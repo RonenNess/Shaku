@@ -5971,7 +5971,7 @@ let _countSecond = 0;
 let _currFps = 0;
 
 // current version
-const version = "1.0.0";
+const version = "1.0.1";
 
 /**
  * Shaku's main object.
