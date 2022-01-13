@@ -1,0 +1,32 @@
+{
+  "name": "shaku",
+  "version": "1.0.0",
+  "description": "A simple yet effective web game development framework that knows its place!",
+  "main": "lib/index.js",
+  "directories": {
+    "doc": "docs",
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RonenNess/Shaku.git"
+  },
+  "keywords": [
+    "web",
+    "game",
+    "game",
+    "webgl",
+    "gamedev",
+    "canvas",
+    "rendering"
+  ],
+  "author": "Ronen Ness",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/RonenNess/Shaku/issues"
+  },
+  "homepage": "https://github.com/RonenNess/Shaku#readme"
+}
