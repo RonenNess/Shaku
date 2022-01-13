@@ -77,7 +77,7 @@ It's a lean and mean package with zero dependencies and only minimal necessary a
 
 Plus, *Shaku* is written in pure modern JavaScript.
 
-If you want to play with *Shaku* while reading the docs, you can check out the [Sandbox Demo](TODO LINK). 
+If you want to play with *Shaku* while reading the docs, you can check out the [Sandbox Demo](https://ronenness.github.io/Shaku/demo/sandbox.html). 
 See the [demos assets](demo/assets) folder to see which assets you can use for the sandbox (or load from external sources).
 
 ![Sandbox](resources/sandbox.jpg)
@@ -145,7 +145,7 @@ You can find the above boilerplate HTML [here](html_boilerplate.html).
 
 # Online Demo Projects
 
-Online demo projects can be found [here](TODO LINK). 
+Online demo projects can be found [here](https://ronenness.github.io/Shaku/demo/index.html). 
 The demos illustrate basic features and components, and implement 3 basic "games": Snake, Tilemap Editor, and Fishy.
 
 ![Demo-2](resources/demo-2.png)
@@ -247,7 +247,7 @@ Shaku.gfx.draw(texture, position, size, sourceRect, color, blendMode, rotation, 
 * `origin` is the point relative to texture size from which the texture will be painted. this affects both positioning and rotation. 0,0 = top left, 1,1 = bottom right.
 * `transform` optional transformation matrix. Used internally (for example with groups drawing) but you can also use it by providing a transformation matrix. More on matrices later.
 
-A demo page that draw textures can be found [here](TODO LINK).
+A demo page that draw textures can be found [here](https://ronenness.github.io/Shaku/demo/gfx_draw.html).
 
 ### Cover
 
@@ -270,7 +270,7 @@ Shaku.gfx.fillRect(new Shaku.utils.Rectangle(100, 100, 50, 50), Shaku.utils.Colo
 `Shaku` will use whatever effect is currently set to draw the rectangle, with a single white pixel as the texture. 
 If you change the default effect, it may affect how rectangles draw as well. More on effects later.
 
-A demo page that draw rectangles can be found [here](TODO LINK).
+A demo page that draw rectangles can be found [here](https://ronenness.github.io/Shaku/demo/gfx_draw.html).
 
 ### Draw Lines
 
@@ -292,7 +292,7 @@ Shaku.gfx.drawLine(new Shaku.utils.Vector2(50,50), new Shaku.utils.Vector2(150,5
 `Shaku` will use whatever effect is currently set to draw the lines, with a single white pixel as the texture. 
 If you change the default effect, it may affect how lines draw as well. More on effects later.
 
-A demo page that draw lines can be found [here](TODO LINK).
+A demo page that draw lines can be found [here](https://ronenness.github.io/Shaku/demo/gfx_draw_lines.html).
 
 ### Blend Modes
 
@@ -302,7 +302,7 @@ The following screenshot illustrate the different blend modes *Shaku* supports, 
 
 ![BlendModes](docs/resources/blend-modes.png)
 
-Or, you can watch the live demo [here](TODO LINK).
+Or, you can watch the live demo [here](https://ronenness.github.io/Shaku/demo/gfx_blend_modes.html).
 
 ### Sprites
 
@@ -358,14 +358,14 @@ let batching = true;
 Shaku.gfx.drawGroup(group, batching);
 ```
 
-A demo page that draw with sprites group can be found [here](TODO LINK).
+A demo page that draw with sprites group can be found [here](https://ronenness.github.io/Shaku/demo/gfx_sprites_group.html).
 
 Notice that `let batching = true` in the end - that's a very important optimization that batch together multiple sprites and reduce draw calls.
 If you draw lots of sprites that share the same texture and blending mode, always use batching. It will significantly increase your performance. 
 
 More on batching [here](#batching).
 
-Or a demo page with performance test can be found [here](TODO LINK).
+Or a demo page with performance test can be found [here](https://ronenness.github.io/Shaku/demo/gfx_performance.html).
 
 
 ### Draw Text
@@ -392,7 +392,7 @@ Shaku.gfx.drawGroup(text1, true);
 
 When loading the `FontTexture` you can provide additional parameters, to learn more about them check out the [API Docs](docs/assets_font_texture_asset.md).
 
-To illustrate the concept of `Font Textures` better, here's a saved font texture that was generated via `assets.loadFontTexture()` in the drawing texts demo (TODO LINK):
+To illustrate the concept of `Font Textures` better, here's a saved font texture that was generated via `assets.loadFontTexture()` in the [drawing texts demo](https://ronenness.github.io/Shaku/demo/gfx_draw_text.html):
 
 ![font texture](resources/font-texture.png)
 
@@ -412,7 +412,7 @@ Shaku.gfx.buildText(fontTexture, "hello world.", fontSize, color, alignment, mar
 * `alignment`: how to align text. Options are `Shaku.gfx.TextAlignment.Left`, `Shaku.gfx.TextAlignment.Right` and `Shaku.gfx.TextAlignment.Center`.
 * `marginFactor`: optional factor for characters spacing. For example value of 2,1 will make double horizontal spacing. 
 
-A demo page that draw texts can be found [here](TODO LINK).
+A demo page that draw texts can be found [here](https://ronenness.github.io/Shaku/demo/gfx_draw_text.html).
 
 ### Render Targets
 
@@ -443,7 +443,7 @@ And now we can use the render target just like we would use any texture:
 Shaku.gfx.draw(renderTarget, position, size);
 ```
 
-A demo page that uses render targets can be found [here](TODO LINK).
+A demo page that uses render targets can be found [here](https://ronenness.github.io/Shaku/demo/gfx_render_target.html).
 
 ### Cameras
 
@@ -479,7 +479,7 @@ Shaku.gfx.resetCamera();
 
 For more details, check out the [Camera object API](docs/gfx_camera.md) docs.
 
-A demo page that uses cameras can be found [here](TODO LINK).
+A demo page that uses cameras can be found [here](https://ronenness.github.io/Shaku/demo/miscs_tilemap.html).
 
 ### Custom Effects
 
@@ -544,7 +544,7 @@ Since every component gets a different offset from the start, it will create a r
 
 ![Custom Effects](resources/custom_effects.png)
 
-A demo page with the above effect can be found [here](TODO LINK).
+A demo page with the above effect can be found [here](https://ronenness.github.io/Shaku/demo/gfx_custom_effects.html).
 
 
 Now lets explain the code.
@@ -734,7 +734,7 @@ The sound instance have the following properties:
 * *preservesPitch*: Set if to preserve pitch while changing playback rate.
 * *playbackRate*: Set playback rate.
 
-A demo page that play sounds can be found [here](TODO LINK).
+A demo page that play sounds can be found [here](https://ronenness.github.io/Shaku/demo/sfx_basic_audio.html).
 
 ### Sounds Mixer
 
@@ -782,7 +782,7 @@ let mixProgress = 0.5; // valid range = 0-1
 mixer.update(mixProgress);
 ```
 
-A demo page with sounds mixer can be found [here](TODO LINK).
+A demo page with sounds mixer can be found [here](https://ronenness.github.io/Shaku/demo/sfx_sound_mixer.html).
 
 ## Input
 
@@ -863,7 +863,7 @@ Note that we use a callback and not `Shaku.gfx.canvas` directly, as `Shaku.gfx.c
 
 ![Input Demo](resources/input-demo.png)
 
-A demo page with mouse and keyboard input can be found [here](TODO LINK).
+A demo page with mouse and keyboard input can be found [here](https://ronenness.github.io/Shaku/demo/input_basic_input.html).
 
 ## Assets
 
@@ -1237,7 +1237,7 @@ In this case I chose batching because it allows us to use the same shaders with 
 
 Note that if you really need instances you can probably implement it with a custom effect + extending the gfx with another method.
 
-A demo project that illustrate performance with batching can be found [here](TODO LINK).
+A demo project that illustrate performance with batching can be found [here](https://ronenness.github.io/Shaku/demo/gfx_performance.html).
 
 
 # Build Shaku
