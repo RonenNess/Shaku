@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Shaku</title>
+    <meta name="description" content="Shaku - a simple and easy-to-use javascript library for videogame programming.">
+    <meta name="author" content="Ronen Ness">
+    <link href="css/style.css" rel="stylesheet" type="text/css" media="all">
+  </head>
+  <body>
+    <div class="noselect">
+    <button class="view-code-btn" onclick="showSampleCode();">View Code</button> 
+    <h1 class="demo-title">Shaku Gfx Demo: Text</h1>
+      <p>This demo illustrate how to render text with Shaku.<br/>
+      To render text, Shaku can dynamically load a font and built a texture atlas out of it, which would look something like this (the below image is an actual font texture generated at runtime):</p>
+      <img id="font-texture" style="background: black;" />
+      <p>Once the font texture is loaded, the Gfx manager provides a method to generate a sprites groups from any given text.<br />
+        The examples below show text generated with this method. Note that we can apply any group transformations on a text group:</p>
+
+      <!-- include shaku -->
+      <script src="js/demos.js"></script>
+      <script src="js/shaku.js"></script>
+
+      <!-- demo code -->
+      <script>
+        async function runDemo()
+        {
+          // init shaku
+          await Shaku.init();
+
+          // screen size
+          let screenX = 800;
+          let screenY = 600;
+
+          // add canvas to document
+          document.body.appendChild(Shaku.gfx.canvas);
+          Shaku.gfx.setResolution(screenX, screenY, true);
+
+          // load font texture
+          let fontTexture = await Shaku.assets.loadFontTexture('assets/DejaVuSansMono.ttf', {fontName: 'DejaVuSansMono'});
+          document.getElementById('font-texture').src = fontTexture.texture.image.src;
+
+          // create some texts
+
+          let text1 = Shaku.gfx.buildText(fontTexture, "Hello World!");
+          text1.position.set(40, 40);
+
+          let text2 = Shaku.gfx.buildText(fontTexture, "Rotating", 32, Shaku.utils.Color.red, Shaku.gfx.TextAlignment.Center);
+          text2.position.set(130, 170);
+
+          let text3 = Shaku.gfx.buildText(fontTexture, "Flipping", 32, Shaku.utils.Color.red, Shaku.gfx.TextAlignment.Center);
+          text3.position.set(330, 170);
+
+          let text4 = Shaku.gfx.buildText(fontTexture, "Wavy & Funky!", 32, Shaku.utils.Color.white, Shaku.gfx.TextAlignment.Center);
+          text4.position.set(600, 170);
+
+          let text5 = Shaku.gfx.buildText(fontTexture, "This is a multiline text..\nAligned left.", 24, Shaku.utils.Color.white, Shaku.gfx.TextAlignment.Left);
+          text5.position.set(screenX / 2, 250);
+
+          let text6 = Shaku.gfx.buildText(fontTexture, "This is a multiline text..\nAligned right.", 24, Shaku.utils.Color.white, Shaku.gfx.TextAlignment.Right);
+          text6.position.set(screenX / 2, 350);
+
+          let text7 = Shaku.gfx.buildText(fontTexture, "This is a multiline text..\nAligned center.", 24, Shaku.utils.Color.white, Shaku.gfx.TextAlignment.Center);
+          text7.position.set(screenX / 2, 450);
+
+          let text8 = Shaku.gfx.buildText(fontTexture, "Larger spacing", 24, Shaku.utils.Color.brown, Shaku.gfx.TextAlignment.Center, new Shaku.utils.Vector2(2.5, 1));
+          text8.position.set(screenX / 2, 550);
+
+          // do a main loop step.
+          function step() 
+          {
+            // start frame and clear screen
+            Shaku.startFrame(); 
+            Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
+
+            // draw texts
+            Shaku.gfx.drawGroup(text1);
+            Shaku.gfx.drawGroup(text2);
+            Shaku.gfx.drawGroup(text3);
+            Shaku.gfx.drawGroup(text4);
+            Shaku.gfx.drawGroup(text5);
+            Shaku.gfx.drawGroup(text6);
+            Shaku.gfx.drawGroup(text7);
+            Shaku.gfx.drawGroup(text8);
+
+            // do some animations
+            text2.rotation += Shaku.gameTime.delta;
+            text3.scale.x = Math.sin(Shaku.gameTime.elapsed);
+            text4.forEach (sprite => {
+              sprite.position.y = Math.sin(Shaku.gameTime.elapsed + sprite.position.x) * 6;
+              sprite.color.r = Math.sin(Shaku.gameTime.elapsed * 2 + sprite.position.x);
+              sprite.color.g = Math.sin(2 + Shaku.gameTime.elapsed * 2 + sprite.position.x);
+              sprite.color.b = Math.sin(4 + Shaku.gameTime.elapsed * 2 + sprite.position.x);
+            })
+
+            // end frame and request next frame
+            Shaku.endFrame();
+            Shaku.requestAnimationFrame(step);
+          }
+
+          // start main loop
+          step();
+        }
+
+        // start demo
+        runDemo();
+
+      </script>
+
+</div>
+
+<!-- code example part -->
+<div id="sample-code-modal" class="modal">
+  <div class="modal__overlay jsOverlay"></div>
+  <div class="modal__container">   
+
+<p class="noselect">The following is a minimal code example on how to draw text.</p>
+<pre><code class="language-js">// load font texture asset
+let fontTexture = await Shaku.assets.loadFontTexture('assets/DejaVuSansMono.ttf', {fontName: 'DejaVuSansMono'});
+
+// generate text
+let textGroup = Shaku.gfx.buildText(fontTexture, "This is a multiline text..\nAligned left.", 24, Shaku.utils.Color.white, Shaku.gfx.TextAlignment.Left);
+textGroup.position.set(100, 100);
+
+// part below goes between startFrame() and endFrame()
+// -------------------------------------------------------
+
+// draw the text
+Shaku.gfx.drawGroup(textGroup);</code></pre>
+
+  <button class="modal__close" onclick="closeModal('sample-code-modal')">&#10005;</button>
+</div>
+</div>
+
+<link href="prism/prism.css" rel="stylesheet" />
+<script src="prism/prism.js"></script>
+
+  </body>
+</html>

@@ -1,0 +1,4176 @@
+![Shaku JS](resources/logo-sm.png)
+
+[Back To Table of Content](index.md)
+
+# Shaku
+
+## Classes
+
+<dl>
+<dt><a href="#Asset">Asset</a></dt>
+<dd><p>A loadable asset base class.
+All asset types inherit from this.</p>
+</dd>
+<dt><a href="#Assets">Assets</a></dt>
+<dd><p>Assets manager class.
+Used to create, load and cache game assets, which includes textures, audio files, JSON objects, etc.
+As a rule of thumb, all methods to load or create assets are async and return a promise.</p>
+<p>To access the Assets manager you use <code>Shaku.assets</code>.</p>
+</dd>
+<dt><a href="#BinaryAsset">BinaryAsset</a></dt>
+<dd><p>A loadable binary data asset.
+This asset type loads array of bytes from a remote file.</p>
+</dd>
+<dt><a href="#FontTextureAsset">FontTextureAsset</a></dt>
+<dd><p>A font texture asset, dynamically generated from loaded font and canvas.
+This asset type creates an atlas of all the font&#39;s characters as textures, so we can later render them as sprites.</p>
+</dd>
+<dt><a href="#JsonAsset">JsonAsset</a></dt>
+<dd><p>A loadable json asset.
+This asset type loads JSON from a remote file.</p>
+</dd>
+<dt><a href="#SoundAsset">SoundAsset</a></dt>
+<dd><p>A loadable sound asset.
+This is the asset type you use to play sounds.</p>
+</dd>
+<dt><a href="#TextureAsset">TextureAsset</a></dt>
+<dd><p>A loadable texture asset.
+This asset type loads an image from URL or source, and turn it into a texture.</p>
+</dd>
+<dt><a href="#Camera">Camera</a></dt>
+<dd><p>Implements a Camera object.</p>
+</dd>
+<dt><a href="#BasicEffect">BasicEffect</a></dt>
+<dd><p>Default basic effect to draw 2d sprites.</p>
+</dd>
+<dt><a href="#Effect">Effect</a></dt>
+<dd><p>Effect base class.
+An effect = vertex shader + fragment shader + uniforms &amp; attributes + setup code.</p>
+</dd>
+<dt><a href="#Gfx">Gfx</a></dt>
+<dd><p>Gfx is the graphics manager. 
+Everything related to rendering and managing your game canvas goes here.</p>
+<p>To access the Graphics manager you use <code>Shaku.gfx</code>.</p>
+</dd>
+<dt><a href="#Matrix">Matrix</a></dt>
+<dd><p>Implements a matrix.</p>
+</dd>
+<dt><a href="#Mesh">Mesh</a></dt>
+<dd><p>Class to hold a mesh.</p>
+</dd>
+<dt><a href="#Sprite">Sprite</a></dt>
+<dd><p>Sprite class.
+This object is a helper class to hold all the properties of a texture to render.</p>
+</dd>
+<dt><a href="#SpritesGroup">SpritesGroup</a></dt>
+<dd><p>Sprites group class.
+This object is a container to hold sprites collection + parent transformations.
+You need SpritesGroup to use batched rendering.</p>
+</dd>
+<dt><a href="#Input">Input</a></dt>
+<dd><p>Input manager. 
+Used to recieve input from keyboard and mouse.</p>
+<p>To access the Input manager use <code>Shaku.input</code>.</p>
+</dd>
+<dt><a href="#Logger">Logger</a></dt>
+<dd><p>A logger manager.
+By default writes logs to console.</p>
+</dd>
+<dt><a href="#IManager">IManager</a></dt>
+<dd><p>Interface for any manager.
+Manager = manages a domain in Shaku, such as gfx (graphics), sfx (sounds), input, etc.</p>
+</dd>
+<dt><a href="#Sfx">Sfx</a></dt>
+<dd><p>Sfx manager. 
+Used to play sound effects and music.</p>
+<p>To access the Sfx manager use <code>Shaku.sfx</code>.</p>
+</dd>
+<dt><a href="#SoundInstance">SoundInstance</a></dt>
+<dd><p>A sound effect instance you can play and stop.</p>
+</dd>
+<dt><a href="#SoundMixer">SoundMixer</a></dt>
+<dd><p>A utility class to mix between two sounds.</p>
+</dd>
+<dt><a href="#Shaku">Shaku</a></dt>
+<dd><p>Shaku&#39;s main object.
+This object wraps the entire lib namespace, and this is what you use to access all managers and manage your main loop.</p>
+</dd>
+<dt><a href="#Animator">Animator</a></dt>
+<dd><p>Implement an animator object that change values over time using Linear Interpolation.
+Usage example:
+(new Animator(sprite)).from({&#39;position.x&#39;: 0}).to({&#39;position.x&#39;: 100}).duration(1).play();</p>
+</dd>
+<dt><a href="#Circle">Circle</a></dt>
+<dd><p>Implement a simple 2d Circle.</p>
+</dd>
+<dt><a href="#Color">Color</a></dt>
+<dd><p>Implement a color.
+All color components are expected to be in 0.0 - 1.0 range (and not 0-255).</p>
+</dd>
+<dt><a href="#GameTime">GameTime</a></dt>
+<dd><p>Class to hold current game time (elapse and deltatime).</p>
+</dd>
+<dt><a href="#Rectangle">Rectangle</a></dt>
+<dd><p>Implement a simple 2d Rectangle.</p>
+</dd>
+<dt><a href="#Vector2">Vector2</a></dt>
+<dd><p>A simple Vector object for 2d positions.</p>
+</dd>
+</dl>
+
+<a name="Asset"></a>
+
+## Asset
+A loadable asset base class.
+All asset types inherit from this.
+
+**Kind**: global class  
+
+* [Asset](#Asset)
+    * [new Asset(url)](#new_Asset_new)
+    * [.url](#Asset+url) ⇒ <code>String</code>
+    * [.valid](#Asset+valid) ⇒ <code>Boolean</code>
+    * [.load(params)](#Asset+load) ⇒ <code>Promise</code>
+    * [.create(source, params)](#Asset+create) ⇒ <code>Promise</code>
+    * [.destroy()](#Asset+destroy)
+
+<a name="new_Asset_new"></a>
+
+### new Asset(url)
+Create the new asset.
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| url | <code>String</code> | Asset URL / identifier. |
+
+<a name="Asset+url"></a>
+
+### asset.url ⇒ <code>String</code>
+Get asset's URL.
+
+**Kind**: instance property of [<code>Asset</code>](#Asset)  
+**Returns**: <code>String</code> - Asset URL.  
+<a name="Asset+valid"></a>
+
+### asset.valid ⇒ <code>Boolean</code>
+Get if this asset is loaded and valid.
+
+**Kind**: instance property of [<code>Asset</code>](#Asset)  
+**Returns**: <code>Boolean</code> - True if asset is loaded and valid, false otherwise.  
+<a name="Asset+load"></a>
+
+### asset.load(params) ⇒ <code>Promise</code>
+Load the asset from it's URL.
+
+**Kind**: instance method of [<code>Asset</code>](#Asset)  
+**Returns**: <code>Promise</code> - Promise to resolve when fully loaded.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| params | <code>\*</code> | Optional additional params. |
+
+<a name="Asset+create"></a>
+
+### asset.create(source, params) ⇒ <code>Promise</code>
+Create the asset from data source.
+
+**Kind**: instance method of [<code>Asset</code>](#Asset)  
+**Returns**: <code>Promise</code> - Promise to resolve when asset is ready.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| source | <code>\*</code> | Data to create asset from. |
+| params | <code>\*</code> | Optional additional params. |
+
+<a name="Asset+destroy"></a>
+
+### asset.destroy()
+Destroy the asset, freeing any allocated resources in the process.
+
+**Kind**: instance method of [<code>Asset</code>](#Asset)  
+<a name="Assets"></a>
+
+## Assets
+Assets manager class.
+Used to create, load and cache game assets, which includes textures, audio files, JSON objects, etc.
+As a rule of thumb, all methods to load or create assets are async and return a promise.
+
+To access the Assets manager you use `Shaku.assets`.
+
+**Kind**: global class  
+
+* [Assets](#Assets)
+    * [new Assets()](#new_Assets_new)
+    * [.pendingAssets](#Assets+pendingAssets) ⇒ <code>Array.&lt;string&gt;</code>
+    * [.failedAssets](#Assets+failedAssets) ⇒ <code>Array.&lt;string&gt;</code>
+    * [.waitForAll()](#Assets+waitForAll) ⇒ <code>Promise</code>
+    * [.getCached(url)](#Assets+getCached) ⇒ [<code>Asset</code>](#Asset)
+    * [.loadSound(url)](#Assets+loadSound) ⇒ [<code>Promise.&lt;Asset&gt;</code>](#Asset)
+    * [.loadTexture(url, params)](#Assets+loadTexture) ⇒ [<code>Promise.&lt;Asset&gt;</code>](#Asset)
+    * [.createRenderTarget(name, width, height)](#Assets+createRenderTarget) ⇒ [<code>Promise.&lt;Asset&gt;</code>](#Asset)
+    * [.loadFontTexture(url, params)](#Assets+loadFontTexture) ⇒ [<code>Promise.&lt;Asset&gt;</code>](#Asset)
+    * [.loadJson(url)](#Assets+loadJson) ⇒ [<code>Promise.&lt;Asset&gt;</code>](#Asset)
+    * [.createJson(name, data)](#Assets+createJson) ⇒ [<code>Promise.&lt;Asset&gt;</code>](#Asset)
+    * [.loadBinary(url)](#Assets+loadBinary) ⇒ [<code>Promise.&lt;Asset&gt;</code>](#Asset)
+    * [.createBinary(name, data)](#Assets+createBinary) ⇒ [<code>Promise.&lt;Asset&gt;</code>](#Asset)
+    * [.free(url)](#Assets+free)
+    * [.clearCache()](#Assets+clearCache)
+
+<a name="new_Assets_new"></a>
+
+### new Assets()
+Create the manager.
+
+<a name="Assets+pendingAssets"></a>
+
+### assets.pendingAssets ⇒ <code>Array.&lt;string&gt;</code>
+Get list of assets waiting to be loaded.
+This list will be reset if you call clearCache().
+
+**Kind**: instance property of [<code>Assets</code>](#Assets)  
+**Returns**: <code>Array.&lt;string&gt;</code> - URLs of assets waiting to be loaded.  
+<a name="Assets+failedAssets"></a>
+
+### assets.failedAssets ⇒ <code>Array.&lt;string&gt;</code>
+Get list of assets that failed to load.
+This list will be reset if you call clearCache().
+
+**Kind**: instance property of [<code>Assets</code>](#Assets)  
+**Returns**: <code>Array.&lt;string&gt;</code> - URLs of assets that had error loading.  
+<a name="Assets+waitForAll"></a>
+
+### assets.waitForAll() ⇒ <code>Promise</code>
+Return a promise that will be resolved only when all pending assets are loaded.
+If an asset fails, will reject.
+
+**Kind**: instance method of [<code>Assets</code>](#Assets)  
+**Returns**: <code>Promise</code> - Promise to resolve when all assets are loaded, or reject if there are failed assets.  
+**Example**  
+```js
+await Shaku.assets.waitForAll();
+console.log("All assets are loaded!");
+```
+<a name="Assets+getCached"></a>
+
+### assets.getCached(url) ⇒ [<code>Asset</code>](#Asset)
+Get asset directly from cache, synchronous and without a Promise.
+
+**Kind**: instance method of [<code>Assets</code>](#Assets)  
+**Returns**: [<code>Asset</code>](#Asset) - Asset or null if not loaded.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| url | <code>String</code> | Asset URL or name. |
+
+<a name="Assets+loadSound"></a>
+
+### assets.loadSound(url) ⇒ [<code>Promise.&lt;Asset&gt;</code>](#Asset)
+Load a sound asset. If already loaded, will use cache.
+
+**Kind**: instance method of [<code>Assets</code>](#Assets)  
+**Returns**: [<code>Promise.&lt;Asset&gt;</code>](#Asset) - promise to resolve with asset instance, when loaded.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| url | <code>String</code> | Asset URL. |
+
+**Example**  
+```js
+let sound = await Shaku.assets.loadSound("assets/my_sound.ogg");
+```
+<a name="Assets+loadTexture"></a>
+
+### assets.loadTexture(url, params) ⇒ [<code>Promise.&lt;Asset&gt;</code>](#Asset)
+Load a texture asset. If already loaded, will use cache.
+
+**Kind**: instance method of [<code>Assets</code>](#Assets)  
+**Returns**: [<code>Promise.&lt;Asset&gt;</code>](#Asset) - promise to resolve with asset instance, when loaded.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| url | <code>String</code> | Asset URL. |
+| params | <code>\*</code> | Optional params dictionary. See TextureAsset.load() for more details. |
+
+**Example**  
+```js
+let texture = await Shaku.assets.loadTexture("assets/my_texture.png", {generateMipMaps: false});
+```
+<a name="Assets+createRenderTarget"></a>
+
+### assets.createRenderTarget(name, width, height) ⇒ [<code>Promise.&lt;Asset&gt;</code>](#Asset)
+Create a render target texture asset. If already loaded, will use cache.
+
+**Kind**: instance method of [<code>Assets</code>](#Assets)  
+**Returns**: [<code>Promise.&lt;Asset&gt;</code>](#Asset) - promise to resolve with asset instance, when loaded.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| name | <code>String</code> | Asset name (matched to URLs when using cache). If null, will not add to cache. |
+| width | <code>Number</code> | Texture width. |
+| height | <code>Number</code> | Texture height. |
+
+**Example**  
+```js
+let width = 512;
+let height = 512;
+let renderTarget = await Shaku.assets.createRenderTarget("optional_render_target_asset_id", width, height);
+```
+<a name="Assets+loadFontTexture"></a>
+
+### assets.loadFontTexture(url, params) ⇒ [<code>Promise.&lt;Asset&gt;</code>](#Asset)
+Load a font texture asset. If already loaded, will use cache.
+
+**Kind**: instance method of [<code>Assets</code>](#Assets)  
+**Returns**: [<code>Promise.&lt;Asset&gt;</code>](#Asset) - promise to resolve with asset instance, when loaded.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| url | <code>String</code> | Asset URL. |
+| params | <code>\*</code> | Optional params dictionary. See FontTextureAsset.load() for more details. |
+
+**Example**  
+```js
+let fontTexture = await Shaku.assets.loadFontTexture('assets/DejaVuSansMono.ttf', {fontName: 'DejaVuSansMono'});
+```
+<a name="Assets+loadJson"></a>
+
+### assets.loadJson(url) ⇒ [<code>Promise.&lt;Asset&gt;</code>](#Asset)
+Load a json asset. If already loaded, will use cache.
+
+**Kind**: instance method of [<code>Assets</code>](#Assets)  
+**Returns**: [<code>Promise.&lt;Asset&gt;</code>](#Asset) - promise to resolve with asset instance, when loaded.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| url | <code>String</code> | Asset URL. |
+
+**Example**  
+```js
+let jsonData = await Shaku.assets.loadJson('assets/my_json_data.json');
+console.log(jsonData.data);
+```
+<a name="Assets+createJson"></a>
+
+### assets.createJson(name, data) ⇒ [<code>Promise.&lt;Asset&gt;</code>](#Asset)
+Create a new json asset. If already exist, will reject promise.
+
+**Kind**: instance method of [<code>Assets</code>](#Assets)  
+**Returns**: [<code>Promise.&lt;Asset&gt;</code>](#Asset) - promise to resolve with asset instance, when ready.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| name | <code>String</code> | Asset name (matched to URLs when using cache). If null, will not add to cache. |
+| data | <code>Object</code> \| <code>String</code> | Optional starting data. |
+
+**Example**  
+```js
+let jsonData = await Shaku.assets.createJson('optional_json_data_id', {"foo": "bar"});
+// you can now load this asset from anywhere in your code using 'optional_json_data_id' as url
+```
+<a name="Assets+loadBinary"></a>
+
+### assets.loadBinary(url) ⇒ [<code>Promise.&lt;Asset&gt;</code>](#Asset)
+Load a binary data asset. If already loaded, will use cache.
+
+**Kind**: instance method of [<code>Assets</code>](#Assets)  
+**Returns**: [<code>Promise.&lt;Asset&gt;</code>](#Asset) - promise to resolve with asset instance, when loaded.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| url | <code>String</code> | Asset URL. |
+
+**Example**  
+```js
+let binData = await Shaku.assets.loadBinary('assets/my_bin_data.dat');
+console.log(binData.data);
+```
+<a name="Assets+createBinary"></a>
+
+### assets.createBinary(name, data) ⇒ [<code>Promise.&lt;Asset&gt;</code>](#Asset)
+Create a new binary asset. If already exist, will reject promise.
+
+**Kind**: instance method of [<code>Assets</code>](#Assets)  
+**Returns**: [<code>Promise.&lt;Asset&gt;</code>](#Asset) - promise to resolve with asset instance, when ready.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| name | <code>String</code> | Asset name (matched to URLs when using cache). If null, will not add to cache. |
+| data | <code>Array.&lt;Number&gt;</code> \| <code>Uint8Array</code> | Binary data to set. |
+
+**Example**  
+```js
+let binData = await Shaku.assets.createBinary('optional_bin_data_id', [1,2,3,4]);
+// you can now load this asset from anywhere in your code using 'optional_bin_data_id' as url
+```
+<a name="Assets+free"></a>
+
+### assets.free(url)
+Destroy and free asset from cache.
+
+**Kind**: instance method of [<code>Assets</code>](#Assets)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| url | <code>String</code> | Asset URL to free. |
+
+**Example**  
+```js
+Shaku.assets.free("my_asset_url");
+```
+<a name="Assets+clearCache"></a>
+
+### assets.clearCache()
+Free all loaded assets from cache.
+
+**Kind**: instance method of [<code>Assets</code>](#Assets)  
+**Example**  
+```js
+Shaku.assets.clearCache();
+```
+<a name="BinaryAsset"></a>
+
+## BinaryAsset
+A loadable binary data asset.
+This asset type loads array of bytes from a remote file.
+
+**Kind**: global class  
+
+* [BinaryAsset](#BinaryAsset)
+    * [.valid](#BinaryAsset+valid)
+    * [.data](#BinaryAsset+data) ⇒ <code>Uint8Array</code>
+    * [.load()](#BinaryAsset+load) ⇒ <code>Promise</code>
+    * [.create(source)](#BinaryAsset+create) ⇒ <code>Promise</code>
+    * [.destroy()](#BinaryAsset+destroy)
+    * [.string()](#BinaryAsset+string) ⇒ <code>String</code>
+
+<a name="BinaryAsset+valid"></a>
+
+### binaryAsset.valid
+**Kind**: instance property of [<code>BinaryAsset</code>](#BinaryAsset)  
+<a name="BinaryAsset+data"></a>
+
+### binaryAsset.data ⇒ <code>Uint8Array</code>
+Get binary data.
+
+**Kind**: instance property of [<code>BinaryAsset</code>](#BinaryAsset)  
+**Returns**: <code>Uint8Array</code> - Data as bytes array.  
+<a name="BinaryAsset+load"></a>
+
+### binaryAsset.load() ⇒ <code>Promise</code>
+Load the binary data from the asset URL.
+
+**Kind**: instance method of [<code>BinaryAsset</code>](#BinaryAsset)  
+**Returns**: <code>Promise</code> - Promise to resolve when fully loaded.  
+<a name="BinaryAsset+create"></a>
+
+### binaryAsset.create(source) ⇒ <code>Promise</code>
+Create the binary data asset from array or Uint8Array.
+
+**Kind**: instance method of [<code>BinaryAsset</code>](#BinaryAsset)  
+**Returns**: <code>Promise</code> - Promise to resolve when asset is ready.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| source | <code>Array.&lt;Number&gt;</code> \| <code>Uint8Array</code> | Data to create asset from. |
+
+<a name="BinaryAsset+destroy"></a>
+
+### binaryAsset.destroy()
+**Kind**: instance method of [<code>BinaryAsset</code>](#BinaryAsset)  
+<a name="BinaryAsset+string"></a>
+
+### binaryAsset.string() ⇒ <code>String</code>
+Convert and return data as string.
+
+**Kind**: instance method of [<code>BinaryAsset</code>](#BinaryAsset)  
+**Returns**: <code>String</code> - Data converted to string.  
+<a name="FontTextureAsset"></a>
+
+## FontTextureAsset
+A font texture asset, dynamically generated from loaded font and canvas.
+This asset type creates an atlas of all the font's characters as textures, so we can later render them as sprites.
+
+**Kind**: global class  
+
+* [FontTextureAsset](#FontTextureAsset)
+    * [.lineHeight](#FontTextureAsset+lineHeight)
+    * [.fontName](#FontTextureAsset+fontName)
+    * [.fontSize](#FontTextureAsset+fontSize)
+    * [.placeholderCharacter](#FontTextureAsset+placeholderCharacter)
+    * [.texture](#FontTextureAsset+texture)
+    * [.valid](#FontTextureAsset+valid)
+    * [.load(params)](#FontTextureAsset+load) ⇒ <code>Promise</code>
+    * [.getSourceRect(character)](#FontTextureAsset+getSourceRect) ⇒ [<code>Rectangle</code>](#Rectangle)
+    * [.destroy()](#FontTextureAsset+destroy)
+
+<a name="FontTextureAsset+lineHeight"></a>
+
+### fontTextureAsset.lineHeight
+Get line height.
+
+**Kind**: instance property of [<code>FontTextureAsset</code>](#FontTextureAsset)  
+<a name="FontTextureAsset+fontName"></a>
+
+### fontTextureAsset.fontName
+Get font name.
+
+**Kind**: instance property of [<code>FontTextureAsset</code>](#FontTextureAsset)  
+<a name="FontTextureAsset+fontSize"></a>
+
+### fontTextureAsset.fontSize
+Get font size.
+
+**Kind**: instance property of [<code>FontTextureAsset</code>](#FontTextureAsset)  
+<a name="FontTextureAsset+placeholderCharacter"></a>
+
+### fontTextureAsset.placeholderCharacter
+Get placeholder character.
+
+**Kind**: instance property of [<code>FontTextureAsset</code>](#FontTextureAsset)  
+<a name="FontTextureAsset+texture"></a>
+
+### fontTextureAsset.texture
+Get the texture.
+
+**Kind**: instance property of [<code>FontTextureAsset</code>](#FontTextureAsset)  
+<a name="FontTextureAsset+valid"></a>
+
+### fontTextureAsset.valid
+**Kind**: instance property of [<code>FontTextureAsset</code>](#FontTextureAsset)  
+<a name="FontTextureAsset+load"></a>
+
+### fontTextureAsset.load(params) ⇒ <code>Promise</code>
+Generate the font texture from a font found in given URL.
+
+**Kind**: instance method of [<code>FontTextureAsset</code>](#FontTextureAsset)  
+**Returns**: <code>Promise</code> - Promise to resolve when fully loaded.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| params | <code>\*</code> | Additional params. Possible values are:                      - fontName: mandatory font name. on some browsers if the font name does not match the font you actually load via the URL, it will not be loaded properly.                      - missingCharPlaceholder (default='?'): character to use for missing characters.                      - smoothFont (default=true): if true, will set font to smooth mode.                      - fontSize (default=52): font size in texture. larget font size will take more memory, but allow for sharper text rendering in larger scales.                      - enforceTexturePowerOfTwo (default=true): if true, will force texture size to be power of two.                      - maxTextureWidth (default=1024): max texture width.                      - charactersSet (default=FontTextureAsset.defaultCharactersSet): which characters to set in the texture. |
+
+<a name="FontTextureAsset+getSourceRect"></a>
+
+### fontTextureAsset.getSourceRect(character) ⇒ [<code>Rectangle</code>](#Rectangle)
+Get the source rectangle for a given character in texture.
+
+**Kind**: instance method of [<code>FontTextureAsset</code>](#FontTextureAsset)  
+**Returns**: [<code>Rectangle</code>](#Rectangle) - Source rectangle for character.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| character | <code>Character</code> | Character to get source rect for. |
+
+<a name="FontTextureAsset+destroy"></a>
+
+### fontTextureAsset.destroy()
+**Kind**: instance method of [<code>FontTextureAsset</code>](#FontTextureAsset)  
+<a name="JsonAsset"></a>
+
+## JsonAsset
+A loadable json asset.
+This asset type loads JSON from a remote file.
+
+**Kind**: global class  
+
+* [JsonAsset](#JsonAsset)
+    * [.data](#JsonAsset+data) ⇒ <code>\*</code>
+    * [.valid](#JsonAsset+valid)
+    * [.load()](#JsonAsset+load) ⇒ <code>Promise</code>
+    * [.create(source)](#JsonAsset+create) ⇒ <code>Promise</code>
+    * [.destroy()](#JsonAsset+destroy)
+
+<a name="JsonAsset+data"></a>
+
+### jsonAsset.data ⇒ <code>\*</code>
+Get json data.
+
+**Kind**: instance property of [<code>JsonAsset</code>](#JsonAsset)  
+**Returns**: <code>\*</code> - Data as dictionary.  
+<a name="JsonAsset+valid"></a>
+
+### jsonAsset.valid
+**Kind**: instance property of [<code>JsonAsset</code>](#JsonAsset)  
+<a name="JsonAsset+load"></a>
+
+### jsonAsset.load() ⇒ <code>Promise</code>
+Load the JSON data from the asset URL.
+
+**Kind**: instance method of [<code>JsonAsset</code>](#JsonAsset)  
+**Returns**: <code>Promise</code> - Promise to resolve when fully loaded.  
+<a name="JsonAsset+create"></a>
+
+### jsonAsset.create(source) ⇒ <code>Promise</code>
+Create the JSON data asset from object or string.
+
+**Kind**: instance method of [<code>JsonAsset</code>](#JsonAsset)  
+**Returns**: <code>Promise</code> - Promise to resolve when asset is ready.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| source | <code>Object</code> \| <code>String</code> | Data to create asset from. |
+
+<a name="JsonAsset+destroy"></a>
+
+### jsonAsset.destroy()
+**Kind**: instance method of [<code>JsonAsset</code>](#JsonAsset)  
+<a name="SoundAsset"></a>
+
+## SoundAsset
+A loadable sound asset.
+This is the asset type you use to play sounds.
+
+**Kind**: global class  
+
+* [SoundAsset](#SoundAsset)
+    * [.valid](#SoundAsset+valid)
+    * [.load()](#SoundAsset+load) ⇒ <code>Promise</code>
+    * [.destroy()](#SoundAsset+destroy)
+
+<a name="SoundAsset+valid"></a>
+
+### soundAsset.valid
+**Kind**: instance property of [<code>SoundAsset</code>](#SoundAsset)  
+<a name="SoundAsset+load"></a>
+
+### soundAsset.load() ⇒ <code>Promise</code>
+Load the sound asset from its URL.
+Note that loading sounds isn't actually necessary to play sounds, this method merely pre-load the asset (so first time we play
+the sound would be immediate and not delayed) and validate the data is valid.
+
+**Kind**: instance method of [<code>SoundAsset</code>](#SoundAsset)  
+**Returns**: <code>Promise</code> - Promise to resolve when fully loaded.  
+<a name="SoundAsset+destroy"></a>
+
+### soundAsset.destroy()
+**Kind**: instance method of [<code>SoundAsset</code>](#SoundAsset)  
+<a name="TextureAsset"></a>
+
+## TextureAsset
+A loadable texture asset.
+This asset type loads an image from URL or source, and turn it into a texture.
+
+**Kind**: global class  
+
+* [TextureAsset](#TextureAsset)
+    * [.filter](#TextureAsset+filter)
+    * [.filter](#TextureAsset+filter)
+    * [.wrapMode](#TextureAsset+wrapMode)
+    * [.wrapMode](#TextureAsset+wrapMode)
+    * [.image](#TextureAsset+image) ⇒ <code>Image</code>
+    * [.width](#TextureAsset+width) ⇒ <code>Number</code>
+    * [.height](#TextureAsset+height) ⇒ <code>Number</code>
+    * [.size](#TextureAsset+size) ⇒ [<code>Vector2</code>](#Vector2)
+    * [.texture](#TextureAsset+texture)
+    * [.valid](#TextureAsset+valid)
+    * [.load(params)](#TextureAsset+load) ⇒ <code>Promise</code>
+    * [.createRenderTarget(width, height)](#TextureAsset+createRenderTarget)
+    * [.fromImage(image, params)](#TextureAsset+fromImage)
+    * [.create(source, params)](#TextureAsset+create) ⇒ <code>Promise</code>
+    * [.getPixel(x, y)](#TextureAsset+getPixel) ⇒ [<code>Color</code>](#Color)
+    * [.destroy()](#TextureAsset+destroy)
+
+<a name="TextureAsset+filter"></a>
+
+### textureAsset.filter
+Get texture magnifying filter, or null to use default.
+
+**Kind**: instance property of [<code>TextureAsset</code>](#TextureAsset)  
+**See**: Shaku.gfx.TextureFilterModes  
+<a name="TextureAsset+filter"></a>
+
+### textureAsset.filter
+Set texture magnifying filter.
+
+**Kind**: instance property of [<code>TextureAsset</code>](#TextureAsset)  
+**See**: Shaku.gfx.TextureFilterModes  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| value | <code>TextureFilterModes</code> | Filter mode to use or null to use default. |
+
+<a name="TextureAsset+wrapMode"></a>
+
+### textureAsset.wrapMode
+Get texture wrapping mode, or null to use default.
+
+**Kind**: instance property of [<code>TextureAsset</code>](#TextureAsset)  
+**See**: Shaku.gfx.TextureWrapModes  
+<a name="TextureAsset+wrapMode"></a>
+
+### textureAsset.wrapMode
+Set texture wrapping mode.
+
+**Kind**: instance property of [<code>TextureAsset</code>](#TextureAsset)  
+**See**: Shaku.gfx.TextureWrapModes  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| value | <code>TextureWrapModes</code> | Wrapping mode to use or null to use default. |
+
+<a name="TextureAsset+image"></a>
+
+### textureAsset.image ⇒ <code>Image</code>
+Get raw image.
+
+**Kind**: instance property of [<code>TextureAsset</code>](#TextureAsset)  
+**Returns**: <code>Image</code> - Image instance.  
+<a name="TextureAsset+width"></a>
+
+### textureAsset.width ⇒ <code>Number</code>
+Get texture width.
+
+**Kind**: instance property of [<code>TextureAsset</code>](#TextureAsset)  
+**Returns**: <code>Number</code> - Texture width.  
+<a name="TextureAsset+height"></a>
+
+### textureAsset.height ⇒ <code>Number</code>
+Get texture height.
+
+**Kind**: instance property of [<code>TextureAsset</code>](#TextureAsset)  
+**Returns**: <code>Number</code> - Texture height.  
+<a name="TextureAsset+size"></a>
+
+### textureAsset.size ⇒ [<code>Vector2</code>](#Vector2)
+Get texture size as a vector.
+
+**Kind**: instance property of [<code>TextureAsset</code>](#TextureAsset)  
+**Returns**: [<code>Vector2</code>](#Vector2) - Texture size.  
+<a name="TextureAsset+texture"></a>
+
+### textureAsset.texture
+Get texture instance for WebGL.
+
+**Kind**: instance property of [<code>TextureAsset</code>](#TextureAsset)  
+<a name="TextureAsset+valid"></a>
+
+### textureAsset.valid
+**Kind**: instance property of [<code>TextureAsset</code>](#TextureAsset)  
+<a name="TextureAsset+load"></a>
+
+### textureAsset.load(params) ⇒ <code>Promise</code>
+Load the texture from it's image URL.
+
+**Kind**: instance method of [<code>TextureAsset</code>](#TextureAsset)  
+**Returns**: <code>Promise</code> - Promise to resolve when fully loaded.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| params | <code>\*</code> | Optional additional params. Possible values are:                      - generateMipMaps (default=false): should we generate mipmaps for this texture? |
+
+<a name="TextureAsset+createRenderTarget"></a>
+
+### textureAsset.createRenderTarget(width, height)
+Create this texture as an empty render target.
+
+**Kind**: instance method of [<code>TextureAsset</code>](#TextureAsset)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| width | <code>Number</code> | Texture width. |
+| height | <code>Number</code> | Texture height. |
+
+<a name="TextureAsset+fromImage"></a>
+
+### textureAsset.fromImage(image, params)
+Create texture from loaded image instance.
+
+**Kind**: instance method of [<code>TextureAsset</code>](#TextureAsset)  
+**See**: TextureAsset.load for params.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| image | <code>Image</code> | Image to create texture from. Image must be loaded! |
+| params | <code>\*</code> | Optional additional params. See load() for details. |
+
+<a name="TextureAsset+create"></a>
+
+### textureAsset.create(source, params) ⇒ <code>Promise</code>
+Create the texture from an image.
+
+**Kind**: instance method of [<code>TextureAsset</code>](#TextureAsset)  
+**Returns**: <code>Promise</code> - Promise to resolve when asset is ready.  
+**See**: TextureAsset.load for params.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| source | <code>Image</code> \| <code>String</code> | Image or Image source URL to create texture from. |
+| params | <code>\*</code> | Optional additional params. See load() for details. |
+
+<a name="TextureAsset+getPixel"></a>
+
+### textureAsset.getPixel(x, y) ⇒ [<code>Color</code>](#Color)
+Get pixel color from image.
+
+**Kind**: instance method of [<code>TextureAsset</code>](#TextureAsset)  
+**Returns**: [<code>Color</code>](#Color) - Pixel color.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| x | <code>Number</code> | Pixel X value. |
+| y | <code>Number</code> | Pixel Y value. |
+
+<a name="TextureAsset+destroy"></a>
+
+### textureAsset.destroy()
+**Kind**: instance method of [<code>TextureAsset</code>](#TextureAsset)  
+<a name="Camera"></a>
+
+## Camera
+Implements a Camera object.
+
+**Kind**: global class  
+
+* [Camera](#Camera)
+    * [new Camera(gfx)](#new_Camera_new)
+    * [.projection](#Camera+projection)
+    * [.viewport](#Camera+viewport) ⇒ [<code>Rectangle</code>](#Rectangle)
+    * [.viewport](#Camera+viewport)
+    * [.orthographicOffset(offset, near, far)](#Camera+orthographicOffset)
+    * [.orthographic(region, near, far)](#Camera+orthographic)
+    * [.perspective(fieldOfView, aspectRatio, near, far)](#Camera+perspective)
+
+<a name="new_Camera_new"></a>
+
+### new Camera(gfx)
+Create the camera.
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| gfx | [<code>Gfx</code>](#Gfx) | The gfx manager instance. |
+
+<a name="Camera+projection"></a>
+
+### camera.projection
+Camera projection matrix.
+You can set it manually, or use 'orthographicOffset' / 'orthographic' / 'perspective' helper functions.
+
+**Kind**: instance property of [<code>Camera</code>](#Camera)  
+<a name="Camera+viewport"></a>
+
+### camera.viewport ⇒ [<code>Rectangle</code>](#Rectangle)
+Get camera's viewport (drawing region to set when using this camera).
+
+**Kind**: instance property of [<code>Camera</code>](#Camera)  
+**Returns**: [<code>Rectangle</code>](#Rectangle) - Camera's viewport as rectangle.  
+<a name="Camera+viewport"></a>
+
+### camera.viewport
+Set camera's viewport.
+
+**Kind**: instance property of [<code>Camera</code>](#Camera)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| viewport | [<code>Rectangle</code>](#Rectangle) | New viewport to set or null to not use any viewport when using this camera. |
+
+<a name="Camera+orthographicOffset"></a>
+
+### camera.orthographicOffset(offset, near, far)
+Make this camera an orthographic camera with offset.
+
+**Kind**: instance method of [<code>Camera</code>](#Camera)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| offset | [<code>Vector2</code>](#Vector2) | Camera offset (top-left corner). |
+| near | <code>Number</code> | Near clipping plane. |
+| far | <code>Number</code> | Far clipping plane. |
+
+<a name="Camera+orthographic"></a>
+
+### camera.orthographic(region, near, far)
+Make this camera an orthographic camera.
+
+**Kind**: instance method of [<code>Camera</code>](#Camera)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| region | [<code>Rectangle</code>](#Rectangle) | Camera left, top, bottom and right. If not set, will take entire canvas. |
+| near | <code>Number</code> | Near clipping plane. |
+| far | <code>Number</code> | Far clipping plane. |
+
+<a name="Camera+perspective"></a>
+
+### camera.perspective(fieldOfView, aspectRatio, near, far)
+Make this camera a perspective camera.
+
+**Kind**: instance method of [<code>Camera</code>](#Camera)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| fieldOfView | <code>\*</code> | Field of view angle in radians. |
+| aspectRatio | <code>\*</code> | Aspect ratio. |
+| near | <code>\*</code> | Near clipping plane. |
+| far | <code>\*</code> | Far clipping plane. |
+
+<a name="BasicEffect"></a>
+
+## BasicEffect
+Default basic effect to draw 2d sprites.
+
+**Kind**: global class  
+
+* [BasicEffect](#BasicEffect)
+    * [.vertexCode](#BasicEffect+vertexCode)
+    * [.fragmentCode](#BasicEffect+fragmentCode)
+    * [.uniformTypes](#BasicEffect+uniformTypes)
+    * [.attributeTypes](#BasicEffect+attributeTypes)
+
+<a name="BasicEffect+vertexCode"></a>
+
+### basicEffect.vertexCode
+**Kind**: instance property of [<code>BasicEffect</code>](#BasicEffect)  
+<a name="BasicEffect+fragmentCode"></a>
+
+### basicEffect.fragmentCode
+**Kind**: instance property of [<code>BasicEffect</code>](#BasicEffect)  
+<a name="BasicEffect+uniformTypes"></a>
+
+### basicEffect.uniformTypes
+**Kind**: instance property of [<code>BasicEffect</code>](#BasicEffect)  
+<a name="BasicEffect+attributeTypes"></a>
+
+### basicEffect.attributeTypes
+**Kind**: instance property of [<code>BasicEffect</code>](#BasicEffect)  
+<a name="Effect"></a>
+
+## Effect
+Effect base class.
+An effect = vertex shader + fragment shader + uniforms & attributes + setup code.
+
+**Kind**: global class  
+
+* [Effect](#Effect)
+    * [.uniformTypes](#Effect+uniformTypes) ⇒ <code>\*</code>
+    * [.attributeTypes](#Effect+attributeTypes) ⇒ <code>\*</code>
+    * [.vertexCode](#Effect+vertexCode) ⇒ <code>String</code>
+    * [.fragmentCode](#Effect+fragmentCode) ⇒ <code>String</code>
+    * [.enableDepthTest](#Effect+enableDepthTest)
+    * [.enableFaceCulling](#Effect+enableFaceCulling)
+    * [.enableStencilTest](#Effect+enableStencilTest)
+    * [.setAsActive()](#Effect+setAsActive)
+    * [.prepareToDraw(mesh, color, world, sourceRect, texture)](#Effect+prepareToDraw)
+    * [.prepareToDrawBatch(mesh, world)](#Effect+prepareToDrawBatch)
+    * [.resetUvOffsetAndScale()](#Effect+resetUvOffsetAndScale)
+    * [.setTexture(texture)](#Effect+setTexture) ⇒ <code>Boolean</code>
+    * [.setColor(color)](#Effect+setColor)
+    * [.setUvOffsetAndScale(sourceRect, texture)](#Effect+setUvOffsetAndScale)
+    * [.setProjectionMatrix(matrix)](#Effect+setProjectionMatrix)
+    * [.setWorldMatrix(matrix)](#Effect+setWorldMatrix)
+    * [.setPositionsAttribute(buffer)](#Effect+setPositionsAttribute)
+    * [.setTextureCoordsAttribute(buffer)](#Effect+setTextureCoordsAttribute)
+    * [.setColorsAttribute(buffer)](#Effect+setColorsAttribute)
+
+<a name="Effect+uniformTypes"></a>
+
+### effect.uniformTypes ⇒ <code>\*</code>
+Get a dictionary with all shaders uniforms.
+Key = uniform name, as appears in shader code.
+Value = {
+             type: UniformTypes to represent uniform type,
+             bind: Optional bind to one of the built-in uniforms. See Effect.UniformBinds for details.
+        }
+
+**Kind**: instance property of [<code>Effect</code>](#Effect)  
+**Returns**: <code>\*</code> - Dictionary with uniforms descriptions.  
+<a name="Effect+attributeTypes"></a>
+
+### effect.attributeTypes ⇒ <code>\*</code>
+Get a dictionary with all shader attributes.
+Key = attribute name, as appears in shader code.
+Value = {
+            size: size of every value in this attribute.
+            type: attribute type. See Effect.AttributeTypes for details.
+            normalize: if true, will normalize values.
+            stride: optional stride. 
+            offset: optional offset.
+            bind: Optional bind to one of the built-in attributes. See Effect.AttributeBinds for details.
+        }
+
+**Kind**: instance property of [<code>Effect</code>](#Effect)  
+**Returns**: <code>\*</code> - Dictionary with attributes descriptions.  
+<a name="Effect+vertexCode"></a>
+
+### effect.vertexCode ⇒ <code>String</code>
+Get this effect's vertex shader code, as string.
+
+**Kind**: instance property of [<code>Effect</code>](#Effect)  
+**Returns**: <code>String</code> - Vertex shader code.  
+<a name="Effect+fragmentCode"></a>
+
+### effect.fragmentCode ⇒ <code>String</code>
+Get this effect's fragment shader code, as string.
+
+**Kind**: instance property of [<code>Effect</code>](#Effect)  
+**Returns**: <code>String</code> - Fragment shader code.  
+<a name="Effect+enableDepthTest"></a>
+
+### effect.enableDepthTest
+Should this effect enable depth test?
+
+**Kind**: instance property of [<code>Effect</code>](#Effect)  
+<a name="Effect+enableFaceCulling"></a>
+
+### effect.enableFaceCulling
+Should this effect enable face culling?
+
+**Kind**: instance property of [<code>Effect</code>](#Effect)  
+<a name="Effect+enableStencilTest"></a>
+
+### effect.enableStencilTest
+Should this effect enable stencil test?
+
+**Kind**: instance property of [<code>Effect</code>](#Effect)  
+<a name="Effect+setAsActive"></a>
+
+### effect.setAsActive()
+Make this effect active.
+
+**Kind**: instance method of [<code>Effect</code>](#Effect)  
+<a name="Effect+prepareToDraw"></a>
+
+### effect.prepareToDraw(mesh, color, world, sourceRect, texture)
+Prepare effect before drawing it.
+
+**Kind**: instance method of [<code>Effect</code>](#Effect)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| mesh | [<code>Mesh</code>](#Mesh) | Mesh we're about to draw. |
+| color | [<code>Color</code>](#Color) | Optional color to set as the color uniform. |
+| world | [<code>Matrix</code>](#Matrix) | World matrix. |
+| sourceRect | [<code>Rectangle</code>](#Rectangle) | Optional source rectangle. |
+| texture | [<code>TextureAsset</code>](#TextureAsset) | Texture asset. |
+
+<a name="Effect+prepareToDrawBatch"></a>
+
+### effect.prepareToDrawBatch(mesh, world)
+Prepare effect before drawing it with batching.
+
+**Kind**: instance method of [<code>Effect</code>](#Effect)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| mesh | [<code>Mesh</code>](#Mesh) | Mesh we're about to draw. |
+| world | [<code>Matrix</code>](#Matrix) | World matrix. |
+
+<a name="Effect+resetUvOffsetAndScale"></a>
+
+### effect.resetUvOffsetAndScale()
+Reset UV offset and scale uniforms.
+
+**Kind**: instance method of [<code>Effect</code>](#Effect)  
+<a name="Effect+setTexture"></a>
+
+### effect.setTexture(texture) ⇒ <code>Boolean</code>
+Set the main texture.
+Only works if there's a uniform type bound to 'MainTexture'.
+
+**Kind**: instance method of [<code>Effect</code>](#Effect)  
+**Returns**: <code>Boolean</code> - True if texture was changed, false if there was no need to change the texture.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| texture | [<code>TextureAsset</code>](#TextureAsset) | Texture to set. |
+
+<a name="Effect+setColor"></a>
+
+### effect.setColor(color)
+Set the main tint color.
+Only works if there's a uniform type bound to 'Color'.
+
+**Kind**: instance method of [<code>Effect</code>](#Effect)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| color | [<code>Color</code>](#Color) | Color to set. |
+
+<a name="Effect+setUvOffsetAndScale"></a>
+
+### effect.setUvOffsetAndScale(sourceRect, texture)
+Set uvOffset and uvScale params from source rectangle and texture.
+
+**Kind**: instance method of [<code>Effect</code>](#Effect)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| sourceRect | [<code>Rectangle</code>](#Rectangle) | Source rectangle to set, or null to take entire texture. |
+| texture | [<code>TextureAsset</code>](#TextureAsset) | Texture asset to set source rect for. |
+
+<a name="Effect+setProjectionMatrix"></a>
+
+### effect.setProjectionMatrix(matrix)
+Set the projection matrix uniform.
+
+**Kind**: instance method of [<code>Effect</code>](#Effect)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| matrix | [<code>Matrix</code>](#Matrix) | Matrix to set. |
+
+<a name="Effect+setWorldMatrix"></a>
+
+### effect.setWorldMatrix(matrix)
+Set the world matrix uniform.
+
+**Kind**: instance method of [<code>Effect</code>](#Effect)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| matrix | [<code>Matrix</code>](#Matrix) | Matrix to set. |
+
+<a name="Effect+setPositionsAttribute"></a>
+
+### effect.setPositionsAttribute(buffer)
+Set the vertices position buffer.
+Only works if there's an attribute type bound to 'Position'.
+
+**Kind**: instance method of [<code>Effect</code>](#Effect)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| buffer | <code>WebGLBuffer</code> | Vertices position buffer. |
+
+<a name="Effect+setTextureCoordsAttribute"></a>
+
+### effect.setTextureCoordsAttribute(buffer)
+Set the vertices texture coords buffer.
+Only works if there's an attribute type bound to 'TextureCoords'.
+
+**Kind**: instance method of [<code>Effect</code>](#Effect)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| buffer | <code>WebGLBuffer</code> | Vertices texture coords buffer. |
+
+<a name="Effect+setColorsAttribute"></a>
+
+### effect.setColorsAttribute(buffer)
+Set the vertices colors buffer.
+Only works if there's an attribute type bound to 'Colors'.
+
+**Kind**: instance method of [<code>Effect</code>](#Effect)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| buffer | <code>WebGLBuffer</code> | Vertices colors buffer. |
+
+<a name="Gfx"></a>
+
+## Gfx
+Gfx is the graphics manager. 
+Everything related to rendering and managing your game canvas goes here.
+
+To access the Graphics manager you use `Shaku.gfx`.
+
+**Kind**: global class  
+
+* [Gfx](#Gfx)
+    * [new Gfx()](#new_Gfx_new)
+    * [.canvas](#Gfx+canvas) ⇒ <code>Canvas</code>
+    * [.Effect](#Gfx+Effect)
+    * [.BasicEffect](#Gfx+BasicEffect)
+    * [.Sprite](#Gfx+Sprite)
+    * [.SpritesGroup](#Gfx+SpritesGroup)
+    * [.Matrix](#Gfx+Matrix)
+    * [.TextAlignment](#Gfx+TextAlignment)
+    * [.renderingRegion](#Gfx+renderingRegion) ⇒ [<code>Rectangle</code>](#Rectangle)
+    * [.canvasSize](#Gfx+canvasSize) ⇒ [<code>Vector2</code>](#Vector2)
+    * [.BlendModes](#Gfx+BlendModes)
+    * [.TextureWrapModes](#Gfx+TextureWrapModes)
+    * [.TextureFilterModes](#Gfx+TextureFilterModes)
+    * [.setContextAttributes(flags)](#Gfx+setContextAttributes)
+    * [.setCanvas(element)](#Gfx+setCanvas)
+    * [.createCamera(withViewport)](#Gfx+createCamera) ⇒ [<code>Camera</code>](#Camera)
+    * [.createEffect(type)](#Gfx+createEffect) ⇒ [<code>Effect</code>](#Effect)
+    * [.maximizeCanvasSize(limitToParent)](#Gfx+maximizeCanvasSize)
+    * [.setRenderTarget(texture)](#Gfx+setRenderTarget)
+    * [.useEffect(effect)](#Gfx+useEffect)
+    * [.setResolution(width, height, updateCanvasStyle)](#Gfx+setResolution)
+    * [.resetCamera()](#Gfx+resetCamera)
+    * [.applyCamera(camera)](#Gfx+applyCamera)
+    * [.buildText(fontTexture, text, fontSize, color, alignment, marginFactor)](#Gfx+buildText) ⇒ [<code>SpritesGroup</code>](#SpritesGroup)
+    * [.drawGroup(group, useBatching)](#Gfx+drawGroup)
+    * [.drawSprite(sprite, transform)](#Gfx+drawSprite)
+    * [.cover(texture, destRect, sourceRect, color, blendMode)](#Gfx+cover)
+    * [.draw(texture, position, size, sourceRect, color, blendMode, rotation, origin, transform)](#Gfx+draw)
+    * [.fillRect(destRect, color, blend, rotation)](#Gfx+fillRect)
+    * [.drawLine(startPoint, endPoint, color, blendMode)](#Gfx+drawLine)
+    * [.drawLines(points, colors, blendMode, looped)](#Gfx+drawLines)
+    * [.clear(color)](#Gfx+clear)
+
+<a name="new_Gfx_new"></a>
+
+### new Gfx()
+Create the manager.
+
+<a name="Gfx+canvas"></a>
+
+### gfx.canvas ⇒ <code>Canvas</code>
+Get the canvas element controlled by the gfx manager.
+If you didn't provide your own canvas before initialization, you must add this canvas to your document after initializing `Shaku`.
+
+**Kind**: instance property of [<code>Gfx</code>](#Gfx)  
+**Returns**: <code>Canvas</code> - Canvas we use for rendering.  
+**Example**  
+```js
+document.body.appendChild(Shaku.gfx.canvas);
+```
+<a name="Gfx+Effect"></a>
+
+### gfx.Effect
+Get the Effect base class, which is required to implement custom effects.
+
+**Kind**: instance property of [<code>Gfx</code>](#Gfx)  
+**See**: Effect  
+<a name="Gfx+BasicEffect"></a>
+
+### gfx.BasicEffect
+Get the default Effect class, which is required to implement custom effects that inherit and reuse parts from the default effect.
+
+**Kind**: instance property of [<code>Gfx</code>](#Gfx)  
+**See**: BasicEffect  
+<a name="Gfx+Sprite"></a>
+
+### gfx.Sprite
+Get the sprite class.
+
+**Kind**: instance property of [<code>Gfx</code>](#Gfx)  
+**See**: Sprite  
+<a name="Gfx+SpritesGroup"></a>
+
+### gfx.SpritesGroup
+Get the sprites group object.
+
+**Kind**: instance property of [<code>Gfx</code>](#Gfx)  
+**See**: SpritesGroup  
+<a name="Gfx+Matrix"></a>
+
+### gfx.Matrix
+Get the matrix object.
+
+**Kind**: instance property of [<code>Gfx</code>](#Gfx)  
+**See**: Matrix  
+<a name="Gfx+TextAlignment"></a>
+
+### gfx.TextAlignment
+Get the text alignments options.
+* Left: align text to the left.
+* Right: align text to the right.
+* Center: align text to center.
+
+**Kind**: instance property of [<code>Gfx</code>](#Gfx)  
+**See**: TextAlignment  
+<a name="Gfx+renderingRegion"></a>
+
+### gfx.renderingRegion ⇒ [<code>Rectangle</code>](#Rectangle)
+Get rendering region (based on resolution / canvas, without viewport or camera properties).
+
+**Kind**: instance property of [<code>Gfx</code>](#Gfx)  
+**Returns**: [<code>Rectangle</code>](#Rectangle) - Rectangle with rendering region.  
+<a name="Gfx+canvasSize"></a>
+
+### gfx.canvasSize ⇒ [<code>Vector2</code>](#Vector2)
+Get canvas size as vector.
+
+**Kind**: instance property of [<code>Gfx</code>](#Gfx)  
+**Returns**: [<code>Vector2</code>](#Vector2) - Canvas size.  
+<a name="Gfx+BlendModes"></a>
+
+### gfx.BlendModes
+Get the blend modes enum.
+* AlphaBlend
+* Opaque
+* Additive
+* Multiply
+* Subtract
+* Screen
+* Overlay
+* DestIn
+* DestOut
+
+![Blend Modes](resources/blend-modes.png)
+
+**Kind**: instance property of [<code>Gfx</code>](#Gfx)  
+**See**: BlendModes  
+<a name="Gfx+TextureWrapModes"></a>
+
+### gfx.TextureWrapModes
+Get the wrap modes enum.
+* Clamp: when uv position exceed texture boundaries it will be clamped to the nearest border, ie repeat the edge pixels.
+* Repeat: when uv position exceed texture boundaries it will wrap back to the other side.
+* RepeatMirrored: when uv position exceed texture boundaries it will wrap back to the other side but also mirror the texture.
+
+![Wrap Modes](resources/wrap-modes.png)
+
+**Kind**: instance property of [<code>Gfx</code>](#Gfx)  
+**See**: TextureWrapModes  
+<a name="Gfx+TextureFilterModes"></a>
+
+### gfx.TextureFilterModes
+Get texture filter modes.
+* Nearest: no filtering, no mipmaps (pixelated).
+* Linear: simple filtering, no mipmaps (smooth).
+* NearestMipmapNearest: no filtering, sharp switching between mipmaps,
+* LinearMipmapNearest: filtering, sharp switching between mipmaps.
+* NearestMipmapLinear: no filtering, smooth transition between mipmaps.
+* LinearMipmapLinear: filtering, smooth transition between mipmaps.
+
+![Filter Modes](resources/filter-modes.png)
+
+**Kind**: instance property of [<code>Gfx</code>](#Gfx)  
+**See**: TextureFilterModes  
+<a name="Gfx+setContextAttributes"></a>
+
+### gfx.setContextAttributes(flags)
+Set WebGL init flags (passed as additional params to the getContext() call). 
+You must call this *before* initializing *Shaku*.
+
+By default, *Shaku* will init WebGL context with the following flags:
+- antialias: false.
+- alpha: true.
+- depth: false.
+- premultipliedAlpha: true.
+
+**Kind**: instance method of [<code>Gfx</code>](#Gfx)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| flags | <code>Dictionary</code> | WebGL init flags to set. |
+
+**Example**  
+```js
+Shaku.gfx.setContextAttributes({ antialias: true, alpha: false });
+```
+<a name="Gfx+setCanvas"></a>
+
+### gfx.setCanvas(element)
+Set the canvas element to initialize on.
+You must call this *before* initializing Shaku. Calling this will prevent Shaku from creating its own canvas.
+
+**Kind**: instance method of [<code>Gfx</code>](#Gfx)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| element | <code>Canvas</code> | Canvas element to initialize on. |
+
+**Example**  
+```js
+Shaku.gfx.setCanvas(document.getElementById('my-canvas')); 
+```
+<a name="Gfx+createCamera"></a>
+
+### gfx.createCamera(withViewport) ⇒ [<code>Camera</code>](#Camera)
+Create and return a new camera instance.
+
+**Kind**: instance method of [<code>Gfx</code>](#Gfx)  
+**Returns**: [<code>Camera</code>](#Camera) - New camera object.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| withViewport | <code>Boolean</code> | If true, will create camera with viewport value equal to canvas' size. |
+
+<a name="Gfx+createEffect"></a>
+
+### gfx.createEffect(type) ⇒ [<code>Effect</code>](#Effect)
+Create and return an effect instance.
+
+**Kind**: instance method of [<code>Gfx</code>](#Gfx)  
+**Returns**: [<code>Effect</code>](#Effect) - Effect instance.  
+**See**: Effect  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| type | <code>Class</code> | Effect class type. Must inherit from Effect base class. |
+
+<a name="Gfx+maximizeCanvasSize"></a>
+
+### gfx.maximizeCanvasSize(limitToParent)
+Set resolution and canvas to the max size of its parent element or screen.
+If the canvas is directly under document body, it will take the max size of the page.
+
+**Kind**: instance method of [<code>Gfx</code>](#Gfx)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| limitToParent | <code>Boolean</code> | if true, will use parent element size. If false, will stretch on entire document. |
+
+<a name="Gfx+setRenderTarget"></a>
+
+### gfx.setRenderTarget(texture)
+Set a render target (texture) to render on.
+
+**Kind**: instance method of [<code>Gfx</code>](#Gfx)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| texture | [<code>TextureAsset</code>](#TextureAsset) | Render target texture to set as render target, or null to reset and render back on canvas. |
+
+**Example**  
+```js
+// create render target
+let renderTarget = await Shaku.assets.createRenderTarget('_my_render_target', 800, 600);
+
+// use render target
+Shaku.gfx.setRenderTarget(renderTarget);
+// .. draw some stuff here
+
+// reset render target and present it on screen
+// note the negative height - render targets end up with flipped Y axis
+Shaku.gfx.setRenderTarget(null);
+Shaku.gfx.draw(renderTarget, new Shaku.utils.Vector2(screenX / 2, screenY / 2), new Shaku.utils.Vector2(screenX, -screenY));
+```
+<a name="Gfx+useEffect"></a>
+
+### gfx.useEffect(effect)
+Set effect to use for future draw calls.
+
+**Kind**: instance method of [<code>Gfx</code>](#Gfx)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| effect | [<code>Effect</code>](#Effect) | Effect to use or null to use the basic builtin effect. |
+
+**Example**  
+```js
+let effect = Shaku.gfx.createEffect(MyEffectType);
+Shaku.gfx.useEffect(effect);
+```
+<a name="Gfx+setResolution"></a>
+
+### gfx.setResolution(width, height, updateCanvasStyle)
+Set resolution and canvas size.
+
+**Kind**: instance method of [<code>Gfx</code>](#Gfx)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| width | <code>Number</code> | Resolution width. |
+| height | <code>Number</code> | Resolution height. |
+| updateCanvasStyle | <code>Boolean</code> | If true, will also update the canvas *css* size in pixels. |
+
+**Example**  
+```js
+// set resolution and size of 800x600.
+Shaku.gfx.setResolution(800, 600, true);
+```
+<a name="Gfx+resetCamera"></a>
+
+### gfx.resetCamera()
+Reset camera properties to default camera.
+
+**Kind**: instance method of [<code>Gfx</code>](#Gfx)  
+<a name="Gfx+applyCamera"></a>
+
+### gfx.applyCamera(camera)
+Set viewport, projection and other properties from a camera instance.
+Changing the camera properties after calling this method will *not* update the renderer, until you call applyCamera again.
+
+**Kind**: instance method of [<code>Gfx</code>](#Gfx)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| camera | [<code>Camera</code>](#Camera) | Camera to apply. |
+
+<a name="Gfx+buildText"></a>
+
+### gfx.buildText(fontTexture, text, fontSize, color, alignment, marginFactor) ⇒ [<code>SpritesGroup</code>](#SpritesGroup)
+Generate a sprites group to render a string using a font texture.
+Take the result of this method and use with gfx.drawGroup() to render the text.
+This is what you use when you want to draw texts with `Shaku`.
+Note: its best to always draw texts with *batching* enabled.
+
+**Kind**: instance method of [<code>Gfx</code>](#Gfx)  
+**Returns**: [<code>SpritesGroup</code>](#SpritesGroup) - Sprites group containing the needed sprites to draw the given text with its properties.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| fontTexture | [<code>FontTextureAsset</code>](#FontTextureAsset) | Font texture asset to use. |
+| text | <code>String</code> | Text to generate sprites for. |
+| fontSize | <code>Number</code> | Font size, or undefined to use font texture base size. |
+| color | [<code>Color</code>](#Color) | Text sprites color. |
+| alignment | <code>TextAlignment</code> | Text alignment. |
+| marginFactor | [<code>Vector2</code>](#Vector2) | Optional factor for characters and line spacing. For example value of 2,1 will make double horizontal spacing. |
+
+**Example**  
+```js
+// load font texture
+let fontTexture = await Shaku.assets.loadFontTexture('assets/DejaVuSansMono.ttf', {fontName: 'DejaVuSansMono'});
+
+// generate 'hello world!' text (note: you don't have to regenerate every frame if text didn't change)
+let text1 = Shaku.gfx.buildText(fontTexture, "Hello World!");
+text1.position.set(40, 40);
+
+// draw text
+Shaku.gfx.drawGroup(text1, true);
+```
+<a name="Gfx+drawGroup"></a>
+
+### gfx.drawGroup(group, useBatching)
+Draw a SpritesGroup object. 
+A SpritesGroup is a collection of sprites we can draw in bulks + transformations to apply on the entire group.
+
+**Kind**: instance method of [<code>Gfx</code>](#Gfx)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| group | [<code>SpritesGroup</code>](#SpritesGroup) | Sprites group to draw. |
+| useBatching | <code>Boolean</code> | If true (default), will use batching while rendering the group. |
+
+**Example**  
+```js
+// load texture
+let texture = await Shaku.assets.loadTexture('assets/sprite.png');
+
+// create group and set entire group's position and scale
+let group = new Shaku.gfx.SpritesGroup();
+group.position.set(125, 300);
+group.scale.set(2, 2);
+
+// create 5 sprites and add to group
+for (let i = 0; i < 5; ++i) {
+  let sprite = new Shaku.gfx.Sprite(texture);
+  sprite.position.set(100 * i, 150);
+  sprite.size.set(50, 50);
+  group.add(sprite)
+}
+
+// draw the group with batching
+Shaku.gfx.drawGroup(group, true);
+```
+<a name="Gfx+drawSprite"></a>
+
+### gfx.drawSprite(sprite, transform)
+Draw a single sprite object.
+Sprites are optional objects that store all the parameters for a `draw()` call. They are also used for batch rendering.
+
+**Kind**: instance method of [<code>Gfx</code>](#Gfx)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| sprite | [<code>Sprite</code>](#Sprite) | Sprite object to draw. |
+| transform | [<code>Matrix</code>](#Matrix) | Optional parent transformation matrix. |
+
+**Example**  
+```js
+// load texture and create sprite
+let texture = await Shaku.assets.loadTexture('assets/sprite.png');
+let sprite = new Shaku.gfx.Sprite(texture);
+
+// set position and size
+sprite.position.set(100, 150);
+sprite.size.set(50, 50);
+
+// draw sprite
+Shaku.gfx.drawSprite(sprite);
+```
+<a name="Gfx+cover"></a>
+
+### gfx.cover(texture, destRect, sourceRect, color, blendMode)
+Draw a texture to cover a given destination rectangle.
+
+**Kind**: instance method of [<code>Gfx</code>](#Gfx)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| texture | [<code>TextureAsset</code>](#TextureAsset) | Texture to draw. |
+| destRect | [<code>Rectangle</code>](#Rectangle) | Destination rectangle to draw on. |
+| sourceRect | [<code>Rectangle</code>](#Rectangle) | Source rectangle, or undefined to use the entire texture. |
+| color | [<code>Color</code>](#Color) | Tint color, or undefined to not change color. |
+| blendMode | <code>BlendModes</code> | Blend mode, or undefined to use alpha blend. |
+
+**Example**  
+```js
+// cover the entire screen with an image
+let texture = await Shaku.assets.loadTexture('assets/sprite.png');
+Shaku.gfx.cover(texture, Shaku.gfx.renderingRegion);
+```
+**Example**  
+```js
+// draw with additional params
+let sourceRect = new Shaku.utils.Rectangle(0, 0, 64, 64);
+let color = Shaku.utils.Color.blue;
+let blendMode = Shaku.gfx.BlendModes.Multiply;
+let rotation = Math.PI / 4;
+let origin = new Shaku.utils.Vector2(0.5, 0.5);
+Shaku.gfx.draw(texture, position, size, sourceRect, color, blendMode, rotation, origin);
+```
+<a name="Gfx+draw"></a>
+
+### gfx.draw(texture, position, size, sourceRect, color, blendMode, rotation, origin, transform)
+Draw a texture.
+
+**Kind**: instance method of [<code>Gfx</code>](#Gfx)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| texture | [<code>TextureAsset</code>](#TextureAsset) | Texture to draw. |
+| position | [<code>Vector2</code>](#Vector2) | Drawing position (at origin). |
+| size | [<code>Vector2</code>](#Vector2) \| <code>Number</code> | Drawing size. |
+| sourceRect | [<code>Rectangle</code>](#Rectangle) | Source rectangle, or undefined to use the entire texture. |
+| color | [<code>Color</code>](#Color) | Tint color, or undefined to not change color. |
+| blendMode | <code>BlendModes</code> | Blend mode, or undefined to use alpha blend. |
+| rotation | <code>Number</code> | Rotate sprite. |
+| origin | [<code>Vector2</code>](#Vector2) | Drawing origin. This will be the point at 'position' and rotation origin. |
+| transform | [<code>Matrix</code>](#Matrix) | Optional parent transformation matrix. |
+
+**Example**  
+```js
+// a simple draw with position and size
+let texture = await Shaku.assets.loadTexture('assets/sprite.png');
+let position = new Shaku.utils.Vector2(100, 100);
+let size = new Shaku.utils.Vector2(75, 125); // if width == height, you can pass as a number instead of vector
+Shaku.gfx.draw(texture, position, size);
+```
+**Example**  
+```js
+// draw with additional params
+let sourceRect = new Shaku.utils.Rectangle(0, 0, 64, 64);
+let color = Shaku.utils.Color.blue;
+let blendMode = Shaku.gfx.BlendModes.Multiply;
+let rotation = Math.PI / 4;
+let origin = new Shaku.utils.Vector2(0.5, 0.5);
+Shaku.gfx.draw(texture, position, size, sourceRect, color, blendMode, rotation, origin);
+```
+<a name="Gfx+fillRect"></a>
+
+### gfx.fillRect(destRect, color, blend, rotation)
+Draw a filled colored rectangle.
+
+**Kind**: instance method of [<code>Gfx</code>](#Gfx)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| destRect | [<code>Rectangle</code>](#Rectangle) | Rectangle to fill. |
+| color | [<code>Color</code>](#Color) | Rectangle fill color. |
+| blend | <code>BlendModes</code> | Blend mode. |
+| rotation | <code>Number</code> | Rotate the rectangle around its center. |
+
+**Example**  
+```js
+// draw a 50x50 red rectangle at position 100x100, that will rotate over time
+Shaku.gfx.fillRect(new Shaku.utils.Rectangle(100, 100, 50, 50), Shaku.utils.Color.red, null, Shaku.gameTime.elapsed);
+```
+<a name="Gfx+drawLine"></a>
+
+### gfx.drawLine(startPoint, endPoint, color, blendMode)
+Draw a single line between two points.
+
+**Kind**: instance method of [<code>Gfx</code>](#Gfx)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| startPoint | [<code>Vector2</code>](#Vector2) | Line start point. |
+| endPoint | [<code>Vector2</code>](#Vector2) | Line end point. |
+| color | [<code>Color</code>](#Color) | Line color. |
+| blendMode | <code>BlendModes</code> | Blend mode to draw lines with (default to Opaque). |
+
+**Example**  
+```js
+Shaku.gfx.drawLine(new Shaku.utils.Vector2(50,50), new Shaku.utils.Vector2(150,50), Shaku.utils.Color.red);
+```
+<a name="Gfx+drawLines"></a>
+
+### gfx.drawLines(points, colors, blendMode, looped)
+Draw a strip of lines between an array of points.
+
+**Kind**: instance method of [<code>Gfx</code>](#Gfx)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| points | [<code>Array.&lt;Vector2&gt;</code>](#Vector2) | Points to draw line between. |
+| colors | [<code>Color</code>](#Color) \| [<code>Array.&lt;Color&gt;</code>](#Color) | Single lines color if you want one color for all lines, or an array of colors per segment. |
+| blendMode | <code>BlendModes</code> | Blend mode to draw lines with (default to Opaque). |
+| looped | <code>Boolean</code> | If true, will also draw a line from last point back to first point. |
+
+**Example**  
+```js
+let lines = [new Shaku.utils.Vector2(50,50), new Shaku.utils.Vector2(150,50), new Shaku.utils.Vector2(150,150)];
+let colors = [Shaku.utils.Color.random(), Shaku.utils.Color.random(), Shaku.utils.Color.random()];
+Shaku.gfx.drawLines(lines, colors);
+```
+<a name="Gfx+clear"></a>
+
+### gfx.clear(color)
+Clear screen to a given color.
+
+**Kind**: instance method of [<code>Gfx</code>](#Gfx)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| color | [<code>Color</code>](#Color) | Color to clear screen to, or black if not set. |
+
+**Example**  
+```js
+Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
+```
+<a name="Matrix"></a>
+
+## Matrix
+Implements a matrix.
+
+**Kind**: global class  
+
+* [Matrix](#Matrix)
+    * [new Matrix(values, cloneValues)](#new_Matrix_new)
+    * _instance_
+        * [.set()](#Matrix+set)
+        * [.clone()](#Matrix+clone) ⇒ [<code>Matrix</code>](#Matrix)
+        * [.equals(other)](#Matrix+equals) ⇒ <code>Boolean</code>
+    * _static_
+        * [.orthographic()](#Matrix.orthographic) ⇒ [<code>Matrix</code>](#Matrix)
+        * [.perspective()](#Matrix.perspective) ⇒ [<code>Matrix</code>](#Matrix)
+        * [.translate()](#Matrix.translate) ⇒ [<code>Matrix</code>](#Matrix)
+        * [.scale()](#Matrix.scale) ⇒ [<code>Matrix</code>](#Matrix)
+        * [.rotateX()](#Matrix.rotateX) ⇒ [<code>Matrix</code>](#Matrix)
+        * [.rotateY()](#Matrix.rotateY) ⇒ [<code>Matrix</code>](#Matrix)
+        * [.rotateZ()](#Matrix.rotateZ) ⇒ [<code>Matrix</code>](#Matrix)
+        * [.multiply()](#Matrix.multiply) ⇒ [<code>Matrix</code>](#Matrix)
+        * [.multiplyMany(matrices)](#Matrix.multiplyMany) ⇒ [<code>Matrix</code>](#Matrix)
+        * [.multiplyIntoFirst()](#Matrix.multiplyIntoFirst) ⇒ [<code>Matrix</code>](#Matrix)
+        * [.multiplyManyIntoFirst(matrices)](#Matrix.multiplyManyIntoFirst) ⇒ [<code>Matrix</code>](#Matrix)
+
+<a name="new_Matrix_new"></a>
+
+### new Matrix(values, cloneValues)
+Create the matrix.
+
+
+| Param | Description |
+| --- | --- |
+| values | matrix values array. |
+| cloneValues | if true or undefined, will clone values instead of just holding a reference to them. |
+
+<a name="Matrix+set"></a>
+
+### matrix.set()
+Set the matrix values.
+
+**Kind**: instance method of [<code>Matrix</code>](#Matrix)  
+<a name="Matrix+clone"></a>
+
+### matrix.clone() ⇒ [<code>Matrix</code>](#Matrix)
+Clone the matrix.
+
+**Kind**: instance method of [<code>Matrix</code>](#Matrix)  
+**Returns**: [<code>Matrix</code>](#Matrix) - Cloned matrix.  
+<a name="Matrix+equals"></a>
+
+### matrix.equals(other) ⇒ <code>Boolean</code>
+Compare this matrix to another matrix.
+
+**Kind**: instance method of [<code>Matrix</code>](#Matrix)  
+**Returns**: <code>Boolean</code> - If matrices are the same.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| other | [<code>Matrix</code>](#Matrix) | Matrix to compare to. |
+
+<a name="Matrix.orthographic"></a>
+
+### Matrix.orthographic() ⇒ [<code>Matrix</code>](#Matrix)
+Create an orthographic projection matrix.
+
+**Kind**: static method of [<code>Matrix</code>](#Matrix)  
+**Returns**: [<code>Matrix</code>](#Matrix) - a new matrix with result.  
+<a name="Matrix.perspective"></a>
+
+### Matrix.perspective() ⇒ [<code>Matrix</code>](#Matrix)
+Create a perspective projection matrix.
+
+**Kind**: static method of [<code>Matrix</code>](#Matrix)  
+**Returns**: [<code>Matrix</code>](#Matrix) - a new matrix with result.  
+<a name="Matrix.translate"></a>
+
+### Matrix.translate() ⇒ [<code>Matrix</code>](#Matrix)
+Create a translation matrix.
+
+**Kind**: static method of [<code>Matrix</code>](#Matrix)  
+**Returns**: [<code>Matrix</code>](#Matrix) - a new matrix with result.  
+<a name="Matrix.scale"></a>
+
+### Matrix.scale() ⇒ [<code>Matrix</code>](#Matrix)
+Create a scale matrix.
+
+**Kind**: static method of [<code>Matrix</code>](#Matrix)  
+**Returns**: [<code>Matrix</code>](#Matrix) - a new matrix with result.  
+<a name="Matrix.rotateX"></a>
+
+### Matrix.rotateX() ⇒ [<code>Matrix</code>](#Matrix)
+Create a rotation matrix around X axis.
+
+**Kind**: static method of [<code>Matrix</code>](#Matrix)  
+**Returns**: [<code>Matrix</code>](#Matrix) - a new matrix with result.  
+<a name="Matrix.rotateY"></a>
+
+### Matrix.rotateY() ⇒ [<code>Matrix</code>](#Matrix)
+Create a rotation matrix around Y axis.
+
+**Kind**: static method of [<code>Matrix</code>](#Matrix)  
+**Returns**: [<code>Matrix</code>](#Matrix) - a new matrix with result.  
+<a name="Matrix.rotateZ"></a>
+
+### Matrix.rotateZ() ⇒ [<code>Matrix</code>](#Matrix)
+Create a rotation matrix around Z axis.
+
+**Kind**: static method of [<code>Matrix</code>](#Matrix)  
+**Returns**: [<code>Matrix</code>](#Matrix) - a new matrix with result.  
+<a name="Matrix.multiply"></a>
+
+### Matrix.multiply() ⇒ [<code>Matrix</code>](#Matrix)
+Multiply two matrices.
+
+**Kind**: static method of [<code>Matrix</code>](#Matrix)  
+**Returns**: [<code>Matrix</code>](#Matrix) - a new matrix with result.  
+<a name="Matrix.multiplyMany"></a>
+
+### Matrix.multiplyMany(matrices) ⇒ [<code>Matrix</code>](#Matrix)
+Multiply an array of matrices.
+
+**Kind**: static method of [<code>Matrix</code>](#Matrix)  
+**Returns**: [<code>Matrix</code>](#Matrix) - new matrix with multiply result.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| matrices | [<code>Array.&lt;Matrix&gt;</code>](#Matrix) | Matrices to multiply. |
+
+<a name="Matrix.multiplyIntoFirst"></a>
+
+### Matrix.multiplyIntoFirst() ⇒ [<code>Matrix</code>](#Matrix)
+Multiply two matrices and put result in first matrix.
+
+**Kind**: static method of [<code>Matrix</code>](#Matrix)  
+**Returns**: [<code>Matrix</code>](#Matrix) - matrixA, after it was modified.  
+<a name="Matrix.multiplyManyIntoFirst"></a>
+
+### Matrix.multiplyManyIntoFirst(matrices) ⇒ [<code>Matrix</code>](#Matrix)
+Multiply an array of matrices into the first matrix in the array.
+
+**Kind**: static method of [<code>Matrix</code>](#Matrix)  
+**Returns**: [<code>Matrix</code>](#Matrix) - first matrix in array, after it was modified.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| matrices | [<code>Array.&lt;Matrix&gt;</code>](#Matrix) | Matrices to multiply. |
+
+<a name="Mesh"></a>
+
+## Mesh
+Class to hold a mesh.
+
+**Kind**: global class  
+
+* [Mesh](#Mesh)
+    * [new Mesh(positions, textureCoords, colorss, indices, indicesCount)](#new_Mesh_new)
+    * [.overrideColors(gl, color)](#Mesh+overrideColors)
+
+<a name="new_Mesh_new"></a>
+
+### new Mesh(positions, textureCoords, colorss, indices, indicesCount)
+Create the mesh object.
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| positions | <code>WebGLBuffer</code> | vertices positions buffer. |
+| textureCoords | <code>WebGLBuffer</code> | vertices texture coords buffer. |
+| colorss | <code>WebGLBuffer</code> | vertices colors buffer. |
+| indices | <code>WebGLBuffer</code> | indices buffer. |
+| indicesCount | <code>Number</code> | how many indices we have. |
+
+<a name="Mesh+overrideColors"></a>
+
+### mesh.overrideColors(gl, color)
+Override the colors buffer, if possible.
+
+**Kind**: instance method of [<code>Mesh</code>](#Mesh)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| gl | <code>WebGl</code> | WebGL context. |
+| color | [<code>Color</code>](#Color) | Color to set. |
+
+<a name="Sprite"></a>
+
+## Sprite
+Sprite class.
+This object is a helper class to hold all the properties of a texture to render.
+
+**Kind**: global class  
+
+* [Sprite](#Sprite)
+    * [new Sprite(texture, sourceRect)](#new_Sprite_new)
+    * [.texture](#Sprite+texture) : [<code>TextureAsset</code>](#TextureAsset)
+    * [.position](#Sprite+position) : [<code>Vector2</code>](#Vector2)
+    * [.size](#Sprite+size) : [<code>Vector2</code>](#Vector2)
+    * [.sourceRect](#Sprite+sourceRect) : [<code>Rectangle</code>](#Rectangle)
+    * [.blendMode](#Sprite+blendMode) : <code>BlendModes</code>
+    * [.rotation](#Sprite+rotation) : <code>Number</code>
+    * [.origin](#Sprite+origin) : [<code>Vector2</code>](#Vector2)
+    * [.color](#Sprite+color) : [<code>Color</code>](#Color)
+
+<a name="new_Sprite_new"></a>
+
+### new Sprite(texture, sourceRect)
+Create the texture object.
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| texture | [<code>TextureAsset</code>](#TextureAsset) | Texture asset. |
+| sourceRect | [<code>Rectangle</code>](#Rectangle) | Optional source rect. |
+
+<a name="Sprite+texture"></a>
+
+### sprite.texture : [<code>TextureAsset</code>](#TextureAsset)
+Texture to use for this sprite.
+
+**Kind**: instance property of [<code>Sprite</code>](#Sprite)  
+<a name="Sprite+position"></a>
+
+### sprite.position : [<code>Vector2</code>](#Vector2)
+Sprite position.
+
+**Kind**: instance property of [<code>Sprite</code>](#Sprite)  
+<a name="Sprite+size"></a>
+
+### sprite.size : [<code>Vector2</code>](#Vector2)
+Sprite size.
+
+**Kind**: instance property of [<code>Sprite</code>](#Sprite)  
+<a name="Sprite+sourceRect"></a>
+
+### sprite.sourceRect : [<code>Rectangle</code>](#Rectangle)
+Sprite source rectangle in texture.
+Null will take entire texture.
+
+**Kind**: instance property of [<code>Sprite</code>](#Sprite)  
+<a name="Sprite+blendMode"></a>
+
+### sprite.blendMode : <code>BlendModes</code>
+Sprite blend mode.
+
+**Kind**: instance property of [<code>Sprite</code>](#Sprite)  
+<a name="Sprite+rotation"></a>
+
+### sprite.rotation : <code>Number</code>
+Sprite rotation in radians.
+
+**Kind**: instance property of [<code>Sprite</code>](#Sprite)  
+<a name="Sprite+origin"></a>
+
+### sprite.origin : [<code>Vector2</code>](#Vector2)
+Sprite origin point.
+
+**Kind**: instance property of [<code>Sprite</code>](#Sprite)  
+<a name="Sprite+color"></a>
+
+### sprite.color : [<code>Color</code>](#Color)
+Sprite color.
+
+**Kind**: instance property of [<code>Sprite</code>](#Sprite)  
+<a name="SpritesGroup"></a>
+
+## SpritesGroup
+Sprites group class.
+This object is a container to hold sprites collection + parent transformations.
+You need SpritesGroup to use batched rendering.
+
+**Kind**: global class  
+
+* [SpritesGroup](#SpritesGroup)
+    * [new SpritesGroup()](#new_SpritesGroup_new)
+    * [.count](#SpritesGroup+count) ⇒ <code>Number</code>
+    * [.forEach(callback)](#SpritesGroup+forEach)
+    * [.setColor(color)](#SpritesGroup+setColor)
+    * [.getTransform()](#SpritesGroup+getTransform) ⇒ [<code>Matrix</code>](#Matrix)
+    * [.add(sprite)](#SpritesGroup+add) ⇒ [<code>Sprite</code>](#Sprite)
+    * [.remove(sprite)](#SpritesGroup+remove)
+    * [.shift()](#SpritesGroup+shift) ⇒ [<code>Sprite</code>](#Sprite)
+
+<a name="new_SpritesGroup_new"></a>
+
+### new SpritesGroup()
+Create the group object.
+
+<a name="SpritesGroup+count"></a>
+
+### spritesGroup.count ⇒ <code>Number</code>
+Sprites count in group.
+
+**Kind**: instance property of [<code>SpritesGroup</code>](#SpritesGroup)  
+**Returns**: <code>Number</code> - Number of sprites in group.  
+<a name="SpritesGroup+forEach"></a>
+
+### spritesGroup.forEach(callback)
+Iterate all sprites.
+
+**Kind**: instance method of [<code>SpritesGroup</code>](#SpritesGroup)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| callback | <code>function</code> | Callback to run on all sprites in group. |
+
+<a name="SpritesGroup+setColor"></a>
+
+### spritesGroup.setColor(color)
+Set color for all sprites in group.
+
+**Kind**: instance method of [<code>SpritesGroup</code>](#SpritesGroup)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| color | [<code>Color</code>](#Color) | Color to set. |
+
+<a name="SpritesGroup+getTransform"></a>
+
+### spritesGroup.getTransform() ⇒ [<code>Matrix</code>](#Matrix)
+Get group's transformations.
+
+**Kind**: instance method of [<code>SpritesGroup</code>](#SpritesGroup)  
+**Returns**: [<code>Matrix</code>](#Matrix) - Transformations matrix, or null if there's nothing to apply.  
+<a name="SpritesGroup+add"></a>
+
+### spritesGroup.add(sprite) ⇒ [<code>Sprite</code>](#Sprite)
+Adds a sprite to group.
+
+**Kind**: instance method of [<code>SpritesGroup</code>](#SpritesGroup)  
+**Returns**: [<code>Sprite</code>](#Sprite) - The newly added sprite.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| sprite | [<code>Sprite</code>](#Sprite) | Sprite to add. |
+
+<a name="SpritesGroup+remove"></a>
+
+### spritesGroup.remove(sprite)
+Remove a sprite from group.
+
+**Kind**: instance method of [<code>SpritesGroup</code>](#SpritesGroup)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| sprite | [<code>Sprite</code>](#Sprite) | Sprite to remove. |
+
+<a name="SpritesGroup+shift"></a>
+
+### spritesGroup.shift() ⇒ [<code>Sprite</code>](#Sprite)
+Shift first sprite element.
+
+**Kind**: instance method of [<code>SpritesGroup</code>](#SpritesGroup)  
+**Returns**: [<code>Sprite</code>](#Sprite) - The removed sprite.  
+<a name="Input"></a>
+
+## Input
+Input manager. 
+Used to recieve input from keyboard and mouse.
+
+To access the Input manager use `Shaku.input`.
+
+**Kind**: global class  
+
+* [Input](#Input)
+    * [new Input()](#new_Input_new)
+    * [.mousePosition](#Input+mousePosition) ⇒ [<code>Vector2</code>](#Vector2)
+    * [.prevMousePosition](#Input+prevMousePosition) ⇒ [<code>Vector2</code>](#Vector2)
+    * [.mouseDelta](#Input+mouseDelta) ⇒ [<code>Vector2</code>](#Vector2)
+    * [.mouseMoving](#Input+mouseMoving) ⇒ <code>Boolean</code>
+    * [.shiftDown](#Input+shiftDown) ⇒ <code>Boolean</code>
+    * [.ctrlDown](#Input+ctrlDown) ⇒ <code>Boolean</code>
+    * [.altDown](#Input+altDown) ⇒ <code>Boolean</code>
+    * [.anyKeyDown](#Input+anyKeyDown) ⇒ <code>Boolean</code>
+    * [.anyMouseButtonDown](#Input+anyMouseButtonDown) ⇒ <code>Boolean</code>
+    * [.mouseWheelSign](#Input+mouseWheelSign) ⇒ <code>Number</code>
+    * [.mouseWheel](#Input+mouseWheel) ⇒ <code>Number</code>
+    * [.setTargetElement(element)](#Input+setTargetElement)
+    * [.mousePressed(button)](#Input+mousePressed) ⇒ <code>Boolean</code>
+    * [.mouseDown(button)](#Input+mouseDown) ⇒ <code>Boolean</code>
+    * [.mouseUp(button)](#Input+mouseUp) ⇒ <code>Boolean</code>
+    * [.mouseReleased(button)](#Input+mouseReleased) ⇒ <code>Boolean</code>
+    * [.keyDown(key)](#Input+keyDown) ⇒ <code>boolean</code>
+    * [.keyUp(key)](#Input+keyUp) ⇒ <code>Boolean</code>
+    * [.keyReleased(button)](#Input+keyReleased) ⇒ <code>Boolean</code>
+    * [.keyPressed(key)](#Input+keyPressed) ⇒ <code>Boolean</code>
+    * [.down(code)](#Input+down) ⇒ <code>Boolean</code>
+    * [.released(code)](#Input+released) ⇒ <code>Boolean</code>
+    * [.pressed(code)](#Input+pressed) ⇒ <code>Boolean</code>
+
+<a name="new_Input_new"></a>
+
+### new Input()
+Create the manager.
+
+<a name="Input+mousePosition"></a>
+
+### input.mousePosition ⇒ [<code>Vector2</code>](#Vector2)
+Get mouse position.
+
+**Kind**: instance property of [<code>Input</code>](#Input)  
+**Returns**: [<code>Vector2</code>](#Vector2) - Mouse position.  
+<a name="Input+prevMousePosition"></a>
+
+### input.prevMousePosition ⇒ [<code>Vector2</code>](#Vector2)
+Get mouse previous position (before the last endFrame() call).
+
+**Kind**: instance property of [<code>Input</code>](#Input)  
+**Returns**: [<code>Vector2</code>](#Vector2) - Mouse position in previous frame.  
+<a name="Input+mouseDelta"></a>
+
+### input.mouseDelta ⇒ [<code>Vector2</code>](#Vector2)
+Get mouse movement since last endFrame() call.
+
+**Kind**: instance property of [<code>Input</code>](#Input)  
+**Returns**: [<code>Vector2</code>](#Vector2) - Mouse change since last frame.  
+<a name="Input+mouseMoving"></a>
+
+### input.mouseMoving ⇒ <code>Boolean</code>
+Get if mouse is currently moving.
+
+**Kind**: instance property of [<code>Input</code>](#Input)  
+**Returns**: <code>Boolean</code> - True if mouse moved since last frame, false otherwise.  
+<a name="Input+shiftDown"></a>
+
+### input.shiftDown ⇒ <code>Boolean</code>
+Get if any of the shift keys are currently down.
+
+**Kind**: instance property of [<code>Input</code>](#Input)  
+**Returns**: <code>Boolean</code> - True if there's a shift key pressed down.  
+<a name="Input+ctrlDown"></a>
+
+### input.ctrlDown ⇒ <code>Boolean</code>
+Get if any of the Ctrl keys are currently down.
+
+**Kind**: instance property of [<code>Input</code>](#Input)  
+**Returns**: <code>Boolean</code> - True if there's a Ctrl key pressed down.  
+<a name="Input+altDown"></a>
+
+### input.altDown ⇒ <code>Boolean</code>
+Get if any of the Alt keys are currently down.
+
+**Kind**: instance property of [<code>Input</code>](#Input)  
+**Returns**: <code>Boolean</code> - True if there's an Alt key pressed down.  
+<a name="Input+anyKeyDown"></a>
+
+### input.anyKeyDown ⇒ <code>Boolean</code>
+Get if any keyboard key is currently down.
+
+**Kind**: instance property of [<code>Input</code>](#Input)  
+**Returns**: <code>Boolean</code> - True if there's a key pressed down.  
+<a name="Input+anyMouseButtonDown"></a>
+
+### input.anyMouseButtonDown ⇒ <code>Boolean</code>
+Get if any mouse button is down.
+
+**Kind**: instance property of [<code>Input</code>](#Input)  
+**Returns**: <code>Boolean</code> - True if any of the mouse buttons are pressed.  
+<a name="Input+mouseWheelSign"></a>
+
+### input.mouseWheelSign ⇒ <code>Number</code>
+Get mouse wheel sign.
+
+**Kind**: instance property of [<code>Input</code>](#Input)  
+**Returns**: <code>Number</code> - Mouse wheel sign (-1 or 1) for wheel scrolling that happened during this frame.
+Will return 0 if mouse wheel is not currently being used.  
+<a name="Input+mouseWheel"></a>
+
+### input.mouseWheel ⇒ <code>Number</code>
+Get mouse wheel value.
+
+**Kind**: instance property of [<code>Input</code>](#Input)  
+**Returns**: <code>Number</code> - Mouse wheel value.  
+<a name="Input+setTargetElement"></a>
+
+### input.setTargetElement(element)
+Set the target element to attach input to. If not called, will just use the entire document.
+Must be called *before* initializing Shaku. This can also be a method to invoke while initializing.
+
+**Kind**: instance method of [<code>Input</code>](#Input)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| element | <code>Element</code> | Element to attach input to. |
+
+**Example**  
+```js
+// the following will use whatever canvas the gfx manager uses as input element.
+// this means mouse offset will also be relative to this element.
+Shaku.input.setTargetElement(() => Shaku.gfx.canvas);
+```
+<a name="Input+mousePressed"></a>
+
+### input.mousePressed(button) ⇒ <code>Boolean</code>
+Get if mouse button was pressed this frame.
+
+**Kind**: instance method of [<code>Input</code>](#Input)  
+**Returns**: <code>Boolean</code> - True if mouse button is currently down, but was up in previous frame.  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| button | <code>MouseButtons</code> | <code>0</code> | Button code (defults to MouseButtons.left). |
+
+<a name="Input+mouseDown"></a>
+
+### input.mouseDown(button) ⇒ <code>Boolean</code>
+Get if mouse button is currently pressed.
+
+**Kind**: instance method of [<code>Input</code>](#Input)  
+**Returns**: <code>Boolean</code> - true if mouse button is currently down, false otherwise.  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| button | <code>MouseButtons</code> | <code>0</code> | Button code (defults to MouseButtons.left). |
+
+<a name="Input+mouseUp"></a>
+
+### input.mouseUp(button) ⇒ <code>Boolean</code>
+Get if mouse button is currently not down.
+
+**Kind**: instance method of [<code>Input</code>](#Input)  
+**Returns**: <code>Boolean</code> - true if mouse button is currently up, false otherwise.  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| button | <code>MouseButtons</code> | <code>0</code> | Button code (defults to MouseButtons.left). |
+
+<a name="Input+mouseReleased"></a>
+
+### input.mouseReleased(button) ⇒ <code>Boolean</code>
+Get if mouse button was released in current frame.
+
+**Kind**: instance method of [<code>Input</code>](#Input)  
+**Returns**: <code>Boolean</code> - True if mouse was down last frame, but released in current frame.  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| button | <code>MouseButtons</code> | <code>0</code> | Button code (defults to MouseButtons.left). |
+
+<a name="Input+keyDown"></a>
+
+### input.keyDown(key) ⇒ <code>boolean</code>
+Get if keyboard key is currently pressed down.
+
+**Kind**: instance method of [<code>Input</code>](#Input)  
+**Returns**: <code>boolean</code> - True if keyboard key is currently down, false otherwise.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| key | <code>KeyboardKeys</code> | Keyboard key code. |
+
+<a name="Input+keyUp"></a>
+
+### input.keyUp(key) ⇒ <code>Boolean</code>
+Get if keyboard key is currently not down.
+
+**Kind**: instance method of [<code>Input</code>](#Input)  
+**Returns**: <code>Boolean</code> - True if keyboard key is currently up, false otherwise.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| key | <code>KeyboardKeys</code> | Keyboard key code. |
+
+<a name="Input+keyReleased"></a>
+
+### input.keyReleased(button) ⇒ <code>Boolean</code>
+Get if a keyboard button was released in current frame.
+
+**Kind**: instance method of [<code>Input</code>](#Input)  
+**Returns**: <code>Boolean</code> - True if key was down last frame, but released in current frame.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| button | <code>KeyboardKeys</code> | Keyboard key code. |
+
+<a name="Input+keyPressed"></a>
+
+### input.keyPressed(key) ⇒ <code>Boolean</code>
+Get if keyboard key was pressed this frame.
+
+**Kind**: instance method of [<code>Input</code>](#Input)  
+**Returns**: <code>Boolean</code> - True if key is currently down, but was up in previous frame.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| key | <code>KeyboardKeys</code> | Keyboard key code. |
+
+<a name="Input+down"></a>
+
+### input.down(code) ⇒ <code>Boolean</code>
+Return if a mouse or keyboard button is currently down.
+
+**Kind**: instance method of [<code>Input</code>](#Input)  
+**Returns**: <code>Boolean</code> - True if key or mouse button are down.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| code | <code>string</code> | Keyboard or mouse code.                           For mouse buttons: mouse_left, mouse_right or mouse_middle.                          For keyboard buttons: use one of the keys of KeyboardKeys (for example 'a', 'alt', 'up_arrow', etc..)                          For numbers (0-9): you can use the number. |
+
+<a name="Input+released"></a>
+
+### input.released(code) ⇒ <code>Boolean</code>
+Return if a mouse or keyboard button was released in this frame.
+
+**Kind**: instance method of [<code>Input</code>](#Input)  
+**Returns**: <code>Boolean</code> - True if key or mouse button were down in previous frame, and released this frame.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| code | <code>string</code> | Keyboard or mouse code.                           For mouse buttons: mouse_left, mouse_right or mouse_middle.                          For keyboard buttons: use one of the keys of KeyboardKeys (for example 'a', 'alt', 'up_arrow', etc..)                          For numbers (0-9): you can use the number. |
+
+<a name="Input+pressed"></a>
+
+### input.pressed(code) ⇒ <code>Boolean</code>
+Return if a mouse or keyboard button was pressed in this frame.
+
+**Kind**: instance method of [<code>Input</code>](#Input)  
+**Returns**: <code>Boolean</code> - True if key or mouse button where up in previous frame, and pressed this frame.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| code | <code>string</code> | Keyboard or mouse code.                           For mouse buttons: mouse_left, mouse_right or mouse_middle.                          For keyboard buttons: use one of the keys of KeyboardKeys (for example 'a', 'alt', 'up_arrow', etc..)                          For numbers (0-9): you can use the number. |
+
+<a name="Logger"></a>
+
+## Logger
+A logger manager.
+By default writes logs to console.
+
+**Kind**: global class  
+
+* [Logger](#Logger)
+    * [.trace(msg)](#Logger+trace)
+    * [.debug(msg)](#Logger+debug)
+    * [.info(msg)](#Logger+info)
+    * [.warn(msg)](#Logger+warn)
+    * [.error(msg)](#Logger+error)
+
+<a name="Logger+trace"></a>
+
+### logger.trace(msg)
+Write a trace level log message.
+
+**Kind**: instance method of [<code>Logger</code>](#Logger)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| msg | <code>String</code> | Message to write. |
+
+<a name="Logger+debug"></a>
+
+### logger.debug(msg)
+Write a debug level log message.
+
+**Kind**: instance method of [<code>Logger</code>](#Logger)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| msg | <code>String</code> | Message to write. |
+
+<a name="Logger+info"></a>
+
+### logger.info(msg)
+Write an info level log message.
+
+**Kind**: instance method of [<code>Logger</code>](#Logger)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| msg | <code>String</code> | Message to write. |
+
+<a name="Logger+warn"></a>
+
+### logger.warn(msg)
+Write a warning level log message.
+
+**Kind**: instance method of [<code>Logger</code>](#Logger)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| msg | <code>String</code> | Message to write. |
+
+<a name="Logger+error"></a>
+
+### logger.error(msg)
+Write an error level log message.
+
+**Kind**: instance method of [<code>Logger</code>](#Logger)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| msg | <code>String</code> | Message to write. |
+
+<a name="IManager"></a>
+
+## IManager
+Interface for any manager.
+Manager = manages a domain in Shaku, such as gfx (graphics), sfx (sounds), input, etc.
+
+**Kind**: global class  
+
+* [IManager](#IManager)
+    * [.setup()](#IManager+setup) ⇒ <code>Promise</code>
+    * [.startFrame()](#IManager+startFrame)
+    * [.endFrame()](#IManager+endFrame)
+    * [.destroy()](#IManager+destroy)
+
+<a name="IManager+setup"></a>
+
+### iManager.setup() ⇒ <code>Promise</code>
+Initialize the manager.
+
+**Kind**: instance method of [<code>IManager</code>](#IManager)  
+**Returns**: <code>Promise</code> - Promise to resolve when initialization is done.  
+<a name="IManager+startFrame"></a>
+
+### iManager.startFrame()
+Called every update at the begining of the frame.
+
+**Kind**: instance method of [<code>IManager</code>](#IManager)  
+<a name="IManager+endFrame"></a>
+
+### iManager.endFrame()
+Called every update at the end of the frame.
+
+**Kind**: instance method of [<code>IManager</code>](#IManager)  
+<a name="IManager+destroy"></a>
+
+### iManager.destroy()
+Destroy the manager.
+
+**Kind**: instance method of [<code>IManager</code>](#IManager)  
+<a name="Sfx"></a>
+
+## Sfx
+Sfx manager. 
+Used to play sound effects and music.
+
+To access the Sfx manager use `Shaku.sfx`.
+
+**Kind**: global class  
+
+* [Sfx](#Sfx)
+    * [new Sfx()](#new_Sfx_new)
+    * [.SoundMixer](#Sfx+SoundMixer)
+    * [.playingSoundsCount](#Sfx+playingSoundsCount) ⇒ <code>Number</code>
+    * [.masterVolume](#Sfx+masterVolume) ⇒ <code>Number</code>
+    * [.masterVolume](#Sfx+masterVolume)
+    * [.play(sound, volume, playbackRate, preservesPitch)](#Sfx+play)
+    * [.stopAll()](#Sfx+stopAll)
+    * [.createSound(sound)](#Sfx+createSound) ⇒ [<code>SoundInstance</code>](#SoundInstance)
+
+<a name="new_Sfx_new"></a>
+
+### new Sfx()
+Create the manager.
+
+<a name="Sfx+SoundMixer"></a>
+
+### sfx.SoundMixer
+Get the SoundMixer class.
+
+**Kind**: instance property of [<code>Sfx</code>](#Sfx)  
+**See**: SoundMixer  
+<a name="Sfx+playingSoundsCount"></a>
+
+### sfx.playingSoundsCount ⇒ <code>Number</code>
+Get currently playing sounds count.
+
+**Kind**: instance property of [<code>Sfx</code>](#Sfx)  
+**Returns**: <code>Number</code> - Number of sounds currently playing.  
+<a name="Sfx+masterVolume"></a>
+
+### sfx.masterVolume ⇒ <code>Number</code>
+Get master volume.
+This affect all sound effects volumes.
+
+**Kind**: instance property of [<code>Sfx</code>](#Sfx)  
+**Returns**: <code>Number</code> - Current master volume value.  
+<a name="Sfx+masterVolume"></a>
+
+### sfx.masterVolume
+Set master volume.
+This affect all sound effects volumes.
+
+**Kind**: instance property of [<code>Sfx</code>](#Sfx)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| value | <code>Number</code> | Master volume to set. |
+
+<a name="Sfx+play"></a>
+
+### sfx.play(sound, volume, playbackRate, preservesPitch)
+Play a sound once without any special properties and without returning a sound instance.
+Its a more convinient method to play sounds, but less efficient than 'createSound()' if you want to play multiple times.
+
+**Kind**: instance method of [<code>Sfx</code>](#Sfx)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| sound | [<code>SoundAsset</code>](#SoundAsset) | Sound asset to play. |
+| volume | <code>Number</code> | Volume to play sound (default to max). |
+| playbackRate | <code>Number</code> | Optional playback rate factor. |
+| preservesPitch | <code>Boolean</code> | Optional preserve pitch when changing rate factor. |
+
+**Example**  
+```js
+let sound = await Shaku.assets.loadSound("assets/my_sound.ogg");
+Shaku.sfx.play(sound, 0.75);
+```
+<a name="Sfx+stopAll"></a>
+
+### sfx.stopAll()
+Stop all playing sounds.
+
+**Kind**: instance method of [<code>Sfx</code>](#Sfx)  
+**Example**  
+```js
+Shaku.sfx.stopAll();
+```
+<a name="Sfx+createSound"></a>
+
+### sfx.createSound(sound) ⇒ [<code>SoundInstance</code>](#SoundInstance)
+Create and return a sound instance you can use to play multiple times.
+
+**Kind**: instance method of [<code>Sfx</code>](#Sfx)  
+**Returns**: [<code>SoundInstance</code>](#SoundInstance) - Newly created sound instance.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| sound | [<code>SoundAsset</code>](#SoundAsset) | Sound asset to play. |
+
+**Example**  
+```js
+let sound = await Shaku.assets.loadSound("assets/my_sound.ogg");
+let soundInstance = Shaku.sfx.createSound(sound);
+soundInstance.play();
+```
+<a name="SoundInstance"></a>
+
+## SoundInstance
+A sound effect instance you can play and stop.
+
+**Kind**: global class  
+
+* [SoundInstance](#SoundInstance)
+    * [new SoundInstance(sfxManager, url)](#new_SoundInstance_new)
+    * [.playbackRate](#SoundInstance+playbackRate) ⇒ <code>Number</code>
+    * [.playbackRate](#SoundInstance+playbackRate)
+    * [.preservesPitch](#SoundInstance+preservesPitch) ⇒ <code>Boolean</code>
+    * [.preservesPitch](#SoundInstance+preservesPitch)
+    * [.loop](#SoundInstance+loop) ⇒ <code>Boolean</code>
+    * [.loop](#SoundInstance+loop)
+    * [.volume](#SoundInstance+volume) ⇒ <code>Number</code>
+    * [.volume](#SoundInstance+volume)
+    * [.currentTime](#SoundInstance+currentTime) ⇒ <code>Number</code>
+    * [.currentTime](#SoundInstance+currentTime)
+    * [.duration](#SoundInstance+duration) ⇒ <code>Number</code>
+    * [.paused](#SoundInstance+paused) ⇒ <code>Boolean</code>
+    * [.playing](#SoundInstance+playing) ⇒ <code>Boolean</code>
+    * [.finished](#SoundInstance+finished) ⇒ <code>Boolean</code>
+    * [.play()](#SoundInstance+play)
+    * [.pause()](#SoundInstance+pause)
+    * [.replay()](#SoundInstance+replay)
+    * [.stop()](#SoundInstance+stop)
+
+<a name="new_SoundInstance_new"></a>
+
+### new SoundInstance(sfxManager, url)
+Create a sound instance.
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| sfxManager | [<code>Sfx</code>](#Sfx) | Sfx manager instance. |
+| url | <code>String</code> | Sound URL or source. |
+
+<a name="SoundInstance+playbackRate"></a>
+
+### soundInstance.playbackRate ⇒ <code>Number</code>
+Get sound effect playback rate.
+
+**Kind**: instance property of [<code>SoundInstance</code>](#SoundInstance)  
+**Returns**: <code>Number</code> - Playback rate.  
+<a name="SoundInstance+playbackRate"></a>
+
+### soundInstance.playbackRate
+Set playback rate.
+
+**Kind**: instance property of [<code>SoundInstance</code>](#SoundInstance)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| val | <code>Number</code> | Playback value to set. |
+
+<a name="SoundInstance+preservesPitch"></a>
+
+### soundInstance.preservesPitch ⇒ <code>Boolean</code>
+Get if to preserve pitch while changing playback rate.
+
+**Kind**: instance property of [<code>SoundInstance</code>](#SoundInstance)  
+**Returns**: <code>Boolean</code> - Preserve pitch state of the sound instance.  
+<a name="SoundInstance+preservesPitch"></a>
+
+### soundInstance.preservesPitch
+Set if to preserve pitch while changing playback rate.
+
+**Kind**: instance property of [<code>SoundInstance</code>](#SoundInstance)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| val | <code>Boolean</code> | New preserve pitch value to set. |
+
+<a name="SoundInstance+loop"></a>
+
+### soundInstance.loop ⇒ <code>Boolean</code>
+Get if playing in loop.
+
+**Kind**: instance property of [<code>SoundInstance</code>](#SoundInstance)  
+**Returns**: <code>Boolean</code> - If this sound should play in loop.  
+<a name="SoundInstance+loop"></a>
+
+### soundInstance.loop
+Set if playing in loop.
+
+**Kind**: instance property of [<code>SoundInstance</code>](#SoundInstance)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| value | <code>Boolean</code> | If this sound should play in loop. |
+
+<a name="SoundInstance+volume"></a>
+
+### soundInstance.volume ⇒ <code>Number</code>
+Get volume.
+
+**Kind**: instance property of [<code>SoundInstance</code>](#SoundInstance)  
+**Returns**: <code>Number</code> - Sound effect volume.  
+<a name="SoundInstance+volume"></a>
+
+### soundInstance.volume
+Set volume.
+
+**Kind**: instance property of [<code>SoundInstance</code>](#SoundInstance)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| value | <code>Number</code> | Sound effect volume to set. |
+
+<a name="SoundInstance+currentTime"></a>
+
+### soundInstance.currentTime ⇒ <code>Number</code>
+Get current time in track.
+
+**Kind**: instance property of [<code>SoundInstance</code>](#SoundInstance)  
+**Returns**: <code>Number</code> - Current time in playing sound.  
+<a name="SoundInstance+currentTime"></a>
+
+### soundInstance.currentTime
+Set current time in track.
+
+**Kind**: instance property of [<code>SoundInstance</code>](#SoundInstance)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| value | <code>Number</code> | Set current playing time in sound track. |
+
+<a name="SoundInstance+duration"></a>
+
+### soundInstance.duration ⇒ <code>Number</code>
+Get track duration.
+
+**Kind**: instance property of [<code>SoundInstance</code>](#SoundInstance)  
+**Returns**: <code>Number</code> - Sound duration in seconds.  
+<a name="SoundInstance+paused"></a>
+
+### soundInstance.paused ⇒ <code>Boolean</code>
+Get if sound is currently paused.
+
+**Kind**: instance property of [<code>SoundInstance</code>](#SoundInstance)  
+**Returns**: <code>Boolean</code> - True if sound is currently paused.  
+<a name="SoundInstance+playing"></a>
+
+### soundInstance.playing ⇒ <code>Boolean</code>
+Get if sound is currently playing.
+
+**Kind**: instance property of [<code>SoundInstance</code>](#SoundInstance)  
+**Returns**: <code>Boolean</code> - True if sound is currently playing.  
+<a name="SoundInstance+finished"></a>
+
+### soundInstance.finished ⇒ <code>Boolean</code>
+Get if finished playing.
+
+**Kind**: instance property of [<code>SoundInstance</code>](#SoundInstance)  
+**Returns**: <code>Boolean</code> - True if sound reached the end and didn't loop.  
+<a name="SoundInstance+play"></a>
+
+### soundInstance.play()
+Play sound.
+
+**Kind**: instance method of [<code>SoundInstance</code>](#SoundInstance)  
+<a name="SoundInstance+pause"></a>
+
+### soundInstance.pause()
+Pause the sound.
+
+**Kind**: instance method of [<code>SoundInstance</code>](#SoundInstance)  
+<a name="SoundInstance+replay"></a>
+
+### soundInstance.replay()
+Replay sound from start.
+
+**Kind**: instance method of [<code>SoundInstance</code>](#SoundInstance)  
+<a name="SoundInstance+stop"></a>
+
+### soundInstance.stop()
+Stop the sound and go back to start.
+
+**Kind**: instance method of [<code>SoundInstance</code>](#SoundInstance)  
+<a name="SoundMixer"></a>
+
+## SoundMixer
+A utility class to mix between two sounds.
+
+**Kind**: global class  
+
+* [SoundMixer](#SoundMixer)
+    * [new SoundMixer(sound1, sound2, allowOverlapping)](#new_SoundMixer_new)
+    * [.fromSound](#SoundMixer+fromSound) ⇒ [<code>SoundInstance</code>](#SoundInstance)
+    * [.toSound](#SoundMixer+toSound) ⇒ [<code>SoundInstance</code>](#SoundInstance)
+    * [.progress](#SoundMixer+progress) ⇒ <code>Number</code>
+    * [.stop()](#SoundMixer+stop)
+    * [.updateDelta(delta)](#SoundMixer+updateDelta)
+    * [.update(progress)](#SoundMixer+update)
+
+<a name="new_SoundMixer_new"></a>
+
+### new SoundMixer(sound1, sound2, allowOverlapping)
+Create the sound mixer.
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| sound1 | [<code>SoundInstance</code>](#SoundInstance) | Sound to mix from. Can be null to just fade in. |
+| sound2 | [<code>SoundInstance</code>](#SoundInstance) | Sound to mix to. Can be null to just fade out. |
+| allowOverlapping | <code>Boolean</code> | If true (default), will mix while overlapping sounds.                                    If false, will first finish first sound before begining next. |
+
+<a name="SoundMixer+fromSound"></a>
+
+### soundMixer.fromSound ⇒ [<code>SoundInstance</code>](#SoundInstance)
+Get first sound.
+
+**Kind**: instance property of [<code>SoundMixer</code>](#SoundMixer)  
+**Returns**: [<code>SoundInstance</code>](#SoundInstance) - First sound instance.  
+<a name="SoundMixer+toSound"></a>
+
+### soundMixer.toSound ⇒ [<code>SoundInstance</code>](#SoundInstance)
+Get second sound.
+
+**Kind**: instance property of [<code>SoundMixer</code>](#SoundMixer)  
+**Returns**: [<code>SoundInstance</code>](#SoundInstance) - Second sound instance.  
+<a name="SoundMixer+progress"></a>
+
+### soundMixer.progress ⇒ <code>Number</code>
+Return current progress.
+
+**Kind**: instance property of [<code>SoundMixer</code>](#SoundMixer)  
+**Returns**: <code>Number</code> - Mix progress from 0 to 1.  
+<a name="SoundMixer+stop"></a>
+
+### soundMixer.stop()
+Stop both sounds.
+
+**Kind**: instance method of [<code>SoundMixer</code>](#SoundMixer)  
+<a name="SoundMixer+updateDelta"></a>
+
+### soundMixer.updateDelta(delta)
+Update the mixer progress with time delta instead of absolute value.
+
+**Kind**: instance method of [<code>SoundMixer</code>](#SoundMixer)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| delta | <code>Number</code> | Progress delta, in seconds. |
+
+<a name="SoundMixer+update"></a>
+
+### soundMixer.update(progress)
+Update the mixer progress.
+
+**Kind**: instance method of [<code>SoundMixer</code>](#SoundMixer)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| progress | <code>Number</code> | Transition progress from sound1 to sound2. Values must be between 0.0 to 1.0. |
+
+<a name="Shaku"></a>
+
+## Shaku
+Shaku's main object.
+This object wraps the entire lib namespace, and this is what you use to access all managers and manage your main loop.
+
+**Kind**: global class  
+
+* [Shaku](#Shaku)
+    * [new Shaku()](#new_Shaku_new)
+    * [.gameTime](#Shaku+gameTime) ⇒ [<code>GameTime</code>](#GameTime)
+    * [.version](#Shaku+version) ⇒ <code>String</code>
+    * [.init(managers)](#Shaku+init) ⇒ <code>Promise</code>
+    * [.destroy()](#Shaku+destroy)
+    * [.startFrame()](#Shaku+startFrame)
+    * [.endFrame()](#Shaku+endFrame)
+    * [.silent()](#Shaku+silent)
+    * [.getFpsCount()](#Shaku+getFpsCount) ⇒ <code>Number</code>
+    * [.requestAnimationFrame(callback)](#Shaku+requestAnimationFrame) ⇒ <code>Number</code>
+    * [.cancelAnimationFrame(id)](#Shaku+cancelAnimationFrame)
+
+<a name="new_Shaku_new"></a>
+
+### new Shaku()
+Create the Shaku main object.
+
+<a name="Shaku+gameTime"></a>
+
+### shaku.gameTime ⇒ [<code>GameTime</code>](#GameTime)
+Get current frame game time.
+Only valid between startFrame() and endFrame().
+
+**Kind**: instance property of [<code>Shaku</code>](#Shaku)  
+**Returns**: [<code>GameTime</code>](#GameTime) - Current frame's gametime.  
+<a name="Shaku+version"></a>
+
+### shaku.version ⇒ <code>String</code>
+Get Shaku's version.
+
+**Kind**: instance property of [<code>Shaku</code>](#Shaku)  
+**Returns**: <code>String</code> - Shaku's version.  
+<a name="Shaku+init"></a>
+
+### shaku.init(managers) ⇒ <code>Promise</code>
+Method to select managers to use + initialize them.
+
+**Kind**: instance method of [<code>Shaku</code>](#Shaku)  
+**Returns**: <code>Promise</code> - promise to resolve when finish initialization.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| managers | [<code>Array.&lt;IManager&gt;</code>](#IManager) | Array with list of managers to use or null to use all. |
+
+<a name="Shaku+destroy"></a>
+
+### shaku.destroy()
+Destroy all managers
+
+**Kind**: instance method of [<code>Shaku</code>](#Shaku)  
+<a name="Shaku+startFrame"></a>
+
+### shaku.startFrame()
+Start frame (update all managers).
+
+**Kind**: instance method of [<code>Shaku</code>](#Shaku)  
+<a name="Shaku+endFrame"></a>
+
+### shaku.endFrame()
+End frame (update all managers).
+
+**Kind**: instance method of [<code>Shaku</code>](#Shaku)  
+<a name="Shaku+silent"></a>
+
+### shaku.silent()
+Make Shaku run in silent mode, without logs.
+
+**Kind**: instance method of [<code>Shaku</code>](#Shaku)  
+<a name="Shaku+getFpsCount"></a>
+
+### shaku.getFpsCount() ⇒ <code>Number</code>
+Return current FPS count.
+Note: will return 0 until at least one second have passed.
+
+**Kind**: instance method of [<code>Shaku</code>](#Shaku)  
+**Returns**: <code>Number</code> - FPS count.  
+<a name="Shaku+requestAnimationFrame"></a>
+
+### shaku.requestAnimationFrame(callback) ⇒ <code>Number</code>
+Request animation frame with fallbacks.
+
+**Kind**: instance method of [<code>Shaku</code>](#Shaku)  
+**Returns**: <code>Number</code> - Handle for cancellation.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| callback | <code>function</code> | Method to invoke in next animation frame. |
+
+<a name="Shaku+cancelAnimationFrame"></a>
+
+### shaku.cancelAnimationFrame(id)
+Cancel animation frame with fallbacks.
+
+**Kind**: instance method of [<code>Shaku</code>](#Shaku)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| id | <code>Number</code> | Request handle. |
+
+<a name="Animator"></a>
+
+## Animator
+Implement an animator object that change values over time using Linear Interpolation.
+Usage example:
+(new Animator(sprite)).from({'position.x': 0}).to({'position.x': 100}).duration(1).play();
+
+**Kind**: global class  
+
+* [Animator](#Animator)
+    * [new Animator(target)](#new_Animator_new)
+    * [.speedFactor](#Animator+speedFactor)
+    * [.ended](#Animator+ended) ⇒ <code>Boolean</code>
+    * [.update(delta)](#Animator+update)
+    * [.then(callback)](#Animator+then) ⇒ [<code>Animator</code>](#Animator)
+    * [.smoothDamp(enable)](#Animator+smoothDamp) ⇒ [<code>Animator</code>](#Animator)
+    * [.repeats(enable, reverseAnimation)](#Animator+repeats) ⇒ [<code>Animator</code>](#Animator)
+    * [.from(values)](#Animator+from) ⇒ [<code>Animator</code>](#Animator)
+    * [.to(values)](#Animator+to) ⇒ [<code>Animator</code>](#Animator)
+    * [.flipFromAndTo()](#Animator+flipFromAndTo)
+    * [.duration(seconds)](#Animator+duration) ⇒ [<code>Animator</code>](#Animator)
+    * [.reset()](#Animator+reset) ⇒ [<code>Animator</code>](#Animator)
+    * [.play()](#Animator+play) ⇒ [<code>Animator</code>](#Animator)
+
+<a name="new_Animator_new"></a>
+
+### new Animator(target)
+Create the animator.
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| target | <code>\*</code> | Any object you want to animate. |
+
+<a name="Animator+speedFactor"></a>
+
+### animator.speedFactor
+Speed factor to multiply with delta every time this animator updates.
+
+**Kind**: instance property of [<code>Animator</code>](#Animator)  
+<a name="Animator+ended"></a>
+
+### animator.ended ⇒ <code>Boolean</code>
+Get if this animator finished.
+
+**Kind**: instance property of [<code>Animator</code>](#Animator)  
+**Returns**: <code>Boolean</code> - True if animator finished.  
+<a name="Animator+update"></a>
+
+### animator.update(delta)
+Update this animator with a given delta time.
+
+**Kind**: instance method of [<code>Animator</code>](#Animator)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| delta | <code>Number</code> | Delta time to progress this animator by. |
+
+<a name="Animator+then"></a>
+
+### animator.then(callback) ⇒ [<code>Animator</code>](#Animator)
+Set a method to run when animation ends.
+
+**Kind**: instance method of [<code>Animator</code>](#Animator)  
+**Returns**: [<code>Animator</code>](#Animator) - this.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| callback | <code>function</code> | Callback to invoke when done. |
+
+<a name="Animator+smoothDamp"></a>
+
+### animator.smoothDamp(enable) ⇒ [<code>Animator</code>](#Animator)
+Set smooth damp.
+If true, lerping will go slower as the animation reach its ending.
+
+**Kind**: instance method of [<code>Animator</code>](#Animator)  
+**Returns**: [<code>Animator</code>](#Animator) - this.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| enable | <code>Boolean</code> | set smooth damp mode. |
+
+<a name="Animator+repeats"></a>
+
+### animator.repeats(enable, reverseAnimation) ⇒ [<code>Animator</code>](#Animator)
+Set if the animator should repeat itself.
+
+**Kind**: instance method of [<code>Animator</code>](#Animator)  
+**Returns**: [<code>Animator</code>](#Animator) - this.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| enable | <code>Boolean</code> \| <code>Number</code> | false to disable repeating, true for endless repeats, or a number for limited number of repeats. |
+| reverseAnimation | <code>Boolean</code> | if true, it will reverse animation to repeat it instead of just "jumping" back to starting state. |
+
+<a name="Animator+from"></a>
+
+### animator.from(values) ⇒ [<code>Animator</code>](#Animator)
+Set 'from' values.
+You don't have to provide 'from' values, when a value is not set the animator will just take whatever was set in target when first update is called.
+
+**Kind**: instance method of [<code>Animator</code>](#Animator)  
+**Returns**: [<code>Animator</code>](#Animator) - this.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| values | <code>\*</code> | Values to set as 'from' values.  Key = property name in target (can contain dots for nested), value = value to start animation from. |
+
+<a name="Animator+to"></a>
+
+### animator.to(values) ⇒ [<code>Animator</code>](#Animator)
+Set 'to' values, ie the result when animation ends.
+
+**Kind**: instance method of [<code>Animator</code>](#Animator)  
+**Returns**: [<code>Animator</code>](#Animator) - this.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| values | <code>\*</code> | Values to set as 'to' values.  Key = property name in target (can contain dots for nested), value = value to start animation from. |
+
+<a name="Animator+flipFromAndTo"></a>
+
+### animator.flipFromAndTo()
+Flip between the 'from' and the 'to' states.
+
+**Kind**: instance method of [<code>Animator</code>](#Animator)  
+<a name="Animator+duration"></a>
+
+### animator.duration(seconds) ⇒ [<code>Animator</code>](#Animator)
+Make this Animator update automatically with the gameTime delta time.
+Note: this will change the speedFactor property.
+
+**Kind**: instance method of [<code>Animator</code>](#Animator)  
+**Returns**: [<code>Animator</code>](#Animator) - this.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| seconds | <code>Number</code> | Animator duration time in seconds. |
+
+<a name="Animator+reset"></a>
+
+### animator.reset() ⇒ [<code>Animator</code>](#Animator)
+Reset animator progress.
+
+**Kind**: instance method of [<code>Animator</code>](#Animator)  
+**Returns**: [<code>Animator</code>](#Animator) - this.  
+<a name="Animator+play"></a>
+
+### animator.play() ⇒ [<code>Animator</code>](#Animator)
+Make this Animator update automatically with the gameTime delta time, until its done.
+
+**Kind**: instance method of [<code>Animator</code>](#Animator)  
+**Returns**: [<code>Animator</code>](#Animator) - this.  
+<a name="Circle"></a>
+
+## Circle
+Implement a simple 2d Circle.
+
+**Kind**: global class  
+
+* [Circle](#Circle)
+    * [new Circle(center, radius)](#new_Circle_new)
+    * _instance_
+        * [.clone()](#Circle+clone) ⇒ [<code>Circle</code>](#Circle)
+        * [.containsVector(p)](#Circle+containsVector) ⇒ <code>Boolean</code>
+        * [.equals(other)](#Circle+equals) ⇒ <code>Boolean</code>
+    * _static_
+        * [.lerp(p1, p2, a)](#Circle.lerp) ⇒ [<code>Circle</code>](#Circle)
+
+<a name="new_Circle_new"></a>
+
+### new Circle(center, radius)
+Create the Circle.
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| center | [<code>Vector2</code>](#Vector2) | Circle center position. |
+| radius | <code>Number</code> | Circle radius. |
+
+<a name="Circle+clone"></a>
+
+### circle.clone() ⇒ [<code>Circle</code>](#Circle)
+Return a clone of this circle.
+
+**Kind**: instance method of [<code>Circle</code>](#Circle)  
+**Returns**: [<code>Circle</code>](#Circle) - Cloned circle.  
+<a name="Circle+containsVector"></a>
+
+### circle.containsVector(p) ⇒ <code>Boolean</code>
+Check if this circle contains a Vector2.
+
+**Kind**: instance method of [<code>Circle</code>](#Circle)  
+**Returns**: <code>Boolean</code> - if point is contained within the circle.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| p | [<code>Vector2</code>](#Vector2) | Point to check. |
+
+<a name="Circle+equals"></a>
+
+### circle.equals(other) ⇒ <code>Boolean</code>
+Check if equal to another circle.
+
+**Kind**: instance method of [<code>Circle</code>](#Circle)  
+**Returns**: <code>Boolean</code> - True if circles are equal, false otherwise.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| other | [<code>Circle</code>](#Circle) | Other circle to compare to. |
+
+<a name="Circle.lerp"></a>
+
+### Circle.lerp(p1, p2, a) ⇒ [<code>Circle</code>](#Circle)
+Lerp between two circle.
+
+**Kind**: static method of [<code>Circle</code>](#Circle)  
+**Returns**: [<code>Circle</code>](#Circle) - result circle.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| p1 | [<code>Vector2</code>](#Vector2) | First circle. |
+| p2 | [<code>Vector2</code>](#Vector2) | Second circle. |
+| a | <code>Number</code> | Lerp factor (0.0 - 1.0). |
+
+<a name="Color"></a>
+
+## Color
+Implement a color.
+All color components are expected to be in 0.0 - 1.0 range (and not 0-255).
+
+**Kind**: global class  
+
+* [Color](#Color)
+    * [new Color(r, g, b, a)](#new_Color_new)
+    * _instance_
+        * [.r](#Color+r) ⇒ <code>Number</code>
+        * [.g](#Color+g) ⇒ <code>Number</code>
+        * [.b](#Color+b) ⇒ <code>Number</code>
+        * [.a](#Color+a) ⇒ <code>Number</code>
+        * [.r](#Color+r) ⇒ <code>Number</code>
+        * [.g](#Color+g) ⇒ <code>Number</code>
+        * [.b](#Color+b) ⇒ <code>Number</code>
+        * [.a](#Color+a) ⇒ <code>Number</code>
+        * [.asHex](#Color+asHex) ⇒ <code>String</code>
+        * [.asDecimalRGBA](#Color+asDecimalRGBA) ⇒ <code>Number</code>
+        * [.asDecimalABGR](#Color+asDecimalABGR) ⇒ <code>Number</code>
+        * [.floatArray](#Color+floatArray)
+        * [.isBlack](#Color+isBlack)
+        * [.isTransparentBlack](#Color+isTransparentBlack)
+        * [.set(r, g, b, a)](#Color+set) ⇒ [<code>Color</code>](#Color)
+        * [.setByte(r, g, b, a)](#Color+setByte) ⇒ [<code>Color</code>](#Color)
+        * [.copy(other)](#Color+copy) ⇒ [<code>Color</code>](#Color)
+        * [.clone()](#Color+clone) ⇒ <code>Number</code>
+        * [.string()](#Color+string)
+        * [.equals(other)](#Color+equals)
+    * _static_
+        * [.componentToHex(c)](#Color.componentToHex) ⇒ <code>String</code>
+        * [.fromHex(val)](#Color.fromHex) ⇒ [<code>Color</code>](#Color)
+        * [.fromDecimal(val, includeAlpha)](#Color.fromDecimal) ⇒ [<code>Color</code>](#Color)
+        * [.random(includeAlpha)](#Color.random) ⇒ [<code>Color</code>](#Color)
+        * [.fromBytesArray(bytes)](#Color.fromBytesArray) ⇒ [<code>Color</code>](#Color)
+        * [.lerp(p1, p2, a)](#Color.lerp) ⇒ [<code>Color</code>](#Color)
+
+<a name="new_Color_new"></a>
+
+### new Color(r, g, b, a)
+Create the color.
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| r | <code>Number</code> | Color red component (value range: 0-1). |
+| g | <code>Number</code> | Color green component (value range: 0-1). |
+| b | <code>Number</code> | Color blue component (value range: 0-1). |
+| a | <code>Number</code> | Color alpha component (value range: 0-1). |
+
+<a name="Color+r"></a>
+
+### color.r ⇒ <code>Number</code>
+Get r component.
+
+**Kind**: instance property of [<code>Color</code>](#Color)  
+**Returns**: <code>Number</code> - Red component.  
+<a name="Color+g"></a>
+
+### color.g ⇒ <code>Number</code>
+Get g component.
+
+**Kind**: instance property of [<code>Color</code>](#Color)  
+**Returns**: <code>Number</code> - Green component.  
+<a name="Color+b"></a>
+
+### color.b ⇒ <code>Number</code>
+Get b component.
+
+**Kind**: instance property of [<code>Color</code>](#Color)  
+**Returns**: <code>Number</code> - Blue component.  
+<a name="Color+a"></a>
+
+### color.a ⇒ <code>Number</code>
+Get a component.
+
+**Kind**: instance property of [<code>Color</code>](#Color)  
+**Returns**: <code>Number</code> - Alpha component.  
+<a name="Color+r"></a>
+
+### color.r ⇒ <code>Number</code>
+Set r component.
+
+**Kind**: instance property of [<code>Color</code>](#Color)  
+**Returns**: <code>Number</code> - Red component after change.  
+<a name="Color+g"></a>
+
+### color.g ⇒ <code>Number</code>
+Set g component.
+
+**Kind**: instance property of [<code>Color</code>](#Color)  
+**Returns**: <code>Number</code> - Green component after change.  
+<a name="Color+b"></a>
+
+### color.b ⇒ <code>Number</code>
+Set b component.
+
+**Kind**: instance property of [<code>Color</code>](#Color)  
+**Returns**: <code>Number</code> - Blue component after change.  
+<a name="Color+a"></a>
+
+### color.a ⇒ <code>Number</code>
+Set a component.
+
+**Kind**: instance property of [<code>Color</code>](#Color)  
+**Returns**: <code>Number</code> - Alpha component after change.  
+<a name="Color+asHex"></a>
+
+### color.asHex ⇒ <code>String</code>
+Convert this color to hex string (starting with '#').
+
+**Kind**: instance property of [<code>Color</code>](#Color)  
+**Returns**: <code>String</code> - Color as hex.  
+<a name="Color+asDecimalRGBA"></a>
+
+### color.asDecimalRGBA ⇒ <code>Number</code>
+Convert this color to decimal number.
+
+**Kind**: instance property of [<code>Color</code>](#Color)  
+**Returns**: <code>Number</code> - Color as decimal RGBA.  
+<a name="Color+asDecimalABGR"></a>
+
+### color.asDecimalABGR ⇒ <code>Number</code>
+Convert this color to decimal number.
+
+**Kind**: instance property of [<code>Color</code>](#Color)  
+**Returns**: <code>Number</code> - Color as decimal ARGB.  
+<a name="Color+floatArray"></a>
+
+### color.floatArray
+Convert this color to a float array.
+
+**Kind**: instance property of [<code>Color</code>](#Color)  
+<a name="Color+isBlack"></a>
+
+### color.isBlack
+Get if this color is pure black (ignoring alpha).
+
+**Kind**: instance property of [<code>Color</code>](#Color)  
+<a name="Color+isTransparentBlack"></a>
+
+### color.isTransparentBlack
+Get if this color is transparent black.
+
+**Kind**: instance property of [<code>Color</code>](#Color)  
+<a name="Color+set"></a>
+
+### color.set(r, g, b, a) ⇒ [<code>Color</code>](#Color)
+Set the color components.
+
+**Kind**: instance method of [<code>Color</code>](#Color)  
+**Returns**: [<code>Color</code>](#Color) - this.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| r | <code>Number</code> | Color red component (value range: 0-1). |
+| g | <code>Number</code> | Color green component (value range: 0-1). |
+| b | <code>Number</code> | Color blue component (value range: 0-1). |
+| a | <code>Number</code> | Color alpha component (value range: 0-1). |
+
+<a name="Color+setByte"></a>
+
+### color.setByte(r, g, b, a) ⇒ [<code>Color</code>](#Color)
+Set the color components from byte values (0-255).
+
+**Kind**: instance method of [<code>Color</code>](#Color)  
+**Returns**: [<code>Color</code>](#Color) - this.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| r | <code>Number</code> | Color red component (value range: 0-255). |
+| g | <code>Number</code> | Color green component (value range: 0-255). |
+| b | <code>Number</code> | Color blue component (value range: 0-255). |
+| a | <code>Number</code> | Color alpha component (value range: 0-255). |
+
+<a name="Color+copy"></a>
+
+### color.copy(other) ⇒ [<code>Color</code>](#Color)
+Copy all component values from another color.
+
+**Kind**: instance method of [<code>Color</code>](#Color)  
+**Returns**: [<code>Color</code>](#Color) - this.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| other | [<code>Color</code>](#Color) | Color to copy values from. |
+
+<a name="Color+clone"></a>
+
+### color.clone() ⇒ <code>Number</code>
+Return a clone of this color.
+
+**Kind**: instance method of [<code>Color</code>](#Color)  
+**Returns**: <code>Number</code> - Cloned color.  
+<a name="Color+string"></a>
+
+### color.string()
+Convert to string.
+
+**Kind**: instance method of [<code>Color</code>](#Color)  
+<a name="Color+equals"></a>
+
+### color.equals(other)
+Check if equal to another color.
+
+**Kind**: instance method of [<code>Color</code>](#Color)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| other | <code>PintarJS.Color</code> | Other color to compare to. |
+
+<a name="Color.componentToHex"></a>
+
+### Color.componentToHex(c) ⇒ <code>String</code>
+Convert a single component to hex value.
+
+**Kind**: static method of [<code>Color</code>](#Color)  
+**Returns**: <code>String</code> - Component as hex value.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| c | <code>Number</code> | Value to convert to hex. |
+
+<a name="Color.fromHex"></a>
+
+### Color.fromHex(val) ⇒ [<code>Color</code>](#Color)
+Create color from hex value.
+
+**Kind**: static method of [<code>Color</code>](#Color)  
+**Returns**: [<code>Color</code>](#Color) - New color value.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| val | <code>Number</code> | Number value (hex), as 0xrrggbbaa. |
+
+<a name="Color.fromDecimal"></a>
+
+### Color.fromDecimal(val, includeAlpha) ⇒ [<code>Color</code>](#Color)
+Create color from decimal value.
+
+**Kind**: static method of [<code>Color</code>](#Color)  
+**Returns**: [<code>Color</code>](#Color) - New color value.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| val | <code>Number</code> | Number value (int). |
+| includeAlpha | <code>Number</code> | If true, will include alpha value. |
+
+<a name="Color.random"></a>
+
+### Color.random(includeAlpha) ⇒ [<code>Color</code>](#Color)
+Return a random color.
+
+**Kind**: static method of [<code>Color</code>](#Color)  
+**Returns**: [<code>Color</code>](#Color) - Randomized color.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| includeAlpha | <code>Boolean</code> | If true, will also randomize alpha. |
+
+<a name="Color.fromBytesArray"></a>
+
+### Color.fromBytesArray(bytes) ⇒ [<code>Color</code>](#Color)
+Build and return new color from bytes array.
+
+**Kind**: static method of [<code>Color</code>](#Color)  
+**Returns**: [<code>Color</code>](#Color) - Newly created color.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| bytes | <code>Array.&lt;Number&gt;</code> | Bytes array to build color from. |
+
+<a name="Color.lerp"></a>
+
+### Color.lerp(p1, p2, a) ⇒ [<code>Color</code>](#Color)
+Lerp between two colors.
+
+**Kind**: static method of [<code>Color</code>](#Color)  
+**Returns**: [<code>Color</code>](#Color) - result color.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| p1 | [<code>Vector2</code>](#Vector2) | First color. |
+| p2 | [<code>Vector2</code>](#Vector2) | Second color. |
+| a | <code>Number</code> | Lerp factor (0.0 - 1.0). |
+
+<a name="GameTime"></a>
+
+## GameTime
+Class to hold current game time (elapse and deltatime).
+
+**Kind**: global class  
+
+* [GameTime](#GameTime)
+    * [new GameTime(prevTime)](#new_GameTime_new)
+    * [.elapsedTime](#GameTime+elapsedTime)
+    * [.deltaTime](#GameTime+deltaTime)
+    * [.delta](#GameTime+delta)
+    * [.elapsed](#GameTime+elapsed)
+
+<a name="new_GameTime_new"></a>
+
+### new GameTime(prevTime)
+create the gametime object with current time.
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| prevTime | [<code>GameTime</code>](#GameTime) | The gameTime from previous call, required to calculate delta time from last frame. |
+
+<a name="GameTime+elapsedTime"></a>
+
+### gameTime.elapsedTime
+Elapsed time details in milliseconds and seconds.
+
+**Kind**: instance property of [<code>GameTime</code>](#GameTime)  
+<a name="GameTime+deltaTime"></a>
+
+### gameTime.deltaTime
+Delta time details in milliseconds and seconds.
+
+**Kind**: instance property of [<code>GameTime</code>](#GameTime)  
+<a name="GameTime+delta"></a>
+
+### gameTime.delta
+Delta time, in seconds, since last frame.
+
+**Kind**: instance property of [<code>GameTime</code>](#GameTime)  
+<a name="GameTime+elapsed"></a>
+
+### gameTime.elapsed
+Total time, in seconds, since Shaku was initialized.
+
+**Kind**: instance property of [<code>GameTime</code>](#GameTime)  
+<a name="Rectangle"></a>
+
+## Rectangle
+Implement a simple 2d Rectangle.
+
+**Kind**: global class  
+
+* [Rectangle](#Rectangle)
+    * [new Rectangle(x, y, width, height)](#new_Rectangle_new)
+    * _instance_
+        * [.left](#Rectangle+left) ⇒ <code>Number</code>
+        * [.right](#Rectangle+right) ⇒ <code>Number</code>
+        * [.top](#Rectangle+top) ⇒ <code>Number</code>
+        * [.bottom](#Rectangle+bottom) ⇒ <code>Number</code>
+        * [.topLeft](#Rectangle+topLeft) ⇒ [<code>Vector2</code>](#Vector2)
+        * [.topRight](#Rectangle+topRight) ⇒ [<code>Vector2</code>](#Vector2)
+        * [.bottomLeft](#Rectangle+bottomLeft) ⇒ [<code>Vector2</code>](#Vector2)
+        * [.bottomRight](#Rectangle+bottomRight) ⇒ [<code>Vector2</code>](#Vector2)
+        * [.set(x, y, width, height)](#Rectangle+set) ⇒ [<code>Rectangle</code>](#Rectangle)
+        * [.getPosition()](#Rectangle+getPosition) ⇒ [<code>Vector2</code>](#Vector2)
+        * [.getSize()](#Rectangle+getSize) ⇒ [<code>Vector2</code>](#Vector2)
+        * [.getCenter()](#Rectangle+getCenter) ⇒ [<code>Vector2</code>](#Vector2)
+        * [.clone()](#Rectangle+clone) ⇒ [<code>Rectangle</code>](#Rectangle)
+        * [.string()](#Rectangle+string)
+        * [.containsVector(p)](#Rectangle+containsVector) ⇒ <code>Boolean</code>
+        * [.collideRect(other)](#Rectangle+collideRect) ⇒ <code>Boolean</code>
+        * [.collideCircle(circle)](#Rectangle+collideCircle) ⇒ <code>Boolean</code>
+        * [.equals(other)](#Rectangle+equals)
+    * _static_
+        * [.fromPoints(points)](#Rectangle.fromPoints) ⇒ [<code>Rectangle</code>](#Rectangle)
+        * [.lerp(p1, p2, a)](#Rectangle.lerp) ⇒ [<code>Rectangle</code>](#Rectangle)
+
+<a name="new_Rectangle_new"></a>
+
+### new Rectangle(x, y, width, height)
+Create the Rect.
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| x | <code>Number</code> | Rect position X (top left corner). |
+| y | <code>Number</code> | Rect position Y (top left corner). |
+| width | <code>Number</code> | Rect width. |
+| height | <code>Number</code> | Rect height. |
+
+<a name="Rectangle+left"></a>
+
+### rectangle.left ⇒ <code>Number</code>
+Get left value.
+
+**Kind**: instance property of [<code>Rectangle</code>](#Rectangle)  
+**Returns**: <code>Number</code> - rectangle left.  
+<a name="Rectangle+right"></a>
+
+### rectangle.right ⇒ <code>Number</code>
+Get right value.
+
+**Kind**: instance property of [<code>Rectangle</code>](#Rectangle)  
+**Returns**: <code>Number</code> - rectangle right.  
+<a name="Rectangle+top"></a>
+
+### rectangle.top ⇒ <code>Number</code>
+Get top value.
+
+**Kind**: instance property of [<code>Rectangle</code>](#Rectangle)  
+**Returns**: <code>Number</code> - rectangle top.  
+<a name="Rectangle+bottom"></a>
+
+### rectangle.bottom ⇒ <code>Number</code>
+Get bottom value.
+
+**Kind**: instance property of [<code>Rectangle</code>](#Rectangle)  
+**Returns**: <code>Number</code> - rectangle bottom.  
+<a name="Rectangle+topLeft"></a>
+
+### rectangle.topLeft ⇒ [<code>Vector2</code>](#Vector2)
+Get top-left corner.
+
+**Kind**: instance property of [<code>Rectangle</code>](#Rectangle)  
+**Returns**: [<code>Vector2</code>](#Vector2) - Corner position vector.  
+<a name="Rectangle+topRight"></a>
+
+### rectangle.topRight ⇒ [<code>Vector2</code>](#Vector2)
+Get top-right corner.
+
+**Kind**: instance property of [<code>Rectangle</code>](#Rectangle)  
+**Returns**: [<code>Vector2</code>](#Vector2) - Corner position vector.  
+<a name="Rectangle+bottomLeft"></a>
+
+### rectangle.bottomLeft ⇒ [<code>Vector2</code>](#Vector2)
+Get bottom-left corner.
+
+**Kind**: instance property of [<code>Rectangle</code>](#Rectangle)  
+**Returns**: [<code>Vector2</code>](#Vector2) - Corner position vector.  
+<a name="Rectangle+bottomRight"></a>
+
+### rectangle.bottomRight ⇒ [<code>Vector2</code>](#Vector2)
+Get bottom-right corner.
+
+**Kind**: instance property of [<code>Rectangle</code>](#Rectangle)  
+**Returns**: [<code>Vector2</code>](#Vector2) - Corner position vector.  
+<a name="Rectangle+set"></a>
+
+### rectangle.set(x, y, width, height) ⇒ [<code>Rectangle</code>](#Rectangle)
+Set rectangle values.
+
+**Kind**: instance method of [<code>Rectangle</code>](#Rectangle)  
+**Returns**: [<code>Rectangle</code>](#Rectangle) - this.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| x | <code>Number</code> | Rectangle x position. |
+| y | <code>Number</code> | Rectangle y position. |
+| width | <code>Number</code> | Rectangle width. |
+| height | <code>Number</code> | Rectangle height. |
+
+<a name="Rectangle+getPosition"></a>
+
+### rectangle.getPosition() ⇒ [<code>Vector2</code>](#Vector2)
+Get position as Vector2.
+
+**Kind**: instance method of [<code>Rectangle</code>](#Rectangle)  
+**Returns**: [<code>Vector2</code>](#Vector2) - Position vector.  
+<a name="Rectangle+getSize"></a>
+
+### rectangle.getSize() ⇒ [<code>Vector2</code>](#Vector2)
+Get size as Vector2.
+
+**Kind**: instance method of [<code>Rectangle</code>](#Rectangle)  
+**Returns**: [<code>Vector2</code>](#Vector2) - Size vector.  
+<a name="Rectangle+getCenter"></a>
+
+### rectangle.getCenter() ⇒ [<code>Vector2</code>](#Vector2)
+Get center position.
+
+**Kind**: instance method of [<code>Rectangle</code>](#Rectangle)  
+**Returns**: [<code>Vector2</code>](#Vector2) - Position vector.  
+<a name="Rectangle+clone"></a>
+
+### rectangle.clone() ⇒ [<code>Rectangle</code>](#Rectangle)
+Return a clone of this rectangle.
+
+**Kind**: instance method of [<code>Rectangle</code>](#Rectangle)  
+**Returns**: [<code>Rectangle</code>](#Rectangle) - Cloned rectangle.  
+<a name="Rectangle+string"></a>
+
+### rectangle.string()
+Convert to string.
+
+**Kind**: instance method of [<code>Rectangle</code>](#Rectangle)  
+<a name="Rectangle+containsVector"></a>
+
+### rectangle.containsVector(p) ⇒ <code>Boolean</code>
+Check if this rectangle contains a Vector2.
+
+**Kind**: instance method of [<code>Rectangle</code>](#Rectangle)  
+**Returns**: <code>Boolean</code> - if point is contained within the rectangle.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| p | [<code>Vector2</code>](#Vector2) | Point to check. |
+
+<a name="Rectangle+collideRect"></a>
+
+### rectangle.collideRect(other) ⇒ <code>Boolean</code>
+Check if this rectangle collides with another rectangle.
+
+**Kind**: instance method of [<code>Rectangle</code>](#Rectangle)  
+**Returns**: <code>Boolean</code> - if rectangles collide.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| other | [<code>Rectangle</code>](#Rectangle) | Rectangle to check collision with. |
+
+<a name="Rectangle+collideCircle"></a>
+
+### rectangle.collideCircle(circle) ⇒ <code>Boolean</code>
+Checks if this rectangle collides with a circle.
+
+**Kind**: instance method of [<code>Rectangle</code>](#Rectangle)  
+**Returns**: <code>Boolean</code> - if rectangle collides with circle.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| circle | [<code>Circle</code>](#Circle) | Circle to check collision with. |
+
+<a name="Rectangle+equals"></a>
+
+### rectangle.equals(other)
+Check if equal to another rectangle.
+
+**Kind**: instance method of [<code>Rectangle</code>](#Rectangle)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| other | [<code>Rectangle</code>](#Rectangle) | Other rectangle to compare to. |
+
+<a name="Rectangle.fromPoints"></a>
+
+### Rectangle.fromPoints(points) ⇒ [<code>Rectangle</code>](#Rectangle)
+Build and return a rectangle from points.
+
+**Kind**: static method of [<code>Rectangle</code>](#Rectangle)  
+**Returns**: [<code>Rectangle</code>](#Rectangle) - new rectangle from points.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| points | [<code>Array.&lt;Vector2&gt;</code>](#Vector2) | Points to build rectangle from. |
+
+<a name="Rectangle.lerp"></a>
+
+### Rectangle.lerp(p1, p2, a) ⇒ [<code>Rectangle</code>](#Rectangle)
+Lerp between two rectangles.
+
+**Kind**: static method of [<code>Rectangle</code>](#Rectangle)  
+**Returns**: [<code>Rectangle</code>](#Rectangle) - result rectangle.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| p1 | [<code>Vector2</code>](#Vector2) | First rectangles. |
+| p2 | [<code>Vector2</code>](#Vector2) | Second rectangles. |
+| a | <code>Number</code> | Lerp factor (0.0 - 1.0). |
+
+<a name="Vector2"></a>
+
+## Vector2
+A simple Vector object for 2d positions.
+
+**Kind**: global class  
+
+* [Vector2](#Vector2)
+    * [new Vector2(x, y)](#new_Vector2_new)
+    * _instance_
+        * [.length](#Vector2+length) ⇒ <code>Number</code>
+        * [.clone()](#Vector2+clone) ⇒ [<code>Vector2</code>](#Vector2)
+        * [.set(x, y)](#Vector2+set) ⇒ [<code>Vector2</code>](#Vector2)
+        * [.copy()](#Vector2+copy) ⇒ [<code>Vector2</code>](#Vector2)
+        * [.add(Other)](#Vector2+add) ⇒ [<code>Vector2</code>](#Vector2)
+        * [.sub(Other)](#Vector2+sub) ⇒ [<code>Vector2</code>](#Vector2)
+        * [.div(Other)](#Vector2+div) ⇒ [<code>Vector2</code>](#Vector2)
+        * [.mul(Other)](#Vector2+mul) ⇒ [<code>Vector2</code>](#Vector2)
+        * [.round()](#Vector2+round) ⇒ [<code>Vector2</code>](#Vector2)
+        * [.floor()](#Vector2+floor) ⇒ [<code>Vector2</code>](#Vector2)
+        * [.ceil()](#Vector2+ceil) ⇒ [<code>Vector2</code>](#Vector2)
+        * [.normalized()](#Vector2+normalized) ⇒ [<code>Vector2</code>](#Vector2)
+        * [.addSelf(Other)](#Vector2+addSelf) ⇒ [<code>Vector2</code>](#Vector2)
+        * [.subSelf(Other)](#Vector2+subSelf) ⇒ [<code>Vector2</code>](#Vector2)
+        * [.divSelf(Other)](#Vector2+divSelf) ⇒ [<code>Vector2</code>](#Vector2)
+        * [.mulSelf(Other)](#Vector2+mulSelf) ⇒ [<code>Vector2</code>](#Vector2)
+        * [.roundSelf()](#Vector2+roundSelf) ⇒ [<code>Vector2</code>](#Vector2)
+        * [.floorSelf()](#Vector2+floorSelf) ⇒ [<code>Vector2</code>](#Vector2)
+        * [.ceilSelf()](#Vector2+ceilSelf) ⇒ [<code>Vector2</code>](#Vector2)
+        * [.normalizeSelf()](#Vector2+normalizeSelf) ⇒ [<code>Vector2</code>](#Vector2)
+        * [.equals(other)](#Vector2+equals) ⇒ <code>Boolean</code>
+        * [.scaled()](#Vector2+scaled) ⇒ [<code>Vector2</code>](#Vector2)
+        * [.degreesTo(other)](#Vector2+degreesTo) ⇒ <code>Number</code>
+        * [.radiansTo(other)](#Vector2+radiansTo) ⇒ <code>Number</code>
+        * [.distanceTo(other)](#Vector2+distanceTo) ⇒ <code>Number</code>
+        * [.string()](#Vector2+string)
+    * _static_
+        * [.zero](#Vector2.zero) ⇒ [<code>Vector2</code>](#Vector2)
+        * [.one](#Vector2.one) ⇒ [<code>Vector2</code>](#Vector2)
+        * [.half](#Vector2.half) ⇒ [<code>Vector2</code>](#Vector2)
+        * [.left](#Vector2.left) ⇒ [<code>Vector2</code>](#Vector2)
+        * [.right](#Vector2.right) ⇒ [<code>Vector2</code>](#Vector2)
+        * [.up](#Vector2.up) ⇒ [<code>Vector2</code>](#Vector2)
+        * [.down](#Vector2.down) ⇒ [<code>Vector2</code>](#Vector2)
+        * [.fromDegree(degrees)](#Vector2.fromDegree) ⇒ [<code>Vector2</code>](#Vector2)
+        * [.fromRadians(radians)](#Vector2.fromRadians) ⇒ [<code>Vector2</code>](#Vector2)
+        * [.lerp(p1, p2, a)](#Vector2.lerp) ⇒ [<code>Vector2</code>](#Vector2)
+        * [.degreesBetween(p1, p2)](#Vector2.degreesBetween) ⇒ <code>Number</code>
+        * [.radiansBetween(p1, p2)](#Vector2.radiansBetween) ⇒ <code>Number</code>
+        * [.distance(p1, p2)](#Vector2.distance) ⇒ <code>Number</code>
+        * [.cross(p1, p2)](#Vector2.cross) ⇒ <code>Number</code>
+        * [.dot(p1, p2)](#Vector2.dot) ⇒ <code>Number</code>
+        * [.parse(str)](#Vector2.parse) ⇒ [<code>Vector2</code>](#Vector2)
+
+<a name="new_Vector2_new"></a>
+
+### new Vector2(x, y)
+Create the Vector object.
+
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| x | <code>number</code> | <code>0</code> | Vector X. |
+| y | <code>number</code> | <code>0</code> | Vector Y. |
+
+<a name="Vector2+length"></a>
+
+### vector2.length ⇒ <code>Number</code>
+Return vector length (aka magnitude).
+
+**Kind**: instance property of [<code>Vector2</code>](#Vector2)  
+**Returns**: <code>Number</code> - Vector length.  
+<a name="Vector2+clone"></a>
+
+### vector2.clone() ⇒ [<code>Vector2</code>](#Vector2)
+Clone the vector.
+
+**Kind**: instance method of [<code>Vector2</code>](#Vector2)  
+**Returns**: [<code>Vector2</code>](#Vector2) - cloned vector.  
+<a name="Vector2+set"></a>
+
+### vector2.set(x, y) ⇒ [<code>Vector2</code>](#Vector2)
+Set vector value.
+
+**Kind**: instance method of [<code>Vector2</code>](#Vector2)  
+**Returns**: [<code>Vector2</code>](#Vector2) - this.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| x | <code>Number</code> | X component. |
+| y | <code>Number</code> | Y component. |
+
+<a name="Vector2+copy"></a>
+
+### vector2.copy() ⇒ [<code>Vector2</code>](#Vector2)
+Copy values from other vector into self.
+
+**Kind**: instance method of [<code>Vector2</code>](#Vector2)  
+**Returns**: [<code>Vector2</code>](#Vector2) - this.  
+<a name="Vector2+add"></a>
+
+### vector2.add(Other) ⇒ [<code>Vector2</code>](#Vector2)
+Return a new vector of this + other.
+
+**Kind**: instance method of [<code>Vector2</code>](#Vector2)  
+**Returns**: [<code>Vector2</code>](#Vector2) - result vector.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| Other | <code>Number</code> \| [<code>Vector2</code>](#Vector2) | Vector or number to add. |
+
+<a name="Vector2+sub"></a>
+
+### vector2.sub(Other) ⇒ [<code>Vector2</code>](#Vector2)
+Return a new vector of this - other.
+
+**Kind**: instance method of [<code>Vector2</code>](#Vector2)  
+**Returns**: [<code>Vector2</code>](#Vector2) - result vector.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| Other | <code>Number</code> \| [<code>Vector2</code>](#Vector2) | Vector or number to sub. |
+
+<a name="Vector2+div"></a>
+
+### vector2.div(Other) ⇒ [<code>Vector2</code>](#Vector2)
+Return a new vector of this / other.
+
+**Kind**: instance method of [<code>Vector2</code>](#Vector2)  
+**Returns**: [<code>Vector2</code>](#Vector2) - result vector.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| Other | <code>Number</code> \| [<code>Vector2</code>](#Vector2) | Vector or number to divide. |
+
+<a name="Vector2+mul"></a>
+
+### vector2.mul(Other) ⇒ [<code>Vector2</code>](#Vector2)
+Return a new vector of this * other.
+
+**Kind**: instance method of [<code>Vector2</code>](#Vector2)  
+**Returns**: [<code>Vector2</code>](#Vector2) - result vector.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| Other | <code>Number</code> \| [<code>Vector2</code>](#Vector2) | Vector or number to multiply. |
+
+<a name="Vector2+round"></a>
+
+### vector2.round() ⇒ [<code>Vector2</code>](#Vector2)
+Return a round copy of this vector.
+
+**Kind**: instance method of [<code>Vector2</code>](#Vector2)  
+**Returns**: [<code>Vector2</code>](#Vector2) - result vector.  
+<a name="Vector2+floor"></a>
+
+### vector2.floor() ⇒ [<code>Vector2</code>](#Vector2)
+Return a floored copy of this vector.
+
+**Kind**: instance method of [<code>Vector2</code>](#Vector2)  
+**Returns**: [<code>Vector2</code>](#Vector2) - result vector.  
+<a name="Vector2+ceil"></a>
+
+### vector2.ceil() ⇒ [<code>Vector2</code>](#Vector2)
+Return a ceiled copy of this vector.
+
+**Kind**: instance method of [<code>Vector2</code>](#Vector2)  
+**Returns**: [<code>Vector2</code>](#Vector2) - result vector.  
+<a name="Vector2+normalized"></a>
+
+### vector2.normalized() ⇒ [<code>Vector2</code>](#Vector2)
+Return a normalized copy of this vector.
+
+**Kind**: instance method of [<code>Vector2</code>](#Vector2)  
+**Returns**: [<code>Vector2</code>](#Vector2) - result vector.  
+<a name="Vector2+addSelf"></a>
+
+### vector2.addSelf(Other) ⇒ [<code>Vector2</code>](#Vector2)
+Add other vector values to self.
+
+**Kind**: instance method of [<code>Vector2</code>](#Vector2)  
+**Returns**: [<code>Vector2</code>](#Vector2) - this.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| Other | <code>Number</code> \| [<code>Vector2</code>](#Vector2) | Vector or number to add. |
+
+<a name="Vector2+subSelf"></a>
+
+### vector2.subSelf(Other) ⇒ [<code>Vector2</code>](#Vector2)
+Sub other vector values from self.
+
+**Kind**: instance method of [<code>Vector2</code>](#Vector2)  
+**Returns**: [<code>Vector2</code>](#Vector2) - this.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| Other | <code>Number</code> \| [<code>Vector2</code>](#Vector2) | Vector or number to substract. |
+
+<a name="Vector2+divSelf"></a>
+
+### vector2.divSelf(Other) ⇒ [<code>Vector2</code>](#Vector2)
+Divide this vector by other vector values.
+
+**Kind**: instance method of [<code>Vector2</code>](#Vector2)  
+**Returns**: [<code>Vector2</code>](#Vector2) - this.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| Other | <code>Number</code> \| [<code>Vector2</code>](#Vector2) | Vector or number to divide by. |
+
+<a name="Vector2+mulSelf"></a>
+
+### vector2.mulSelf(Other) ⇒ [<code>Vector2</code>](#Vector2)
+Multiply this vector by other vector values.
+
+**Kind**: instance method of [<code>Vector2</code>](#Vector2)  
+**Returns**: [<code>Vector2</code>](#Vector2) - this.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| Other | <code>Number</code> \| [<code>Vector2</code>](#Vector2) | Vector or number to multiply by. |
+
+<a name="Vector2+roundSelf"></a>
+
+### vector2.roundSelf() ⇒ [<code>Vector2</code>](#Vector2)
+Round self.
+
+**Kind**: instance method of [<code>Vector2</code>](#Vector2)  
+**Returns**: [<code>Vector2</code>](#Vector2) - this.  
+<a name="Vector2+floorSelf"></a>
+
+### vector2.floorSelf() ⇒ [<code>Vector2</code>](#Vector2)
+Floor self.
+
+**Kind**: instance method of [<code>Vector2</code>](#Vector2)  
+**Returns**: [<code>Vector2</code>](#Vector2) - this.  
+<a name="Vector2+ceilSelf"></a>
+
+### vector2.ceilSelf() ⇒ [<code>Vector2</code>](#Vector2)
+Ceil self.
+
+**Kind**: instance method of [<code>Vector2</code>](#Vector2)  
+**Returns**: [<code>Vector2</code>](#Vector2) - this.  
+<a name="Vector2+normalizeSelf"></a>
+
+### vector2.normalizeSelf() ⇒ [<code>Vector2</code>](#Vector2)
+Return a normalized copy of this vector.
+
+**Kind**: instance method of [<code>Vector2</code>](#Vector2)  
+**Returns**: [<code>Vector2</code>](#Vector2) - this.  
+<a name="Vector2+equals"></a>
+
+### vector2.equals(other) ⇒ <code>Boolean</code>
+Return if vector equals another vector.
+
+**Kind**: instance method of [<code>Vector2</code>](#Vector2)  
+**Returns**: <code>Boolean</code> - if vectors are equal.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| other | [<code>Vector2</code>](#Vector2) | Other vector to compare to. |
+
+<a name="Vector2+scaled"></a>
+
+### vector2.scaled() ⇒ [<code>Vector2</code>](#Vector2)
+Return a copy of this vector multiplied by a factor.
+
+**Kind**: instance method of [<code>Vector2</code>](#Vector2)  
+**Returns**: [<code>Vector2</code>](#Vector2) - result vector.  
+<a name="Vector2+degreesTo"></a>
+
+### vector2.degreesTo(other) ⇒ <code>Number</code>
+Get degrees between this vector and another vector.
+
+**Kind**: instance method of [<code>Vector2</code>](#Vector2)  
+**Returns**: <code>Number</code> - Angle between vectors in degrees.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| other | [<code>Vector2</code>](#Vector2) | Other vector. |
+
+<a name="Vector2+radiansTo"></a>
+
+### vector2.radiansTo(other) ⇒ <code>Number</code>
+Get radians between this vector and another vector.
+
+**Kind**: instance method of [<code>Vector2</code>](#Vector2)  
+**Returns**: <code>Number</code> - Angle between vectors in radians.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| other | [<code>Vector2</code>](#Vector2) | Other vector. |
+
+<a name="Vector2+distanceTo"></a>
+
+### vector2.distanceTo(other) ⇒ <code>Number</code>
+Calculate distance between this vector and another vectors.
+
+**Kind**: instance method of [<code>Vector2</code>](#Vector2)  
+**Returns**: <code>Number</code> - Distance between vectors.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| other | [<code>Vector2</code>](#Vector2) | Other vector. |
+
+<a name="Vector2+string"></a>
+
+### vector2.string()
+Convert to string.
+
+**Kind**: instance method of [<code>Vector2</code>](#Vector2)  
+<a name="Vector2.zero"></a>
+
+### Vector2.zero ⇒ [<code>Vector2</code>](#Vector2)
+Get vector (0,0).
+
+**Kind**: static property of [<code>Vector2</code>](#Vector2)  
+**Returns**: [<code>Vector2</code>](#Vector2) - result vector.  
+<a name="Vector2.one"></a>
+
+### Vector2.one ⇒ [<code>Vector2</code>](#Vector2)
+Get vector with 1,1 values.
+
+**Kind**: static property of [<code>Vector2</code>](#Vector2)  
+**Returns**: [<code>Vector2</code>](#Vector2) - result vector.  
+<a name="Vector2.half"></a>
+
+### Vector2.half ⇒ [<code>Vector2</code>](#Vector2)
+Get vector with 0.5,0.5 values.
+
+**Kind**: static property of [<code>Vector2</code>](#Vector2)  
+**Returns**: [<code>Vector2</code>](#Vector2) - result vector.  
+<a name="Vector2.left"></a>
+
+### Vector2.left ⇒ [<code>Vector2</code>](#Vector2)
+Get vector with -1,0 values.
+
+**Kind**: static property of [<code>Vector2</code>](#Vector2)  
+**Returns**: [<code>Vector2</code>](#Vector2) - result vector.  
+<a name="Vector2.right"></a>
+
+### Vector2.right ⇒ [<code>Vector2</code>](#Vector2)
+Get vector with 1,0 values.
+
+**Kind**: static property of [<code>Vector2</code>](#Vector2)  
+**Returns**: [<code>Vector2</code>](#Vector2) - result vector.  
+<a name="Vector2.up"></a>
+
+### Vector2.up ⇒ [<code>Vector2</code>](#Vector2)
+Get vector with 0,-1 values.
+
+**Kind**: static property of [<code>Vector2</code>](#Vector2)  
+**Returns**: [<code>Vector2</code>](#Vector2) - result vector.  
+<a name="Vector2.down"></a>
+
+### Vector2.down ⇒ [<code>Vector2</code>](#Vector2)
+Get vector with 0,1 values.
+
+**Kind**: static property of [<code>Vector2</code>](#Vector2)  
+**Returns**: [<code>Vector2</code>](#Vector2) - result vector.  
+<a name="Vector2.fromDegree"></a>
+
+### Vector2.fromDegree(degrees) ⇒ [<code>Vector2</code>](#Vector2)
+Get vector from degrees.
+
+**Kind**: static method of [<code>Vector2</code>](#Vector2)  
+**Returns**: [<code>Vector2</code>](#Vector2) - result vector.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| degrees | <code>Number</code> | Angle to create vector from (0 = vector pointing right). |
+
+<a name="Vector2.fromRadians"></a>
+
+### Vector2.fromRadians(radians) ⇒ [<code>Vector2</code>](#Vector2)
+Get vector from radians.
+
+**Kind**: static method of [<code>Vector2</code>](#Vector2)  
+**Returns**: [<code>Vector2</code>](#Vector2) - result vector.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| radians | <code>Number</code> | Angle to create vector from (0 = vector pointing right). |
+
+<a name="Vector2.lerp"></a>
+
+### Vector2.lerp(p1, p2, a) ⇒ [<code>Vector2</code>](#Vector2)
+Lerp between two vectors.
+
+**Kind**: static method of [<code>Vector2</code>](#Vector2)  
+**Returns**: [<code>Vector2</code>](#Vector2) - result vector.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| p1 | [<code>Vector2</code>](#Vector2) | First vector. |
+| p2 | [<code>Vector2</code>](#Vector2) | Second vector. |
+| a | <code>Number</code> | Lerp factor (0.0 - 1.0). |
+
+<a name="Vector2.degreesBetween"></a>
+
+### Vector2.degreesBetween(p1, p2) ⇒ <code>Number</code>
+Get degrees between two vectors.
+
+**Kind**: static method of [<code>Vector2</code>](#Vector2)  
+**Returns**: <code>Number</code> - Angle between vectors in degrees.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| p1 | [<code>Vector2</code>](#Vector2) | First vector. |
+| p2 | [<code>Vector2</code>](#Vector2) | Second vector. |
+
+<a name="Vector2.radiansBetween"></a>
+
+### Vector2.radiansBetween(p1, p2) ⇒ <code>Number</code>
+Get radians between two vectors.
+
+**Kind**: static method of [<code>Vector2</code>](#Vector2)  
+**Returns**: <code>Number</code> - Angle between vectors in radians.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| p1 | [<code>Vector2</code>](#Vector2) | First vector. |
+| p2 | [<code>Vector2</code>](#Vector2) | Second vector. |
+
+<a name="Vector2.distance"></a>
+
+### Vector2.distance(p1, p2) ⇒ <code>Number</code>
+Calculate distance between two vectors.
+
+**Kind**: static method of [<code>Vector2</code>](#Vector2)  
+**Returns**: <code>Number</code> - Distance between vectors.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| p1 | [<code>Vector2</code>](#Vector2) | First vector. |
+| p2 | [<code>Vector2</code>](#Vector2) | Second vector. |
+
+<a name="Vector2.cross"></a>
+
+### Vector2.cross(p1, p2) ⇒ <code>Number</code>
+Return cross product between two vectors.
+
+**Kind**: static method of [<code>Vector2</code>](#Vector2)  
+**Returns**: <code>Number</code> - Cross between vectors.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| p1 | [<code>Vector2</code>](#Vector2) | First vector. |
+| p2 | [<code>Vector2</code>](#Vector2) | Second vector. |
+
+<a name="Vector2.dot"></a>
+
+### Vector2.dot(p1, p2) ⇒ <code>Number</code>
+Return dot product between two vectors.
+
+**Kind**: static method of [<code>Vector2</code>](#Vector2)  
+**Returns**: <code>Number</code> - Dot between vectors.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| p1 | [<code>Vector2</code>](#Vector2) | First vector. |
+| p2 | [<code>Vector2</code>](#Vector2) | Second vector. |
+
+<a name="Vector2.parse"></a>
+
+### Vector2.parse(str) ⇒ [<code>Vector2</code>](#Vector2)
+Parse and return a vector object from string in the form of "x,y".
+
+**Kind**: static method of [<code>Vector2</code>](#Vector2)  
+**Returns**: [<code>Vector2</code>](#Vector2) - Parsed vector.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| str | <code>String</code> | String to parse. |
+

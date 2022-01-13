@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Shaku</title>
+    <meta name="description" content="Shaku - a simple and easy-to-use javascript library for videogame programming.">
+    <meta name="author" content="Ronen Ness">
+    <link href="css/style.css" rel="stylesheet" type="text/css" media="all">
+  </head>
+  <body>
+    <div class="noselect">
+    <button class="view-code-btn" onclick="showSampleCode();">View Code</button> 
+    <h1 class="demo-title">Shaku Gfx Demo: Performance Test - Multiple Textures</h1>
+      <p>This demo is a performance test to test the limits of Shaku on your machine, with and without sprite batching optimization.<br />
+      This test uses <b>multiple textures randomly</b>, which decreases batching efficiency.<br />
+      A single-texture performance test can be found <a href="gfx_performance.html">here</a>.<br /><br />
+
+      Press <b>Z</b> to add sprites, and <b>X</b> to remove them. Try to see performance with or without batching, the difference should be quite impressive.</p>
+
+      <div>
+        <input type="checkbox" id="sprite-batch" name="sprite-batch"
+               checked>
+        <label for="sprite-batch">Use Sprite Batch</label>
+      </div>
+      <p id="fps-data"></p>
+
+      <!-- include shaku -->
+      <script src="js/demos.js"></script>
+      <script src="js/shaku.js"></script>
+
+      <!-- demo code -->
+      <script>
+        async function runDemo()
+        {
+          // init shaku
+          await Shaku.init();
+
+          // screen size
+          let screenX = 1000;
+          let screenY = 800;
+
+          // add canvas to document
+          document.body.appendChild(Shaku.gfx.canvas);
+          Shaku.gfx.setResolution(screenX, screenY, true);
+
+          // load textures
+          let texture1 = await Shaku.assets.loadTexture('assets/orcy.png');
+          let texture2 = await Shaku.assets.loadTexture('assets/skelly.png');
+          let currTexture = texture1;
+
+          // create sprites group
+          let group = new Shaku.gfx.SpritesGroup();
+
+          // add a new sprite to group
+          function addSprite()
+          {
+            // create sprite
+            let sprite = new Shaku.gfx.Sprite(currTexture);
+
+            // randomly switch texture, but not for every sprite!
+            if (Math.random() < 0.15) {
+              currTexture = (Math.random() < 0.5) ? texture1 : texture2;
+            }
+
+            // random position and set size
+            sprite.position.set(16 + Math.random() * (screenX - 32), 24 + Math.random() * (screenY - 48));
+            sprite.size.set(32, 48);
+
+            // random color
+            if (Math.random() < 0.75) {
+              sprite.color.set(Math.random(), Math.random(), Math.random(), 1);
+            }
+
+            // random if should rotate randomly
+            if (Math.random() < 0.25) {
+              sprite.rotationSpeed = (Math.random() - 0.5) * 5;
+            }
+
+            // randomize velocity
+            sprite.velocity = new Shaku.utils.Vector2(Math.random() * 2 - 1, Math.random() * 2 - 1);
+
+            // add to group
+            group.add(sprite);
+          }
+
+          // create starting sprites
+          let spritesCount = 10000;
+          for (let i = 0; i < spritesCount; ++i) {
+            addSprite();
+          }
+
+          // do a main loop step.
+          function step() 
+          {  
+            // start frame and clear screen
+            Shaku.startFrame();
+            Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
+
+            // draw sprites
+            let batching = document.getElementById('sprite-batch').checked;
+            Shaku.gfx.drawGroup(group, batching);
+
+            // add sprites
+            if (Shaku.input.down('z')) { for (let x = 0; x < 100; ++x) addSprite(); }
+            if (Shaku.input.down('x')) { for (let x = 0; x < 100 && group.count > 1; ++x) group.shift(); }
+
+            // animate stuff
+            group.forEach(sprite => {
+              
+              // move sprite
+              sprite.position.x += sprite.velocity.x * Shaku.gameTime.delta * 45;
+              sprite.position.y += sprite.velocity.y * Shaku.gameTime.delta * 45;
+              if ((sprite.velocity.x < 0 && sprite.position.x < 16) || (sprite.velocity.x > 0 && sprite.position.x > screenX - 16)) {
+                sprite.velocity.x *= -1;
+              }
+              if ((sprite.velocity.y < 0 && sprite.position.y < 24) || (sprite.velocity.y > 0 && sprite.position.y > screenY - 24)) {
+                sprite.velocity.y *= -1;
+              }
+
+              // rotate sprite
+              if (sprite.rotationSpeed) {
+                sprite.rotation += sprite.rotationSpeed * Shaku.gameTime.delta;
+              }
+            });
+
+            // update fps and data
+            document.getElementById('fps-data').innerHTML = "FPS: " + Shaku.getFpsCount() + "<br />Sprites: " + group.count;
+
+            // end frame and request next frame
+            Shaku.endFrame();
+            Shaku.requestAnimationFrame(step);
+          }
+
+          // start main loop
+          step();
+        }
+
+        // start demo
+        runDemo();
+
+      </script>
+
+</div>
+
+<!-- code example part -->
+<div id="sample-code-modal" class="modal">
+  <div class="modal__overlay jsOverlay"></div>
+  <div class="modal__container">   
+
+<p class="noselect">The code below renders 100,000 sprites with batch rendering.</p>
+<pre><code class="language-js">// load textures for test
+let texture1 = await Shaku.assets.loadTexture('assets/orcy.png');
+let texture2 = await Shaku.assets.loadTexture('assets/skelly.png');
+let currTexture = texture1;
+
+// create sprites group
+let group = new Shaku.gfx.SpritesGroup();
+
+// create 100,000 sprites
+for (let i = 0; i < 100000; ++i) {
+  let sprite = new Shaku.gfx.Sprite(currTexture);
+  if (Math.random() < 0.15) {
+    currTexture = (Math.random() < 0.5) ? texture1 : texture2;
+  }
+  sprite.position.set(Math.random() * 800, Math.random() * 600);
+  sprite.size.set(32, 48);
+  sprite.color.set(Math.random(), Math.random(), Math.random(), 1);
+  group.add(sprite);
+}
+
+// part below goes between startFrame() and endFrame()
+// -------------------------------------------------------
+
+// draw sprites with batching
+Shaku.gfx.drawGroup(group, true);
+
+// show current FPS count in element #show-fps
+document.getElementById('show-fps').innerHTML = Shaku.getFpsCount();</code></pre>
+
+  <button class="modal__close" onclick="closeModal('sample-code-modal')">&#10005;</button>
+</div>
+</div>
+
+<link href="prism/prism.css" rel="stylesheet" />
+<script src="prism/prism.js"></script>
+
+  </body>
+</html>

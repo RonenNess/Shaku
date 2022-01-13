@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Shaku</title>
+    <meta name="description" content="Shaku - a simple and easy-to-use javascript library for videogame programming.">
+    <meta name="author" content="Ronen Ness">
+    <link href="css/style.css" rel="stylesheet" type="text/css" media="all">
+  </head>
+  <body>
+    <div class="noselect">
+    <button class="view-code-btn" onclick="showSampleCode();">View Code</button> 
+    <h1 class="demo-title">Shaku Input Demo: Basic Input</h1>
+      <p>This demo illustrate how to use basic keyboard and mouse input with Shaku.</p>
+      <p id="mouse_state"></p>
+
+      <!-- include shaku -->
+      <script src="js/demos.js"></script>
+      <script src="js/shaku.js"></script>
+
+      <!-- demo code -->
+      <script>
+
+        (function() {
+
+          // create button element to show key state
+          function createButtonElement(key) {
+            let p = document.createElement("BUTTON");
+            p.style.fontSize = '120%';
+            p.innerHTML = key;
+            p.id = key;
+            document.body.appendChild(p); 
+          }
+
+          // create elements to show all keys state
+          for (let key in Shaku.input.KeyboardKeys) {
+            createButtonElement(key);
+          }
+          createButtonElement('mouse_left');
+          createButtonElement('mouse_middle');
+          createButtonElement('mouse_right');
+
+          // to count mouse wheel
+          let mouseWheel = 0;
+
+          // run demo 
+          async function runDemo()
+          {
+            // init shaku
+            await Shaku.init();
+
+            // do a main loop step.
+            function step()
+            {
+              // start frame  
+              Shaku.startFrame();
+
+              // highlight pressed buttons
+              for (let key in Shaku.input.KeyboardKeys) {
+                let p = document.getElementById(key);
+                p.style.color = Shaku.input.down(key) ? 'red' : 'black';
+              }
+
+              // highlight mouse buttons
+              document.getElementById("mouse_left").style.color = Shaku.input.down('mouse_left') ? 'red' : 'black';
+              document.getElementById("mouse_middle").style.color = Shaku.input.down('mouse_middle') ? 'red' : 'black';
+              document.getElementById("mouse_right").style.color = Shaku.input.down('mouse_right') ? 'red' : 'black';
+
+              // show mouse state
+              mouseWheel += Shaku.input.mouseWheelSign;
+              document.getElementById('mouse_state').innerHTML = "Mouse position: " + Shaku.input.mousePosition.string() + " / Mouse scroll: " + mouseWheel;
+
+              // end frame and request next frame
+              Shaku.endFrame();
+              Shaku.requestAnimationFrame(step);
+            }
+
+            // start main loop
+            step();
+          }
+
+          // start demo
+          runDemo();
+
+        })();
+
+      </script>
+      </div>
+
+
+      
+    
+      <!-- code example part -->
+      <div id="sample-code-modal" class="modal">
+        <div class="modal__overlay jsOverlay"></div>
+        <div class="modal__container">   
+
+      <p class="noselect">The following is few code examples on how to use the input manager. These are just the basics, for the full API please see the docs.</p>
+      <pre><code class="language-js">// everything below goes between startFrame() and endFrame()
+
+// getting mouse button states
+let mouseDown = Shaku.input.down('mouse_left');
+let mouseRightDown = Shaku.input.down('mouse_right');
+let mouseMiddleDown = Shaku.input.down('mouse_middle');
+
+// was left mouse button pressed in the previous frame, and released right in this frame?
+// this is useful to generate 'onclick' like behavior. this will be true for only 1 frame when user release the mouse button
+let mouseReleasedNow = Shaku.input.released('mouse_left');
+
+// was left mouse button released previous frame, but pressed down right in this frame?
+// this is useful to generate 'onclick' like behavior. this will be true for only 1 frame when user press the mouse button
+let mousePressedNow = Shaku.input.pressed('mouse_left');
+
+// get keyboard arrows state
+// you can get all keyboard keys with the following command: Object.keys(Shaku.input.KeyboardKeys)
+let moveUp = Shaku.input.down('up');
+let moveDown = Shaku.input.down('down');
+let moveLeft = Shaku.input.down('left');
+let moveRight = Shaku.input.down('right');
+
+// you can also use 'released()' and 'pressed' with keyboard keys
+// for example, attack when space is released:
+if (Shaku.input.released('space')) {
+  doAttack();
+}
+
+// get mouse position
+console.log("Mouse move x: " + Shaku.input.mousePosition.x);
+console.log("Mouse move y: " + Shaku.input.mousePosition.y);
+</code></pre>
+
+        <button class="modal__close" onclick="closeModal('sample-code-modal')">&#10005;</button>
+      </div>
+    </div>
+
+      <link href="prism/prism.css" rel="stylesheet" />
+      <script src="prism/prism.js"></script>  
+
+
+
+  </body>
+</html>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Shaku</title>
+    <meta name="description" content="Shaku - a simple and easy-to-use javascript library for videogame programming.">
+    <meta name="author" content="Ronen Ness">
+    <link href="css/style.css" rel="stylesheet" type="text/css" media="all">
+  </head>
+  <body style="padding: 0; margin: 0; overflow: hidden;">
+    <div class="noselect" style="padding: 0; margin: 0; overflow: hidden;">
+    
+      <!-- include shaku -->
+      <script src="js/demos.js"></script>
+      <script src="js/shaku.js"></script>
+
+      <!-- code to run content -->
+      <script>
+        window.addEventListener('message', function(event) {
+            if (typeof event.data == 'object' && event.data.call=='setCode') {
+                eval(event.data.value);
+            }
+        }, false);
+      </script>
+
+    </div>
+
+  </body>
+</html>

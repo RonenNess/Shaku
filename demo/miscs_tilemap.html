@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Shaku</title>
+    <meta name="description" content="Shaku - a simple and easy-to-use javascript library for videogame programming.">
+    <meta name="author" content="Ronen Ness">
+    <link href="css/style.css" rel="stylesheet" type="text/css" media="all">
+  </head>
+  <body>
+    <div class="noselect">
+    <button class="view-code-btn" onclick="showSampleCode();">View Code</button> 
+    <h1 class="demo-title">Shaku Miscs Demo: Tilemap & Camera</h1>
+      <p>This demo implements a simple tilemap editor.<br />
+      Use <b>Arrows</b> or <b>WASD</b> to move camera, <b>Left Mouse Button</b> to set tile, <b>Right Mouse Button</b> to delete.</p>
+
+      <!-- include shaku -->
+      <script src="js/demos.js"></script>
+      <script src="js/shaku.js"></script>
+
+      <!-- demo code -->
+      <script>
+        async function runGame()
+        {
+          // make shaku only listen to gfx canvas
+          Shaku.input.setTargetElement(() => Shaku.gfx.canvas);
+
+          // init shaku
+          await Shaku.init();
+
+          // add shaku's canvas to document and set resolution to 800x600
+          document.body.appendChild(Shaku.gfx.canvas);
+          Shaku.gfx.setResolution(1400, 1008, true);
+
+          // selected tile type
+          let selectedTileType = Shaku.utils.Vector2.zero;
+
+          // load tilemap's texture asset
+          let texture = await Shaku.assets.loadTexture('assets/tilemap.png');
+
+          // camera position
+          let cameraOffset = Shaku.utils.Vector2.zero;
+          let camera = Shaku.gfx.createCamera();
+
+          // tile size and tilemap size
+          let tileSize = 16 * 4;
+          let tilemapSize = 150;
+
+          // create tilesmap
+          let tiles = [[],[]];
+          for (let layer = 0; layer <= 1; ++layer)
+          {
+            for (let i = 0; i < tilemapSize; ++i) {
+              tiles[layer].push([]);
+              for (let j = 0; j < tilemapSize; ++j) {
+                tiles[layer][i][j] = layer === 0 ? Shaku.utils.Vector2.zero : null;
+              }
+            }
+          }
+
+          // do a single main loop step
+          function step() 
+          {  
+            // start new frame and clear screen
+            Shaku.startFrame();
+            Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
+
+            // apply camera
+            camera.orthographicOffset(cameraOffset);
+            Shaku.gfx.applyCamera(camera);
+
+            // draw the map
+            let minI = Math.max(Math.floor(cameraOffset.x / tileSize) - 1, 0);
+            let minJ = Math.max(Math.floor(cameraOffset.y / tileSize) - 1, 0);
+            let maxI = Math.min(minI + Math.floor(Shaku.gfx.canvasSize.x / tileSize) + 3, tilemapSize);
+            let maxJ = Math.min(minJ + Math.floor(Shaku.gfx.canvasSize.y / tileSize) + 3, tilemapSize);
+            for (let layer = 0; layer <= 1; ++layer)
+            {
+              for (let i = minI; i < maxI; ++i) {
+                for (let j = minJ; j < maxJ; ++j) {
+                  let type = tiles[layer][i][j];
+                  if (type) {
+                    Shaku.gfx.cover(texture, 
+                                    new Shaku.utils.Rectangle(i * tileSize, j * tileSize, tileSize, tileSize), 
+                                    new Shaku.utils.Rectangle(type.x * 16, type.y * 16, 16, 16));
+                  }
+                }
+              }
+            }
+
+            // reset camera for ui
+            Shaku.gfx.resetCamera();
+
+            // draw tilemap selection
+            let scaleFac = 3;
+            let tilesSelectionSize = texture.size.mul(scaleFac);
+            Shaku.gfx.fillRect(new Shaku.utils.Rectangle(0, 0, tilesSelectionSize.x + 4, tilesSelectionSize.y + 4), Shaku.utils.Color.black);
+            Shaku.gfx.draw(texture, Shaku.utils.Vector2.zero.add(2), tilesSelectionSize, null, null, null, 0, Shaku.utils.Vector2.zero);
+
+            // highlight selected tile
+            if (selectedTileType.y > 4) {
+              Shaku.gfx.fillRect(new Shaku.utils.Rectangle(2 + selectedTileType.x * 16 * scaleFac, 2 + selectedTileType.y * 16 * scaleFac, 16 * 2 * 3, 16 * 3 * scaleFac), Shaku.utils.Color.red, Shaku.gfx.BlendModes.Overlay);
+            }
+            else {
+              Shaku.gfx.fillRect(new Shaku.utils.Rectangle(2 + selectedTileType.x * 16 * scaleFac, 2 + selectedTileType.y * 16 * scaleFac, 16 * 3, 16 * scaleFac), Shaku.utils.Color.red, Shaku.gfx.BlendModes.Overlay);
+            }
+
+            // select tile to set
+            if (Shaku.input.pressed('mouse_left') && 
+                (Shaku.input.mousePosition.x <= tilesSelectionSize.x + 4) && 
+                (Shaku.input.mousePosition.y <= tilesSelectionSize.y + 4)) 
+            {
+
+              // get selected tile
+              selectedTileType.x = Math.floor((Shaku.input.mousePosition.x - 2) / (16 * scaleFac));
+              selectedTileType.y = Math.floor((Shaku.input.mousePosition.y - 2) / (16 * scaleFac));
+
+              // special - fix tree selection
+              if (selectedTileType.y > 4) {
+                selectedTileType.y = 5;
+                selectedTileType.x = Math.floor(selectedTileType.x / 2) * 2;
+              }
+            }
+
+            // set tiles
+            if ((Shaku.input.down('mouse_left') || Shaku.input.down('mouse_right')) && 
+                ((Shaku.input.mousePosition.x > tilesSelectionSize.x + 4) || 
+                (Shaku.input.mousePosition.y > tilesSelectionSize.y + 4))) {
+
+              // get selected tile and layer
+              let selectedTile = Shaku.input.mousePosition.add(cameraOffset).div(tileSize).floor();
+              let layer = selectedTileType.y < 4 ? 0 : 1;
+
+              // make sure legal tile
+              if (tiles[layer][selectedTile.x] && tiles[layer][selectedTile.x][selectedTile.y] !== undefined) { 
+
+                // set tile
+                if (Shaku.input.down('mouse_left')) {
+
+                  // special case - set whole tree
+                  if (selectedTileType.y >= 5) {
+                    for (let x = 0; x < 2; ++x) {
+                      for (let y = 0; y < 3; ++y) {
+                        try {
+                          tiles[layer][selectedTile.x + x][selectedTile.y + y] = selectedTileType.clone().add(new Shaku.utils.Vector2(x, y)); 
+                        } catch(e) {}
+                      }
+                    }
+                  }
+                  // set a single tile
+                  else {
+                    tiles[layer][selectedTile.x][selectedTile.y] = selectedTileType.clone(); 
+                  }
+                }
+                // delete tile
+                else {
+                  tiles[1][selectedTile.x][selectedTile.y] = null;
+                }
+              }
+            }
+
+            // camera controls
+            let cameraSpeed = Shaku.gameTime.delta * 500;
+            if (Shaku.input.down('left') || Shaku.input.down('a')) { 
+              cameraOffset.x -= cameraSpeed;
+            }
+            if (Shaku.input.down('right') || Shaku.input.down('d')) { 
+              cameraOffset.x += cameraSpeed;
+            }
+            if (Shaku.input.down('up') || Shaku.input.down('w')) { 
+              cameraOffset.y -= cameraSpeed;
+            }
+            if (Shaku.input.down('down') || Shaku.input.down('s')) { 
+              cameraOffset.y += cameraSpeed;
+            }
+
+            // end frame and request next frame
+            Shaku.endFrame();
+            Shaku.requestAnimationFrame(step);
+          }
+
+          // start main loop
+          step();
+        }
+
+        runGame();
+      </script>
+
+</div>
+
+<!-- code example part -->
+<div id="sample-code-modal" class="modal">
+  <div class="modal__overlay jsOverlay"></div>
+  <div class="modal__container">   
+
+<p class="noselect">The following shows a minimal code example on how to init Shaku and create a main loop.</p>
+<pre><code class="language-js">// load sprite's texture asset
+let texture = await Shaku.assets.loadTexture('assets/sprite.png');
+
+// part below goes between startFrame() and endFrame()
+// -------------------------------------------------------
+
+// draw the texture
+let position = new Shaku.utils.Vector2(400, 300);
+let size = new Shaku.utils.Vector2(100, 100);  // if width == height, you can use a number instead of a Vector
+Shaku.gfx.draw(texture, position, size);
+
+// draw with advanced params
+let sourceRect = new Shaku.utils.Rectangle(0, 0, 100, 100);
+let color = Shaku.utils.Color.red;
+let blendMode = Shaku.gfx.BlendModes.Additive;
+let rotation = Math.PI / 2;
+let origin = new Shaku.utils.Vector2(0.5, 0.5);
+let transform = Shaku.gfx.Matrix.scale(2, 2, 2);
+Shaku.gfx.draw(texture, position, size, sourceRect, color, blendMode, rotation, origin, transform)
+
+// draw a filled rectangle
+Shaku.gfx.fillRect(new Shaku.utils.Rectangle(0, 0, 50, 50), Shaku.utils.Color.red, Shaku.gfx.BlendModes.Opaque, rotation);</code></pre>
+
+  <button class="modal__close" onclick="closeModal('sample-code-modal')">&#10005;</button>
+</div>
+</div>
+
+<link href="prism/prism.css" rel="stylesheet" />
+<script src="prism/prism.js"></script>
+
+  </body>
+</html>

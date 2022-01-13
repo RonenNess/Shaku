@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Shaku Sandbox</title>
+    <meta name="description" content="Shaku - a simple and easy-to-use javascript library for videogame programming.">
+    <meta name="author" content="Ronen Ness">
+    <link href="css/style.css" rel="stylesheet" type="text/css" media="all">
+  </head>
+  <body>
+    <style>
+      html {
+        min-height: 100%;/* make sure it is at least as tall as the viewport */
+        position: relative;
+      }
+      body {
+        height: 100%; /* force the BODY element to match the height of the HTML element */
+        overflow: hidden;
+      }
+      .max-height {
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          overflow: hidden;
+          z-index: -1; /* Remove this line if it's not going to be a background! */
+      }
+      #editor {
+          position: absolute;
+          width: 100%;
+          min-height: 100%;
+      }
+      #editor *{ font-family : monospace !important;font-size: 16px !important;direction:ltr !important;text-align:left !important;}
+    </style>
+
+      <div id="left-pane" class="max-height" style="left:0px; width:40%; display:block; overflow: scroll;">
+        <div style="padding:0.5em">
+          <h1 class="demo-title" style="margin-left: 0;">Shaku: Sandbox</h1>
+          <p>This demo is a sandbox application to play with Shaku. Write code below to update the Shaku app on the right.</p>
+          <button class="view-code-btn" onclick="updateSandbox();" style="position: absolute; z-index: 100; right:0px; margin-top:-0.75em">Run Code →</button>
+        </div>
+
+        <div id="editor">// call runGame() to start your game
+async function runGame()
+{
+  // init shaku
+  await Shaku.init();
+
+  // add shaku's canvas to document and set resolution to 800x600
+  document.body.appendChild(Shaku.gfx.canvas);
+  
+  // load a texture asset and a font texture
+  let texture = await Shaku.assets.loadTexture('assets/shaku.png');
+  let fontTexture = await Shaku.assets.loadFontTexture('assets/DejaVuSansMono.ttf', {fontName: 'DejaVuSansMono'});
+
+  // do a single main loop step
+  function step() 
+  {  
+    // start new frame and clear screen
+    Shaku.startFrame();
+    Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
+
+    // draw test texture
+    let position = new Shaku.utils.Vector2(Shaku.gfx.renderingRegion.width / 2, Shaku.gfx.renderingRegion.height / 2);
+    Shaku.gfx.draw(texture, position, 256);
+
+    // draw 'hello world'
+    let textGroup = Shaku.gfx.buildText(fontTexture, "Shaku is ready for battle!", 24, Shaku.utils.Color.white, Shaku.gfx.TextAlignment.Center);
+    textGroup.position.set(position.x, position.y + 160);
+    Shaku.gfx.drawGroup(textGroup);
+
+    // PUT YOUR GAME LOGIC HERE
+
+    // make fullscreen
+    Shaku.gfx.maximizeCanvasSize(false);
+
+    // end frame and request next frame
+    Shaku.endFrame();
+    Shaku.requestAnimationFrame(step);
+  }
+
+  // start main loop
+  step();
+}
+
+// initiate the game
+runGame();</div>
+      </div>
+
+      <div id="right-pane" class="max-height" style="left:40%; width:60%; display:block;">
+        <iframe id="sandbox-iframe" src="sandbox_internal.html" style="left:0px; top:0px; width:100%; height:100%;"></iframe>
+      </div>
+
+      <!-- update sandbox code -->
+      <script>
+        function updateSandbox()
+        {
+          let code = window._codeEditor.getValue();
+          let iframe = document.getElementById('sandbox-iframe');
+          iframe.src = 'sandbox_internal.html';
+          iframe.onload = () => {
+            iframe.contentWindow.postMessage({call:'setCode', value: code}, '*');
+          }
+        }
+      </script>
+
+      <script src="ace/ace.js" type="text/javascript" charset="utf-8"></script>
+
+      <script>
+        (function() {
+          var editor = ace.edit("editor");
+          ace.config.loadModule("ace/keybinding/vscode");
+          editor.setOption('useWorker', false);
+          editor.setTheme("ace/theme/dracula");
+          editor.session.setMode("ace/mode/javascript");
+          window._codeEditor = editor;
+          updateSandbox();
+        })();
+      </script>
+
+  </body>
+</html>

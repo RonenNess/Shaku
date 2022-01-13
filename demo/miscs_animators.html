@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Shaku</title>
+    <meta name="description" content="Shaku - a simple and easy-to-use javascript library for videogame programming.">
+    <meta name="author" content="Ronen Ness">
+    <link href="css/style.css" rel="stylesheet" type="text/css" media="all">
+  </head>
+  <body>
+    <div class="noselect">
+    <button class="view-code-btn" onclick="showSampleCode();">View Code</button> 
+    <h1 class="demo-title">Shaku Miscs Demo: Animators</h1>
+      <p>Animator is a helper class to animate stuff using lerp.<br />
+      It can be color, position, size, and even sound volume. Any property that's either a number or implements a static 'lerp' method can be used.</p>
+      
+      <!-- include shaku -->
+      <script src="js/demos.js"></script>
+      <script src="js/shaku.js"></script>
+
+      <!-- demo code -->
+      <script>
+        async function runGame()
+        {
+          // init shaku
+          await Shaku.init();
+
+          // add shaku's canvas to document and set resolution to 800x600
+          document.body.appendChild(Shaku.gfx.canvas);
+          Shaku.gfx.setResolution(800, 600, true);
+
+          // load font texture
+          let fontTexture = await Shaku.assets.loadFontTexture('assets/DejaVuSansMono.ttf', {fontName: 'DejaVuSansMono', fontSize: 20});
+
+          // load sprite's texture asset
+          let texture = await Shaku.assets.loadTexture('assets/shaku.png');
+
+          // example 1: simple moving and coloring
+          let text1 = Shaku.gfx.buildText(fontTexture, "Animate position.x and color (to red):", 20, Shaku.utils.Color.white);
+          text1.position.set(40, 40);
+          let sprite1 = new Shaku.gfx.Sprite(texture);
+          sprite1.position.set(50, 150);
+          (new Shaku.utils.Animator(sprite1)).repeats(true).to({'position.x': 700, 'color': Shaku.utils.Color.red}).duration(5).play();
+
+          // example 2: two animators activating each other
+          let text2 = Shaku.gfx.buildText(fontTexture, "Animate position.x & size back and forth, smooth damp:", 20, Shaku.utils.Color.white);
+          text2.position.set(40, 240);
+          let sprite2 = new Shaku.gfx.Sprite(texture);
+          sprite2.position.set(50, 340);
+          (new Shaku.utils.Animator(sprite2)).repeats(true, true).to({'position.x': 700, 'size': new Shaku.utils.Vector2(150, 150)}).duration(5).smoothDamp(true).play();
+
+          // example 3: heartbeat on click
+          let text3 = Shaku.gfx.buildText(fontTexture, "Press A for heatbeat effect:", 20, Shaku.utils.Color.white);
+          text3.position.set(40, 440);
+          let sprite3 = new Shaku.gfx.Sprite(texture);
+          sprite3.position.set(100, 540);
+          let heartbeat = (new Shaku.utils.Animator(sprite3)).to({'size': new Shaku.utils.Vector2(170, 170)}).repeats(1, true).duration(0.5).smoothDamp(true);
+
+          // do a single main loop step
+          function step() 
+          {  
+            // start new frame and clear screen
+            Shaku.startFrame();
+            Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
+
+            // draw sprite 1 animations
+            Shaku.gfx.drawGroup(text1, true);
+            Shaku.gfx.drawSprite(sprite1);
+            
+            // draw sprite 2 animations
+            Shaku.gfx.drawGroup(text2, true);
+            Shaku.gfx.drawSprite(sprite2);
+
+            // draw sprite 3 animations
+            Shaku.gfx.drawGroup(text3, true);
+            Shaku.gfx.drawSprite(sprite3);
+
+            // activate heartbeat animation
+            if (Shaku.input.pressed('a')) {
+              heartbeat.reset().play();
+            }
+
+            // end frame and request next frame
+            Shaku.endFrame();
+            Shaku.requestAnimationFrame(step);
+          }
+
+          // start main loop
+          step();
+        }
+
+        runGame();
+      </script>
+
+</div>
+
+<!-- code example part -->
+<div id="sample-code-modal" class="modal">
+  <div class="modal__overlay jsOverlay"></div>
+  <div class="modal__container">   
+
+<p class="noselect">The following shows a minimal code example on how to init Shaku and create a main loop.</p>
+<pre><code class="language-js">// create repeating animation that move sprite from position x=0 to x=700 while turning it red, over 5 seconds:
+let sprite1 = new Shaku.gfx.Sprite(texture);
+sprite1.position.set(50, 150);
+(new Shaku.utils.Animator(sprite1)).repeats(true).to({'position.x': 700, 'color': Shaku.utils.Color.red}).duration(5).play();
+
+// create repeating animation that move and scale, but instead of "jumping" back to the starting state, it will lerp back to it
+let sprite2 = new Shaku.gfx.Sprite(texture);
+sprite2.position.set(50, 340);
+(new Shaku.utils.Animator(sprite2)).repeats(true, true).to({'position.x': 700, 'size': new Shaku.utils.Vector2(150, 150)}).duration(5).smoothDamp(true).play();
+
+
+// do "heartbeat" effect that pump once when we call the method "beat()"
+let sprite3 = new Shaku.gfx.Sprite(texture);
+sprite3.position.set(50, 540);
+let heartbeat = (new Shaku.utils.Animator(sprite3)).to({'size': new Shaku.utils.Vector2(170, 170)}).repeats(1, true).duration(0.5).smoothDamp(true);
+function beat() {
+  heartbeat.reset().play();
+}</code></pre>
+
+  <button class="modal__close" onclick="closeModal('sample-code-modal')">&#10005;</button>
+</div>
+</div>
+
+<link href="prism/prism.css" rel="stylesheet" />
+<script src="prism/prism.js"></script>
+
+  </body>
+</html>

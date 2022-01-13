@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Shaku</title>
+    <meta name="description" content="Shaku - a simple and easy-to-use javascript library for videogame programming.">
+    <meta name="author" content="Ronen Ness">
+    <link href="css/style.css" rel="stylesheet" type="text/css" media="all">
+  </head>
+  <body>
+    <div class="noselect">
+
+    <button class="view-code-btn" onclick="showSampleCode();">View Code</button> 
+    <h1 class="demo-title">Shaku Miscs Demo: Binary Asset</h1>
+      <p>This demo illustrate how to load binary data assets with Shaku. <br />
+        Dynamically loading binary files can be used for anything that's not JSON or the built-in supported types (texture / audio).
+        <br /><br />
+        The following content was loaded from a static binary file (its actually a JSON file, just loaded as binary..): </p>
+        <textarea id="result" readonly rows="10" style="width: 100%;"></textarea>
+        <p>The following content is a binary asset we created via code at runtime (it's "hello world" but creates as bytes array): </p>
+        <textarea id="result2" readonly rows="3" style="width: 100%;"></textarea>
+        <p>We can easily convert binary to string if we wanted, to show the original value: </p>
+        <textarea id="result3" readonly rows="3" style="width: 100%;"></textarea>
+
+      <!-- include shaku -->
+      <script src="js/demos.js"></script>
+      <script src="js/shaku.js"></script>
+
+      <!-- demo code -->
+      <script>
+        async function runDemo()
+        {
+          await Shaku.init();
+
+          let binary = await Shaku.assets.loadBinary("assets/json_example.json");
+          document.getElementById('result').value = binary.data;
+
+          let binary2 = await Shaku.assets.createBinary("dynamic_json_asset", (new TextEncoder()).encode("hello world"));
+          document.getElementById('result2').value = binary2.data;
+        
+          let binary3 = await Shaku.assets.loadBinary("dynamic_json_asset");
+          document.getElementById('result3').value = binary3.string();
+        }
+
+        // start demo
+        runDemo();
+
+      </script>
+
+    </div>
+
+        
+    <!-- code example part -->
+    <div id="sample-code-modal" class="modal">
+      <div class="modal__overlay jsOverlay"></div>
+      <div class="modal__container">   
+
+    <p class="noselect">The following is a code example on how to load a binary assets.</p>
+    <pre><code class="language-js">// load binary asset
+let bin = await Shaku.assets.loadBinary("assets/data.bin");
+
+// bin.data will contain a buffer of bytes with the loaded binary data
+alert(bin.data);
+
+// if your data is string, you can convert it to string:
+alert(bin.string());
+</code></pre>
+
+      <button class="modal__close" onclick="closeModal('sample-code-modal')">&#10005;</button>
+    </div>
+    </div>
+
+    <link href="prism/prism.css" rel="stylesheet" />
+    <script src="prism/prism.js"></script>  
+
+  </body>
+</html>

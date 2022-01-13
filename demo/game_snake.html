@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Shaku</title>
+    <meta name="description" content="Shaku - a simple and easy-to-use javascript library for videogame programming.">
+    <meta name="author" content="Ronen Ness">
+    <link href="css/style.css" rel="stylesheet" type="text/css" media="all">
+  </head>
+  <body>
+    <div class="noselect">
+    <button class="view-code-btn" onclick="showSampleCode();">View Code</button> 
+    <h1 class="demo-title">Shaku: Snake</h1>
+      <p>This demo shows a simple snake game made with Shaku.<br />Use <b>Arrows</b> or <b>WASD</b> to move.</p>
+      
+      <!-- include shaku -->
+      <script src="js/demos.js"></script>
+      <script src="js/shaku.js"></script>
+
+      <!-- demo code -->
+      <script id="main-code">async function runGame()
+{
+  // init shaku
+  await Shaku.init();
+
+  // add shaku's canvas to document
+  document.body.appendChild(Shaku.gfx.canvas);
+
+  // single tile size in the snake game
+  let tileSize = 50;
+  let gridSize = new Shaku.utils.Vector2(25, 15);
+
+  // we don't move snake every frame; only in this intervals
+  const snakeMovementInterval = 0.1;
+  let timeForSnakeMovement;
+
+  // snake direction
+  let direction;
+  let lastMovedDirection;
+
+  // set canvas size to match grid
+  let screenX = tileSize * gridSize.x;
+  let screenY = tileSize * gridSize.y;
+  Shaku.gfx.setResolution(screenX, screenY, true);
+
+  // load font texture
+  let fontTexture = await Shaku.assets.loadFontTexture('assets/DejaVuSansMono.ttf', {fontName: 'DejaVuSansMono'});
+
+  // head position and snake body
+  let head;
+  let snake;
+
+  // food position
+  let food;
+
+  // did we get game over?
+  let gameOver = false;
+  let gameOverTextGroup = Shaku.gfx.buildText(fontTexture, "Game Over!\nPress 'Space' to restart.", 64, Shaku.utils.Color.white, Shaku.gfx.TextAlignment.Center);
+  gameOverTextGroup.position.set(screenX / 2, screenY / 2 - 32);
+
+  // generate food position
+  function generateFood()
+  {
+    food = new Shaku.utils.Vector2(Math.floor(Math.random() * gridSize.x), Math.floor(Math.random() * gridSize.y));
+  }
+
+  // draw a tile
+  function drawTile(index, color)
+  {
+    Shaku.gfx.fillRect(new Shaku.utils.Rectangle(index.x * tileSize, index.y * tileSize, tileSize, tileSize), color);
+  }
+
+  // convert directions to values to movement vectors
+  const directionsToVector = {up: {x:0, y:-1}, down: {x:0, y:1}, left: {x:-1, y:0}, right: {x:1, y:0}};
+
+  // reset game state
+  function resetGame()
+  {
+    head = gridSize.div(2).floor();
+    snake = [head];
+    direction = 'right';
+    lastMovedDirection = direction;
+    timeForSnakeMovement = snakeMovementInterval * 2;
+    gameOver = false;
+    generateFood();
+  }
+  resetGame();
+
+  // do a single main loop step
+  function step() 
+  {  
+    // start new frame and clear screen
+    Shaku.startFrame();
+    Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
+
+    // draw snake
+    for (let i = 1; i < snake.length; ++i) {
+      drawTile(snake[i], Shaku.utils.Color.darkred);
+    }
+    drawTile(snake[0], Shaku.utils.Color.red);
+
+    // draw food
+    if (food) {
+      drawTile(food, Shaku.utils.Color.lime);
+    }
+
+    // if game over, stop here
+    if (gameOver) {
+      if (Shaku.input.released('space')) {
+        resetGame();
+      }
+      Shaku.gfx.drawGroup(gameOverTextGroup);
+      Shaku.endFrame();
+      Shaku.requestAnimationFrame(step);
+      return;
+    }
+
+    // set snake direction
+    if ((Shaku.input.down('left') || Shaku.input.down('a')) && lastMovedDirection !== 'right') { direction = 'left'; }
+    if ((Shaku.input.down('right') || Shaku.input.down('d')) && lastMovedDirection !== 'left') { direction = 'right'; }
+    if ((Shaku.input.down('up') || Shaku.input.down('w')) && lastMovedDirection !== 'down') { direction = 'up'; }
+    if ((Shaku.input.down('down') || Shaku.input.down('s')) && lastMovedDirection !== 'up') { direction = 'down'; }
+
+    // check if its time to make a snake step
+    timeForSnakeMovement -= Shaku.gameTime.delta;
+    if (timeForSnakeMovement <= 0) {
+      timeForSnakeMovement = snakeMovementInterval;
+
+      // store last part position
+      let last = snake[snake.length - 1].clone();
+      let lastHead = head.clone();
+
+      // move head
+      head.x += directionsToVector[direction].x;
+      head.y += directionsToVector[direction].y;
+
+      // store last moved direction
+      lastMovedDirection = snake.length > 1 ? direction : null;
+
+      // update tail
+      for (let i = snake.length - 1; i >= 1; --i) {
+        snake[i] = (i === 1) ? lastHead : snake[i - 1].clone(); 
+      }
+
+      // pick up food
+      if (head.equals(food)) {
+        generateFood();
+        snake.push(last.clone());
+      }
+
+      // check if game over due to out of level
+      if (head.x < 0 || head.y < 0 || head.x >= gridSize.x || head.y >= gridSize.y) { 
+        gameOver = true;
+      }
+      // check if game over due to stepping on tail
+      for (let i = 1; i < snake.length && !gameOver; ++i) {
+        if (head.equals(snake[i])) {
+          gameOver = true;
+        }
+      }
+    }
+
+    // draw score
+    let scoreTextGroup = Shaku.gfx.buildText(fontTexture, "Score: " + snake.length, 20, Shaku.utils.Color.white, Shaku.gfx.TextAlignment.Left);
+    scoreTextGroup.position.set(5, 18);
+    Shaku.gfx.drawGroup(scoreTextGroup);
+
+    // end frame and request next frame
+    Shaku.endFrame();
+    Shaku.requestAnimationFrame(step);
+  }
+
+  // start main loop
+  step();
+}
+
+runGame();</script>
+
+</div>
+
+<!-- code example part -->
+<div id="sample-code-modal" class="modal">
+  <div class="modal__overlay jsOverlay"></div>
+  <div class="modal__container">   
+
+<p class="noselect">The following shows the full code for this snake game demo.</i>
+</p>
+<pre><code class="language-js" id="code-box"></code></pre>
+
+  <button class="modal__close" onclick="closeModal('sample-code-modal')">&#10005;</button>
+</div>
+</div>
+
+<script>
+  document.getElementById('code-box').innerHTML = document.getElementById('main-code').innerHTML;
+</script>
+
+<link href="prism/prism.css" rel="stylesheet" />
+<script src="prism/prism.js"></script>
+
+  </body>
+</html>

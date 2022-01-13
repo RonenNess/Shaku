@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Shaku</title>
+    <meta name="description" content="Shaku - a simple and easy-to-use javascript library for videogame programming.">
+    <meta name="author" content="Ronen Ness">
+    <link href="css/style.css" rel="stylesheet" type="text/css" media="all">
+  </head>
+  <body>
+    <div class="noselect">
+    <button class="view-code-btn" onclick="showSampleCode();">View Code</button> 
+    <h1 class="demo-title">Shaku Gfx Demo: Draw</h1>
+      <p>This demo shows how to clear screen and use the gfx.Draw() and gfx.fillRect() methods to render basic stuff.</p>
+      
+      <!-- include shaku -->
+      <script src="js/demos.js"></script>
+      <script src="js/shaku.js"></script>
+
+      <!-- demo code -->
+      <script>
+        async function runGame()
+        {
+          // init shaku
+          await Shaku.init();
+
+          // add shaku's canvas to document and set resolution to 800x600
+          document.body.appendChild(Shaku.gfx.canvas);
+          Shaku.gfx.setResolution(800, 600, true);
+
+          // load sprite's texture asset
+          let texture = await Shaku.assets.loadTexture('assets/shaku.png');
+
+          // do a single main loop step
+          function step() 
+          {  
+            // start new frame and clear screen
+            Shaku.startFrame();
+            Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
+
+            // draw a texture
+            Shaku.gfx.draw(texture, Shaku.gfx.canvasSize.div(2), 256);
+
+            // draw rectangles
+            Shaku.gfx.fillRect(new Shaku.utils.Rectangle(0, 0, 50, 50), Shaku.utils.Color.red, null, Shaku.gameTime.elapsed);
+            Shaku.gfx.fillRect(new Shaku.utils.Rectangle(800 - 50, 0, 50, 50), Shaku.utils.Color.green, null, Shaku.gameTime.elapsed);
+            Shaku.gfx.fillRect(new Shaku.utils.Rectangle(0, 600 - 50, 50, 50), Shaku.utils.Color.blue, null, Shaku.gameTime.elapsed);
+            Shaku.gfx.fillRect(new Shaku.utils.Rectangle(800 - 50, 600 - 50, 50, 50), Shaku.utils.Color.yellow, null, Shaku.gameTime.elapsed);
+
+            // end frame and request next frame
+            Shaku.endFrame();
+            Shaku.requestAnimationFrame(step);
+          }
+
+          // start main loop
+          step();
+        }
+
+        runGame();
+      </script>
+
+</div>
+
+<!-- code example part -->
+<div id="sample-code-modal" class="modal">
+  <div class="modal__overlay jsOverlay"></div>
+  <div class="modal__container">   
+
+<p class="noselect">The following shows a minimal code example on how to init Shaku and create a main loop.</p>
+<pre><code class="language-js">// load sprite's texture asset
+let texture = await Shaku.assets.loadTexture('assets/sprite.png');
+
+// part below goes between startFrame() and endFrame()
+// -------------------------------------------------------
+
+// draw the texture
+let position = new Shaku.utils.Vector2(400, 300);
+let size = new Shaku.utils.Vector2(100, 100);  // if width == height, you can use a number instead of a Vector
+Shaku.gfx.draw(texture, position, size);
+
+// draw with advanced params
+let sourceRect = new Shaku.utils.Rectangle(0, 0, 100, 100);
+let color = Shaku.utils.Color.red;
+let blendMode = Shaku.gfx.BlendModes.Additive;
+let rotation = Math.PI / 2;
+let origin = new Shaku.utils.Vector2(0.5, 0.5);
+let transform = Shaku.gfx.Matrix.scale(2, 2, 2);
+Shaku.gfx.draw(texture, position, size, sourceRect, color, blendMode, rotation, origin, transform)
+
+// draw a filled rectangle
+Shaku.gfx.fillRect(new Shaku.utils.Rectangle(0, 0, 50, 50), Shaku.utils.Color.red, Shaku.gfx.BlendModes.Opaque, rotation);</code></pre>
+
+  <button class="modal__close" onclick="closeModal('sample-code-modal')">&#10005;</button>
+</div>
+</div>
+
+<link href="prism/prism.css" rel="stylesheet" />
+<script src="prism/prism.js"></script>
+
+  </body>
+</html>

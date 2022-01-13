@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Shaku</title>
+    <meta name="description" content="Shaku - a simple and easy-to-use javascript library for videogame programming.">
+    <meta name="author" content="Ronen Ness">
+    <link href="css/style.css" rel="stylesheet" type="text/css" media="all">
+  </head>
+  <body>
+    <div class="noselect">
+    <button class="view-code-btn" onclick="showSampleCode();">View Code</button> 
+    <h1 class="demo-title">Shaku Gfx Demo: Sprites Group</h1>
+      <p>This demo uses a Sprites Group to draw a collection of sprites with parent transformations.<br/>
+        This method is useful when you need to group together a bunch of sprites, and move, rotate or scale them as a single unit.<br/><br/>
+      This demo will draw a tank from three different parts (+ blurry wheels texture not seen below):</p>
+      <img width="256" height="auto" src="assets/tank.png" />
+      <p>Use <b>Arrows</b> or <b>WASD</b> to drive the tank, and <b>Z/X</b> to rotate the cannon.</p>
+      <span class="credits">Tank image is from: https://opengameart.org/content/top-down-vehicle</span>
+      <span class="credits">Grass image is from: https://opengameart.org/content/10-seamless-grass-textures-that-are-2048-x-2048-grass-1png</span>
+
+      <!-- include shaku -->
+      <script src="js/demos.js"></script>
+      <script src="js/shaku.js"></script>
+
+      <!-- demo code -->
+      <script>
+        async function runDemo()
+        {
+          // init shaku
+          await Shaku.init();
+
+          // screen size
+          let screenX = 800;
+          let screenY = 600;
+
+          // add canvas to document
+          document.body.appendChild(Shaku.gfx.canvas);
+          Shaku.gfx.setResolution(screenX, screenY, true);
+
+          // load textures
+          let tankTexture = await Shaku.assets.loadTexture('assets/tank.png');
+          let wheelsMoveTexture = await Shaku.assets.loadTexture('assets/tank_wheel_drive.png');
+          let grassTexture = await Shaku.assets.loadTexture('assets/grass.png');
+
+          // create sprites group
+          let tank = new Shaku.gfx.SpritesGroup();
+          tank.scale.set(0.65, 0.65);
+
+          // add wheels
+          let wheelsSprite = tank.add(new Shaku.gfx.Sprite(tankTexture, new Shaku.utils.Rectangle(0, 0, 232, 256)));
+          wheelsSprite.size.x = wheelsSprite.sourceRect.width;
+          wheelsSprite.size.y = wheelsSprite.sourceRect.height;
+
+          // add base
+          let baseSprite = tank.add(new Shaku.gfx.Sprite(tankTexture, new Shaku.utils.Rectangle(232, 0, 170, 256)));
+          baseSprite.size.x = baseSprite.sourceRect.width;
+          baseSprite.size.y = baseSprite.sourceRect.height;
+
+          // add cannon
+          let cannonSprite = tank.add(new Shaku.gfx.Sprite(tankTexture, new Shaku.utils.Rectangle(232 + 170, 0, 110, 256)));
+          cannonSprite.size.x = cannonSprite.sourceRect.width;
+          cannonSprite.size.y = cannonSprite.sourceRect.height;
+
+          // sprite position
+          tank.position.x = screenX / 2;
+          tank.position.y = screenY / 2;
+
+          // walk to position, but only if not marked as blocked in the block map
+          function walkTo(newX, newY)
+          {
+            tank.position.x = newX;
+            tank.position.y = newY;
+          }
+
+          // do a main loop step.
+          function step()
+          {
+            // start frame and clear screen
+            Shaku.startFrame();
+            Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
+
+            // draw background
+            Shaku.gfx.cover(grassTexture, Shaku.gfx.renderingRegion);
+
+            // draw tank
+            Shaku.gfx.drawGroup(tank, true);
+
+            // move and rotate tank
+            let driveSpeed = Shaku.gameTime.delta * 200;
+            let moveWheels = false;
+            if (Shaku.input.down('left') || Shaku.input.down('a')) { 
+              tank.rotation += Shaku.gameTime.delta; 
+              moveWheels = true;
+            }
+            if (Shaku.input.down('right') || Shaku.input.down('d')) { 
+              tank.rotation -= Shaku.gameTime.delta; 
+              moveWheels = true;
+            }
+            if (Shaku.input.down('x')) { 
+              cannonSprite.rotation -= Shaku.gameTime.delta; 
+            }
+            if (Shaku.input.down('z')) { 
+              cannonSprite.rotation += Shaku.gameTime.delta; 
+            }
+            if (Shaku.input.down('up') || Shaku.input.down('w')) { 
+              tank.position = tank.position.sub(Shaku.utils.Vector2.fromRadians( Math.PI / 2 - tank.rotation).mul(driveSpeed));
+              moveWheels = true;
+            }
+            if (Shaku.input.down('down') || Shaku.input.down('s')) { 
+              tank.position = tank.position.add(Shaku.utils.Vector2.fromRadians( Math.PI / 2 - tank.rotation).mul(driveSpeed));
+              moveWheels = true;
+            }
+
+            // do wheels blur while moving
+            wheelsSprite.texture = (moveWheels && (Math.floor(Shaku.gameTime.elapsed * 20) % 2 == 0)) ? wheelsMoveTexture : tankTexture;
+
+            // end frame and request next frame
+            Shaku.endFrame();
+            Shaku.requestAnimationFrame(step);
+          }
+
+          // start main loop
+          step();
+        }
+
+        // start demo
+        runDemo();
+
+      </script>
+
+</div>
+
+<!-- code example part -->
+<div id="sample-code-modal" class="modal">
+  <div class="modal__overlay jsOverlay"></div>
+  <div class="modal__container">   
+
+<p class="noselect">The following is a minimal code example on how to use sprites group.</p>
+<pre><code class="language-js">// load tank's texture asset, which contains wheels, middle and top cannon
+let tankTexture = await Shaku.assets.loadTexture('assets/tank.png');
+
+// create a group to hold the tank sprites
+let tank = new Shaku.gfx.SpritesGroup();
+
+// add wheels
+let wheelsSprite = tank.add(new Shaku.gfx.Sprite(tankTexture, new Shaku.utils.Rectangle(0, 0, 232, 256)));
+wheelsSprite.size.x = wheelsSprite.sourceRect.width;
+wheelsSprite.size.y = wheelsSprite.sourceRect.height;
+
+// add base
+let baseSprite = tank.add(new Shaku.gfx.Sprite(tankTexture, new Shaku.utils.Rectangle(232, 0, 170, 256)));
+baseSprite.size.x = baseSprite.sourceRect.width;
+baseSprite.size.y = baseSprite.sourceRect.height;
+
+// add cannon
+let cannonSprite = tank.add(new Shaku.gfx.Sprite(tankTexture, new Shaku.utils.Rectangle(232 + 170, 0, 110, 256)));
+cannonSprite.size.x = cannonSprite.sourceRect.width;
+cannonSprite.size.y = cannonSprite.sourceRect.height;
+
+// part below goes between startFrame() and endFrame()
+// -------------------------------------------------------
+
+// update the tank position
+tank.position.set(playerX, playerY);
+
+// draw group
+Shaku.gfx.drawGroup(group);</code></pre>
+
+  <button class="modal__close" onclick="closeModal('sample-code-modal')">&#10005;</button>
+</div>
+</div>
+
+<link href="prism/prism.css" rel="stylesheet" />
+<script src="prism/prism.js"></script>
+
+  </body>
+</html>

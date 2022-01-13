@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Shaku</title>
+    <meta name="description" content="Shaku - a simple and easy-to-use javascript library for videogame programming.">
+    <meta name="author" content="Ronen Ness">
+    <link href="css/style.css" rel="stylesheet" type="text/css" media="all">
+  </head>
+  
+  <body>
+    <div class="noselect">
+
+    <button class="view-code-btn" onclick="showSampleCode();">View Code</button> 
+    <h1 class="demo-title">Shaku Miscs Demo: JSON Asset</h1>
+      <p>This demo illustrate how to load JSON assets with Shaku. <br />
+        Dynamically loading JSON files is very useful to store objects data and configuration, and load them from server.
+        <br /><br />
+        The following content was loaded from a static JSON file: </p>
+        <textarea id="result" readonly rows="30" style="width: 100%;"></textarea>
+        <p>The following content is a JSON asset we created via code at runtime: </p>
+        <textarea id="result2" readonly rows="8" style="width: 100%;"></textarea>
+      <!-- include shaku -->
+      <script src="js/demos.js"></script>
+      <script src="js/shaku.js"></script>
+
+      <!-- demo code -->
+      <script>
+        async function runDemo()
+        {
+          await Shaku.init();
+
+          let json = await Shaku.assets.loadJson("assets/json_example.json");
+          document.getElementById('result').value = JSON.stringify(json.data, null, 2);
+
+          let json2 = await Shaku.assets.createJson("dynamic_json_asset", {"hello": "world", "foo": {"bar": 123}});
+          document.getElementById('result2').value = JSON.stringify(json2.data, null, 2);
+        }
+
+        // start demo
+        runDemo();
+
+      </script>
+      </div>
+
+    
+      <!-- code example part -->
+      <div id="sample-code-modal" class="modal">
+        <div class="modal__overlay jsOverlay"></div>
+        <div class="modal__container">   
+
+      <p class="noselect">The following is a code example on how to load a JSON assets.</p>
+      <pre><code class="language-js">// load json asset
+let json = await Shaku.assets.loadJson("assets/json_example.json");
+
+// get data from json (it's a dictionary once loaded)
+alert(json.data.some_field);</code></pre>
+
+        <button class="modal__close" onclick="closeModal('sample-code-modal')">&#10005;</button>
+      </div>
+    </div>
+
+      <link href="prism/prism.css" rel="stylesheet" />
+      <script src="prism/prism.js"></script>  
+
+
+  </body>
+</html>

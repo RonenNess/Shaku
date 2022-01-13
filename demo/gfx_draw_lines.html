@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Shaku</title>
+    <meta name="description" content="Shaku - a simple and easy-to-use javascript library for videogame programming.">
+    <meta name="author" content="Ronen Ness">
+    <link href="css/style.css" rel="stylesheet" type="text/css" media="all">
+  </head>
+  <body>
+    <div class="noselect">
+    <button class="view-code-btn" onclick="showSampleCode();">View Code</button> 
+    <h1 class="demo-title">Shaku Gfx Demo: Draw Lines</h1>
+      <p>This demo shows how to draw lines. Click anywhere on the canvas to continue the line.</p>
+      
+      <div>
+        <input type="checkbox" id="loop-lines" name="loop-lines">
+        <label for="loop-lines">Loop lines segment.</label>
+      </div>
+
+      <!-- include shaku -->
+      <script src="js/demos.js"></script>
+      <script src="js/shaku.js"></script>
+
+      <!-- demo code -->
+      <script>
+        async function runGame()
+        {
+          // make shaku only listen to gfx canvas
+          Shaku.input.setTargetElement(() => Shaku.gfx.canvas);
+
+          // init shaku
+          await Shaku.init();
+
+          // add shaku's canvas to document and set resolution to 800x600
+          document.body.appendChild(Shaku.gfx.canvas);
+          Shaku.gfx.setResolution(800, 600, true);
+
+          // lines to draw
+          let lines = [new Shaku.utils.Vector2(50,50), new Shaku.utils.Vector2(150,50)];
+          let colors = [Shaku.utils.Color.random(), Shaku.utils.Color.random()];
+
+          // do a single main loop step
+          function step() 
+          {  
+            // start new frame and clear screen
+            Shaku.startFrame();
+            Shaku.gfx.clear(Shaku.utils.Color.black);
+
+            // draw lines
+            let looped = document.getElementById('loop-lines').checked;
+            Shaku.gfx.drawLines(lines, colors, null, looped);
+
+            // add line segments
+            if (Shaku.input.down('mouse_left') && (Shaku.input.mouseMoving || Shaku.input.pressed('mouse_left'))) {
+              lines.push(Shaku.input.mousePosition);
+              colors.push(Shaku.utils.Color.random());
+              while (lines.length >= Shaku.gfx.maxLineSegments - 1) {
+                lines.shift();
+                colors.shift();
+              }
+            }
+
+            // end frame and request next frame
+            Shaku.endFrame();
+            Shaku.requestAnimationFrame(step);
+          }
+
+          // start main loop
+          step();
+        }
+
+        runGame();
+      </script>
+
+</div>
+
+<!-- code example part -->
+<div id="sample-code-modal" class="modal">
+  <div class="modal__overlay jsOverlay"></div>
+  <div class="modal__container">   
+
+<p class="noselect">The following shows a minimal code example on how to draw lines segment.</p>
+<pre><code class="language-js">// draw lines strip
+let lines = [new Shaku.utils.Vector2(50,50), new Shaku.utils.Vector2(150,50), new Shaku.utils.Vector2(150,150)];
+let colors = [Shaku.utils.Color.random(), Shaku.utils.Color.random(), Shaku.utils.Color.random()];
+Shaku.gfx.drawLines(lines, colors);
+
+// draw a single line between two points
+Shaku.gfx.drawLine(new Shaku.utils.Vector2(50,50), new Shaku.utils.Vector2(150,50), Shaku.utils.Color.red);
+</code></pre>
+
+  <button class="modal__close" onclick="closeModal('sample-code-modal')">&#10005;</button>
+</div>
+</div>
+
+<link href="prism/prism.css" rel="stylesheet" />
+<script src="prism/prism.js"></script>
+
+  </body>
+</html>

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Shaku</title>
+    <meta name="description" content="Shaku - a simple and easy-to-use javascript library for videogame programming.">
+    <meta name="author" content="Ronen Ness">
+    <link href="css/style.css" rel="stylesheet" type="text/css" media="all">
+  </head>
+  <body>
+
+    <div class="noselect">
+      <button class="view-code-btn" onclick="showSampleCode();">View Code</button> 
+      <h1 class="demo-title">Shaku Sfx Demo: Audio Mixer</h1>
+      <p>This demo illustrate a utility class to mix two sounds by fading one sound out while fading another sound in.<br />
+      Its very useful to change music between levels or when entering a boss fight.</p>
+      <button id="stop-all">Stop All</button>
+      <button id="mix-overlapping">Mix With Overlapping</button>
+      <button id="mix-no-overlapping">Mix Without Overlapping</button>
+      <button id="mix-fade-in">Fade Music In</button>
+      <button id="mix-fade-out">Fade Music Out</button>
+      <br />
+      <p>Transition Speed:</p>
+      <div class="slidecontainer">
+        <input style="width:300px" type="range" min="1" max="10" value="1" class="slider" id="transition-speed">
+      </div>
+      
+      <!-- include shaku -->
+      <script src="js/demos.js"></script>
+      <script src="js/shaku.js"></script>
+
+      <!-- demo code -->
+      <script>
+
+        async function runDemo()
+        {
+          // init shaku
+          await Shaku.init();
+
+          // load music assets
+          let music1 = await Shaku.assets.loadSound('assets/music1.ogg');
+          let music2 = await Shaku.assets.loadSound('assets/music2.ogg');
+        
+          // create mixer object and buttons to create mixers  
+          let mixer = null;
+        
+          // stop all
+          document.getElementById('stop-all').onclick = () => {
+            if (mixer) { mixer.stop(); }
+            mixer = null;
+          }
+
+          // begin mix overlapping
+          document.getElementById('mix-overlapping').onclick = () => {
+            if (mixer) { mixer.stop(); }
+            mixer = new Shaku.sfx.SoundMixer(Shaku.sfx.createSound(music1), Shaku.sfx.createSound(music2), true);
+          };
+
+          // begin mix wthout overlapping
+          document.getElementById('mix-no-overlapping').onclick = () => {
+            if (mixer) { mixer.stop(); }
+            mixer = new Shaku.sfx.SoundMixer(Shaku.sfx.createSound(music1), Shaku.sfx.createSound(music2), false);
+          };
+
+          // begin mix for fade in
+          document.getElementById('mix-fade-in').onclick = () => {
+            if (mixer) { mixer.stop(); }
+            mixer = new Shaku.sfx.SoundMixer(null, Shaku.sfx.createSound(music2), true);
+          };
+
+          // begin mix for fade out
+          document.getElementById('mix-fade-out').onclick = () => {
+            if (mixer) { mixer.stop(); }
+            mixer = new Shaku.sfx.SoundMixer(Shaku.sfx.createSound(music1), null, true);
+          };
+
+          // do a main loop step.
+          function step() 
+          {
+            // start frame
+            Shaku.startFrame();
+
+            // update mixer
+            if (mixer) {
+              let speed = parseFloat(document.getElementById('transition-speed').value) || 1;
+              mixer.updateDelta(Shaku.gameTime.delta * 0.1 * speed);
+            }
+
+            // end frame and request next frame
+            Shaku.endFrame();
+            Shaku.requestAnimationFrame(step);
+          }
+
+          // start main loop
+          step();
+        }
+
+        // start demo
+        runDemo();
+
+      </script>
+      </div>
+
+      <!-- code example part -->
+      <div id="sample-code-modal" class="modal">
+        <div class="modal__overlay jsOverlay"></div>
+        <div class="modal__container">   
+
+      <p class="noselect">The following is a minimal code example on how to use the SFX manager. These are just the basics, for the full API please see the docs.<br />
+        <i>Keep in mind you also need to call Shaku.init(), Shaku.startFrame() and Shaku.endFrame(), which are mandatory for all examples and omitted for simplicity.</i>
+      </p>
+      <pre><code class="language-js">// load music assets
+let music1 = await Shaku.assets.loadSound('assets/music1.ogg');
+let music2 = await Shaku.assets.loadSound('assets/music2.ogg');
+
+// create a mixer between the music, allowing them to overlap in the process
+let overlapping = true;
+let mixer = new Shaku.sfx.SoundMixer(Shaku.sfx.createSound(music1), Shaku.sfx.createSound(music2), overlapping);
+
+// or, create a fade-in for music2 (if first music is null, its a fade in. if second music is null, its a fade out.)
+let fadeIn = new Shaku.sfx.SoundMixer(null, Shaku.sfx.createSound(music2), true);
+
+// part below goes between startFrame() and endFrame()
+// -------------------------------------------------------
+
+// update mixer with delta time (will take ~1 second to finish):
+mixer.updateDelta(Shaku.gameTime.delta);
+
+// or, update fade in mixer to a specific value (50% faded in):
+fadeIn.update(0.5);</code></pre>
+
+        <button class="modal__close" onclick="closeModal('sample-code-modal')">&#10005;</button>
+      </div>
+    </div>
+
+      <link href="prism/prism.css" rel="stylesheet" />
+      <script src="prism/prism.js"></script>
+
+  </body>
+</html>
