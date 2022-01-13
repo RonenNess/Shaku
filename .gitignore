@@ -7,9 +7,6 @@ yarn-error.log*
 lerna-debug.log*
 .pnpm-debug.log*
 
-# dist folders
-dist/*.js
-
 # compiled python files
 *.pyc
 
@@ -95,7 +92,6 @@ out
 
 # Nuxt.js build / generate output
 .nuxt
-dist
 
 # Gatsby files
 .cache/
