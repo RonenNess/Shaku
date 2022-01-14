@@ -7484,7 +7484,7 @@ class Vector2
     add(other) 
     {
         if (typeof other === 'number') {
-            return new Vector2(this.x + other, this.y + other);
+            return new Vector2(this.x + other, this.y + (arguments[1] === undefined ? other : arguments[1]));
         }
         return new Vector2(this.x + other.x, this.y + other.y);
     }
@@ -7497,7 +7497,7 @@ class Vector2
     sub(other) 
     {
         if (typeof other === 'number') {
-            return new Vector2(this.x - other, this.y - other);
+            return new Vector2(this.x - other, this.y - (arguments[1] === undefined ? other : arguments[1]));
         }
         return new Vector2(this.x - other.x, this.y - other.y);
     }
@@ -7510,7 +7510,7 @@ class Vector2
     div(other) 
     {
         if (typeof other === 'number') {
-            return new Vector2(this.x / other, this.y / other);
+            return new Vector2(this.x / other, this.y / (arguments[1] === undefined ? other : arguments[1]));
         }
         return new Vector2(this.x / other.x, this.y / other.y);
     }
@@ -7523,7 +7523,7 @@ class Vector2
     mul(other) 
     {
         if (typeof other === 'number') {
-            return new Vector2(this.x * other, this.y * other);
+            return new Vector2(this.x * other, this.y * (arguments[1] === undefined ? other : arguments[1]));
         }
         return new Vector2(this.x * other.x, this.y * other.y);
     }
@@ -7575,7 +7575,7 @@ class Vector2
     {
         if (typeof other === 'number') {
             this.x += other;
-            this.y += other;
+            this.y += (arguments[1] === undefined ? other : arguments[1]);
         }
         else {
             this.x += other.x;
@@ -7593,7 +7593,7 @@ class Vector2
     {
         if (typeof other === 'number') {
             this.x -= other;
-            this.y -= other;
+            this.y -= (arguments[1] === undefined ? other : arguments[1]);
         }
         else {
             this.x -= other.x;
@@ -7611,7 +7611,7 @@ class Vector2
     {
         if (typeof other === 'number') {
             this.x /= other;
-            this.y /= other;
+            this.y /= (arguments[1] === undefined ? other : arguments[1]);
         }
         else {
             this.x /= other.x;
@@ -7629,7 +7629,7 @@ class Vector2
     {
         if (typeof other === 'number') {
             this.x *= other;
-            this.y *= other;
+            this.y *= (arguments[1] === undefined ? other : arguments[1]);
         }
         else {
             this.x *= other.x;
