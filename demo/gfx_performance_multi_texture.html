@@ -15,7 +15,8 @@
       This test uses <b>multiple textures randomly</b>, which decreases batching efficiency.<br />
       A single-texture performance test can be found <a href="gfx_performance.html">here</a>.<br /><br />
 
-      Press <b>Z</b> to add sprites, and <b>X</b> to remove them. Try to see performance with or without batching, the difference should be quite impressive.</p>
+      Press <b>Z</b> to add sprites, and <b>X</b> to remove them. Press <b>S</b> to sort sprites for batching - should improve performance (note: since it sort by texture and blend, you should suddenly see a lot more sprites of a specific type as they'll be on front).
+      <br />Try to see performance with or without batching, the difference should be quite impressive.</p>
 
       <div>
         <input type="checkbox" id="sprite-batch" name="sprite-batch"
@@ -103,6 +104,7 @@
             // add sprites
             if (Shaku.input.down('z')) { for (let x = 0; x < 100; ++x) addSprite(); }
             if (Shaku.input.down('x')) { for (let x = 0; x < 100 && group.count > 1; ++x) group.shift(); }
+            if (Shaku.input.pressed('s')) { group.sortForBatching(); }
 
             // animate stuff
             group.forEach(sprite => {

@@ -4279,6 +4279,28 @@ class SpritesGroup
     }
 
     /**
+     * Sort sprites.
+     * @param {Function} compare Comparer method.
+     */
+    sort(compare)
+    {
+        this._sprites.sort(compare);
+    }
+
+    /**
+     * Sort by texture and blend mode for maximum efficiency in batching.
+     * This will change sprites order.
+     */
+    sortForBatching()
+    {
+        this._sprites.sort((a,b) => {
+            let at = a.texture.url + a.blendMode;
+            let bt = b.texture.url + b.blendMode;
+            return (at > bt) ? 1 : ((bt > at) ? -1 : 0);
+        });
+    }
+
+    /**
      * Sprites count in group.
      * @returns {Number} Number of sprites in group.
      */

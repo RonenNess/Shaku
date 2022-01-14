@@ -22,6 +22,8 @@ You need SpritesGroup to use batched rendering.
     * [.add(sprite)](#SpritesGroup+add) ⇒ <code>Sprite</code>
     * [.remove(sprite)](#SpritesGroup+remove)
     * [.shift()](#SpritesGroup+shift) ⇒ <code>Sprite</code>
+    * [.sort(compare)](#SpritesGroup+sort)
+    * [.sortForBatching()](#SpritesGroup+sortForBatching)
 
 <a name="new_SpritesGroup_new"></a>
 
@@ -94,3 +96,21 @@ Shift first sprite element.
 
 **Kind**: instance method of [<code>SpritesGroup</code>](#SpritesGroup)  
 **Returns**: <code>Sprite</code> - The removed sprite.  
+<a name="SpritesGroup+sort"></a>
+
+### spritesGroup.sort(compare)
+Sort sprites.
+
+**Kind**: instance method of [<code>SpritesGroup</code>](#SpritesGroup)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| compare | <code>function</code> | Comparer method. |
+
+<a name="SpritesGroup+sortForBatching"></a>
+
+### spritesGroup.sortForBatching()
+Sort by texture and blend mode for maximum efficiency in batching.
+This will change sprites order.
+
+**Kind**: instance method of [<code>SpritesGroup</code>](#SpritesGroup)  
