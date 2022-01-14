@@ -574,7 +574,7 @@ class BinaryAsset extends Asset
                         resolve();
                     }
                     else {
-                        reject("Response is not a valid binary data!");
+                        reject(request.statusText);
                     }
                 }
             }
@@ -1007,7 +1007,12 @@ class JsonAsset extends Asset
                         resolve();
                     }
                     else {
-                        reject("Response is not a valid JSON!");
+                        if (request.status === 200) {
+                            reject("Response is not a valid JSON!");
+                        }
+                        else {
+                            reject(request.statusText);
+                        }
                     }
                 }
             }
