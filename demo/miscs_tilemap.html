@@ -19,7 +19,7 @@
       <script src="js/shaku.js"></script>
 
       <!-- demo code -->
-      <script>
+      <script id="main-code">
         async function runGame()
         {
           // make shaku only listen to gfx canvas
@@ -194,28 +194,7 @@
   <div class="modal__container">   
 
 <p class="noselect">The following shows a minimal code example on how to init Shaku and create a main loop.</p>
-<pre><code class="language-js">// load sprite's texture asset
-let texture = await Shaku.assets.loadTexture('assets/sprite.png');
-
-// part below goes between startFrame() and endFrame()
-// -------------------------------------------------------
-
-// draw the texture
-let position = new Shaku.utils.Vector2(400, 300);
-let size = new Shaku.utils.Vector2(100, 100);  // if width == height, you can use a number instead of a Vector
-Shaku.gfx.draw(texture, position, size);
-
-// draw with advanced params
-let sourceRect = new Shaku.utils.Rectangle(0, 0, 100, 100);
-let color = Shaku.utils.Color.red;
-let blendMode = Shaku.gfx.BlendModes.Additive;
-let rotation = Math.PI / 2;
-let origin = new Shaku.utils.Vector2(0.5, 0.5);
-let transform = Shaku.gfx.Matrix.scale(2, 2, 2);
-Shaku.gfx.draw(texture, position, size, sourceRect, color, blendMode, rotation, origin, transform)
-
-// draw a filled rectangle
-Shaku.gfx.fillRect(new Shaku.utils.Rectangle(0, 0, 50, 50), Shaku.utils.Color.red, Shaku.gfx.BlendModes.Opaque, rotation);</code></pre>
+<pre><code class="language-js"></code></pre>
 
   <button class="modal__close" onclick="closeModal('sample-code-modal')">&#10005;</button>
 </div>
@@ -223,6 +202,10 @@ Shaku.gfx.fillRect(new Shaku.utils.Rectangle(0, 0, 50, 50), Shaku.utils.Color.re
 
 <link href="prism/prism.css" rel="stylesheet" />
 <script src="prism/prism.js"></script>
+
+<script>
+  document.getElementById('code-box').innerHTML = document.getElementById('main-code').innerHTML;
+</script>
 
   </body>
 </html>
