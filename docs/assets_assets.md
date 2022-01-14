@@ -84,7 +84,7 @@ Get asset directly from cache, synchronous and without a Promise.
 Load a sound asset. If already loaded, will use cache.
 
 **Kind**: instance method of [<code>Assets</code>](#Assets)  
-**Returns**: <code>Promise.&lt;Asset&gt;</code> - promise to resolve with asset instance, when loaded.  
+**Returns**: <code>Promise.&lt;Asset&gt;</code> - promise to resolve with asset instance, when loaded. You can access the loading asset with `.asset` on the promise.  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -100,7 +100,7 @@ let sound = await Shaku.assets.loadSound("assets/my_sound.ogg");
 Load a texture asset. If already loaded, will use cache.
 
 **Kind**: instance method of [<code>Assets</code>](#Assets)  
-**Returns**: <code>Promise.&lt;Asset&gt;</code> - promise to resolve with asset instance, when loaded.  
+**Returns**: <code>Promise.&lt;Asset&gt;</code> - promise to resolve with asset instance, when loaded. You can access the loading asset with `.asset` on the promise.  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -117,7 +117,7 @@ let texture = await Shaku.assets.loadTexture("assets/my_texture.png", {generateM
 Create a render target texture asset. If already loaded, will use cache.
 
 **Kind**: instance method of [<code>Assets</code>](#Assets)  
-**Returns**: <code>Promise.&lt;Asset&gt;</code> - promise to resolve with asset instance, when loaded.  
+**Returns**: <code>Promise.&lt;Asset&gt;</code> - promise to resolve with asset instance, when loaded. You can access the loading asset with `.asset` on the promise.  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -137,7 +137,7 @@ let renderTarget = await Shaku.assets.createRenderTarget("optional_render_target
 Load a font texture asset. If already loaded, will use cache.
 
 **Kind**: instance method of [<code>Assets</code>](#Assets)  
-**Returns**: <code>Promise.&lt;Asset&gt;</code> - promise to resolve with asset instance, when loaded.  
+**Returns**: <code>Promise.&lt;Asset&gt;</code> - promise to resolve with asset instance, when loaded. You can access the loading asset with `.asset` on the promise.  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -154,7 +154,7 @@ let fontTexture = await Shaku.assets.loadFontTexture('assets/DejaVuSansMono.ttf'
 Load a json asset. If already loaded, will use cache.
 
 **Kind**: instance method of [<code>Assets</code>](#Assets)  
-**Returns**: <code>Promise.&lt;Asset&gt;</code> - promise to resolve with asset instance, when loaded.  
+**Returns**: <code>Promise.&lt;Asset&gt;</code> - promise to resolve with asset instance, when loaded. You can access the loading asset with `.asset` on the promise.  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -171,7 +171,7 @@ console.log(jsonData.data);
 Create a new json asset. If already exist, will reject promise.
 
 **Kind**: instance method of [<code>Assets</code>](#Assets)  
-**Returns**: <code>Promise.&lt;Asset&gt;</code> - promise to resolve with asset instance, when ready.  
+**Returns**: <code>Promise.&lt;Asset&gt;</code> - promise to resolve with asset instance, when ready. You can access the loading asset with `.asset` on the promise.  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -189,7 +189,7 @@ let jsonData = await Shaku.assets.createJson('optional_json_data_id', {"foo": "b
 Load a binary data asset. If already loaded, will use cache.
 
 **Kind**: instance method of [<code>Assets</code>](#Assets)  
-**Returns**: <code>Promise.&lt;Asset&gt;</code> - promise to resolve with asset instance, when loaded.  
+**Returns**: <code>Promise.&lt;Asset&gt;</code> - promise to resolve with asset instance, when loaded. You can access the loading asset with `.asset` on the promise.  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -206,7 +206,7 @@ console.log(binData.data);
 Create a new binary asset. If already exist, will reject promise.
 
 **Kind**: instance method of [<code>Assets</code>](#Assets)  
-**Returns**: <code>Promise.&lt;Asset&gt;</code> - promise to resolve with asset instance, when ready.  
+**Returns**: <code>Promise.&lt;Asset&gt;</code> - promise to resolve with asset instance, when ready. You can access the loading asset with `.asset` on the promise.  
 
 | Param | Type | Description |
 | --- | --- | --- |

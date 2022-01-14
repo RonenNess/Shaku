@@ -894,6 +894,42 @@ Even if the asset was returned from cache, it will be returned via the promise.
 
 If you want to get existing cached asset, don't use the create / load methods, use the `getCached()` method (shown later).
 
+**Promise.asset**
+
+All returned promises from the assets manager have additional property: `asset`. 
+This property allow you to access the asset before its ready, at your own risk. For example, you can do this:
+
+```js
+// myTexture may not be loaded yet!
+let myTexture = Shaku.assets.loadTexture(url).asset;
+```
+
+Instead of this:
+
+```js
+let myTexture = await Shaku.assets.loadTexture(url);
+```
+
+Or this:
+
+```js
+Shaku.assets.loadTexture(url).then((asset) => myTexture = asset);
+```
+
+The idea behind the `Promise.asset` property is to make it easier to do parallel loading. For example consider the following usecase:
+
+```js
+let assets = {
+  tree: Shaku.assets.loadTexture("tree.png").asset,
+  rock: Shaku.assets.loadTexture("rock.png").asset,
+  house: Shaku.assets.loadTexture("house.png").asset
+}
+await Shaku.assets.waitForAll();
+```
+
+Just keep in mind that using assets before they are ready may cause undefined behavior. You can test asset validity with `asset.valid`.
+
+
 ### Load Sound
 
 To load a sound asset:
