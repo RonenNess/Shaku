@@ -4,6 +4,9 @@
 
 **If you're looking for a package that implements rendering, sounds, assets and input, while keeping it low level and simple, this is the library for you!** 
 
+- [Online Demos](https://ronenness.github.io/Shaku/demo/index.html)
+- [Full API](https://ronenness.github.io/Shaku/)
+
 # Table Of Content
 
 - [About](#about)
