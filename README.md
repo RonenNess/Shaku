@@ -1297,6 +1297,22 @@ To update the docs, call `build_api_docs.py` (requires Python3).
 
 If you added a new file, please copy and update the header comment from one of the existing files. Then you can execute `update_top_comment.py` to make sure the header is written properly and have auto fields set.
 
+# Changes
+
+List of changes in released versions.
+
+## 1.1.0
+
+- Improved error text on failed JSON / Binary assets.
+- Added 'asset' property to loading assets Promise, so you can access them before they are ready.
+- Improved some demos.
+- Updated `Vector2` add / sub / div / mul to accept two numbers in addition to single number or vector.
+- Added sort method + sort-for-batching to sprites group.
+- Added a method to get average frame time.
+- Added a getter to get draw calls count.
+- Added culling to batch rendering.
+- Changed `renderingRegion` to return actual region, with `viewport` and `renderTarget` considered (breaking change).
+
 # License
 
 *Shaku* is licensed under the permissive MIT license, so you can use it for any purpose (including commercially) and it should be compatible with most common licenses.
