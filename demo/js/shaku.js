@@ -2398,6 +2398,7 @@ class Gfx extends IManager
         this.defaultTextureFilter = TextureFilterModes.Nearest;
         this.defaultTextureWrapMode = TextureWrapModes.Clamp;
         this.whiteTexture = null;
+        this._drawCallsCount = 0;
     }
 
     /**
@@ -3192,6 +3193,7 @@ class Gfx extends IManager
         // draw elements
         let linesType = looped ? gl.LINE_LOOP : gl.LINE_STRIP;
         gl.drawArrays(linesType, 0, points.length);
+        this._drawCallsCount++;
     }
 
     /**
@@ -3254,6 +3256,7 @@ class Gfx extends IManager
 
             // draw elements
             gl.drawElements(gl.TRIANGLES, currBatchSpritesCount * 6, gl.UNSIGNED_SHORT, 0);
+            this._drawCallsCount++;
 
             // reset arrays
             currBatchSpritesCount = 0;
@@ -3377,6 +3380,7 @@ class Gfx extends IManager
 
         // draw sprite
         this._gl.drawArrays(this._gl.TRIANGLE_STRIP, 0, 4);
+        this._drawCallsCount++;
     }
 
     /**
@@ -3441,6 +3445,15 @@ class Gfx extends IManager
     get TextureFilterModes()
     {
         return TextureFilterModes;
+    }
+
+    /**
+     * Get number of actual WebGL draw calls we performed since the beginning of the frame.
+     * @returns {Number} Number of WebGL draw calls this frame.
+     */
+    get drawCallsCount()
+    {
+        return this._drawCallsCount;
     }
 
     /**
@@ -3560,6 +3573,7 @@ class Gfx extends IManager
     {
         // reset some states
         this._lastBlendMode = null;
+        this._drawCallsCount = 0;
     }
 
     /** 

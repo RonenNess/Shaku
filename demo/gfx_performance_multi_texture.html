@@ -125,12 +125,12 @@
               }
             });
 
-            // update fps and data
-            document.getElementById('fps-data').innerHTML = "FPS: " + Shaku.getFpsCount() + "<br />Sprites: " + group.count + "<br />Avg Frame Time (ms): " + Shaku.getAverageFrameTime() + "<br />Delta Time (ms): " + (Shaku.gameTime.delta * 1000.0);
-
             // end frame and request next frame
             Shaku.endFrame();
             Shaku.requestAnimationFrame(step);
+            
+            // update fps and data
+            document.getElementById('fps-data').innerHTML = "FPS: " + Shaku.getFpsCount() + "<br />Sprites: " + group.count + "<br />Avg Frame Time (ms): " + Shaku.getAverageFrameTime() + "<br />Delta Time (ms): " + (Shaku.gameTime.delta * 1000.0) + "<br />Draw Calls: " + Shaku.gfx.drawCallsCount;
           }
 
           // start main loop

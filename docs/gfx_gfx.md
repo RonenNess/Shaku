@@ -28,6 +28,7 @@ To access the Graphics manager you use `Shaku.gfx`.
     * [.BlendModes](#Gfx+BlendModes)
     * [.TextureWrapModes](#Gfx+TextureWrapModes)
     * [.TextureFilterModes](#Gfx+TextureFilterModes)
+    * [.drawCallsCount](#Gfx+drawCallsCount) ⇒ <code>Number</code>
     * [.setContextAttributes(flags)](#Gfx+setContextAttributes)
     * [.setCanvas(element)](#Gfx+setCanvas)
     * [.createCamera(withViewport)](#Gfx+createCamera) ⇒ <code>Camera</code>
@@ -169,6 +170,13 @@ Get texture filter modes.
 
 **Kind**: instance property of [<code>Gfx</code>](#Gfx)  
 **See**: TextureFilterModes  
+<a name="Gfx+drawCallsCount"></a>
+
+### gfx.drawCallsCount ⇒ <code>Number</code>
+Get number of actual WebGL draw calls we performed since the beginning of the frame.
+
+**Kind**: instance property of [<code>Gfx</code>](#Gfx)  
+**Returns**: <code>Number</code> - Number of WebGL draw calls this frame.  
 <a name="Gfx+setContextAttributes"></a>
 
 ### gfx.setContextAttributes(flags)
