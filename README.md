@@ -1228,6 +1228,14 @@ More info can be found in the [API docs](docs/utils_game_time.md).
 Return the current FPS count. 
 Until at least one second have passed, this will always return 0.
 
+### Shaku.getAverageFrameTime()
+
+Sometimes FPS is not enough to measure performance, because FPS is capped to 60. So if you develop on a powerful machine that is always on 60 FPS, you may not know that a tiny change you've made increased the time it takes to actually render a frame from 1ms to 10ms, which may be noticeable on weaker machines that may not reach max FPS. 
+
+To measure how long it takes to perform a single game step on average, you can call `Shaku.getAverageFrameTime()` (results are in milliseconds). 
+
+**Don't try to use Shaku.gameTime.delta to measure performance**, as this value is affected by the FPS cap and will be constant if you run on max FPS, regardless of actual performance.
+
 
 ### Shaku.requestAnimationFrame()
 

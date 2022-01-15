@@ -2843,6 +2843,7 @@ This object wraps the entire lib namespace, and this is what you use to access a
     * [.endFrame()](#Shaku+endFrame)
     * [.silent()](#Shaku+silent)
     * [.getFpsCount()](#Shaku+getFpsCount) ⇒ <code>Number</code>
+    * [.getAverageFrameTime()](#Shaku+getAverageFrameTime) ⇒ <code>Number</code>
     * [.requestAnimationFrame(callback)](#Shaku+requestAnimationFrame) ⇒ <code>Number</code>
     * [.cancelAnimationFrame(id)](#Shaku+cancelAnimationFrame)
 
@@ -2910,6 +2911,13 @@ Note: will return 0 until at least one second have passed.
 
 **Kind**: instance method of [<code>Shaku</code>](#Shaku)  
 **Returns**: <code>Number</code> - FPS count.  
+<a name="Shaku+getAverageFrameTime"></a>
+
+### shaku.getAverageFrameTime() ⇒ <code>Number</code>
+Get how long on average it takes to complete a game frame.
+
+**Kind**: instance method of [<code>Shaku</code>](#Shaku)  
+**Returns**: <code>Number</code> - Average time, in milliseconds, it takes to complete a game frame.  
 <a name="Shaku+requestAnimationFrame"></a>
 
 ### shaku.requestAnimationFrame(callback) ⇒ <code>Number</code>
