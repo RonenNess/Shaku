@@ -1194,7 +1194,7 @@ To access the Graphics manager you use `Shaku.gfx`.
     * [.resetCamera()](#Gfx+resetCamera)
     * [.applyCamera(camera)](#Gfx+applyCamera)
     * [.buildText(fontTexture, text, fontSize, color, alignment, marginFactor)](#Gfx+buildText) ⇒ [<code>SpritesGroup</code>](#SpritesGroup)
-    * [.drawGroup(group, useBatching)](#Gfx+drawGroup)
+    * [.drawGroup(group, useBatching, cullOutOfScreen)](#Gfx+drawGroup)
     * [.drawSprite(sprite, transform)](#Gfx+drawSprite)
     * [.cover(texture, destRect, sourceRect, color, blendMode)](#Gfx+cover)
     * [.draw(texture, position, size, sourceRect, color, blendMode, rotation, origin, transform)](#Gfx+draw)
@@ -1268,7 +1268,7 @@ Get the text alignments options.
 <a name="Gfx+renderingRegion"></a>
 
 ### gfx.renderingRegion ⇒ [<code>Rectangle</code>](#Rectangle)
-Get rendering region (based on resolution / canvas, without viewport or camera properties).
+Get current rendering region.
 
 **Kind**: instance property of [<code>Gfx</code>](#Gfx)  
 **Returns**: [<code>Rectangle</code>](#Rectangle) - Rectangle with rendering region.  
@@ -1517,7 +1517,7 @@ Shaku.gfx.drawGroup(text1, true);
 ```
 <a name="Gfx+drawGroup"></a>
 
-### gfx.drawGroup(group, useBatching)
+### gfx.drawGroup(group, useBatching, cullOutOfScreen)
 Draw a SpritesGroup object. 
 A SpritesGroup is a collection of sprites we can draw in bulks + transformations to apply on the entire group.
 
@@ -1527,6 +1527,7 @@ A SpritesGroup is a collection of sprites we can draw in bulks + transformations
 | --- | --- | --- |
 | group | [<code>SpritesGroup</code>](#SpritesGroup) | Sprites group to draw. |
 | useBatching | <code>Boolean</code> | If true (default), will use batching while rendering the group. |
+| cullOutOfScreen | <code>Boolean</code> | If true and in batching mode, will cull automatically any quad that is completely out of screen. |
 
 **Example**  
 ```js

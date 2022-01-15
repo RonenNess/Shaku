@@ -2398,6 +2398,8 @@ class Gfx extends IManager
         this.defaultTextureFilter = TextureFilterModes.Nearest;
         this.defaultTextureWrapMode = TextureWrapModes.Clamp;
         this.whiteTexture = null;
+        this._renderTarget = null;
+        this._viewport = null;
         this._drawCallsCount = 0;
     }
 
@@ -2598,6 +2600,7 @@ class Gfx extends IManager
     {
         // if texture is null, remove any render target
         if (texture === null) {
+            this._renderTarget = null;
             this._gl.bindFramebuffer(this._gl.FRAMEBUFFER, null);
             return;
         }
@@ -2609,6 +2612,7 @@ class Gfx extends IManager
         const attachmentPoint = this._gl.COLOR_ATTACHMENT0;
         this._gl.framebufferTexture2D(
         this._gl.FRAMEBUFFER, attachmentPoint, this._gl.TEXTURE_2D, texture.texture, 0);
+        this._renderTarget = texture;
     }
 
     /**
@@ -2677,19 +2681,20 @@ class Gfx extends IManager
      */
     applyCamera(camera)
     {
-        let viewport = camera.viewport || this.renderingRegion;
+        this._viewport = camera.viewport;
+        let viewport = this.renderingRegion;
         this._gl.viewport(viewport.x, viewport.y, viewport.width, viewport.height);
         this._projection = camera.projection.clone();
         if (this._activeEffect) { this._activeEffect.setProjectionMatrix(this._projection); }
     }
 
     /**
-     * Get rendering region (based on resolution / canvas, without viewport or camera properties).
+     * Get current rendering region.
      * @returns {Rectangle} Rectangle with rendering region.
      */
     get renderingRegion()
     {
-        return new Rectangle(0, 0, this._canvas.width, this._canvas.height);
+        return this._viewport || new Rectangle(0, 0, (this._renderTarget || this._canvas).width, (this._renderTarget || this._canvas).height);
     }
 
     /**
@@ -2959,15 +2964,17 @@ class Gfx extends IManager
      * Shaku.gfx.drawGroup(group, true);
      * @param {SpritesGroup} group Sprites group to draw.
      * @param {Boolean} useBatching If true (default), will use batching while rendering the group.
+     * @param {Boolean} cullOutOfScreen If true and in batching mode, will cull automatically any quad that is completely out of screen.
      */
-    drawGroup(group, useBatching)
+    drawGroup(group, useBatching, cullOutOfScreen)
     {
         // draw with batching
         if (useBatching || useBatching === undefined) {
-            this._drawBatch(group);
+            this._drawBatch(group, Boolean(cullOutOfScreen));
         }
         // draw without batching
         else {
+            if (cullOutOfScreen) { _logger.warn("'cullOutOfScreen' is only useable when using batch rendering!"); }
             let transform = group.getTransform();
             for (let i = 0; i < group._sprites.length; ++i) {
                 this.drawSprite(group._sprites[i], transform);
@@ -3200,8 +3207,9 @@ class Gfx extends IManager
      * Draw sprites group as a batch.
      * @private
      * @param {SpritesGroup} group Group to draw.
+     * @param {Boolean} cullOutOfScreen If true will cull quads that are out of screen.
      */
-    _drawBatch(group)
+    _drawBatch(group, cullOutOfScreen)
     {
         // skip if empty
         if (group._sprites.length === 0) { return; }
@@ -3307,12 +3315,27 @@ class Gfx extends IManager
                 rotateVec(bottomRight);
             }
 
+            // add sprite position
+            topLeft.addSelf(sprite.position);
+            topRight.addSelf(sprite.position);
+            bottomLeft.addSelf(sprite.position);
+            bottomRight.addSelf(sprite.position);
+
+            // cull out-of-screen sprites
+            if (cullOutOfScreen)
+            {
+                let region = this.renderingRegion;
+                if (!region.containsVector(topLeft) && !region.containsVector(topRight) && !region.containsVector(bottomLeft) && !region.containsVector(bottomRight)) {
+                    continue;
+                }
+            }
+
             // update positions buffer
             let pi = currBatchSpritesCount * 4 * 3;
-            positions[pi+0] = topLeft.x + sprite.position.x;             positions[pi+1] = topLeft.y + sprite.position.y;             positions[pi+2] = 0;
-            positions[pi+3] = topRight.x + sprite.position.x;            positions[pi+4] = topRight.y + sprite.position.y;            positions[pi+5] = 0;
-            positions[pi+6] = bottomLeft.x + sprite.position.x;          positions[pi+7] = bottomLeft.y + sprite.position.y;          positions[pi+8] = 0;
-            positions[pi+9] = bottomRight.x + sprite.position.x;         positions[pi+10] = bottomRight.y + sprite.position.y;        positions[pi+11] = 0;
+            positions[pi+0] = topLeft.x;             positions[pi+1] = topLeft.y;             positions[pi+2] = 0;
+            positions[pi+3] = topRight.x;            positions[pi+4] = topRight.y;            positions[pi+5] = 0;
+            positions[pi+6] = bottomLeft.x;          positions[pi+7] = bottomLeft.y;          positions[pi+8] = 0;
+            positions[pi+9] = bottomRight.x;         positions[pi+10] = bottomRight.y;        positions[pi+11] = 0;
 
             // add uvs
             let uvi = currBatchSpritesCount * 4 * 2;
@@ -6045,7 +6068,7 @@ let _totalFrameTimes = 0;
 
 
 // current version
-const version = "1.0.2";
+const version = "1.1.0";
 
 /**
  * Shaku's main object.
