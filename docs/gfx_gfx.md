@@ -47,6 +47,7 @@ To access the Graphics manager you use `Shaku.gfx`.
     * [.fillRect(destRect, color, blend, rotation)](#Gfx+fillRect)
     * [.outlineRect(destRect, color, blend, rotation)](#Gfx+outlineRect)
     * [.outlineCircle(circle, color, blend, lineAmount)](#Gfx+outlineCircle)
+    * [.fillCircle(circle, color, blend, lineAmount)](#Gfx+fillCircle)
     * [.drawLine(startPoint, endPoint, color, blendMode)](#Gfx+drawLine)
     * [.drawLines(points, colors, blendMode, looped)](#Gfx+drawLines)
     * [.clear(color)](#Gfx+clear)
@@ -541,7 +542,7 @@ Draw an outline colored circle.
 | Param | Type | Description |
 | --- | --- | --- |
 | circle | <code>Circle</code> | Circle to draw. |
-| color | <code>Color</code> | Rectangle outline color. |
+| color | <code>Color</code> | Circle outline color. |
 | blend | <code>BlendModes</code> | Blend mode. |
 | lineAmount | <code>Number</code> | How many lines to compose the circle from (bigger number = smoother circle). |
 
@@ -549,6 +550,25 @@ Draw an outline colored circle.
 ```js
 // draw a circle at 50x50 with radius of 85
 Shaku.gfx.outlineCircle(new Shaku.utils.Circle(new Shaku.utils.Vector2(50, 50), 85), Shaku.utils.Color.red);
+```
+<a name="Gfx+fillCircle"></a>
+
+### gfx.fillCircle(circle, color, blend, lineAmount)
+Draw a filled colored circle.
+
+**Kind**: instance method of [<code>Gfx</code>](#Gfx)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| circle | <code>Circle</code> | Circle to draw. |
+| color | <code>Color</code> | Circle fill color. |
+| blend | <code>BlendModes</code> | Blend mode. |
+| lineAmount | <code>Number</code> | How many lines to compose the circle from (bigger number = smoother circle). |
+
+**Example**  
+```js
+// draw a filled circle at 50x50 with radius of 85
+Shaku.gfx.fillCircle(new Shaku.utils.Circle(new Shaku.utils.Vector2(50, 50), 85), Shaku.utils.Color.red);
 ```
 <a name="Gfx+drawLine"></a>
 
