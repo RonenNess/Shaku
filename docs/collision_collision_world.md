@@ -18,6 +18,7 @@ You can use different collision worlds to represent different levels or differen
     * [.removeShape(shape)](#CollisionWorld+removeShape)
     * [.testCollision(sourceShape, sortByDistance, predicate)](#CollisionWorld+testCollision) ⇒ <code>CollisionTestResult</code>
     * [.testCollisionMany(sourceShape, sortByDistance, predicate)](#CollisionWorld+testCollisionMany) ⇒ <code>Array.&lt;CollisionTestResult&gt;</code>
+    * [.debugDraw(gridColor, gridHighlitColor, opacity)](#CollisionWorld+debugDraw)
 
 <a name="new_CollisionWorld_new"></a>
 
@@ -78,4 +79,17 @@ Test collision with shapes in world, and return all results found.
 | sourceShape | <code>CollisionShape</code> | Source shape to check collision for. If shape is in world, it will not collide with itself. |
 | sortByDistance | <code>Boolean</code> | If true will sort results by distance. |
 | predicate | <code>function</code> | Optional filter to run on any shape we're about to test collision with. If the predicate returns false, we will skip this shape. |
+
+<a name="CollisionWorld+debugDraw"></a>
+
+### collisionWorld.debugDraw(gridColor, gridHighlitColor, opacity)
+Debug-draw the current collision world.
+
+**Kind**: instance method of [<code>CollisionWorld</code>](#CollisionWorld)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| gridColor | <code>Color</code> | Optional grid color (default to black). |
+| gridHighlitColor | <code>Color</code> | Optional grid color for cells with shapes in them (default to red). |
+| opacity | <code>Number</code> | Optional opacity factor (default to 0.5). |
 

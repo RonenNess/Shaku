@@ -18,6 +18,8 @@ To access the Collision manager you use `Shaku.collision`.
 * [Collision](#Collision)
     * [new Collision()](#new_Collision_new)
     * [.resolver](#Collision+resolver)
+    * [.RectangleShape](#Collision+RectangleShape)
+    * [.PointShape](#Collision+PointShape)
     * [.createWorld(gridCellSize)](#Collision+createWorld) ⇒ <code>CollisionWorld</code>
 
 <a name="new_Collision_new"></a>
@@ -30,6 +32,18 @@ Create the manager.
 ### collision.resolver
 Get the collision resolver. 
 You can use this object directly without creating a collision world, if you just need to test collision between two shapes.
+
+**Kind**: instance property of [<code>Collision</code>](#Collision)  
+<a name="Collision+RectangleShape"></a>
+
+### collision.RectangleShape
+Get the collision reactanle shape class.
+
+**Kind**: instance property of [<code>Collision</code>](#Collision)  
+<a name="Collision+PointShape"></a>
+
+### collision.PointShape
+Get the collision point shape class.
 
 **Kind**: instance property of [<code>Collision</code>](#Collision)  
 <a name="Collision+createWorld"></a>

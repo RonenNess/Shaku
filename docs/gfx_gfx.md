@@ -46,6 +46,7 @@ To access the Graphics manager you use `Shaku.gfx`.
     * [.draw(texture, position, size, sourceRect, color, blendMode, rotation, origin, transform)](#Gfx+draw)
     * [.fillRect(destRect, color, blend, rotation)](#Gfx+fillRect)
     * [.outlineRect(destRect, color, blend, rotation)](#Gfx+outlineRect)
+    * [.outlineCircle(circle, color, blend, lineAmount)](#Gfx+outlineCircle)
     * [.drawLine(startPoint, endPoint, color, blendMode)](#Gfx+drawLine)
     * [.drawLines(points, colors, blendMode, looped)](#Gfx+drawLines)
     * [.clear(color)](#Gfx+clear)
@@ -137,6 +138,7 @@ Get the blend modes enum.
 * Subtract
 * Screen
 * Overlay
+* Invert
 * DestIn
 * DestOut
 
@@ -185,7 +187,7 @@ Set WebGL init flags (passed as additional params to the getContext() call).
 You must call this *before* initializing *Shaku*.
 
 By default, *Shaku* will init WebGL context with the following flags:
-- antialias: false.
+- antialias: true.
 - alpha: true.
 - depth: false.
 - premultipliedAlpha: true.
@@ -528,6 +530,25 @@ Draw an outline colored rectangle.
 ```js
 // draw a 50x50 red rectangle at position 100x100, that will rotate over time
 Shaku.gfx.outlineRect(new Shaku.utils.Rectangle(100, 100, 50, 50), Shaku.utils.Color.red, null, Shaku.gameTime.elapsed);
+```
+<a name="Gfx+outlineCircle"></a>
+
+### gfx.outlineCircle(circle, color, blend, lineAmount)
+Draw an outline colored circle.
+
+**Kind**: instance method of [<code>Gfx</code>](#Gfx)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| circle | <code>Circle</code> | Circle to draw. |
+| color | <code>Color</code> | Rectangle outline color. |
+| blend | <code>BlendModes</code> | Blend mode. |
+| lineAmount | <code>Number</code> | How many lines to compose the circle from (bigger number = smoother circle). |
+
+**Example**  
+```js
+// draw a circle at 50x50 with radius of 85
+Shaku.gfx.outlineCircle(new Shaku.utils.Circle(new Shaku.utils.Vector2(50, 50), 85), Shaku.utils.Color.red);
 ```
 <a name="Gfx+drawLine"></a>
 
