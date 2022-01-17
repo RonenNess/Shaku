@@ -1932,6 +1932,9 @@ class CollisionWorld
         gridColor.a *= opacity;
         gridHighlitColor.a *= opacity;
 
+        // all shapes we rendered
+        let renderedShapes = new Set();
+
         // get visible grid cells
         let bb = gfx.renderingRegion;
         let minx = Math.floor(bb.left / this._gridCellSize.x);
@@ -1953,6 +1956,10 @@ class CollisionWorld
                 if (cell) {
                     for (let shape of cell)
                     {
+                        if (renderedShapes.has(shape)) {
+                            continue;
+                        }
+                        renderedShapes.add(shape);
                         shape.debugDraw(opacity);
                     }
                 }
