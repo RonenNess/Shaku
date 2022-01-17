@@ -262,7 +262,7 @@ For example, the following will cover the entire canvas with a texture:
 Shaku.gfx.cover(texture, Shaku.gfx.renderingRegion);
 ```
 
-### Fill Rect
+### Draw Rectangles
 
 `fillRect` will draw filled colored rectangles. 
 For example the following will draw a red rectangle at position 100,100  and size 50,50.
@@ -271,10 +271,29 @@ For example the following will draw a red rectangle at position 100,100  and siz
 Shaku.gfx.fillRect(new Shaku.utils.Rectangle(100, 100, 50, 50), Shaku.utils.Color.red);
 ```
 
+You can also draw a rectangle outlines with outlineRect:
+
+```js
+Shaku.gfx.outlineRect(new Shaku.utils.Rectangle(100, 100, 50, 50), Shaku.utils.Color.red);
+```
+
 `Shaku` will use whatever effect is currently set to draw the rectangle, with a single white pixel as the texture. 
 If you change the default effect, it may affect how rectangles draw as well. More on effects later.
 
 A demo page that draw rectangles can be found [here](https://ronenness.github.io/Shaku/demo/gfx_draw.html).
+
+### Draw Circle
+
+`outlineCircle` will draw the outlines of a colored circle.
+
+```js
+Shaku.gfx.outlineCircle(new Shaku.utils.Circle(Shaku.gfx.canvasSize.div(2), 285), Shaku.utils.Color.red);
+```
+
+`Shaku` will use whatever effect is currently set to draw the circle, with a single white pixel as the texture. 
+If you change the default effect, it may affect how circles draw as well. More on effects later.
+
+A demo page that draw a circle can be found [here](https://ronenness.github.io/Shaku/demo/gfx_draw.html).
 
 ### Draw Lines
 
@@ -1323,6 +1342,7 @@ List of changes in released versions.
 - Small default-color optimization in gfx manager.
 - Added 'Invert' Blend Mode.
 - Added 'Darken' Blend Mode.
+- Added 'outlineCircle' to gfx manager.
 
 
 # License

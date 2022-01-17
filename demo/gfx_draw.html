@@ -41,6 +41,9 @@
             // draw a texture
             Shaku.gfx.draw(texture, Shaku.gfx.canvasSize.div(2), 256, null, null, null, Shaku.gameTime.elapsed);
 
+            // draw circle
+            Shaku.gfx.outlineCircle(new Shaku.utils.Circle(Shaku.gfx.canvasSize.div(2), 285), Shaku.utils.Color.red);
+
             // draw rectangles with outline
 
             Shaku.gfx.fillRect(new Shaku.utils.Rectangle(0, 0, 50, 50), Shaku.utils.Color.red, null, Shaku.gameTime.elapsed);

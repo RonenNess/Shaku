@@ -53,6 +53,12 @@ You can use different collision worlds to represent different levels or differen
 <dt><a href="#CollisionTestResult">CollisionTestResult</a></dt>
 <dd><p>Collision detection result.</p>
 </dd>
+<dt><a href="#PointShape">PointShape</a></dt>
+<dd><p>Collision point class.</p>
+</dd>
+<dt><a href="#RectangleShape">RectangleShape</a></dt>
+<dd><p>Collision rectangle class.</p>
+</dd>
 <dt><a href="#CollisionShape">CollisionShape</a></dt>
 <dd><p>Collision shape base class.</p>
 </dd>
@@ -848,6 +854,8 @@ To access the Collision manager you use `Shaku.collision`.
 * [Collision](#Collision)
     * [new Collision()](#new_Collision_new)
     * [.resolver](#Collision+resolver)
+    * [.RectangleShape](#Collision+RectangleShape)
+    * [.PointShape](#Collision+PointShape)
     * [.createWorld(gridCellSize)](#Collision+createWorld) ⇒ [<code>CollisionWorld</code>](#CollisionWorld)
 
 <a name="new_Collision_new"></a>
@@ -860,6 +868,18 @@ Create the manager.
 ### collision.resolver
 Get the collision resolver. 
 You can use this object directly without creating a collision world, if you just need to test collision between two shapes.
+
+**Kind**: instance property of [<code>Collision</code>](#Collision)  
+<a name="Collision+RectangleShape"></a>
+
+### collision.RectangleShape
+Get the collision reactanle shape class.
+
+**Kind**: instance property of [<code>Collision</code>](#Collision)  
+<a name="Collision+PointShape"></a>
+
+### collision.PointShape
+Get the collision point shape class.
 
 **Kind**: instance property of [<code>Collision</code>](#Collision)  
 <a name="Collision+createWorld"></a>
@@ -888,6 +908,7 @@ You can use different collision worlds to represent different levels or differen
     * [.removeShape(shape)](#CollisionWorld+removeShape)
     * [.testCollision(sourceShape, sortByDistance, predicate)](#CollisionWorld+testCollision) ⇒ [<code>CollisionTestResult</code>](#CollisionTestResult)
     * [.testCollisionMany(sourceShape, sortByDistance, predicate)](#CollisionWorld+testCollisionMany) ⇒ [<code>Array.&lt;CollisionTestResult&gt;</code>](#CollisionTestResult)
+    * [.debugDraw(gridColor, gridHighlitColor, opacity)](#CollisionWorld+debugDraw)
 
 <a name="new_CollisionWorld_new"></a>
 
@@ -948,6 +969,19 @@ Test collision with shapes in world, and return all results found.
 | sourceShape | [<code>CollisionShape</code>](#CollisionShape) | Source shape to check collision for. If shape is in world, it will not collide with itself. |
 | sortByDistance | <code>Boolean</code> | If true will sort results by distance. |
 | predicate | <code>function</code> | Optional filter to run on any shape we're about to test collision with. If the predicate returns false, we will skip this shape. |
+
+<a name="CollisionWorld+debugDraw"></a>
+
+### collisionWorld.debugDraw(gridColor, gridHighlitColor, opacity)
+Debug-draw the current collision world.
+
+**Kind**: instance method of [<code>CollisionWorld</code>](#CollisionWorld)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| gridColor | [<code>Color</code>](#Color) | Optional grid color (default to black). |
+| gridHighlitColor | [<code>Color</code>](#Color) | Optional grid color for cells with shapes in them (default to red). |
+| opacity | <code>Number</code> | Optional opacity factor (default to 0.5). |
 
 <a name="CollisionResolver"></a>
 
@@ -1011,6 +1045,118 @@ Create the collision result.
 | first | [<code>CollisionShape</code>](#CollisionShape) | First shape in the collision check. |
 | second | [<code>CollisionShape</code>](#CollisionShape) | Second shape in the collision check. |
 
+<a name="PointShape"></a>
+
+## PointShape
+Collision point class.
+
+**Kind**: global class  
+
+* [PointShape](#PointShape)
+    * [new PointShape(position)](#new_PointShape_new)
+    * [.setPosition(position)](#PointShape+setPosition)
+    * [.getPosition()](#PointShape+getPosition) ⇒ [<code>Vector2</code>](#Vector2)
+    * [.getBoundingBox()](#PointShape+getBoundingBox) ⇒ [<code>Rectangle</code>](#Rectangle)
+    * [.debugDraw(opacity)](#PointShape+debugDraw)
+
+<a name="new_PointShape_new"></a>
+
+### new PointShape(position)
+Create the collision shape.
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| position | [<code>Vector2</code>](#Vector2) | Point position. |
+
+<a name="PointShape+setPosition"></a>
+
+### pointShape.setPosition(position)
+Set this collision shape from vector2.
+
+**Kind**: instance method of [<code>PointShape</code>](#PointShape)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| position | [<code>Vector2</code>](#Vector2) | Point position. |
+
+<a name="PointShape+getPosition"></a>
+
+### pointShape.getPosition() ⇒ [<code>Vector2</code>](#Vector2)
+Get point position.
+
+**Kind**: instance method of [<code>PointShape</code>](#PointShape)  
+**Returns**: [<code>Vector2</code>](#Vector2) - Point position.  
+<a name="PointShape+getBoundingBox"></a>
+
+### pointShape.getBoundingBox() ⇒ [<code>Rectangle</code>](#Rectangle)
+Get collision shape's bounding box.
+
+**Kind**: instance method of [<code>PointShape</code>](#PointShape)  
+**Returns**: [<code>Rectangle</code>](#Rectangle) - Shape's bounding box.  
+<a name="PointShape+debugDraw"></a>
+
+### pointShape.debugDraw(opacity)
+Debug draw this shape.
+
+**Kind**: instance method of [<code>PointShape</code>](#PointShape)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| opacity | <code>Number</code> | Shape opacity factor. |
+
+<a name="RectangleShape"></a>
+
+## RectangleShape
+Collision rectangle class.
+
+**Kind**: global class  
+
+* [RectangleShape](#RectangleShape)
+    * [new RectangleShape(rectangle)](#new_RectangleShape_new)
+    * [.setShape(rectangle)](#RectangleShape+setShape)
+    * [.getBoundingBox()](#RectangleShape+getBoundingBox) ⇒ [<code>Rectangle</code>](#Rectangle)
+    * [.debugDraw(opacity)](#RectangleShape+debugDraw)
+
+<a name="new_RectangleShape_new"></a>
+
+### new RectangleShape(rectangle)
+Create the collision shape.
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| rectangle | [<code>Rectangle</code>](#Rectangle) | the rectangle shape. |
+
+<a name="RectangleShape+setShape"></a>
+
+### rectangleShape.setShape(rectangle)
+Set this collision shape from rectangle.
+
+**Kind**: instance method of [<code>RectangleShape</code>](#RectangleShape)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| rectangle | [<code>Rectangle</code>](#Rectangle) | Rectangle shape. |
+
+<a name="RectangleShape+getBoundingBox"></a>
+
+### rectangleShape.getBoundingBox() ⇒ [<code>Rectangle</code>](#Rectangle)
+Get collision shape's bounding box.
+
+**Kind**: instance method of [<code>RectangleShape</code>](#RectangleShape)  
+**Returns**: [<code>Rectangle</code>](#Rectangle) - Shape's bounding box.  
+<a name="RectangleShape+debugDraw"></a>
+
+### rectangleShape.debugDraw(opacity)
+Debug draw this shape.
+
+**Kind**: instance method of [<code>RectangleShape</code>](#RectangleShape)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| opacity | <code>Number</code> | Shape opacity factor. |
+
 <a name="CollisionShape"></a>
 
 ## CollisionShape
@@ -1020,12 +1166,25 @@ Collision shape base class.
 
 * [CollisionShape](#CollisionShape)
     * [new CollisionShape()](#new_CollisionShape_new)
+    * [.setDebugColor(color)](#CollisionShape+setDebugColor)
     * [.getBoundingBox()](#CollisionShape+getBoundingBox) ⇒ [<code>Rectangle</code>](#Rectangle)
+    * [.debugDraw(opacity)](#CollisionShape+debugDraw)
 
 <a name="new_CollisionShape_new"></a>
 
 ### new CollisionShape()
 Create the collision shape.
+
+<a name="CollisionShape+setDebugColor"></a>
+
+### collisionShape.setDebugColor(color)
+Set the debug color to use to draw this shape.
+
+**Kind**: instance method of [<code>CollisionShape</code>](#CollisionShape)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| color | [<code>Color</code>](#Color) | Color to set or null to use default. |
 
 <a name="CollisionShape+getBoundingBox"></a>
 
@@ -1034,6 +1193,17 @@ Get collision shape's bounding box.
 
 **Kind**: instance method of [<code>CollisionShape</code>](#CollisionShape)  
 **Returns**: [<code>Rectangle</code>](#Rectangle) - Shape's bounding box.  
+<a name="CollisionShape+debugDraw"></a>
+
+### collisionShape.debugDraw(opacity)
+Debug draw this shape.
+
+**Kind**: instance method of [<code>CollisionShape</code>](#CollisionShape)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| opacity | <code>Number</code> | Shape opacity factor. |
+
 <a name="Camera"></a>
 
 ## Camera
@@ -1419,6 +1589,7 @@ To access the Graphics manager you use `Shaku.gfx`.
     * [.draw(texture, position, size, sourceRect, color, blendMode, rotation, origin, transform)](#Gfx+draw)
     * [.fillRect(destRect, color, blend, rotation)](#Gfx+fillRect)
     * [.outlineRect(destRect, color, blend, rotation)](#Gfx+outlineRect)
+    * [.outlineCircle(circle, color, blend, lineAmount)](#Gfx+outlineCircle)
     * [.drawLine(startPoint, endPoint, color, blendMode)](#Gfx+drawLine)
     * [.drawLines(points, colors, blendMode, looped)](#Gfx+drawLines)
     * [.clear(color)](#Gfx+clear)
@@ -1510,6 +1681,7 @@ Get the blend modes enum.
 * Subtract
 * Screen
 * Overlay
+* Invert
 * DestIn
 * DestOut
 
@@ -1558,7 +1730,7 @@ Set WebGL init flags (passed as additional params to the getContext() call).
 You must call this *before* initializing *Shaku*.
 
 By default, *Shaku* will init WebGL context with the following flags:
-- antialias: false.
+- antialias: true.
 - alpha: true.
 - depth: false.
 - premultipliedAlpha: true.
@@ -1901,6 +2073,25 @@ Draw an outline colored rectangle.
 ```js
 // draw a 50x50 red rectangle at position 100x100, that will rotate over time
 Shaku.gfx.outlineRect(new Shaku.utils.Rectangle(100, 100, 50, 50), Shaku.utils.Color.red, null, Shaku.gameTime.elapsed);
+```
+<a name="Gfx+outlineCircle"></a>
+
+### gfx.outlineCircle(circle, color, blend, lineAmount)
+Draw an outline colored circle.
+
+**Kind**: instance method of [<code>Gfx</code>](#Gfx)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| circle | [<code>Circle</code>](#Circle) | Circle to draw. |
+| color | [<code>Color</code>](#Color) | Rectangle outline color. |
+| blend | <code>BlendModes</code> | Blend mode. |
+| lineAmount | <code>Number</code> | How many lines to compose the circle from (bigger number = smoother circle). |
+
+**Example**  
+```js
+// draw a circle at 50x50 with radius of 85
+Shaku.gfx.outlineCircle(new Shaku.utils.Circle(new Shaku.utils.Vector2(50, 50), 85), Shaku.utils.Color.red);
 ```
 <a name="Gfx+drawLine"></a>
 
