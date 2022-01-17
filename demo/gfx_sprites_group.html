@@ -90,17 +90,17 @@
             let driveSpeed = Shaku.gameTime.delta * 200;
             let moveWheels = false;
             if (Shaku.input.down('left') || Shaku.input.down('a')) { 
-              tank.rotation += Shaku.gameTime.delta; 
-              moveWheels = true;
-            }
-            if (Shaku.input.down('right') || Shaku.input.down('d')) { 
               tank.rotation -= Shaku.gameTime.delta; 
               moveWheels = true;
             }
-            if (Shaku.input.down('x')) { 
-              cannonSprite.rotation -= Shaku.gameTime.delta; 
+            if (Shaku.input.down('right') || Shaku.input.down('d')) { 
+              tank.rotation += Shaku.gameTime.delta; 
+              moveWheels = true;
             }
             if (Shaku.input.down('z')) { 
+              cannonSprite.rotation -= Shaku.gameTime.delta; 
+            }
+            if (Shaku.input.down('x')) { 
               cannonSprite.rotation += Shaku.gameTime.delta; 
             }
             if (Shaku.input.down('up') || Shaku.input.down('w')) { 

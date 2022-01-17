@@ -18,15 +18,15 @@ Implement a simple 2d Rectangle.
         * [.right](#Rectangle+right) ⇒ <code>Number</code>
         * [.top](#Rectangle+top) ⇒ <code>Number</code>
         * [.bottom](#Rectangle+bottom) ⇒ <code>Number</code>
-        * [.topLeft](#Rectangle+topLeft) ⇒ <code>Vector2</code>
-        * [.topRight](#Rectangle+topRight) ⇒ <code>Vector2</code>
-        * [.bottomLeft](#Rectangle+bottomLeft) ⇒ <code>Vector2</code>
-        * [.bottomRight](#Rectangle+bottomRight) ⇒ <code>Vector2</code>
         * [.set(x, y, width, height)](#Rectangle+set) ⇒ [<code>Rectangle</code>](#Rectangle)
         * [.getPosition()](#Rectangle+getPosition) ⇒ <code>Vector2</code>
         * [.getSize()](#Rectangle+getSize) ⇒ <code>Vector2</code>
         * [.getCenter()](#Rectangle+getCenter) ⇒ <code>Vector2</code>
         * [.clone()](#Rectangle+clone) ⇒ [<code>Rectangle</code>](#Rectangle)
+        * [.getTopLeft()](#Rectangle+getTopLeft) ⇒ <code>Vector2</code>
+        * [.getTopRight()](#Rectangle+getTopRight) ⇒ <code>Vector2</code>
+        * [.getBottomLeft()](#Rectangle+getBottomLeft) ⇒ <code>Vector2</code>
+        * [.getBottomRight()](#Rectangle+getBottomRight) ⇒ <code>Vector2</code>
         * [.string()](#Rectangle+string)
         * [.containsVector(p)](#Rectangle+containsVector) ⇒ <code>Boolean</code>
         * [.collideRect(other)](#Rectangle+collideRect) ⇒ <code>Boolean</code>
@@ -77,34 +77,6 @@ Get bottom value.
 
 **Kind**: instance property of [<code>Rectangle</code>](#Rectangle)  
 **Returns**: <code>Number</code> - rectangle bottom.  
-<a name="Rectangle+topLeft"></a>
-
-### rectangle.topLeft ⇒ <code>Vector2</code>
-Get top-left corner.
-
-**Kind**: instance property of [<code>Rectangle</code>](#Rectangle)  
-**Returns**: <code>Vector2</code> - Corner position vector.  
-<a name="Rectangle+topRight"></a>
-
-### rectangle.topRight ⇒ <code>Vector2</code>
-Get top-right corner.
-
-**Kind**: instance property of [<code>Rectangle</code>](#Rectangle)  
-**Returns**: <code>Vector2</code> - Corner position vector.  
-<a name="Rectangle+bottomLeft"></a>
-
-### rectangle.bottomLeft ⇒ <code>Vector2</code>
-Get bottom-left corner.
-
-**Kind**: instance property of [<code>Rectangle</code>](#Rectangle)  
-**Returns**: <code>Vector2</code> - Corner position vector.  
-<a name="Rectangle+bottomRight"></a>
-
-### rectangle.bottomRight ⇒ <code>Vector2</code>
-Get bottom-right corner.
-
-**Kind**: instance property of [<code>Rectangle</code>](#Rectangle)  
-**Returns**: <code>Vector2</code> - Corner position vector.  
 <a name="Rectangle+set"></a>
 
 ### rectangle.set(x, y, width, height) ⇒ [<code>Rectangle</code>](#Rectangle)
@@ -148,6 +120,34 @@ Return a clone of this rectangle.
 
 **Kind**: instance method of [<code>Rectangle</code>](#Rectangle)  
 **Returns**: [<code>Rectangle</code>](#Rectangle) - Cloned rectangle.  
+<a name="Rectangle+getTopLeft"></a>
+
+### rectangle.getTopLeft() ⇒ <code>Vector2</code>
+Get top-left corner.
+
+**Kind**: instance method of [<code>Rectangle</code>](#Rectangle)  
+**Returns**: <code>Vector2</code> - Corner position vector.  
+<a name="Rectangle+getTopRight"></a>
+
+### rectangle.getTopRight() ⇒ <code>Vector2</code>
+Get top-right corner.
+
+**Kind**: instance method of [<code>Rectangle</code>](#Rectangle)  
+**Returns**: <code>Vector2</code> - Corner position vector.  
+<a name="Rectangle+getBottomLeft"></a>
+
+### rectangle.getBottomLeft() ⇒ <code>Vector2</code>
+Get bottom-left corner.
+
+**Kind**: instance method of [<code>Rectangle</code>](#Rectangle)  
+**Returns**: <code>Vector2</code> - Corner position vector.  
+<a name="Rectangle+getBottomRight"></a>
+
+### rectangle.getBottomRight() ⇒ <code>Vector2</code>
+Get bottom-right corner.
+
+**Kind**: instance method of [<code>Rectangle</code>](#Rectangle)  
+**Returns**: <code>Vector2</code> - Corner position vector.  
 <a name="Rectangle+string"></a>
 
 ### rectangle.string()

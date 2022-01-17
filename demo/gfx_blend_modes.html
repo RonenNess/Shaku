@@ -11,7 +11,8 @@
     <div class="noselect">
     <button class="view-code-btn" onclick="showSampleCode();">View Code</button> 
     <h1 class="demo-title">Shaku Gfx Demo: Blend Modes</h1>
-      <p>This demo illustrate how to render with different blend modes.</p>
+      <p>This demo illustrate how to render with different blend modes.<br />
+      Press <b>Space</b> to toggle background, <b>Z</b> to rotate textures.</p>
 
       <!-- include shaku -->
       <script src="js/demos.js"></script>
@@ -24,8 +25,12 @@
           // init shaku
           await Shaku.init();
 
+          // show background?
+          let showBackground = false;
+          let textureIndex = 0;
+
           // screen size
-          let screenX = 800;
+          let screenX = 900;
           let screenY = 600;
 
           // add canvas to document
@@ -58,7 +63,14 @@
           }
 
           // load textures
-          let sprite = await Shaku.assets.loadTexture('assets/shaku.png');
+          let texture1 = await Shaku.assets.loadTexture('assets/shaku.png');
+          let texture2 = await Shaku.assets.loadTexture('assets/colors.png');
+          let texture3 = await Shaku.assets.loadTexture('assets/sprite.png');
+          let texture4 = await Shaku.assets.loadTexture('assets/stone_wall.png');
+          let background = await Shaku.assets.loadTexture('assets/level.jpg');
+
+          // texture options
+          let textures = [texture1, texture2, texture3, texture4, Shaku.gfx.whiteTexture];
 
           // do a main loop step.
           function step() 
@@ -66,6 +78,20 @@
             // start frame and clear screen
             Shaku.startFrame();
             Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
+
+            // draw background
+            if (showBackground) {
+              Shaku.gfx.cover(background, Shaku.gfx.renderingRegion);
+            }
+
+            // input
+            if (Shaku.input.pressed('space')) { 
+              showBackground = !showBackground;
+            }
+            if (Shaku.input.pressed('z')) { 
+              textureIndex++;
+              if (!textures[textureIndex]) { textureIndex = 0; }
+            }
             
             // draw blend modes
             let spriteSize = 200;
@@ -74,7 +100,7 @@
             for (let blend in Shaku.gfx.BlendModes) {
 
               // draw sprite with blend mode
-              Shaku.gfx.draw(sprite, new Shaku.utils.Vector2(x, y), spriteSize, null, null, Shaku.gfx.BlendModes[blend]);
+              Shaku.gfx.draw(textures[textureIndex], new Shaku.utils.Vector2(x, y), spriteSize, null, null, Shaku.gfx.BlendModes[blend]);
 
               // draw blend mode text
               drawTextWithOutline(blend, new Shaku.utils.Vector2(x, y - spriteSize / 2 + 18));

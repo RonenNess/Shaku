@@ -547,7 +547,7 @@ function generateRandomAssetName()
  
 // export assets manager
 module.exports = new Assets();
-},{"../assets/sound_asset.js":7,"../logger.js":28,"../manager.js":29,"./asset.js":1,"./binary_asset.js":3,"./font_texture_asset":4,"./json_asset.js":6,"./texture_asset.js":8}],3:[function(require,module,exports){
+},{"../assets/sound_asset.js":7,"../logger.js":34,"../manager.js":35,"./asset.js":1,"./binary_asset.js":3,"./font_texture_asset":4,"./json_asset.js":6,"./texture_asset.js":8}],3:[function(require,module,exports){
 /**
  * Implement binary data asset type.
  * 
@@ -965,7 +965,7 @@ function measureTextWidth(fontFamily, fontSize, char)
 
 // export the asset type.
 module.exports = FontTextureAsset;
-},{"../utils/rectangle":40,"../utils/vector2":41,"./asset":1,"./texture_asset":8}],5:[function(require,module,exports){
+},{"../utils/rectangle":46,"../utils/vector2":47,"./asset":1,"./texture_asset":8}],5:[function(require,module,exports){
 /**
  * Just an alias to main manager so we can require() this folder as a package.
  * 
@@ -1542,7 +1542,591 @@ function isPowerOf2(value) {
 
 // export the asset type.
 module.exports = TextureAsset;
-},{"../gfx/texture_filter_modes":22,"../gfx/texture_wrap_modes":23,"../logger.js":28,"../utils/color":37,"../utils/vector2":41,"./asset":1}],9:[function(require,module,exports){
+},{"../gfx/texture_filter_modes":28,"../gfx/texture_wrap_modes":29,"../logger.js":34,"../utils/color":43,"../utils/vector2":47,"./asset":1}],9:[function(require,module,exports){
+/**
+ * Implement the collision manager.
+ * 
+ * |-- copyright and license --|
+ * @package    Shaku
+ * @file       shaku\lib\collision\collision.js
+ * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
+ * @copyright  (c) 2021 Ronen Ness
+ * @license    MIT
+ * |-- end copyright and license --|
+ * 
+ */
+'use strict';
+const IManager = require('../manager.js');
+const Vector2 = require('../utils/vector2.js');
+const CollisionWorld = require('./collision_world.js');
+const _resolver = require('./resolver');
+const _logger = require('../logger.js').getLogger('collision');
+
+
+/**
+ * Collision is the collision manager. 
+ * It provides basic 2d collision detection functionality.
+ * Note: this is *not* a physics engine, its only for detection and objects picking.
+ * 
+ * To access the Collision manager you use `Shaku.collision`. 
+ */
+class Collision extends IManager
+{
+    /**
+     * Create the manager.
+     */
+    constructor()
+    {
+        super();
+    }
+
+    /** 
+     * @inheritdoc 
+     * @private
+     **/
+    setup()
+    {        
+        return new Promise((resolve, reject) => {    
+            _logger.info("Setup collision manager..");
+            _resolver._init();
+            resolve();
+        });
+    }
+
+    /**
+     * Get the collision resolver. 
+     * You can use this object directly without creating a collision world, if you just need to test collision between two shapes.
+     */
+    get resolver()
+    {
+        return _resolver;
+    }
+
+    /**
+     * Create a new collision world object.
+     * @param {Number|Vector2} gridCellSize Collision world grid cell size.
+     * @returns {CollisionWorld} Newly created collision world.
+     */
+    createWorld(gridCellSize)
+    {
+        return new CollisionWorld(gridCellSize);
+    }
+
+    /** 
+     * @inheritdoc 
+     * @private
+     **/
+    startFrame()
+    {
+
+    }
+
+    /** 
+     * @inheritdoc 
+     * @private
+     **/
+    endFrame()
+    {
+    }
+
+    /** 
+     * @inheritdoc 
+     * @private
+     **/
+    destroy()
+    {
+    }    
+}
+
+// export main object
+module.exports = new Collision();
+},{"../logger.js":34,"../manager.js":35,"../utils/vector2.js":47,"./collision_world.js":10,"./resolver":12}],10:[function(require,module,exports){
+/**
+ * Implement the collision manager.
+ * 
+ * |-- copyright and license --|
+ * @package    Shaku
+ * @file       shaku\lib\collision\collision_world.js
+ * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
+ * @copyright  (c) 2021 Ronen Ness
+ * @license    MIT
+ * |-- end copyright and license --|
+ * 
+ */
+'use strict';
+const Color = require("../utils/color");
+const Vector2 = require("../utils/vector2");
+const resolver = require('./resolver');
+const CollisionTestResult = require("./result");
+const CollisionShape = require("./shapes/shape");
+const gfx = require('./../gfx');
+const Rectangle = require("../utils/rectangle");
+const _logger = require('../logger.js').getLogger('collision');
+
+
+/**
+ * A collision world is a set of collision shapes that interact with each other.
+ * You can use different collision worlds to represent different levels or different parts of your game world.
+ */
+class CollisionWorld
+{
+    /**
+     * Create the collision world.
+     * @param {Number|Vector2} gridCellSize For optimize collision testing, the collision world is divided into a collision grid. This param determine the grid cell size.
+     */
+    constructor(gridCellSize)
+    {
+        // set grid cell size
+        if (typeof gridCellSize === 'undefined') { gridCellSize = new Vector2(512, 512); }
+        else if (typeof gridCellSize === 'number') { gridCellSize = new Vector2(gridCellSize, gridCellSize); }
+        else { gridCellSize = gridCellSize.clone(); }
+        this._gridCellSize = gridCellSize;
+
+        // create collision grid
+        this._grid = {};
+
+        // shapes that need updates and grid chunks to delete
+        this._shapesToUpdate = new Set();
+        this._cellsToDelete = new Set();
+    }
+
+    /**
+     * Do collision world updates, if we have any.
+     * @private
+     */
+    _performUpdates()
+    {
+        // delete empty grid cells
+        if (this._cellsToDelete.size > 0) {
+            for (let key of this._cellsToDelete) {
+                if (this._grid[key] && this._grid[key].size === 0) { 
+                    delete this._grid[key];
+                }
+            }
+            this._cellsToDelete.clear();
+        }
+
+        // update all shapes
+        if (this._shapesToUpdate.size > 0) {
+            for (let shape of this._shapesToUpdate) {
+                this._updateShape(shape);
+            }
+            this._shapesToUpdate.clear();
+        }
+    }
+
+    /**
+     * Update a shape in collision world after it moved or changed.
+     * @private
+     */
+    _updateShape(shape)
+    {
+
+    }
+
+    /**
+     * Request update for this shape on next updates call.
+     * @private
+     */
+    _queueUpdate(shape)
+    {
+        this._shapesToUpdate.add(shape);
+    }
+
+    /**
+     * Add a collision shape to this world.
+     * @param {CollisionShape} shape Shape to add.
+     */
+    addShape(shape)
+    {
+        // add shape
+        shape._setParent(this);
+
+        // get shape bounding box and add to grid
+        let bb = shape.getBoundingBox();
+        let minx = Math.floor(bb.left / this._gridCellSize.x);
+        let miny = Math.floor(bb.top / this._gridCellSize.y);
+        let maxx = Math.ceil(bb.right / this._gridCellSize.x);
+        let maxy = Math.ceil(bb.bottom / this._gridCellSize.y);
+        for (let i = minx; i <= maxx; ++i) {
+            for (let j = miny; j <= maxy; ++j) {
+
+                let key = i + ',' + j;
+                let currSet = this._grid[key];
+                if (!currSet) { 
+                    this._grid[key] = currSet = new Set(); 
+                }
+                currSet.add(shape);
+            }
+        }
+        shape._worldRange = [minx, miny, maxx, maxy];
+
+        // do general updates
+        this._performUpdates();
+    }
+
+    /**
+     * Remove a collision shape from this world.
+     * @param {CollisionShape} shape Shape to remove.
+     */
+    removeShape(shape)
+    {
+        // sanity
+        if (shape._world !== this) {
+            _logger.warn("Shape to remove is not in this collision world!");
+            return;
+        }
+
+        // remove from grid
+        if (shape._worldRange) {
+            let minx = shape._worldRange[0];
+            let miny = shape._worldRange[1];
+            let maxx = shape._worldRange[2];
+            let maxy = shape._worldRange[3];
+            for (let i = minx; i <= maxx; ++i) {
+                for (let j = miny; j <= maxy; ++j) {
+                    let key = i + ',' + j;
+                    let currSet = this._grid[key];
+                    if (currSet) {
+                        currSet.delete(shape);
+                        if (currSet.size === 0) {
+                            this._cellsToDelete.add(key);
+                        }
+                    }
+                }
+            }
+        }
+
+        // remove shape
+        this._updateShape.delete(shape);
+        shape._setParent(null);
+
+        // do general updates
+        this._performUpdates();
+    }
+
+    /**
+     * Test collision with shapes in world, and return just the first result found.
+     * @param {CollisionShape} sourceShape Source shape to check collision for. If shape is in world, it will not collide with itself.
+     * @param {Boolean} sortByDistance If true will return the nearest collision found (based on center of shapes).
+     * @param {Function} predicate Optional filter to run on any shape we're about to test collision with. If the predicate returns false, we will skip this shape.
+     * @returns {CollisionTestResult} A collision test result, or null if not found.
+     */
+    testCollision(sourceShape, sortByDistance, predicate)
+    {
+        // do updates before check
+        this._performUpdates();
+    }
+
+    /**
+     * Test collision with shapes in world, and return all results found.
+     * @param {CollisionShape} sourceShape Source shape to check collision for. If shape is in world, it will not collide with itself.
+     * @param {Boolean} sortByDistance If true will sort results by distance.
+     * @param {Function} predicate Optional filter to run on any shape we're about to test collision with. If the predicate returns false, we will skip this shape.
+     * @returns {Array<CollisionTestResult>} An array of collision test results, or empty array if none found.
+     */
+    testCollisionMany(sourceShape, sortByDistance, predicate)
+    {
+        // do updates before check
+        this._performUpdates();
+    }
+
+    /**
+     * Debug-draw the current collision world.
+     * @param {Color} gridColor Optional grid color (default to black).
+     * @param {Color} gridHighlitColor Optional grid color for cells with shapes in them (default to red).
+     * @param {Number} opacity Optional opacity factor (default to 0.5).
+     */
+    debugDraw(gridColor, gridHighlitColor, opacity)
+    {
+        // default grid colors
+        if (!gridColor) {
+            gridColor = Color.black;
+            gridColor.a *= 0.75;
+        }
+        if (!gridHighlitColor) {
+            gridHighlitColor = Color.red;
+            gridHighlitColor.a *= 0.75;
+        }
+
+        // default opacity
+        if (opacity === undefined) { 
+            opacity = 0.5;
+        }
+
+        // set grid color opacity
+        gridColor.a *= opacity;
+        gridHighlitColor.a *= opacity;
+
+        // get visible grid cells
+        let bb = gfx.renderingRegion;
+        let minx = Math.floor(bb.left / this._gridCellSize.x);
+        let miny = Math.floor(bb.top / this._gridCellSize.y);
+        let maxx = Math.ceil(bb.right / this._gridCellSize.x);
+        let maxy = Math.ceil(bb.bottom / this._gridCellSize.y);
+        for (let i = minx; i <= maxx; ++i) {
+            for (let j = miny; j <= maxy; ++j) {
+
+                // get current cell
+                let cell = this._grid[i + ',' + j];
+
+                // draw grid cell
+                let color = (cell && cell.size) ? gridHighlitColor : gridColor;
+                let cellRect = new Rectangle(i * this._gridCellSize.x, j * this._gridCellSize.y, this._gridCellSize.x-1, this._gridCellSize.y-1);
+                gfx.outlineRect(cellRect, color, gfx.BlendModes.AlphaBlend, 0);
+
+                // draw shapes in grid
+                if (cell) {
+                    for (let shape of cell)
+                    {
+                        shape.debugDraw(opacity);
+                    }
+                }
+            }
+        }
+    }
+}
+
+// export collision world
+module.exports = CollisionWorld;
+},{"../logger.js":34,"../utils/color":43,"../utils/rectangle":46,"../utils/vector2":47,"./../gfx":21,"./resolver":12,"./result":13,"./shapes/shape":14}],11:[function(require,module,exports){
+/**
+ * Just an alias to main manager so we can require() this folder as a package.
+ * 
+ * |-- copyright and license --|
+ * @package    Shaku
+ * @file       shaku\lib\collision\index.js
+ * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
+ * @copyright  (c) 2021 Ronen Ness
+ * @license    MIT
+ * |-- end copyright and license --|
+ * 
+ */
+ 'use strict';
+ module.exports = require('./collision');
+},{"./collision":9}],12:[function(require,module,exports){
+/**
+ * Implement the collision resolver class.
+ * 
+ * |-- copyright and license --|
+ * @package    Shaku
+ * @file       shaku\lib\collision\resolver.js
+ * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
+ * @copyright  (c) 2021 Ronen Ness
+ * @license    MIT
+ * |-- end copyright and license --|
+ * 
+ */
+'use strict';
+const Vector2 = require('../utils/vector2.js');
+const CollisionTestResult = require('./result.js');
+const CollisionShape = require('./shapes/shape.js');
+const _logger = require('../logger.js').getLogger('collision');
+
+ 
+/**
+ * The collision resolver is responsible to implement collision detection between pair of shapes of same or different types.
+ */
+class CollisionResolver
+{
+    /**
+     * Create the resolver.
+     */
+    constructor()
+    {
+        this._handlers = {};
+    }
+
+    /**
+     * Initialize the resolver.
+     * @private
+     */
+    _init()
+    {
+
+    }
+
+    /**
+     * Set the method used to test collision between two shapes.
+     * Note: you don't need to register the same handler twice for reverse order, its done automatically inside.
+     * @param {Class} firstShapeClass The shape type the handler recieves as first argument.
+     * @param {Class} secondShapeClass The shape type the handler recieves as second argument.
+     * @param {Function} handler Method to test collision between the shapes. Return false if don't collide, return either Vector2 with collision position or 'true' for collision.
+     */
+    setHandler(firstShapeClass, secondShapeClass, handler)
+    {
+        _logger.debug(`Register handler for shapes '${firstShapeClass.name}' and '${secondShapeClass.name}'.`);
+
+        // register handler
+        if (!this._handlers[firstShapeClass]) { this._handlers[firstShapeClass] = {}; }
+        this._handlers[firstShapeClass][secondShapeClass] = handler;
+
+        // register reverse order handler
+        if (!this._handlers[secondShapeClass]) { this._handlers[secondShapeClass] = {}; }
+        this._handlers[secondShapeClass][firstShapeClass] = (f, s) => { return handler(s, f); };
+    }
+
+    /**
+     * Check a collision between two shapes.
+     * @param {CollisionShape} first First collision shape to test.
+     * @param {CollisionShape} second Second collision shape to test.
+     * @returns {CollisionTestResult} collision detection result or null if they don't collide.
+     */
+    test(first, second)
+    {
+        // get method and make sure we got a handler
+        let method = _getCollisionMethod(first, second);
+        if (!method) {
+            _logger.warn(`Missing collision handler for shapes '${first.constructor.name}' and '${second.constructor.name}'.`);
+            return null;
+        }
+
+        // test collision
+        let result = handler(first, second);
+
+        // collision
+        if (result) {
+            let position = (result instanceof Vector2) ? result : null;
+            return new CollisionTestResult(position, first, second);
+        }
+
+        // no collision
+        return null;
+    }
+
+    /**
+     * Get the collision detection method for two given shapes.
+     * @private
+     * @param {CollisionShape} first First collision shape to test.
+     * @param {CollisionShape} second Second collision shape to test.
+     * @returns {Function} collision detection method or null if not found.
+     */
+    _getCollisionMethod(first, second)
+    {
+        if (this._handlers[first.constructor]) {
+            return this._handlers[first.constructor][second.constructor] || null;
+        }
+        return null;
+    }
+}
+
+// export the collision resolver
+module.exports = new CollisionResolver();
+},{"../logger.js":34,"../utils/vector2.js":47,"./result.js":13,"./shapes/shape.js":14}],13:[function(require,module,exports){
+/**
+ * An object to store collision detection result.
+ * 
+ * |-- copyright and license --|
+ * @package    Shaku
+ * @file       shaku\lib\collision\result.js
+ * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
+ * @copyright  (c) 2021 Ronen Ness
+ * @license    MIT
+ * |-- end copyright and license --|
+ * 
+ */
+'use strict';
+const Vector2 = require("../utils/vector2");
+const CollisionShape = require("./shapes/shape");
+
+ 
+/**
+ * Collision detection result.
+ */
+class CollisionTestResult
+{
+    /**
+     * Create the collision result.
+     * @param {Vector2} position Optional collision position.
+     * @param {CollisionShape} first First shape in the collision check.
+     * @param {CollisionShape} second Second shape in the collision check.
+     */
+    constructor(position, first, second)
+    {
+        this.position = position;
+        this.first = first;
+        this.second = second;
+    }
+}
+
+// export collision shape class
+module.exports = CollisionTestResult;
+},{"../utils/vector2":47,"./shapes/shape":14}],14:[function(require,module,exports){
+/**
+ * Implement collision shape base class.
+ * 
+ * |-- copyright and license --|
+ * @package    Shaku
+ * @file       shaku\lib\collision\shapes\shape.js
+ * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
+ * @copyright  (c) 2021 Ronen Ness
+ * @license    MIT
+ * |-- end copyright and license --|
+ * 
+ */
+'use strict';
+const Rectangle = require("../../utils/rectangle");
+const CollisionWorld = require("../collision_world");
+
+ 
+/**
+ * Collision shape base class.
+ */
+class CollisionShape
+{
+    /**
+     * Create the collision shape.
+     */
+    constructor()
+    {
+        this._world = world;
+        this._worldRange = null;
+    }
+
+    /**
+     * Get collision shape's bounding box.
+     * @returns {Rectangle} Shape's bounding box.
+     */
+    getBoundingBox()
+    {
+        throw new Error("Not Implemented!");
+    }
+
+    /**
+     * Debug draw this shape.
+     * @param {Number} opacity Shape opacity factor.
+     */
+    debugDraw(opacity)
+    {
+        throw new Error("Not Implemented!");
+    }
+
+    /**
+     * Set the parent collision world this shape is currently in.
+     * @private
+     * @param {CollisionWorld} world New parent collision world or null to remove.
+     */
+    _setParent(world)
+    {
+        // same world? skip
+        if (world === this._world) {
+            return;
+        }
+
+        // we already have a world but try to set a new one? error
+        if (this._world && world) {
+            throw new Error("Cannot add collision shape to world while its already in another world!");
+        }
+
+        // set new world
+        this._world = world;
+        shape._worldRange = null;
+    }
+}
+
+// export collision shape class
+module.exports = CollisionShape;
+},{"../../utils/rectangle":46,"../collision_world":10}],15:[function(require,module,exports){
 /**
  * Define supported blend modes.
  * 
@@ -1569,8 +2153,10 @@ const BlendModes = {
     Subtract: "subtract",
     Screen: "screen",
     Overlay: "overlay",
+    Invert: "invert",
+    Darken: "darken",
     DestIn: "dest-in",
-    DestOut: "dest-out",
+    DestOut: "dest-out"
 };
 
 Object.defineProperty(BlendModes, '_values', {
@@ -1580,7 +2166,7 @@ Object.defineProperty(BlendModes, '_values', {
 Object.freeze(BlendModes);
 
 module.exports = BlendModes;
-},{}],10:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 /**
  * Camera class.
  * 
@@ -1682,7 +2268,7 @@ class Camera
 
 // export the camera object
 module.exports = Camera;
-},{"../utils/rectangle":40,"../utils/vector2":41,"./matrix":16}],11:[function(require,module,exports){
+},{"../utils/rectangle":46,"../utils/vector2":47,"./matrix":22}],17:[function(require,module,exports){
 /**
  * Implement a basic effect to draw sprites.
  * 
@@ -1780,7 +2366,7 @@ class BasicEffect extends Effect
 
 // export the basic shader
 module.exports = BasicEffect;
-},{"./effect":12}],12:[function(require,module,exports){
+},{"./effect":18}],18:[function(require,module,exports){
 /**
  * Effect base class.
  * 
@@ -2316,7 +2902,7 @@ Object.freeze(Effect.AttributeBinds);
 
 // export the effect class.
 module.exports = Effect;
-},{"../../assets/texture_asset.js":8,"../../logger.js":28,"../../utils/color.js":37,"../../utils/rectangle.js":40,"../matrix.js":16}],13:[function(require,module,exports){
+},{"../../assets/texture_asset.js":8,"../../logger.js":34,"../../utils/color.js":43,"../../utils/rectangle.js":46,"../matrix.js":22}],19:[function(require,module,exports){
 /**
  * Include all built-in effects.
  * 
@@ -2335,7 +2921,7 @@ module.exports = Effect;
     Effect: require('./effect'),
     BasicEffect: require('./basic'),
  }
-},{"./basic":11,"./effect":12}],14:[function(require,module,exports){
+},{"./basic":17,"./effect":18}],20:[function(require,module,exports){
 /**
  * Implement the gfx manager.
  * 
@@ -2366,6 +2952,7 @@ const Vector2 = require('../utils/vector2.js');
 const FontTextureAsset = require('../assets/font_texture_asset.js');
 const TextAlignment = require('./text_alignment.js');
 const Mesh = require('./mesh.js');
+const _whiteColor = Color.white;
 const _logger = require('../logger.js').getLogger('gfx');
 
 
@@ -2384,7 +2971,7 @@ class Gfx extends IManager
     {
         super();
         this._gl = null;
-        this._initSettings = { antialias: false, alpha: true, depth: false, premultipliedAlpha: true };
+        this._initSettings = { antialias: true, alpha: true, depth: false, premultipliedAlpha: true };
         this._canvas = null;
         this._lastBlendMode = null;
         this._activeEffect = null;
@@ -2428,7 +3015,7 @@ class Gfx extends IManager
      * You must call this *before* initializing *Shaku*.
      * 
      * By default, *Shaku* will init WebGL context with the following flags:
-     * - antialias: false.
+     * - antialias: true.
      * - alpha: true.
      * - depth: false.
      * - premultipliedAlpha: true.
@@ -3077,7 +3664,7 @@ class Gfx extends IManager
         if (rotation) { 
             world = Matrix.multiplyManyIntoFirst([
                 Matrix.translate(Math.floor(position.x), Math.floor(position.y), 0),
-                Matrix.rotateZ(rotation || 0),
+                Matrix.rotateZ(-rotation),
                 Matrix.translate(Math.floor((1 - origin.x - 0.5) * size.x), Math.floor((1 - origin.y - 0.5) * size.y), 0),
                 Matrix.scale(Math.floor(size.x), Math.floor(size.y))
             ]);
@@ -3111,6 +3698,59 @@ class Gfx extends IManager
     }
 
     /**
+     * Draw an outline colored rectangle.
+     * @example
+     * // draw a 50x50 red rectangle at position 100x100, that will rotate over time
+     * Shaku.gfx.outlineRect(new Shaku.utils.Rectangle(100, 100, 50, 50), Shaku.utils.Color.red, null, Shaku.gameTime.elapsed);
+     * @param {Rectangle} destRect Rectangle to draw outline for.
+     * @param {Color} color Rectangle outline color.
+     * @param {BlendModes} blend Blend mode.
+     * @param {Number} rotation Rotate the rectangle around its center.
+     */
+    outlineRect(destRect, color, blend, rotation)
+    {
+        // get corners
+        let topLeft = destRect.getTopLeft();
+        let topRight = destRect.getTopRight();
+        let bottomRight = destRect.getBottomRight();
+        let bottomLeft = destRect.getBottomLeft();
+
+        // rotate vertices
+        if (rotation) {
+
+            // center rect
+            let center = destRect.getCenter();
+            topLeft.subSelf(center);
+            topRight.subSelf(center);
+            bottomLeft.subSelf(center);
+            bottomRight.subSelf(center);
+
+            // do rotation
+            let cos = Math.cos(rotation);
+            let sin = Math.sin(rotation);
+            function rotateVec(vector)
+            {
+                let x = (vector.x * cos - vector.y * sin);
+                let y = (vector.x * sin + vector.y * cos);
+                vector.set(x, y);
+            }
+            rotateVec(topLeft);
+            rotateVec(topRight);
+            rotateVec(bottomLeft);
+            rotateVec(bottomRight);
+
+            // return to original position
+            topLeft.addSelf(center);
+            topRight.addSelf(center);
+            bottomLeft.addSelf(center);
+            bottomRight.addSelf(center);
+        }
+        
+        // draw rectangle with lines strip
+        this.drawLines([topLeft, topRight, bottomRight, bottomLeft], color, blend, true);
+    }
+
+    /**
      * Draw a single line between two points.
      * @example
      * Shaku.gfx.drawLine(new Shaku.utils.Vector2(50,50), new Shaku.utils.Vector2(150,50), Shaku.utils.Color.red);
@@ -3138,7 +3778,7 @@ class Gfx extends IManager
     drawLines(points, colors, blendMode, looped)
     {
         // some defaults
-        colors = colors || Color.white;
+        colors = colors || _whiteColor;
         blendMode = blendMode || BlendModes.Opaque;
         looped = Boolean(looped);
 
@@ -3389,13 +4029,13 @@ class Gfx extends IManager
 
         // use quad buffers and other effect properties
         let quad = this.meshes.quad;
-        quad.overrideColors(this._gl, color || Color.white);
+        quad.overrideColors(this._gl, color || _whiteColor);
         this._activeEffect.prepareToDraw(quad, color, world, sourceRect, texture)
 
         // set indices
         if (quad.indices !== this._currIndices) {
-        this._gl.bindBuffer(this._gl.ELEMENT_ARRAY_BUFFER, quad.indices);
-        this._currIndices = quad.indices;
+            this._gl.bindBuffer(this._gl.ELEMENT_ARRAY_BUFFER, quad.indices);
+            this._currIndices = quad.indices;
         }
 
         // set texture
@@ -3428,6 +4068,7 @@ class Gfx extends IManager
      * * Subtract
      * * Screen
      * * Overlay
+     * * Invert
      * * DestIn
      * * DestOut
      * 
@@ -3531,12 +4172,11 @@ class Gfx extends IManager
 
             // get gl context and set defaults
             var gl = this._gl;
-            gl.enable(gl.BLEND);
-            gl.blendEquation(gl.FUNC_ADD);
-
             switch (blendMode) 
             {
                 case BlendModes.AlphaBlend:
+                    gl.enable(gl.BLEND);
+                    gl.blendEquation(gl.FUNC_ADD);
                     gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
                     break;
 
@@ -3545,41 +4185,69 @@ class Gfx extends IManager
                     break;
 
                 case BlendModes.Additive:
+                    gl.enable(gl.BLEND);
+                    gl.blendEquation(gl.FUNC_ADD);
                     gl.blendFunc(gl.ONE, gl.ONE);
                     break;
                     
                 case BlendModes.Multiply:
+                    gl.enable(gl.BLEND);
+                    gl.blendEquation(gl.FUNC_ADD);
                     gl.blendFuncSeparate(gl.DST_COLOR, gl.ONE_MINUS_SRC_ALPHA, gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
                     break;
 
                 case BlendModes.Screen:
+                    gl.enable(gl.BLEND);
+                    gl.blendEquation(gl.FUNC_ADD);
                     gl.blendFuncSeparate(gl.ONE, gl.ONE_MINUS_SRC_COLOR, gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
                     break;
 
                 case BlendModes.Subtract:
+                    gl.enable(gl.BLEND);
+                    gl.blendEquation(gl.FUNC_ADD);
                     gl.blendFuncSeparate(gl.ONE, gl.ONE, gl.ONE, gl.ONE);
                     gl.blendEquationSeparate(gl.FUNC_REVERSE_SUBTRACT, gl.FUNC_ADD);
                     break;
 
+                case BlendModes.Invert:
+                    gl.enable(gl.BLEND);
+                    gl.blendEquation(gl.FUNC_ADD);
+                    gl.blendFunc(gl.ONE_MINUS_DST_COLOR, gl.ZERO);
+                    gl.blendFuncSeparate(gl.ONE_MINUS_DST_COLOR, gl.ZERO, gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+                    break;
+
                 case BlendModes.Overlay:
+                    gl.enable(gl.BLEND);
                     if (gl.MAX) {
                         gl.blendEquation(gl.MAX);
                         gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
                     } else {
+                        gl.blendEquation(gl.FUNC_ADD);
                         gl.blendFunc(gl.ONE, gl.ONE);
                     }
                     break;
 
+                case BlendModes.Darken:
+                    gl.enable(gl.BLEND);
+                    gl.blendEquation(gl.MIN);
+                    gl.blendFuncSeparate(gl.DST_COLOR, gl.ONE_MINUS_SRC_ALPHA, gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+                    gl.blendFuncSeparate(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA, gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+                    break;
+
                 case BlendModes.DestIn:
+                    gl.enable(gl.BLEND);
+                    gl.blendEquation(gl.FUNC_ADD);
                     gl.blendFunc(gl.ZERO, gl.SRC_ALPHA);
                     break;
 
                 case BlendModes.DestOut:
+                    gl.enable(gl.BLEND);
+                    gl.blendEquation(gl.FUNC_ADD);
                     gl.blendFunc(gl.ZERO, gl.ONE_MINUS_SRC_ALPHA);
+                    // can also use: gl.blendFunc(gl.ONE_MINUS_DST_COLOR, gl.ONE_MINUS_SRC_COLOR);
                     break;
 
                 default:
-                    // gl.blendFuncSeparate(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA, gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
                     throw new Error(`Unknown blend mode '${blendMode}'!`);
             }
 
@@ -3619,7 +4287,7 @@ class Gfx extends IManager
 
 // export main object
 module.exports = new Gfx();
-},{"../assets/font_texture_asset.js":4,"../assets/texture_asset.js":8,"../logger.js":28,"../manager.js":29,"../utils/color.js":37,"../utils/rectangle.js":40,"../utils/vector2.js":41,"./blend_modes.js":9,"./camera.js":10,"./effects":13,"./matrix.js":16,"./mesh.js":17,"./mesh_generator.js":18,"./sprite.js":19,"./sprites_group.js":20,"./text_alignment.js":21,"./texture_filter_modes.js":22,"./texture_wrap_modes.js":23}],15:[function(require,module,exports){
+},{"../assets/font_texture_asset.js":4,"../assets/texture_asset.js":8,"../logger.js":34,"../manager.js":35,"../utils/color.js":43,"../utils/rectangle.js":46,"../utils/vector2.js":47,"./blend_modes.js":15,"./camera.js":16,"./effects":19,"./matrix.js":22,"./mesh.js":23,"./mesh_generator.js":24,"./sprite.js":25,"./sprites_group.js":26,"./text_alignment.js":27,"./texture_filter_modes.js":28,"./texture_wrap_modes.js":29}],21:[function(require,module,exports){
 /**
  * Just an alias to main manager so we can require() this folder as a package.
  * 
@@ -3634,7 +4302,7 @@ module.exports = new Gfx();
  */
  'use strict';
  module.exports = require('./gfx');
-},{"./gfx":14}],16:[function(require,module,exports){
+},{"./gfx":20}],22:[function(require,module,exports){
 /**
  * Matrix class.
  * Based on code from https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API/Matrix_math_for_the_web
@@ -3952,7 +4620,7 @@ Object.freeze(Matrix.identity);
 
 // export the matrix object
 module.exports = Matrix;
-},{}],17:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 /**
  * Define a mesh object.
  * 
@@ -4017,7 +4685,7 @@ const { Color } = require("../utils");
  
  // export the mesh class.
  module.exports = Mesh;
-},{"../utils":39}],18:[function(require,module,exports){
+},{"../utils":45}],24:[function(require,module,exports){
 /**
  * Define utility to generate meshes.
  * 
@@ -4100,7 +4768,7 @@ class MeshGenerator
 
 // export the meshes generator.
 module.exports = MeshGenerator;
-},{"./mesh":17}],19:[function(require,module,exports){
+},{"./mesh":23}],25:[function(require,module,exports){
 /**
  * Define a sprite object.
  * 
@@ -4195,7 +4863,7 @@ class Sprite
 
 // export the sprite class.
 module.exports = Sprite;
-},{"../assets/texture_asset":8,"../utils/color":37,"../utils/rectangle":40,"../utils/vector2":41,"./blend_modes":9}],20:[function(require,module,exports){
+},{"../assets/texture_asset":8,"../utils/color":43,"../utils/rectangle":46,"../utils/vector2":47,"./blend_modes":15}],26:[function(require,module,exports){
 /**
  * Define a sprites group.
  * 
@@ -4268,7 +4936,7 @@ class SpritesGroup
         
         if (this.rotation) 
         { 
-            matrices.push(Matrix.rotateZ(this.rotation));
+            matrices.push(Matrix.rotateZ(-this.rotation));
         }
         
         if ((this.scale.x !== 1) || (this.scale.y !== 1)) 
@@ -4350,7 +5018,7 @@ class SpritesGroup
 
 // export the sprites group class.
 module.exports = SpritesGroup;
-},{"../utils/color":37,"../utils/vector2":41,"./matrix":16,"./sprite":19}],21:[function(require,module,exports){
+},{"../utils/color":43,"../utils/vector2":47,"./matrix":22,"./sprite":25}],27:[function(require,module,exports){
 /**
  * Define possible text alignments.
  * 
@@ -4388,7 +5056,7 @@ const TextAlignment = {
 
 Object.freeze(TextAlignment);
 module.exports = TextAlignment;
-},{}],22:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 /**
  * Define possible texture filter modes.
  * 
@@ -4423,7 +5091,7 @@ Object.defineProperty(TextureFilterModes, '_values', {
 Object.freeze(TextureFilterModes);
 module.exports = TextureFilterModes;
 
-},{}],23:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 /**
  * Define possible texture wrap modes.
  * 
@@ -4454,7 +5122,7 @@ Object.defineProperty(TextureWrapModes, '_values', {
 
 Object.freeze(TextureWrapModes);
 module.exports = TextureWrapModes;
-},{}],24:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 /**
  * Entry point for the Shaku module.
  * 
@@ -4469,7 +5137,7 @@ module.exports = TextureWrapModes;
  */
 'use strict';
 module.exports = require('./shaku');
-},{"./shaku":34}],25:[function(require,module,exports){
+},{"./shaku":40}],31:[function(require,module,exports){
 /**
  * Just an alias to main manager so we can require() this folder as a package.
  * 
@@ -4484,7 +5152,7 @@ module.exports = require('./shaku');
  */
  'use strict';
  module.exports = require('./input');
-},{"./input":26}],26:[function(require,module,exports){
+},{"./input":32}],32:[function(require,module,exports){
 /**
  * Implement the input manager.
  * 
@@ -5159,7 +5827,7 @@ class Input extends IManager
 
 // export main object
 module.exports = new Input();
-},{"../logger.js":28,"../manager.js":29,"../utils/vector2.js":41,"./key_codes.js":27}],27:[function(require,module,exports){
+},{"../logger.js":34,"../manager.js":35,"../utils/vector2.js":47,"./key_codes.js":33}],33:[function(require,module,exports){
 /**
  * Define keyboard and mouse key codes.
  * 
@@ -5290,7 +5958,7 @@ const KeyboardKeys = {
 
 // export keyboard keys and mouse buttons
 module.exports = { KeyboardKeys: KeyboardKeys, MouseButtons: MouseButtons };
-},{}],28:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 /**
  * Implement basic logger.
  * By default, uses console for logging, but it can be replaced with setDrivers().
@@ -5422,7 +6090,7 @@ module.exports = {
         _drivers = drivers;
     }
 };
-},{}],29:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 /**
  * Define the managers interface.
  * 
@@ -5480,7 +6148,7 @@ class IManager
 
 // export the manager interface.
 module.exports = IManager
-},{}],30:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 /**
  * Just an alias to main manager so we can require() this folder as a package.
  * 
@@ -5495,7 +6163,7 @@ module.exports = IManager
  */
  'use strict';
  module.exports = require('./sfx');
-},{"./sfx":31}],31:[function(require,module,exports){
+},{"./sfx":37}],37:[function(require,module,exports){
 /**
  * Implement the sfx manager.
  * 
@@ -5546,15 +6214,6 @@ class Sfx extends IManager
         });
     }
 
-    /**
-     * Get the SoundMixer class.
-     * @see SoundMixer
-     */
-    get SoundMixer()
-    {
-        return SoundMixer;
-    }
-
     /** 
      * @inheritdoc 
      * @private
@@ -5593,6 +6252,15 @@ class Sfx extends IManager
     {
         this.stopAll();
         this._playingSounds = new Set();
+    }
+
+    /**
+     * Get the SoundMixer class.
+     * @see SoundMixer
+     */
+    get SoundMixer()
+    {
+        return SoundMixer;
     }
 
     /**
@@ -5679,7 +6347,7 @@ class Sfx extends IManager
 
 // export main object
 module.exports = new Sfx();
-},{"../assets/sound_asset.js":7,"../logger.js":28,"../manager.js":29,"./sound_instance.js":32,"./sound_mixer.js":33}],32:[function(require,module,exports){
+},{"../assets/sound_asset.js":7,"../logger.js":34,"../manager.js":35,"./sound_instance.js":38,"./sound_mixer.js":39}],38:[function(require,module,exports){
 /**
  * Implement a sound effect instance.
  * 
@@ -5895,7 +6563,7 @@ SoundInstance._masterVolume = 1;
 
 // export main object
 module.exports = SoundInstance;
-},{"../logger.js":28}],33:[function(require,module,exports){
+},{"../logger.js":34}],39:[function(require,module,exports){
 /**
  * Implement a sound mixer class.
  * 
@@ -6029,7 +6697,7 @@ class SoundMixer
 
 // export the sound mixer
 module.exports = SoundMixer;
-},{"./sound_instance.js":32}],34:[function(require,module,exports){
+},{"./sound_instance.js":38}],40:[function(require,module,exports){
 /**
  * Shaku Main.
  * 
@@ -6049,6 +6717,7 @@ const sfx = require('./sfx');
 const gfx = require('./gfx');
 const input = require('./input');
 const assets = require('./assets');
+const collision = require('./collision');
 const utils = require('./utils');
 const GameTime = require("./utils/game_time");
 
@@ -6068,7 +6737,7 @@ let _totalFrameTimes = 0;
 
 
 // current version
-const version = "1.1.0";
+const version = "1.2.0";
 
 /**
  * Shaku's main object.
@@ -6089,6 +6758,7 @@ class Shaku
         this.gfx = gfx;
         this.input = input;
         this.assets = assets;
+        this.collision = collision;
     }
 
     /**
@@ -6107,7 +6777,7 @@ class Shaku
             GameTime.resetGameStartTime();
 
             // setup used managers
-            _usedManagers = managers || [assets, sfx, gfx, input];
+            _usedManagers = managers || [assets, sfx, gfx, input, collision];
 
             // init all managers
             for (let i = 0; i < _usedManagers.length; ++i) {
@@ -6263,7 +6933,7 @@ class Shaku
 
 // create and return the main object.
 module.exports = new Shaku();
-},{"./assets":5,"./gfx":15,"./input":25,"./logger":28,"./manager":29,"./sfx":30,"./utils":39,"./utils/game_time":38}],35:[function(require,module,exports){
+},{"./assets":5,"./collision":11,"./gfx":21,"./input":31,"./logger":34,"./manager":35,"./sfx":36,"./utils":45,"./utils/game_time":44}],41:[function(require,module,exports){
 /**
  * Implement an animator helper class.
  * 
@@ -6602,7 +7272,7 @@ function lerp(start, end, amt) {
 
 // export the animator class.
 module.exports = Animator;
-},{}],36:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 /**
  * Implement a simple 2d circle.
  * 
@@ -6684,7 +7354,7 @@ class Circle
 
 // export the circle class
 module.exports = Circle;
-},{"./vector2":41}],37:[function(require,module,exports){
+},{"./vector2":47}],43:[function(require,module,exports){
 /**
  * Define a color object.
  * 
@@ -7091,7 +7761,7 @@ function hexToColor(hex)
 
 // export Color object
 module.exports = Color;
-},{}],38:[function(require,module,exports){
+},{}],44:[function(require,module,exports){
 /**
  * A utility to hold gametime.
  * 
@@ -7186,7 +7856,7 @@ GameTime.rawTimestamp = getAccurateTimestampMs;
 
 // export the GameTime class.
 module.exports = GameTime;
-},{}],39:[function(require,module,exports){
+},{}],45:[function(require,module,exports){
 /**
  * Include all util classes.
  * 
@@ -7209,7 +7879,7 @@ module.exports = GameTime;
     Animator: require('./animator'),
     GameTime: require('./game_time')
  };
-},{"./animator":35,"./circle":36,"./color":37,"./game_time":38,"./rectangle":40,"./vector2":41}],40:[function(require,module,exports){
+},{"./animator":41,"./circle":42,"./color":43,"./game_time":44,"./rectangle":46,"./vector2":47}],46:[function(require,module,exports){
 /**
  * Implement a simple 2d rectangle.
  * 
@@ -7341,7 +8011,7 @@ class Rectangle
      * Get top-left corner.
      * @returns {Vector2} Corner position vector.
      */
-    get topLeft()
+    getTopLeft()
     {
         return new Vector2(this.x, this.y);
     }
@@ -7350,7 +8020,7 @@ class Rectangle
      * Get top-right corner.
      * @returns {Vector2} Corner position vector.
      */
-    get topRight()
+    getTopRight()
     {
         return new Vector2(this.x + this.width, this.y);
     }
@@ -7359,7 +8029,7 @@ class Rectangle
      * Get bottom-left corner.
      * @returns {Vector2} Corner position vector.
      */
-    get bottomLeft()
+    getBottomLeft()
     {
         return new Vector2(this.x, this.y + this.height);
     }
@@ -7368,7 +8038,7 @@ class Rectangle
      * Get bottom-right corner.
      * @returns {Vector2} Corner position vector.
      */
-    get bottomRight()
+    getBottomRight()
     {
         return new Vector2(this.x + this.width, this.y + this.height);
     }
@@ -7426,17 +8096,23 @@ class Rectangle
         // get rectangle center
         let rectCenter = rect.getCenter();
 
+        // get corners
+        let topLeft = rect.getTopLeft();
+        let topRight = rect.getTopRight();
+        let bottomRight = rect.getBottomRight();
+        let bottomLeft = rect.getBottomLeft();
+
         // create a list of lines to check (in the rectangle) based on circle position to rect center
         let lines = [];
         if (rectCenter.x > center.x) {
-            lines.push([rect.topLeft, rect.bottomLeft]);
+            lines.push([topLeft, bottomLeft]);
         } else {
-            lines.push([rect.topRight, rect.bottomRight]);
+            lines.push([topRight, bottomRight]);
         }
         if (rectCenter.y > center.y) {
-            lines.push([rect.topLeft, rect.topRight]);
+            lines.push([topLeft, topRight]);
         } else {
-            lines.push([rect.bottomLeft, rect.bottomRight]);
+            lines.push([bottomLeft, bottomRight]);
         }
 
         // now check intersection between circle and each of the rectangle lines
@@ -7506,7 +8182,7 @@ class Rectangle
 
 // export the rectangle class
 module.exports = Rectangle;
-},{"./circle":36,"./vector2":41}],41:[function(require,module,exports){
+},{"./circle":42,"./vector2":47}],47:[function(require,module,exports){
 /**
  * Implement a simple 2d vector.
  * 
@@ -8019,5 +8695,5 @@ class Vector2
 
 // export vector object
 module.exports = Vector2;
-},{}]},{},[24])(24)
+},{}]},{},[30])(30)
 });

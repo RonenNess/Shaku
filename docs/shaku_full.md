@@ -37,6 +37,25 @@ This is the asset type you use to play sounds.</p>
 <dd><p>A loadable texture asset.
 This asset type loads an image from URL or source, and turn it into a texture.</p>
 </dd>
+<dt><a href="#Collision">Collision</a></dt>
+<dd><p>Collision is the collision manager. 
+It provides basic 2d collision detection functionality.
+Note: this is <em>not</em> a physics engine, its only for detection and objects picking.</p>
+<p>To access the Collision manager you use <code>Shaku.collision</code>.</p>
+</dd>
+<dt><a href="#CollisionWorld">CollisionWorld</a></dt>
+<dd><p>A collision world is a set of collision shapes that interact with each other.
+You can use different collision worlds to represent different levels or different parts of your game world.</p>
+</dd>
+<dt><a href="#CollisionResolver">CollisionResolver</a></dt>
+<dd><p>The collision resolver is responsible to implement collision detection between pair of shapes of same or different types.</p>
+</dd>
+<dt><a href="#CollisionTestResult">CollisionTestResult</a></dt>
+<dd><p>Collision detection result.</p>
+</dd>
+<dt><a href="#CollisionShape">CollisionShape</a></dt>
+<dd><p>Collision shape base class.</p>
+</dd>
 <dt><a href="#Camera">Camera</a></dt>
 <dd><p>Implements a Camera object.</p>
 </dd>
@@ -815,6 +834,206 @@ Get pixel color from image.
 
 ### textureAsset.destroy()
 **Kind**: instance method of [<code>TextureAsset</code>](#TextureAsset)  
+<a name="Collision"></a>
+
+## Collision
+Collision is the collision manager. 
+It provides basic 2d collision detection functionality.
+Note: this is *not* a physics engine, its only for detection and objects picking.
+
+To access the Collision manager you use `Shaku.collision`.
+
+**Kind**: global class  
+
+* [Collision](#Collision)
+    * [new Collision()](#new_Collision_new)
+    * [.resolver](#Collision+resolver)
+    * [.createWorld(gridCellSize)](#Collision+createWorld) ⇒ [<code>CollisionWorld</code>](#CollisionWorld)
+
+<a name="new_Collision_new"></a>
+
+### new Collision()
+Create the manager.
+
+<a name="Collision+resolver"></a>
+
+### collision.resolver
+Get the collision resolver. 
+You can use this object directly without creating a collision world, if you just need to test collision between two shapes.
+
+**Kind**: instance property of [<code>Collision</code>](#Collision)  
+<a name="Collision+createWorld"></a>
+
+### collision.createWorld(gridCellSize) ⇒ [<code>CollisionWorld</code>](#CollisionWorld)
+Create a new collision world object.
+
+**Kind**: instance method of [<code>Collision</code>](#Collision)  
+**Returns**: [<code>CollisionWorld</code>](#CollisionWorld) - Newly created collision world.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| gridCellSize | <code>Number</code> \| [<code>Vector2</code>](#Vector2) | Collision world grid cell size. |
+
+<a name="CollisionWorld"></a>
+
+## CollisionWorld
+A collision world is a set of collision shapes that interact with each other.
+You can use different collision worlds to represent different levels or different parts of your game world.
+
+**Kind**: global class  
+
+* [CollisionWorld](#CollisionWorld)
+    * [new CollisionWorld(gridCellSize)](#new_CollisionWorld_new)
+    * [.addShape(shape)](#CollisionWorld+addShape)
+    * [.removeShape(shape)](#CollisionWorld+removeShape)
+    * [.testCollision(sourceShape, sortByDistance, predicate)](#CollisionWorld+testCollision) ⇒ [<code>CollisionTestResult</code>](#CollisionTestResult)
+    * [.testCollisionMany(sourceShape, sortByDistance, predicate)](#CollisionWorld+testCollisionMany) ⇒ [<code>Array.&lt;CollisionTestResult&gt;</code>](#CollisionTestResult)
+
+<a name="new_CollisionWorld_new"></a>
+
+### new CollisionWorld(gridCellSize)
+Create the collision world.
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| gridCellSize | <code>Number</code> \| [<code>Vector2</code>](#Vector2) | For optimize collision testing, the collision world is divided into a collision grid. This param determine the grid cell size. |
+
+<a name="CollisionWorld+addShape"></a>
+
+### collisionWorld.addShape(shape)
+Add a collision shape to this world.
+
+**Kind**: instance method of [<code>CollisionWorld</code>](#CollisionWorld)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| shape | [<code>CollisionShape</code>](#CollisionShape) | Shape to add. |
+
+<a name="CollisionWorld+removeShape"></a>
+
+### collisionWorld.removeShape(shape)
+Remove a collision shape from this world.
+
+**Kind**: instance method of [<code>CollisionWorld</code>](#CollisionWorld)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| shape | [<code>CollisionShape</code>](#CollisionShape) | Shape to remove. |
+
+<a name="CollisionWorld+testCollision"></a>
+
+### collisionWorld.testCollision(sourceShape, sortByDistance, predicate) ⇒ [<code>CollisionTestResult</code>](#CollisionTestResult)
+Test collision with shapes in world, and return just the first result found.
+
+**Kind**: instance method of [<code>CollisionWorld</code>](#CollisionWorld)  
+**Returns**: [<code>CollisionTestResult</code>](#CollisionTestResult) - A collision test result, or null if not found.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| sourceShape | [<code>CollisionShape</code>](#CollisionShape) | Source shape to check collision for. If shape is in world, it will not collide with itself. |
+| sortByDistance | <code>Boolean</code> | If true will return the nearest collision found (based on center of shapes). |
+| predicate | <code>function</code> | Optional filter to run on any shape we're about to test collision with. If the predicate returns false, we will skip this shape. |
+
+<a name="CollisionWorld+testCollisionMany"></a>
+
+### collisionWorld.testCollisionMany(sourceShape, sortByDistance, predicate) ⇒ [<code>Array.&lt;CollisionTestResult&gt;</code>](#CollisionTestResult)
+Test collision with shapes in world, and return all results found.
+
+**Kind**: instance method of [<code>CollisionWorld</code>](#CollisionWorld)  
+**Returns**: [<code>Array.&lt;CollisionTestResult&gt;</code>](#CollisionTestResult) - An array of collision test results, or empty array if none found.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| sourceShape | [<code>CollisionShape</code>](#CollisionShape) | Source shape to check collision for. If shape is in world, it will not collide with itself. |
+| sortByDistance | <code>Boolean</code> | If true will sort results by distance. |
+| predicate | <code>function</code> | Optional filter to run on any shape we're about to test collision with. If the predicate returns false, we will skip this shape. |
+
+<a name="CollisionResolver"></a>
+
+## CollisionResolver
+The collision resolver is responsible to implement collision detection between pair of shapes of same or different types.
+
+**Kind**: global class  
+
+* [CollisionResolver](#CollisionResolver)
+    * [new CollisionResolver()](#new_CollisionResolver_new)
+    * [.setHandler(firstShapeClass, secondShapeClass, handler)](#CollisionResolver+setHandler)
+    * [.test(first, second)](#CollisionResolver+test) ⇒ [<code>CollisionTestResult</code>](#CollisionTestResult)
+
+<a name="new_CollisionResolver_new"></a>
+
+### new CollisionResolver()
+Create the resolver.
+
+<a name="CollisionResolver+setHandler"></a>
+
+### collisionResolver.setHandler(firstShapeClass, secondShapeClass, handler)
+Set the method used to test collision between two shapes.
+Note: you don't need to register the same handler twice for reverse order, its done automatically inside.
+
+**Kind**: instance method of [<code>CollisionResolver</code>](#CollisionResolver)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| firstShapeClass | <code>Class</code> | The shape type the handler recieves as first argument. |
+| secondShapeClass | <code>Class</code> | The shape type the handler recieves as second argument. |
+| handler | <code>function</code> | Method to test collision between the shapes. Return false if don't collide, return either Vector2 with collision position or 'true' for collision. |
+
+<a name="CollisionResolver+test"></a>
+
+### collisionResolver.test(first, second) ⇒ [<code>CollisionTestResult</code>](#CollisionTestResult)
+Check a collision between two shapes.
+
+**Kind**: instance method of [<code>CollisionResolver</code>](#CollisionResolver)  
+**Returns**: [<code>CollisionTestResult</code>](#CollisionTestResult) - collision detection result or null if they don't collide.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| first | [<code>CollisionShape</code>](#CollisionShape) | First collision shape to test. |
+| second | [<code>CollisionShape</code>](#CollisionShape) | Second collision shape to test. |
+
+<a name="CollisionTestResult"></a>
+
+## CollisionTestResult
+Collision detection result.
+
+**Kind**: global class  
+<a name="new_CollisionTestResult_new"></a>
+
+### new CollisionTestResult(position, first, second)
+Create the collision result.
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| position | [<code>Vector2</code>](#Vector2) | Optional collision position. |
+| first | [<code>CollisionShape</code>](#CollisionShape) | First shape in the collision check. |
+| second | [<code>CollisionShape</code>](#CollisionShape) | Second shape in the collision check. |
+
+<a name="CollisionShape"></a>
+
+## CollisionShape
+Collision shape base class.
+
+**Kind**: global class  
+
+* [CollisionShape](#CollisionShape)
+    * [new CollisionShape()](#new_CollisionShape_new)
+    * [.getBoundingBox()](#CollisionShape+getBoundingBox) ⇒ [<code>Rectangle</code>](#Rectangle)
+
+<a name="new_CollisionShape_new"></a>
+
+### new CollisionShape()
+Create the collision shape.
+
+<a name="CollisionShape+getBoundingBox"></a>
+
+### collisionShape.getBoundingBox() ⇒ [<code>Rectangle</code>](#Rectangle)
+Get collision shape's bounding box.
+
+**Kind**: instance method of [<code>CollisionShape</code>](#CollisionShape)  
+**Returns**: [<code>Rectangle</code>](#Rectangle) - Shape's bounding box.  
 <a name="Camera"></a>
 
 ## Camera
@@ -1199,6 +1418,7 @@ To access the Graphics manager you use `Shaku.gfx`.
     * [.cover(texture, destRect, sourceRect, color, blendMode)](#Gfx+cover)
     * [.draw(texture, position, size, sourceRect, color, blendMode, rotation, origin, transform)](#Gfx+draw)
     * [.fillRect(destRect, color, blend, rotation)](#Gfx+fillRect)
+    * [.outlineRect(destRect, color, blend, rotation)](#Gfx+outlineRect)
     * [.drawLine(startPoint, endPoint, color, blendMode)](#Gfx+drawLine)
     * [.drawLines(points, colors, blendMode, looped)](#Gfx+drawLines)
     * [.clear(color)](#Gfx+clear)
@@ -1662,6 +1882,25 @@ Draw a filled colored rectangle.
 ```js
 // draw a 50x50 red rectangle at position 100x100, that will rotate over time
 Shaku.gfx.fillRect(new Shaku.utils.Rectangle(100, 100, 50, 50), Shaku.utils.Color.red, null, Shaku.gameTime.elapsed);
+```
+<a name="Gfx+outlineRect"></a>
+
+### gfx.outlineRect(destRect, color, blend, rotation)
+Draw an outline colored rectangle.
+
+**Kind**: instance method of [<code>Gfx</code>](#Gfx)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| destRect | [<code>Rectangle</code>](#Rectangle) | Rectangle to draw outline for. |
+| color | [<code>Color</code>](#Color) | Rectangle outline color. |
+| blend | <code>BlendModes</code> | Blend mode. |
+| rotation | <code>Number</code> | Rotate the rectangle around its center. |
+
+**Example**  
+```js
+// draw a 50x50 red rectangle at position 100x100, that will rotate over time
+Shaku.gfx.outlineRect(new Shaku.utils.Rectangle(100, 100, 50, 50), Shaku.utils.Color.red, null, Shaku.gameTime.elapsed);
 ```
 <a name="Gfx+drawLine"></a>
 
@@ -3526,15 +3765,15 @@ Implement a simple 2d Rectangle.
         * [.right](#Rectangle+right) ⇒ <code>Number</code>
         * [.top](#Rectangle+top) ⇒ <code>Number</code>
         * [.bottom](#Rectangle+bottom) ⇒ <code>Number</code>
-        * [.topLeft](#Rectangle+topLeft) ⇒ [<code>Vector2</code>](#Vector2)
-        * [.topRight](#Rectangle+topRight) ⇒ [<code>Vector2</code>](#Vector2)
-        * [.bottomLeft](#Rectangle+bottomLeft) ⇒ [<code>Vector2</code>](#Vector2)
-        * [.bottomRight](#Rectangle+bottomRight) ⇒ [<code>Vector2</code>](#Vector2)
         * [.set(x, y, width, height)](#Rectangle+set) ⇒ [<code>Rectangle</code>](#Rectangle)
         * [.getPosition()](#Rectangle+getPosition) ⇒ [<code>Vector2</code>](#Vector2)
         * [.getSize()](#Rectangle+getSize) ⇒ [<code>Vector2</code>](#Vector2)
         * [.getCenter()](#Rectangle+getCenter) ⇒ [<code>Vector2</code>](#Vector2)
         * [.clone()](#Rectangle+clone) ⇒ [<code>Rectangle</code>](#Rectangle)
+        * [.getTopLeft()](#Rectangle+getTopLeft) ⇒ [<code>Vector2</code>](#Vector2)
+        * [.getTopRight()](#Rectangle+getTopRight) ⇒ [<code>Vector2</code>](#Vector2)
+        * [.getBottomLeft()](#Rectangle+getBottomLeft) ⇒ [<code>Vector2</code>](#Vector2)
+        * [.getBottomRight()](#Rectangle+getBottomRight) ⇒ [<code>Vector2</code>](#Vector2)
         * [.string()](#Rectangle+string)
         * [.containsVector(p)](#Rectangle+containsVector) ⇒ <code>Boolean</code>
         * [.collideRect(other)](#Rectangle+collideRect) ⇒ <code>Boolean</code>
@@ -3585,34 +3824,6 @@ Get bottom value.
 
 **Kind**: instance property of [<code>Rectangle</code>](#Rectangle)  
 **Returns**: <code>Number</code> - rectangle bottom.  
-<a name="Rectangle+topLeft"></a>
-
-### rectangle.topLeft ⇒ [<code>Vector2</code>](#Vector2)
-Get top-left corner.
-
-**Kind**: instance property of [<code>Rectangle</code>](#Rectangle)  
-**Returns**: [<code>Vector2</code>](#Vector2) - Corner position vector.  
-<a name="Rectangle+topRight"></a>
-
-### rectangle.topRight ⇒ [<code>Vector2</code>](#Vector2)
-Get top-right corner.
-
-**Kind**: instance property of [<code>Rectangle</code>](#Rectangle)  
-**Returns**: [<code>Vector2</code>](#Vector2) - Corner position vector.  
-<a name="Rectangle+bottomLeft"></a>
-
-### rectangle.bottomLeft ⇒ [<code>Vector2</code>](#Vector2)
-Get bottom-left corner.
-
-**Kind**: instance property of [<code>Rectangle</code>](#Rectangle)  
-**Returns**: [<code>Vector2</code>](#Vector2) - Corner position vector.  
-<a name="Rectangle+bottomRight"></a>
-
-### rectangle.bottomRight ⇒ [<code>Vector2</code>](#Vector2)
-Get bottom-right corner.
-
-**Kind**: instance property of [<code>Rectangle</code>](#Rectangle)  
-**Returns**: [<code>Vector2</code>](#Vector2) - Corner position vector.  
 <a name="Rectangle+set"></a>
 
 ### rectangle.set(x, y, width, height) ⇒ [<code>Rectangle</code>](#Rectangle)
@@ -3656,6 +3867,34 @@ Return a clone of this rectangle.
 
 **Kind**: instance method of [<code>Rectangle</code>](#Rectangle)  
 **Returns**: [<code>Rectangle</code>](#Rectangle) - Cloned rectangle.  
+<a name="Rectangle+getTopLeft"></a>
+
+### rectangle.getTopLeft() ⇒ [<code>Vector2</code>](#Vector2)
+Get top-left corner.
+
+**Kind**: instance method of [<code>Rectangle</code>](#Rectangle)  
+**Returns**: [<code>Vector2</code>](#Vector2) - Corner position vector.  
+<a name="Rectangle+getTopRight"></a>
+
+### rectangle.getTopRight() ⇒ [<code>Vector2</code>](#Vector2)
+Get top-right corner.
+
+**Kind**: instance method of [<code>Rectangle</code>](#Rectangle)  
+**Returns**: [<code>Vector2</code>](#Vector2) - Corner position vector.  
+<a name="Rectangle+getBottomLeft"></a>
+
+### rectangle.getBottomLeft() ⇒ [<code>Vector2</code>](#Vector2)
+Get bottom-left corner.
+
+**Kind**: instance method of [<code>Rectangle</code>](#Rectangle)  
+**Returns**: [<code>Vector2</code>](#Vector2) - Corner position vector.  
+<a name="Rectangle+getBottomRight"></a>
+
+### rectangle.getBottomRight() ⇒ [<code>Vector2</code>](#Vector2)
+Get bottom-right corner.
+
+**Kind**: instance method of [<code>Rectangle</code>](#Rectangle)  
+**Returns**: [<code>Vector2</code>](#Vector2) - Corner position vector.  
 <a name="Rectangle+string"></a>
 
 ### rectangle.string()

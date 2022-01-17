@@ -1313,6 +1313,18 @@ List of changes in released versions.
 - Added culling to batch rendering.
 - Changed `renderingRegion` to return actual region, with `viewport` and `renderTarget` considered (breaking change).
 
+# 1.2.0
+
+- Added collision detection manager.
+- Added outlineRect method.
+- Changed the topLeft, topRight, bottomLeft, bottomRight getters in `Rectangle` to be 'getXXX' methods (breaking change).
+- - Why: if its a getter you can do `rect.topLeft.x = ...` which implies you can change it, but you can't. also now its more consistent with getSize() and getCenter().
+- Fixed all rotations to go clockwise, to be more industry standard (breaking change).
+- Small default-color optimization in gfx manager.
+- Added 'Invert' Blend Mode.
+- Added 'Darken' Blend Mode.
+
+
 # License
 
 *Shaku* is licensed under the permissive MIT license, so you can use it for any purpose (including commercially) and it should be compatible with most common licenses.

@@ -45,6 +45,7 @@ To access the Graphics manager you use `Shaku.gfx`.
     * [.cover(texture, destRect, sourceRect, color, blendMode)](#Gfx+cover)
     * [.draw(texture, position, size, sourceRect, color, blendMode, rotation, origin, transform)](#Gfx+draw)
     * [.fillRect(destRect, color, blend, rotation)](#Gfx+fillRect)
+    * [.outlineRect(destRect, color, blend, rotation)](#Gfx+outlineRect)
     * [.drawLine(startPoint, endPoint, color, blendMode)](#Gfx+drawLine)
     * [.drawLines(points, colors, blendMode, looped)](#Gfx+drawLines)
     * [.clear(color)](#Gfx+clear)
@@ -508,6 +509,25 @@ Draw a filled colored rectangle.
 ```js
 // draw a 50x50 red rectangle at position 100x100, that will rotate over time
 Shaku.gfx.fillRect(new Shaku.utils.Rectangle(100, 100, 50, 50), Shaku.utils.Color.red, null, Shaku.gameTime.elapsed);
+```
+<a name="Gfx+outlineRect"></a>
+
+### gfx.outlineRect(destRect, color, blend, rotation)
+Draw an outline colored rectangle.
+
+**Kind**: instance method of [<code>Gfx</code>](#Gfx)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| destRect | <code>Rectangle</code> | Rectangle to draw outline for. |
+| color | <code>Color</code> | Rectangle outline color. |
+| blend | <code>BlendModes</code> | Blend mode. |
+| rotation | <code>Number</code> | Rotate the rectangle around its center. |
+
+**Example**  
+```js
+// draw a 50x50 red rectangle at position 100x100, that will rotate over time
+Shaku.gfx.outlineRect(new Shaku.utils.Rectangle(100, 100, 50, 50), Shaku.utils.Color.red, null, Shaku.gameTime.elapsed);
 ```
 <a name="Gfx+drawLine"></a>
 
