@@ -32,10 +32,15 @@
           let world = Shaku.collision.createWorld(128);
 
           // create some shapes
-          let rect = new Shaku.collision.RectangleShape(new Shaku.utils.Rectangle(150, 150, 75, 125));
+
+          let rect = new Shaku.collision.RectangleShape(new Shaku.utils.Rectangle(200, 150, 75, 125));
           world.addShape(rect);
+
           let point = new Shaku.collision.PointShape(new Shaku.utils.Vector2(75, 200));
           world.addShape(point);
+
+          let circle = new Shaku.collision.CircleShape(new Shaku.utils.Circle(new Shaku.utils.Vector2(450, 200), 75));
+          world.addShape(circle);
 
           // do a single main loop step
           function step() 

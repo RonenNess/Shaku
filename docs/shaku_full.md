@@ -53,6 +53,9 @@ You can use different collision worlds to represent different levels or differen
 <dt><a href="#CollisionTestResult">CollisionTestResult</a></dt>
 <dd><p>Collision detection result.</p>
 </dd>
+<dt><a href="#CircleShape">CircleShape</a></dt>
+<dd><p>Collision circle class.</p>
+</dd>
 <dt><a href="#PointShape">PointShape</a></dt>
 <dd><p>Collision point class.</p>
 </dd>
@@ -856,6 +859,7 @@ To access the Collision manager you use `Shaku.collision`.
     * [.resolver](#Collision+resolver)
     * [.RectangleShape](#Collision+RectangleShape)
     * [.PointShape](#Collision+PointShape)
+    * [.CircleShape](#Collision+CircleShape)
     * [.createWorld(gridCellSize)](#Collision+createWorld) ⇒ [<code>CollisionWorld</code>](#CollisionWorld)
 
 <a name="new_Collision_new"></a>
@@ -880,6 +884,12 @@ Get the collision reactanle shape class.
 
 ### collision.PointShape
 Get the collision point shape class.
+
+**Kind**: instance property of [<code>Collision</code>](#Collision)  
+<a name="Collision+CircleShape"></a>
+
+### collision.CircleShape
+Get the collision circle shape class.
 
 **Kind**: instance property of [<code>Collision</code>](#Collision)  
 <a name="Collision+createWorld"></a>
@@ -1044,6 +1054,58 @@ Create the collision result.
 | position | [<code>Vector2</code>](#Vector2) | Optional collision position. |
 | first | [<code>CollisionShape</code>](#CollisionShape) | First shape in the collision check. |
 | second | [<code>CollisionShape</code>](#CollisionShape) | Second shape in the collision check. |
+
+<a name="CircleShape"></a>
+
+## CircleShape
+Collision circle class.
+
+**Kind**: global class  
+
+* [CircleShape](#CircleShape)
+    * [new CircleShape(circle)](#new_CircleShape_new)
+    * [.setShape(circle)](#CircleShape+setShape)
+    * [.getBoundingBox()](#CircleShape+getBoundingBox) ⇒ [<code>Rectangle</code>](#Rectangle)
+    * [.debugDraw(opacity)](#CircleShape+debugDraw)
+
+<a name="new_CircleShape_new"></a>
+
+### new CircleShape(circle)
+Create the collision shape.
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| circle | [<code>Circle</code>](#Circle) | the circle shape. |
+
+<a name="CircleShape+setShape"></a>
+
+### circleShape.setShape(circle)
+Set this collision shape from circle.
+
+**Kind**: instance method of [<code>CircleShape</code>](#CircleShape)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| circle | [<code>Rectangle</code>](#Rectangle) | Circle shape. |
+
+<a name="CircleShape+getBoundingBox"></a>
+
+### circleShape.getBoundingBox() ⇒ [<code>Rectangle</code>](#Rectangle)
+Get collision shape's bounding box.
+
+**Kind**: instance method of [<code>CircleShape</code>](#CircleShape)  
+**Returns**: [<code>Rectangle</code>](#Rectangle) - Shape's bounding box.  
+<a name="CircleShape+debugDraw"></a>
+
+### circleShape.debugDraw(opacity)
+Debug draw this shape.
+
+**Kind**: instance method of [<code>CircleShape</code>](#CircleShape)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| opacity | <code>Number</code> | Shape opacity factor. |
 
 <a name="PointShape"></a>
 
@@ -1590,6 +1652,7 @@ To access the Graphics manager you use `Shaku.gfx`.
     * [.fillRect(destRect, color, blend, rotation)](#Gfx+fillRect)
     * [.outlineRect(destRect, color, blend, rotation)](#Gfx+outlineRect)
     * [.outlineCircle(circle, color, blend, lineAmount)](#Gfx+outlineCircle)
+    * [.fillCircle(circle, color, blend, lineAmount)](#Gfx+fillCircle)
     * [.drawLine(startPoint, endPoint, color, blendMode)](#Gfx+drawLine)
     * [.drawLines(points, colors, blendMode, looped)](#Gfx+drawLines)
     * [.clear(color)](#Gfx+clear)
@@ -2084,7 +2147,7 @@ Draw an outline colored circle.
 | Param | Type | Description |
 | --- | --- | --- |
 | circle | [<code>Circle</code>](#Circle) | Circle to draw. |
-| color | [<code>Color</code>](#Color) | Rectangle outline color. |
+| color | [<code>Color</code>](#Color) | Circle outline color. |
 | blend | <code>BlendModes</code> | Blend mode. |
 | lineAmount | <code>Number</code> | How many lines to compose the circle from (bigger number = smoother circle). |
 
@@ -2092,6 +2155,25 @@ Draw an outline colored circle.
 ```js
 // draw a circle at 50x50 with radius of 85
 Shaku.gfx.outlineCircle(new Shaku.utils.Circle(new Shaku.utils.Vector2(50, 50), 85), Shaku.utils.Color.red);
+```
+<a name="Gfx+fillCircle"></a>
+
+### gfx.fillCircle(circle, color, blend, lineAmount)
+Draw a filled colored circle.
+
+**Kind**: instance method of [<code>Gfx</code>](#Gfx)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| circle | [<code>Circle</code>](#Circle) | Circle to draw. |
+| color | [<code>Color</code>](#Color) | Circle fill color. |
+| blend | <code>BlendModes</code> | Blend mode. |
+| lineAmount | <code>Number</code> | How many lines to compose the circle from (bigger number = smoother circle). |
+
+**Example**  
+```js
+// draw a filled circle at 50x50 with radius of 85
+Shaku.gfx.fillCircle(new Shaku.utils.Circle(new Shaku.utils.Vector2(50, 50), 85), Shaku.utils.Color.red);
 ```
 <a name="Gfx+drawLine"></a>
 

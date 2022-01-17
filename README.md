@@ -282,18 +282,26 @@ If you change the default effect, it may affect how rectangles draw as well. Mor
 
 A demo page that draw rectangles can be found [here](https://ronenness.github.io/Shaku/demo/gfx_draw.html).
 
+
 ### Draw Circle
 
-`outlineCircle` will draw the outlines of a colored circle.
+`fillCircle` will draw filled colored circles. 
 
 ```js
-Shaku.gfx.outlineCircle(new Shaku.utils.Circle(Shaku.gfx.canvasSize.div(2), 285), Shaku.utils.Color.red);
+Shaku.gfx.fillCircle(new Shaku.utils.Circle(new Shaku.utils.Vector2(100, 100), 285), Shaku.utils.Color.red);
+```
+
+You can also draw a circle outlines with outlineCircle:
+
+```js
+Shaku.gfx.outlineCircle(new Shaku.utils.Circle(new Shaku.utils.Vector2(100, 100), 285), Shaku.utils.Color.red);
 ```
 
 `Shaku` will use whatever effect is currently set to draw the circle, with a single white pixel as the texture. 
 If you change the default effect, it may affect how circles draw as well. More on effects later.
 
 A demo page that draw a circle can be found [here](https://ronenness.github.io/Shaku/demo/gfx_draw.html).
+
 
 ### Draw Lines
 
@@ -1335,14 +1343,15 @@ List of changes in released versions.
 # 1.2.0
 
 - Added collision detection manager.
-- Added outlineRect method.
+- Added 'outlineRect' to gfx manager.
+- Added 'fillCircle' to gfx manager.
+- Added 'outlineCircle' to gfx manager.
 - Changed the topLeft, topRight, bottomLeft, bottomRight getters in `Rectangle` to be 'getXXX' methods (breaking change).
 - - Why: if its a getter you can do `rect.topLeft.x = ...` which implies you can change it, but you can't. also now its more consistent with getSize() and getCenter().
 - Fixed all rotations to go clockwise, to be more industry standard (breaking change).
 - Small default-color optimization in gfx manager.
 - Added 'Invert' Blend Mode.
 - Added 'Darken' Blend Mode.
-- Added 'outlineCircle' to gfx manager.
 
 
 # License

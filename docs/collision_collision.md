@@ -20,6 +20,7 @@ To access the Collision manager you use `Shaku.collision`.
     * [.resolver](#Collision+resolver)
     * [.RectangleShape](#Collision+RectangleShape)
     * [.PointShape](#Collision+PointShape)
+    * [.CircleShape](#Collision+CircleShape)
     * [.createWorld(gridCellSize)](#Collision+createWorld) ⇒ <code>CollisionWorld</code>
 
 <a name="new_Collision_new"></a>
@@ -44,6 +45,12 @@ Get the collision reactanle shape class.
 
 ### collision.PointShape
 Get the collision point shape class.
+
+**Kind**: instance property of [<code>Collision</code>](#Collision)  
+<a name="Collision+CircleShape"></a>
+
+### collision.CircleShape
+Get the collision circle shape class.
 
 **Kind**: instance property of [<code>Collision</code>](#Collision)  
 <a name="Collision+createWorld"></a>
