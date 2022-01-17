@@ -305,12 +305,20 @@ A demo page that draw a circle can be found [here](https://ronenness.github.io/S
 
 ### Draw Lines
 
-`drawLines` will draw a strip of colored lines. 
+`drawLinesStrip` will draw a strip of colored lines. 
 For example the following will draw lines from 50,50 to 150,50 and then 150,150 with random colors:
 
 ```js
 let lines = [new Shaku.utils.Vector2(50,50), new Shaku.utils.Vector2(150,50), new Shaku.utils.Vector2(150,150)];
 let colors = [Shaku.utils.Color.random(), Shaku.utils.Color.random(), Shaku.utils.Color.random()];
+Shaku.gfx.drawLinesStrip(lines, colors);
+```
+
+And `drawLines` will draw a set of lines, not connected as a strip:
+
+```js
+let lines = [new Shaku.utils.Vector2(50,50), new Shaku.utils.Vector2(150,50), new Shaku.utils.Vector2(150,150), new Shaku.utils.Vector2(300,150)];
+let colors = [Shaku.utils.Color.red, Shaku.utils.Color.red, Shaku.utils.Color.blue, Shaku.utils.Color.blue];
 Shaku.gfx.drawLines(lines, colors);
 ```
 
@@ -1343,15 +1351,16 @@ List of changes in released versions.
 # 1.2.0
 
 - Added collision detection manager.
-- Added 'outlineRect' to gfx manager.
-- Added 'fillCircle' to gfx manager.
-- Added 'outlineCircle' to gfx manager.
+- Added `outlineRect` to gfx manager.
+- Added `fillCircle` to gfx manager.
+- Added `outlineCircle` to gfx manager.
 - Changed the topLeft, topRight, bottomLeft, bottomRight getters in `Rectangle` to be 'getXXX' methods (breaking change).
 - - Why: if its a getter you can do `rect.topLeft.x = ...` which implies you can change it, but you can't. also now its more consistent with getSize() and getCenter().
 - Fixed all rotations to go clockwise, to be more industry standard (breaking change).
 - Small default-color optimization in gfx manager.
-- Added 'Invert' Blend Mode.
-- Added 'Darken' Blend Mode.
+- Added `Invert` Blend Mode.
+- Added `Darken` Blend Mode.
+- Renamed `drawLines` to `drawLinesStrip` and added real `drawLines` (breaking change).
 
 
 # License

@@ -49,7 +49,8 @@ To access the Graphics manager you use `Shaku.gfx`.
     * [.outlineCircle(circle, color, blend, lineAmount)](#Gfx+outlineCircle)
     * [.fillCircle(circle, color, blend, lineAmount)](#Gfx+fillCircle)
     * [.drawLine(startPoint, endPoint, color, blendMode)](#Gfx+drawLine)
-    * [.drawLines(points, colors, blendMode, looped)](#Gfx+drawLines)
+    * [.drawLinesStrip(points, colors, blendMode, looped)](#Gfx+drawLinesStrip)
+    * [.drawLines(points, colors, blendMode)](#Gfx+drawLines)
     * [.clear(color)](#Gfx+clear)
 
 <a name="new_Gfx_new"></a>
@@ -588,9 +589,9 @@ Draw a single line between two points.
 ```js
 Shaku.gfx.drawLine(new Shaku.utils.Vector2(50,50), new Shaku.utils.Vector2(150,50), Shaku.utils.Color.red);
 ```
-<a name="Gfx+drawLines"></a>
+<a name="Gfx+drawLinesStrip"></a>
 
-### gfx.drawLines(points, colors, blendMode, looped)
+### gfx.drawLinesStrip(points, colors, blendMode, looped)
 Draw a strip of lines between an array of points.
 
 **Kind**: instance method of [<code>Gfx</code>](#Gfx)  
@@ -601,6 +602,25 @@ Draw a strip of lines between an array of points.
 | colors | <code>Color</code> \| <code>Array.&lt;Color&gt;</code> | Single lines color if you want one color for all lines, or an array of colors per segment. |
 | blendMode | <code>BlendModes</code> | Blend mode to draw lines with (default to Opaque). |
 | looped | <code>Boolean</code> | If true, will also draw a line from last point back to first point. |
+
+**Example**  
+```js
+let lines = [new Shaku.utils.Vector2(50,50), new Shaku.utils.Vector2(150,50), new Shaku.utils.Vector2(150,150)];
+let colors = [Shaku.utils.Color.random(), Shaku.utils.Color.random(), Shaku.utils.Color.random()];
+Shaku.gfx.drawLinesStrip(lines, colors);
+```
+<a name="Gfx+drawLines"></a>
+
+### gfx.drawLines(points, colors, blendMode)
+Draw a list of lines from an array of points.
+
+**Kind**: instance method of [<code>Gfx</code>](#Gfx)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| points | <code>Array.&lt;Vector2&gt;</code> | Points to draw line between. |
+| colors | <code>Color</code> \| <code>Array.&lt;Color&gt;</code> | Single lines color if you want one color for all lines, or an array of colors per segment. |
+| blendMode | <code>BlendModes</code> | Blend mode to draw lines with (default to Opaque). |
 
 **Example**  
 ```js

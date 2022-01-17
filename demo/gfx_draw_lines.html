@@ -49,7 +49,7 @@
 
             // draw lines
             let looped = document.getElementById('loop-lines').checked;
-            Shaku.gfx.drawLines(lines, colors, null, looped);
+            Shaku.gfx.drawLinesStrip(lines, colors, null, looped);
 
             // add line segments
             if (Shaku.input.down('mouse_left') && (Shaku.input.mouseMoving || Shaku.input.pressed('mouse_left'))) {

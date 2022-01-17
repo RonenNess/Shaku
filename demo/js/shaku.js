@@ -2187,8 +2187,12 @@ class CircleShape extends CollisionShape
     debugDraw(opacity)
     {
         let color = this._getDebugColor();
+
         color.a *= opacity;
-        gfx.outlineCircle(this._circle, color, gfx.BlendModes.AlphaBlend);
+        gfx.outlineCircle(this._circle, color, gfx.BlendModes.AlphaBlend, 11);
+
+        color.a *= 0.25;
+        gfx.fillCircle(this._circle, color, gfx.BlendModes.AlphaBlend, 11);
     }
 }
 
@@ -2212,6 +2216,7 @@ const CollisionShape = require("./shape");
 const gfx = require('./../../gfx');
 const Vector2 = require("../../utils/vector2");
 const Rectangle = require("../../utils/rectangle");
+const Circle = require("../../utils/circle");
 
 
 /**
@@ -2265,13 +2270,13 @@ class PointShape extends CollisionShape
     {
         let color = this._getDebugColor();
         color.a *= opacity;
-        gfx.outlineRect(this._boundingBox, color, gfx.BlendModes.AlphaBlend);
+        gfx.outlineCircle(new Circle(this.getPosition(), 3), color, gfx.BlendModes.AlphaBlend, 4);
     }
 }
 
 // export collision shape class
 module.exports = PointShape;
-},{"../../utils/rectangle":49,"../../utils/vector2":50,"./../../gfx":24,"./shape":17}],16:[function(require,module,exports){
+},{"../../utils/circle":45,"../../utils/rectangle":49,"../../utils/vector2":50,"./../../gfx":24,"./shape":17}],16:[function(require,module,exports){
 /**
  * Implement collision rectangle.
  * 
@@ -2331,8 +2336,12 @@ class RectangleShape extends CollisionShape
     debugDraw(opacity)
     {
         let color = this._getDebugColor();
+
         color.a *= opacity;
         gfx.outlineRect(this._rect, color, gfx.BlendModes.AlphaBlend);
+                
+        color.a *= 0.25;
+        gfx.fillRect(this._rect, color, gfx.BlendModes.AlphaBlend);
     }
 }
 
@@ -4078,7 +4087,7 @@ class Gfx extends IManager
         }
         
         // draw rectangle with lines strip
-        this.drawLines([topLeft, topRight, bottomRight, bottomLeft], color, blend, true);
+        this.drawLinesStrip([topLeft, topRight, bottomRight, bottomLeft], color, blend, true);
     }
 
     /**
@@ -4108,7 +4117,7 @@ class Gfx extends IManager
         }
 
         // draw lines
-        this.drawLines(lines, color, blend);
+        this.drawLinesStrip(lines, color, blend);
     }
 
     /**
@@ -4165,13 +4174,13 @@ class Gfx extends IManager
      * @example
      * let lines = [new Shaku.utils.Vector2(50,50), new Shaku.utils.Vector2(150,50), new Shaku.utils.Vector2(150,150)];
      * let colors = [Shaku.utils.Color.random(), Shaku.utils.Color.random(), Shaku.utils.Color.random()];
-     * Shaku.gfx.drawLines(lines, colors);
+     * Shaku.gfx.drawLinesStrip(lines, colors);
      * @param {Array<Vector2>} points Points to draw line between.
      * @param {Color|Array<Color>} colors Single lines color if you want one color for all lines, or an array of colors per segment.
      * @param {BlendModes} blendMode Blend mode to draw lines with (default to Opaque).
      * @param {Boolean} looped If true, will also draw a line from last point back to first point.
      */
-    drawLines(points, colors, blendMode, looped)
+    drawLinesStrip(points, colors, blendMode, looped)
     {
         // prepare effect and buffers
         this._fillShapesBuffer(points, colors, blendMode);
@@ -4182,6 +4191,27 @@ class Gfx extends IManager
         gl.drawArrays(linesType, 0, points.length);
         this._drawCallsCount++;
     }
+
+    /**
+     * Draw a list of lines from an array of points.
+     * @example
+     * let lines = [new Shaku.utils.Vector2(50,50), new Shaku.utils.Vector2(150,50), new Shaku.utils.Vector2(150,150)];
+     * let colors = [Shaku.utils.Color.random(), Shaku.utils.Color.random(), Shaku.utils.Color.random()];
+     * Shaku.gfx.drawLines(lines, colors);
+     * @param {Array<Vector2>} points Points to draw line between.
+     * @param {Color|Array<Color>} colors Single lines color if you want one color for all lines, or an array of colors per segment.
+     * @param {BlendModes} blendMode Blend mode to draw lines with (default to Opaque).
+     */
+     drawLines(points, colors, blendMode)
+     {
+         // prepare effect and buffers
+         this._fillShapesBuffer(points, colors, blendMode);
+ 
+         // draw elements
+         let gl = this._gl;
+         gl.drawArrays(gl.LINES, 0, points.length);
+         this._drawCallsCount++;
+     }
 
     /**
      * Prepare buffers, effect and blend mode for shape rendering.
@@ -4229,8 +4259,8 @@ class Gfx extends IManager
        this._activeEffect.prepareToDrawBatch(mesh, Matrix.identity);
        this._setActiveTexture(this.whiteTexture);
 
-       // should we slice the arrays?
-       let shouldSliceArrays = points.length < this.batchSpritesCount / 2;
+       // should we slice the arrays to more optimal size?
+       let shouldSliceArrays = points.length <= 8;
 
        // copy position buffer
        this._gl.bindBuffer(this._gl.ARRAY_BUFFER, this._dynamicBuffers.positionBuffer);
