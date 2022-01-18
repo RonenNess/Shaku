@@ -10,8 +10,8 @@
   <body>
     <div class="noselect">
     <button class="view-code-btn" onclick="showSampleCode();">View Code</button> 
-    <h1 class="demo-title">Shaku: Basic Collision</h1>
-      <p>This demo illustrate basic collision detection with Shaku.collision manager.<br />
+    <h1 class="demo-title">Shaku: Basic Collision Flags</h1>
+      <p>This demo illustrate basic collision detection with Shaku.collision manager, using collision flags / mask (will only collide with matching colors).<br />
       Move the shape with your mouse to test collision, press <b>1-3</b> to replace the shape, and <b>+ / -</b> to set size. </p>
       
       <p id="show-data" style="color: red;"></p>
@@ -45,16 +45,21 @@
           let sizeFactor = 1;
 
           // create some test shapes
-          for (let i = 0; i < 7; ++i) 
+          for (let i = 0; i < 9; ++i) 
           {
             let size = Shaku.gfx.canvasSize;
 
             let point = new Shaku.collision.PointShape(new Shaku.utils.Vector2(Math.random() * size.x, Math.random() * size.y));
             world.addShape(point);
+            point.collisionFlags = 1 << Math.floor(Math.random() * 4);
+
             let rect = new Shaku.collision.RectangleShape(new Shaku.utils.Rectangle(Math.random() * size.x, Math.random() * size.y, 50 + Math.random() * 150, 50 + Math.random() * 150));
             world.addShape(rect);
+            rect.collisionFlags = 1 << Math.floor(Math.random() * 4);
+
             let circle = new Shaku.collision.CircleShape(new Shaku.utils.Circle(new Shaku.utils.Vector2(Math.random() * size.x, Math.random() * size.y), 25 + Math.random() * 150));
             world.addShape(circle);
+            circle.collisionFlags = 1 << Math.floor(Math.random() * 4);
           }
 
           // do a single main loop step
@@ -89,17 +94,17 @@
             }
             
             // draw shape the user drags
-            shapeToTest.setDebugColor(Shaku.utils.Color.green);
+            shapeToTest.collisionFlags = 1;
             shapeToTest.debugDraw();
 
             // test collision with all
-            let collisions = world.testCollisionMany(shapeToTest);
+            let collisions = world.testCollisionMany(shapeToTest, false, 1);
             let collisionsTypes = collisions.map(r => r.second.constructor.name);
             showDataParagraph.innerHTML += collisionsTypes.join(',');
 
             // test collision single sorted
             showDataParagraph.innerHTML += "<br />Nearest collided shape: ";
-            let collisionSingle = world.testCollision(shapeToTest, true);
+            let collisionSingle = world.testCollision(shapeToTest, true, 1);
             if (collisionSingle) {
               showDataParagraph.innerHTML += collisionSingle.second.constructor.name;
               Shaku.gfx.drawLine(shapeToTest.getCenter(), collisionSingle.second.getCenter(), Shaku.utils.Color.red);

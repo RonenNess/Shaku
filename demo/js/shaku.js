@@ -1897,9 +1897,10 @@ class CollisionWorld
      * @private
      * @param {CollisionShape} shape Shape to test.
      * @param {Function} handler Method to run on all shapes in phase. Return true to continue iteration, false to break.
+     * @param {Number} mask Optional mask of bits to match against shapes collisionFlags. Will only return shapes that have at least one common bit.
      * @param {Function} predicate Optional filter to run on any shape we're about to test collision with.
      */
-    _iterateBroadPhase(shape, handler, predicate)
+    _iterateBroadPhase(shape, handler, mask, predicate)
     {
         // get grid range
         let bb = shape._getBoundingBox();
@@ -1922,6 +1923,11 @@ class CollisionWorld
                 // iterate shapes in grid chunk
                 if (currSet) { 
                     for (let other of currSet) {
+
+                        // check collision flags
+                        if (mask && ((other.collisionFlags & mask) === 0)) {
+                            continue;
+                        }
 
                         // skip if checked
                         if (checked.has(other)) {
@@ -1951,10 +1957,11 @@ class CollisionWorld
      * Test collision with shapes in world, and return just the first result found.
      * @param {CollisionShape} sourceShape Source shape to check collision for. If shape is in world, it will not collide with itself.
      * @param {Boolean} sortByDistance If true will return the nearest collision found (based on center of shapes).
+     * @param {Number} mask Optional mask of bits to match against shapes collisionFlags. Will only return shapes that have at least one common bit.
      * @param {Function} predicate Optional filter to run on any shape we're about to test collision with. If the predicate returns false, we will skip this shape.
      * @returns {CollisionTestResult} A collision test result, or null if not found.
      */
-    testCollision(sourceShape, sortByDistance, predicate)
+    testCollision(sourceShape, sortByDistance, mask, predicate)
     {
         // do updates before check
         this._performUpdates();
@@ -1970,7 +1977,7 @@ class CollisionWorld
             this._iterateBroadPhase(sourceShape, (other) => {
                 options.push(other);
                 return true;
-            }, predicate);
+            }, mask, predicate);
 
             // sort options
             sortByDistanceShapes(sourceShape, options);
@@ -1993,7 +2000,7 @@ class CollisionWorld
                 result = this.resolver.test(sourceShape, other);
                 return !result;
 
-            }, predicate);
+            }, mask, predicate);
         }
 
         // return result
@@ -2004,10 +2011,11 @@ class CollisionWorld
      * Test collision with shapes in world, and return all results found.
      * @param {CollisionShape} sourceShape Source shape to check collision for. If shape is in world, it will not collide with itself.
      * @param {Boolean} sortByDistance If true will sort results by distance.
+     * @param {Number} mask Optional mask of bits to match against shapes collisionFlags. Will only return shapes that have at least one common bit.
      * @param {Function} predicate Optional filter to run on any shape we're about to test collision with. If the predicate returns false, we will skip this shape.
      * @returns {Array<CollisionTestResult>} An array of collision test results, or empty array if none found.
      */
-    testCollisionMany(sourceShape, sortByDistance, predicate)
+    testCollisionMany(sourceShape, sortByDistance, mask, predicate)
     {
         // do updates before check
         this._performUpdates();
@@ -2020,7 +2028,7 @@ class CollisionWorld
                 ret.push(result);
             }
             return true;
-        }, predicate);
+        }, mask, predicate);
 
         // sort by distance
         if (sortByDistance) {
@@ -2651,6 +2659,11 @@ class CollisionShape
         this._worldRange = null;
         this._debugColor = null;
         this._forceDebugColor = null;
+
+        /**
+         * Optional collision flags to be matched against collision mask when checking collision.
+         */
+        this.collisionFlags = Number.MAX_SAFE_INTEGER;
     }
 
     /**
@@ -2693,7 +2706,7 @@ class CollisionShape
 
         // calculate debug color
         if (!this._debugColor) {
-            this._debugColor = Color.red;
+            this._debugColor = defaultDebugColors[this.collisionFlags % defaultDebugColors.length];
         }
 
         // return color
@@ -2753,6 +2766,9 @@ class CollisionShape
         }
     }
 }
+
+// default debug colors to use
+const defaultDebugColors = [Color.red, Color.blue, Color.green, Color.yellow, Color.purple, Color.teal, Color.brown, Color.orange, Color.khaki, Color.darkcyan, Color.cornflowerblue, Color.darkgray, Color.chocolate, Color.aquamarine, Color.cadetblue, Color.magenta, Color.seagreen, Color.pink, Color.olive, Color.violet];
 
 // export collision shape class
 module.exports = CollisionShape;
@@ -8411,6 +8427,15 @@ class Color
     }
 
     /**
+     * Get array with all built-in web color names.
+     * @returns {Array<String>} Array with color names.
+     */
+    static get webColorNames()
+    {
+        return colorKeys;
+    }
+
+    /**
      * Check if equal to another color.
      * @param {PintarJS.Color} other Other color to compare to.
      */
@@ -8481,6 +8506,10 @@ for (var key in colorNameToHex) {
         })(colorValue);
     }
 }
+
+// built-in color keys
+const colorKeys = Object.keys(colorNameToHex);
+Object.freeze(colorKeys);
 
 // add transparent getter
 Object.defineProperty (Color, 'transparent', {
