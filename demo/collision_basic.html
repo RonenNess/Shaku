@@ -95,6 +95,7 @@
             // test collision with all
             let collisions = world.testCollisionMany(shapeToTest);
             let collisionsTypes = collisions.map(r => r.second.constructor.name);
+            showDataParagraph.innerHTML += collisionsTypes.join(',');
 
             // test collision single sorted
             showDataParagraph.innerHTML += "<br />Nearest collided shape: ";
