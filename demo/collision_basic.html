@@ -152,7 +152,7 @@ world.addShape(rect);
 let circle = new Shaku.collision.CircleShape(new Shaku.utils.Circle(new Shaku.utils.Vector2(300, 315), 150));
 world.addShape(circle);
 
-// test collision against a circle at mouse position with radius of 100
+// create a circle at mouse position with radius of 100. we'll use it to check collisions
 let shapeToTest = new Shaku.collision.CircleShape(new Shaku.utils.Circle(Shaku.input.mousePosition, 100));
 
 // test a single result, sorted by distance
@@ -165,8 +165,7 @@ if (collisionSingle) {
 let collisions = world.testCollisionMany(shapeToTest, false);
 for (let i = 0; i < collisions.length; ++i) {
   console.log(collisions[i].first, collisions[i].second);
-}
-</code></pre>
+}</code></pre>
 
   <button class="modal__close" onclick="closeModal('sample-code-modal')">&#10005;</button>
 </div>

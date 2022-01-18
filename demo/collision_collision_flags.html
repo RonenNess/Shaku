@@ -142,34 +142,39 @@
 
 <p class="noselect">The following shows a minimal code example on how to init Shaku and create a main loop.</i>
 </p>
-<pre><code class="language-js">async function runGame()
-{
-  // init shaku
-  await Shaku.init();
-
-  // add shaku's canvas to document and set resolution to 800x600
-  document.body.appendChild(Shaku.gfx.canvas);
-  Shaku.gfx.setResolution(800, 600, true);
-
-  // do a single main loop step
-  function step() 
-  {  
-    // start new frame and clear screen
-    Shaku.startFrame();
-    Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
-
-    // PUT YOUR GAME LOGIC HERE
-
-    // end frame and request next frame
-    Shaku.endFrame();
-    Shaku.requestAnimationFrame(step);
+<pre><code class="language-js">// create collision world
+  let world = Shaku.collision.createWorld(128);
+  
+  // add point to world with collision flags of 0001
+  let point = new Shaku.collision.PointShape(new Shaku.utils.Vector2(125, 65));
+  point.collisionFlags = 1;
+  world.addShape(point);
+  
+  // add rect to world with collision flags of 0010
+  let rect = new Shaku.collision.RectangleShape(new Shaku.utils.Rectangle(45, 75, 100, 50));
+  rect.collisionFlags = 1 << 1;
+  world.addShape(rect);
+  
+  // add circle to world
+  // add rect to world with collision flags of 0100
+  let circle = new Shaku.collision.CircleShape(new Shaku.utils.Circle(new Shaku.utils.Vector2(300, 315), 150));
+  circle.collisionFlags = 1 << 2;
+  world.addShape(circle);
+  
+  // create a circle at mouse position with radius of 100. we'll use it to check collisions
+  let shapeToTest = new Shaku.collision.CircleShape(new Shaku.utils.Circle(Shaku.input.mousePosition, 100));
+  
+  // test a single result, sorted by distance, only on shapes that have collision flag bit 0001
+  let collisionSingle = world.testCollision(shapeToTest, true, 1);
+  if (collisionSingle) {
+    console.log(collisionSingle.first, collisionSingle.second);
   }
-
-  // start main loop
-  step();
-}
-
-runGame();</code></pre>
+  
+  // test many results, not sorted, only on shapes that have collision flag bits 0001 or 0101
+  let collisions = world.testCollisionMany(shapeToTest, false, 5);
+  for (let i = 0; i < collisions.length; ++i) {
+    console.log(collisions[i].first, collisions[i].second);
+  }</code></pre>
 
   <button class="modal__close" onclick="closeModal('sample-code-modal')">&#10005;</button>
 </div>
