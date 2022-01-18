@@ -17,8 +17,8 @@ You can use different collision worlds to represent different levels or differen
     * [.resolver](#CollisionWorld+resolver)
     * [.addShape(shape)](#CollisionWorld+addShape)
     * [.removeShape(shape)](#CollisionWorld+removeShape)
-    * [.testCollision(sourceShape, sortByDistance, predicate)](#CollisionWorld+testCollision) ⇒ <code>CollisionTestResult</code>
-    * [.testCollisionMany(sourceShape, sortByDistance, predicate)](#CollisionWorld+testCollisionMany) ⇒ <code>Array.&lt;CollisionTestResult&gt;</code>
+    * [.testCollision(sourceShape, sortByDistance, mask, predicate)](#CollisionWorld+testCollision) ⇒ <code>CollisionTestResult</code>
+    * [.testCollisionMany(sourceShape, sortByDistance, mask, predicate)](#CollisionWorld+testCollisionMany) ⇒ <code>Array.&lt;CollisionTestResult&gt;</code>
     * [.debugDraw(gridColor, gridHighlitColor, opacity)](#CollisionWorld+debugDraw)
 
 <a name="new_CollisionWorld_new"></a>
@@ -63,7 +63,7 @@ Remove a collision shape from this world.
 
 <a name="CollisionWorld+testCollision"></a>
 
-### collisionWorld.testCollision(sourceShape, sortByDistance, predicate) ⇒ <code>CollisionTestResult</code>
+### collisionWorld.testCollision(sourceShape, sortByDistance, mask, predicate) ⇒ <code>CollisionTestResult</code>
 Test collision with shapes in world, and return just the first result found.
 
 **Kind**: instance method of [<code>CollisionWorld</code>](#CollisionWorld)  
@@ -73,11 +73,12 @@ Test collision with shapes in world, and return just the first result found.
 | --- | --- | --- |
 | sourceShape | <code>CollisionShape</code> | Source shape to check collision for. If shape is in world, it will not collide with itself. |
 | sortByDistance | <code>Boolean</code> | If true will return the nearest collision found (based on center of shapes). |
+| mask | <code>Number</code> | Optional mask of bits to match against shapes collisionFlags. Will only return shapes that have at least one common bit. |
 | predicate | <code>function</code> | Optional filter to run on any shape we're about to test collision with. If the predicate returns false, we will skip this shape. |
 
 <a name="CollisionWorld+testCollisionMany"></a>
 
-### collisionWorld.testCollisionMany(sourceShape, sortByDistance, predicate) ⇒ <code>Array.&lt;CollisionTestResult&gt;</code>
+### collisionWorld.testCollisionMany(sourceShape, sortByDistance, mask, predicate) ⇒ <code>Array.&lt;CollisionTestResult&gt;</code>
 Test collision with shapes in world, and return all results found.
 
 **Kind**: instance method of [<code>CollisionWorld</code>](#CollisionWorld)  
@@ -87,6 +88,7 @@ Test collision with shapes in world, and return all results found.
 | --- | --- | --- |
 | sourceShape | <code>CollisionShape</code> | Source shape to check collision for. If shape is in world, it will not collide with itself. |
 | sortByDistance | <code>Boolean</code> | If true will sort results by distance. |
+| mask | <code>Number</code> | Optional mask of bits to match against shapes collisionFlags. Will only return shapes that have at least one common bit. |
 | predicate | <code>function</code> | Optional filter to run on any shape we're about to test collision with. If the predicate returns false, we will skip this shape. |
 
 <a name="CollisionWorld+debugDraw"></a>

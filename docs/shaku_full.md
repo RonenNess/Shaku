@@ -917,8 +917,8 @@ You can use different collision worlds to represent different levels or differen
     * [.resolver](#CollisionWorld+resolver)
     * [.addShape(shape)](#CollisionWorld+addShape)
     * [.removeShape(shape)](#CollisionWorld+removeShape)
-    * [.testCollision(sourceShape, sortByDistance, predicate)](#CollisionWorld+testCollision) ⇒ [<code>CollisionTestResult</code>](#CollisionTestResult)
-    * [.testCollisionMany(sourceShape, sortByDistance, predicate)](#CollisionWorld+testCollisionMany) ⇒ [<code>Array.&lt;CollisionTestResult&gt;</code>](#CollisionTestResult)
+    * [.testCollision(sourceShape, sortByDistance, mask, predicate)](#CollisionWorld+testCollision) ⇒ [<code>CollisionTestResult</code>](#CollisionTestResult)
+    * [.testCollisionMany(sourceShape, sortByDistance, mask, predicate)](#CollisionWorld+testCollisionMany) ⇒ [<code>Array.&lt;CollisionTestResult&gt;</code>](#CollisionTestResult)
     * [.debugDraw(gridColor, gridHighlitColor, opacity)](#CollisionWorld+debugDraw)
 
 <a name="new_CollisionWorld_new"></a>
@@ -963,7 +963,7 @@ Remove a collision shape from this world.
 
 <a name="CollisionWorld+testCollision"></a>
 
-### collisionWorld.testCollision(sourceShape, sortByDistance, predicate) ⇒ [<code>CollisionTestResult</code>](#CollisionTestResult)
+### collisionWorld.testCollision(sourceShape, sortByDistance, mask, predicate) ⇒ [<code>CollisionTestResult</code>](#CollisionTestResult)
 Test collision with shapes in world, and return just the first result found.
 
 **Kind**: instance method of [<code>CollisionWorld</code>](#CollisionWorld)  
@@ -973,11 +973,12 @@ Test collision with shapes in world, and return just the first result found.
 | --- | --- | --- |
 | sourceShape | [<code>CollisionShape</code>](#CollisionShape) | Source shape to check collision for. If shape is in world, it will not collide with itself. |
 | sortByDistance | <code>Boolean</code> | If true will return the nearest collision found (based on center of shapes). |
+| mask | <code>Number</code> | Optional mask of bits to match against shapes collisionFlags. Will only return shapes that have at least one common bit. |
 | predicate | <code>function</code> | Optional filter to run on any shape we're about to test collision with. If the predicate returns false, we will skip this shape. |
 
 <a name="CollisionWorld+testCollisionMany"></a>
 
-### collisionWorld.testCollisionMany(sourceShape, sortByDistance, predicate) ⇒ [<code>Array.&lt;CollisionTestResult&gt;</code>](#CollisionTestResult)
+### collisionWorld.testCollisionMany(sourceShape, sortByDistance, mask, predicate) ⇒ [<code>Array.&lt;CollisionTestResult&gt;</code>](#CollisionTestResult)
 Test collision with shapes in world, and return all results found.
 
 **Kind**: instance method of [<code>CollisionWorld</code>](#CollisionWorld)  
@@ -987,6 +988,7 @@ Test collision with shapes in world, and return all results found.
 | --- | --- | --- |
 | sourceShape | [<code>CollisionShape</code>](#CollisionShape) | Source shape to check collision for. If shape is in world, it will not collide with itself. |
 | sortByDistance | <code>Boolean</code> | If true will sort results by distance. |
+| mask | <code>Number</code> | Optional mask of bits to match against shapes collisionFlags. Will only return shapes that have at least one common bit. |
 | predicate | <code>function</code> | Optional filter to run on any shape we're about to test collision with. If the predicate returns false, we will skip this shape. |
 
 <a name="CollisionWorld+debugDraw"></a>
@@ -1074,6 +1076,8 @@ Collision circle class.
 * [CircleShape](#CircleShape)
     * [new CircleShape(circle)](#new_CircleShape_new)
     * [.setShape(circle)](#CircleShape+setShape)
+    * [._getRadius()](#CircleShape+_getRadius)
+    * [.getCenter()](#CircleShape+getCenter)
     * [._getBoundingBox()](#CircleShape+_getBoundingBox)
     * [.debugDraw(opacity)](#CircleShape+debugDraw)
 
@@ -1096,8 +1100,16 @@ Set this collision shape from circle.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| circle | [<code>Rectangle</code>](#Rectangle) | Circle shape. |
+| circle | [<code>Circle</code>](#Circle) | Circle shape. |
 
+<a name="CircleShape+_getRadius"></a>
+
+### circleShape.\_getRadius()
+**Kind**: instance method of [<code>CircleShape</code>](#CircleShape)  
+<a name="CircleShape+getCenter"></a>
+
+### circleShape.getCenter()
+**Kind**: instance method of [<code>CircleShape</code>](#CircleShape)  
 <a name="CircleShape+_getBoundingBox"></a>
 
 ### circleShape.\_getBoundingBox()
@@ -1124,6 +1136,8 @@ Collision point class.
     * [new PointShape(position)](#new_PointShape_new)
     * [.setPosition(position)](#PointShape+setPosition)
     * [.getPosition()](#PointShape+getPosition) ⇒ [<code>Vector2</code>](#Vector2)
+    * [.getCenter()](#PointShape+getCenter)
+    * [._getRadius()](#PointShape+_getRadius)
     * [._getBoundingBox()](#PointShape+_getBoundingBox)
     * [.debugDraw(opacity)](#PointShape+debugDraw)
 
@@ -1155,6 +1169,14 @@ Get point position.
 
 **Kind**: instance method of [<code>PointShape</code>](#PointShape)  
 **Returns**: [<code>Vector2</code>](#Vector2) - Point position.  
+<a name="PointShape+getCenter"></a>
+
+### pointShape.getCenter()
+**Kind**: instance method of [<code>PointShape</code>](#PointShape)  
+<a name="PointShape+_getRadius"></a>
+
+### pointShape.\_getRadius()
+**Kind**: instance method of [<code>PointShape</code>](#PointShape)  
 <a name="PointShape+_getBoundingBox"></a>
 
 ### pointShape.\_getBoundingBox()
@@ -1180,7 +1202,9 @@ Collision rectangle class.
 * [RectangleShape](#RectangleShape)
     * [new RectangleShape(rectangle)](#new_RectangleShape_new)
     * [.setShape(rectangle)](#RectangleShape+setShape)
+    * [._getRadius()](#RectangleShape+_getRadius)
     * [._getBoundingBox()](#RectangleShape+_getBoundingBox)
+    * [.getCenter()](#RectangleShape+getCenter)
     * [.debugDraw(opacity)](#RectangleShape+debugDraw)
 
 <a name="new_RectangleShape_new"></a>
@@ -1204,9 +1228,17 @@ Set this collision shape from rectangle.
 | --- | --- | --- |
 | rectangle | [<code>Rectangle</code>](#Rectangle) | Rectangle shape. |
 
+<a name="RectangleShape+_getRadius"></a>
+
+### rectangleShape.\_getRadius()
+**Kind**: instance method of [<code>RectangleShape</code>](#RectangleShape)  
 <a name="RectangleShape+_getBoundingBox"></a>
 
 ### rectangleShape.\_getBoundingBox()
+**Kind**: instance method of [<code>RectangleShape</code>](#RectangleShape)  
+<a name="RectangleShape+getCenter"></a>
+
+### rectangleShape.getCenter()
 **Kind**: instance method of [<code>RectangleShape</code>](#RectangleShape)  
 <a name="RectangleShape+debugDraw"></a>
 
@@ -1228,14 +1260,22 @@ Collision shape base class.
 
 * [CollisionShape](#CollisionShape)
     * [new CollisionShape()](#new_CollisionShape_new)
+    * [.collisionFlags](#CollisionShape+collisionFlags)
     * [.setDebugColor(color)](#CollisionShape+setDebugColor)
     * [.debugDraw(opacity)](#CollisionShape+debugDraw)
+    * [.getCenter()](#CollisionShape+getCenter) ⇒ [<code>Vector2</code>](#Vector2)
 
 <a name="new_CollisionShape_new"></a>
 
 ### new CollisionShape()
 Create the collision shape.
 
+<a name="CollisionShape+collisionFlags"></a>
+
+### collisionShape.collisionFlags
+Optional collision flags to be matched against collision mask when checking collision.
+
+**Kind**: instance property of [<code>CollisionShape</code>](#CollisionShape)  
 <a name="CollisionShape+setDebugColor"></a>
 
 ### collisionShape.setDebugColor(color)
@@ -1258,6 +1298,13 @@ Debug draw this shape.
 | --- | --- | --- |
 | opacity | <code>Number</code> | Shape opacity factor. |
 
+<a name="CollisionShape+getCenter"></a>
+
+### collisionShape.getCenter() ⇒ [<code>Vector2</code>](#Vector2)
+Get shape center position.
+
+**Kind**: instance method of [<code>CollisionShape</code>](#CollisionShape)  
+**Returns**: [<code>Vector2</code>](#Vector2) - Center position.  
 <a name="Camera"></a>
 
 ## Camera
@@ -3758,6 +3805,7 @@ All color components are expected to be in 0.0 - 1.0 range (and not 0-255).
         * [.string()](#Color+string)
         * [.equals(other)](#Color+equals)
     * _static_
+        * [.webColorNames](#Color.webColorNames) ⇒ <code>Array.&lt;String&gt;</code>
         * [.componentToHex(c)](#Color.componentToHex) ⇒ <code>String</code>
         * [.fromHex(val)](#Color.fromHex) ⇒ [<code>Color</code>](#Color)
         * [.fromDecimal(val, includeAlpha)](#Color.fromDecimal) ⇒ [<code>Color</code>](#Color)
@@ -3939,6 +3987,13 @@ Check if equal to another color.
 | --- | --- | --- |
 | other | <code>PintarJS.Color</code> | Other color to compare to. |
 
+<a name="Color.webColorNames"></a>
+
+### Color.webColorNames ⇒ <code>Array.&lt;String&gt;</code>
+Get array with all built-in web color names.
+
+**Kind**: static property of [<code>Color</code>](#Color)  
+**Returns**: <code>Array.&lt;String&gt;</code> - Array with color names.  
 <a name="Color.componentToHex"></a>
 
 ### Color.componentToHex(c) ⇒ <code>String</code>
@@ -4316,6 +4371,7 @@ A simple Vector object for 2d positions.
         * [.ceilSelf()](#Vector2+ceilSelf) ⇒ [<code>Vector2</code>](#Vector2)
         * [.normalizeSelf()](#Vector2+normalizeSelf) ⇒ [<code>Vector2</code>](#Vector2)
         * [.equals(other)](#Vector2+equals) ⇒ <code>Boolean</code>
+        * [.approximate(other)](#Vector2+approximate) ⇒ <code>Boolean</code>
         * [.scaled()](#Vector2+scaled) ⇒ [<code>Vector2</code>](#Vector2)
         * [.degreesTo(other)](#Vector2+degreesTo) ⇒ <code>Number</code>
         * [.radiansTo(other)](#Vector2+radiansTo) ⇒ <code>Number</code>
@@ -4540,6 +4596,18 @@ Return a normalized copy of this vector.
 
 ### vector2.equals(other) ⇒ <code>Boolean</code>
 Return if vector equals another vector.
+
+**Kind**: instance method of [<code>Vector2</code>](#Vector2)  
+**Returns**: <code>Boolean</code> - if vectors are equal.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| other | [<code>Vector2</code>](#Vector2) | Other vector to compare to. |
+
+<a name="Vector2+approximate"></a>
+
+### vector2.approximate(other) ⇒ <code>Boolean</code>
+Return if vector approximately equals another vector.
 
 **Kind**: instance method of [<code>Vector2</code>](#Vector2)  
 **Returns**: <code>Boolean</code> - if vectors are equal.  

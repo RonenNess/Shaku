@@ -15,6 +15,8 @@ Collision point class.
     * [new PointShape(position)](#new_PointShape_new)
     * [.setPosition(position)](#PointShape+setPosition)
     * [.getPosition()](#PointShape+getPosition) ⇒ <code>Vector2</code>
+    * [.getCenter()](#PointShape+getCenter)
+    * [._getRadius()](#PointShape+_getRadius)
     * [._getBoundingBox()](#PointShape+_getBoundingBox)
     * [.debugDraw(opacity)](#PointShape+debugDraw)
 
@@ -46,6 +48,14 @@ Get point position.
 
 **Kind**: instance method of [<code>PointShape</code>](#PointShape)  
 **Returns**: <code>Vector2</code> - Point position.  
+<a name="PointShape+getCenter"></a>
+
+### pointShape.getCenter()
+**Kind**: instance method of [<code>PointShape</code>](#PointShape)  
+<a name="PointShape+_getRadius"></a>
+
+### pointShape.\_getRadius()
+**Kind**: instance method of [<code>PointShape</code>](#PointShape)  
 <a name="PointShape+_getBoundingBox"></a>
 
 ### pointShape.\_getBoundingBox()

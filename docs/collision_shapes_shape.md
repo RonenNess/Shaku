@@ -13,14 +13,22 @@ Collision shape base class.
 
 * [CollisionShape](#CollisionShape)
     * [new CollisionShape()](#new_CollisionShape_new)
+    * [.collisionFlags](#CollisionShape+collisionFlags)
     * [.setDebugColor(color)](#CollisionShape+setDebugColor)
     * [.debugDraw(opacity)](#CollisionShape+debugDraw)
+    * [.getCenter()](#CollisionShape+getCenter) ⇒ <code>Vector2</code>
 
 <a name="new_CollisionShape_new"></a>
 
 ### new CollisionShape()
 Create the collision shape.
 
+<a name="CollisionShape+collisionFlags"></a>
+
+### collisionShape.collisionFlags
+Optional collision flags to be matched against collision mask when checking collision.
+
+**Kind**: instance property of [<code>CollisionShape</code>](#CollisionShape)  
 <a name="CollisionShape+setDebugColor"></a>
 
 ### collisionShape.setDebugColor(color)
@@ -43,3 +51,10 @@ Debug draw this shape.
 | --- | --- | --- |
 | opacity | <code>Number</code> | Shape opacity factor. |
 
+<a name="CollisionShape+getCenter"></a>
+
+### collisionShape.getCenter() ⇒ <code>Vector2</code>
+Get shape center position.
+
+**Kind**: instance method of [<code>CollisionShape</code>](#CollisionShape)  
+**Returns**: <code>Vector2</code> - Center position.  
