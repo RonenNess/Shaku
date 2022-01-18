@@ -1364,6 +1364,8 @@ List of changes in released versions.
 - Changed few exceptions to error logs to be softer on rendering errors.
 - Added `throwErrorOnWarnings()` to allow more strict mode.
 - Fixed rectangle-rectangle collision to include touching borders (breaking change).
+- Fixed `collideCircle()` bug.
+
 
 # License
 

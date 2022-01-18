@@ -1893,6 +1893,52 @@ class CollisionWorld
     }
 
     /**
+     * Iterate shapes that match broad phase test.
+     * @private
+     * @param {CollisionShape} shape Shape to test.
+     * @param {Function} handler Method to run on all shapes in phase. Return true to continue iteration, false to break.
+     * @param {Function} predicate Optional filter to run on any shape we're about to test collision with.
+     */
+    _iterateBroadPhase(shape, handler, predicate)
+    {
+        // get grid range
+        let bb = shape._getBoundingBox();
+        let minx = Math.floor(bb.left / this._gridCellSize.x);
+        let miny = Math.floor(bb.top / this._gridCellSize.y);
+        let maxx = Math.ceil(bb.right / this._gridCellSize.x);
+        let maxy = Math.ceil(bb.bottom / this._gridCellSize.y);
+
+        // iterate options
+        for (let i = minx; i < maxx; ++i) {
+            for (let j = miny; j < maxy; ++j) {
+
+                // get current grid chunk
+                let key = i + ',' + j;
+                let currSet = this._grid[key];
+
+                // iterate shapes in grid chunk
+                if (currSet) { 
+                    for (let other of currSet) {
+
+                        // use predicate
+                        if (predicate && !predicate(other)) {
+                            continue;
+                        }
+
+                        // invoke handler on shape
+                        let proceedLoop = Boolean(handler(other));
+
+                        // break loop
+                        if (!proceedLoop) {
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
      * Test collision with shapes in world, and return just the first result found.
      * @param {CollisionShape} sourceShape Source shape to check collision for. If shape is in world, it will not collide with itself.
      * @param {Boolean} sortByDistance If true will return the nearest collision found (based on center of shapes).
@@ -1903,6 +1949,47 @@ class CollisionWorld
     {
         // do updates before check
         this._performUpdates();
+
+        // result to return
+        var result = null;
+
+        // hard case - single result, sorted by distance
+        if (sortByDistance)
+        {
+            // build options array
+            var options = [];
+            this._iterateBroadPhase(sourceShape, (other) => {
+                options.push(other);
+                return true;
+            }, predicate);
+
+            // sort options
+            let sourceCenter = sourceShape.getCenter();
+            options.sort((a, b) => a.getCenter().distanceTo(sourceCenter) - b.getCenter().distanceTo(sourceCenter));
+
+            // check collision sorted
+            for (let i = 0; i < options.length; ++i) {
+                result = this.resolver.test(sourceShape, options[i]);
+                if (result) {
+                    break;
+                }
+            }
+        }
+        // easy case - single result, not sorted
+        else
+        {
+            // iterate possible shapes and test collision
+            this._iterateBroadPhase(sourceShape, (other) => {
+
+                // test collision and continue iterating if we don't have a result
+                result = this.resolver.test(sourceShape, other);
+                return !result;
+
+            }, predicate);
+        }
+
+        // return result
+        return result;
     }
 
     /**
@@ -1916,6 +2003,8 @@ class CollisionWorld
     {
         // do updates before check
         this._performUpdates();
+
+        return []
     }
 
     /**
@@ -2069,8 +2158,8 @@ class CollisionResolver
     test(first, second)
     {
         // get method and make sure we got a handler
-        let method = _getCollisionMethod(first, second);
-        if (!method) {
+        let handler = this._getCollisionMethod(first, second);
+        if (!handler) {
             _logger.warn(`Missing collision handler for shapes '${first.constructor.name}' and '${second.constructor.name}'.`);
             return null;
         }
@@ -2220,10 +2309,10 @@ module.exports = CollisionTestResult;
  * 
  */
  'use strict';
-const Rectangle = require("../../utils/rectangle");
 const CollisionShape = require("./shape");
 const gfx = require('./../../gfx');
 const Circle = require("../../utils/circle");
+const Rectangle = require("../../utils/rectangle");
 
 
 /**
@@ -2243,13 +2332,22 @@ class CircleShape extends CollisionShape
 
     /**
      * Set this collision shape from circle.
-     * @param {Rectangle} circle Circle shape.
+     * @param {Circle} circle Circle shape.
      */
     setShape(circle)
     {
         this._circle = circle;
+        this._position = circle.center;
         this._boundingBox = new Rectangle(circle.center.x - circle.radius, circle.center.y - circle.radius, circle.radius * 2, circle.radius * 2);
         this._shapeChanged();
+    }
+    
+    /**
+     * @inheritdoc
+     */
+    getCenter()
+    {
+        return this._position.clone();
     }
 
     /**
@@ -2266,13 +2364,14 @@ class CircleShape extends CollisionShape
      */
     debugDraw(opacity)
     {
+        if (opacity === undefined) opacity = 1;
         let color = this._getDebugColor();
 
         color.a *= opacity;
-        gfx.outlineCircle(this._circle, color, gfx.BlendModes.AlphaBlend, 11);
+        gfx.outlineCircle(this._circle, color, gfx.BlendModes.AlphaBlend, 14);
 
         color.a *= 0.25;
-        gfx.fillCircle(this._circle, color, gfx.BlendModes.AlphaBlend, 11);
+        gfx.fillCircle(this._circle, color, gfx.BlendModes.AlphaBlend, 14);
     }
 }
 
@@ -2333,7 +2432,15 @@ class PointShape extends CollisionShape
     {
         return this._position.clone();
     }
-
+    
+    /**
+     * @inheritdoc
+     */
+    getCenter()
+    {
+        return this._position.clone();
+    }
+    
     /**
      * @inheritdoc
      */
@@ -2348,6 +2455,7 @@ class PointShape extends CollisionShape
      */
     debugDraw(opacity)
     {
+        if (opacity === undefined) opacity = 1;
         let color = this._getDebugColor();
         color.a *= opacity;
         gfx.outlineCircle(new Circle(this.getPosition(), 3), color, gfx.BlendModes.AlphaBlend, 4);
@@ -2397,6 +2505,7 @@ class RectangleShape extends CollisionShape
     setShape(rectangle)
     {
         this._rect = rectangle;
+        this._center = rectangle.getCenter();
         this._shapeChanged();
     }
 
@@ -2407,13 +2516,22 @@ class RectangleShape extends CollisionShape
     {
         return this._rect;
     }
-
+    
+    /**
+     * @inheritdoc
+     */
+    getCenter()
+    {
+        return this._center.clone();
+    }
+    
     /**
      * Debug draw this shape.
      * @param {Number} opacity Shape opacity factor.
      */
     debugDraw(opacity)
     {
+        if (opacity === undefined) opacity = 1;
         let color = this._getDebugColor();
 
         color.a *= opacity;
@@ -2442,6 +2560,7 @@ module.exports = RectangleShape;
 'use strict';
 const Color = require("../../utils/color");
 const Rectangle = require("../../utils/rectangle");
+const Vector2 = require("../../utils/vector2");
 const CollisionWorld = require("../collision_world");
 
  
@@ -2479,6 +2598,15 @@ class CollisionShape
         throw new Error("Not Implemented!");
     }
     
+    /**
+     * Get shape center position.
+     * @returns {Vector2} Center position.
+     */
+    getCenter()
+    {
+        throw new Error("Not Implemented!");
+    }
+
     /**
      * Get debug drawing color.
      * @private
@@ -2545,7 +2673,7 @@ class CollisionShape
 
 // export collision shape class
 module.exports = CollisionShape;
-},{"../../utils/color":47,"../../utils/rectangle":50,"../collision_world":10}],19:[function(require,module,exports){
+},{"../../utils/color":47,"../../utils/rectangle":50,"../../utils/vector2":51,"../collision_world":10}],19:[function(require,module,exports){
 /**
  * Define supported blend modes.
  * 
@@ -8636,7 +8764,7 @@ class Rectangle
 
         // first check if circle center is inside the rectangle - easy case
         let rect = this;
-        if (rect.containsPoint(center)) {
+        if (rect.containsVector(center)) {
             return true;
         }
 
@@ -8664,7 +8792,7 @@ class Rectangle
 
         // now check intersection between circle and each of the rectangle lines
         for (let i = 0; i < lines.length; ++i) {
-            let disToLine = Math._extended.pointLineDistance(center, lines[i][0], lines[i][1]);
+            let disToLine = pointLineDistance(center, lines[i][0], lines[i][1]);
             if (disToLine <= radius) {
                 return true;
             }
@@ -8725,6 +8853,50 @@ class Rectangle
                             );
      }
 }
+
+/**
+ * Get distance between a point and a line.
+ * @private
+ */
+function pointLineDistance(p1, l1, l2) {
+
+    let x = p1.x;
+    let y = p1.y;
+    let x1 = l1.x;
+    let y1 = l1.y;
+    let x2 = l2.x;
+    let y2 = l2.y;
+
+    var A = x - x1;
+    var B = y - y1;
+    var C = x2 - x1;
+    var D = y2 - y1;
+  
+    var dot = A * C + B * D;
+    var len_sq = C * C + D * D;
+    var param = -1;
+    if (len_sq != 0) //in case of 0 length line
+        param = dot / len_sq;
+  
+    var xx, yy;
+  
+    if (param < 0) {
+      xx = x1;
+      yy = y1;
+    }
+    else if (param > 1) {
+      xx = x2;
+      yy = y2;
+    }
+    else {
+      xx = x1 + param * C;
+      yy = y1 + param * D;
+    }
+  
+    var dx = x - xx;
+    var dy = y - yy;
+    return Math.sqrt(dx * dx + dy * dy);
+  }
 
 
 // export the rectangle class
