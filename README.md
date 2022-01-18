@@ -1348,7 +1348,7 @@ List of changes in released versions.
 - Added culling to batch rendering.
 - Changed `renderingRegion` to return actual region, with `viewport` and `renderTarget` considered (breaking change).
 
-# 1.2.0
+## 1.2.0
 
 - Added collision detection manager.
 - Added `outlineRect` to gfx manager.
