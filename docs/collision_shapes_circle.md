@@ -14,7 +14,7 @@ Collision circle class.
 * [CircleShape](#CircleShape)
     * [new CircleShape(circle)](#new_CircleShape_new)
     * [.setShape(circle)](#CircleShape+setShape)
-    * [.getBoundingBox()](#CircleShape+getBoundingBox) ⇒ <code>Rectangle</code>
+    * [._getBoundingBox()](#CircleShape+_getBoundingBox)
     * [.debugDraw(opacity)](#CircleShape+debugDraw)
 
 <a name="new_CircleShape_new"></a>
@@ -38,13 +38,10 @@ Set this collision shape from circle.
 | --- | --- | --- |
 | circle | <code>Rectangle</code> | Circle shape. |
 
-<a name="CircleShape+getBoundingBox"></a>
+<a name="CircleShape+_getBoundingBox"></a>
 
-### circleShape.getBoundingBox() ⇒ <code>Rectangle</code>
-Get collision shape's bounding box.
-
+### circleShape.\_getBoundingBox()
 **Kind**: instance method of [<code>CircleShape</code>](#CircleShape)  
-**Returns**: <code>Rectangle</code> - Shape's bounding box.  
 <a name="CircleShape+debugDraw"></a>
 
 ### circleShape.debugDraw(opacity)

@@ -14,7 +14,7 @@ Collision rectangle class.
 * [RectangleShape](#RectangleShape)
     * [new RectangleShape(rectangle)](#new_RectangleShape_new)
     * [.setShape(rectangle)](#RectangleShape+setShape)
-    * [.getBoundingBox()](#RectangleShape+getBoundingBox) ⇒ <code>Rectangle</code>
+    * [._getBoundingBox()](#RectangleShape+_getBoundingBox)
     * [.debugDraw(opacity)](#RectangleShape+debugDraw)
 
 <a name="new_RectangleShape_new"></a>
@@ -38,13 +38,10 @@ Set this collision shape from rectangle.
 | --- | --- | --- |
 | rectangle | <code>Rectangle</code> | Rectangle shape. |
 
-<a name="RectangleShape+getBoundingBox"></a>
+<a name="RectangleShape+_getBoundingBox"></a>
 
-### rectangleShape.getBoundingBox() ⇒ <code>Rectangle</code>
-Get collision shape's bounding box.
-
+### rectangleShape.\_getBoundingBox()
 **Kind**: instance method of [<code>RectangleShape</code>](#RectangleShape)  
-**Returns**: <code>Rectangle</code> - Shape's bounding box.  
 <a name="RectangleShape+debugDraw"></a>
 
 ### rectangleShape.debugDraw(opacity)

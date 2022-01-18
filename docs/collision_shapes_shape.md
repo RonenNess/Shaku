@@ -14,7 +14,6 @@ Collision shape base class.
 * [CollisionShape](#CollisionShape)
     * [new CollisionShape()](#new_CollisionShape_new)
     * [.setDebugColor(color)](#CollisionShape+setDebugColor)
-    * [.getBoundingBox()](#CollisionShape+getBoundingBox) ⇒ <code>Rectangle</code>
     * [.debugDraw(opacity)](#CollisionShape+debugDraw)
 
 <a name="new_CollisionShape_new"></a>
@@ -33,13 +32,6 @@ Set the debug color to use to draw this shape.
 | --- | --- | --- |
 | color | <code>Color</code> | Color to set or null to use default. |
 
-<a name="CollisionShape+getBoundingBox"></a>
-
-### collisionShape.getBoundingBox() ⇒ <code>Rectangle</code>
-Get collision shape's bounding box.
-
-**Kind**: instance method of [<code>CollisionShape</code>](#CollisionShape)  
-**Returns**: <code>Rectangle</code> - Shape's bounding box.  
 <a name="CollisionShape+debugDraw"></a>
 
 ### collisionShape.debugDraw(opacity)

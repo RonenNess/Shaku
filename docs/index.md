@@ -19,6 +19,7 @@ You can view the entire docs as a single file [here](shaku_full.md), or by topic
 * [Collision: Collision](collision_collision.md)
 * [Collision: Collision World](collision_collision_world.md)
 * [Collision: Resolver](collision_resolver.md)
+* [Collision: Resolvers Imp](collision_resolvers_imp.md)
 * [Collision: Result](collision_result.md)
 * [Collision: Shapes Circle](collision_shapes_circle.md)
 * [Collision: Shapes Point](collision_shapes_point.md)

@@ -1361,7 +1361,9 @@ List of changes in released versions.
 - Added `Invert` Blend Mode.
 - Added `Darken` Blend Mode.
 - Renamed `drawLines` to `drawLinesStrip` and added real `drawLines` (breaking change).
-
+- Changed few exceptions to error logs to be softer on rendering errors.
+- Added `throwErrorOnWarnings()` to allow more strict mode.
+- Fixed rectangle-rectangle collision to include touching borders (breaking change).
 
 # License
 

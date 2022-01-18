@@ -13,7 +13,8 @@ You can use different collision worlds to represent different levels or differen
 **Kind**: global class  
 
 * [CollisionWorld](#CollisionWorld)
-    * [new CollisionWorld(gridCellSize)](#new_CollisionWorld_new)
+    * [new CollisionWorld(resolver, gridCellSize)](#new_CollisionWorld_new)
+    * [.resolver](#CollisionWorld+resolver)
     * [.addShape(shape)](#CollisionWorld+addShape)
     * [.removeShape(shape)](#CollisionWorld+removeShape)
     * [.testCollision(sourceShape, sortByDistance, predicate)](#CollisionWorld+testCollision) ⇒ <code>CollisionTestResult</code>
@@ -22,14 +23,22 @@ You can use different collision worlds to represent different levels or differen
 
 <a name="new_CollisionWorld_new"></a>
 
-### new CollisionWorld(gridCellSize)
+### new CollisionWorld(resolver, gridCellSize)
 Create the collision world.
 
 
 | Param | Type | Description |
 | --- | --- | --- |
+| resolver | <code>CollisionResolver</code> | Collision resolver to use for this world. |
 | gridCellSize | <code>Number</code> \| <code>Vector2</code> | For optimize collision testing, the collision world is divided into a collision grid. This param determine the grid cell size. |
 
+<a name="CollisionWorld+resolver"></a>
+
+### collisionWorld.resolver
+Collision resolver used in this collision world.
+By default, will inherit the collision manager default resolver.
+
+**Kind**: instance property of [<code>CollisionWorld</code>](#CollisionWorld)  
 <a name="CollisionWorld+addShape"></a>
 
 ### collisionWorld.addShape(shape)

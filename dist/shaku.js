@@ -547,7 +547,7 @@ function generateRandomAssetName()
  
 // export assets manager
 module.exports = new Assets();
-},{"../assets/sound_asset.js":7,"../logger.js":37,"../manager.js":38,"./asset.js":1,"./binary_asset.js":3,"./font_texture_asset":4,"./json_asset.js":6,"./texture_asset.js":8}],3:[function(require,module,exports){
+},{"../assets/sound_asset.js":7,"../logger.js":38,"../manager.js":39,"./asset.js":1,"./binary_asset.js":3,"./font_texture_asset":4,"./json_asset.js":6,"./texture_asset.js":8}],3:[function(require,module,exports){
 /**
  * Implement binary data asset type.
  * 
@@ -965,7 +965,7 @@ function measureTextWidth(fontFamily, fontSize, char)
 
 // export the asset type.
 module.exports = FontTextureAsset;
-},{"../utils/rectangle":49,"../utils/vector2":50,"./asset":1,"./texture_asset":8}],5:[function(require,module,exports){
+},{"../utils/rectangle":50,"../utils/vector2":51,"./asset":1,"./texture_asset":8}],5:[function(require,module,exports){
 /**
  * Just an alias to main manager so we can require() this folder as a package.
  * 
@@ -1542,7 +1542,7 @@ function isPowerOf2(value) {
 
 // export the asset type.
 module.exports = TextureAsset;
-},{"../gfx/texture_filter_modes":31,"../gfx/texture_wrap_modes":32,"../logger.js":37,"../utils/color":46,"../utils/vector2":50,"./asset":1}],9:[function(require,module,exports){
+},{"../gfx/texture_filter_modes":32,"../gfx/texture_wrap_modes":33,"../logger.js":38,"../utils/color":47,"../utils/vector2":51,"./asset":1}],9:[function(require,module,exports){
 /**
  * Implement the collision manager.
  * 
@@ -1559,10 +1559,11 @@ module.exports = TextureAsset;
 const IManager = require('../manager.js');
 const Vector2 = require('../utils/vector2.js');
 const CollisionWorld = require('./collision_world.js');
-const _resolver = require('./resolver');
+const CollisionResolver = require('./resolver');
 const CircleShape = require('./shapes/circle.js');
 const PointShape = require('./shapes/point.js');
 const RectangleShape = require('./shapes/rectangle.js');
+const ResolverImp = require('./resolvers_imp');
 const _logger = require('../logger.js').getLogger('collision');
 
 
@@ -1581,6 +1582,12 @@ class Collision extends IManager
     constructor()
     {
         super();
+
+        /**
+         * The collision resolver we use to detect collision between different shapes. 
+         * You can use this object directly without creating a collision world, if you just need to test collision between shapes.
+         */
+        this.resolver = new CollisionResolver();
     }
 
     /** 
@@ -1591,18 +1598,17 @@ class Collision extends IManager
     {        
         return new Promise((resolve, reject) => {    
             _logger.info("Setup collision manager..");
-            _resolver._init();
+
+            this.resolver._init();
+            this.resolver.setHandler(PointShape, PointShape, ResolverImp.pointPoint);
+            this.resolver.setHandler(PointShape, CircleShape, ResolverImp.pointCircle);
+            this.resolver.setHandler(PointShape, RectangleShape, ResolverImp.pointRectangle);
+            this.resolver.setHandler(CircleShape, CircleShape, ResolverImp.circleCircle);
+            this.resolver.setHandler(CircleShape, RectangleShape, ResolverImp.circleRectangle);
+            this.resolver.setHandler(RectangleShape, RectangleShape, ResolverImp.rectangleRectangle);
+
             resolve();
         });
-    }
-
-    /**
-     * Get the collision resolver. 
-     * You can use this object directly without creating a collision world, if you just need to test collision between two shapes.
-     */
-    get resolver()
-    {
-        return _resolver;
     }
 
     /**
@@ -1612,7 +1618,7 @@ class Collision extends IManager
      */
     createWorld(gridCellSize)
     {
-        return new CollisionWorld(gridCellSize);
+        return new CollisionWorld(this.resolver, gridCellSize);
     }
 
     /**
@@ -1667,7 +1673,7 @@ class Collision extends IManager
 
 // export main object
 module.exports = new Collision();
-},{"../logger.js":37,"../manager.js":38,"../utils/vector2.js":50,"./collision_world.js":10,"./resolver":12,"./shapes/circle.js":14,"./shapes/point.js":15,"./shapes/rectangle.js":16}],10:[function(require,module,exports){
+},{"../logger.js":38,"../manager.js":39,"../utils/vector2.js":51,"./collision_world.js":10,"./resolver":12,"./resolvers_imp":13,"./shapes/circle.js":15,"./shapes/point.js":16,"./shapes/rectangle.js":17}],10:[function(require,module,exports){
 /**
  * Implement the collision manager.
  * 
@@ -1683,11 +1689,11 @@ module.exports = new Collision();
 'use strict';
 const Color = require("../utils/color");
 const Vector2 = require("../utils/vector2");
-const resolver = require('./resolver');
 const CollisionTestResult = require("./result");
 const CollisionShape = require("./shapes/shape");
 const gfx = require('./../gfx');
 const Rectangle = require("../utils/rectangle");
+const CollisionResolver = require("./resolver");
 const _logger = require('../logger.js').getLogger('collision');
 
 
@@ -1699,10 +1705,17 @@ class CollisionWorld
 {
     /**
      * Create the collision world.
+     * @param {CollisionResolver} resolver Collision resolver to use for this world.
      * @param {Number|Vector2} gridCellSize For optimize collision testing, the collision world is divided into a collision grid. This param determine the grid cell size.
      */
-    constructor(gridCellSize)
+    constructor(resolver, gridCellSize)
     {
+        /**
+         * Collision resolver used in this collision world.
+         * By default, will inherit the collision manager default resolver.
+         */
+        this.resolver = resolver;
+
         // set grid cell size
         if (typeof gridCellSize === 'undefined') { gridCellSize = new Vector2(512, 512); }
         else if (typeof gridCellSize === 'number') { gridCellSize = new Vector2(gridCellSize, gridCellSize); }
@@ -1754,7 +1767,7 @@ class CollisionWorld
         }
 
         // get new range
-        let bb = shape.getBoundingBox();
+        let bb = shape._getBoundingBox();
         let minx = Math.floor(bb.left / this._gridCellSize.x);
         let miny = Math.floor(bb.top / this._gridCellSize.y);
         let maxx = Math.ceil(bb.right / this._gridCellSize.x);
@@ -1970,7 +1983,7 @@ class CollisionWorld
 
 // export collision world
 module.exports = CollisionWorld;
-},{"../logger.js":37,"../utils/color":46,"../utils/rectangle":49,"../utils/vector2":50,"./../gfx":24,"./resolver":12,"./result":13,"./shapes/shape":17}],11:[function(require,module,exports){
+},{"../logger.js":38,"../utils/color":47,"../utils/rectangle":50,"../utils/vector2":51,"./../gfx":25,"./resolver":12,"./result":14,"./shapes/shape":18}],11:[function(require,module,exports){
 /**
  * Just an alias to main manager so we can require() this folder as a package.
  * 
@@ -2092,8 +2105,69 @@ class CollisionResolver
 }
 
 // export the collision resolver
-module.exports = new CollisionResolver();
-},{"../logger.js":37,"../utils/vector2.js":50,"./result.js":13,"./shapes/shape.js":17}],13:[function(require,module,exports){
+module.exports = CollisionResolver;
+},{"../logger.js":38,"../utils/vector2.js":51,"./result.js":14,"./shapes/shape.js":18}],13:[function(require,module,exports){
+/**
+ * All default collision detection implementations.
+ * 
+ * |-- copyright and license --|
+ * @package    Shaku
+ * @file       shaku\lib\collision\resolvers_imp.js
+ * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
+ * @copyright  (c) 2021 Ronen Ness
+ * @license    MIT
+ * |-- end copyright and license --|
+ * 
+ */
+'use strict';
+
+ 
+// export the main methods
+module.exports = {
+    
+    /**
+     * Test collision between two points.
+     */
+    pointPoint: function(v1, v2) {
+        return v1._position.equals(v2._position);
+    },
+
+    /**
+     * Test collision between point and circle.
+     */
+    pointCircle: function(v1, c1) {
+        return v1._position.distanceTo(c1._circle.center) <= c1._circle.radius;
+    },
+
+    /**
+     * Test collision between point and rectangle.
+     */
+    pointRectangle: function(v1, r1) {
+        return r1._rect.containsVector(v1._position);
+    },
+
+    /**
+     * Test collision between circle and circle.
+     */
+    circleCircle: function(c1, c2) {
+        return c1._circle.center.distanceTo(c2._circle.center) <= (c1._circle.radius + c2._circle.radius);
+    },
+
+    /**
+     * Test collision between circle and rectangle.
+     */
+    circleRectangle: function(c1, r1) {
+        return r1._rect.collideCircle(c1._circle);
+    },
+    
+    /**
+     * Test collision between rectangle and rectangle.
+     */
+     rectangleRectangle: function(r1, r2) {
+        return r1._rect.collideRect(r2._rect);
+    }
+}
+},{}],14:[function(require,module,exports){
 /**
  * An object to store collision detection result.
  * 
@@ -2132,7 +2206,7 @@ class CollisionTestResult
 
 // export collision shape class
 module.exports = CollisionTestResult;
-},{"../utils/vector2":50,"./shapes/shape":17}],14:[function(require,module,exports){
+},{"../utils/vector2":51,"./shapes/shape":18}],15:[function(require,module,exports){
 /**
  * Implement collision circle.
  * 
@@ -2179,10 +2253,9 @@ class CircleShape extends CollisionShape
     }
 
     /**
-     * Get collision shape's bounding box.
-     * @returns {Rectangle} Shape's bounding box.
+     * @inheritdoc
      */
-    getBoundingBox()
+    _getBoundingBox()
     {
         return this._boundingBox;
     }
@@ -2205,7 +2278,7 @@ class CircleShape extends CollisionShape
 
 // export collision shape class
 module.exports = CircleShape;
-},{"../../utils/circle":45,"../../utils/rectangle":49,"./../../gfx":24,"./shape":17}],15:[function(require,module,exports){
+},{"../../utils/circle":46,"../../utils/rectangle":50,"./../../gfx":25,"./shape":18}],16:[function(require,module,exports){
 /**
  * Implement collision point.
  * 
@@ -2247,6 +2320,7 @@ class PointShape extends CollisionShape
      */
     setPosition(position)
     {
+        this._position = position.clone();
         this._boundingBox = new Rectangle(position.x, position.y, 1, 1);
         this._shapeChanged();
     }
@@ -2257,14 +2331,13 @@ class PointShape extends CollisionShape
      */
     getPosition()
     {
-        return this._boundingBox.getPosition();
+        return this._position.clone();
     }
 
     /**
-     * Get collision shape's bounding box.
-     * @returns {Rectangle} Shape's bounding box.
+     * @inheritdoc
      */
-    getBoundingBox()
+    _getBoundingBox()
     {
         return this._boundingBox;
     }
@@ -2283,7 +2356,7 @@ class PointShape extends CollisionShape
 
 // export collision shape class
 module.exports = PointShape;
-},{"../../utils/circle":45,"../../utils/rectangle":49,"../../utils/vector2":50,"./../../gfx":24,"./shape":17}],16:[function(require,module,exports){
+},{"../../utils/circle":46,"../../utils/rectangle":50,"../../utils/vector2":51,"./../../gfx":25,"./shape":18}],17:[function(require,module,exports){
 /**
  * Implement collision rectangle.
  * 
@@ -2328,10 +2401,9 @@ class RectangleShape extends CollisionShape
     }
 
     /**
-     * Get collision shape's bounding box.
-     * @returns {Rectangle} Shape's bounding box.
+     * @inheritdoc
      */
-    getBoundingBox()
+    _getBoundingBox()
     {
         return this._rect;
     }
@@ -2354,7 +2426,7 @@ class RectangleShape extends CollisionShape
 
 // export collision shape class
 module.exports = RectangleShape;
-},{"../../utils/rectangle":49,"./../../gfx":24,"./shape":17}],17:[function(require,module,exports){
+},{"../../utils/rectangle":50,"./../../gfx":25,"./shape":18}],18:[function(require,module,exports){
 /**
  * Implement collision shape base class.
  * 
@@ -2399,6 +2471,15 @@ class CollisionShape
     }
 
     /**
+     * Debug draw this shape.
+     * @param {Number} opacity Shape opacity factor.
+     */
+    debugDraw(opacity)
+    {
+        throw new Error("Not Implemented!");
+    }
+    
+    /**
      * Get debug drawing color.
      * @private
      */
@@ -2420,22 +2501,14 @@ class CollisionShape
 
     /**
      * Get collision shape's bounding box.
+     * @private
      * @returns {Rectangle} Shape's bounding box.
      */
-    getBoundingBox()
+    _getBoundingBox()
     {
         throw new Error("Not Implemented!");
     }
-
-    /**
-     * Debug draw this shape.
-     * @param {Number} opacity Shape opacity factor.
-     */
-    debugDraw(opacity)
-    {
-        throw new Error("Not Implemented!");
-    }
-
+    
     /**
      * Set the parent collision world this shape is currently in.
      * @private
@@ -2472,7 +2545,7 @@ class CollisionShape
 
 // export collision shape class
 module.exports = CollisionShape;
-},{"../../utils/color":46,"../../utils/rectangle":49,"../collision_world":10}],18:[function(require,module,exports){
+},{"../../utils/color":47,"../../utils/rectangle":50,"../collision_world":10}],19:[function(require,module,exports){
 /**
  * Define supported blend modes.
  * 
@@ -2512,7 +2585,7 @@ Object.defineProperty(BlendModes, '_values', {
 Object.freeze(BlendModes);
 
 module.exports = BlendModes;
-},{}],19:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 /**
  * Camera class.
  * 
@@ -2614,7 +2687,7 @@ class Camera
 
 // export the camera object
 module.exports = Camera;
-},{"../utils/rectangle":49,"../utils/vector2":50,"./matrix":25}],20:[function(require,module,exports){
+},{"../utils/rectangle":50,"../utils/vector2":51,"./matrix":26}],21:[function(require,module,exports){
 /**
  * Implement a basic effect to draw sprites.
  * 
@@ -2712,7 +2785,7 @@ class BasicEffect extends Effect
 
 // export the basic shader
 module.exports = BasicEffect;
-},{"./effect":21}],21:[function(require,module,exports){
+},{"./effect":22}],22:[function(require,module,exports){
 /**
  * Effect base class.
  * 
@@ -3248,7 +3321,7 @@ Object.freeze(Effect.AttributeBinds);
 
 // export the effect class.
 module.exports = Effect;
-},{"../../assets/texture_asset.js":8,"../../logger.js":37,"../../utils/color.js":46,"../../utils/rectangle.js":49,"../matrix.js":25}],22:[function(require,module,exports){
+},{"../../assets/texture_asset.js":8,"../../logger.js":38,"../../utils/color.js":47,"../../utils/rectangle.js":50,"../matrix.js":26}],23:[function(require,module,exports){
 /**
  * Include all built-in effects.
  * 
@@ -3267,7 +3340,7 @@ module.exports = Effect;
     Effect: require('./effect'),
     BasicEffect: require('./basic'),
  }
-},{"./basic":20,"./effect":21}],23:[function(require,module,exports){
+},{"./basic":21,"./effect":22}],24:[function(require,module,exports){
 /**
  * Implement the gfx manager.
  * 
@@ -4230,13 +4303,17 @@ class Gfx extends IManager
        colors = colors || _whiteColor;
        blendMode = blendMode || BlendModes.Opaque;
 
-       // sanity
-       if (colors.length !== undefined && colors.length !== points.length) {
-           throw new Error("When drawing lines with colors array, the colors array and points array must have the same length!");
-       }
-       if (points.length > this.maxLineSegments) {
-           throw new Error(`Cannot draw lines strip with more than ${this.maxLineSegments} vertices!`);
-       }
+        // sanity - make sure colors and vertices match
+        if (colors.length !== undefined && colors.length !== points.length) {
+            _logger.error("When drawing shapes with colors array, the colors array and points array must have the same length!");
+            return;
+        }
+
+        // sanity - make sure not too many vertices
+        if (points.length > this.maxLineSegments) {
+            _logger.error(`Cannot draw shapes with more than ${this.maxLineSegments} vertices!`);
+            return;
+        }
 
        // basic params
        let gl = this._gl;
@@ -4729,7 +4806,7 @@ class Gfx extends IManager
 
 // export main object
 module.exports = new Gfx();
-},{"../assets/font_texture_asset.js":4,"../assets/texture_asset.js":8,"../logger.js":37,"../manager.js":38,"../utils/circle.js":45,"../utils/color.js":46,"../utils/rectangle.js":49,"../utils/vector2.js":50,"./blend_modes.js":18,"./camera.js":19,"./effects":22,"./matrix.js":25,"./mesh.js":26,"./mesh_generator.js":27,"./sprite.js":28,"./sprites_group.js":29,"./text_alignment.js":30,"./texture_filter_modes.js":31,"./texture_wrap_modes.js":32}],24:[function(require,module,exports){
+},{"../assets/font_texture_asset.js":4,"../assets/texture_asset.js":8,"../logger.js":38,"../manager.js":39,"../utils/circle.js":46,"../utils/color.js":47,"../utils/rectangle.js":50,"../utils/vector2.js":51,"./blend_modes.js":19,"./camera.js":20,"./effects":23,"./matrix.js":26,"./mesh.js":27,"./mesh_generator.js":28,"./sprite.js":29,"./sprites_group.js":30,"./text_alignment.js":31,"./texture_filter_modes.js":32,"./texture_wrap_modes.js":33}],25:[function(require,module,exports){
 /**
  * Just an alias to main manager so we can require() this folder as a package.
  * 
@@ -4744,7 +4821,7 @@ module.exports = new Gfx();
  */
  'use strict';
  module.exports = require('./gfx');
-},{"./gfx":23}],25:[function(require,module,exports){
+},{"./gfx":24}],26:[function(require,module,exports){
 /**
  * Matrix class.
  * Based on code from https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API/Matrix_math_for_the_web
@@ -5062,7 +5139,7 @@ Object.freeze(Matrix.identity);
 
 // export the matrix object
 module.exports = Matrix;
-},{}],26:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 /**
  * Define a mesh object.
  * 
@@ -5127,7 +5204,7 @@ const { Color } = require("../utils");
  
  // export the mesh class.
  module.exports = Mesh;
-},{"../utils":48}],27:[function(require,module,exports){
+},{"../utils":49}],28:[function(require,module,exports){
 /**
  * Define utility to generate meshes.
  * 
@@ -5210,7 +5287,7 @@ class MeshGenerator
 
 // export the meshes generator.
 module.exports = MeshGenerator;
-},{"./mesh":26}],28:[function(require,module,exports){
+},{"./mesh":27}],29:[function(require,module,exports){
 /**
  * Define a sprite object.
  * 
@@ -5305,7 +5382,7 @@ class Sprite
 
 // export the sprite class.
 module.exports = Sprite;
-},{"../assets/texture_asset":8,"../utils/color":46,"../utils/rectangle":49,"../utils/vector2":50,"./blend_modes":18}],29:[function(require,module,exports){
+},{"../assets/texture_asset":8,"../utils/color":47,"../utils/rectangle":50,"../utils/vector2":51,"./blend_modes":19}],30:[function(require,module,exports){
 /**
  * Define a sprites group.
  * 
@@ -5460,7 +5537,7 @@ class SpritesGroup
 
 // export the sprites group class.
 module.exports = SpritesGroup;
-},{"../utils/color":46,"../utils/vector2":50,"./matrix":25,"./sprite":28}],30:[function(require,module,exports){
+},{"../utils/color":47,"../utils/vector2":51,"./matrix":26,"./sprite":29}],31:[function(require,module,exports){
 /**
  * Define possible text alignments.
  * 
@@ -5498,7 +5575,7 @@ const TextAlignment = {
 
 Object.freeze(TextAlignment);
 module.exports = TextAlignment;
-},{}],31:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 /**
  * Define possible texture filter modes.
  * 
@@ -5533,7 +5610,7 @@ Object.defineProperty(TextureFilterModes, '_values', {
 Object.freeze(TextureFilterModes);
 module.exports = TextureFilterModes;
 
-},{}],32:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 /**
  * Define possible texture wrap modes.
  * 
@@ -5564,7 +5641,7 @@ Object.defineProperty(TextureWrapModes, '_values', {
 
 Object.freeze(TextureWrapModes);
 module.exports = TextureWrapModes;
-},{}],33:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 /**
  * Entry point for the Shaku module.
  * 
@@ -5579,7 +5656,7 @@ module.exports = TextureWrapModes;
  */
 'use strict';
 module.exports = require('./shaku');
-},{"./shaku":43}],34:[function(require,module,exports){
+},{"./shaku":44}],35:[function(require,module,exports){
 /**
  * Just an alias to main manager so we can require() this folder as a package.
  * 
@@ -5594,7 +5671,7 @@ module.exports = require('./shaku');
  */
  'use strict';
  module.exports = require('./input');
-},{"./input":35}],35:[function(require,module,exports){
+},{"./input":36}],36:[function(require,module,exports){
 /**
  * Implement the input manager.
  * 
@@ -6269,7 +6346,7 @@ class Input extends IManager
 
 // export main object
 module.exports = new Input();
-},{"../logger.js":37,"../manager.js":38,"../utils/vector2.js":50,"./key_codes.js":36}],36:[function(require,module,exports){
+},{"../logger.js":38,"../manager.js":39,"../utils/vector2.js":51,"./key_codes.js":37}],37:[function(require,module,exports){
 /**
  * Define keyboard and mouse key codes.
  * 
@@ -6400,7 +6477,7 @@ const KeyboardKeys = {
 
 // export keyboard keys and mouse buttons
 module.exports = { KeyboardKeys: KeyboardKeys, MouseButtons: MouseButtons };
-},{}],37:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 /**
  * Implement basic logger.
  * By default, uses console for logging, but it can be replaced with setDrivers().
@@ -6428,6 +6505,7 @@ class Logger
     constructor(name)
     {
         this._nameHeader = '[Shaku][' + name + ']';
+        this._throwErrors = false;
     }
 
     /**
@@ -6464,6 +6542,9 @@ class Logger
     warn(msg)
     {
         _drivers.warn(this._nameHeader, msg);
+        if (this._throwErrors) {
+            throw new Error(msg);
+        }
     }
 
     /**
@@ -6473,6 +6554,18 @@ class Logger
     error(msg)
     {
         _drivers.error(this._nameHeader, msg);
+        if (this._throwErrors) {
+            throw new Error(msg);
+        }
+    }
+
+    /**
+     * Set logger to throw an error every time a log message with severity higher than warning is written.
+     * @param {Boolean} enable Set to true to throw error on warnings.
+     */
+    throwErrorOnWarnings(enable)
+    {
+        this._throwErrors = Boolean(enable);
     }
 }
 
@@ -6532,7 +6625,7 @@ module.exports = {
         _drivers = drivers;
     }
 };
-},{}],38:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 /**
  * Define the managers interface.
  * 
@@ -6590,7 +6683,7 @@ class IManager
 
 // export the manager interface.
 module.exports = IManager
-},{}],39:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 /**
  * Just an alias to main manager so we can require() this folder as a package.
  * 
@@ -6605,7 +6698,7 @@ module.exports = IManager
  */
  'use strict';
  module.exports = require('./sfx');
-},{"./sfx":40}],40:[function(require,module,exports){
+},{"./sfx":41}],41:[function(require,module,exports){
 /**
  * Implement the sfx manager.
  * 
@@ -6789,7 +6882,7 @@ class Sfx extends IManager
 
 // export main object
 module.exports = new Sfx();
-},{"../assets/sound_asset.js":7,"../logger.js":37,"../manager.js":38,"./sound_instance.js":41,"./sound_mixer.js":42}],41:[function(require,module,exports){
+},{"../assets/sound_asset.js":7,"../logger.js":38,"../manager.js":39,"./sound_instance.js":42,"./sound_mixer.js":43}],42:[function(require,module,exports){
 /**
  * Implement a sound effect instance.
  * 
@@ -7005,7 +7098,7 @@ SoundInstance._masterVolume = 1;
 
 // export main object
 module.exports = SoundInstance;
-},{"../logger.js":37}],42:[function(require,module,exports){
+},{"../logger.js":38}],43:[function(require,module,exports){
 /**
  * Implement a sound mixer class.
  * 
@@ -7139,7 +7232,7 @@ class SoundMixer
 
 // export the sound mixer
 module.exports = SoundMixer;
-},{"./sound_instance.js":41}],43:[function(require,module,exports){
+},{"./sound_instance.js":42}],44:[function(require,module,exports){
 /**
  * Shaku Main.
  * 
@@ -7306,10 +7399,22 @@ class Shaku
 
     /**
      * Make Shaku run in silent mode, without logs.
+     * You can call this before init.
      */
     silent()
     {
         logger.silent();
+    }
+
+    /**
+     * Set logger to throw an error every time a log message with severity higher than warning is written.
+     * You can call this before init.
+     * @param {Boolean} enable Set to true to throw error on warnings.
+     */
+    throwErrorOnWarnings(enable)
+    {
+        if (enable === undefined) { throw Error("Must provide a value!"); }
+        logger.throwErrorOnWarnings(enable);
     }
 
     /**
@@ -7375,7 +7480,7 @@ class Shaku
 
 // create and return the main object.
 module.exports = new Shaku();
-},{"./assets":5,"./collision":11,"./gfx":24,"./input":34,"./logger":37,"./manager":38,"./sfx":39,"./utils":48,"./utils/game_time":47}],44:[function(require,module,exports){
+},{"./assets":5,"./collision":11,"./gfx":25,"./input":35,"./logger":38,"./manager":39,"./sfx":40,"./utils":49,"./utils/game_time":48}],45:[function(require,module,exports){
 /**
  * Implement an animator helper class.
  * 
@@ -7714,7 +7819,7 @@ function lerp(start, end, amt) {
 
 // export the animator class.
 module.exports = Animator;
-},{}],45:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 /**
  * Implement a simple 2d circle.
  * 
@@ -7796,7 +7901,7 @@ class Circle
 
 // export the circle class
 module.exports = Circle;
-},{"./vector2":50}],46:[function(require,module,exports){
+},{"./vector2":51}],47:[function(require,module,exports){
 /**
  * Define a color object.
  * 
@@ -8203,7 +8308,7 @@ function hexToColor(hex)
 
 // export Color object
 module.exports = Color;
-},{}],47:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 /**
  * A utility to hold gametime.
  * 
@@ -8298,7 +8403,7 @@ GameTime.rawTimestamp = getAccurateTimestampMs;
 
 // export the GameTime class.
 module.exports = GameTime;
-},{}],48:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
 /**
  * Include all util classes.
  * 
@@ -8321,7 +8426,7 @@ module.exports = GameTime;
     Animator: require('./animator'),
     GameTime: require('./game_time')
  };
-},{"./animator":44,"./circle":45,"./color":46,"./game_time":47,"./rectangle":49,"./vector2":50}],49:[function(require,module,exports){
+},{"./animator":45,"./circle":46,"./color":47,"./game_time":48,"./rectangle":50,"./vector2":51}],50:[function(require,module,exports){
 /**
  * Implement a simple 2d rectangle.
  * 
@@ -8512,10 +8617,10 @@ class Rectangle
     {
         let r1 = this;
         let r2 = other;
-        return !(r2.left > r1.right ||
-                r2.right < r1.left ||
-                r2.top > r1.bottom ||
-                r2.bottom < r1.top);
+        return !(r2.left >= r1.right ||
+                r2.right <= r1.left ||
+                r2.top >= r1.bottom ||
+                r2.bottom <= r1.top);
     }
 
     /**
@@ -8624,7 +8729,7 @@ class Rectangle
 
 // export the rectangle class
 module.exports = Rectangle;
-},{"./circle":45,"./vector2":50}],50:[function(require,module,exports){
+},{"./circle":46,"./vector2":51}],51:[function(require,module,exports){
 /**
  * Implement a simple 2d vector.
  * 
@@ -8994,7 +9099,7 @@ class Vector2
      */
     degreesTo(other) 
     {
-    return Vector2.degreesBetween(this, other);
+        return Vector2.degreesBetween(this, other);
     };
 
     /**
@@ -9014,7 +9119,7 @@ class Vector2
      */
     distanceTo(other)
     {
-    return Vector2.distance(this, other);
+        return Vector2.distance(this, other);
     }
     
     /**
@@ -9137,5 +9242,5 @@ class Vector2
 
 // export vector object
 module.exports = Vector2;
-},{}]},{},[33])(33)
+},{}]},{},[34])(34)
 });

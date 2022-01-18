@@ -21,6 +21,7 @@ This object wraps the entire lib namespace, and this is what you use to access a
     * [.startFrame()](#Shaku+startFrame)
     * [.endFrame()](#Shaku+endFrame)
     * [.silent()](#Shaku+silent)
+    * [.throwErrorOnWarnings(enable)](#Shaku+throwErrorOnWarnings)
     * [.getFpsCount()](#Shaku+getFpsCount) ⇒ <code>Number</code>
     * [.getAverageFrameTime()](#Shaku+getAverageFrameTime) ⇒ <code>Number</code>
     * [.requestAnimationFrame(callback)](#Shaku+requestAnimationFrame) ⇒ <code>Number</code>
@@ -80,8 +81,21 @@ End frame (update all managers).
 
 ### shaku.silent()
 Make Shaku run in silent mode, without logs.
+You can call this before init.
 
 **Kind**: instance method of [<code>Shaku</code>](#Shaku)  
+<a name="Shaku+throwErrorOnWarnings"></a>
+
+### shaku.throwErrorOnWarnings(enable)
+Set logger to throw an error every time a log message with severity higher than warning is written.
+You can call this before init.
+
+**Kind**: instance method of [<code>Shaku</code>](#Shaku)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| enable | <code>Boolean</code> | Set to true to throw error on warnings. |
+
 <a name="Shaku+getFpsCount"></a>
 
 ### shaku.getFpsCount() ⇒ <code>Number</code>

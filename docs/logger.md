@@ -18,6 +18,7 @@ By default writes logs to console.
     * [.info(msg)](#Logger+info)
     * [.warn(msg)](#Logger+warn)
     * [.error(msg)](#Logger+error)
+    * [.throwErrorOnWarnings(enable)](#Logger+throwErrorOnWarnings)
 
 <a name="Logger+trace"></a>
 
@@ -73,4 +74,15 @@ Write an error level log message.
 | Param | Type | Description |
 | --- | --- | --- |
 | msg | <code>String</code> | Message to write. |
+
+<a name="Logger+throwErrorOnWarnings"></a>
+
+### logger.throwErrorOnWarnings(enable)
+Set logger to throw an error every time a log message with severity higher than warning is written.
+
+**Kind**: instance method of [<code>Logger</code>](#Logger)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| enable | <code>Boolean</code> | Set to true to throw error on warnings. |
 

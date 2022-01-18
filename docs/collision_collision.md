@@ -31,8 +31,8 @@ Create the manager.
 <a name="Collision+resolver"></a>
 
 ### collision.resolver
-Get the collision resolver. 
-You can use this object directly without creating a collision world, if you just need to test collision between two shapes.
+The collision resolver we use to detect collision between different shapes. 
+You can use this object directly without creating a collision world, if you just need to test collision between shapes.
 
 **Kind**: instance property of [<code>Collision</code>](#Collision)  
 <a name="Collision+RectangleShape"></a>

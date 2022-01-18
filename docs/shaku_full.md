@@ -870,8 +870,8 @@ Create the manager.
 <a name="Collision+resolver"></a>
 
 ### collision.resolver
-Get the collision resolver. 
-You can use this object directly without creating a collision world, if you just need to test collision between two shapes.
+The collision resolver we use to detect collision between different shapes. 
+You can use this object directly without creating a collision world, if you just need to test collision between shapes.
 
 **Kind**: instance property of [<code>Collision</code>](#Collision)  
 <a name="Collision+RectangleShape"></a>
@@ -913,7 +913,8 @@ You can use different collision worlds to represent different levels or differen
 **Kind**: global class  
 
 * [CollisionWorld](#CollisionWorld)
-    * [new CollisionWorld(gridCellSize)](#new_CollisionWorld_new)
+    * [new CollisionWorld(resolver, gridCellSize)](#new_CollisionWorld_new)
+    * [.resolver](#CollisionWorld+resolver)
     * [.addShape(shape)](#CollisionWorld+addShape)
     * [.removeShape(shape)](#CollisionWorld+removeShape)
     * [.testCollision(sourceShape, sortByDistance, predicate)](#CollisionWorld+testCollision) ⇒ [<code>CollisionTestResult</code>](#CollisionTestResult)
@@ -922,14 +923,22 @@ You can use different collision worlds to represent different levels or differen
 
 <a name="new_CollisionWorld_new"></a>
 
-### new CollisionWorld(gridCellSize)
+### new CollisionWorld(resolver, gridCellSize)
 Create the collision world.
 
 
 | Param | Type | Description |
 | --- | --- | --- |
+| resolver | [<code>CollisionResolver</code>](#CollisionResolver) | Collision resolver to use for this world. |
 | gridCellSize | <code>Number</code> \| [<code>Vector2</code>](#Vector2) | For optimize collision testing, the collision world is divided into a collision grid. This param determine the grid cell size. |
 
+<a name="CollisionWorld+resolver"></a>
+
+### collisionWorld.resolver
+Collision resolver used in this collision world.
+By default, will inherit the collision manager default resolver.
+
+**Kind**: instance property of [<code>CollisionWorld</code>](#CollisionWorld)  
 <a name="CollisionWorld+addShape"></a>
 
 ### collisionWorld.addShape(shape)
@@ -1065,7 +1074,7 @@ Collision circle class.
 * [CircleShape](#CircleShape)
     * [new CircleShape(circle)](#new_CircleShape_new)
     * [.setShape(circle)](#CircleShape+setShape)
-    * [.getBoundingBox()](#CircleShape+getBoundingBox) ⇒ [<code>Rectangle</code>](#Rectangle)
+    * [._getBoundingBox()](#CircleShape+_getBoundingBox)
     * [.debugDraw(opacity)](#CircleShape+debugDraw)
 
 <a name="new_CircleShape_new"></a>
@@ -1089,13 +1098,10 @@ Set this collision shape from circle.
 | --- | --- | --- |
 | circle | [<code>Rectangle</code>](#Rectangle) | Circle shape. |
 
-<a name="CircleShape+getBoundingBox"></a>
+<a name="CircleShape+_getBoundingBox"></a>
 
-### circleShape.getBoundingBox() ⇒ [<code>Rectangle</code>](#Rectangle)
-Get collision shape's bounding box.
-
+### circleShape.\_getBoundingBox()
 **Kind**: instance method of [<code>CircleShape</code>](#CircleShape)  
-**Returns**: [<code>Rectangle</code>](#Rectangle) - Shape's bounding box.  
 <a name="CircleShape+debugDraw"></a>
 
 ### circleShape.debugDraw(opacity)
@@ -1118,7 +1124,7 @@ Collision point class.
     * [new PointShape(position)](#new_PointShape_new)
     * [.setPosition(position)](#PointShape+setPosition)
     * [.getPosition()](#PointShape+getPosition) ⇒ [<code>Vector2</code>](#Vector2)
-    * [.getBoundingBox()](#PointShape+getBoundingBox) ⇒ [<code>Rectangle</code>](#Rectangle)
+    * [._getBoundingBox()](#PointShape+_getBoundingBox)
     * [.debugDraw(opacity)](#PointShape+debugDraw)
 
 <a name="new_PointShape_new"></a>
@@ -1149,13 +1155,10 @@ Get point position.
 
 **Kind**: instance method of [<code>PointShape</code>](#PointShape)  
 **Returns**: [<code>Vector2</code>](#Vector2) - Point position.  
-<a name="PointShape+getBoundingBox"></a>
+<a name="PointShape+_getBoundingBox"></a>
 
-### pointShape.getBoundingBox() ⇒ [<code>Rectangle</code>](#Rectangle)
-Get collision shape's bounding box.
-
+### pointShape.\_getBoundingBox()
 **Kind**: instance method of [<code>PointShape</code>](#PointShape)  
-**Returns**: [<code>Rectangle</code>](#Rectangle) - Shape's bounding box.  
 <a name="PointShape+debugDraw"></a>
 
 ### pointShape.debugDraw(opacity)
@@ -1177,7 +1180,7 @@ Collision rectangle class.
 * [RectangleShape](#RectangleShape)
     * [new RectangleShape(rectangle)](#new_RectangleShape_new)
     * [.setShape(rectangle)](#RectangleShape+setShape)
-    * [.getBoundingBox()](#RectangleShape+getBoundingBox) ⇒ [<code>Rectangle</code>](#Rectangle)
+    * [._getBoundingBox()](#RectangleShape+_getBoundingBox)
     * [.debugDraw(opacity)](#RectangleShape+debugDraw)
 
 <a name="new_RectangleShape_new"></a>
@@ -1201,13 +1204,10 @@ Set this collision shape from rectangle.
 | --- | --- | --- |
 | rectangle | [<code>Rectangle</code>](#Rectangle) | Rectangle shape. |
 
-<a name="RectangleShape+getBoundingBox"></a>
+<a name="RectangleShape+_getBoundingBox"></a>
 
-### rectangleShape.getBoundingBox() ⇒ [<code>Rectangle</code>](#Rectangle)
-Get collision shape's bounding box.
-
+### rectangleShape.\_getBoundingBox()
 **Kind**: instance method of [<code>RectangleShape</code>](#RectangleShape)  
-**Returns**: [<code>Rectangle</code>](#Rectangle) - Shape's bounding box.  
 <a name="RectangleShape+debugDraw"></a>
 
 ### rectangleShape.debugDraw(opacity)
@@ -1229,7 +1229,6 @@ Collision shape base class.
 * [CollisionShape](#CollisionShape)
     * [new CollisionShape()](#new_CollisionShape_new)
     * [.setDebugColor(color)](#CollisionShape+setDebugColor)
-    * [.getBoundingBox()](#CollisionShape+getBoundingBox) ⇒ [<code>Rectangle</code>](#Rectangle)
     * [.debugDraw(opacity)](#CollisionShape+debugDraw)
 
 <a name="new_CollisionShape_new"></a>
@@ -1248,13 +1247,6 @@ Set the debug color to use to draw this shape.
 | --- | --- | --- |
 | color | [<code>Color</code>](#Color) | Color to set or null to use default. |
 
-<a name="CollisionShape+getBoundingBox"></a>
-
-### collisionShape.getBoundingBox() ⇒ [<code>Rectangle</code>](#Rectangle)
-Get collision shape's bounding box.
-
-**Kind**: instance method of [<code>CollisionShape</code>](#CollisionShape)  
-**Returns**: [<code>Rectangle</code>](#Rectangle) - Shape's bounding box.  
 <a name="CollisionShape+debugDraw"></a>
 
 ### collisionShape.debugDraw(opacity)
@@ -2906,6 +2898,7 @@ By default writes logs to console.
     * [.info(msg)](#Logger+info)
     * [.warn(msg)](#Logger+warn)
     * [.error(msg)](#Logger+error)
+    * [.throwErrorOnWarnings(enable)](#Logger+throwErrorOnWarnings)
 
 <a name="Logger+trace"></a>
 
@@ -2961,6 +2954,17 @@ Write an error level log message.
 | Param | Type | Description |
 | --- | --- | --- |
 | msg | <code>String</code> | Message to write. |
+
+<a name="Logger+throwErrorOnWarnings"></a>
+
+### logger.throwErrorOnWarnings(enable)
+Set logger to throw an error every time a log message with severity higher than warning is written.
+
+**Kind**: instance method of [<code>Logger</code>](#Logger)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| enable | <code>Boolean</code> | Set to true to throw error on warnings. |
 
 <a name="IManager"></a>
 
@@ -3383,6 +3387,7 @@ This object wraps the entire lib namespace, and this is what you use to access a
     * [.startFrame()](#Shaku+startFrame)
     * [.endFrame()](#Shaku+endFrame)
     * [.silent()](#Shaku+silent)
+    * [.throwErrorOnWarnings(enable)](#Shaku+throwErrorOnWarnings)
     * [.getFpsCount()](#Shaku+getFpsCount) ⇒ <code>Number</code>
     * [.getAverageFrameTime()](#Shaku+getAverageFrameTime) ⇒ <code>Number</code>
     * [.requestAnimationFrame(callback)](#Shaku+requestAnimationFrame) ⇒ <code>Number</code>
@@ -3442,8 +3447,21 @@ End frame (update all managers).
 
 ### shaku.silent()
 Make Shaku run in silent mode, without logs.
+You can call this before init.
 
 **Kind**: instance method of [<code>Shaku</code>](#Shaku)  
+<a name="Shaku+throwErrorOnWarnings"></a>
+
+### shaku.throwErrorOnWarnings(enable)
+Set logger to throw an error every time a log message with severity higher than warning is written.
+You can call this before init.
+
+**Kind**: instance method of [<code>Shaku</code>](#Shaku)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| enable | <code>Boolean</code> | Set to true to throw error on warnings. |
+
 <a name="Shaku+getFpsCount"></a>
 
 ### shaku.getFpsCount() ⇒ <code>Number</code>
