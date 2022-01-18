@@ -35,6 +35,7 @@ A simple Vector object for 2d positions.
         * [.ceilSelf()](#Vector2+ceilSelf) ⇒ [<code>Vector2</code>](#Vector2)
         * [.normalizeSelf()](#Vector2+normalizeSelf) ⇒ [<code>Vector2</code>](#Vector2)
         * [.equals(other)](#Vector2+equals) ⇒ <code>Boolean</code>
+        * [.approximate(other)](#Vector2+approximate) ⇒ <code>Boolean</code>
         * [.scaled()](#Vector2+scaled) ⇒ [<code>Vector2</code>](#Vector2)
         * [.degreesTo(other)](#Vector2+degreesTo) ⇒ <code>Number</code>
         * [.radiansTo(other)](#Vector2+radiansTo) ⇒ <code>Number</code>
@@ -259,6 +260,18 @@ Return a normalized copy of this vector.
 
 ### vector2.equals(other) ⇒ <code>Boolean</code>
 Return if vector equals another vector.
+
+**Kind**: instance method of [<code>Vector2</code>](#Vector2)  
+**Returns**: <code>Boolean</code> - if vectors are equal.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| other | [<code>Vector2</code>](#Vector2) | Other vector to compare to. |
+
+<a name="Vector2+approximate"></a>
+
+### vector2.approximate(other) ⇒ <code>Boolean</code>
+Return if vector approximately equals another vector.
 
 **Kind**: instance method of [<code>Vector2</code>](#Vector2)  
 **Returns**: <code>Boolean</code> - if vectors are equal.  

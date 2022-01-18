@@ -53,6 +53,7 @@ All color components are expected to be in 0.0 - 1.0 range (and not 0-255).
         * [.string()](#Color+string)
         * [.equals(other)](#Color+equals)
     * _static_
+        * [.webColorNames](#Color.webColorNames) ⇒ <code>Array.&lt;String&gt;</code>
         * [.componentToHex(c)](#Color.componentToHex) ⇒ <code>String</code>
         * [.fromHex(val)](#Color.fromHex) ⇒ [<code>Color</code>](#Color)
         * [.fromDecimal(val, includeAlpha)](#Color.fromDecimal) ⇒ [<code>Color</code>](#Color)
@@ -234,6 +235,13 @@ Check if equal to another color.
 | --- | --- | --- |
 | other | <code>PintarJS.Color</code> | Other color to compare to. |
 
+<a name="Color.webColorNames"></a>
+
+### Color.webColorNames ⇒ <code>Array.&lt;String&gt;</code>
+Get array with all built-in web color names.
+
+**Kind**: static property of [<code>Color</code>](#Color)  
+**Returns**: <code>Array.&lt;String&gt;</code> - Array with color names.  
 <a name="Color.componentToHex"></a>
 
 ### Color.componentToHex(c) ⇒ <code>String</code>
