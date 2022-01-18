@@ -1935,6 +1935,11 @@ class CollisionWorld
                         }
                         checked.add(other);
 
+                        // skip self
+                        if (other === shape) {
+                            continue;
+                        }
+
                         // use predicate
                         if (predicate && !predicate(other)) {
                             continue;
