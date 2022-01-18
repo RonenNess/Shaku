@@ -1365,7 +1365,7 @@ List of changes in released versions.
 - Added `throwErrorOnWarnings()` to allow more strict mode.
 - Fixed rectangle-rectangle collision to include touching borders (breaking change).
 - Fixed `collideCircle()` bug.
-
+- Added plus / minus key codes.
 
 # License
 

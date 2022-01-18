@@ -2070,6 +2070,17 @@ class CollisionWorld
     }
 }
 
+/**
+ * Sort array by distance from source shape.
+ * @private
+ */
+function sortByDistance(sourceShape, options)
+{
+    let sourceCenter = sourceShape.getCenter();
+    let sourceRadius = sourceCenter._getRadius();
+    options.sort((a, b) => (a.getCenter().distanceTo(sourceCenter) - a._getRadius() - sourceRadius) - (b.getCenter().distanceTo(sourceCenter) - b._getRadius() - sourceRadius));
+}
+
 // export collision world
 module.exports = CollisionWorld;
 },{"../logger.js":38,"../utils/color":47,"../utils/rectangle":50,"../utils/vector2":51,"./../gfx":25,"./resolver":12,"./result":14,"./shapes/shape":18}],11:[function(require,module,exports){
@@ -2218,7 +2229,7 @@ module.exports = {
      * Test collision between two points.
      */
     pointPoint: function(v1, v2) {
-        return v1._position.equals(v2._position);
+        return v1._position.approximate(v2._position);
     },
 
     /**
@@ -2341,6 +2352,14 @@ class CircleShape extends CollisionShape
         this._boundingBox = new Rectangle(circle.center.x - circle.radius, circle.center.y - circle.radius, circle.radius * 2, circle.radius * 2);
         this._shapeChanged();
     }
+ 
+    /**
+     * @inheritdoc
+     */
+    _getRadius()
+    {
+        return this._circle.radius;
+    }
     
     /**
      * @inheritdoc
@@ -2440,7 +2459,15 @@ class PointShape extends CollisionShape
     {
         return this._position.clone();
     }
-    
+
+    /**
+     * @inheritdoc
+     */
+    _getRadius()
+    {
+        return 1;
+    }
+
     /**
      * @inheritdoc
      */
@@ -2506,7 +2533,16 @@ class RectangleShape extends CollisionShape
     {
         this._rect = rectangle;
         this._center = rectangle.getCenter();
+        this._radius = (this._rect.width + this._rect.height) / 2;
         this._shapeChanged();
+    }
+       
+    /**
+     * @inheritdoc
+     */ 
+    _getRadius()
+    {
+        return this._radius;
     }
 
     /**
@@ -2625,6 +2661,16 @@ class CollisionShape
 
         // return color
         return this._debugColor.clone();
+    }
+
+    /**
+     * Get collision shape's estimated radius box.
+     * @private
+     * @returns {Number} Shape's radius
+     */
+    _getRadius()
+    {
+        throw new Error("Not Implemented!");
     }
 
     /**
@@ -5882,8 +5928,11 @@ class Input extends IManager
 
             // to make sure keyboard input would work if provided with canvas entity
             if (element.tabIndex === -1 || element.tabIndex === undefined) {
-                element.tabIndex = 0;
+                element.tabIndex = 1000;
             }
+
+            // focus on target element
+            window.setTimeout(() => element.focus(), 0);
 
             // set all the events to listen to
             var _this = this;
@@ -6592,8 +6641,10 @@ const KeyboardKeys = {
     scroll_lock: 145,
     semicolon: 186,
     equal_sign: 187,
+    plus: 187,
     comma: 188,
     dash: 189,
+    minus: 189,
     period: 190,
     forward_slash: 191,
     grave_accent: 192,
@@ -9181,6 +9232,16 @@ class Vector2
     equals(other)
     {
         return ((this === other) || (this.x === other.x && this.y === other.y));
+    }
+    
+    /**
+     * Return if vector approximately equals another vector.
+     * @param {Vector2} other Other vector to compare to.
+     * @returns {Boolean} if vectors are equal.
+     */
+    approximate(other)
+    {
+        return ((this === other) || ((Math.abs(this.x - other.x) <= 1) && (Math.abs(this.y - other.y) <= 1)));
     }
 
     /**

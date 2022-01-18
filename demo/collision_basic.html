@@ -12,7 +12,7 @@
     <button class="view-code-btn" onclick="showSampleCode();">View Code</button> 
     <h1 class="demo-title">Shaku: Basic Collision</h1>
       <p>This demo illustrate basic collision detection with Shaku.collision manager.<br />
-      Move the shape with your mouse to test collision, press <b>1-3</b> to replace the shape.</p>
+      Move the shape with your mouse to test collision, press <b>1-3</b> to replace the shape, and <b>+ / -</b> to set size. </p>
       
       <p id="show-data" style="color: red;"></p>
 
@@ -42,6 +42,7 @@
 
           // shape to use for test
           let userShapeType = 0;
+          let sizeFactor = 1;
 
           // create some test shapes
           for (let i = 0; i < 5; ++i) 
@@ -72,12 +73,12 @@
             switch (userShapeType)
             {
               case 0:
-                shapeToTest = new Shaku.collision.RectangleShape(new Shaku.utils.Rectangle(mouse.x - 60, mouse.y - 60, 120, 120));
+                shapeToTest = new Shaku.collision.RectangleShape(new Shaku.utils.Rectangle(mouse.x - 60 * sizeFactor, mouse.y - 60 * sizeFactor, 120 * sizeFactor, 120 * sizeFactor));
                 showDataParagraph.innerHTML = "'RectangleShape' collides with: ";
                 break;
               
               case 1:
-                shapeToTest = new Shaku.collision.CircleShape(new Shaku.utils.Circle(mouse, 100));
+                shapeToTest = new Shaku.collision.CircleShape(new Shaku.utils.Circle(mouse, 100 * sizeFactor));
                 showDataParagraph.innerHTML = "'CircleShape' collides with: ";
                 break;
               
@@ -100,6 +101,7 @@
             let collisionSingle = world.testCollision(shapeToTest, true);
             if (collisionSingle) {
               showDataParagraph.innerHTML += collisionSingle.second.constructor.name;
+              Shaku.gfx.drawLine(shapeToTest.getCenter(), collisionSingle.second.getCenter(), Shaku.utils.Color.red);
               showDataParagraph.style.color = 'red';
             }
             else {
@@ -110,6 +112,8 @@
             if (Shaku.input.down('1')) { userShapeType = 0; }
             if (Shaku.input.down('2')) { userShapeType = 1; }
             if (Shaku.input.down('3')) { userShapeType = 2; }
+            if (Shaku.input.pressed('plus')) {sizeFactor += 0.25; }
+            if (Shaku.input.pressed('minus') && sizeFactor > 0.5) {sizeFactor -= 0.25; }
 
             // end frame and request next frame
             Shaku.endFrame();
