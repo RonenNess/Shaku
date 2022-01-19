@@ -523,7 +523,7 @@
       Shaku.gfx.useEffect(waterEffect);
       waterEffect.uniforms.elapsedTime(Shaku.gameTime.elapsed);
       waterEffect.uniforms.waveFactor(1);
-      Shaku.gfx.cover(assets.background, Shaku.gfx.renderingRegion);
+      Shaku.gfx.cover(assets.background, Shaku.gfx.getRenderingRegion());
       Shaku.gfx.useEffect(null);
 
       // draw bones pile
@@ -575,13 +575,13 @@
       Shaku.gfx.useEffect(waterEffect);
       waterEffect.uniforms.elapsedTime(Shaku.gameTime.elapsed + 0.125);
       waterEffect.uniforms.waveFactor(2);
-      Shaku.gfx.draw(assets.seaWeed, new Shaku.utils.Vector2(350, Shaku.gfx.canvasSize.y), assets.seaWeed.size.mul(0.775), null, null, null, 0, new Shaku.utils.Vector2(0.5, 1));
-      Shaku.gfx.draw(assets.seaWeed, new Shaku.utils.Vector2(650, Shaku.gfx.canvasSize.y), assets.seaWeed.size, null, null, null, 0, new Shaku.utils.Vector2(0.5, 1));
-      Shaku.gfx.draw(assets.seaWeed, new Shaku.utils.Vector2(950, Shaku.gfx.canvasSize.y), assets.seaWeed.size.mul(0.5), null, null, null, 0, new Shaku.utils.Vector2(0.5, 1));
+      Shaku.gfx.draw(assets.seaWeed, new Shaku.utils.Vector2(350, Shaku.gfx.getCanvasSize().y), assets.seaWeed.size.mul(0.775), null, null, null, 0, new Shaku.utils.Vector2(0.5, 1));
+      Shaku.gfx.draw(assets.seaWeed, new Shaku.utils.Vector2(650, Shaku.gfx.getCanvasSize().y), assets.seaWeed.size, null, null, null, 0, new Shaku.utils.Vector2(0.5, 1));
+      Shaku.gfx.draw(assets.seaWeed, new Shaku.utils.Vector2(950, Shaku.gfx.getCanvasSize().y), assets.seaWeed.size.mul(0.5), null, null, null, 0, new Shaku.utils.Vector2(0.5, 1));
       Shaku.gfx.useEffect(null);
 
       // blood effect
-      Shaku.gfx.fillRect(Shaku.gfx.renderingRegion, new Shaku.utils.Color(1,0,0,this.messedUpFactor), Shaku.gfx.BlendModes.Multiply);
+      Shaku.gfx.fillRect(Shaku.gfx.getRenderingRegion(), new Shaku.utils.Color(1,0,0,this.messedUpFactor), Shaku.gfx.BlendModes.Multiply);
 
       // draw score
       Shaku.gfx.draw(assets.skeletonIcon, new Shaku.utils.Vector2(32, 32), new Shaku.utils.Vector2(48, 48));

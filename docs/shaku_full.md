@@ -919,7 +919,8 @@ You can use different collision worlds to represent different levels or differen
     * [.removeShape(shape)](#CollisionWorld+removeShape)
     * [.testCollision(sourceShape, sortByDistance, mask, predicate)](#CollisionWorld+testCollision) ⇒ [<code>CollisionTestResult</code>](#CollisionTestResult)
     * [.testCollisionMany(sourceShape, sortByDistance, mask, predicate)](#CollisionWorld+testCollisionMany) ⇒ [<code>Array.&lt;CollisionTestResult&gt;</code>](#CollisionTestResult)
-    * [.debugDraw(gridColor, gridHighlitColor, opacity)](#CollisionWorld+debugDraw)
+    * [.pick(position, radius, sortByDistance, mask, predicate)](#CollisionWorld+pick) ⇒ [<code>Array.&lt;CollisionShape&gt;</code>](#CollisionShape)
+    * [.debugDraw(gridColor, gridHighlitColor, opacity, camera)](#CollisionWorld+debugDraw)
 
 <a name="new_CollisionWorld_new"></a>
 
@@ -991,9 +992,29 @@ Test collision with shapes in world, and return all results found.
 | mask | <code>Number</code> | Optional mask of bits to match against shapes collisionFlags. Will only return shapes that have at least one common bit. |
 | predicate | <code>function</code> | Optional filter to run on any shape we're about to test collision with. If the predicate returns false, we will skip this shape. |
 
+<a name="CollisionWorld+pick"></a>
+
+### collisionWorld.pick(position, radius, sortByDistance, mask, predicate) ⇒ [<code>Array.&lt;CollisionShape&gt;</code>](#CollisionShape)
+Return array of shapes that touch a given position, with optional radius.
+
+**Kind**: instance method of [<code>CollisionWorld</code>](#CollisionWorld)  
+**Returns**: [<code>Array.&lt;CollisionShape&gt;</code>](#CollisionShape) - Array with collision shapes we picked.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| position | <code>\*</code> | Position to pick. |
+| radius | <code>\*</code> | Optional picking radius to use a circle instead of a point. |
+| sortByDistance | <code>\*</code> | If true, will sort results by distance from point. |
+| mask | <code>\*</code> | Collision mask to filter by. |
+| predicate | <code>\*</code> | Optional predicate method to filter by. |
+
+**Example**  
+```js
+let shapes = world.pick(Shaku.input.mousePosition);
+```
 <a name="CollisionWorld+debugDraw"></a>
 
-### collisionWorld.debugDraw(gridColor, gridHighlitColor, opacity)
+### collisionWorld.debugDraw(gridColor, gridHighlitColor, opacity, camera)
 Debug-draw the current collision world.
 
 **Kind**: instance method of [<code>CollisionWorld</code>](#CollisionWorld)  
@@ -1003,6 +1024,7 @@ Debug-draw the current collision world.
 | gridColor | [<code>Color</code>](#Color) | Optional grid color (default to black). |
 | gridHighlitColor | [<code>Color</code>](#Color) | Optional grid color for cells with shapes in them (default to red). |
 | opacity | <code>Number</code> | Optional opacity factor (default to 0.5). |
+| camera | [<code>Camera</code>](#Camera) | Optional camera for offset and viewport. |
 
 <a name="CollisionResolver"></a>
 
@@ -1054,6 +1076,13 @@ Check a collision between two shapes.
 Collision detection result.
 
 **Kind**: global class  
+
+* [CollisionTestResult](#CollisionTestResult)
+    * [new CollisionTestResult(position, first, second)](#new_CollisionTestResult_new)
+    * [.position](#CollisionTestResult+position)
+    * [.first](#CollisionTestResult+first)
+    * [.second](#CollisionTestResult+second)
+
 <a name="new_CollisionTestResult_new"></a>
 
 ### new CollisionTestResult(position, first, second)
@@ -1066,6 +1095,25 @@ Create the collision result.
 | first | [<code>CollisionShape</code>](#CollisionShape) | First shape in the collision check. |
 | second | [<code>CollisionShape</code>](#CollisionShape) | Second shape in the collision check. |
 
+<a name="CollisionTestResult+position"></a>
+
+### collisionTestResult.position
+Collision position, only relevant when there's a single touching point.
+For shapes with multiple touching points, this will be null.
+
+**Kind**: instance property of [<code>CollisionTestResult</code>](#CollisionTestResult)  
+<a name="CollisionTestResult+first"></a>
+
+### collisionTestResult.first
+First collided shape.
+
+**Kind**: instance property of [<code>CollisionTestResult</code>](#CollisionTestResult)  
+<a name="CollisionTestResult+second"></a>
+
+### collisionTestResult.second
+Second collided shape.
+
+**Kind**: instance property of [<code>CollisionTestResult</code>](#CollisionTestResult)  
 <a name="CircleShape"></a>
 
 ## CircleShape
@@ -1317,9 +1365,9 @@ Implements a Camera object.
     * [.projection](#Camera+projection)
     * [.viewport](#Camera+viewport) ⇒ [<code>Rectangle</code>](#Rectangle)
     * [.viewport](#Camera+viewport)
-    * [.orthographicOffset(offset, near, far)](#Camera+orthographicOffset)
+    * [.getRegion()](#Camera+getRegion) ⇒ [<code>Rectangle</code>](#Rectangle)
+    * [.orthographicOffset(offset, ignoreViewportSize, near, far)](#Camera+orthographicOffset)
     * [.orthographic(region, near, far)](#Camera+orthographic)
-    * [.perspective(fieldOfView, aspectRatio, near, far)](#Camera+perspective)
 
 <a name="new_Camera_new"></a>
 
@@ -1356,9 +1404,16 @@ Set camera's viewport.
 | --- | --- | --- |
 | viewport | [<code>Rectangle</code>](#Rectangle) | New viewport to set or null to not use any viewport when using this camera. |
 
+<a name="Camera+getRegion"></a>
+
+### camera.getRegion() ⇒ [<code>Rectangle</code>](#Rectangle)
+Get the region this camera covers.
+
+**Kind**: instance method of [<code>Camera</code>](#Camera)  
+**Returns**: [<code>Rectangle</code>](#Rectangle) - region this camera covers.  
 <a name="Camera+orthographicOffset"></a>
 
-### camera.orthographicOffset(offset, near, far)
+### camera.orthographicOffset(offset, ignoreViewportSize, near, far)
 Make this camera an orthographic camera with offset.
 
 **Kind**: instance method of [<code>Camera</code>](#Camera)  
@@ -1366,6 +1421,7 @@ Make this camera an orthographic camera with offset.
 | Param | Type | Description |
 | --- | --- | --- |
 | offset | [<code>Vector2</code>](#Vector2) | Camera offset (top-left corner). |
+| ignoreViewportSize | <code>Boolean</code> | If true, will take the entire canvas size for calculation and ignore the viewport size, if set. |
 | near | <code>Number</code> | Near clipping plane. |
 | far | <code>Number</code> | Far clipping plane. |
 
@@ -1381,20 +1437,6 @@ Make this camera an orthographic camera.
 | region | [<code>Rectangle</code>](#Rectangle) | Camera left, top, bottom and right. If not set, will take entire canvas. |
 | near | <code>Number</code> | Near clipping plane. |
 | far | <code>Number</code> | Far clipping plane. |
-
-<a name="Camera+perspective"></a>
-
-### camera.perspective(fieldOfView, aspectRatio, near, far)
-Make this camera a perspective camera.
-
-**Kind**: instance method of [<code>Camera</code>](#Camera)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| fieldOfView | <code>\*</code> | Field of view angle in radians. |
-| aspectRatio | <code>\*</code> | Aspect ratio. |
-| near | <code>\*</code> | Near clipping plane. |
-| far | <code>\*</code> | Far clipping plane. |
 
 <a name="BasicEffect"></a>
 
@@ -1667,8 +1709,6 @@ To access the Graphics manager you use `Shaku.gfx`.
     * [.SpritesGroup](#Gfx+SpritesGroup)
     * [.Matrix](#Gfx+Matrix)
     * [.TextAlignment](#Gfx+TextAlignment)
-    * [.renderingRegion](#Gfx+renderingRegion) ⇒ [<code>Rectangle</code>](#Rectangle)
-    * [.canvasSize](#Gfx+canvasSize) ⇒ [<code>Vector2</code>](#Vector2)
     * [.BlendModes](#Gfx+BlendModes)
     * [.TextureWrapModes](#Gfx+TextureWrapModes)
     * [.TextureFilterModes](#Gfx+TextureFilterModes)
@@ -1683,6 +1723,9 @@ To access the Graphics manager you use `Shaku.gfx`.
     * [.setResolution(width, height, updateCanvasStyle)](#Gfx+setResolution)
     * [.resetCamera()](#Gfx+resetCamera)
     * [.applyCamera(camera)](#Gfx+applyCamera)
+    * [.getRenderingRegion(includeOffset)](#Gfx+getRenderingRegion) ⇒ [<code>Rectangle</code>](#Rectangle)
+    * [.getRenderingSize()](#Gfx+getRenderingSize) ⇒ [<code>Vector2</code>](#Vector2)
+    * [.getCanvasSize()](#Gfx+getCanvasSize) ⇒ [<code>Vector2</code>](#Vector2)
     * [.buildText(fontTexture, text, fontSize, color, alignment, marginFactor)](#Gfx+buildText) ⇒ [<code>SpritesGroup</code>](#SpritesGroup)
     * [.drawGroup(group, useBatching, cullOutOfScreen)](#Gfx+drawGroup)
     * [.drawSprite(sprite, transform)](#Gfx+drawSprite)
@@ -1759,20 +1802,6 @@ Get the text alignments options.
 
 **Kind**: instance property of [<code>Gfx</code>](#Gfx)  
 **See**: TextAlignment  
-<a name="Gfx+renderingRegion"></a>
-
-### gfx.renderingRegion ⇒ [<code>Rectangle</code>](#Rectangle)
-Get current rendering region.
-
-**Kind**: instance property of [<code>Gfx</code>](#Gfx)  
-**Returns**: [<code>Rectangle</code>](#Rectangle) - Rectangle with rendering region.  
-<a name="Gfx+canvasSize"></a>
-
-### gfx.canvasSize ⇒ [<code>Vector2</code>](#Vector2)
-Get canvas size as vector.
-
-**Kind**: instance property of [<code>Gfx</code>](#Gfx)  
-**Returns**: [<code>Vector2</code>](#Vector2) - Canvas size.  
 <a name="Gfx+BlendModes"></a>
 
 ### gfx.BlendModes
@@ -1978,6 +2007,33 @@ Changing the camera properties after calling this method will *not* update the r
 | --- | --- | --- |
 | camera | [<code>Camera</code>](#Camera) | Camera to apply. |
 
+<a name="Gfx+getRenderingRegion"></a>
+
+### gfx.getRenderingRegion(includeOffset) ⇒ [<code>Rectangle</code>](#Rectangle)
+Get current rendering region.
+
+**Kind**: instance method of [<code>Gfx</code>](#Gfx)  
+**Returns**: [<code>Rectangle</code>](#Rectangle) - Rectangle with rendering region.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| includeOffset | <code>Boolean</code> | If true (default) will include viewport offset, if exists. |
+
+<a name="Gfx+getRenderingSize"></a>
+
+### gfx.getRenderingSize() ⇒ [<code>Vector2</code>](#Vector2)
+Get current rendering size.
+Unlike 'canvasSize', this takes viewport and render target into consideration.
+
+**Kind**: instance method of [<code>Gfx</code>](#Gfx)  
+**Returns**: [<code>Vector2</code>](#Vector2) - rendering size.  
+<a name="Gfx+getCanvasSize"></a>
+
+### gfx.getCanvasSize() ⇒ [<code>Vector2</code>](#Vector2)
+Get canvas size as vector.
+
+**Kind**: instance method of [<code>Gfx</code>](#Gfx)  
+**Returns**: [<code>Vector2</code>](#Vector2) - Canvas size.  
 <a name="Gfx+buildText"></a>
 
 ### gfx.buildText(fontTexture, text, fontSize, color, alignment, marginFactor) ⇒ [<code>SpritesGroup</code>](#SpritesGroup)
@@ -2081,7 +2137,7 @@ Draw a texture to cover a given destination rectangle.
 | Param | Type | Description |
 | --- | --- | --- |
 | texture | [<code>TextureAsset</code>](#TextureAsset) | Texture to draw. |
-| destRect | [<code>Rectangle</code>](#Rectangle) | Destination rectangle to draw on. |
+| destRect | [<code>Rectangle</code>](#Rectangle) \| [<code>Vector2</code>](#Vector2) | Destination rectangle to draw on. If vector2 is provided, will draw from 0,0 with vector as size. |
 | sourceRect | [<code>Rectangle</code>](#Rectangle) | Source rectangle, or undefined to use the entire texture. |
 | color | [<code>Color</code>](#Color) | Tint color, or undefined to not change color. |
 | blendMode | <code>BlendModes</code> | Blend mode, or undefined to use alpha blend. |
@@ -2090,7 +2146,7 @@ Draw a texture to cover a given destination rectangle.
 ```js
 // cover the entire screen with an image
 let texture = await Shaku.assets.loadTexture('assets/sprite.png');
-Shaku.gfx.cover(texture, Shaku.gfx.renderingRegion);
+Shaku.gfx.cover(texture, Shaku.gfx.getRenderingRegion());
 ```
 **Example**  
 ```js
@@ -2491,6 +2547,11 @@ This object is a helper class to hold all the properties of a texture to render.
     * [.rotation](#Sprite+rotation) : <code>Number</code>
     * [.origin](#Sprite+origin) : [<code>Vector2</code>](#Vector2)
     * [.color](#Sprite+color) : [<code>Color</code>](#Color)
+    * [.flipX](#Sprite+flipX) ⇒ <code>Boolean</code>
+    * [.flipX](#Sprite+flipX)
+    * [.flipY](#Sprite+flipY) ⇒ <code>Boolean</code>
+    * [.flipY](#Sprite+flipY)
+    * [.clone()](#Sprite+clone) ⇒ [<code>Sprite</code>](#Sprite)
 
 <a name="new_Sprite_new"></a>
 
@@ -2552,6 +2613,53 @@ Sprite origin point.
 Sprite color.
 
 **Kind**: instance property of [<code>Sprite</code>](#Sprite)  
+<a name="Sprite+flipX"></a>
+
+### sprite.flipX ⇒ <code>Boolean</code>
+Check if this sprite is flipped around X axis.
+This is just a sugarcoat that returns if size.x < 0.
+
+**Kind**: instance property of [<code>Sprite</code>](#Sprite)  
+**Returns**: <code>Boolean</code> - If sprite is flipped on X axis.  
+<a name="Sprite+flipX"></a>
+
+### sprite.flipX
+Flip sprite around X axis.
+This is just a sugarcoat that set size.x to negative or positive value, without changing its scale.
+
+**Kind**: instance property of [<code>Sprite</code>](#Sprite)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| flip | <code>Boolean</code> | Should we flip the sprite around X axis. If undefined, will take the negative of flipX current value, ie will toggle flipping. |
+
+<a name="Sprite+flipY"></a>
+
+### sprite.flipY ⇒ <code>Boolean</code>
+Check if this sprite is flipped around y axis.
+This is just a sugarcoat that returns if size.y < 0.
+
+**Kind**: instance property of [<code>Sprite</code>](#Sprite)  
+**Returns**: <code>Boolean</code> - If sprite is flipped on Y axis.  
+<a name="Sprite+flipY"></a>
+
+### sprite.flipY
+Flip sprite around Y axis.
+This is just a sugarcoat that set size.y to negative or positive value, without changing its scale.
+
+**Kind**: instance property of [<code>Sprite</code>](#Sprite)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| flip | <code>Boolean</code> | Should we flip the sprite around Y axis. If undefined, will take the negative of flipY current value, ie will toggle flipping. |
+
+<a name="Sprite+clone"></a>
+
+### sprite.clone() ⇒ [<code>Sprite</code>](#Sprite)
+Clone this sprite.
+
+**Kind**: instance method of [<code>Sprite</code>](#Sprite)  
+**Returns**: [<code>Sprite</code>](#Sprite) - cloned sprite.  
 <a name="SpritesGroup"></a>
 
 ## SpritesGroup

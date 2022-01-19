@@ -84,9 +84,9 @@
             Shaku.gfx.setRenderTarget(renderTarget);
 
             // draw level background, knight and then level overlay
-            Shaku.gfx.cover(level, Shaku.gfx.renderingRegion);
+            Shaku.gfx.cover(level, Shaku.gfx.getRenderingRegion());
             Shaku.gfx.drawSprite(playerSprite);
-            Shaku.gfx.cover(levelOverlay, Shaku.gfx.renderingRegion);
+            Shaku.gfx.cover(levelOverlay, Shaku.gfx.getRenderingRegion());
 
             // clear render target
             Shaku.gfx.setRenderTarget(null);

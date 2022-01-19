@@ -47,7 +47,7 @@
           // create some test shapes
           for (let i = 0; i < 9; ++i) 
           {
-            let size = Shaku.gfx.canvasSize;
+            let size = Shaku.gfx.getCanvasSize();
 
             let point = new Shaku.collision.PointShape(new Shaku.utils.Vector2(Math.random() * size.x, Math.random() * size.y));
             world.addShape(point);

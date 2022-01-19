@@ -12,7 +12,8 @@
     <button class="view-code-btn" onclick="showSampleCode();">View Code</button> 
     <h1 class="demo-title">Shaku Miscs Demo: Tilemap & Camera</h1>
       <p>This demo implements a simple tilemap editor.<br />
-      Use <b>Arrows</b> or <b>WASD</b> to move camera, <b>Left Mouse Button</b> to set tile, <b>Right Mouse Button</b> to delete.</p>
+      Use <b>Arrows</b> or <b>WASD</b> to move camera, <b>Left Mouse Button</b> to set tile, <b>Right Mouse Button</b> to delete upper tiles. <br />
+      Press <b>Space</b> to toggle viewport test (will render on smaller region).</p>
 
       <!-- include shaku -->
       <script src="js/demos.js"></script>
@@ -30,7 +31,7 @@
 
           // add shaku's canvas to document and set resolution to 800x600
           document.body.appendChild(Shaku.gfx.canvas);
-          Shaku.gfx.setResolution(1400, 1008, true);
+          Shaku.gfx.setResolution(1400, 1000, true);
 
           // selected tile type
           let selectedTileType = Shaku.utils.Vector2.zero;
@@ -72,8 +73,8 @@
             // draw the map
             let minI = Math.max(Math.floor(cameraOffset.x / tileSize) - 1, 0);
             let minJ = Math.max(Math.floor(cameraOffset.y / tileSize) - 1, 0);
-            let maxI = Math.min(minI + Math.floor(Shaku.gfx.canvasSize.x / tileSize) + 3, tilemapSize);
-            let maxJ = Math.min(minJ + Math.floor(Shaku.gfx.canvasSize.y / tileSize) + 3, tilemapSize);
+            let maxI = Math.min(minI + Math.floor(Shaku.gfx.getCanvasSize().x / tileSize) + 3, tilemapSize);
+            let maxJ = Math.min(minJ + Math.floor(Shaku.gfx.getCanvasSize().y / tileSize) + 3, tilemapSize);
             for (let layer = 0; layer <= 1; ++layer)
             {
               for (let i = minI; i < maxI; ++i) {
@@ -88,7 +89,16 @@
               }
             }
 
-            // reset camera for ui
+            // calc which tile we point on
+            let region = Shaku.gfx.getRenderingRegion();
+            let viewportScale = Shaku.gfx.getCanvasSize().div(region.getSize());
+            let viewportOffset = region.getPosition();
+            let selectedTile = Shaku.input.mousePosition.add(cameraOffset).sub(viewportOffset).mul(viewportScale).div(tileSize).floor();
+
+            // highlight selected tile
+            Shaku.gfx.fillRect(new Shaku.utils.Rectangle(selectedTile.x * tileSize, selectedTile.y * tileSize, tileSize, tileSize), Shaku.utils.Color.red, Shaku.gfx.BlendModes.Additive);
+
+            // reset camera and viewport for ui
             Shaku.gfx.resetCamera();
 
             // draw tilemap selection
@@ -128,7 +138,6 @@
                 (Shaku.input.mousePosition.y > tilesSelectionSize.y + 4))) {
 
               // get selected tile and layer
-              let selectedTile = Shaku.input.mousePosition.add(cameraOffset).div(tileSize).floor();
               let layer = selectedTileType.y < 4 ? 0 : 1;
 
               // make sure legal tile
@@ -172,6 +181,16 @@
             }
             if (Shaku.input.down('down') || Shaku.input.down('s')) { 
               cameraOffset.y += cameraSpeed;
+            }
+
+            // toggle viewport
+            if (Shaku.input.pressed('space')) {
+              if (camera.viewport) {
+                camera.viewport = null;
+              }
+              else {
+                camera.viewport = new Shaku.utils.Rectangle(100, 100, Shaku.gfx.getCanvasSize().x - 200, Shaku.gfx.getCanvasSize().y - 200);
+              }
             }
 
             // end frame and request next frame

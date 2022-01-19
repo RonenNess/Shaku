@@ -259,7 +259,7 @@ A demo page that draw textures can be found [here](https://ronenness.github.io/S
 For example, the following will cover the entire canvas with a texture:
 
 ```js
-Shaku.gfx.cover(texture, Shaku.gfx.renderingRegion);
+Shaku.gfx.cover(texture, Shaku.gfx.getRenderingRegion());
 ```
 
 ### Draw Rectangles
@@ -1366,6 +1366,23 @@ List of changes in released versions.
 - Fixed rectangle-rectangle collision to include touching borders (breaking change).
 - Fixed `collideCircle()` bug.
 - Added plus / minus key codes.
+
+## 1.3.0
+
+- Fixed collision debug render to accept camera parameter.
+- Added method to get actual rendering size without offset.
+- Changed gfx `renderingRegion` and `canvasSize` to be methods and not getters, to make it clear they are immutable (breaking change).
+- Changed gfx `cover` to accept vector in addition to rectangle.
+- Added `pick` method to collision world.
+- Added position value for collision result with points.
+- Added `flipX` and `flipY` getters / setters to sprite.
+- Fixed `orthographicOffset()` bug with viewport offset.
+- Fixed sprites group demo (wrong rotation).
+- Fixed how viewports work and are applied in general (breaking change).
+- Hid the camera `perspective()` method, at least for now (breaking change).
+- Fixed collision shapes custom debug color.
+- Added `clone()` to sprites.
+
 
 # License
 

@@ -22,6 +22,11 @@ This object is a helper class to hold all the properties of a texture to render.
     * [.rotation](#Sprite+rotation) : <code>Number</code>
     * [.origin](#Sprite+origin) : <code>Vector2</code>
     * [.color](#Sprite+color) : <code>Color</code>
+    * [.flipX](#Sprite+flipX) ⇒ <code>Boolean</code>
+    * [.flipX](#Sprite+flipX)
+    * [.flipY](#Sprite+flipY) ⇒ <code>Boolean</code>
+    * [.flipY](#Sprite+flipY)
+    * [.clone()](#Sprite+clone) ⇒ [<code>Sprite</code>](#Sprite)
 
 <a name="new_Sprite_new"></a>
 
@@ -83,3 +88,50 @@ Sprite origin point.
 Sprite color.
 
 **Kind**: instance property of [<code>Sprite</code>](#Sprite)  
+<a name="Sprite+flipX"></a>
+
+### sprite.flipX ⇒ <code>Boolean</code>
+Check if this sprite is flipped around X axis.
+This is just a sugarcoat that returns if size.x < 0.
+
+**Kind**: instance property of [<code>Sprite</code>](#Sprite)  
+**Returns**: <code>Boolean</code> - If sprite is flipped on X axis.  
+<a name="Sprite+flipX"></a>
+
+### sprite.flipX
+Flip sprite around X axis.
+This is just a sugarcoat that set size.x to negative or positive value, without changing its scale.
+
+**Kind**: instance property of [<code>Sprite</code>](#Sprite)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| flip | <code>Boolean</code> | Should we flip the sprite around X axis. If undefined, will take the negative of flipX current value, ie will toggle flipping. |
+
+<a name="Sprite+flipY"></a>
+
+### sprite.flipY ⇒ <code>Boolean</code>
+Check if this sprite is flipped around y axis.
+This is just a sugarcoat that returns if size.y < 0.
+
+**Kind**: instance property of [<code>Sprite</code>](#Sprite)  
+**Returns**: <code>Boolean</code> - If sprite is flipped on Y axis.  
+<a name="Sprite+flipY"></a>
+
+### sprite.flipY
+Flip sprite around Y axis.
+This is just a sugarcoat that set size.y to negative or positive value, without changing its scale.
+
+**Kind**: instance property of [<code>Sprite</code>](#Sprite)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| flip | <code>Boolean</code> | Should we flip the sprite around Y axis. If undefined, will take the negative of flipY current value, ie will toggle flipping. |
+
+<a name="Sprite+clone"></a>
+
+### sprite.clone() ⇒ [<code>Sprite</code>](#Sprite)
+Clone this sprite.
+
+**Kind**: instance method of [<code>Sprite</code>](#Sprite)  
+**Returns**: [<code>Sprite</code>](#Sprite) - cloned sprite.  

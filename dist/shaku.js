@@ -1689,11 +1689,13 @@ module.exports = new Collision();
 'use strict';
 const Color = require("../utils/color");
 const Vector2 = require("../utils/vector2");
+const Circle = require("../utils/circle");
 const CollisionTestResult = require("./result");
 const CollisionShape = require("./shapes/shape");
 const gfx = require('./../gfx');
 const Rectangle = require("../utils/rectangle");
 const CollisionResolver = require("./resolver");
+const { PointShape, CircleShape } = require(".");
 const _logger = require('../logger.js').getLogger('collision');
 
 
@@ -2045,13 +2047,35 @@ class CollisionWorld
     }
 
     /**
+     * Return array of shapes that touch a given position, with optional radius.
+     * @example
+     * let shapes = world.pick(Shaku.input.mousePosition);
+     * @param {*} position Position to pick.
+     * @param {*} radius Optional picking radius to use a circle instead of a point.
+     * @param {*} sortByDistance If true, will sort results by distance from point.
+     * @param {*} mask Collision mask to filter by.
+     * @param {*} predicate Optional predicate method to filter by.
+     * @returns {Array<CollisionShape>} Array with collision shapes we picked.
+     */
+    pick(position, radius, sortByDistance, mask, predicate)
+    {
+        let shape = ((radius || 0) <= 1) ? new PointShape(position) : new CircleShape(new Circle(position, radius));
+        let ret = this.testCollisionMany(shape, sortByDistance, mask, predicate);
+        return ret.map(x => x.second);
+    }
+
+    /**
      * Debug-draw the current collision world.
      * @param {Color} gridColor Optional grid color (default to black).
      * @param {Color} gridHighlitColor Optional grid color for cells with shapes in them (default to red).
      * @param {Number} opacity Optional opacity factor (default to 0.5).
+     * @param {Camera} camera Optional camera for offset and viewport.
      */
-    debugDraw(gridColor, gridHighlitColor, opacity)
+    debugDraw(gridColor, gridHighlitColor, opacity, camera)
     {
+        // do updates before check
+        this._performUpdates();
+        
         // default grid colors
         if (!gridColor) {
             gridColor = Color.black;
@@ -2075,11 +2099,11 @@ class CollisionWorld
         let renderedShapes = new Set();
 
         // get visible grid cells
-        let bb = gfx.renderingRegion;
+        let bb = camera ? camera.getRegion() : gfx.getRenderingRegion(false);
         let minx = Math.floor(bb.left / this._gridCellSize.x);
         let miny = Math.floor(bb.top / this._gridCellSize.y);
-        let maxx = Math.ceil(bb.right / this._gridCellSize.x);
-        let maxy = Math.ceil(bb.bottom / this._gridCellSize.y);
+        let maxx = minx + Math.ceil(bb.width / this._gridCellSize.x);
+        let maxy = miny + Math.ceil(bb.height / this._gridCellSize.y);
         for (let i = minx; i <= maxx; ++i) {
             for (let j = miny; j <= maxy; ++j) {
 
@@ -2133,7 +2157,7 @@ function sortByDistanceShapes(sourceShape, options)
 
 // export collision world
 module.exports = CollisionWorld;
-},{"../logger.js":38,"../utils/color":47,"../utils/rectangle":50,"../utils/vector2":51,"./../gfx":25,"./resolver":12,"./result":14,"./shapes/shape":18}],11:[function(require,module,exports){
+},{".":11,"../logger.js":38,"../utils/circle":46,"../utils/color":47,"../utils/rectangle":50,"../utils/vector2":51,"./../gfx":25,"./resolver":12,"./result":14,"./shapes/shape":18}],11:[function(require,module,exports){
 /**
  * Just an alias to main manager so we can require() this folder as a package.
  * 
@@ -2279,21 +2303,21 @@ module.exports = {
      * Test collision between two points.
      */
     pointPoint: function(v1, v2) {
-        return v1._position.approximate(v2._position);
+        return v1._position.approximate(v2._position) ? v1._position : false;
     },
 
     /**
      * Test collision between point and circle.
      */
     pointCircle: function(v1, c1) {
-        return v1._position.distanceTo(c1._circle.center) <= c1._circle.radius;
+        return (v1._position.distanceTo(c1._circle.center) <= c1._circle.radius) ? v1._position : false;
     },
 
     /**
      * Test collision between point and rectangle.
      */
     pointRectangle: function(v1, r1) {
-        return r1._rect.containsVector(v1._position);
+        return r1._rect.containsVector(v1._position) ? v1._position : false;
     },
 
     /**
@@ -2348,8 +2372,20 @@ class CollisionTestResult
      */
     constructor(position, first, second)
     {
+        /**
+         * Collision position, only relevant when there's a single touching point.
+         * For shapes with multiple touching points, this will be null.
+         */
         this.position = position;
+
+        /**
+         * First collided shape.
+         */
         this.first = first;
+
+        /**
+         * Second collided shape.
+         */
         this.second = second;
     }
 }
@@ -2706,7 +2742,7 @@ class CollisionShape
     {
         // use forced debug color
         if (this._forceDebugColor) {
-            return this._forceDebugColor;
+            return this._forceDebugColor.clone();
         }
 
         // calculate debug color
@@ -2853,6 +2889,7 @@ class Camera
          */
         this.projection = null;
 
+        this._region = null;
         this._gfx = gfx;
         this.orthographic();
         this._viewport = null;
@@ -2874,19 +2911,29 @@ class Camera
     set viewport(viewport)
     {
         this._viewport = viewport;
+        return viewport;
+    }
+
+    /**
+     * Get the region this camera covers.
+     * @returns {Rectangle} region this camera covers.
+     */
+    getRegion()
+    {
+        return this._region.clone();
     }
 
     /**
      * Make this camera an orthographic camera with offset.
      * @param {Vector2} offset Camera offset (top-left corner).
+     * @param {Boolean} ignoreViewportSize If true, will take the entire canvas size for calculation and ignore the viewport size, if set.
      * @param {Number} near Near clipping plane.
      * @param {Number} far Far clipping plane.
      */
-    orthographicOffset(offset, near, far)
+    orthographicOffset(offset, ignoreViewportSize, near, far)
     {
-        let region = this._gfx.renderingRegion;
-        region.x += offset.x;
-        region.y += offset.y;
+        let renderingSize = (ignoreViewportSize || !this.viewport) ? this._gfx.getCanvasSize() : this.viewport.getSize();
+        let region = new Rectangle(offset.x, offset.y, renderingSize.x, renderingSize.y);
         this.orthographic(region, near, far);
     }
 
@@ -2899,19 +2946,21 @@ class Camera
     orthographic(region, near, far) 
     {
         if (region === undefined) {
-            region = this._gfx.renderingRegion;
+            region = this._gfx.getRenderingRegion();
         }
+        this._region = region;
         this.projection = Matrix.orthographic(region.left, region.right, region.bottom, region.top, near || -1, far || 400);
     }
 
     /**
      * Make this camera a perspective camera.
+     * @private
      * @param {*} fieldOfView Field of view angle in radians.
      * @param {*} aspectRatio Aspect ratio.
      * @param {*} near Near clipping plane.
      * @param {*} far Far clipping plane.
      */
-    perspective(fieldOfView, aspectRatio, near, far) 
+    _perspective(fieldOfView, aspectRatio, near, far) 
     {
         this.projection = Matrix.perspective(fieldOfView || (Math.PI / 2), aspectRatio || 1, near || 0.1, far || 1000)
     }
@@ -3772,7 +3821,7 @@ class Gfx extends IManager
     {
         let ret = new Camera(this);
         if (withViewport) {
-            ret.viewport = this.renderingRegion;
+            ret.viewport = this.getRenderingRegion();
         }
         return ret;
     }
@@ -3900,7 +3949,6 @@ class Gfx extends IManager
         }
 
         this._gl.viewport(0, 0, width, height);
-
         this.resetCamera();
     }
 
@@ -3910,6 +3958,8 @@ class Gfx extends IManager
     resetCamera()
     {
         this._camera = this.createCamera();
+        let size = this.getCanvasSize();
+        this._camera.orthographic(new Rectangle(0, 0, size.x, size.y));
         this.applyCamera(this._camera);
     }
 
@@ -3921,7 +3971,7 @@ class Gfx extends IManager
     applyCamera(camera)
     {
         this._viewport = camera.viewport;
-        let viewport = this.renderingRegion;
+        let viewport = this.getRenderingRegion(true);
         this._gl.viewport(viewport.x, viewport.y, viewport.width, viewport.height);
         this._projection = camera.projection.clone();
         if (this._activeEffect) { this._activeEffect.setProjectionMatrix(this._projection); }
@@ -3929,18 +3979,37 @@ class Gfx extends IManager
 
     /**
      * Get current rendering region.
+     * @param {Boolean} includeOffset If true (default) will include viewport offset, if exists.
      * @returns {Rectangle} Rectangle with rendering region.
      */
-    get renderingRegion()
+    getRenderingRegion(includeOffset)
     {
-        return this._viewport || new Rectangle(0, 0, (this._renderTarget || this._canvas).width, (this._renderTarget || this._canvas).height);
+        if (this._viewport) {
+            let ret = this._viewport.clone();
+            if (includeOffset === false) {
+                ret.x = ret.y = 0;
+            }
+            return ret;
+        }
+        return new Rectangle(0, 0, (this._renderTarget || this._canvas).width, (this._renderTarget || this._canvas).height);
     }
 
+    /**
+     * Get current rendering size.
+     * Unlike 'canvasSize', this takes viewport and render target into consideration.
+     * @returns {Vector2} rendering size.
+     */
+    getRenderingSize()
+    {
+        let region = this.getRenderingRegion();
+        return region.getSize();
+    }
+    
     /**
      * Get canvas size as vector.
      * @returns {Vector2} Canvas size.
      */
-    get canvasSize()
+    getCanvasSize()
     {
         return new Vector2(this._canvas.width, this._canvas.height);
     }
@@ -4248,7 +4317,7 @@ class Gfx extends IManager
      * @example
      * // cover the entire screen with an image
      * let texture = await Shaku.assets.loadTexture('assets/sprite.png');
-     * Shaku.gfx.cover(texture, Shaku.gfx.renderingRegion);
+     * Shaku.gfx.cover(texture, Shaku.gfx.getRenderingRegion());
      * @example
      * // draw with additional params
      * let sourceRect = new Shaku.utils.Rectangle(0, 0, 64, 64);
@@ -4258,13 +4327,16 @@ class Gfx extends IManager
      * let origin = new Shaku.utils.Vector2(0.5, 0.5);
      * Shaku.gfx.draw(texture, position, size, sourceRect, color, blendMode, rotation, origin);
      * @param {TextureAsset} texture Texture to draw.
-     * @param {Rectangle} destRect Destination rectangle to draw on.
+     * @param {Rectangle|Vector2} destRect Destination rectangle to draw on. If vector2 is provided, will draw from 0,0 with vector as size.
      * @param {Rectangle} sourceRect Source rectangle, or undefined to use the entire texture.
      * @param {Color} color Tint color, or undefined to not change color.
      * @param {BlendModes} blendMode Blend mode, or undefined to use alpha blend.
      */
     cover(texture, destRect, sourceRect, color, blendMode)
     {
+        if (destRect instanceof Vector2) {
+            destRect = new Rectangle(0, 0, destRect.x, destRect.y);
+        }
         return this.draw(texture, destRect.getCenter(), destRect.getSize(), sourceRect, color, blendMode);
     }
 
@@ -4716,7 +4788,7 @@ class Gfx extends IManager
             // cull out-of-screen sprites
             if (cullOutOfScreen)
             {
-                let region = this.renderingRegion;
+                let region = this.getRenderingRegion();
                 if (!region.containsVector(topLeft) && !region.containsVector(topRight) && !region.containsVector(bottomLeft) && !region.containsVector(bottomRight)) {
                     continue;
                 }
@@ -5610,6 +5682,66 @@ class Sprite
          */
         this.color = Color.white;
     }
+
+    /**
+     * Clone this sprite.
+     * @returns {Sprite} cloned sprite.
+     */
+    clone()
+    {
+        let ret = new Sprite(this.texture, this.sourceRect);
+        ret.position = this.position.clone();
+        ret.size = this.size.clone();
+        ret.blendMode = this.blendMode;
+        ret.rotation = this.rotation;
+        ret.origin = this.origin.clone();
+        ret.color = this.color.clone();
+        return ret;
+    }
+
+    /**
+     * Check if this sprite is flipped around X axis.
+     * This is just a sugarcoat that returns if size.x < 0.
+     * @returns {Boolean} If sprite is flipped on X axis.
+     */
+    get flipX()
+    {
+        return this.size.x < 0;
+    }
+
+    /**
+     * Flip sprite around X axis.
+     * This is just a sugarcoat that set size.x to negative or positive value, without changing its scale.
+     * @param {Boolean} flip Should we flip the sprite around X axis. If undefined, will take the negative of flipX current value, ie will toggle flipping.
+     */
+    set flipX(flip)
+    {
+        if (flip === undefined) flip = !this.flipX;
+        this.size.x = Math.abs(this.size.x) * (flip ? -1 : 1);
+        return flip;
+    }
+
+    /**
+     * Check if this sprite is flipped around y axis.
+     * This is just a sugarcoat that returns if size.y < 0.
+     * @returns {Boolean} If sprite is flipped on Y axis.
+     */
+     get flipY()
+     {
+         return this.size.y < 0;
+     }
+ 
+     /**
+      * Flip sprite around Y axis.
+      * This is just a sugarcoat that set size.y to negative or positive value, without changing its scale.
+      * @param {Boolean} flip Should we flip the sprite around Y axis. If undefined, will take the negative of flipY current value, ie will toggle flipping.
+      */
+     set flipY(flip)
+     {
+         if (flip === undefined) flip = !this.flipY;
+         this.size.y = Math.abs(this.size.y) * (flip ? -1 : 1);
+         return flip;
+     }
 }
 
 // export the sprite class.
@@ -7509,7 +7641,7 @@ let _totalFrameTimes = 0;
 
 
 // current version
-const version = "1.2.0";
+const version = "1.3.0";
 
 /**
  * Shaku's main object.

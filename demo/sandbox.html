@@ -62,7 +62,7 @@ async function runGame()
     Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
 
     // draw test texture
-    let position = Shaku.gfx.canvasSize.div(2);
+    let position = Shaku.gfx.getCanvasSize().div(2);
     let size = new Shaku.utils.Vector2(256, 256);
     let rotation = Shaku.gameTime.elapsed;
     Shaku.gfx.draw(texture, position, size, null, null, null, rotation);

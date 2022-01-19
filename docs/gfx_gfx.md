@@ -23,8 +23,6 @@ To access the Graphics manager you use `Shaku.gfx`.
     * [.SpritesGroup](#Gfx+SpritesGroup)
     * [.Matrix](#Gfx+Matrix)
     * [.TextAlignment](#Gfx+TextAlignment)
-    * [.renderingRegion](#Gfx+renderingRegion) ⇒ <code>Rectangle</code>
-    * [.canvasSize](#Gfx+canvasSize) ⇒ <code>Vector2</code>
     * [.BlendModes](#Gfx+BlendModes)
     * [.TextureWrapModes](#Gfx+TextureWrapModes)
     * [.TextureFilterModes](#Gfx+TextureFilterModes)
@@ -39,6 +37,9 @@ To access the Graphics manager you use `Shaku.gfx`.
     * [.setResolution(width, height, updateCanvasStyle)](#Gfx+setResolution)
     * [.resetCamera()](#Gfx+resetCamera)
     * [.applyCamera(camera)](#Gfx+applyCamera)
+    * [.getRenderingRegion(includeOffset)](#Gfx+getRenderingRegion) ⇒ <code>Rectangle</code>
+    * [.getRenderingSize()](#Gfx+getRenderingSize) ⇒ <code>Vector2</code>
+    * [.getCanvasSize()](#Gfx+getCanvasSize) ⇒ <code>Vector2</code>
     * [.buildText(fontTexture, text, fontSize, color, alignment, marginFactor)](#Gfx+buildText) ⇒ <code>SpritesGroup</code>
     * [.drawGroup(group, useBatching, cullOutOfScreen)](#Gfx+drawGroup)
     * [.drawSprite(sprite, transform)](#Gfx+drawSprite)
@@ -115,20 +116,6 @@ Get the text alignments options.
 
 **Kind**: instance property of [<code>Gfx</code>](#Gfx)  
 **See**: TextAlignment  
-<a name="Gfx+renderingRegion"></a>
-
-### gfx.renderingRegion ⇒ <code>Rectangle</code>
-Get current rendering region.
-
-**Kind**: instance property of [<code>Gfx</code>](#Gfx)  
-**Returns**: <code>Rectangle</code> - Rectangle with rendering region.  
-<a name="Gfx+canvasSize"></a>
-
-### gfx.canvasSize ⇒ <code>Vector2</code>
-Get canvas size as vector.
-
-**Kind**: instance property of [<code>Gfx</code>](#Gfx)  
-**Returns**: <code>Vector2</code> - Canvas size.  
 <a name="Gfx+BlendModes"></a>
 
 ### gfx.BlendModes
@@ -334,6 +321,33 @@ Changing the camera properties after calling this method will *not* update the r
 | --- | --- | --- |
 | camera | <code>Camera</code> | Camera to apply. |
 
+<a name="Gfx+getRenderingRegion"></a>
+
+### gfx.getRenderingRegion(includeOffset) ⇒ <code>Rectangle</code>
+Get current rendering region.
+
+**Kind**: instance method of [<code>Gfx</code>](#Gfx)  
+**Returns**: <code>Rectangle</code> - Rectangle with rendering region.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| includeOffset | <code>Boolean</code> | If true (default) will include viewport offset, if exists. |
+
+<a name="Gfx+getRenderingSize"></a>
+
+### gfx.getRenderingSize() ⇒ <code>Vector2</code>
+Get current rendering size.
+Unlike 'canvasSize', this takes viewport and render target into consideration.
+
+**Kind**: instance method of [<code>Gfx</code>](#Gfx)  
+**Returns**: <code>Vector2</code> - rendering size.  
+<a name="Gfx+getCanvasSize"></a>
+
+### gfx.getCanvasSize() ⇒ <code>Vector2</code>
+Get canvas size as vector.
+
+**Kind**: instance method of [<code>Gfx</code>](#Gfx)  
+**Returns**: <code>Vector2</code> - Canvas size.  
 <a name="Gfx+buildText"></a>
 
 ### gfx.buildText(fontTexture, text, fontSize, color, alignment, marginFactor) ⇒ <code>SpritesGroup</code>
@@ -437,7 +451,7 @@ Draw a texture to cover a given destination rectangle.
 | Param | Type | Description |
 | --- | --- | --- |
 | texture | <code>TextureAsset</code> | Texture to draw. |
-| destRect | <code>Rectangle</code> | Destination rectangle to draw on. |
+| destRect | <code>Rectangle</code> \| <code>Vector2</code> | Destination rectangle to draw on. If vector2 is provided, will draw from 0,0 with vector as size. |
 | sourceRect | <code>Rectangle</code> | Source rectangle, or undefined to use the entire texture. |
 | color | <code>Color</code> | Tint color, or undefined to not change color. |
 | blendMode | <code>BlendModes</code> | Blend mode, or undefined to use alpha blend. |
@@ -446,7 +460,7 @@ Draw a texture to cover a given destination rectangle.
 ```js
 // cover the entire screen with an image
 let texture = await Shaku.assets.loadTexture('assets/sprite.png');
-Shaku.gfx.cover(texture, Shaku.gfx.renderingRegion);
+Shaku.gfx.cover(texture, Shaku.gfx.getRenderingRegion());
 ```
 **Example**  
 ```js

@@ -16,9 +16,9 @@ Implements a Camera object.
     * [.projection](#Camera+projection)
     * [.viewport](#Camera+viewport) ⇒ <code>Rectangle</code>
     * [.viewport](#Camera+viewport)
-    * [.orthographicOffset(offset, near, far)](#Camera+orthographicOffset)
+    * [.getRegion()](#Camera+getRegion) ⇒ <code>Rectangle</code>
+    * [.orthographicOffset(offset, ignoreViewportSize, near, far)](#Camera+orthographicOffset)
     * [.orthographic(region, near, far)](#Camera+orthographic)
-    * [.perspective(fieldOfView, aspectRatio, near, far)](#Camera+perspective)
 
 <a name="new_Camera_new"></a>
 
@@ -55,9 +55,16 @@ Set camera's viewport.
 | --- | --- | --- |
 | viewport | <code>Rectangle</code> | New viewport to set or null to not use any viewport when using this camera. |
 
+<a name="Camera+getRegion"></a>
+
+### camera.getRegion() ⇒ <code>Rectangle</code>
+Get the region this camera covers.
+
+**Kind**: instance method of [<code>Camera</code>](#Camera)  
+**Returns**: <code>Rectangle</code> - region this camera covers.  
 <a name="Camera+orthographicOffset"></a>
 
-### camera.orthographicOffset(offset, near, far)
+### camera.orthographicOffset(offset, ignoreViewportSize, near, far)
 Make this camera an orthographic camera with offset.
 
 **Kind**: instance method of [<code>Camera</code>](#Camera)  
@@ -65,6 +72,7 @@ Make this camera an orthographic camera with offset.
 | Param | Type | Description |
 | --- | --- | --- |
 | offset | <code>Vector2</code> | Camera offset (top-left corner). |
+| ignoreViewportSize | <code>Boolean</code> | If true, will take the entire canvas size for calculation and ignore the viewport size, if set. |
 | near | <code>Number</code> | Near clipping plane. |
 | far | <code>Number</code> | Far clipping plane. |
 
@@ -80,18 +88,4 @@ Make this camera an orthographic camera.
 | region | <code>Rectangle</code> | Camera left, top, bottom and right. If not set, will take entire canvas. |
 | near | <code>Number</code> | Near clipping plane. |
 | far | <code>Number</code> | Far clipping plane. |
-
-<a name="Camera+perspective"></a>
-
-### camera.perspective(fieldOfView, aspectRatio, near, far)
-Make this camera a perspective camera.
-
-**Kind**: instance method of [<code>Camera</code>](#Camera)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| fieldOfView | <code>\*</code> | Field of view angle in radians. |
-| aspectRatio | <code>\*</code> | Aspect ratio. |
-| near | <code>\*</code> | Near clipping plane. |
-| far | <code>\*</code> | Far clipping plane. |
 

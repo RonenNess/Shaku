@@ -77,9 +77,9 @@
             Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
 
             // draw level background, knight and then level overlay
-            Shaku.gfx.cover(level, Shaku.gfx.renderingRegion);
+            Shaku.gfx.cover(level, Shaku.gfx.getRenderingRegion());
             Shaku.gfx.drawSprite(playerSprite);
-            Shaku.gfx.cover(levelOverlay, Shaku.gfx.renderingRegion);
+            Shaku.gfx.cover(levelOverlay, Shaku.gfx.getRenderingRegion());
 
             // walking speed and are we walking this frame?
             let walkSpeed = Shaku.gameTime.delta * 200;

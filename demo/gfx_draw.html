@@ -39,13 +39,13 @@
             Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
 
             // draw background circle
-            Shaku.gfx.fillCircle(new Shaku.utils.Circle(Shaku.gfx.canvasSize.div(2), 285), Shaku.utils.Color.pink);
+            Shaku.gfx.fillCircle(new Shaku.utils.Circle(Shaku.gfx.getCanvasSize().div(2), 285), Shaku.utils.Color.pink);
 
             // draw a texture
-            Shaku.gfx.draw(texture, Shaku.gfx.canvasSize.div(2), 256, null, null, null, Shaku.gameTime.elapsed * 0.5);
+            Shaku.gfx.draw(texture, Shaku.gfx.getCanvasSize().div(2), 256, null, null, null, Shaku.gameTime.elapsed * 0.5);
 
             // draw circle outline
-            Shaku.gfx.outlineCircle(new Shaku.utils.Circle(Shaku.gfx.canvasSize.div(2), 285), Shaku.utils.Color.black);
+            Shaku.gfx.outlineCircle(new Shaku.utils.Circle(Shaku.gfx.getCanvasSize().div(2), 285), Shaku.utils.Color.black);
 
             // draw rectangles with outline
 

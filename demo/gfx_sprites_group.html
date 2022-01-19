@@ -51,16 +51,19 @@
           let wheelsSprite = tank.add(new Shaku.gfx.Sprite(tankTexture, new Shaku.utils.Rectangle(0, 0, 232, 256)));
           wheelsSprite.size.x = wheelsSprite.sourceRect.width;
           wheelsSprite.size.y = wheelsSprite.sourceRect.height;
+          wheelsSprite.rotation = Math.PI / 2;
 
           // add base
           let baseSprite = tank.add(new Shaku.gfx.Sprite(tankTexture, new Shaku.utils.Rectangle(232, 0, 170, 256)));
           baseSprite.size.x = baseSprite.sourceRect.width;
           baseSprite.size.y = baseSprite.sourceRect.height;
+          baseSprite.rotation = Math.PI / 2;
 
           // add cannon
           let cannonSprite = tank.add(new Shaku.gfx.Sprite(tankTexture, new Shaku.utils.Rectangle(232 + 170, 0, 110, 256)));
           cannonSprite.size.x = cannonSprite.sourceRect.width;
           cannonSprite.size.y = cannonSprite.sourceRect.height;
+          cannonSprite.rotation = Math.PI / 2;
 
           // sprite position
           tank.position.x = screenX / 2;
@@ -81,7 +84,7 @@
             Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
 
             // draw background
-            Shaku.gfx.cover(grassTexture, Shaku.gfx.renderingRegion);
+            Shaku.gfx.cover(grassTexture, Shaku.gfx.getRenderingRegion());
 
             // draw tank
             Shaku.gfx.drawGroup(tank, true);
@@ -104,11 +107,11 @@
               cannonSprite.rotation += Shaku.gameTime.delta; 
             }
             if (Shaku.input.down('up') || Shaku.input.down('w')) { 
-              tank.position = tank.position.sub(Shaku.utils.Vector2.fromRadians( Math.PI / 2 - tank.rotation).mul(driveSpeed));
+              tank.position.addSelf(Shaku.utils.Vector2.fromRadians(tank.rotation).mul(driveSpeed));
               moveWheels = true;
             }
             if (Shaku.input.down('down') || Shaku.input.down('s')) { 
-              tank.position = tank.position.add(Shaku.utils.Vector2.fromRadians( Math.PI / 2 - tank.rotation).mul(driveSpeed));
+              tank.position.subSelf(Shaku.utils.Vector2.fromRadians(tank.rotation).mul(driveSpeed));
               moveWheels = true;
             }
 
