@@ -14,6 +14,7 @@ Collision shape base class.
 * [CollisionShape](#CollisionShape)
     * [new CollisionShape()](#new_CollisionShape_new)
     * [.collisionFlags](#CollisionShape+collisionFlags)
+    * [.collisionFlags](#CollisionShape+collisionFlags)
     * [.setDebugColor(color)](#CollisionShape+setDebugColor)
     * [.debugDraw(opacity)](#CollisionShape+debugDraw)
     * [.getCenter()](#CollisionShape+getCenter) ⇒ <code>Vector2</code>
@@ -26,7 +27,13 @@ Create the collision shape.
 <a name="CollisionShape+collisionFlags"></a>
 
 ### collisionShape.collisionFlags
-Optional collision flags to be matched against collision mask when checking collision.
+Get collision flags (matched against collision mask when checking collision).
+
+**Kind**: instance property of [<code>CollisionShape</code>](#CollisionShape)  
+<a name="CollisionShape+collisionFlags"></a>
+
+### collisionShape.collisionFlags
+Set collision flags (matched against collision mask when checking collision).
 
 **Kind**: instance property of [<code>CollisionShape</code>](#CollisionShape)  
 <a name="CollisionShape+setDebugColor"></a>

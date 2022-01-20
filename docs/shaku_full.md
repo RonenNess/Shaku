@@ -158,6 +158,7 @@ All asset types inherit from this.
     * [new Asset(url)](#new_Asset_new)
     * [.url](#Asset+url) ⇒ <code>String</code>
     * [.valid](#Asset+valid) ⇒ <code>Boolean</code>
+    * [.onReady(callback)](#Asset+onReady)
     * [.load(params)](#Asset+load) ⇒ <code>Promise</code>
     * [.create(source, params)](#Asset+create) ⇒ <code>Promise</code>
     * [.destroy()](#Asset+destroy)
@@ -186,6 +187,18 @@ Get if this asset is loaded and valid.
 
 **Kind**: instance property of [<code>Asset</code>](#Asset)  
 **Returns**: <code>Boolean</code> - True if asset is loaded and valid, false otherwise.  
+<a name="Asset+onReady"></a>
+
+### asset.onReady(callback)
+Register a method to be called when asset is ready.
+If asset is already in ready state, will invoke immediately.
+
+**Kind**: instance method of [<code>Asset</code>](#Asset)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| callback | <code>function</code> | Callback to invoke when asset is ready. |
+
 <a name="Asset+load"></a>
 
 ### asset.load(params) ⇒ <code>Promise</code>
@@ -230,8 +243,11 @@ To access the Assets manager you use `Shaku.assets`.
 
 * [Assets](#Assets)
     * [new Assets()](#new_Assets_new)
+    * [.root](#Assets+root)
+    * [.suffix](#Assets+suffix)
     * [.pendingAssets](#Assets+pendingAssets) ⇒ <code>Array.&lt;string&gt;</code>
     * [.failedAssets](#Assets+failedAssets) ⇒ <code>Array.&lt;string&gt;</code>
+    * [._wrapUrl(url)](#Assets+_wrapUrl) ⇒ <code>String</code>
     * [.waitForAll()](#Assets+waitForAll) ⇒ <code>Promise</code>
     * [.getCached(url)](#Assets+getCached) ⇒ [<code>Asset</code>](#Asset)
     * [.loadSound(url)](#Assets+loadSound) ⇒ [<code>Promise.&lt;Asset&gt;</code>](#Asset)
@@ -250,6 +266,20 @@ To access the Assets manager you use `Shaku.assets`.
 ### new Assets()
 Create the manager.
 
+<a name="Assets+root"></a>
+
+### assets.root
+Optional URL root to prepend to all loaded assets URLs.
+For example, if all your assets are under '/static/assets/', you can set this url as root and omit it when loading assets later.
+
+**Kind**: instance property of [<code>Assets</code>](#Assets)  
+<a name="Assets+suffix"></a>
+
+### assets.suffix
+Optional suffix to add to all loaded assets URLs.
+You can use this for anti-cache mechanism if you want to reload all assets. For example, you can set this value to "'?dt=' + Date.now()".
+
+**Kind**: instance property of [<code>Assets</code>](#Assets)  
 <a name="Assets+pendingAssets"></a>
 
 ### assets.pendingAssets ⇒ <code>Array.&lt;string&gt;</code>
@@ -266,6 +296,18 @@ This list will be reset if you call clearCache().
 
 **Kind**: instance property of [<code>Assets</code>](#Assets)  
 **Returns**: <code>Array.&lt;string&gt;</code> - URLs of assets that had error loading.  
+<a name="Assets+_wrapUrl"></a>
+
+### assets.\_wrapUrl(url) ⇒ <code>String</code>
+Wrap a URL with 'root' and 'suffix'.
+
+**Kind**: instance method of [<code>Assets</code>](#Assets)  
+**Returns**: <code>String</code> - Wrapped URL.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| url | <code>String</code> | Url to wrap. |
+
 <a name="Assets+waitForAll"></a>
 
 ### assets.waitForAll() ⇒ <code>Promise</code>
@@ -1309,6 +1351,7 @@ Collision shape base class.
 * [CollisionShape](#CollisionShape)
     * [new CollisionShape()](#new_CollisionShape_new)
     * [.collisionFlags](#CollisionShape+collisionFlags)
+    * [.collisionFlags](#CollisionShape+collisionFlags)
     * [.setDebugColor(color)](#CollisionShape+setDebugColor)
     * [.debugDraw(opacity)](#CollisionShape+debugDraw)
     * [.getCenter()](#CollisionShape+getCenter) ⇒ [<code>Vector2</code>](#Vector2)
@@ -1321,7 +1364,13 @@ Create the collision shape.
 <a name="CollisionShape+collisionFlags"></a>
 
 ### collisionShape.collisionFlags
-Optional collision flags to be matched against collision mask when checking collision.
+Get collision flags (matched against collision mask when checking collision).
+
+**Kind**: instance property of [<code>CollisionShape</code>](#CollisionShape)  
+<a name="CollisionShape+collisionFlags"></a>
+
+### collisionShape.collisionFlags
+Set collision flags (matched against collision mask when checking collision).
 
 **Kind**: instance property of [<code>CollisionShape</code>](#CollisionShape)  
 <a name="CollisionShape+setDebugColor"></a>

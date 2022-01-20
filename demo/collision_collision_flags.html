@@ -12,7 +12,8 @@
     <button class="view-code-btn" onclick="showSampleCode();">View Code</button> 
     <h1 class="demo-title">Shaku: Basic Collision Flags</h1>
       <p>This demo illustrate basic collision detection with Shaku.collision manager, using collision flags / mask (will only collide with matching colors).<br />
-      Move the shape with your mouse to test collision, press <b>1-3</b> to replace the shape, and <b>+ / -</b> to set size. </p>
+      Move the shape with your mouse to test collision, press <b>1-3</b> to replace the shape, and <b>+ / -</b> to set size. <br />
+      Click on shapes to randomize their flags.</p>
       
       <p id="show-data" style="color: red;"></p>
 
@@ -114,6 +115,14 @@
               showDataParagraph.style.color = 'black';
             }
 
+            // pick shapes to random flags
+            if (Shaku.input.pressed('mouse_left')) {
+              let shapes = world.pick(Shaku.input.mousePosition);
+              for (let i = 0; i < shapes.length; ++i) {
+                shapes[i].collisionFlags = 1 << Math.floor(Math.random() * 4);
+              }
+            }
+
             // control the shape the user drags
             if (Shaku.input.down('1')) { userShapeType = 0; }
             if (Shaku.input.down('2')) { userShapeType = 1; }
@@ -140,7 +149,7 @@
   <div class="modal__overlay jsOverlay"></div>
   <div class="modal__container">   
 
-<p class="noselect">The following shows a minimal code example on how to init Shaku and create a main loop.</i>
+<p class="noselect">The following shows a minimal code example for collision detection with collision flags.</i>
 </p>
 <pre><code class="language-js">// create collision world
   let world = Shaku.collision.createWorld(128);

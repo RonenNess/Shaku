@@ -17,8 +17,11 @@ To access the Assets manager you use `Shaku.assets`.
 
 * [Assets](#Assets)
     * [new Assets()](#new_Assets_new)
+    * [.root](#Assets+root)
+    * [.suffix](#Assets+suffix)
     * [.pendingAssets](#Assets+pendingAssets) ⇒ <code>Array.&lt;string&gt;</code>
     * [.failedAssets](#Assets+failedAssets) ⇒ <code>Array.&lt;string&gt;</code>
+    * [._wrapUrl(url)](#Assets+_wrapUrl) ⇒ <code>String</code>
     * [.waitForAll()](#Assets+waitForAll) ⇒ <code>Promise</code>
     * [.getCached(url)](#Assets+getCached) ⇒ <code>Asset</code>
     * [.loadSound(url)](#Assets+loadSound) ⇒ <code>Promise.&lt;Asset&gt;</code>
@@ -37,6 +40,20 @@ To access the Assets manager you use `Shaku.assets`.
 ### new Assets()
 Create the manager.
 
+<a name="Assets+root"></a>
+
+### assets.root
+Optional URL root to prepend to all loaded assets URLs.
+For example, if all your assets are under '/static/assets/', you can set this url as root and omit it when loading assets later.
+
+**Kind**: instance property of [<code>Assets</code>](#Assets)  
+<a name="Assets+suffix"></a>
+
+### assets.suffix
+Optional suffix to add to all loaded assets URLs.
+You can use this for anti-cache mechanism if you want to reload all assets. For example, you can set this value to "'?dt=' + Date.now()".
+
+**Kind**: instance property of [<code>Assets</code>](#Assets)  
 <a name="Assets+pendingAssets"></a>
 
 ### assets.pendingAssets ⇒ <code>Array.&lt;string&gt;</code>
@@ -53,6 +70,18 @@ This list will be reset if you call clearCache().
 
 **Kind**: instance property of [<code>Assets</code>](#Assets)  
 **Returns**: <code>Array.&lt;string&gt;</code> - URLs of assets that had error loading.  
+<a name="Assets+_wrapUrl"></a>
+
+### assets.\_wrapUrl(url) ⇒ <code>String</code>
+Wrap a URL with 'root' and 'suffix'.
+
+**Kind**: instance method of [<code>Assets</code>](#Assets)  
+**Returns**: <code>String</code> - Wrapped URL.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| url | <code>String</code> | Url to wrap. |
+
 <a name="Assets+waitForAll"></a>
 
 ### assets.waitForAll() ⇒ <code>Promise</code>

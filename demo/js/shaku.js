@@ -27,6 +27,35 @@ class Asset
     constructor(url)
     {
         this._url = url;
+        this._waitingCallbacks = [];
+    }
+
+    /**
+     * Register a method to be called when asset is ready.
+     * If asset is already in ready state, will invoke immediately.
+     * @param {Function} callback Callback to invoke when asset is ready.
+     */
+    onReady(callback)
+    {
+        if (this.valid || this._waitingCallbacks === null) {
+            callback();
+            return;
+        }
+        this._waitingCallbacks.push(callback);
+    }
+
+    /**
+     * Notify all waiting callbacks that this asset is ready.
+     * @private
+     */
+    _notifyReady()
+    {
+        if (this._waitingCallbacks) {
+            for (let i = 0; i < this._waitingCallbacks.length; ++i) {
+                this._waitingCallbacks[i]();
+            }
+            this._waitingCallbacks = null;
+        }
     }
 
     /**
@@ -123,6 +152,29 @@ class Assets extends IManager
         this._waitingAssets = new Set();
 		this._failedAssets = new Set();
         this._successfulLoadedAssetsCount = 0;
+
+        /**
+         * Optional URL root to prepend to all loaded assets URLs.
+         * For example, if all your assets are under '/static/assets/', you can set this url as root and omit it when loading assets later.
+         */
+        this.root = '';
+
+        /**
+         * Optional suffix to add to all loaded assets URLs.
+         * You can use this for anti-cache mechanism if you want to reload all assets. For example, you can set this value to "'?dt=' + Date.now()".
+         */
+        this.suffix = '';
+    }
+
+    /**
+     * Wrap a URL with 'root' and 'suffix'.
+     * @param {String} url Url to wrap.
+     * @returns {String} Wrapped URL.
+     */
+    _wrapUrl(url)
+    {
+        if (!url) { return url; }
+        return this.root + url + this.suffix;
     }
 
     /**
@@ -232,43 +284,42 @@ class Assets extends IManager
     /**
      * Load an asset of a given type and add to cache when done.
      * @private
-     * @param {String} url Asset URL.
-     * @param {type} type Asset type to load.
+     * @param {Asset} newAsset Asset instance to load.
      * @param {*} params Optional loading params.
-     * @returns {Promise<Asset>} promise to resolve with asset instance, when loaded.
      */
-    _loadAndCacheAsset(url, type, params)
+    async _loadAndCacheAsset(newAsset, params)
     {
+        // extract url and typename, and add to cache
+        let url = newAsset.url;
+        let typeName = newAsset.constructor.name;
+        this._loaded[url] = newAsset;
+        this._waitingAssets.add(url);
+
+        // initiate loading
         return new Promise(async (resolve, reject) => {
 
-            // update waiting assets count
-            this._waitingAssets.add(url);
-
-            _logger.debug(`Load asset [${type.name}] from URL '${url}'.`);
-
             // load asset
-            let newAsset = new type(url);
+            _logger.debug(`Load asset [${typeName}] from URL '${url}'.`);
             try {
                 await newAsset.load(params);
             }
             catch (e) {
-                _logger.warn(`Failed to load asset [${type.name}] from URL '${url}'.`);
+                _logger.warn(`Failed to load asset [${typeName}] from URL '${url}'.`);
                 this._failedAssets.add(url);
                 return reject(e);
             }
-            this._loaded[url] = newAsset;
 
             // update waiting assets count
             this._waitingAssets.delete(url);
 
             // make sure valid
             if (!newAsset.valid) {
-                _logger.warn(`Failed to load asset [${type.name}] from URL '${url}'.`);
+                _logger.warn(`Failed to load asset [${typeName}] from URL '${url}'.`);
                 this._failedAssets.add(url);
                 return reject("Loaded asset is not valid!");
             }
 
-            _logger.debug(`Successfully loaded asset [${type.name}] from URL '${url}'.`);
+            _logger.debug(`Successfully loaded asset [${typeName}] from URL '${url}'.`);
 
             // resolve
             this._successfulLoadedAssetsCount++;
@@ -283,7 +334,69 @@ class Assets extends IManager
      */
     getCached(url)
     {
+        url = this._wrapUrl(url);
         return this._loaded[url] || null;
+    }
+
+    /**
+     * Get / load asset of given type, and return a promise to be resolved when ready.
+     * @private
+     */
+    _loadAssetType(url, typeClass, params)
+    {
+        // normalize URL
+        url = this._wrapUrl(url);
+
+        // try to get from cache
+        let _asset = this._getFromCache(url, typeClass);
+        
+        // check if need to create new and load
+        var needLoad = false;
+        if (!_asset) {
+            _asset = new typeClass(url);
+            needLoad = true;
+        }
+        
+        // create promise to load asset
+        let promise = new Promise(async (resolve, reject) => {
+            if (needLoad) {
+                await this._loadAndCacheAsset(_asset, params);
+            }
+            _asset.onReady(() => {
+                resolve(_asset);
+            });
+        });
+
+        // return promise with asset attached to it
+        promise.asset = _asset;
+        return promise;
+    }
+
+    /**
+     * Create and init asset of given class type.
+     * @private
+     */
+    _createAsset(name, classType, initMethod)
+    {
+        // create asset
+        name = this._wrapUrl(name);
+        var _asset = new classType(name || generateRandomAssetName());
+
+        // generate render target in async
+        let promise = new Promise(async (resolve, reject) => {
+
+            // make sure not in cache
+            if (name && this._loaded[name]) { return reject(`Asset of type '${classType.name}' to create with URL '${name}' already exist in cache!`); }
+
+            // create and return
+            initMethod(_asset);
+            if (name) { this._loaded[name] = _asset; }
+            resolve(_asset);
+        });
+
+        // attach asset to promise
+        promise.asset = _asset;
+        return promise;
     }
 
     /**
@@ -295,19 +408,7 @@ class Assets extends IManager
      */
     loadSound(url)
     {
-        var _asset;
-        let promise = new Promise(async (resolve, reject) => {
-
-            // try to get from cache
-            _asset = this._getFromCache(url, SoundAsset);
-            if (_asset) { return resolve(_asset); }
-
-            // load and return asset
-            _asset = await this._loadAndCacheAsset(url, SoundAsset);
-            resolve(_asset);
-        });
-        promise.asset = _asset;
-        return promise;
+        return this._loadAssetType(url, SoundAsset, undefined);
     }
 
     /**
@@ -320,19 +421,7 @@ class Assets extends IManager
      */
     loadTexture(url, params)
     {
-        var _asset;
-        let promise = new Promise(async (resolve, reject) => {
-
-            // try to get from cache
-            _asset = this._getFromCache(url, TextureAsset);
-            if (_asset) { return resolve(_asset); }
-
-            // load and return asset
-            _asset = await this._loadAndCacheAsset(url, TextureAsset, params);
-            resolve(_asset);
-        });
-        promise.asset = _asset;
-        return promise;
+        return this._loadAssetType(url, TextureAsset, params);
     }
 
     /**
@@ -348,25 +437,15 @@ class Assets extends IManager
      */
     createRenderTarget(name, width, height)
     {
-        var _asset;
-        let promise = new Promise(async (resolve, reject) => {
+        // make sure we have valid size
+        if (!width || !height) {
+            return reject("Missing or invalid size!");
+        }
 
-            // make sure we have valid size
-            if (!width || !height) {
-                return reject("Missing or invalid size!");
-            }
-
-            // make sure not in cache
-            if (name && this._loaded[name]) { return reject(`Asset with URL or name '${name}' already exist!`); }
-
-            // create and return
-            _asset = new TextureAsset(name || generateRandomAssetName());
-            _asset.createRenderTarget(width, height);
-            if (name) { this._loaded[name] = _asset; }
-            resolve(_asset);
+        // create asset and return promise
+        return this._createAsset(name, TextureAsset, (asset) => {
+            asset.createRenderTarget(width, height);
         });
-        promise.asset = _asset;
-        return promise;
     }
     
     /**
@@ -379,19 +458,7 @@ class Assets extends IManager
      */
     loadFontTexture(url, params)
     {
-        var _asset;
-        let promise = new Promise(async (resolve, reject) => {
-
-            // try to get from cache
-            _asset = this._getFromCache(url, FontTextureAsset);
-            if (_asset) { return resolve(_asset); }
-
-            // load and return asset
-            _asset = await this._loadAndCacheAsset(url, FontTextureAsset, params);
-            resolve(_asset);
-        });
-        promise.asset = _asset;
-        return promise;
+        return this._loadAssetType(url, FontTextureAsset, params);
     }
     
     /**
@@ -404,19 +471,7 @@ class Assets extends IManager
      */
     loadJson(url)
     {
-        var _asset;
-        let promise = new Promise(async (resolve, reject) => {
-
-            // try to get from cache
-            _asset = this._getFromCache(url, JsonAsset);
-            if (_asset) { return resolve(_asset); }
-
-            // load and return asset
-            _asset = await this._loadAndCacheAsset(url, JsonAsset);
-            resolve(_asset);
-        });
-        promise.asset = _asset;
-        return promise;
+        return this._loadAssetType(url, JsonAsset);
     }
  
     /**
@@ -430,20 +485,15 @@ class Assets extends IManager
      */
     createJson(name, data)
     {
-        var _asset;
-        let promise = new Promise(async (resolve, reject) => {
+        // make sure we have valid data
+        if (!data) {
+            return reject("Missing or invalid data!");
+        }
 
-            // make sure not in cache
-            if (name && this._loaded[name]) { return reject(`Asset with URL or name '${name}' already exist!`); }
-
-            // create and return the new json asset
-            _asset = new JsonAsset(name || generateRandomAssetName());
-            _asset.create(data);
-            if (name) { this._loaded[name] = _asset; }
-            resolve(_asset);
+        // create asset and return promise
+        return this._createAsset(name, JsonAsset, (asset) => {
+            asset.create(data);
         });
-        promise.asset = _asset;
-        return promise;
     }
 
     /**
@@ -456,19 +506,7 @@ class Assets extends IManager
      */
     loadBinary(url)
     {
-        var _asset;
-        let promise = new Promise(async (resolve, reject) => {
-
-            // try to get from cache
-            _asset = this._getFromCache(url, BinaryAsset);
-            if (_asset) { return resolve(_asset); }
-
-            // load and return asset
-            _asset = await this._loadAndCacheAsset(url, BinaryAsset);
-            resolve(_asset);
-        });
-        promise.asset = _asset;
-        return promise;
+        return this._loadAssetType(url, BinaryAsset);
     }
 
     /**
@@ -482,20 +520,15 @@ class Assets extends IManager
      */
     createBinary(name, data)
     {
-        var _asset;
-        let promise = new Promise(async (resolve, reject) => {
+        // make sure we have valid data
+        if (!data) {
+            return reject("Missing or invalid data!");
+        }
 
-            // make sure not in cache
-            if (name && this._loaded[name]) { return reject(`Asset with URL or name '${name}' already exist!`); }
-
-            // create and return the new binary asset
-            _asset = new BinaryAsset(name || generateRandomAssetName());
-            await _asset.create(data);
-            if (name) { this._loaded[name] = _asset; }
-            resolve(_asset);
+        // create asset and return promise
+        return this._createAsset(name, BinaryAsset, (asset) => {
+            asset.create(data);
         });
-        promise.asset = _asset;
-        return promise;
     }
 
     /**
@@ -506,6 +539,7 @@ class Assets extends IManager
      */
     free(url)
     {
+        url = this._wrapUrl(url);
         let asset = this._loaded[url];
         if (asset) {
             asset.destroy();
@@ -595,6 +629,7 @@ class BinaryAsset extends Asset
                 if (request.readyState == 4) {
                     if (request.response) {
                         this._data = new Uint8Array(request.response);
+                        this._notifyReady();
                         resolve();
                     }
                     else {
@@ -624,6 +659,7 @@ class BinaryAsset extends Asset
             if (source instanceof Array) { source = new Uint8Array(source); }
             if (!(source instanceof Uint8Array)) { return reject("Binary asset source must be of type 'Uint8Array'!"); }
             this._data = source;
+            this._notifyReady();
             resolve();
         });
     }
@@ -876,6 +912,7 @@ class FontTextureAsset extends Asset
 
                 // success!
                 this._texture = texture;
+                this._notifyReady();
                 resolve();
 
             };
@@ -1028,6 +1065,7 @@ class JsonAsset extends Asset
                 if (request.readyState == 4) {
                     if (request.response) {
                         this._data = request.response;
+                        this._notifyReady();
                         resolve();
                     }
                     else {
@@ -1082,6 +1120,7 @@ class JsonAsset extends Asset
 
             // store data and resolve
             this._data = source;
+            this._notifyReady();
             resolve();
         });
     }
@@ -1165,6 +1204,7 @@ class SoundAsset extends Asset
             {
                 var audioData = request.response;
                 this._valid = true; // <-- good enough for now, as decodeAudio won't work before user's input
+                this._notifyReady();
                 audioCtx.decodeAudioData(audioData, function(buffer) {
                     resolve();
                 },
@@ -1313,6 +1353,7 @@ class TextureAsset extends Asset
             {
                 try {
                     await this.create(image, params);
+                    this._notifyReady();
                     resolve();
                 }
                 catch (e) {
@@ -1363,6 +1404,7 @@ class TextureAsset extends Asset
         this._width = width;
         this._height = height;
         this._texture = targetTexture;
+        this._notifyReady();
     }
 
     /**
@@ -1418,6 +1460,7 @@ class TextureAsset extends Asset
 
         // success!
         this._texture = texture;
+        this._notifyReady();
     }
 
     /**
@@ -1435,6 +1478,7 @@ class TextureAsset extends Asset
                 let img = new Image();
                 img.onload = () => {
                     this.fromImage(source, params);
+                    this._notifyReady();
                     resolve();
                 }
                 img.src = source;
@@ -1695,7 +1739,8 @@ const CollisionShape = require("./shapes/shape");
 const gfx = require('./../gfx');
 const Rectangle = require("../utils/rectangle");
 const CollisionResolver = require("./resolver");
-const { PointShape, CircleShape } = require(".");
+const PointShape = require("./shapes/point");
+const CircleShape = require("./shapes/circle");
 const _logger = require('../logger.js').getLogger('collision');
 
 
@@ -2157,7 +2202,7 @@ function sortByDistanceShapes(sourceShape, options)
 
 // export collision world
 module.exports = CollisionWorld;
-},{".":11,"../logger.js":38,"../utils/circle":46,"../utils/color":47,"../utils/rectangle":50,"../utils/vector2":51,"./../gfx":25,"./resolver":12,"./result":14,"./shapes/shape":18}],11:[function(require,module,exports){
+},{"../logger.js":38,"../utils/circle":46,"../utils/color":47,"../utils/rectangle":50,"../utils/vector2":51,"./../gfx":25,"./resolver":12,"./result":14,"./shapes/circle":15,"./shapes/point":16,"./shapes/shape":18}],11:[function(require,module,exports){
 /**
  * Just an alias to main manager so we can require() this folder as a package.
  * 
@@ -2700,11 +2745,25 @@ class CollisionShape
         this._worldRange = null;
         this._debugColor = null;
         this._forceDebugColor = null;
+        this._collisionFlags = Number.MAX_SAFE_INTEGER;
+    }
 
-        /**
-         * Optional collision flags to be matched against collision mask when checking collision.
-         */
-        this.collisionFlags = Number.MAX_SAFE_INTEGER;
+    /**
+     * Get collision flags (matched against collision mask when checking collision).
+     */
+    get collisionFlags()
+    {
+        return this._collisionFlags;
+    }
+
+    /**
+     * Set collision flags (matched against collision mask when checking collision).
+     */
+    set collisionFlags(value)
+    {
+        this._debugColor = null;
+        this._collisionFlags = value;
+        return this._collisionFlags;
     }
 
     /**
@@ -7641,7 +7700,7 @@ let _totalFrameTimes = 0;
 
 
 // current version
-const version = "1.3.0";
+const version = "1.3.1";
 
 /**
  * Shaku's main object.

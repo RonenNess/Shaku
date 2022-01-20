@@ -21,6 +21,7 @@
   - [Sounds](#sounds)
   - [Input](#input)
   - [Assets](#assets)
+  - [Collision](#collision)
   - [Utils](#utils)
   - [Miscellaneous](#miscellaneous)
 - [Advanced Topics](#advanced-topics)
@@ -157,7 +158,7 @@ The demos illustrate basic features and components, and implement 3 basic "games
 
 # Using Shaku
 
-*Shaku*'s API mostly consist of four main managers, each solve a different domain of problems in gamedev: *graphics*, *sounds*, *assets*, and *input*.
+*Shaku*'s API mostly consist of five main managers, each solve a different domain of problems in gamedev: *graphics*, *sounds*, *assets*, *collision* and *input*.
 
 In this doc we'll explore these managers and cover the most common use cases.
 If you want to dive into the full API, you can check out the [API Docs](docs/index.md), or browse the code instead.
@@ -1113,6 +1114,129 @@ You can also free all loaded assets, by calling `clearCache`:
 Shaku.assets.clearCache();
 ```
 
+## Collision
+
+The *Collision* manager provides basic collision detection functionality, and is accessed by `Shaku.collision`.
+The collision manager handles detection, but *not* physics.
+
+This doc don't cover the entirely of the API, only the main parts of it. To see the full API, check out the [API docs](docs/collision.md).
+
+### Collision Shapes
+
+A collision shape is a 2d body you can collide with.
+There are currently 3 collision shapes:
+
+* [Point](docs/collision_shapes_point.md).
+* [Rectangle](docs/collision_shapes_point.md).
+* [Circle](docs/collision_shapes_point.md).
+
+#### Collision Flags
+
+Every shape has a property called `collisionFlags`. 
+This property is a number used as a bitmap for collision filtering. For example, you can define the following:
+
+```js
+const CollisionFlags = {
+  Walls: 1,
+  Lava: 1 << 1,
+  Floor: 1 << 2,
+  Enemy: 1 << 3,
+}
+```
+
+Then define a shape with 'walls' collision flags:
+
+```js
+shape.collisionFlags = CollisionFlags.Walls;
+```
+
+And later if we want to only collide with walls or floor, we can query with the following mask:
+
+```js
+const WallsAndFloorMask = CollisionFlags.Walls | CollisionFlags.Floor;
+```
+
+### Collision World
+
+`Collision World` is a group of collision shapes you can query, debug render, and more. It represent a level, or scene, where you need to perform collision detection.
+
+Every collision world have an internal grid used for the broad phase detection. Set the grid size proportionately to your collision shape sizes, so that every grid cell would only contain a handful of shapes.
+
+Lets start by creating a collision world:
+
+```js
+let gridSize = new Shaku.utils.Vector2(256, 256);
+let world = Shaku.collision.createWorld(gridSize);
+```
+
+#### Adding Shapes
+
+Now lets add 3 shapes to the world:
+
+```js
+// add point to world
+let point = new Shaku.collision.PointShape(new Shaku.utils.Vector2(125, 65));
+world.addShape(point);
+
+// add rectangle to world
+let rect = new Shaku.collision.RectangleShape(new Shaku.utils.Rectangle(45, 75, 100, 50));
+world.addShape(rect);
+
+// add circle to world
+let circle = new Shaku.collision.CircleShape(new Shaku.utils.Circle(new Shaku.utils.Vector2(300, 315), 150));
+world.addShape(circle);
+```
+
+#### Picking
+
+To 'pick' shapes based on position, you can use the `pick()` method:
+
+```js
+// shapes will be an array with all shapes the mouse was pointing on
+let shapes = pick(Shaku.input.mousePosition);
+```
+
+Or we can have additional parameters:
+
+```js
+let position = Shaku.input.mousePosition;
+let radius = 0;
+let sortByDistance = false;
+let mask = 0xffffff;
+let predicate = (shape) => { return true; };
+let shapes = pick(position, radius, sortByDistance, mask, predicate)
+```
+
+* *radius:* is radius around position to pick shapes from.
+* *sortByDistance:* if true, will sort results by distance from position.
+* *mask:* optional collision mask, to match against the shapes collision flags.
+* *predicate:* optional filter method to run in broad phase. return false to skip shape, true to test it.
+
+#### Collision Tests
+
+If you want to test collision using a specific shape that isn't a point or circle, you can use either `testCollision(sourceShape, sortByDistance, mask, predicate)` to get a single result (faster), or `testCollisionMany(sourceShape, sortByDistance, mask, predicate)` for multiple results.
+
+### Resolver
+
+The resolver is the class responsible to perform the actual collision detection math between pairs of shapes. If you want to create your own custom shapes, you need to register a handler method to handle your new shape against all existing shapes.
+
+You can access the resolver with `Shaku.collision.resolver`. To learn more about it, check out the [API docs](docs/collision_resolver.md).
+
+### Debug Draw
+
+Its often useful to draw the collision world in order to debug issues. To do so, you can use the `debugDraw()` method:
+
+```
+world.debugDraw(gridColor, gridHighlitColor, opacity, camera);
+```
+
+* *gridColor*: optional grid lines color, for cells that have no collision shapes in them.
+* *gridHighlitColor*: optional grid lines color, for cells that have collision shapes in them.
+* *opacity*: optional opacity for all shapes and grid.
+* *camera*: optional camera to draw the collision world with.
+
+![physics-example](resources/physics.png)
+
 ## Utils
 
 Utils is not a manager, but a collection of built-in utility classes you use with *Shaku*. You access them with `Shaku.utils`.
@@ -1384,6 +1508,12 @@ List of changes in released versions.
 - Fixed collision shapes custom debug color.
 - Added `clone()` to sprites.
 
+## 1.3.1
+
+- Refactor and bugfix in the assets manager.
+- Added `onReady()` method to assets.
+- Fixed bug in collision world `pick()`.
+- Fixed debug color after changing collision shape flags.
 
 # License
 

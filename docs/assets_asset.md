@@ -16,6 +16,7 @@ All asset types inherit from this.
     * [new Asset(url)](#new_Asset_new)
     * [.url](#Asset+url) ⇒ <code>String</code>
     * [.valid](#Asset+valid) ⇒ <code>Boolean</code>
+    * [.onReady(callback)](#Asset+onReady)
     * [.load(params)](#Asset+load) ⇒ <code>Promise</code>
     * [.create(source, params)](#Asset+create) ⇒ <code>Promise</code>
     * [.destroy()](#Asset+destroy)
@@ -44,6 +45,18 @@ Get if this asset is loaded and valid.
 
 **Kind**: instance property of [<code>Asset</code>](#Asset)  
 **Returns**: <code>Boolean</code> - True if asset is loaded and valid, false otherwise.  
+<a name="Asset+onReady"></a>
+
+### asset.onReady(callback)
+Register a method to be called when asset is ready.
+If asset is already in ready state, will invoke immediately.
+
+**Kind**: instance method of [<code>Asset</code>](#Asset)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| callback | <code>function</code> | Callback to invoke when asset is ready. |
+
 <a name="Asset+load"></a>
 
 ### asset.load(params) ⇒ <code>Promise</code>
