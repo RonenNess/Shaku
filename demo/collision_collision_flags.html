@@ -92,6 +92,11 @@
                 shapeToTest = new Shaku.collision.PointShape(mouse);
                 showDataParagraph.innerHTML = "'PointShape' collides with: ";
                 break;
+                              
+              case 3:
+                shapeToTest = new Shaku.collision.LinesShape(new Shaku.utils.Line(mouse, mouse.add(65*sizeFactor, 65*sizeFactor)));
+                showDataParagraph.innerHTML = "'LinesShape' collides with: ";
+                break;
             }
             
             // draw shape the user drags
@@ -127,6 +132,7 @@
             if (Shaku.input.down('1')) { userShapeType = 0; }
             if (Shaku.input.down('2')) { userShapeType = 1; }
             if (Shaku.input.down('3')) { userShapeType = 2; }
+            if (Shaku.input.down('4')) { userShapeType = 3; }
             if (Shaku.input.pressed('plus')) {sizeFactor += 0.25; }
             if (Shaku.input.pressed('minus') && sizeFactor > 0.5) {sizeFactor -= 0.25; }
 

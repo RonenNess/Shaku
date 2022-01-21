@@ -56,6 +56,10 @@ You can use different collision worlds to represent different levels or differen
 <dt><a href="#CircleShape">CircleShape</a></dt>
 <dd><p>Collision circle class.</p>
 </dd>
+<dt><a href="#LinesShape">LinesShape</a></dt>
+<dd><p>Collision lines class.
+This shape is made of one line or more.</p>
+</dd>
 <dt><a href="#PointShape">PointShape</a></dt>
 <dd><p>Collision point class.</p>
 </dd>
@@ -137,6 +141,9 @@ All color components are expected to be in 0.0 - 1.0 range (and not 0-255).</p>
 </dd>
 <dt><a href="#GameTime">GameTime</a></dt>
 <dd><p>Class to hold current game time (elapse and deltatime).</p>
+</dd>
+<dt><a href="#Line">Line</a></dt>
+<dd><p>Implement a simple 2d Line.</p>
 </dd>
 <dt><a href="#MathHelper">MathHelper</a></dt>
 <dd><p>Implement some math utilities functions.</p>
@@ -908,6 +915,7 @@ To access the Collision manager you use `Shaku.collision`.
     * [.RectangleShape](#Collision+RectangleShape)
     * [.PointShape](#Collision+PointShape)
     * [.CircleShape](#Collision+CircleShape)
+    * [.LinesShape](#Collision+LinesShape)
     * [.createWorld(gridCellSize)](#Collision+createWorld) ⇒ [<code>CollisionWorld</code>](#CollisionWorld)
 
 <a name="new_Collision_new"></a>
@@ -938,6 +946,12 @@ Get the collision point shape class.
 
 ### collision.CircleShape
 Get the collision circle shape class.
+
+**Kind**: instance property of [<code>Collision</code>](#Collision)  
+<a name="Collision+LinesShape"></a>
+
+### collision.LinesShape
+Get the collision lines shape class.
 
 **Kind**: instance property of [<code>Collision</code>](#Collision)  
 <a name="Collision+createWorld"></a>
@@ -1216,6 +1230,78 @@ Set this collision shape from circle.
 Debug draw this shape.
 
 **Kind**: instance method of [<code>CircleShape</code>](#CircleShape)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| opacity | <code>Number</code> | Shape opacity factor. |
+
+<a name="LinesShape"></a>
+
+## LinesShape
+Collision lines class.
+This shape is made of one line or more.
+
+**Kind**: global class  
+
+* [LinesShape](#LinesShape)
+    * [new LinesShape(lines)](#new_LinesShape_new)
+    * [.addLines(lines)](#LinesShape+addLines)
+    * [.setLines(lines)](#LinesShape+setLines)
+    * [._getRadius()](#LinesShape+_getRadius)
+    * [.getCenter()](#LinesShape+getCenter)
+    * [._getBoundingBox()](#LinesShape+_getBoundingBox)
+    * [.debugDraw(opacity)](#LinesShape+debugDraw)
+
+<a name="new_LinesShape_new"></a>
+
+### new LinesShape(lines)
+Create the collision shape.
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| lines | [<code>Array.&lt;Line&gt;</code>](#Line) \| [<code>Line</code>](#Line) | Starting line / lines. |
+
+<a name="LinesShape+addLines"></a>
+
+### linesShape.addLines(lines)
+Add line or lines to this collision shape.
+
+**Kind**: instance method of [<code>LinesShape</code>](#LinesShape)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| lines | [<code>Array.&lt;Line&gt;</code>](#Line) \| [<code>Line</code>](#Line) | Line / lines to add. |
+
+<a name="LinesShape+setLines"></a>
+
+### linesShape.setLines(lines)
+Set this shape from line or lines array.
+
+**Kind**: instance method of [<code>LinesShape</code>](#LinesShape)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| lines | [<code>Array.&lt;Line&gt;</code>](#Line) \| [<code>Line</code>](#Line) | Line / lines to set. |
+
+<a name="LinesShape+_getRadius"></a>
+
+### linesShape.\_getRadius()
+**Kind**: instance method of [<code>LinesShape</code>](#LinesShape)  
+<a name="LinesShape+getCenter"></a>
+
+### linesShape.getCenter()
+**Kind**: instance method of [<code>LinesShape</code>](#LinesShape)  
+<a name="LinesShape+_getBoundingBox"></a>
+
+### linesShape.\_getBoundingBox()
+**Kind**: instance method of [<code>LinesShape</code>](#LinesShape)  
+<a name="LinesShape+debugDraw"></a>
+
+### linesShape.debugDraw(opacity)
+Debug draw this shape.
+
+**Kind**: instance method of [<code>LinesShape</code>](#LinesShape)  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -4280,6 +4366,92 @@ Delta time, in seconds, since last frame.
 Total time, in seconds, since Shaku was initialized.
 
 **Kind**: instance property of [<code>GameTime</code>](#GameTime)  
+<a name="Line"></a>
+
+## Line
+Implement a simple 2d Line.
+
+**Kind**: global class  
+
+* [Line](#Line)
+    * [new Line(from, to)](#new_Line_new)
+    * _instance_
+        * [.clone()](#Line+clone) ⇒ [<code>Line</code>](#Line)
+        * [.containsVector(p, threshold)](#Line+containsVector) ⇒ <code>Boolean</code>
+        * [.distanceToVector(v)](#Line+distanceToVector) ⇒ <code>Number</code>
+        * [.equals(other)](#Line+equals) ⇒ <code>Boolean</code>
+    * _static_
+        * [.lerp(l1, l2, a)](#Line.lerp) ⇒ [<code>Line</code>](#Line)
+
+<a name="new_Line_new"></a>
+
+### new Line(from, to)
+Create the Line.
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| from | [<code>Vector2</code>](#Vector2) | Line start position. |
+| to | [<code>Vector2</code>](#Vector2) | Line end position. |
+
+<a name="Line+clone"></a>
+
+### line.clone() ⇒ [<code>Line</code>](#Line)
+Return a clone of this line.
+
+**Kind**: instance method of [<code>Line</code>](#Line)  
+**Returns**: [<code>Line</code>](#Line) - Cloned line.  
+<a name="Line+containsVector"></a>
+
+### line.containsVector(p, threshold) ⇒ <code>Boolean</code>
+Check if this circle contains a Vector2.
+
+**Kind**: instance method of [<code>Line</code>](#Line)  
+**Returns**: <code>Boolean</code> - if point is contained within the circle.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| p | [<code>Vector2</code>](#Vector2) | Point to check. |
+| threshold | <code>Number</code> | Distance between point and line to consider as intersecting. Default is 0.5, meaning it will treat point and line as round integers (sort-of). |
+
+<a name="Line+distanceToVector"></a>
+
+### line.distanceToVector(v) ⇒ <code>Number</code>
+Get the shortest distance between this line segment and a vector.
+
+**Kind**: instance method of [<code>Line</code>](#Line)  
+**Returns**: <code>Number</code> - Shortest distance between line and vector.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| v | [<code>Vector2</code>](#Vector2) | Vector to get distance to. |
+
+<a name="Line+equals"></a>
+
+### line.equals(other) ⇒ <code>Boolean</code>
+Check if equal to another circle.
+
+**Kind**: instance method of [<code>Line</code>](#Line)  
+**Returns**: <code>Boolean</code> - True if circles are equal, false otherwise.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| other | [<code>Circle</code>](#Circle) | Other circle to compare to. |
+
+<a name="Line.lerp"></a>
+
+### Line.lerp(l1, l2, a) ⇒ [<code>Line</code>](#Line)
+Lerp between two lines.
+
+**Kind**: static method of [<code>Line</code>](#Line)  
+**Returns**: [<code>Line</code>](#Line) - result lines.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| l1 | [<code>Line</code>](#Line) | First lines. |
+| l2 | [<code>Line</code>](#Line) | Second lines. |
+| a | <code>Number</code> | Lerp factor (0.0 - 1.0). |
+
 <a name="MathHelper"></a>
 
 ## MathHelper

@@ -15,7 +15,8 @@ Implement a simple 2d Line.
     * [new Line(from, to)](#new_Line_new)
     * _instance_
         * [.clone()](#Line+clone) ⇒ [<code>Line</code>](#Line)
-        * [.containsVector(p)](#Line+containsVector) ⇒ <code>Boolean</code>
+        * [.containsVector(p, threshold)](#Line+containsVector) ⇒ <code>Boolean</code>
+        * [.distanceToVector(v)](#Line+distanceToVector) ⇒ <code>Number</code>
         * [.equals(other)](#Line+equals) ⇒ <code>Boolean</code>
     * _static_
         * [.lerp(l1, l2, a)](#Line.lerp) ⇒ [<code>Line</code>](#Line)
@@ -40,7 +41,7 @@ Return a clone of this line.
 **Returns**: [<code>Line</code>](#Line) - Cloned line.  
 <a name="Line+containsVector"></a>
 
-### line.containsVector(p) ⇒ <code>Boolean</code>
+### line.containsVector(p, threshold) ⇒ <code>Boolean</code>
 Check if this circle contains a Vector2.
 
 **Kind**: instance method of [<code>Line</code>](#Line)  
@@ -49,6 +50,19 @@ Check if this circle contains a Vector2.
 | Param | Type | Description |
 | --- | --- | --- |
 | p | <code>Vector2</code> | Point to check. |
+| threshold | <code>Number</code> | Distance between point and line to consider as intersecting. Default is 0.5, meaning it will treat point and line as round integers (sort-of). |
+
+<a name="Line+distanceToVector"></a>
+
+### line.distanceToVector(v) ⇒ <code>Number</code>
+Get the shortest distance between this line segment and a vector.
+
+**Kind**: instance method of [<code>Line</code>](#Line)  
+**Returns**: <code>Number</code> - Shortest distance between line and vector.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| v | <code>Vector2</code> | Vector to get distance to. |
 
 <a name="Line+equals"></a>
 

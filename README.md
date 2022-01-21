@@ -1129,6 +1129,7 @@ There are currently 3 collision shapes:
 * [Point](docs/collision_shapes_point.md).
 * [Rectangle](docs/collision_shapes_point.md).
 * [Circle](docs/collision_shapes_point.md).
+* [Lines](docs/collision_shapes_lines.md).
 
 #### Collision Flags
 
@@ -1537,6 +1538,7 @@ List of changes in released versions.
 - Added `SeededRandom` class.
 - Improved all util objects `equals` methods to be safer.
 - Added `Line` class.
+- Added `Lines` collision shape class.
 
 # License
 
