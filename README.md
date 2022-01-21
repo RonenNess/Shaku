@@ -1256,6 +1256,17 @@ For more info check out the [API docs](docs/utils_rectangle.md).
 Represent a 2d circle. 
 For more info check out the [API docs](docs/utils_circle.md).
 
+### MathHelper
+
+Contains useful math-related utilities.
+For more info check out the [API docs](docs/utils_math_helper.md).
+
+### SeededRandom
+
+Generate semi-random numbers using a seed.
+This is useful if you want to generate the same random numbers on different browsers and runs.
+For more info check out the [API docs](docs/utils_seeded_random.md).
+
 ### Color
 
 Represent a color. 
@@ -1514,6 +1525,11 @@ List of changes in released versions.
 - Added `onReady()` method to assets.
 - Fixed bug in collision world `pick()`.
 - Fixed debug color after changing collision shape flags.
+
+## 1.3.2
+
+- Added `MathHelper` class.
+- Added `SeededRandom` class.
 
 # License
 

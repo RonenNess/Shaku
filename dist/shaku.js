@@ -1002,7 +1002,7 @@ function measureTextWidth(fontFamily, fontSize, char)
 
 // export the asset type.
 module.exports = FontTextureAsset;
-},{"../utils/rectangle":50,"../utils/vector2":51,"./asset":1,"./texture_asset":8}],5:[function(require,module,exports){
+},{"../utils/rectangle":51,"../utils/vector2":53,"./asset":1,"./texture_asset":8}],5:[function(require,module,exports){
 /**
  * Just an alias to main manager so we can require() this folder as a package.
  * 
@@ -1586,7 +1586,7 @@ function isPowerOf2(value) {
 
 // export the asset type.
 module.exports = TextureAsset;
-},{"../gfx/texture_filter_modes":32,"../gfx/texture_wrap_modes":33,"../logger.js":38,"../utils/color":47,"../utils/vector2":51,"./asset":1}],9:[function(require,module,exports){
+},{"../gfx/texture_filter_modes":32,"../gfx/texture_wrap_modes":33,"../logger.js":38,"../utils/color":47,"../utils/vector2":53,"./asset":1}],9:[function(require,module,exports){
 /**
  * Implement the collision manager.
  * 
@@ -1717,7 +1717,7 @@ class Collision extends IManager
 
 // export main object
 module.exports = new Collision();
-},{"../logger.js":38,"../manager.js":39,"../utils/vector2.js":51,"./collision_world.js":10,"./resolver":12,"./resolvers_imp":13,"./shapes/circle.js":15,"./shapes/point.js":16,"./shapes/rectangle.js":17}],10:[function(require,module,exports){
+},{"../logger.js":38,"../manager.js":39,"../utils/vector2.js":53,"./collision_world.js":10,"./resolver":12,"./resolvers_imp":13,"./shapes/circle.js":15,"./shapes/point.js":16,"./shapes/rectangle.js":17}],10:[function(require,module,exports){
 /**
  * Implement the collision manager.
  * 
@@ -2202,7 +2202,7 @@ function sortByDistanceShapes(sourceShape, options)
 
 // export collision world
 module.exports = CollisionWorld;
-},{"../logger.js":38,"../utils/circle":46,"../utils/color":47,"../utils/rectangle":50,"../utils/vector2":51,"./../gfx":25,"./resolver":12,"./result":14,"./shapes/circle":15,"./shapes/point":16,"./shapes/shape":18}],11:[function(require,module,exports){
+},{"../logger.js":38,"../utils/circle":46,"../utils/color":47,"../utils/rectangle":51,"../utils/vector2":53,"./../gfx":25,"./resolver":12,"./result":14,"./shapes/circle":15,"./shapes/point":16,"./shapes/shape":18}],11:[function(require,module,exports){
 /**
  * Just an alias to main manager so we can require() this folder as a package.
  * 
@@ -2325,7 +2325,7 @@ class CollisionResolver
 
 // export the collision resolver
 module.exports = CollisionResolver;
-},{"../logger.js":38,"../utils/vector2.js":51,"./result.js":14,"./shapes/shape.js":18}],13:[function(require,module,exports){
+},{"../logger.js":38,"../utils/vector2.js":53,"./result.js":14,"./shapes/shape.js":18}],13:[function(require,module,exports){
 /**
  * All default collision detection implementations.
  * 
@@ -2437,7 +2437,7 @@ class CollisionTestResult
 
 // export collision shape class
 module.exports = CollisionTestResult;
-},{"../utils/vector2":51,"./shapes/shape":18}],15:[function(require,module,exports){
+},{"../utils/vector2":53,"./shapes/shape":18}],15:[function(require,module,exports){
 /**
  * Implement collision circle.
  * 
@@ -2527,7 +2527,7 @@ class CircleShape extends CollisionShape
 
 // export collision shape class
 module.exports = CircleShape;
-},{"../../utils/circle":46,"../../utils/rectangle":50,"./../../gfx":25,"./shape":18}],16:[function(require,module,exports){
+},{"../../utils/circle":46,"../../utils/rectangle":51,"./../../gfx":25,"./shape":18}],16:[function(require,module,exports){
 /**
  * Implement collision point.
  * 
@@ -2622,7 +2622,7 @@ class PointShape extends CollisionShape
 
 // export collision shape class
 module.exports = PointShape;
-},{"../../utils/circle":46,"../../utils/rectangle":50,"../../utils/vector2":51,"./../../gfx":25,"./shape":18}],17:[function(require,module,exports){
+},{"../../utils/circle":46,"../../utils/rectangle":51,"../../utils/vector2":53,"./../../gfx":25,"./shape":18}],17:[function(require,module,exports){
 /**
  * Implement collision rectangle.
  * 
@@ -2711,7 +2711,7 @@ class RectangleShape extends CollisionShape
 
 // export collision shape class
 module.exports = RectangleShape;
-},{"../../utils/rectangle":50,"./../../gfx":25,"./shape":18}],18:[function(require,module,exports){
+},{"../../utils/rectangle":51,"./../../gfx":25,"./shape":18}],18:[function(require,module,exports){
 /**
  * Implement collision shape base class.
  * 
@@ -2872,7 +2872,7 @@ const defaultDebugColors = [Color.red, Color.blue, Color.green, Color.yellow, Co
 
 // export collision shape class
 module.exports = CollisionShape;
-},{"../../utils/color":47,"../../utils/rectangle":50,"../../utils/vector2":51,"../collision_world":10}],19:[function(require,module,exports){
+},{"../../utils/color":47,"../../utils/rectangle":51,"../../utils/vector2":53,"../collision_world":10}],19:[function(require,module,exports){
 /**
  * Define supported blend modes.
  * 
@@ -3027,7 +3027,7 @@ class Camera
 
 // export the camera object
 module.exports = Camera;
-},{"../utils/rectangle":50,"../utils/vector2":51,"./matrix":26}],21:[function(require,module,exports){
+},{"../utils/rectangle":51,"../utils/vector2":53,"./matrix":26}],21:[function(require,module,exports){
 /**
  * Implement a basic effect to draw sprites.
  * 
@@ -3661,7 +3661,7 @@ Object.freeze(Effect.AttributeBinds);
 
 // export the effect class.
 module.exports = Effect;
-},{"../../assets/texture_asset.js":8,"../../logger.js":38,"../../utils/color.js":47,"../../utils/rectangle.js":50,"../matrix.js":26}],23:[function(require,module,exports){
+},{"../../assets/texture_asset.js":8,"../../logger.js":38,"../../utils/color.js":47,"../../utils/rectangle.js":51,"../matrix.js":26}],23:[function(require,module,exports){
 /**
  * Include all built-in effects.
  * 
@@ -5169,7 +5169,7 @@ class Gfx extends IManager
 
 // export main object
 module.exports = new Gfx();
-},{"../assets/font_texture_asset.js":4,"../assets/texture_asset.js":8,"../logger.js":38,"../manager.js":39,"../utils/circle.js":46,"../utils/color.js":47,"../utils/rectangle.js":50,"../utils/vector2.js":51,"./blend_modes.js":19,"./camera.js":20,"./effects":23,"./matrix.js":26,"./mesh.js":27,"./mesh_generator.js":28,"./sprite.js":29,"./sprites_group.js":30,"./text_alignment.js":31,"./texture_filter_modes.js":32,"./texture_wrap_modes.js":33}],25:[function(require,module,exports){
+},{"../assets/font_texture_asset.js":4,"../assets/texture_asset.js":8,"../logger.js":38,"../manager.js":39,"../utils/circle.js":46,"../utils/color.js":47,"../utils/rectangle.js":51,"../utils/vector2.js":53,"./blend_modes.js":19,"./camera.js":20,"./effects":23,"./matrix.js":26,"./mesh.js":27,"./mesh_generator.js":28,"./sprite.js":29,"./sprites_group.js":30,"./text_alignment.js":31,"./texture_filter_modes.js":32,"./texture_wrap_modes.js":33}],25:[function(require,module,exports){
 /**
  * Just an alias to main manager so we can require() this folder as a package.
  * 
@@ -5805,7 +5805,7 @@ class Sprite
 
 // export the sprite class.
 module.exports = Sprite;
-},{"../assets/texture_asset":8,"../utils/color":47,"../utils/rectangle":50,"../utils/vector2":51,"./blend_modes":19}],30:[function(require,module,exports){
+},{"../assets/texture_asset":8,"../utils/color":47,"../utils/rectangle":51,"../utils/vector2":53,"./blend_modes":19}],30:[function(require,module,exports){
 /**
  * Define a sprites group.
  * 
@@ -5960,7 +5960,7 @@ class SpritesGroup
 
 // export the sprites group class.
 module.exports = SpritesGroup;
-},{"../utils/color":47,"../utils/vector2":51,"./matrix":26,"./sprite":29}],31:[function(require,module,exports){
+},{"../utils/color":47,"../utils/vector2":53,"./matrix":26,"./sprite":29}],31:[function(require,module,exports){
 /**
  * Define possible text alignments.
  * 
@@ -6772,7 +6772,7 @@ class Input extends IManager
 
 // export main object
 module.exports = new Input();
-},{"../logger.js":38,"../manager.js":39,"../utils/vector2.js":51,"./key_codes.js":37}],37:[function(require,module,exports){
+},{"../logger.js":38,"../manager.js":39,"../utils/vector2.js":53,"./key_codes.js":37}],37:[function(require,module,exports){
 /**
  * Define keyboard and mouse key codes.
  * 
@@ -7700,7 +7700,7 @@ let _totalFrameTimes = 0;
 
 
 // current version
-const version = "1.3.1";
+const version = "1.3.2";
 
 /**
  * Shaku's main object.
@@ -8329,7 +8329,7 @@ class Circle
 
 // export the circle class
 module.exports = Circle;
-},{"./vector2":51}],47:[function(require,module,exports){
+},{"./vector2":53}],47:[function(require,module,exports){
 /**
  * Define a color object.
  * 
@@ -8865,9 +8865,136 @@ module.exports = GameTime;
     Circle: require('./circle'),
     Color: require('./color'),
     Animator: require('./animator'),
-    GameTime: require('./game_time')
+    GameTime: require('./game_time'),
+    MathHelper: require('./math_helper'),
+    SeededRandom: require('./seeded_random')
  };
-},{"./animator":45,"./circle":46,"./color":47,"./game_time":48,"./rectangle":50,"./vector2":51}],50:[function(require,module,exports){
+},{"./animator":45,"./circle":46,"./color":47,"./game_time":48,"./math_helper":50,"./rectangle":51,"./seeded_random":52,"./vector2":53}],50:[function(require,module,exports){
+/**
+ * Implement a math utilities class.
+ * 
+ * |-- copyright and license --|
+ * @package    Shaku
+ * @file       shaku\lib\utils\math_helper.js
+ * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
+ * @copyright  (c) 2021 Ronen Ness
+ * @license    MIT
+ * |-- end copyright and license --|
+ * 
+ */
+'use strict';
+
+// for radians / degrees conversion
+const _toRadsFactor = (Math.PI / 180);
+const _toDegreesFactor = (180 / Math.PI);
+
+
+/**
+ * Implement some math utilities functions.
+ */
+class MathHelper
+{
+    /**
+     * Perform linear interpolation between start and end values.
+     * @param {Number} start Starting value.
+     * @param {Number} end Ending value.
+     * @param {Number} amount How much to interpolate from start to end.
+     * @returns {Number} interpolated value between start and end.
+     */
+    static lerp(start, end, amount)
+    {
+        return ((1-amount) * start) + (amount * end);
+    }
+
+    /**
+     * Convert degrees to radians.
+     * @param {Number} degrees Degrees value to convert to radians.
+     * @returns {Number} Value as radians.
+     */
+    static toRadians(degrees) 
+    {
+        return degrees * _toRadsFactor;
+    }
+
+    /**
+     * Convert radians to degrees.
+     * @param {Number} radians Radians value to convert to degrees.
+     * @returns {Number} Value as degrees.
+     */
+    static toDegrees(radians) 
+    {
+        return radians * _toDegreesFactor;
+    }
+
+
+    /**
+    * Find shortest distance between two radians.
+    * @param {Number} a1 First radian.
+    * @param {Number} a2 Second radian.
+    * @returns {Number} Shortest distance between radians.
+    */
+    static radiansDistance(a1, a2)
+    {
+        var max = Math.PI * 2;
+        var da = (a2 - a1) % max;
+        return 2 * da % max - da;
+    }
+
+    /**
+     * Perform linear interpolation between radian values.
+     * Unlike the regular lerp method, this method will take wrapping into consideration, and will always lerp via the shortest distance.
+     * @param {Number} a1 Starting value.
+     * @param {Number} a2 Ending value.
+     * @param {Number} alpha How much to interpolate from start to end.
+     * @returns {Number} interpolated radians between start and end.
+     */
+    static lerpRadians(a1, a2, alpha)
+    {
+        return a1 + this.radiansDistance(a1, a2) * alpha;
+    }
+
+    /**
+     * Perform linear interpolation between degrees.
+     * Unlike the regular lerp method, this method will take wrapping into consideration, and will always lerp via the shortest distance.
+     * @param {Number} a1 Starting value.
+     * @param {Number} a2 Ending value.
+     * @param {Number} alpha How much to interpolate from start to end.
+     * @returns {Number} interpolated degrees between start and end.
+     */
+    static lerpDegrees(a1, a2, alpha)
+    {
+        // convert to radians
+        a1 = this.toRadians(a1);
+        a2 = this.toRadians(a2);
+
+        // lerp
+        var ret = this.lerpRadians(a1, a2, alpha);
+
+        // convert back to degrees and return
+        return this.toDegrees(ret);
+    }
+
+    /**
+    * Round numbers from 10'th digit.
+    * This is useful for calculations that should return round or almost round numbers, but have a long tail of 0's and 1 due to floating points accuracy.
+    * @param {Number} num Number to round.
+    * @returns {Number} Rounded number.
+    */
+    static round10(num)
+    {
+        return Math.round(num * 100000000.0) / 100000000.0;
+    }
+}
+
+/**
+ * PI * 2 value.
+ */
+MathHelper.PI2 = Math.PI * 2;
+
+
+// export the math helper
+module.exports = MathHelper;
+},{}],51:[function(require,module,exports){
 /**
  * Implement a simple 2d rectangle.
  * 
@@ -9214,7 +9341,74 @@ function pointLineDistance(p1, l1, l2) {
 
 // export the rectangle class
 module.exports = Rectangle;
-},{"./circle":46,"./vector2":51}],51:[function(require,module,exports){
+},{"./circle":46,"./vector2":53}],52:[function(require,module,exports){
+/**
+ * Implement a seeded random generator.
+ * 
+ * |-- copyright and license --|
+ * @package    Shaku
+ * @file       shaku\lib\utils\seeded_random.js
+ * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
+ * @copyright  (c) 2021 Ronen Ness
+ * @license    MIT
+ * |-- end copyright and license --|
+ * 
+ */
+'use strict';
+
+/**
+ * Class to generate random numbers with seed.
+ */
+class SeededRandom
+{
+    /**
+     * Create the seeded random object.
+     * @param {Number} seed Seed to start from. If not provided, will use 0.
+     */
+    constructor(seed)
+    {
+        if (seed === undefined) { seed = 0; }
+        this.seed = seed;
+    }
+
+    /**
+     * Get next random value.
+     * @param {Number} min Optional min value. If max is not provided, this will be used as max.
+     * @param {Number} max Optional max value.
+     * @returns {Number} A randomly generated value.
+     */
+    random(min, max)
+    {
+        // generate next value
+        this.seed = (this.seed * 9301 + 49297) % 233280;
+        let rnd = this.seed / 233280;
+
+        // got min and max?
+        if (min && max) {
+            return min + rnd * (max - min);
+        }
+        // got only min (used as max)?
+        else if (min) {
+            return rnd * min;
+        }
+        // no min nor max provided
+        return rnd;
+    }
+    
+    /**
+     * Pick a random value from array.
+     * @param {Array} options Options to pick random value from.
+     * @returns {*} Random value from options array.
+     */
+    pick(options)
+    {
+        return options[Math.floor(this.random(options.length))];
+    }
+}
+
+// export the seeded random class.
+module.exports = SeededRandom;
+},{}],53:[function(require,module,exports){
 /**
  * Implement a simple 2d vector.
  * 

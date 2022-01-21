@@ -14,10 +14,12 @@
       <p>This demo uses a Sprites Group to draw a collection of sprites with parent transformations.<br/>
         This method is useful when you need to group together a bunch of sprites, and move, rotate or scale them as a single unit.<br/><br/>
       This demo will draw a tank from three different parts (+ blurry wheels texture not seen below):</p>
-      <img width="256" height="auto" src="assets/tank.png" />
+      <img width="196" height="auto" src="assets/tank.png" />
       <p>Use <b>Arrows</b> or <b>WASD</b> to drive the tank, and <b>Z/X</b> to rotate the cannon.</p>
-      <span class="credits">Tank image is from: https://opengameart.org/content/top-down-vehicle</span>
-      <span class="credits">Grass image is from: https://opengameart.org/content/10-seamless-grass-textures-that-are-2048-x-2048-grass-1png</span>
+      <span class="credits">Tank image is from: https://opengameart.org/content/top-down-vehicle <br />
+        Grass image is from: https://opengameart.org/content/10-seamless-grass-textures-that-are-2048-x-2048-grass-1png</span>
+
+      <p><b>Note: click anywhere to switch cannon control from keyboard to mouse. Press Z/X again to restore keyboard control.</b></p>
 
       <!-- include shaku -->
       <script src="js/demos.js"></script>
@@ -27,12 +29,18 @@
       <script>
         async function runDemo()
         {
+          // make shaku only listen to gfx canvas
+          Shaku.input.setTargetElement(() => Shaku.gfx.canvas);
+
           // init shaku
           await Shaku.init();
 
           // screen size
           let screenX = 800;
           let screenY = 600;
+
+          // if true, will point cannon on mouse
+          let pointToCursor = false;
 
           // add canvas to document
           document.body.appendChild(Shaku.gfx.canvas);
@@ -102,9 +110,11 @@
             }
             if (Shaku.input.down('z')) { 
               cannonSprite.rotation -= Shaku.gameTime.delta; 
+              pointToCursor = false;
             }
             if (Shaku.input.down('x')) { 
               cannonSprite.rotation += Shaku.gameTime.delta; 
+              pointToCursor = false;
             }
             if (Shaku.input.down('up') || Shaku.input.down('w')) { 
               tank.position.addSelf(Shaku.utils.Vector2.fromRadians(tank.rotation).mul(driveSpeed));
@@ -113,6 +123,17 @@
             if (Shaku.input.down('down') || Shaku.input.down('s')) { 
               tank.position.subSelf(Shaku.utils.Vector2.fromRadians(tank.rotation).mul(driveSpeed));
               moveWheels = true;
+            }
+
+            // switch to mouse control
+            if (Shaku.input.down('mouse_left')) {
+              pointToCursor = true;
+            }
+
+            // rotate cannon using mouse
+            if (pointToCursor) {
+              let targetRotation = Shaku.input.mousePosition.radiansTo(tank.position) - Math.PI / 2 - tank.rotation;
+              cannonSprite.rotation = Shaku.utils.MathHelper.lerpRadians(cannonSprite.rotation, targetRotation, Shaku.gameTime.delta * 5);
             }
 
             // do wheels blur while moving

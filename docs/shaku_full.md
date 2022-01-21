@@ -138,8 +138,14 @@ All color components are expected to be in 0.0 - 1.0 range (and not 0-255).</p>
 <dt><a href="#GameTime">GameTime</a></dt>
 <dd><p>Class to hold current game time (elapse and deltatime).</p>
 </dd>
+<dt><a href="#MathHelper">MathHelper</a></dt>
+<dd><p>Implement some math utilities functions.</p>
+</dd>
 <dt><a href="#Rectangle">Rectangle</a></dt>
 <dd><p>Implement a simple 2d Rectangle.</p>
+</dd>
+<dt><a href="#SeededRandom">SeededRandom</a></dt>
+<dd><p>Class to generate random numbers with seed.</p>
 </dd>
 <dt><a href="#Vector2">Vector2</a></dt>
 <dd><p>A simple Vector object for 2d positions.</p>
@@ -4274,6 +4280,116 @@ Delta time, in seconds, since last frame.
 Total time, in seconds, since Shaku was initialized.
 
 **Kind**: instance property of [<code>GameTime</code>](#GameTime)  
+<a name="MathHelper"></a>
+
+## MathHelper
+Implement some math utilities functions.
+
+**Kind**: global class  
+
+* [MathHelper](#MathHelper)
+    * [.lerp(start, end, amount)](#MathHelper.lerp) ⇒ <code>Number</code>
+    * [.toRadians(degrees)](#MathHelper.toRadians) ⇒ <code>Number</code>
+    * [.toDegrees(radians)](#MathHelper.toDegrees) ⇒ <code>Number</code>
+    * [.radiansDistance(a1, a2)](#MathHelper.radiansDistance) ⇒ <code>Number</code>
+    * [.lerpRadians(a1, a2, alpha)](#MathHelper.lerpRadians) ⇒ <code>Number</code>
+    * [.lerpDegrees(a1, a2, alpha)](#MathHelper.lerpDegrees) ⇒ <code>Number</code>
+    * [.round10(num)](#MathHelper.round10) ⇒ <code>Number</code>
+
+<a name="MathHelper.lerp"></a>
+
+### MathHelper.lerp(start, end, amount) ⇒ <code>Number</code>
+Perform linear interpolation between start and end values.
+
+**Kind**: static method of [<code>MathHelper</code>](#MathHelper)  
+**Returns**: <code>Number</code> - interpolated value between start and end.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| start | <code>Number</code> | Starting value. |
+| end | <code>Number</code> | Ending value. |
+| amount | <code>Number</code> | How much to interpolate from start to end. |
+
+<a name="MathHelper.toRadians"></a>
+
+### MathHelper.toRadians(degrees) ⇒ <code>Number</code>
+Convert degrees to radians.
+
+**Kind**: static method of [<code>MathHelper</code>](#MathHelper)  
+**Returns**: <code>Number</code> - Value as radians.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| degrees | <code>Number</code> | Degrees value to convert to radians. |
+
+<a name="MathHelper.toDegrees"></a>
+
+### MathHelper.toDegrees(radians) ⇒ <code>Number</code>
+Convert radians to degrees.
+
+**Kind**: static method of [<code>MathHelper</code>](#MathHelper)  
+**Returns**: <code>Number</code> - Value as degrees.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| radians | <code>Number</code> | Radians value to convert to degrees. |
+
+<a name="MathHelper.radiansDistance"></a>
+
+### MathHelper.radiansDistance(a1, a2) ⇒ <code>Number</code>
+Find shortest distance between two radians.
+
+**Kind**: static method of [<code>MathHelper</code>](#MathHelper)  
+**Returns**: <code>Number</code> - Shortest distance between radians.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| a1 | <code>Number</code> | First radian. |
+| a2 | <code>Number</code> | Second radian. |
+
+<a name="MathHelper.lerpRadians"></a>
+
+### MathHelper.lerpRadians(a1, a2, alpha) ⇒ <code>Number</code>
+Perform linear interpolation between radian values.
+Unlike the regular lerp method, this method will take wrapping into consideration, and will always lerp via the shortest distance.
+
+**Kind**: static method of [<code>MathHelper</code>](#MathHelper)  
+**Returns**: <code>Number</code> - interpolated radians between start and end.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| a1 | <code>Number</code> | Starting value. |
+| a2 | <code>Number</code> | Ending value. |
+| alpha | <code>Number</code> | How much to interpolate from start to end. |
+
+<a name="MathHelper.lerpDegrees"></a>
+
+### MathHelper.lerpDegrees(a1, a2, alpha) ⇒ <code>Number</code>
+Perform linear interpolation between degrees.
+Unlike the regular lerp method, this method will take wrapping into consideration, and will always lerp via the shortest distance.
+
+**Kind**: static method of [<code>MathHelper</code>](#MathHelper)  
+**Returns**: <code>Number</code> - interpolated degrees between start and end.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| a1 | <code>Number</code> | Starting value. |
+| a2 | <code>Number</code> | Ending value. |
+| alpha | <code>Number</code> | How much to interpolate from start to end. |
+
+<a name="MathHelper.round10"></a>
+
+### MathHelper.round10(num) ⇒ <code>Number</code>
+Round numbers from 10'th digit.
+This is useful for calculations that should return round or almost round numbers, but have a long tail of 0's and 1 due to floating points accuracy.
+
+**Kind**: static method of [<code>MathHelper</code>](#MathHelper)  
+**Returns**: <code>Number</code> - Rounded number.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| num | <code>Number</code> | Number to round. |
+
 <a name="Rectangle"></a>
 
 ## Rectangle
@@ -4496,6 +4612,53 @@ Lerp between two rectangles.
 | p1 | [<code>Vector2</code>](#Vector2) | First rectangles. |
 | p2 | [<code>Vector2</code>](#Vector2) | Second rectangles. |
 | a | <code>Number</code> | Lerp factor (0.0 - 1.0). |
+
+<a name="SeededRandom"></a>
+
+## SeededRandom
+Class to generate random numbers with seed.
+
+**Kind**: global class  
+
+* [SeededRandom](#SeededRandom)
+    * [new SeededRandom(seed)](#new_SeededRandom_new)
+    * [.random(min, max)](#SeededRandom+random) ⇒ <code>Number</code>
+    * [.pick(options)](#SeededRandom+pick) ⇒ <code>\*</code>
+
+<a name="new_SeededRandom_new"></a>
+
+### new SeededRandom(seed)
+Create the seeded random object.
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| seed | <code>Number</code> | Seed to start from. If not provided, will use 0. |
+
+<a name="SeededRandom+random"></a>
+
+### seededRandom.random(min, max) ⇒ <code>Number</code>
+Get next random value.
+
+**Kind**: instance method of [<code>SeededRandom</code>](#SeededRandom)  
+**Returns**: <code>Number</code> - A randomly generated value.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| min | <code>Number</code> | Optional min value. If max is not provided, this will be used as max. |
+| max | <code>Number</code> | Optional max value. |
+
+<a name="SeededRandom+pick"></a>
+
+### seededRandom.pick(options) ⇒ <code>\*</code>
+Pick a random value from array.
+
+**Kind**: instance method of [<code>SeededRandom</code>](#SeededRandom)  
+**Returns**: <code>\*</code> - Random value from options array.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| options | <code>Array</code> | Options to pick random value from. |
 
 <a name="Vector2"></a>
 
