@@ -15,6 +15,7 @@ You can use different collision worlds to represent different levels or differen
 * [CollisionWorld](#CollisionWorld)
     * [new CollisionWorld(resolver, gridCellSize)](#new_CollisionWorld_new)
     * [.resolver](#CollisionWorld+resolver)
+    * [.iterateShapes(callback)](#CollisionWorld+iterateShapes)
     * [.addShape(shape)](#CollisionWorld+addShape)
     * [.removeShape(shape)](#CollisionWorld+removeShape)
     * [.testCollision(sourceShape, sortByDistance, mask, predicate)](#CollisionWorld+testCollision) ⇒ <code>CollisionTestResult</code>
@@ -40,6 +41,17 @@ Collision resolver used in this collision world.
 By default, will inherit the collision manager default resolver.
 
 **Kind**: instance property of [<code>CollisionWorld</code>](#CollisionWorld)  
+<a name="CollisionWorld+iterateShapes"></a>
+
+### collisionWorld.iterateShapes(callback)
+Iterate all shapes in world.
+
+**Kind**: instance method of [<code>CollisionWorld</code>](#CollisionWorld)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| callback | <code>function</code> | Callback to invoke on all shapes. Return false to break iteration. |
+
 <a name="CollisionWorld+addShape"></a>
 
 ### collisionWorld.addShape(shape)

@@ -1900,6 +1900,25 @@ class CollisionWorld
     }
 
     /**
+     * Iterate all shapes in world.
+     * @param {Function} callback Callback to invoke on all shapes. Return false to break iteration.
+     */
+    iterateShapes(callback)
+    {
+        for (let key in this._grid) {
+            let cell = this._grid[key];
+            if (cell) {
+                for (let shape of cell)
+                {
+                    if (callback(shape) === false) {
+                        return;
+                    }
+                }
+            }
+        }
+    }
+
+    /**
      * Add a collision shape to this world.
      * @param {CollisionShape} shape Shape to add.
      */
@@ -2432,14 +2451,26 @@ module.exports = {
      * Test collision between rectangle and line.
      */
     rectangleLine: function(r1, l1) {
-        return false; // TODO
+        for (let i = 0; i < l1._lines.length; ++i) {
+            if (r1._rect.collideLine(l1._lines[i])) {
+                return true;
+            }
+        }
+        return false;
     },
 
     /**
      * Test collision between line and line.
      */
-     lineLine: function(l1, l2) {
-        return false; // TODO
+    lineLine: function(l1, l2) {
+        for (let i = 0; i < l1._lines.length; ++i) {
+            for (let j = 0; j < l2._lines.length; ++j) {
+                if (l1._lines[i].collideLine(l2._lines[j])) {
+                    return true;
+                }
+            }
+        }
+        return false;
     },
 }
 },{}],14:[function(require,module,exports){
@@ -9103,6 +9134,35 @@ class Line
     }
 
     /**
+     * Check if this line collides with another line.
+     * @param {Line} other Other line to test collision with.
+     * @returns {Boolean} True if lines collide, false otherwise.
+     */
+    collideLine(other)
+    {
+        let p0 = this.from;
+        let p1 = this.to;
+        let p2 = other.from;
+        let p3 = other.to;
+
+        if (p0.equals(p2) || p0.equals(p3) || p1.equals(p2) || p1.equals(p3)) {
+            return true;
+        }
+
+        let s1_x, s1_y, s2_x, s2_y;
+        s1_x = p1.x - p0.x;
+        s1_y = p1.y - p0.y;
+        s2_x = p3.x - p2.x;
+        s2_y = p3.y - p2.y;
+    
+        let s, t;
+        s = (-s1_y * (p0.x - p2.x) + s1_x * (p0.y - p2.y)) / (-s2_x * s1_y + s1_x * s2_y);
+        t = (s2_x * (p0.y - p2.y) - s2_y * (p0.x - p2.x)) / (-s2_x * s1_y + s1_x * s2_y);
+    
+        return (s >= 0 && s <= 1 && t >= 0 && t <= 1);
+    }
+
+    /**
      * Get the shortest distance between this line segment and a vector.
      * @param {Vector2} v Vector to get distance to.
      * @returns {Number} Shortest distance between line and vector.
@@ -9312,6 +9372,7 @@ module.exports = MathHelper;
  'use strict';
 
 const Circle = require('./circle');
+const Line = require('./line');
 const MathHelper = require('./math_helper');
 const Vector2 = require('./vector2');
 
@@ -9493,6 +9554,40 @@ class Rectangle
                 r2.top >= r1.bottom ||
                 r2.bottom <= r1.top);
     }
+  
+    /**
+     * Check if this rectangle collides with a line.
+     * @param {Line} line Line to check collision with.
+     * @return {Boolean} if rectangle collides with line.
+     */
+    collideLine(line)
+    {
+        // first check if rectangle contains any of the line points
+        if (this.containsVector(line.from) || this.containsVector(line.to)) {
+            return true;
+        }
+
+        // now check intersection with the rectangle lines
+        let topLeft = this.getTopLeft();
+        let topRight = this.getTopRight();
+        let bottomLeft = this.getBottomLeft();
+        let bottomRight = this.getBottomRight();
+        if (line.collideLine(new Line(topLeft, topRight))) {
+            return true;
+        }
+        if (line.collideLine(new Line(topLeft, bottomLeft))) {
+            return true;
+        }
+        if (line.collideLine(new Line(topRight, bottomRight))) {
+            return true;
+        }
+        if (line.collideLine(new Line(bottomLeft, bottomRight))) {
+            return true;
+        }
+
+        // no collision
+        return false;
+    }
 
     /**
      * Checks if this rectangle collides with a circle.
@@ -9642,7 +9737,7 @@ function pointLineDistance(p1, l1, l2) {
 
 // export the rectangle class
 module.exports = Rectangle;
-},{"./circle":47,"./math_helper":52,"./vector2":55}],54:[function(require,module,exports){
+},{"./circle":47,"./line":51,"./math_helper":52,"./vector2":55}],54:[function(require,module,exports){
 /**
  * Implement a seeded random generator.
  * 

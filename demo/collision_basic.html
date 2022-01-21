@@ -51,10 +51,18 @@
 
             let point = new Shaku.collision.PointShape(new Shaku.utils.Vector2(Math.random() * size.x, Math.random() * size.y));
             world.addShape(point);
+            
             let rect = new Shaku.collision.RectangleShape(new Shaku.utils.Rectangle(Math.random() * size.x, Math.random() * size.y, 50 + Math.random() * 150, 50 + Math.random() * 150));
             world.addShape(rect);
+            
             let circle = new Shaku.collision.CircleShape(new Shaku.utils.Circle(new Shaku.utils.Vector2(Math.random() * size.x, Math.random() * size.y), 25 + Math.random() * 150));
             world.addShape(circle);
+
+            let lineCenter = new Shaku.utils.Vector2(Math.random() * size.x, Math.random() * size.y);
+            let lines = new Shaku.collision.LinesShape([
+              new Shaku.utils.Line(lineCenter, lineCenter.add(Math.random() * 200 - 100, Math.random() * 200 - 100)), 
+              new Shaku.utils.Line(lineCenter, lineCenter.add(Math.random() * 200 - 100, Math.random() * 200 - 100))]);
+            world.addShape(lines);
           }
 
           // do a single main loop step
@@ -88,18 +96,32 @@
                 break;
                               
               case 3:
-                shapeToTest = new Shaku.collision.LinesShape(new Shaku.utils.Line(mouse, mouse.add(65*sizeFactor, 65*sizeFactor)));
+                let second = mouse.add(65*sizeFactor, 65*sizeFactor);
+                shapeToTest = new Shaku.collision.LinesShape([
+                  new Shaku.utils.Line(mouse, second),
+                  new Shaku.utils.Line(second, second.add(65*sizeFactor, -75*sizeFactor))
+                ]);
                 showDataParagraph.innerHTML = "'LinesShape' collides with: ";
                 break;
             }
+
+            // reset all shapes colors
+            world.iterateShapes((shape) => {
+              shape.setDebugColor(null);
+            });
             
             // draw shape the user drags
             shapeToTest.setDebugColor(Shaku.utils.Color.green);
             shapeToTest.debugDraw();
 
-            // test collision with all
+            // test collision with many
             let collisions = world.testCollisionMany(shapeToTest);
-            let collisionsTypes = collisions.map(r => r.second.constructor.name);
+
+            // get shapes we collided with + paint them red
+            let collisionsTypes = collisions.map((r) => { 
+              r.second.setDebugColor(Shaku.utils.Color.red);
+              return r.second.constructor.name;
+            });
             showDataParagraph.innerHTML += collisionsTypes.join(',');
 
             // test collision single sorted
@@ -146,17 +168,21 @@
 <pre><code class="language-js">// create collision world
 let world = Shaku.collision.createWorld(128);
 
-// add point to world
+// add a point to world
 let point = new Shaku.collision.PointShape(new Shaku.utils.Vector2(125, 65));
 world.addShape(point);
 
-// add rect to world
+// add a rectngle to world
 let rect = new Shaku.collision.RectangleShape(new Shaku.utils.Rectangle(45, 75, 100, 50));
 world.addShape(rect);
 
-// add circle to world
+// add a circle to world
 let circle = new Shaku.collision.CircleShape(new Shaku.utils.Circle(new Shaku.utils.Vector2(300, 315), 150));
 world.addShape(circle);
+
+// add a line to world
+let lines = new Shaku.collision.LinesShape(new Shaku.utils.Line(new Shaku.utils.Vector2(100, 100), new Shaku.utils.Vector2(150, 150)));
+world.addShape(lines);
 
 // create a circle at mouse position with radius of 100. we'll use it to check collisions
 let shapeToTest = new Shaku.collision.CircleShape(new Shaku.utils.Circle(Shaku.input.mousePosition, 100));

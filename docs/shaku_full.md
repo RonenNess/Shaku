@@ -977,6 +977,7 @@ You can use different collision worlds to represent different levels or differen
 * [CollisionWorld](#CollisionWorld)
     * [new CollisionWorld(resolver, gridCellSize)](#new_CollisionWorld_new)
     * [.resolver](#CollisionWorld+resolver)
+    * [.iterateShapes(callback)](#CollisionWorld+iterateShapes)
     * [.addShape(shape)](#CollisionWorld+addShape)
     * [.removeShape(shape)](#CollisionWorld+removeShape)
     * [.testCollision(sourceShape, sortByDistance, mask, predicate)](#CollisionWorld+testCollision) ⇒ [<code>CollisionTestResult</code>](#CollisionTestResult)
@@ -1002,6 +1003,17 @@ Collision resolver used in this collision world.
 By default, will inherit the collision manager default resolver.
 
 **Kind**: instance property of [<code>CollisionWorld</code>](#CollisionWorld)  
+<a name="CollisionWorld+iterateShapes"></a>
+
+### collisionWorld.iterateShapes(callback)
+Iterate all shapes in world.
+
+**Kind**: instance method of [<code>CollisionWorld</code>](#CollisionWorld)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| callback | <code>function</code> | Callback to invoke on all shapes. Return false to break iteration. |
+
 <a name="CollisionWorld+addShape"></a>
 
 ### collisionWorld.addShape(shape)
@@ -4378,6 +4390,7 @@ Implement a simple 2d Line.
     * _instance_
         * [.clone()](#Line+clone) ⇒ [<code>Line</code>](#Line)
         * [.containsVector(p, threshold)](#Line+containsVector) ⇒ <code>Boolean</code>
+        * [.collideLine(other)](#Line+collideLine) ⇒ <code>Boolean</code>
         * [.distanceToVector(v)](#Line+distanceToVector) ⇒ <code>Number</code>
         * [.equals(other)](#Line+equals) ⇒ <code>Boolean</code>
     * _static_
@@ -4413,6 +4426,18 @@ Check if this circle contains a Vector2.
 | --- | --- | --- |
 | p | [<code>Vector2</code>](#Vector2) | Point to check. |
 | threshold | <code>Number</code> | Distance between point and line to consider as intersecting. Default is 0.5, meaning it will treat point and line as round integers (sort-of). |
+
+<a name="Line+collideLine"></a>
+
+### line.collideLine(other) ⇒ <code>Boolean</code>
+Check if this line collides with another line.
+
+**Kind**: instance method of [<code>Line</code>](#Line)  
+**Returns**: <code>Boolean</code> - True if lines collide, false otherwise.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| other | [<code>Line</code>](#Line) | Other line to test collision with. |
 
 <a name="Line+distanceToVector"></a>
 
@@ -4588,6 +4613,7 @@ Implement a simple 2d Rectangle.
         * [.string()](#Rectangle+string)
         * [.containsVector(p)](#Rectangle+containsVector) ⇒ <code>Boolean</code>
         * [.collideRect(other)](#Rectangle+collideRect) ⇒ <code>Boolean</code>
+        * [.collideLine(line)](#Rectangle+collideLine) ⇒ <code>Boolean</code>
         * [.collideCircle(circle)](#Rectangle+collideCircle) ⇒ <code>Boolean</code>
         * [.equals(other)](#Rectangle+equals)
     * _static_
@@ -4735,6 +4761,18 @@ Check if this rectangle collides with another rectangle.
 | Param | Type | Description |
 | --- | --- | --- |
 | other | [<code>Rectangle</code>](#Rectangle) | Rectangle to check collision with. |
+
+<a name="Rectangle+collideLine"></a>
+
+### rectangle.collideLine(line) ⇒ <code>Boolean</code>
+Check if this rectangle collides with a line.
+
+**Kind**: instance method of [<code>Rectangle</code>](#Rectangle)  
+**Returns**: <code>Boolean</code> - if rectangle collides with line.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| line | [<code>Line</code>](#Line) | Line to check collision with. |
 
 <a name="Rectangle+collideCircle"></a>
 

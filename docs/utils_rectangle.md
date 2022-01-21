@@ -30,6 +30,7 @@ Implement a simple 2d Rectangle.
         * [.string()](#Rectangle+string)
         * [.containsVector(p)](#Rectangle+containsVector) ⇒ <code>Boolean</code>
         * [.collideRect(other)](#Rectangle+collideRect) ⇒ <code>Boolean</code>
+        * [.collideLine(line)](#Rectangle+collideLine) ⇒ <code>Boolean</code>
         * [.collideCircle(circle)](#Rectangle+collideCircle) ⇒ <code>Boolean</code>
         * [.equals(other)](#Rectangle+equals)
     * _static_
@@ -177,6 +178,18 @@ Check if this rectangle collides with another rectangle.
 | Param | Type | Description |
 | --- | --- | --- |
 | other | [<code>Rectangle</code>](#Rectangle) | Rectangle to check collision with. |
+
+<a name="Rectangle+collideLine"></a>
+
+### rectangle.collideLine(line) ⇒ <code>Boolean</code>
+Check if this rectangle collides with a line.
+
+**Kind**: instance method of [<code>Rectangle</code>](#Rectangle)  
+**Returns**: <code>Boolean</code> - if rectangle collides with line.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| line | <code>Line</code> | Line to check collision with. |
 
 <a name="Rectangle+collideCircle"></a>
 

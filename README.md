@@ -1539,6 +1539,7 @@ List of changes in released versions.
 - Improved all util objects `equals` methods to be safer.
 - Added `Line` class.
 - Added `Lines` collision shape class.
+- Added `iterateShapes` to collision world.
 
 # License
 

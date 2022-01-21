@@ -16,6 +16,7 @@ Implement a simple 2d Line.
     * _instance_
         * [.clone()](#Line+clone) ⇒ [<code>Line</code>](#Line)
         * [.containsVector(p, threshold)](#Line+containsVector) ⇒ <code>Boolean</code>
+        * [.collideLine(other)](#Line+collideLine) ⇒ <code>Boolean</code>
         * [.distanceToVector(v)](#Line+distanceToVector) ⇒ <code>Number</code>
         * [.equals(other)](#Line+equals) ⇒ <code>Boolean</code>
     * _static_
@@ -51,6 +52,18 @@ Check if this circle contains a Vector2.
 | --- | --- | --- |
 | p | <code>Vector2</code> | Point to check. |
 | threshold | <code>Number</code> | Distance between point and line to consider as intersecting. Default is 0.5, meaning it will treat point and line as round integers (sort-of). |
+
+<a name="Line+collideLine"></a>
+
+### line.collideLine(other) ⇒ <code>Boolean</code>
+Check if this line collides with another line.
+
+**Kind**: instance method of [<code>Line</code>](#Line)  
+**Returns**: <code>Boolean</code> - True if lines collide, false otherwise.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| other | [<code>Line</code>](#Line) | Other line to test collision with. |
 
 <a name="Line+distanceToVector"></a>
 
