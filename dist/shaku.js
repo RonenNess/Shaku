@@ -8261,6 +8261,7 @@ module.exports = Animator;
  * 
  */
  'use strict';
+const MathHelper = require('./math_helper');
 const Vector2 = require('./vector2');
 
 
@@ -8306,30 +8307,28 @@ class Circle
      */
     equals(other)
     {
-        return other && this.center.equals(other.center) && this.radius == other.radius;
+        return (other === this) || 
+                (other && (other.constructor === this.constructor) && this.center.equals(other.center) && this.radius == other.radius);
     }
 
     /**
      * Lerp between two circle.
-     * @param {Vector2} p1 First circle.
-     * @param {Vector2} p2 Second circle.
+     * @param {Circle} p1 First circle.
+     * @param {Circle} p2 Second circle.
      * @param {Number} a Lerp factor (0.0 - 1.0).
      * @returns {Circle} result circle.
      */
-     static lerp(p1, p2, a)
-     {
-         function lerpScalar(start, end, a)
-         {
-             return ((1-a) * start) + (a * end);
-         }
-         return new Circle(Vector2.lerp(p1.center, p2.center, a), lerpScalar(p1.radius, p2.radius, a));
-     }
+    static lerp(p1, p2, a)
+    {
+        let lerpScalar = MathHelper.lerp;
+        return new Circle(Vector2.lerp(p1.center, p2.center, a), lerpScalar(p1.radius, p2.radius, a));
+    }
 }
 
 
 // export the circle class
 module.exports = Circle;
-},{"./vector2":53}],47:[function(require,module,exports){
+},{"./math_helper":50,"./vector2":53}],47:[function(require,module,exports){
 /**
  * Define a color object.
  * 
@@ -8343,6 +8342,8 @@ module.exports = Circle;
  * 
  */
 'use strict';
+
+const MathHelper = require("./math_helper");
 
 
 /**
@@ -8637,28 +8638,26 @@ class Color
      */
     equals(other)
     {
-        return other && this._r == other._r && this._g == other._g && this._b == other._b && this._a == other._a;
+        return (this === other) ||
+                (other && (other.constructor === this.constructor) && this._r == other._r && this._g == other._g && this._b == other._b && this._a == other._a);
     }
 
     /**
      * Lerp between two colors.
-     * @param {Vector2} p1 First color.
-     * @param {Vector2} p2 Second color.
+     * @param {Color} p1 First color.
+     * @param {Color} p2 Second color.
      * @param {Number} a Lerp factor (0.0 - 1.0).
      * @returns {Color} result color.
      */
-     static lerp(p1, p2, a)
-     {
-         function lerpScalar(start, end, a)
-         {
-             return ((1-a) * start) + (a * end);
-         }
-         return new Color(  lerpScalar(p1.r, p2.r, a), 
-                            lerpScalar(p1.g, p2.g, a), 
-                            lerpScalar(p1.b, p2.b, a), 
-                            lerpScalar(p1.a, p2.a, a)
-                        );
-     }
+    static lerp(p1, p2, a)
+    {
+    let lerpScalar = MathHelper.lerp;
+        return new Color(  lerpScalar(p1.r, p2.r, a), 
+                        lerpScalar(p1.g, p2.g, a), 
+                        lerpScalar(p1.b, p2.b, a), 
+                        lerpScalar(p1.a, p2.a, a)
+                    );
+    }
 }
 
 // table to convert common color names to hex
@@ -8749,7 +8748,7 @@ function hexToColor(hex)
 
 // export Color object
 module.exports = Color;
-},{}],48:[function(require,module,exports){
+},{"./math_helper":50}],48:[function(require,module,exports){
 /**
  * A utility to hold gametime.
  * 
@@ -8926,7 +8925,6 @@ class MathHelper
         return radians * _toDegreesFactor;
     }
 
-
     /**
     * Find shortest distance between two radians.
     * @param {Number} a1 First radian.
@@ -9010,6 +9008,7 @@ module.exports = MathHelper;
  'use strict';
 
 const Circle = require('./circle');
+const MathHelper = require('./math_helper');
 const Vector2 = require('./vector2');
 
 
@@ -9270,28 +9269,26 @@ class Rectangle
      */
     equals(other)
     {
-        return other && this.x == other.x && this.y == other.y && this.width == other.width && this.height == other.height;
+        return (this === other) || 
+                (other && (other.constructor === this.constructor) && this.x == other.x && this.y == other.y && this.width == other.width && this.height == other.height);
     }
-    
+
     /**
      * Lerp between two rectangles.
-     * @param {Vector2} p1 First rectangles.
-     * @param {Vector2} p2 Second rectangles.
+     * @param {Rectangle} p1 First rectangles.
+     * @param {Rectangle} p2 Second rectangles.
      * @param {Number} a Lerp factor (0.0 - 1.0).
      * @returns {Rectangle} result rectangle.
      */
-     static lerp(p1, p2, a)
-     {
-         function lerpScalar(start, end, a)
-         {
-             return ((1-a) * start) + (a * end);
-         }
-         return new Rectangle(  lerpScalar(p1.x, p2.x, a), 
-                                lerpScalar(p1.y, p2.y, a), 
-                                lerpScalar(p1.width, p2.width, a), 
-                                lerpScalar(p1.height, p2.height, a)
-                            );
-     }
+    static lerp(p1, p2, a)
+    {
+        let lerpScalar = MathHelper.lerp;
+        return new Rectangle(  lerpScalar(p1.x, p2.x, a), 
+                            lerpScalar(p1.y, p2.y, a), 
+                            lerpScalar(p1.width, p2.width, a), 
+                            lerpScalar(p1.height, p2.height, a)
+                        );
+    }
 }
 
 /**
@@ -9341,7 +9338,7 @@ function pointLineDistance(p1, l1, l2) {
 
 // export the rectangle class
 module.exports = Rectangle;
-},{"./circle":46,"./vector2":53}],52:[function(require,module,exports){
+},{"./circle":46,"./math_helper":50,"./vector2":53}],52:[function(require,module,exports){
 /**
  * Implement a seeded random generator.
  * 
@@ -9422,6 +9419,8 @@ module.exports = SeededRandom;
  * 
  */
 'use strict';
+
+const MathHelper = require("./math_helper");
 
 /**
  * A simple Vector object for 2d positions.
@@ -9687,7 +9686,7 @@ class Vector2
      */
     equals(other)
     {
-        return ((this === other) || (this.x === other.x && this.y === other.y));
+        return ((this === other) || ((other.constructor === this.constructor) && this.x === other.x && this.y === other.y));
     }
     
     /**
@@ -9841,10 +9840,7 @@ class Vector2
      */
     static lerp(p1, p2, a)
     {
-        function lerpScalar(start, end, a)
-        {
-            return ((1-a) * start) + (a * end);
-        }
+        let lerpScalar = MathHelper.lerp;
         return new Vector2(lerpScalar(p1.x, p2.x, a), lerpScalar(p1.y, p2.y, a));
     }
 
@@ -9931,5 +9927,5 @@ class Vector2
 
 // export vector object
 module.exports = Vector2;
-},{}]},{},[34])(34)
+},{"./math_helper":50}]},{},[34])(34)
 });

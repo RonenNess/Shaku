@@ -1256,6 +1256,11 @@ For more info check out the [API docs](docs/utils_rectangle.md).
 Represent a 2d circle. 
 For more info check out the [API docs](docs/utils_circle.md).
 
+### Line
+
+Represent a 2d line. 
+For more info check out the [API docs](docs/utils_line.md).
+
 ### MathHelper
 
 Contains useful math-related utilities.
@@ -1530,6 +1535,8 @@ List of changes in released versions.
 
 - Added `MathHelper` class.
 - Added `SeededRandom` class.
+- Improved all util objects `equals` methods to be safer.
+- Added `Line` class.
 
 # License
 

@@ -223,7 +223,7 @@ Lerp between two rectangles.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| p1 | <code>Vector2</code> | First rectangles. |
-| p2 | <code>Vector2</code> | Second rectangles. |
+| p1 | [<code>Rectangle</code>](#Rectangle) | First rectangles. |
+| p2 | [<code>Rectangle</code>](#Rectangle) | Second rectangles. |
 | a | <code>Number</code> | Lerp factor (0.0 - 1.0). |
 

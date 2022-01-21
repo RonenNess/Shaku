@@ -72,7 +72,7 @@ Lerp between two circle.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| p1 | <code>Vector2</code> | First circle. |
-| p2 | <code>Vector2</code> | Second circle. |
+| p1 | [<code>Circle</code>](#Circle) | First circle. |
+| p2 | [<code>Circle</code>](#Circle) | Second circle. |
 | a | <code>Number</code> | Lerp factor (0.0 - 1.0). |
 

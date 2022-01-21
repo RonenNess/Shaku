@@ -313,8 +313,8 @@ Lerp between two colors.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| p1 | <code>Vector2</code> | First color. |
-| p2 | <code>Vector2</code> | Second color. |
+| p1 | [<code>Color</code>](#Color) | First color. |
+| p2 | [<code>Color</code>](#Color) | Second color. |
 | a | <code>Number</code> | Lerp factor (0.0 - 1.0). |
 
 <a name="hexToColor"></a>

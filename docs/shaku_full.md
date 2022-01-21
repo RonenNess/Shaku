@@ -3932,8 +3932,8 @@ Lerp between two circle.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| p1 | [<code>Vector2</code>](#Vector2) | First circle. |
-| p2 | [<code>Vector2</code>](#Vector2) | Second circle. |
+| p1 | [<code>Circle</code>](#Circle) | First circle. |
+| p2 | [<code>Circle</code>](#Circle) | Second circle. |
 | a | <code>Number</code> | Lerp factor (0.0 - 1.0). |
 
 <a name="Color"></a>
@@ -4228,8 +4228,8 @@ Lerp between two colors.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| p1 | [<code>Vector2</code>](#Vector2) | First color. |
-| p2 | [<code>Vector2</code>](#Vector2) | Second color. |
+| p1 | [<code>Color</code>](#Color) | First color. |
+| p2 | [<code>Color</code>](#Color) | Second color. |
 | a | <code>Number</code> | Lerp factor (0.0 - 1.0). |
 
 <a name="GameTime"></a>
@@ -4609,8 +4609,8 @@ Lerp between two rectangles.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| p1 | [<code>Vector2</code>](#Vector2) | First rectangles. |
-| p2 | [<code>Vector2</code>](#Vector2) | Second rectangles. |
+| p1 | [<code>Rectangle</code>](#Rectangle) | First rectangles. |
+| p2 | [<code>Rectangle</code>](#Rectangle) | Second rectangles. |
 | a | <code>Number</code> | Lerp factor (0.0 - 1.0). |
 
 <a name="SeededRandom"></a>
