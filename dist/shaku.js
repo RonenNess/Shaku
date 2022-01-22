@@ -1967,7 +1967,7 @@ class CollisionWorld
         }
 
         // remove shape
-        this._updateShape.delete(shape);
+        this._shapesToUpdate.delete(shape);
         shape._setParent(null);
 
         // do general updates
@@ -2998,6 +2998,16 @@ class CollisionShape
     getCenter()
     {
         throw new Error("Not Implemented!");
+    }
+
+    /**
+     * Remove self from parent world object.
+     */
+    remove()
+    {
+        if (this._world) {
+            this._world.removeShape(this);
+        }
     }
 
     /**
@@ -7909,7 +7919,7 @@ let _totalFrameTimes = 0;
 
 
 // current version
-const version = "1.3.2";
+const version = "1.3.3";
 
 /**
  * Shaku's main object.
@@ -9958,7 +9968,7 @@ class Vector2
      */
     normalized()
     {
-        if (this.x == 0 && this.y == 0) { return Vector2.zero(); }
+        if (this.x == 0 && this.y == 0) { return Vector2.zero; }
         let mag = this.length;
         return new Vector2(this.x / mag, this.y / mag);
     }

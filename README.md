@@ -1544,6 +1544,9 @@ List of changes in released versions.
 ## 1.3.3
 
 - Adjustments to allow using (parts of) Shaku in nodejs.
+- Fixed typo bug when normalizing vector of 0,0.
+- Added `remove()` to collision shape.
+- Fixed bug in `removeShape()`.
 
 # License
 
