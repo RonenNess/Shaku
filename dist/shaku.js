@@ -7881,15 +7881,17 @@ module.exports = SoundMixer;
  * 
  */
 'use strict';
+const isBrowser = typeof window !== 'undefined';
 const IManager = require("./manager");
 const logger = require('./logger');
-const sfx = require('./sfx');
-const gfx = require('./gfx');
-const input = require('./input');
+const sfx = isBrowser ? require('./sfx') : null;
+const gfx = isBrowser ? require('./gfx') : null;
+const input = isBrowser ? require('./input') : null;
 const assets = require('./assets');
 const collision = require('./collision');
 const utils = require('./utils');
 const GameTime = require("./utils/game_time");
+const _logger = logger.getLogger('shaku');
 
 // manager state and gametime
 let _usedManagers = null;
@@ -7940,14 +7942,15 @@ class Shaku
     {
         return new Promise(async (resolve, reject) => {
 
-            // sanity
+            // sanity & log
             if (_usedManagers) { throw new Error("Already initialized!"); }
+            _logger.info(`Initialize Shaku v${version}.`);
             
             // reset game start time
             GameTime.resetGameStartTime();
 
             // setup used managers
-            _usedManagers = managers || [assets, sfx, gfx, input, collision];
+            _usedManagers = managers || (isBrowser ? [assets, sfx, gfx, input, collision] : [assets, collision]);
 
             // init all managers
             for (let i = 0; i < _usedManagers.length; ++i) {

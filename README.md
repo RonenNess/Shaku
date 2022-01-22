@@ -1541,6 +1541,10 @@ List of changes in released versions.
 - Added `Lines` collision shape class.
 - Added `iterateShapes` to collision world.
 
+## 1.3.3
+
+- Adjustments to allow using (parts of) Shaku in nodejs.
+
 # License
 
 *Shaku* is licensed under the permissive MIT license, so you can use it for any purpose (including commercially) and it should be compatible with most common licenses.
