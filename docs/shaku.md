@@ -26,6 +26,7 @@ This object wraps the entire lib namespace, and this is what you use to access a
     * [.getAverageFrameTime()](#Shaku+getAverageFrameTime) ⇒ <code>Number</code>
     * [.requestAnimationFrame(callback)](#Shaku+requestAnimationFrame) ⇒ <code>Number</code>
     * [.cancelAnimationFrame(id)](#Shaku+cancelAnimationFrame)
+    * [.setLogger(loggerHandler)](#Shaku+setLogger)
 
 <a name="new_Shaku_new"></a>
 
@@ -133,4 +134,15 @@ Cancel animation frame with fallbacks.
 | Param | Type | Description |
 | --- | --- | --- |
 | id | <code>Number</code> | Request handle. |
+
+<a name="Shaku+setLogger"></a>
+
+### shaku.setLogger(loggerHandler)
+Set the logger writer class (will replace the default console output).
+
+**Kind**: instance method of [<code>Shaku</code>](#Shaku)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| loggerHandler | <code>\*</code> | New logger handler (must implement trace, debug, info, warn, error methods). |
 

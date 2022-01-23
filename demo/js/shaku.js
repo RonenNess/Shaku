@@ -439,7 +439,7 @@ class Assets extends IManager
     {
         // make sure we have valid size
         if (!width || !height) {
-            return reject("Missing or invalid size!");
+            throw new Error("Missing or invalid size!");
         }
 
         // create asset and return promise
@@ -3438,6 +3438,20 @@ class Effect
                     }
                 })(this, uniform, uniformLocation, uniformData.type);
             }
+            // build setter method for textures
+            else if (uniformData.type === UniformTypes.Texture) {
+                (function(_this, name, location, method) {
+                    _this.uniforms[name] = (texture, index) => {
+                        index = index || 0;
+                        const glTexture = texture.texture || texture;
+                        const textureCode = _this._gl['TEXTURE' + (index || 0)];
+                        _this._gl.enable(textureCode);
+                        _this._gl.activeTexture(textureCode);
+                        _this._gl.bindTexture(_this._gl.TEXTURE_2D, glTexture);
+                        _this._gl.uniform1i(location, (index || 0));
+                    }
+                })(this, uniform, uniformLocation, uniformData.type);
+            }
             // build setter method for other types
             else {
                 (function(_this, name, location, method) {
@@ -3537,6 +3551,16 @@ class Effect
     {
         // use effect program
         this._gl.useProgram(this._program);
+
+        // disable all textures by default (they are enabled when set)
+        this._gl.disable(this._gl.TEXTURE0);
+        this._gl.disable(this._gl.TEXTURE1);
+        this._gl.disable(this._gl.TEXTURE2);
+        this._gl.disable(this._gl.TEXTURE3);
+        this._gl.disable(this._gl.TEXTURE4);
+        this._gl.disable(this._gl.TEXTURE5);
+        this._gl.disable(this._gl.TEXTURE6);
+        this._gl.disable(this._gl.TEXTURE7);
 
         // enable / disable some features
         if (this.enableDepthTest) { this._gl.enable(gl.DEPTH_TEST); } else { this._gl.disable(this._gl.DEPTH_TEST); }
@@ -3658,7 +3682,7 @@ class Effect
             let glTexture = texture.texture || texture;
             this._gl.activeTexture(this._gl.TEXTURE0);
             this._gl.bindTexture(this._gl.TEXTURE_2D, glTexture);
-            this.uniforms[uniform](glTexture);
+            this.uniforms[uniform](glTexture, 0);
             return true;
         }
         return false;
@@ -3808,7 +3832,7 @@ function compileShader(gl, code, type)
  */
 const UniformTypes = 
 {
-    Texture: 'uniform1i',
+    Texture: 'texture',
     Matrix: 'uniformMatrix4fv',
     Color: 'uniform4fv',
 
@@ -4159,13 +4183,17 @@ class Gfx extends IManager
      * Shaku.gfx.setRenderTarget(null);
      * Shaku.gfx.draw(renderTarget, new Shaku.utils.Vector2(screenX / 2, screenY / 2), new Shaku.utils.Vector2(screenX, -screenY));
      * @param {TextureAsset} texture Render target texture to set as render target, or null to reset and render back on canvas.
+     * @param {Boolean} keepCamera If true, will keep current camera settings. If false (default) will reset camera.
      */
-    setRenderTarget(texture)
+    setRenderTarget(texture, keepCamera)
     {
         // if texture is null, remove any render target
         if (texture === null) {
             this._renderTarget = null;
             this._gl.bindFramebuffer(this._gl.FRAMEBUFFER, null);
+            if (!keepCamera) {
+                this.resetCamera();
+            }
             return;
         }
 
@@ -4177,6 +4205,11 @@ class Gfx extends IManager
         this._gl.framebufferTexture2D(
         this._gl.FRAMEBUFFER, attachmentPoint, this._gl.TEXTURE_2D, texture.texture, 0);
         this._renderTarget = texture;
+
+        // reset camera
+        if (!keepCamera) {
+            this.resetCamera();
+        }
     }
 
     /**
@@ -4234,7 +4267,7 @@ class Gfx extends IManager
     resetCamera()
     {
         this._camera = this.createCamera();
-        let size = this.getCanvasSize();
+        let size = this.getRenderingSize();
         this._camera.orthographic(new Rectangle(0, 0, size.x, size.y));
         this.applyCamera(this._camera);
     }
@@ -7919,7 +7952,7 @@ let _totalFrameTimes = 0;
 
 
 // current version
-const version = "1.3.3";
+const version = "1.4.0";
 
 /**
  * Shaku's main object.
@@ -7948,7 +7981,7 @@ class Shaku
      * @param {Array<IManager>} managers Array with list of managers to use or null to use all.
      * @returns {Promise} promise to resolve when finish initialization.
      */
-     async init(managers)
+    async init(managers)
     {
         return new Promise(async (resolve, reject) => {
 
@@ -8123,6 +8156,15 @@ class Shaku
         if (window.cancelAnimationFrame) return window.cancelAnimationFrame(id);
         else if (window.mozCancelAnimationFrame) return window.mozCancelAnimationFrame(id);
         else clearTimeout(id);
+    }
+
+    /**
+     * Set the logger writer class (will replace the default console output).
+     * @param {*} loggerHandler New logger handler (must implement trace, debug, info, warn, error methods).
+     */
+    setLogger(loggerHandler)
+    {
+        logger.setDrivers(loggerHandler);
     }
 };
 
@@ -9303,6 +9345,19 @@ class MathHelper
     }
 
     /**
+    * Find shortest distance between two radians, with sign (ie distance can be negative).
+    * @param {Number} a1 First radian.
+    * @param {Number} a2 Second radian.
+    * @returns {Number} Shortest distance between radians.
+    */
+    static radiansDistanceSigned(a1, a2)
+    {
+        var max = Math.PI * 2;
+        var da = (a2 - a1) % max;
+        return 2 * da % max - da;
+    }
+
+    /**
     * Find shortest distance between two radians.
     * @param {Number} a1 First radian.
     * @param {Number} a2 Second radian.
@@ -9310,9 +9365,7 @@ class MathHelper
     */
     static radiansDistance(a1, a2)
     {
-        var max = Math.PI * 2;
-        var da = (a2 - a1) % max;
-        return 2 * da % max - da;
+        return Math.abs(this.radiansDistanceSigned(a1, a2));
     }
 
     /**
@@ -9325,7 +9378,7 @@ class MathHelper
      */
     static lerpRadians(a1, a2, alpha)
     {
-        return a1 + this.radiansDistance(a1, a2) * alpha;
+        return a1 + this.radiansDistanceSigned(a1, a2) * alpha;
     }
 
     /**

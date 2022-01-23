@@ -26,6 +26,7 @@
   - [Miscellaneous](#miscellaneous)
 - [Advanced Topics](#advanced-topics)
   - [Batching](#batching)
+  - [Shaku on NodeJS](#shaku-on-nodejs)
 - [Build Shaku](#build-shaku)
 - [License](#license)
 
@@ -1465,6 +1466,49 @@ Note that if you really need instances you can probably implement it with a cust
 A demo project that illustrate performance with batching can be found [here](https://ronenness.github.io/Shaku/demo/gfx_performance.html).
 
 
+## Shaku on NodeJS
+
+*Shaku* is a client-side library, designed to run in browsers. However, it has many useful utilities that you might want to use on server side as well, especially if you want to share code between client and server (for example vectors, collision, math helper..).
+
+To use *Shaku* on *NodeJS* you can require it just like you would require any node module. It will work just the same, only without the `gfx`, `sfx` and `input` managers, that will return null instead.
+
+### Connecting to server logger
+
+You might want to connect *Shaku* to your own server-side logger instead of console. To do so, you can create custom logger drivers and set them before initializing *Shaku*. The example below takes an existing `winston` logger and set it as the *Shaku* logger:
+
+```js
+// set shaku logs
+// logger == winston logger instance
+const shakuLogs = logger.child(...);  // <-- add whatever custom params you need as the ...
+class ShakuLogDrivers
+{
+    trace(header, msg)
+    {
+        shakuLogs.debug(msg);
+    }
+    debug(header, msg)
+    {
+        shakuLogs.debug(msg);
+    }
+    info(header, msg)
+    {
+        shakuLogs.info(msg);
+    }
+    warn(header, msg)
+    {
+        shakuLogs.warn(msg);
+    }
+    error(header, msg)
+    {
+        shakuLogs.error(msg);
+    }
+}
+Shaku.setLogger(new ShakuLogDrivers());
+```
+
+Alternatively, if you don't want logs from *Shaku* you can just silent it with `Shaku.silent()`.
+
+
 # Build Shaku
 
 To build shaku after making changes, run `build.bat` from its containing folder. This will generate `Shaku.js` and `Shaku.min.js` under `dist`.
@@ -1541,12 +1585,17 @@ List of changes in released versions.
 - Added `Lines` collision shape class.
 - Added `iterateShapes` to collision world.
 
-## 1.3.3
+## 1.4.0
 
 - Adjustments to allow using (parts of) Shaku in nodejs.
 - Fixed typo bug when normalizing vector of 0,0.
 - Added `remove()` to collision shape.
 - Fixed bug in `removeShape()`.
+- Added `radiansDistanceSigned()` and changed `radiansDistance()` to not be signed (breaking change).
+- Added `setLogger()` method to replace the log handler.
+- Fixed sanity checks in creating render target.
+- Fixed reset camera with render target + added auto camera reset when setting render target (breaking change).
+- Added support in multiple textures in effects.
 
 # License
 

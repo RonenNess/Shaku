@@ -16,6 +16,7 @@ Implement some math utilities functions.
     * [.lerp(start, end, amount)](#MathHelper.lerp) ⇒ <code>Number</code>
     * [.toRadians(degrees)](#MathHelper.toRadians) ⇒ <code>Number</code>
     * [.toDegrees(radians)](#MathHelper.toDegrees) ⇒ <code>Number</code>
+    * [.radiansDistanceSigned(a1, a2)](#MathHelper.radiansDistanceSigned) ⇒ <code>Number</code>
     * [.radiansDistance(a1, a2)](#MathHelper.radiansDistance) ⇒ <code>Number</code>
     * [.lerpRadians(a1, a2, alpha)](#MathHelper.lerpRadians) ⇒ <code>Number</code>
     * [.lerpDegrees(a1, a2, alpha)](#MathHelper.lerpDegrees) ⇒ <code>Number</code>
@@ -64,6 +65,19 @@ Convert radians to degrees.
 | Param | Type | Description |
 | --- | --- | --- |
 | radians | <code>Number</code> | Radians value to convert to degrees. |
+
+<a name="MathHelper.radiansDistanceSigned"></a>
+
+### MathHelper.radiansDistanceSigned(a1, a2) ⇒ <code>Number</code>
+Find shortest distance between two radians, with sign (ie distance can be negative).
+
+**Kind**: static method of [<code>MathHelper</code>](#MathHelper)  
+**Returns**: <code>Number</code> - Shortest distance between radians.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| a1 | <code>Number</code> | First radian. |
+| a2 | <code>Number</code> | Second radian. |
 
 <a name="MathHelper.radiansDistance"></a>
 

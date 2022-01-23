@@ -32,7 +32,7 @@ To access the Graphics manager you use `Shaku.gfx`.
     * [.createCamera(withViewport)](#Gfx+createCamera) ⇒ <code>Camera</code>
     * [.createEffect(type)](#Gfx+createEffect) ⇒ <code>Effect</code>
     * [.maximizeCanvasSize(limitToParent)](#Gfx+maximizeCanvasSize)
-    * [.setRenderTarget(texture)](#Gfx+setRenderTarget)
+    * [.setRenderTarget(texture, keepCamera)](#Gfx+setRenderTarget)
     * [.useEffect(effect)](#Gfx+useEffect)
     * [.setResolution(width, height, updateCanvasStyle)](#Gfx+setResolution)
     * [.resetCamera()](#Gfx+resetCamera)
@@ -246,7 +246,7 @@ If the canvas is directly under document body, it will take the max size of the 
 
 <a name="Gfx+setRenderTarget"></a>
 
-### gfx.setRenderTarget(texture)
+### gfx.setRenderTarget(texture, keepCamera)
 Set a render target (texture) to render on.
 
 **Kind**: instance method of [<code>Gfx</code>](#Gfx)  
@@ -254,6 +254,7 @@ Set a render target (texture) to render on.
 | Param | Type | Description |
 | --- | --- | --- |
 | texture | <code>TextureAsset</code> | Render target texture to set as render target, or null to reset and render back on canvas. |
+| keepCamera | <code>Boolean</code> | If true, will keep current camera settings. If false (default) will reset camera. |
 
 **Example**  
 ```js

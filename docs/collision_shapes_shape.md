@@ -18,6 +18,7 @@ Collision shape base class.
     * [.setDebugColor(color)](#CollisionShape+setDebugColor)
     * [.debugDraw(opacity)](#CollisionShape+debugDraw)
     * [.getCenter()](#CollisionShape+getCenter) ⇒ <code>Vector2</code>
+    * [.remove()](#CollisionShape+remove)
 
 <a name="new_CollisionShape_new"></a>
 
@@ -65,3 +66,9 @@ Get shape center position.
 
 **Kind**: instance method of [<code>CollisionShape</code>](#CollisionShape)  
 **Returns**: <code>Vector2</code> - Center position.  
+<a name="CollisionShape+remove"></a>
+
+### collisionShape.remove()
+Remove self from parent world object.
+
+**Kind**: instance method of [<code>CollisionShape</code>](#CollisionShape)  

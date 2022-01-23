@@ -1459,6 +1459,7 @@ Collision shape base class.
     * [.setDebugColor(color)](#CollisionShape+setDebugColor)
     * [.debugDraw(opacity)](#CollisionShape+debugDraw)
     * [.getCenter()](#CollisionShape+getCenter) ⇒ [<code>Vector2</code>](#Vector2)
+    * [.remove()](#CollisionShape+remove)
 
 <a name="new_CollisionShape_new"></a>
 
@@ -1506,6 +1507,12 @@ Get shape center position.
 
 **Kind**: instance method of [<code>CollisionShape</code>](#CollisionShape)  
 **Returns**: [<code>Vector2</code>](#Vector2) - Center position.  
+<a name="CollisionShape+remove"></a>
+
+### collisionShape.remove()
+Remove self from parent world object.
+
+**Kind**: instance method of [<code>CollisionShape</code>](#CollisionShape)  
 <a name="Camera"></a>
 
 ## Camera
@@ -1871,7 +1878,7 @@ To access the Graphics manager you use `Shaku.gfx`.
     * [.createCamera(withViewport)](#Gfx+createCamera) ⇒ [<code>Camera</code>](#Camera)
     * [.createEffect(type)](#Gfx+createEffect) ⇒ [<code>Effect</code>](#Effect)
     * [.maximizeCanvasSize(limitToParent)](#Gfx+maximizeCanvasSize)
-    * [.setRenderTarget(texture)](#Gfx+setRenderTarget)
+    * [.setRenderTarget(texture, keepCamera)](#Gfx+setRenderTarget)
     * [.useEffect(effect)](#Gfx+useEffect)
     * [.setResolution(width, height, updateCanvasStyle)](#Gfx+setResolution)
     * [.resetCamera()](#Gfx+resetCamera)
@@ -2085,7 +2092,7 @@ If the canvas is directly under document body, it will take the max size of the 
 
 <a name="Gfx+setRenderTarget"></a>
 
-### gfx.setRenderTarget(texture)
+### gfx.setRenderTarget(texture, keepCamera)
 Set a render target (texture) to render on.
 
 **Kind**: instance method of [<code>Gfx</code>](#Gfx)  
@@ -2093,6 +2100,7 @@ Set a render target (texture) to render on.
 | Param | Type | Description |
 | --- | --- | --- |
 | texture | [<code>TextureAsset</code>](#TextureAsset) | Render target texture to set as render target, or null to reset and render back on canvas. |
+| keepCamera | <code>Boolean</code> | If true, will keep current camera settings. If false (default) will reset camera. |
 
 **Example**  
 ```js
@@ -3700,6 +3708,7 @@ This object wraps the entire lib namespace, and this is what you use to access a
     * [.getAverageFrameTime()](#Shaku+getAverageFrameTime) ⇒ <code>Number</code>
     * [.requestAnimationFrame(callback)](#Shaku+requestAnimationFrame) ⇒ <code>Number</code>
     * [.cancelAnimationFrame(id)](#Shaku+cancelAnimationFrame)
+    * [.setLogger(loggerHandler)](#Shaku+setLogger)
 
 <a name="new_Shaku_new"></a>
 
@@ -3807,6 +3816,17 @@ Cancel animation frame with fallbacks.
 | Param | Type | Description |
 | --- | --- | --- |
 | id | <code>Number</code> | Request handle. |
+
+<a name="Shaku+setLogger"></a>
+
+### shaku.setLogger(loggerHandler)
+Set the logger writer class (will replace the default console output).
+
+**Kind**: instance method of [<code>Shaku</code>](#Shaku)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| loggerHandler | <code>\*</code> | New logger handler (must implement trace, debug, info, warn, error methods). |
 
 <a name="Animator"></a>
 
@@ -4488,6 +4508,7 @@ Implement some math utilities functions.
     * [.lerp(start, end, amount)](#MathHelper.lerp) ⇒ <code>Number</code>
     * [.toRadians(degrees)](#MathHelper.toRadians) ⇒ <code>Number</code>
     * [.toDegrees(radians)](#MathHelper.toDegrees) ⇒ <code>Number</code>
+    * [.radiansDistanceSigned(a1, a2)](#MathHelper.radiansDistanceSigned) ⇒ <code>Number</code>
     * [.radiansDistance(a1, a2)](#MathHelper.radiansDistance) ⇒ <code>Number</code>
     * [.lerpRadians(a1, a2, alpha)](#MathHelper.lerpRadians) ⇒ <code>Number</code>
     * [.lerpDegrees(a1, a2, alpha)](#MathHelper.lerpDegrees) ⇒ <code>Number</code>
@@ -4530,6 +4551,19 @@ Convert radians to degrees.
 | Param | Type | Description |
 | --- | --- | --- |
 | radians | <code>Number</code> | Radians value to convert to degrees. |
+
+<a name="MathHelper.radiansDistanceSigned"></a>
+
+### MathHelper.radiansDistanceSigned(a1, a2) ⇒ <code>Number</code>
+Find shortest distance between two radians, with sign (ie distance can be negative).
+
+**Kind**: static method of [<code>MathHelper</code>](#MathHelper)  
+**Returns**: <code>Number</code> - Shortest distance between radians.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| a1 | <code>Number</code> | First radian. |
+| a2 | <code>Number</code> | Second radian. |
 
 <a name="MathHelper.radiansDistance"></a>
 
