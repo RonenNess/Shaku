@@ -1598,6 +1598,10 @@ List of changes in released versions.
 - Added support in multiple textures in effects.
 - Fixed setting secondary textures filter and wrap modes.
 
+## 1.4.1
+
+- Removed accidental glDisable causing warnings in console.
+
 # License
 
 *Shaku* is licensed under the permissive MIT license, so you can use it for any purpose (including commercially) and it should be compatible with most common licenses.

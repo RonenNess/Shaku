@@ -3555,16 +3555,6 @@ class Effect
         // use effect program
         this._gl.useProgram(this._program);
 
-        // disable all textures by default (they are enabled when set)
-        this._gl.disable(this._gl.TEXTURE0);
-        this._gl.disable(this._gl.TEXTURE1);
-        this._gl.disable(this._gl.TEXTURE2);
-        this._gl.disable(this._gl.TEXTURE3);
-        this._gl.disable(this._gl.TEXTURE4);
-        this._gl.disable(this._gl.TEXTURE5);
-        this._gl.disable(this._gl.TEXTURE6);
-        this._gl.disable(this._gl.TEXTURE7);
-
         // enable / disable some features
         if (this.enableDepthTest) { this._gl.enable(gl.DEPTH_TEST); } else { this._gl.disable(this._gl.DEPTH_TEST); }
         if (this.enableFaceCulling) { this._gl.enable(gl.CULL_FACE); } else { this._gl.disable(this._gl.CULL_FACE); }
@@ -7983,7 +7973,7 @@ let _totalFrameTimes = 0;
 
 
 // current version
-const version = "1.4.0";
+const version = "1.4.1";
 
 /**
  * Shaku's main object.
