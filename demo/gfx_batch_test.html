@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Shaku</title>
+    <meta name="description" content="Shaku - a simple and easy-to-use javascript library for videogame programming.">
+    <meta name="author" content="Ronen Ness">
+    <link href="css/style.css" rel="stylesheet" type="text/css" media="all">
+  </head>
+  <body>
+    <div class="noselect">
+    <button class="view-code-btn" onclick="showSampleCode();">View Code</button> 
+    <h1 class="demo-title">Shaku Gfx Demo: Batching</h1>
+      <p>This demo test basic batching functionality.</p>
+
+      <div>
+        <input type="checkbox" id="sprite-batch" name="sprite-batch"
+               checked>
+        <label for="sprite-batch">Use Sprite Batch</label>
+      </div>
+      <p id="fps-data"></p>
+
+      <!-- include shaku -->
+      <script src="js/demos.js"></script>
+      <script src="js/shaku.js"></script>
+
+      <!-- demo code -->
+      <script>
+        async function runDemo()
+        {
+          // init shaku
+          await Shaku.init();
+
+          // screen size
+          let screenX = 1000;
+          let screenY = 800;
+
+          // add canvas to document
+          document.body.appendChild(Shaku.gfx.canvas);
+          Shaku.gfx.setResolution(screenX, screenY, true);
+
+          // load textures
+          let texture = await Shaku.assets.loadTexture('assets/skelly.png');
+
+          // create sprites group
+          let group = new Shaku.gfx.SpritesGroup();
+
+          // add test sprites
+          let index = 0;
+          for (let i = -1; i < 99; ++i)
+          {
+            for (let j = -1; j < 99; ++j)
+            {
+              let sprite = new Shaku.gfx.Sprite(texture);
+              sprite.position.set(j * 24, i * 32);
+              sprite.size.set(32, 48);
+              sprite._index = index++;
+              group.add(sprite);
+            }
+          }
+
+          // do a main loop step.
+          function step() 
+          {  
+            // start frame and clear screen
+            Shaku.startFrame();
+            Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
+
+            // draw sprites
+            let batching = document.getElementById('sprite-batch').checked;
+            Shaku.gfx.drawGroup(group, batching, true);
+
+            // animate stuff
+            group.forEach(sprite => {        
+              sprite.rotation = sprite._index / 10 + Shaku.gameTime.elapsed;
+            });
+
+            // end frame and request next frame
+            Shaku.endFrame();
+            Shaku.requestAnimationFrame(step);
+            
+            // update fps and data
+            document.getElementById('fps-data').innerHTML = "FPS: " + Shaku.getFpsCount() + "<br />Sprites: " + group.count + "<br />Avg Frame Time (ms): " + Shaku.getAverageFrameTime() + "<br />Delta Time (ms): " + (Shaku.gameTime.delta * 1000.0) + "<br />Draw Calls: " + Shaku.gfx.drawCallsCount;
+          }
+
+          // start main loop
+          step();
+        }
+
+        // start demo
+        runDemo();
+
+      </script>
+
+</div>
+
+<!-- code example part -->
+<div id="sample-code-modal" class="modal">
+  <div class="modal__overlay jsOverlay"></div>
+  <div class="modal__container">   
+
+<p class="noselect">The code below renders 100,000 sprites with batch rendering.</p>
+<pre><code class="language-js">// load textures
+let texture = await Shaku.assets.loadTexture('assets/skelly.png');
+
+// create sprites group
+let group = new Shaku.gfx.SpritesGroup();
+
+// add sprites
+for (let i = 0; i < 100; ++i) {
+  for (let j = 0; j < 100; ++j) {
+    let sprite = new Shaku.gfx.Sprite(texture);
+    sprite.position.set(i * 24, j * 32);
+    sprite.size.set(32, 48);
+    group.add(sprite);
+  }
+}
+
+// part below goes between startFrame() and endFrame()
+// -------------------------------------------------------
+
+// draw sprites with batching
+Shaku.gfx.drawGroup(group, true);</code></pre>
+
+  <button class="modal__close" onclick="closeModal('sample-code-modal')">&#10005;</button>
+</div>
+</div>
+
+<link href="prism/prism.css" rel="stylesheet" />
+<script src="prism/prism.js"></script>
+
+  </body>
+</html>

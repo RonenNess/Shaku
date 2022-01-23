@@ -4591,7 +4591,6 @@ class Gfx extends IManager
         }
         // draw without batching
         else {
-            if (cullOutOfScreen) { _logger.warn("'cullOutOfScreen' is only useable when using batch rendering!"); }
             let transform = group.getTransform();
             for (let i = 0; i < group._sprites.length; ++i) {
                 this.drawSprite(group._sprites[i], transform);
