@@ -1596,6 +1596,7 @@ List of changes in released versions.
 - Fixed sanity checks in creating render target.
 - Fixed reset camera with render target + added auto camera reset when setting render target (breaking change).
 - Added support in multiple textures in effects.
+- Fixed setting secondary textures filter and wrap modes.
 
 # License
 

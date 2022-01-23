@@ -3360,6 +3360,8 @@ module.exports = BasicEffect;
 const TextureAsset = require('../../assets/texture_asset.js');
 const Color = require('../../utils/color.js');
 const Rectangle = require('../../utils/rectangle.js');
+const TextureFilterModes = require('../texture_filter_modes');
+const TextureWrapModes = require('../texture_wrap_modes');
 const Matrix = require('../matrix.js');
 const _logger = require('../../logger.js').getLogger('gfx-effect');
 
@@ -3445,10 +3447,11 @@ class Effect
                         index = index || 0;
                         const glTexture = texture.texture || texture;
                         const textureCode = _this._gl['TEXTURE' + (index || 0)];
-                        _this._gl.enable(textureCode);
                         _this._gl.activeTexture(textureCode);
                         _this._gl.bindTexture(_this._gl.TEXTURE_2D, glTexture);
                         _this._gl.uniform1i(location, (index || 0));
+                        if (texture.filter) { _setTextureFilter(_this._gl, texture.filter); }
+                        if (texture.wrapMode) { _setTextureWrapMode(_this._gl, texture.wrapMode); }
                     }
                 })(this, uniform, uniformLocation, uniformData.type);
             }
@@ -3900,9 +3903,38 @@ Effect.AttributeBinds = {
 Object.freeze(Effect.AttributeBinds);
 
 
+/**
+ * Set texture mag and min filters.
+ * @private
+ * @param {TextureFilterModes} filter Texture filter to set.
+ */
+function _setTextureFilter(gl, filter)
+{
+    if (!TextureFilterModeslterModes._values.has(filter)) { throw new Error("Invalid texture filter mode! Please pick a value from 'TextureFilterModes'."); }
+    let glMode = gl[filter];
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, glMode);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, glMode);
+}
+
+/**
+ * Set texture wrap mode on X and Y axis.
+ * @private
+ * @param {WrapModes} wrapX Wrap mode on X axis.
+ * @param {WrapModes} wrapY Wrap mode on Y axis.
+ */
+ function _setTextureWrapMode(gl, wrapX, wrapY)
+{
+    if (wrapY === undefined) { wrapY = wrapX; }
+    if (!TextureWrapModes._values.has(wrapX)) { throw new Error("Invalid texture wrap mode! Please pick a value from 'WrapModes'."); }
+    if (!TextureWrapModes._values.has(wrapY)) { throw new Error("Invalid texture wrap mode! Please pick a value from 'WrapModes'."); }
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl[wrapX]);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl[wrapY]);
+}
+
+
 // export the effect class.
 module.exports = Effect;
-},{"../../assets/texture_asset.js":8,"../../logger.js":39,"../../utils/color.js":48,"../../utils/rectangle.js":53,"../matrix.js":27}],24:[function(require,module,exports){
+},{"../../assets/texture_asset.js":8,"../../logger.js":39,"../../utils/color.js":48,"../../utils/rectangle.js":53,"../matrix.js":27,"../texture_filter_modes":33,"../texture_wrap_modes":34}],24:[function(require,module,exports){
 /**
  * Include all built-in effects.
  * 

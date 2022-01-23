@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Shaku</title>
+    <meta name="description" content="Shaku - a simple and easy-to-use javascript library for videogame programming.">
+    <meta name="author" content="Ronen Ness">
+    <link href="css/style.css" rel="stylesheet" type="text/css" media="all">
+  </head>
+  <body>
+    <div class="noselect">
+    <button class="view-code-btn" onclick="showSampleCode();">View Code</button> 
+    <h1 class="demo-title">Shaku Gfx Demo: Custom Effects</h1>
+      <p>This demo illustrate how to create and use a custom effect.<br/>
+      Custom effect = shaders + setup code to use it. In this case we created a custom effect that animate colors based on elapsed time.</p>
+
+      <!-- include shaku -->
+      <script src="js/demos.js"></script>
+      <script src="js/shaku.js"></script>
+
+      <!-- demo code -->
+      <script>
+        async function runDemo()
+        {
+          // init shaku
+          await Shaku.init();
+          
+          // define our custom effect
+          class CustomEffect extends Shaku.gfx.BasicEffect
+          {
+            /**
+             * Override the fragment shader for our custom effect.
+             */
+            get fragmentCode()
+            {
+              const fragmentShader = `  
+                #ifdef GL_ES
+                    precision highp float;
+                #endif
+
+                uniform sampler2D texture;
+                uniform sampler2D overlayTexture;
+                uniform float elapsedTime;
+
+                varying vec2 v_texCoord;
+                varying vec4 v_color;
+
+                void main(void) {
+                    gl_FragColor = texture2D(texture, v_texCoord) * v_color;
+                    vec4 overlay = texture2D(overlayTexture, v_texCoord + vec2(0.0, elapsedTime));
+                    gl_FragColor.g *= overlay.r * 2.0;
+                    gl_FragColor.rgb *= gl_FragColor.a;
+                }
+                `; 
+                return fragmentShader;
+            }
+
+            /**
+             * Override the uniform types dictionary to add our custom uniform type.
+             */
+            get uniformTypes()
+            {
+              let ret = super.uniformTypes;
+              ret['elapsedTime'] = { type: Shaku.gfx.Effect.UniformTypes.Float };
+              ret['overlayTexture'] = { type: Shaku.gfx.Effect.UniformTypes.Texture };
+              return ret;
+            }
+          }
+
+          // create custom effect instance and set as active
+          let effect = Shaku.gfx.createEffect(CustomEffect);
+          Shaku.gfx.useEffect(effect);
+
+          // screen size
+          let screenX = 800;
+          let screenY = 600;
+
+          // add canvas to document
+          document.body.appendChild(Shaku.gfx.canvas);
+          Shaku.gfx.setResolution(screenX, screenY, true);
+
+          // load textures
+          let sprite = await Shaku.assets.loadTexture('assets/shaku.png');
+          let spriteOverlay = await Shaku.assets.loadTexture('assets/overlay.png');
+          spriteOverlay.wrapMode = Shaku.gfx.TextureWrapModes.Repeat;
+
+          // do a main loop step.
+          function step()
+          {
+            // start frame and clear screen
+            Shaku.startFrame();
+            Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
+
+            // update effect custom uniform
+            effect.uniforms.elapsedTime(Shaku.gameTime.elapsed * 0.1);
+            effect.uniforms.overlayTexture(spriteOverlay, 1);
+
+            // draw with custom effect
+            Shaku.gfx.draw(sprite, new Shaku.utils.Vector2(screenX / 2, screenY / 2), 400);
+
+            // end frame and request next frame
+            Shaku.endFrame();
+            Shaku.requestAnimationFrame(step);
+          }
+
+          // start main loop
+          step();
+        }
+
+        // start demo
+        runDemo();
+
+      </script>
+
+</div>
+
+<!-- code example part -->
+<div id="sample-code-modal" class="modal">
+  <div class="modal__overlay jsOverlay"></div>
+  <div class="modal__container">   
+
+<p class="noselect">The following is a minimal code example to show how to create and use a custom effects with multiple textures.</p>
+<pre><code class="language-js">// define our custom effect
+class CustomEffect extends Shaku.gfx.BasicEffect
+{
+  /**
+    * Override the fragment shader for our custom effect.
+    */
+  get fragmentCode()
+  {
+    const fragmentShader = `  
+      #ifdef GL_ES
+          precision highp float;
+      #endif
+
+      uniform sampler2D texture;
+      uniform sampler2D overlayTexture;
+      uniform float elapsedTime;
+
+      varying vec2 v_texCoord;
+      varying vec4 v_color;
+
+      void main(void) {
+          gl_FragColor = texture2D(texture, v_texCoord) * v_color;
+          vec4 overlay = texture2D(overlayTexture, v_texCoord + vec2(0.0, elapsedTime));
+          gl_FragColor.g *= overlay.r * 2.0;
+          gl_FragColor.rgb *= gl_FragColor.a;
+      }
+      `; 
+      return fragmentShader;
+  }
+
+// create custom effect instance and set as active
+let effect = Shaku.gfx.createEffect(CustomEffect);
+Shaku.gfx.useEffect(effect);
+
+// load texture to render with effect
+let spriteTexture = await Shaku.assets.loadTexture('assets/sprite.png');
+let spriteOverlay = await Shaku.assets.loadTexture('assets/overlay.png');
+spriteOverlay.wrapMode = Shaku.gfx.TextureWrapModes.Repeat;
+
+// part below goes between startFrame() and endFrame()
+// -------------------------------------------------------
+
+// update custom effect 'elapsedTime' uniform and secondary texture
+effect.uniforms.elapsedTime(Shaku.gameTime.elapsed);
+effect.uniforms.overlayTexture(spriteOverlay, 1);
+
+// draw texture with the effect
+Shaku.gfx.draw(spriteTexture, new Shaku.utils.Vector2(200, 200), 400);</code></pre>
+
+  <button class="modal__close" onclick="closeModal('sample-code-modal')">&#10005;</button>
+</div>
+</div>
+
+<link href="prism/prism.css" rel="stylesheet" />
+<script src="prism/prism.js"></script>
+
+  </body>
+</html>
