@@ -32,7 +32,7 @@
 
 # About
 
-*Shaku* is a pure JavaScript framework for web games development that emphasize **simplicity**, **flexability** and **freedom**.
+*Shaku* is a pure JavaScript framework for web games development that emphasize **simplicity**, **flexibility** and **freedom**.
 
 Let's take a sneak peek on gamedev with *Shaku*!
 
@@ -60,7 +60,7 @@ So, what does *simplicity*, *flexability* and *freedom* in *Shaku* actually mean
 *Shaku* is mostly made of straightforward methods and barely have any setup code or configuration.
 It's a lean and mean package with zero dependencies and only minimal necessary abstraction.
 
-### Flexability
+### flexibility
 
 *Shaku* is easy to extend and tweak. The code is well documented and many of the framework components can be replaced or modified.
 
