@@ -60,7 +60,7 @@ So, what does *simplicity*, *flexability* and *freedom* in *Shaku* actually mean
 *Shaku* is mostly made of straightforward methods and barely have any setup code or configuration.
 It's a lean and mean package with zero dependencies and only minimal necessary abstraction.
 
-### flexibility
+### Flexibility
 
 *Shaku* is easy to extend and tweak. The code is well documented and many of the framework components can be replaced or modified.
 
