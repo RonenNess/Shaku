@@ -1602,6 +1602,10 @@ List of changes in released versions.
 
 - Removed accidental glDisable causing warnings in console.
 
+## 1.4.2
+
+- Added `wrapDegrees()` to `MathHelper`.
+
 # License
 
 *Shaku* is licensed under the permissive MIT license, so you can use it for any purpose (including commercially) and it should be compatible with most common licenses.
