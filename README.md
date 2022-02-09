@@ -1605,6 +1605,7 @@ List of changes in released versions.
 ## 1.4.2
 
 - Added `wrapDegrees()` to `MathHelper`.
+- Added a way to change application name in logger.
 
 # License
 
