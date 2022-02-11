@@ -496,13 +496,20 @@ A camera object defines two key properties:
 
 By default, *Shaku* will use a camera with no offset, scale of 1,1, and viewport that covers the entire canvas.
 
-To use a custom camera, lets first create one:
+Easiest way to set camera's offset is with `setCameraOrthographic()`:
+
+```js
+let cameraOffset = Shaku.utils.Vector2.zero;
+Shaku.gfx.setCameraOrthographic(cameraOffset);
+```
+
+But you can also create a camera object and set it manually. Lets first create a camera:
 
 ```js
 let camera = Shaku.gfx.createCamera();
 ```
 
-Now lets set and apply the camera we just created:
+And now set it and apply to make it the active camera:
 
 ```js
 // set offset
@@ -518,6 +525,8 @@ And if you want to reset camera back to default, you can call the following meth
 ```js
 Shaku.gfx.resetCamera();
 ```
+
+
 
 For more details, check out the [Camera object API](docs/gfx_camera.md) docs.
 
@@ -1606,6 +1615,7 @@ List of changes in released versions.
 
 - Added `wrapDegrees()` to `MathHelper`.
 - Added a way to change application name in logger.
+- Added `setCameraOrthographic()` to make it easier to set cameras.
 
 # License
 
