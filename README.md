@@ -1616,6 +1616,7 @@ List of changes in released versions.
 - Added `wrapDegrees()` to `MathHelper`.
 - Added a way to change application name in logger.
 - Added `setCameraOrthographic()` to make it easier to set cameras.
+- Improved lerping on same values.
 
 # License
 
