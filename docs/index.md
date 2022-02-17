@@ -53,6 +53,7 @@ You can view the entire docs as a single file [here](shaku_full.md), or by topic
 * [Utils: Game Time](utils_game_time.md)
 * [Utils: Line](utils_line.md)
 * [Utils: Math Helper](utils_math_helper.md)
+* [Utils: Perlin](utils_perlin.md)
 * [Utils: Rectangle](utils_rectangle.md)
 * [Utils: Seeded Random](utils_seeded_random.md)
 * [Utils: Vector2](utils_vector2.md)

@@ -148,6 +148,11 @@ All color components are expected to be in 0.0 - 1.0 range (and not 0-255).</p>
 <dt><a href="#MathHelper">MathHelper</a></dt>
 <dd><p>Implement some math utilities functions.</p>
 </dd>
+<dt><a href="#Perlin">Perlin</a></dt>
+<dd><p>Generate 2d perlin noise.
+Based on code from noisejs by Stefan Gustavson.
+<a href="https://github.com/josephg/noisejs/blob/master/perlin.js">https://github.com/josephg/noisejs/blob/master/perlin.js</a></p>
+</dd>
 <dt><a href="#Rectangle">Rectangle</a></dt>
 <dd><p>Implement a simple 2d Rectangle.</p>
 </dd>
@@ -1876,6 +1881,7 @@ To access the Graphics manager you use `Shaku.gfx`.
     * [.setContextAttributes(flags)](#Gfx+setContextAttributes)
     * [.setCanvas(element)](#Gfx+setCanvas)
     * [.createCamera(withViewport)](#Gfx+createCamera) ⇒ [<code>Camera</code>](#Camera)
+    * [.setCameraOrthographic(offset)](#Gfx+setCameraOrthographic) ⇒ [<code>Camera</code>](#Camera)
     * [.createEffect(type)](#Gfx+createEffect) ⇒ [<code>Effect</code>](#Effect)
     * [.maximizeCanvasSize(limitToParent)](#Gfx+maximizeCanvasSize)
     * [.setRenderTarget(texture, keepCamera)](#Gfx+setRenderTarget)
@@ -1898,6 +1904,8 @@ To access the Graphics manager you use `Shaku.gfx`.
     * [.drawLine(startPoint, endPoint, color, blendMode)](#Gfx+drawLine)
     * [.drawLinesStrip(points, colors, blendMode, looped)](#Gfx+drawLinesStrip)
     * [.drawLines(points, colors, blendMode)](#Gfx+drawLines)
+    * [.drawPoint(point, color, blendMode)](#Gfx+drawPoint)
+    * [.drawPoints(points, colors, blendMode)](#Gfx+drawPoints)
     * [.clear(color)](#Gfx+clear)
 
 <a name="new_Gfx_new"></a>
@@ -2064,6 +2072,18 @@ Create and return a new camera instance.
 | Param | Type | Description |
 | --- | --- | --- |
 | withViewport | <code>Boolean</code> | If true, will create camera with viewport value equal to canvas' size. |
+
+<a name="Gfx+setCameraOrthographic"></a>
+
+### gfx.setCameraOrthographic(offset) ⇒ [<code>Camera</code>](#Camera)
+Set default orthographic camera from offset.
+
+**Kind**: instance method of [<code>Gfx</code>](#Gfx)  
+**Returns**: [<code>Camera</code>](#Camera) - Camera instance.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| offset | [<code>Vector2</code>](#Vector2) | Camera top-left corner. |
 
 <a name="Gfx+createEffect"></a>
 
@@ -2488,6 +2508,42 @@ Draw a list of lines from an array of points.
 let lines = [new Shaku.utils.Vector2(50,50), new Shaku.utils.Vector2(150,50), new Shaku.utils.Vector2(150,150)];
 let colors = [Shaku.utils.Color.random(), Shaku.utils.Color.random(), Shaku.utils.Color.random()];
 Shaku.gfx.drawLines(lines, colors);
+```
+<a name="Gfx+drawPoint"></a>
+
+### gfx.drawPoint(point, color, blendMode)
+Draw a single point from vector.
+
+**Kind**: instance method of [<code>Gfx</code>](#Gfx)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| point | [<code>Vector2</code>](#Vector2) | Point to draw. |
+| color | [<code>Color</code>](#Color) | Point color. |
+| blendMode | <code>BlendModes</code> | Blend mode to draw point with (default to Opaque). |
+
+**Example**  
+```js
+Shaku.gfx.drawPoint(new Shaku.utils.Vector2(50,50), Shaku.utils.Color.random());
+```
+<a name="Gfx+drawPoints"></a>
+
+### gfx.drawPoints(points, colors, blendMode)
+Draw a list of points from an array of vectors.
+
+**Kind**: instance method of [<code>Gfx</code>](#Gfx)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| points | [<code>Array.&lt;Vector2&gt;</code>](#Vector2) | Points to draw. |
+| colors | [<code>Color</code>](#Color) \| [<code>Array.&lt;Color&gt;</code>](#Color) | Single color if you want one color for all points, or an array of colors per point. |
+| blendMode | <code>BlendModes</code> | Blend mode to draw points with (default to Opaque). |
+
+**Example**  
+```js
+let points = [new Shaku.utils.Vector2(50,50), new Shaku.utils.Vector2(150,50), new Shaku.utils.Vector2(150,150)];
+let colors = [Shaku.utils.Color.random(), Shaku.utils.Color.random(), Shaku.utils.Color.random()];
+Shaku.gfx.drawPoints(points, colors);
 ```
 <a name="Gfx+clear"></a>
 
@@ -4506,6 +4562,7 @@ Implement some math utilities functions.
 
 * [MathHelper](#MathHelper)
     * [.lerp(start, end, amount)](#MathHelper.lerp) ⇒ <code>Number</code>
+    * [.dot(x1, y1, x2, y2)](#MathHelper.dot) ⇒ <code>Number</code>
     * [.toRadians(degrees)](#MathHelper.toRadians) ⇒ <code>Number</code>
     * [.toDegrees(radians)](#MathHelper.toDegrees) ⇒ <code>Number</code>
     * [.radiansDistanceSigned(a1, a2)](#MathHelper.radiansDistanceSigned) ⇒ <code>Number</code>
@@ -4513,6 +4570,7 @@ Implement some math utilities functions.
     * [.lerpRadians(a1, a2, alpha)](#MathHelper.lerpRadians) ⇒ <code>Number</code>
     * [.lerpDegrees(a1, a2, alpha)](#MathHelper.lerpDegrees) ⇒ <code>Number</code>
     * [.round10(num)](#MathHelper.round10) ⇒ <code>Number</code>
+    * [.wrapDegrees(degrees)](#MathHelper.wrapDegrees) ⇒ <code>Number</code>
 
 <a name="MathHelper.lerp"></a>
 
@@ -4527,6 +4585,21 @@ Perform linear interpolation between start and end values.
 | start | <code>Number</code> | Starting value. |
 | end | <code>Number</code> | Ending value. |
 | amount | <code>Number</code> | How much to interpolate from start to end. |
+
+<a name="MathHelper.dot"></a>
+
+### MathHelper.dot(x1, y1, x2, y2) ⇒ <code>Number</code>
+Calculate 2d dot product.
+
+**Kind**: static method of [<code>MathHelper</code>](#MathHelper)  
+**Returns**: <code>Number</code> - dot product result.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| x1 | <code>Number</code> | First vector x. |
+| y1 | <code>Number</code> | First vector y. |
+| x2 | <code>Number</code> | Second vector x. |
+| y2 | <code>Number</code> | Second vector y. |
 
 <a name="MathHelper.toRadians"></a>
 
@@ -4620,6 +4693,83 @@ This is useful for calculations that should return round or almost round numbers
 | Param | Type | Description |
 | --- | --- | --- |
 | num | <code>Number</code> | Number to round. |
+
+<a name="MathHelper.wrapDegrees"></a>
+
+### MathHelper.wrapDegrees(degrees) ⇒ <code>Number</code>
+Wrap degrees value to be between 0 to 360.
+
+**Kind**: static method of [<code>MathHelper</code>](#MathHelper)  
+**Returns**: <code>Number</code> - degrees wrapped to be 0-360 values.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| degrees | <code>Number</code> | Degrees to wrap. |
+
+<a name="Perlin"></a>
+
+## Perlin
+Generate 2d perlin noise.
+Based on code from noisejs by Stefan Gustavson.
+https://github.com/josephg/noisejs/blob/master/perlin.js
+
+**Kind**: global class  
+
+* [Perlin](#Perlin)
+    * [new Perlin(seed)](#new_Perlin_new)
+    * [.seed(seed)](#Perlin+seed)
+    * [.generateSmooth(x, y, blurDistance, contrast)](#Perlin+generateSmooth) ⇒ <code>Number</code>
+    * [.generate(x, y, contrast)](#Perlin+generate) ⇒ <code>Number</code>
+
+<a name="new_Perlin_new"></a>
+
+### new Perlin(seed)
+Create the perlin noise generator.
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| seed | <code>Number</code> | Seed for perlin noise, or undefined for random. |
+
+<a name="Perlin+seed"></a>
+
+### perlin.seed(seed)
+Set the perlin noise seed.
+
+**Kind**: instance method of [<code>Perlin</code>](#Perlin)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| seed | <code>Number</code> | New seed value. May be either a decimal between 0 to 1, or an unsigned short between 0 to 65536. |
+
+<a name="Perlin+generateSmooth"></a>
+
+### perlin.generateSmooth(x, y, blurDistance, contrast) ⇒ <code>Number</code>
+Generate a perlin noise value for x,y coordinates.
+
+**Kind**: instance method of [<code>Perlin</code>](#Perlin)  
+**Returns**: <code>Number</code> - Perlin noise value for given point.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| x | <code>Number</code> | X coordinate to generate perlin noise for. |
+| y | <code>Number</code> | Y coordinate to generate perlin noise for. |
+| blurDistance | <code>Number</code> | Distance to take neighbors to blur returned value with. Defaults to 0.25. |
+| contrast | <code>Number</code> | Optional contrast factor. |
+
+<a name="Perlin+generate"></a>
+
+### perlin.generate(x, y, contrast) ⇒ <code>Number</code>
+Generate a perlin noise value for x,y coordinates.
+
+**Kind**: instance method of [<code>Perlin</code>](#Perlin)  
+**Returns**: <code>Number</code> - Perlin noise value for given point, ranged from 0 to 1.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| x | <code>Number</code> | X coordinate to generate perlin noise for. |
+| y | <code>Number</code> | Y coordinate to generate perlin noise for. |
+| contrast | <code>Number</code> | Optional contrast factor. |
 
 <a name="Rectangle"></a>
 

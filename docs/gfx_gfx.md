@@ -30,6 +30,7 @@ To access the Graphics manager you use `Shaku.gfx`.
     * [.setContextAttributes(flags)](#Gfx+setContextAttributes)
     * [.setCanvas(element)](#Gfx+setCanvas)
     * [.createCamera(withViewport)](#Gfx+createCamera) ⇒ <code>Camera</code>
+    * [.setCameraOrthographic(offset)](#Gfx+setCameraOrthographic) ⇒ <code>Camera</code>
     * [.createEffect(type)](#Gfx+createEffect) ⇒ <code>Effect</code>
     * [.maximizeCanvasSize(limitToParent)](#Gfx+maximizeCanvasSize)
     * [.setRenderTarget(texture, keepCamera)](#Gfx+setRenderTarget)
@@ -52,6 +53,8 @@ To access the Graphics manager you use `Shaku.gfx`.
     * [.drawLine(startPoint, endPoint, color, blendMode)](#Gfx+drawLine)
     * [.drawLinesStrip(points, colors, blendMode, looped)](#Gfx+drawLinesStrip)
     * [.drawLines(points, colors, blendMode)](#Gfx+drawLines)
+    * [.drawPoint(point, color, blendMode)](#Gfx+drawPoint)
+    * [.drawPoints(points, colors, blendMode)](#Gfx+drawPoints)
     * [.clear(color)](#Gfx+clear)
 
 <a name="new_Gfx_new"></a>
@@ -218,6 +221,18 @@ Create and return a new camera instance.
 | Param | Type | Description |
 | --- | --- | --- |
 | withViewport | <code>Boolean</code> | If true, will create camera with viewport value equal to canvas' size. |
+
+<a name="Gfx+setCameraOrthographic"></a>
+
+### gfx.setCameraOrthographic(offset) ⇒ <code>Camera</code>
+Set default orthographic camera from offset.
+
+**Kind**: instance method of [<code>Gfx</code>](#Gfx)  
+**Returns**: <code>Camera</code> - Camera instance.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| offset | <code>Vector2</code> | Camera top-left corner. |
 
 <a name="Gfx+createEffect"></a>
 
@@ -642,6 +657,42 @@ Draw a list of lines from an array of points.
 let lines = [new Shaku.utils.Vector2(50,50), new Shaku.utils.Vector2(150,50), new Shaku.utils.Vector2(150,150)];
 let colors = [Shaku.utils.Color.random(), Shaku.utils.Color.random(), Shaku.utils.Color.random()];
 Shaku.gfx.drawLines(lines, colors);
+```
+<a name="Gfx+drawPoint"></a>
+
+### gfx.drawPoint(point, color, blendMode)
+Draw a single point from vector.
+
+**Kind**: instance method of [<code>Gfx</code>](#Gfx)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| point | <code>Vector2</code> | Point to draw. |
+| color | <code>Color</code> | Point color. |
+| blendMode | <code>BlendModes</code> | Blend mode to draw point with (default to Opaque). |
+
+**Example**  
+```js
+Shaku.gfx.drawPoint(new Shaku.utils.Vector2(50,50), Shaku.utils.Color.random());
+```
+<a name="Gfx+drawPoints"></a>
+
+### gfx.drawPoints(points, colors, blendMode)
+Draw a list of points from an array of vectors.
+
+**Kind**: instance method of [<code>Gfx</code>](#Gfx)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| points | <code>Array.&lt;Vector2&gt;</code> | Points to draw. |
+| colors | <code>Color</code> \| <code>Array.&lt;Color&gt;</code> | Single color if you want one color for all points, or an array of colors per point. |
+| blendMode | <code>BlendModes</code> | Blend mode to draw points with (default to Opaque). |
+
+**Example**  
+```js
+let points = [new Shaku.utils.Vector2(50,50), new Shaku.utils.Vector2(150,50), new Shaku.utils.Vector2(150,150)];
+let colors = [Shaku.utils.Color.random(), Shaku.utils.Color.random(), Shaku.utils.Color.random()];
+Shaku.gfx.drawPoints(points, colors);
 ```
 <a name="Gfx+clear"></a>
 

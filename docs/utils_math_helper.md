@@ -14,6 +14,7 @@ Implement some math utilities functions.
 * [MathHelper](#MathHelper)
     * [.PI2](#MathHelper.PI2)
     * [.lerp(start, end, amount)](#MathHelper.lerp) ⇒ <code>Number</code>
+    * [.dot(x1, y1, x2, y2)](#MathHelper.dot) ⇒ <code>Number</code>
     * [.toRadians(degrees)](#MathHelper.toRadians) ⇒ <code>Number</code>
     * [.toDegrees(radians)](#MathHelper.toDegrees) ⇒ <code>Number</code>
     * [.radiansDistanceSigned(a1, a2)](#MathHelper.radiansDistanceSigned) ⇒ <code>Number</code>
@@ -21,6 +22,7 @@ Implement some math utilities functions.
     * [.lerpRadians(a1, a2, alpha)](#MathHelper.lerpRadians) ⇒ <code>Number</code>
     * [.lerpDegrees(a1, a2, alpha)](#MathHelper.lerpDegrees) ⇒ <code>Number</code>
     * [.round10(num)](#MathHelper.round10) ⇒ <code>Number</code>
+    * [.wrapDegrees(degrees)](#MathHelper.wrapDegrees) ⇒ <code>Number</code>
 
 <a name="MathHelper.PI2"></a>
 
@@ -41,6 +43,21 @@ Perform linear interpolation between start and end values.
 | start | <code>Number</code> | Starting value. |
 | end | <code>Number</code> | Ending value. |
 | amount | <code>Number</code> | How much to interpolate from start to end. |
+
+<a name="MathHelper.dot"></a>
+
+### MathHelper.dot(x1, y1, x2, y2) ⇒ <code>Number</code>
+Calculate 2d dot product.
+
+**Kind**: static method of [<code>MathHelper</code>](#MathHelper)  
+**Returns**: <code>Number</code> - dot product result.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| x1 | <code>Number</code> | First vector x. |
+| y1 | <code>Number</code> | First vector y. |
+| x2 | <code>Number</code> | Second vector x. |
+| y2 | <code>Number</code> | Second vector y. |
 
 <a name="MathHelper.toRadians"></a>
 
@@ -134,4 +151,16 @@ This is useful for calculations that should return round or almost round numbers
 | Param | Type | Description |
 | --- | --- | --- |
 | num | <code>Number</code> | Number to round. |
+
+<a name="MathHelper.wrapDegrees"></a>
+
+### MathHelper.wrapDegrees(degrees) ⇒ <code>Number</code>
+Wrap degrees value to be between 0 to 360.
+
+**Kind**: static method of [<code>MathHelper</code>](#MathHelper)  
+**Returns**: <code>Number</code> - degrees wrapped to be 0-360 values.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| degrees | <code>Number</code> | Degrees to wrap. |
 
