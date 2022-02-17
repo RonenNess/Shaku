@@ -216,7 +216,7 @@ That's pretty much it in terms of setup. Here's a random screenshot to break the
 
 Let's start exploring the APIs from the graphics manager, accessed by `Shaku.gfx`.
 
-This doc don't cover the entirely of the API, only the main parts of it. To see the full API, check out the [API docs](docs/gfx.md).
+This doc don't cover the entirely of the API, only the main parts of it. To see the full API, check out the [API docs](docs/gfx_gfx.md).
 
 ### Draw
 
@@ -738,7 +738,7 @@ To learn more about matrices, check out the [API docs](docs/gfx_matrix.md).
 
 We finally reached our second manager, the sound effects manager, which is accessed by `Shaku.sfx`.
 
-This doc don't cover the entirely of the API, only the main parts of it. To see the full API, check out the [API docs](docs/sfx.md).
+This doc don't cover the entirely of the API, only the main parts of it. To see the full API, check out the [API docs](docs/sfx_sfx.md).
 
 
 ### Play Sound
@@ -840,7 +840,7 @@ A demo page with sounds mixer can be found [here](https://ronenness.github.io/Sh
 The input manager is responsible to get input from Keyboard, Mouse and basic touch (behaves like mouse).
 To access the Input manager we use `Shaku.input`.
 
-This doc don't cover the entirely of the API, only the main parts of it. To see the full API, check out the [API docs](docs/input.md).
+This doc don't cover the entirely of the API, only the main parts of it. To see the full API, check out the [API docs](docs/input_input.md).
 
 ### Keyboard Input
 
@@ -921,7 +921,7 @@ A demo page with mouse and keyboard input can be found [here](https://ronenness.
 The *Assets* manager handle loading game resources and assets, and is accessed by `Shaku.assets`.
 We already covered most of it while exploring the other managers, but in this section we will dive into more details about it.
 
-This doc don't cover the entirely of the API, only the main parts of it. To see the full API, check out the [API docs](docs/assets.md).
+This doc don't cover the entirely of the API, only the main parts of it. To see the full API, check out the [API docs](docs/assets_assets.md).
 
 ### Keep In Mind
 
@@ -1129,7 +1129,7 @@ Shaku.assets.clearCache();
 The *Collision* manager provides basic collision detection functionality, and is accessed by `Shaku.collision`.
 The collision manager handles detection, but *not* physics.
 
-This doc don't cover the entirely of the API, only the main parts of it. To see the full API, check out the [API docs](docs/collision.md).
+This doc don't cover the entirely of the API, only the main parts of it. To see the full API, check out the [API docs](docs/collision_collision.md).
 
 ### Collision Shapes
 
