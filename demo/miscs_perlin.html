@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Shaku</title>
+    <meta name="description" content="Shaku - a simple and easy-to-use javascript library for videogame programming.">
+    <meta name="author" content="Ronen Ness">
+    <link href="css/style.css" rel="stylesheet" type="text/css" media="all">
+  </head>
+  <body>
+    <div class="noselect">
+
+    <button class="view-code-btn" onclick="showSampleCode();">View Code</button> 
+    <h1 class="demo-title">Shaku Miscs Demo: Perlin Noise Generator</h1>
+      <p>This demo illustrate how to use the built-in perlin noise generator. Press <b>Space</b> to randomize noise.</p>
+
+      <!-- include shaku -->
+      <script src="js/demos.js"></script>
+      <script src="js/shaku.js"></script>
+
+      <!-- demo code -->
+      <script>
+        async function runGame()
+        {
+          // init shaku
+          await Shaku.init();
+
+          // add shaku's canvas to document and set resolution to 800x600
+          document.body.appendChild(Shaku.gfx.canvas);
+          Shaku.gfx.setResolution(600, 600, true);
+
+          // perlin seed
+          let seed = Math.random();
+          let needUpdate = true;
+
+          // do a single main loop step
+          function step() 
+          {
+            // update noise
+            if (needUpdate) {
+              // create perlin noise generator
+              let perlin = new Shaku.utils.Perlin(seed);
+
+              // start new frame and clear screen
+              Shaku.startFrame();
+              Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
+
+              // draw noise
+              let points = [];
+              let colors = [];
+              for (let x = 0; x < 600; ++x) {
+                for (let y = 0; y < 600; ++y) {
+                  let val = perlin.generateSmooth(x / 25, y / 25, 0.15);
+                  points.push(new Shaku.utils.Vector2(x, y));
+                  colors.push(new Shaku.utils.Color(val, val, val, 1));
+                  if (points.length === 500) {
+                    Shaku.gfx.drawPoints(points, colors);
+                    points = [];
+                    colors = [];
+                  }
+                }
+              }
+
+              // draw last batch
+              if (points.length) {
+                Shaku.gfx.drawPoints(points, colors);
+              }
+
+              // no longer need update
+              needUpdate = false;
+            }
+
+            // regenerate
+            if (Shaku.input.pressed('space')) {
+              seed = Math.random();
+              needUpdate = true;
+            }
+
+            // end frame and request next frame
+            Shaku.endFrame();
+            Shaku.requestAnimationFrame(step);
+          }
+
+          // do a single step
+          step();
+        }
+
+        runGame();
+      </script>
+
+    </div>
+
+        
+    <!-- code example part -->
+    <div id="sample-code-modal" class="modal">
+      <div class="modal__overlay jsOverlay"></div>
+      <div class="modal__container">   
+
+    <p class="noselect">The following is a code example on how to load a binary assets.</p>
+    <pre><code class="language-js">// load binary asset
+let bin = await Shaku.assets.loadBinary("assets/data.bin");
+
+// bin.data will contain a buffer of bytes with the loaded binary data
+alert(bin.data);
+
+// if your data is string, you can convert it to string:
+alert(bin.string());
+</code></pre>
+
+      <button class="modal__close" onclick="closeModal('sample-code-modal')">&#10005;</button>
+    </div>
+    </div>
+
+    <link href="prism/prism.css" rel="stylesheet" />
+    <script src="prism/prism.js"></script>  
+
+  </body>
+</html>

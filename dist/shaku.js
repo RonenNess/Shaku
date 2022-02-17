@@ -1002,7 +1002,7 @@ function measureTextWidth(fontFamily, fontSize, char)
 
 // export the asset type.
 module.exports = FontTextureAsset;
-},{"../utils/rectangle":53,"../utils/vector2":55,"./asset":1,"./texture_asset":8}],5:[function(require,module,exports){
+},{"../utils/rectangle":54,"../utils/vector2":56,"./asset":1,"./texture_asset":8}],5:[function(require,module,exports){
 /**
  * Just an alias to main manager so we can require() this folder as a package.
  * 
@@ -1586,7 +1586,7 @@ function isPowerOf2(value) {
 
 // export the asset type.
 module.exports = TextureAsset;
-},{"../gfx/texture_filter_modes":33,"../gfx/texture_wrap_modes":34,"../logger.js":39,"../utils/color":48,"../utils/vector2":55,"./asset":1}],9:[function(require,module,exports){
+},{"../gfx/texture_filter_modes":33,"../gfx/texture_wrap_modes":34,"../logger.js":39,"../utils/color":48,"../utils/vector2":56,"./asset":1}],9:[function(require,module,exports){
 /**
  * Implement the collision manager.
  * 
@@ -1733,7 +1733,7 @@ class Collision extends IManager
 
 // export main object
 module.exports = new Collision();
-},{"../logger.js":39,"../manager.js":40,"../utils/vector2.js":55,"./collision_world.js":10,"./resolver":12,"./resolvers_imp":13,"./shapes/circle.js":15,"./shapes/lines.js":16,"./shapes/point.js":17,"./shapes/rectangle.js":18}],10:[function(require,module,exports){
+},{"../logger.js":39,"../manager.js":40,"../utils/vector2.js":56,"./collision_world.js":10,"./resolver":12,"./resolvers_imp":13,"./shapes/circle.js":15,"./shapes/lines.js":16,"./shapes/point.js":17,"./shapes/rectangle.js":18}],10:[function(require,module,exports){
 /**
  * Implement the collision manager.
  * 
@@ -2237,7 +2237,7 @@ function sortByDistanceShapes(sourceShape, options)
 
 // export collision world
 module.exports = CollisionWorld;
-},{"../logger.js":39,"../utils/circle":47,"../utils/color":48,"../utils/rectangle":53,"../utils/vector2":55,"./../gfx":26,"./resolver":12,"./result":14,"./shapes/circle":15,"./shapes/point":17,"./shapes/shape":19}],11:[function(require,module,exports){
+},{"../logger.js":39,"../utils/circle":47,"../utils/color":48,"../utils/rectangle":54,"../utils/vector2":56,"./../gfx":26,"./resolver":12,"./result":14,"./shapes/circle":15,"./shapes/point":17,"./shapes/shape":19}],11:[function(require,module,exports){
 /**
  * Just an alias to main manager so we can require() this folder as a package.
  * 
@@ -2362,7 +2362,7 @@ class CollisionResolver
 
 // export the collision resolver
 module.exports = CollisionResolver;
-},{"../logger.js":39,"../utils/vector2.js":55,"./result.js":14,"./shapes/shape.js":19}],13:[function(require,module,exports){
+},{"../logger.js":39,"../utils/vector2.js":56,"./result.js":14,"./shapes/shape.js":19}],13:[function(require,module,exports){
 /**
  * All default collision detection implementations.
  * 
@@ -2524,7 +2524,7 @@ class CollisionTestResult
 
 // export collision shape class
 module.exports = CollisionTestResult;
-},{"../utils/vector2":55,"./shapes/shape":19}],15:[function(require,module,exports){
+},{"../utils/vector2":56,"./shapes/shape":19}],15:[function(require,module,exports){
 /**
  * Implement collision circle.
  * 
@@ -2614,7 +2614,7 @@ class CircleShape extends CollisionShape
 
 // export collision shape class
 module.exports = CircleShape;
-},{"../../utils/circle":47,"../../utils/rectangle":53,"./../../gfx":26,"./shape":19}],16:[function(require,module,exports){
+},{"../../utils/circle":47,"../../utils/rectangle":54,"./../../gfx":26,"./shape":19}],16:[function(require,module,exports){
 /**
  * Implement collision lines.
  * 
@@ -2734,7 +2734,7 @@ class LinesShape extends CollisionShape
 
 // export collision lines class
 module.exports = LinesShape;
-},{"../../utils/circle":47,"../../utils/line":51,"../../utils/rectangle":53,"./../../gfx":26,"./shape":19}],17:[function(require,module,exports){
+},{"../../utils/circle":47,"../../utils/line":51,"../../utils/rectangle":54,"./../../gfx":26,"./shape":19}],17:[function(require,module,exports){
 /**
  * Implement collision point.
  * 
@@ -2829,7 +2829,7 @@ class PointShape extends CollisionShape
 
 // export collision shape class
 module.exports = PointShape;
-},{"../../utils/circle":47,"../../utils/rectangle":53,"../../utils/vector2":55,"./../../gfx":26,"./shape":19}],18:[function(require,module,exports){
+},{"../../utils/circle":47,"../../utils/rectangle":54,"../../utils/vector2":56,"./../../gfx":26,"./shape":19}],18:[function(require,module,exports){
 /**
  * Implement collision rectangle.
  * 
@@ -2918,7 +2918,7 @@ class RectangleShape extends CollisionShape
 
 // export collision shape class
 module.exports = RectangleShape;
-},{"../../utils/rectangle":53,"./../../gfx":26,"./shape":19}],19:[function(require,module,exports){
+},{"../../utils/rectangle":54,"./../../gfx":26,"./shape":19}],19:[function(require,module,exports){
 /**
  * Implement collision shape base class.
  * 
@@ -3089,7 +3089,7 @@ const defaultDebugColors = [Color.red, Color.blue, Color.green, Color.yellow, Co
 
 // export collision shape class
 module.exports = CollisionShape;
-},{"../../utils/color":48,"../../utils/rectangle":53,"../../utils/vector2":55,"../collision_world":10}],20:[function(require,module,exports){
+},{"../../utils/color":48,"../../utils/rectangle":54,"../../utils/vector2":56,"../collision_world":10}],20:[function(require,module,exports){
 /**
  * Define supported blend modes.
  * 
@@ -3244,7 +3244,7 @@ class Camera
 
 // export the camera object
 module.exports = Camera;
-},{"../utils/rectangle":53,"../utils/vector2":55,"./matrix":27}],22:[function(require,module,exports){
+},{"../utils/rectangle":54,"../utils/vector2":56,"./matrix":27}],22:[function(require,module,exports){
 /**
  * Implement a basic effect to draw sprites.
  * 
@@ -3277,6 +3277,7 @@ varying vec4 v_color;
 
 void main(void) {
     gl_Position = projection * world * vec4(position, 1.0);
+    gl_PointSize = 1.0;
     v_texCoord = uvOffset + (coord * uvScale);
     v_color = color;
 }
@@ -3924,7 +3925,7 @@ function _setTextureFilter(gl, filter)
 
 // export the effect class.
 module.exports = Effect;
-},{"../../assets/texture_asset.js":8,"../../logger.js":39,"../../utils/color.js":48,"../../utils/rectangle.js":53,"../matrix.js":27,"../texture_filter_modes":33,"../texture_wrap_modes":34}],24:[function(require,module,exports){
+},{"../../assets/texture_asset.js":8,"../../logger.js":39,"../../utils/color.js":48,"../../utils/rectangle.js":54,"../matrix.js":27,"../texture_filter_modes":33,"../texture_wrap_modes":34}],24:[function(require,module,exports){
 /**
  * Include all built-in effects.
  * 
@@ -4148,6 +4149,19 @@ class Gfx extends IManager
         return ret;
     }
 
+    /**
+     * Set default orthographic camera from offset.
+     * @param {Vector2} offset Camera top-left corner.
+     * @returns {Camera} Camera instance.
+     */
+    setCameraOrthographic(offset)
+    {
+        let camera = this.createCamera();
+        camera.orthographicOffset(offset);
+        this.applyCamera(camera);
+        return camera;
+    }
+    
     /**
      * Create and return an effect instance.
      * @see Effect
@@ -4916,17 +4930,51 @@ class Gfx extends IManager
      * @param {Color|Array<Color>} colors Single lines color if you want one color for all lines, or an array of colors per segment.
      * @param {BlendModes} blendMode Blend mode to draw lines with (default to Opaque).
      */
-     drawLines(points, colors, blendMode)
-     {
-         // prepare effect and buffers
-         this._fillShapesBuffer(points, colors, blendMode);
- 
-         // draw elements
-         let gl = this._gl;
-         gl.drawArrays(gl.LINES, 0, points.length);
-         this._drawCallsCount++;
-     }
+    drawLines(points, colors, blendMode)
+    {
+        // prepare effect and buffers
+        this._fillShapesBuffer(points, colors, blendMode);
 
+        // draw elements
+        let gl = this._gl;
+        gl.drawArrays(gl.LINES, 0, points.length);
+        this._drawCallsCount++;
+    }
+
+    /**
+     * Draw a single point from vector.
+     * @example
+     * Shaku.gfx.drawPoint(new Shaku.utils.Vector2(50,50), Shaku.utils.Color.random());
+     * @param {Vector2} point Point to draw.
+     * @param {Color} color Point color.
+     * @param {BlendModes} blendMode Blend mode to draw point with (default to Opaque).
+     */
+    drawPoint(point, color, blendMode)
+    {
+        return this.drawPoints([point], [color], blendMode);
+    }
+
+    /**
+     * Draw a list of points from an array of vectors.
+     * @example
+     * let points = [new Shaku.utils.Vector2(50,50), new Shaku.utils.Vector2(150,50), new Shaku.utils.Vector2(150,150)];
+     * let colors = [Shaku.utils.Color.random(), Shaku.utils.Color.random(), Shaku.utils.Color.random()];
+     * Shaku.gfx.drawPoints(points, colors);
+     * @param {Array<Vector2>} points Points to draw.
+     * @param {Color|Array<Color>} colors Single color if you want one color for all points, or an array of colors per point.
+     * @param {BlendModes} blendMode Blend mode to draw points with (default to Opaque).
+     */
+    drawPoints(points, colors, blendMode)
+    {
+        // prepare effect and buffers
+        this._fillShapesBuffer(points, colors, blendMode);
+
+        // draw elements
+        let gl = this._gl;
+        gl.drawArrays(gl.POINTS, 0, points.length);
+        this._drawCallsCount++;
+    }
+    
     /**
      * Prepare buffers, effect and blend mode for shape rendering.
      * @private
@@ -5440,7 +5488,7 @@ class Gfx extends IManager
 
 // export main object
 module.exports = new Gfx();
-},{"../assets/font_texture_asset.js":4,"../assets/texture_asset.js":8,"../logger.js":39,"../manager.js":40,"../utils/circle.js":47,"../utils/color.js":48,"../utils/rectangle.js":53,"../utils/vector2.js":55,"./blend_modes.js":20,"./camera.js":21,"./effects":24,"./matrix.js":27,"./mesh.js":28,"./mesh_generator.js":29,"./sprite.js":30,"./sprites_group.js":31,"./text_alignment.js":32,"./texture_filter_modes.js":33,"./texture_wrap_modes.js":34}],26:[function(require,module,exports){
+},{"../assets/font_texture_asset.js":4,"../assets/texture_asset.js":8,"../logger.js":39,"../manager.js":40,"../utils/circle.js":47,"../utils/color.js":48,"../utils/rectangle.js":54,"../utils/vector2.js":56,"./blend_modes.js":20,"./camera.js":21,"./effects":24,"./matrix.js":27,"./mesh.js":28,"./mesh_generator.js":29,"./sprite.js":30,"./sprites_group.js":31,"./text_alignment.js":32,"./texture_filter_modes.js":33,"./texture_wrap_modes.js":34}],26:[function(require,module,exports){
 /**
  * Just an alias to main manager so we can require() this folder as a package.
  * 
@@ -6076,7 +6124,7 @@ class Sprite
 
 // export the sprite class.
 module.exports = Sprite;
-},{"../assets/texture_asset":8,"../utils/color":48,"../utils/rectangle":53,"../utils/vector2":55,"./blend_modes":20}],31:[function(require,module,exports){
+},{"../assets/texture_asset":8,"../utils/color":48,"../utils/rectangle":54,"../utils/vector2":56,"./blend_modes":20}],31:[function(require,module,exports){
 /**
  * Define a sprites group.
  * 
@@ -6231,7 +6279,7 @@ class SpritesGroup
 
 // export the sprites group class.
 module.exports = SpritesGroup;
-},{"../utils/color":48,"../utils/vector2":55,"./matrix":27,"./sprite":30}],32:[function(require,module,exports){
+},{"../utils/color":48,"../utils/vector2":56,"./matrix":27,"./sprite":30}],32:[function(require,module,exports){
 /**
  * Define possible text alignments.
  * 
@@ -7043,7 +7091,7 @@ class Input extends IManager
 
 // export main object
 module.exports = new Input();
-},{"../logger.js":39,"../manager.js":40,"../utils/vector2.js":55,"./key_codes.js":38}],38:[function(require,module,exports){
+},{"../logger.js":39,"../manager.js":40,"../utils/vector2.js":56,"./key_codes.js":38}],38:[function(require,module,exports){
 /**
  * Define keyboard and mouse key codes.
  * 
@@ -7195,6 +7243,9 @@ module.exports = { KeyboardKeys: KeyboardKeys, MouseButtons: MouseButtons };
 // default logger drivers.
 var _drivers = console;
 
+// application name
+var _application = "Shaku";
+
 /**
  * A logger manager.
  * By default writes logs to console.
@@ -7203,7 +7254,7 @@ class Logger
 {
     constructor(name)
     {
-        this._nameHeader = '[Shaku][' + name + ']';
+        this._nameHeader = '[' + _application + '][' + name + ']';
         this._throwErrors = false;
     }
 
@@ -7322,6 +7373,16 @@ module.exports = {
     setDrivers: function(drivers)
     {
         _drivers = drivers;
+    },
+
+    /**
+     * Set logger application name.
+     * @param {String} name Set application name to replace the 'Shaku' in the headers.
+     */
+    setApplicationName: function(name)
+    {
+        _application = name;
+        return this;
     }
 };
 },{}],40:[function(require,module,exports){
@@ -7973,7 +8034,7 @@ let _totalFrameTimes = 0;
 
 
 // current version
-const version = "1.4.1";
+const version = "1.4.2";
 
 /**
  * Shaku's main object.
@@ -8611,7 +8672,7 @@ class Circle
 
 // export the circle class
 module.exports = Circle;
-},{"./math_helper":52,"./vector2":55}],48:[function(require,module,exports){
+},{"./math_helper":52,"./vector2":56}],48:[function(require,module,exports){
 /**
  * Define a color object.
  * 
@@ -9150,9 +9211,10 @@ module.exports = GameTime;
     Animator: require('./animator'),
     GameTime: require('./game_time'),
     MathHelper: require('./math_helper'),
-    SeededRandom: require('./seeded_random')
+    SeededRandom: require('./seeded_random'),
+    Perlin: require('./perlin')
  };
-},{"./animator":46,"./circle":47,"./color":48,"./game_time":49,"./line":51,"./math_helper":52,"./rectangle":53,"./seeded_random":54,"./vector2":55}],51:[function(require,module,exports){
+},{"./animator":46,"./circle":47,"./color":48,"./game_time":49,"./line":51,"./math_helper":52,"./perlin":53,"./rectangle":54,"./seeded_random":55,"./vector2":56}],51:[function(require,module,exports){
 /**
  * Implement a simple 2d line.
  * 
@@ -9308,7 +9370,7 @@ class Line
 
 // export the line class
 module.exports = Line;
-},{"./vector2":55}],52:[function(require,module,exports){
+},{"./vector2":56}],52:[function(require,module,exports){
 /**
  * Implement a math utilities class.
  * 
@@ -9342,7 +9404,24 @@ class MathHelper
      */
     static lerp(start, end, amount)
     {
+        // to prevent shaking on same values
+        if (start === end) { return end; }
+
+        // do lerping
         return ((1-amount) * start) + (amount * end);
+    }
+
+    /**
+     * Calculate 2d dot product.
+     * @param {Number} x1 First vector x.
+     * @param {Number} y1 First vector y.
+     * @param {Number} x2 Second vector x.
+     * @param {Number} y2 Second vector y.
+     * @returns {Number} dot product result.
+     */
+    static dot(x1, y1, x2, y2) 
+    {
+        return x1 * x2 + y1 * y2;
     }
 
     /**
@@ -9399,6 +9478,10 @@ class MathHelper
      */
     static lerpRadians(a1, a2, alpha)
     {
+        // to prevent shaking on same values
+        if (a1 === a2) { return a2; }
+
+        // do lerping
         return a1 + this.radiansDistanceSigned(a1, a2) * alpha;
     }
 
@@ -9412,6 +9495,9 @@ class MathHelper
      */
     static lerpDegrees(a1, a2, alpha)
     {
+        // to prevent shaking on same values
+        if (a1 === a2) { return a2; }
+
         // convert to radians
         a1 = this.toRadians(a1);
         a2 = this.toRadians(a2);
@@ -9433,6 +9519,18 @@ class MathHelper
     {
         return Math.round(num * 100000000.0) / 100000000.0;
     }
+
+    /**
+     * Wrap degrees value to be between 0 to 360.
+     * @param {Number} degrees Degrees to wrap.
+     * @returns {Number} degrees wrapped to be 0-360 values.
+     */
+    static wrapDegrees(degrees)
+    {
+        degrees = degrees % 360;
+        if (degrees < 0) { degrees += 360; }
+        return degrees;
+    }
 }
 
 /**
@@ -9444,6 +9542,182 @@ MathHelper.PI2 = Math.PI * 2;
 // export the math helper
 module.exports = MathHelper;
 },{}],53:[function(require,module,exports){
+/**
+ * Implements 2d perlin noise generator.
+ * Based on code from noisejs by Stefan Gustavson.
+ * https://github.com/josephg/noisejs/blob/master/perlin.js
+ * 
+ * |-- copyright and license --|
+ * @package    Shaku
+ * @file       shaku\lib\utils\perlin.js
+ * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
+ * @copyright  (c) 2021 Ronen Ness
+ * @license    MIT
+ * |-- end copyright and license --|
+ * 
+ */
+'use strict';
+
+// import some utilities
+const MathHelper = require("./math_helper");
+const lerp = MathHelper.lerp;
+
+// do fade
+function fade(t) {
+    return t*t*t*(t*(t*6-15)+10);
+}
+
+// store gradient value
+function Grad(x, y, z) {
+    this.x = x; this.y = y; this.z = z;
+}
+Grad.prototype.dot2 = function(x, y) {
+    return this.x*x + this.y*y;
+};
+
+// const premutations
+const p = [151,160,137,91,90,15,
+131,13,201,95,96,53,194,233,7,225,140,36,103,30,69,142,8,99,37,240,21,10,23,
+190, 6,148,247,120,234,75,0,26,197,62,94,252,219,203,117,35,11,32,57,177,33,
+88,237,149,56,87,174,20,125,136,171,168, 68,175,74,165,71,134,139,48,27,166,
+77,146,158,231,83,111,229,122,60,211,133,230,220,105,92,41,55,46,245,40,244,
+102,143,54, 65,25,63,161, 1,216,80,73,209,76,132,187,208, 89,18,169,200,196,
+135,130,116,188,159,86,164,100,109,198,173,186, 3,64,52,217,226,250,124,123,
+5,202,38,147,118,126,255,82,85,212,207,206,59,227,47,16,58,17,182,189,28,42,
+223,183,170,213,119,248,152, 2,44,154,163, 70,221,153,101,155,167, 43,172,9,
+129,22,39,253, 19,98,108,110,79,113,224,232,178,185, 112,104,218,246,97,228,
+251,34,242,193,238,210,144,12,191,179,162,241, 81,51,145,235,249,14,239,107,
+49,192,214, 31,181,199,106,157,184, 84,204,176,115,121,50,45,127, 4,150,254,
+138,236,205,93,222,114,67,29,24,72,243,141,128,195,78,66,215,61,156,180];
+
+
+/**
+ * Generate 2d perlin noise.
+ * Based on code from noisejs by Stefan Gustavson.
+ * https://github.com/josephg/noisejs/blob/master/perlin.js
+ */
+class Perlin
+{
+    /**
+     * Create the perlin noise generator.
+     * @param {Number} seed Seed for perlin noise, or undefined for random.
+     */
+    constructor(seed)
+    {
+        if (seed === undefined) { seed = Math.random(); }
+        this.seed(seed);
+    }
+
+    /**
+     * Set the perlin noise seed.
+     * @param {Number} seed New seed value. May be either a decimal between 0 to 1, or an unsigned short between 0 to 65536.
+     */
+    seed(seed)
+    {
+        // scale the seed out
+        if(seed > 0 && seed < 1) {
+            seed *= 65536;
+        }
+    
+        // make sure round and current number of bits
+        seed = Math.floor(seed);
+        if (seed < 256) {
+            seed |= seed << 8;
+        }
+
+        // create perm, gradP and grad3 arrays
+        var perm = new Array(512);
+        var gradP = new Array(512);
+        var grad3 = [new Grad(1,1,0),new Grad(-1,1,0),new Grad(1,-1,0),new Grad(-1,-1,0),
+            new Grad(1,0,1),new Grad(-1,0,1),new Grad(1,0,-1),new Grad(-1,0,-1),
+            new Grad(0,1,1),new Grad(0,-1,1),new Grad(0,1,-1),new Grad(0,-1,-1)];
+    
+        // apply seed
+        for(var i = 0; i < 256; i++) 
+        {
+            var v;
+            if (i & 1) {
+                v = p[i] ^ (seed & 255);
+            } else {
+                v = p[i] ^ ((seed>>8) & 255);
+            }
+    
+            perm[i] = perm[i + 256] = v;
+            gradP[i] = gradP[i + 256] = grad3[v % 12];
+        }
+
+        // store new params
+        this._perm = perm;
+        this._gradP = gradP;
+    }
+
+    /**
+     * Generate a perlin noise value for x,y coordinates.
+     * @param {Number} x X coordinate to generate perlin noise for.
+     * @param {Number} y Y coordinate to generate perlin noise for. 
+     * @param {Number} blurDistance Distance to take neighbors to blur returned value with. Defaults to 0.25.
+     * @param {Number} contrast Optional contrast factor.
+     * @returns {Number} Perlin noise value for given point.
+     */
+    generateSmooth(x, y, blurDistance, contrast) 
+    {
+        if (blurDistance === undefined) { 
+            blurDistance = 0.25;
+        }
+        let a = this.generate(x-blurDistance, y-blurDistance, contrast);
+        let b = this.generate(x+blurDistance, y+blurDistance, contrast);
+        let c = this.generate(x-blurDistance, y+blurDistance, contrast);
+        let d = this.generate(x+blurDistance, y-blurDistance, contrast);
+        return (a + b + c + d) / 4;
+    }
+
+    /**
+     * Generate a perlin noise value for x,y coordinates.
+     * @param {Number} x X coordinate to generate perlin noise for.
+     * @param {Number} y Y coordinate to generate perlin noise for. 
+     * @param {Number} contrast Optional contrast factor.
+     * @returns {Number} Perlin noise value for given point, ranged from 0 to 1.
+     */
+    generate(x, y, contrast) 
+    {
+        // default contrast
+        if (contrast === undefined) {
+            contrast = 1;
+        }
+
+        // store new params
+        let perm = this._perm;
+        let gradP = this._gradP;
+
+        // find unit grid cell containing point
+        var X = Math.floor(x), Y = Math.floor(y);
+
+        // get relative xy coordinates of point within that cell
+        x = x - X; y = y - Y;
+
+        // wrap the integer cells at 255 (smaller integer period can be introduced here)
+        X = X & 255; Y = Y & 255;
+    
+        // calculate noise contributions from each of the four corners
+        var n00 = gradP[X+perm[Y]].dot2(x, y) * contrast;
+        var n01 = gradP[X+perm[Y+1]].dot2(x, y-1) * contrast;
+        var n10 = gradP[X+1+perm[Y]].dot2(x-1, y) * contrast;
+        var n11 = gradP[X+1+perm[Y+1]].dot2(x-1, y-1) * contrast;
+    
+        // compute the fade curve value for x
+        var u = fade(x);
+    
+        // interpolate the four results
+        return Math.min(lerp(
+            lerp(n00, n10, u),
+            lerp(n01, n11, u),
+            fade(y)) + 0.5, 1);
+    };
+}
+
+// export the perlin generator
+module.exports = Perlin;
+},{"./math_helper":52}],54:[function(require,module,exports){
 /**
  * Implement a simple 2d rectangle.
  * 
@@ -9824,7 +10098,7 @@ function pointLineDistance(p1, l1, l2) {
 
 // export the rectangle class
 module.exports = Rectangle;
-},{"./circle":47,"./line":51,"./math_helper":52,"./vector2":55}],54:[function(require,module,exports){
+},{"./circle":47,"./line":51,"./math_helper":52,"./vector2":56}],55:[function(require,module,exports){
 /**
  * Implement a seeded random generator.
  * 
@@ -9891,7 +10165,7 @@ class SeededRandom
 
 // export the seeded random class.
 module.exports = SeededRandom;
-},{}],55:[function(require,module,exports){
+},{}],56:[function(require,module,exports){
 /**
  * Implement a simple 2d vector.
  * 

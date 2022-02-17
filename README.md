@@ -1613,10 +1613,13 @@ List of changes in released versions.
 
 ## 1.4.2
 
-- Added `wrapDegrees()` to `MathHelper`.
+- Added `wrapDegrees()` and `dot()` to `MathHelper`.
 - Added a way to change application name in logger.
 - Added `setCameraOrthographic()` to make it easier to set cameras.
 - Improved lerping on same values.
+- Added perlin noise generator.
+- Updated demos.
+- Added `drawPoints()` and `drawPoint()` methods.
 
 # License
 
