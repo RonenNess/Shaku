@@ -4766,6 +4766,36 @@ class Gfx extends IManager
     }
 
     /**
+     * Draw a list of filled colored rectangles as a batch.
+     * @example
+     * // draw a 50x50 red rectangle at position 100x100, that will rotate over time
+     * Shaku.gfx.fillRects([new Shaku.utils.Rectangle(100, 100, 50, 50), new Shaku.utils.Rectangle(150, 150, 25, 25)], Shaku.utils.Color.red, null, Shaku.gameTime.elapsed);
+     * @param {Array<Rectangle>} destRects Rectangles to fill.
+     * @param {Array<Color>|Color} colors Rectangles fill color.
+     * @param {BlendModes} blend Blend mode.
+     * @param {Number} rotation Rotate the rectangle around its center.
+     */
+    fillRects(destRects, colors, blend, rotation)
+    {
+        // build group
+        let group = new SpritesGroup();
+        for (let i = 0; i < destRects.length; ++i) {
+            let sprite = new Sprite(this.whiteTexture);
+            sprite.color = colors[i] || colors;
+            sprite.rotation = rotation;
+            sprite.blendMode = blend || BlendModes.Opaque;
+            let destRect = destRects[i];
+            sprite.size.set(destRect.width, destRect.height);
+            sprite.position.set(destRect.x + destRect.width / 2, destRect.y + destRect.width / 2);
+            sprite.origin.set(0.5, 0.5);
+            group.add(sprite);
+        }
+
+        // draw group
+        this.drawGroup(group, true);
+    }
+
+    /**
      * Draw an outline colored rectangle.
      * @example
      * // draw a 50x50 red rectangle at position 100x100, that will rotate over time
