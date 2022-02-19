@@ -4875,12 +4875,11 @@ class Gfx extends IManager
         }
 
         // prepare effect and buffers
-        this._fillShapesBuffer(lines, color, blend);
-
-        // draw elements
         let gl = this._gl;
-        gl.drawArrays(gl.TRIANGLE_FAN, 0, lines.length);
-        this._drawCallsCount++;
+        this._fillShapesBuffer(lines, color, blend, (verts) => {
+            gl.drawArrays(gl.TRIANGLE_FAN, 0, verts.length);
+            this._drawCallsCount++;
+        }, true);
     }
 
     /**
@@ -4911,13 +4910,23 @@ class Gfx extends IManager
     drawLinesStrip(points, colors, blendMode, looped)
     {
         // prepare effect and buffers
-        this._fillShapesBuffer(points, colors, blendMode);
-
-        // draw elements
         let gl = this._gl;
-        let linesType = Boolean(looped) ? gl.LINE_LOOP : gl.LINE_STRIP;
-        gl.drawArrays(linesType, 0, points.length);
-        this._drawCallsCount++;
+
+        // do loop - note: we can't use gl.LINE_LOOPED in case we need multiple buffers inside '_fillShapesBuffer' which will invoke more than one draw
+        if (looped) {
+            points = points.slice(0);
+            points.push(points[0]);
+            if (colors && colors.length) {
+                colors = colors.slice(0);
+                colors.push(colors[0]);
+            }
+        }
+
+        // draw lines
+        this._fillShapesBuffer(points, colors, blendMode, (verts) => {
+            gl.drawArrays(gl.LINE_STRIP, 0, verts.length);
+            this._drawCallsCount++;
+        }, true);
     }
 
     /**
@@ -4933,12 +4942,11 @@ class Gfx extends IManager
     drawLines(points, colors, blendMode)
     {
         // prepare effect and buffers
-        this._fillShapesBuffer(points, colors, blendMode);
-
-        // draw elements
         let gl = this._gl;
-        gl.drawArrays(gl.LINES, 0, points.length);
-        this._drawCallsCount++;
+        this._fillShapesBuffer(points, colors, blendMode, (verts) => {
+            gl.drawArrays(gl.LINES, 0, verts.length);
+            this._drawCallsCount++;
+        }, true);
     }
 
     /**
@@ -4966,20 +4974,18 @@ class Gfx extends IManager
      */
     drawPoints(points, colors, blendMode)
     {
-        // prepare effect and buffers
-        this._fillShapesBuffer(points, colors, blendMode);
-
-        // draw elements
         let gl = this._gl;
-        gl.drawArrays(gl.POINTS, 0, points.length);
-        this._drawCallsCount++;
+        this._fillShapesBuffer(points, colors, blendMode, (verts) => {
+            gl.drawArrays(gl.POINTS, 0, verts.length);
+            this._drawCallsCount++;
+        }, false);
     }
     
     /**
      * Prepare buffers, effect and blend mode for shape rendering.
      * @private
      */
-    _fillShapesBuffer(points, colors, blendMode)
+    _fillShapesBuffer(points, colors, blendMode, onReady, isStrip)
     {
        // some defaults
        colors = colors || _whiteColor;
@@ -4991,9 +4997,20 @@ class Gfx extends IManager
             return;
         }
 
-        // sanity - make sure not too many vertices
-        if (points.length > this.maxLineSegments) {
-            _logger.error(`Cannot draw shapes with more than ${this.maxLineSegments} vertices!`);
+        // if we have too many vertices, break to multiple calls
+        let maxWithMargin = isStrip ? (this.maxLineSegments-1) : this.maxLineSegments;
+        if (points.length > maxWithMargin) {
+            let sliceI = 0;
+            while (true) {
+                let start = sliceI * maxWithMargin;
+                let end = start + maxWithMargin;
+                if (isStrip && sliceI > 0) { start--; }
+                let subpoints = points.slice(start, end);
+                if (subpoints.length === 0) { break; }
+                let subcolors = (colors && colors.length) ? colors.slice(start, end) : colors;
+                this._fillShapesBuffer(subpoints, subcolors, blendMode, onReady, isStrip);
+                sliceI++;
+            }
             return;
         }
 
@@ -5043,6 +5060,9 @@ class Gfx extends IManager
        // set indices
        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this._dynamicBuffers.linesIndexBuffer);
        this._currIndices = null;
+
+       // invoke the on-ready callback
+       onReady(points);
     }
 
     /**
@@ -5167,7 +5187,8 @@ class Gfx extends IManager
             if (cullOutOfScreen)
             {
                 let region = this.getRenderingRegion();
-                if (!region.containsVector(topLeft) && !region.containsVector(topRight) && !region.containsVector(bottomLeft) && !region.containsVector(bottomRight)) {
+                let destRect = Rectangle.fromPoints([topLeft, topRight, bottomLeft, bottomRight]);
+                if (!region.collideRect(destRect)) {
                     continue;
                 }
             }
@@ -8034,7 +8055,7 @@ let _totalFrameTimes = 0;
 
 
 // current version
-const version = "1.4.2";
+const version = "1.4.3";
 
 /**
  * Shaku's main object.

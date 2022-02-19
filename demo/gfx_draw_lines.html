@@ -55,7 +55,7 @@
             if (Shaku.input.down('mouse_left') && (Shaku.input.mouseMoving || Shaku.input.pressed('mouse_left'))) {
               lines.push(Shaku.input.mousePosition);
               colors.push(Shaku.utils.Color.random());
-              while (lines.length >= Shaku.gfx.maxLineSegments - 1) {
+              while (lines.length >= Shaku.gfx.maxLineSegments * 2) {
                 lines.shift();
                 colors.shift();
               }

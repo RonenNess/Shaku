@@ -53,18 +53,11 @@
                   let val = perlin.generateSmooth(x / 25, y / 25, 0.15);
                   points.push(new Shaku.utils.Vector2(x, y));
                   colors.push(new Shaku.utils.Color(val, val, val, 1));
-                  if (points.length === 500) {
-                    Shaku.gfx.drawPoints(points, colors);
-                    points = [];
-                    colors = [];
-                  }
                 }
               }
 
-              // draw last batch
-              if (points.length) {
-                Shaku.gfx.drawPoints(points, colors);
-              }
+              // draw noise
+              Shaku.gfx.drawPoints(points, colors);
 
               // no longer need update
               needUpdate = false;

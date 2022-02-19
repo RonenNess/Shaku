@@ -1621,6 +1621,11 @@ List of changes in released versions.
 - Updated demos.
 - Added `drawPoints()` and `drawPoint()` methods.
 
+## 1.4.3 [WIP]
+
+- Removed the annoying quantity limitation when drawing shapes.
+- Fixed sprites batch culling.
+
 # License
 
 *Shaku* is licensed under the permissive MIT license, so you can use it for any purpose (including commercially) and it should be compatible with most common licenses.
