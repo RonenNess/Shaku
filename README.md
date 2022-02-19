@@ -1625,6 +1625,7 @@ List of changes in released versions.
 
 - Removed the annoying quantity limitation when drawing shapes.
 - Fixed sprites batch culling.
+- Added `fillCircles()` method to draw circles with batching.
 
 # License
 

@@ -4879,7 +4879,63 @@ class Gfx extends IManager
         this._fillShapesBuffer(lines, color, blend, (verts) => {
             gl.drawArrays(gl.TRIANGLE_FAN, 0, verts.length);
             this._drawCallsCount++;
-        }, true);
+        }, true, 1);
+    }
+
+    /**
+     * Draw a list of filled colored circles using batches.
+     * @example
+     * // draw a filled circle at 50x50 with radius of 85
+     * Shaku.gfx.fillCircles([new Shaku.utils.Circle(new Shaku.utils.Vector2(50, 50), 85), new Shaku.utils.Circle(new Shaku.utils.Vector2(150, 125), 35)], Shaku.utils.Color.red);
+     * @param {Array<Circle>} circles Circles list to draw.
+     * @param {Color|Array<Color>} colors Circles fill color or a single color for all circles.
+     * @param {BlendModes} blend Blend mode.
+     * @param {Number} lineAmount How many lines to compose the circle from (bigger number = smoother circle).
+     */
+    fillCircles(circles, colors, blend, lineAmount)
+    {
+        // defaults
+        if (lineAmount === undefined) { lineAmount = 32; }
+
+        // build vertices and colors arrays
+        let vertsArr = [];
+        let colorsArr = colors.length ? [] : null;
+
+        // generate vertices and colors
+        for (let i = 0; i < circles.length; ++i) {
+
+            let circle = circles[i];
+            let color = colors[i] || colors;
+
+            const twicePi = 2 * Math.PI;
+            for (let i = 0; i <= lineAmount; i++) {
+
+                // set vertices
+                vertsArr.push(new Vector2(
+                    circle.center.x + (circle.radius * Math.cos(i * twicePi / lineAmount)), 
+                    circle.center.y + (circle.radius * Math.sin(i * twicePi / lineAmount))
+                ));
+                vertsArr.push(new Vector2(
+                    circle.center.x + (circle.radius * Math.cos((i+1) * twicePi / lineAmount)), 
+                    circle.center.y + (circle.radius * Math.sin((i+1) * twicePi / lineAmount))
+                ));
+                vertsArr.push(circle.center);
+
+                // set colors
+                if (colorsArr) {
+                    colorsArr.push(color);
+                    colorsArr.push(color);
+                    colorsArr.push(color);
+                }
+            }
+        }
+
+        // prepare effect and buffers
+        let gl = this._gl;
+        this._fillShapesBuffer(vertsArr, colorsArr || colors, blend, (verts) => {
+            gl.drawArrays(gl.TRIANGLES, 0, verts.length);
+            this._drawCallsCount++;
+        }, true, 3);
     }
 
     /**
@@ -4926,7 +4982,7 @@ class Gfx extends IManager
         this._fillShapesBuffer(points, colors, blendMode, (verts) => {
             gl.drawArrays(gl.LINE_STRIP, 0, verts.length);
             this._drawCallsCount++;
-        }, true);
+        }, true, 2);
     }
 
     /**
@@ -4946,7 +5002,7 @@ class Gfx extends IManager
         this._fillShapesBuffer(points, colors, blendMode, (verts) => {
             gl.drawArrays(gl.LINES, 0, verts.length);
             this._drawCallsCount++;
-        }, true);
+        }, true, 2);
     }
 
     /**
@@ -4978,14 +5034,14 @@ class Gfx extends IManager
         this._fillShapesBuffer(points, colors, blendMode, (verts) => {
             gl.drawArrays(gl.POINTS, 0, verts.length);
             this._drawCallsCount++;
-        }, false);
+        }, false, 1);
     }
     
     /**
      * Prepare buffers, effect and blend mode for shape rendering.
      * @private
      */
-    _fillShapesBuffer(points, colors, blendMode, onReady, isStrip)
+    _fillShapesBuffer(points, colors, blendMode, onReady, isStrip, groupsSize)
     {
        // some defaults
        colors = colors || _whiteColor;
@@ -4997,8 +5053,13 @@ class Gfx extends IManager
             return;
         }
 
-        // if we have too many vertices, break to multiple calls
+        // calculate actual max buffer size
         let maxWithMargin = isStrip ? (this.maxLineSegments-1) : this.maxLineSegments;
+        if (groupsSize != 1) {
+            while (maxWithMargin % groupsSize !== 0) { maxWithMargin--; }
+        }
+
+        // if we have too many vertices, break to multiple calls
         if (points.length > maxWithMargin) {
             let sliceI = 0;
             while (true) {
@@ -5008,7 +5069,7 @@ class Gfx extends IManager
                 let subpoints = points.slice(start, end);
                 if (subpoints.length === 0) { break; }
                 let subcolors = (colors && colors.length) ? colors.slice(start, end) : colors;
-                this._fillShapesBuffer(subpoints, subcolors, blendMode, onReady, isStrip);
+                this._fillShapesBuffer(subpoints, subcolors, blendMode, onReady, isStrip, groupsSize);
                 sliceI++;
             }
             return;
