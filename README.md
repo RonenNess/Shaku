@@ -1627,6 +1627,7 @@ List of changes in released versions.
 - Fixed sprites batch culling.
 - Added `fillCircles()` method to draw circles with batching.
 - Added `fillRects()` method to draw rectangles with batching.
+- Slightly optimized collision world movement.
 
 # License
 
