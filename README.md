@@ -153,7 +153,7 @@ You can find the above boilerplate HTML [here](html_boilerplate.html).
 # Online Demo Projects
 
 Online demo projects can be found [here](https://ronenness.github.io/Shaku/demo/index.html). 
-The demos illustrate basic features and components, and implement 3 basic "games": Snake, Tilemap Editor, and Fishy.
+The demos demonstrate basic features and components, and implement 3 basic "games": Snake, Tilemap Editor, and Fishy.
 
 ![Demo-2](resources/demo-2.png)
 
@@ -340,7 +340,7 @@ A demo page that draw lines can be found [here](https://ronenness.github.io/Shak
 
 Blend Modes are different methods to blend new rendering with the existing buffer / texture we draw on.
 
-The following screenshot illustrate the different blend modes *Shaku* supports, and how it would look like when using them:
+The following screenshot demonstrate the different blend modes *Shaku* supports, and how it would look like when using them:
 
 ![BlendModes](docs/resources/blend-modes.png)
 
@@ -434,7 +434,7 @@ Shaku.gfx.drawGroup(text1, true);
 
 When loading the `FontTexture` you can provide additional parameters, to learn more about them check out the [API Docs](docs/assets_font_texture_asset.md).
 
-To illustrate the concept of `Font Textures` better, here's a saved font texture that was generated via `assets.loadFontTexture()` in the [drawing texts demo](https://ronenness.github.io/Shaku/demo/gfx_draw_text.html):
+To demonstrate the concept of `Font Textures` better, here's a saved font texture that was generated via `assets.loadFontTexture()` in the [drawing texts demo](https://ronenness.github.io/Shaku/demo/gfx_draw_text.html):
 
 ![font texture](resources/font-texture.png)
 
@@ -1472,7 +1472,7 @@ In this case I chose batching because it allows us to use the same shaders with 
 
 Note that if you really need instances you can probably implement it with a custom effect + extending the gfx with another method.
 
-A demo project that illustrate performance with batching can be found [here](https://ronenness.github.io/Shaku/demo/gfx_performance.html).
+A demo project that demonstrate performance with batching can be found [here](https://ronenness.github.io/Shaku/demo/gfx_performance.html).
 
 
 ## Shaku on NodeJS
@@ -1628,6 +1628,10 @@ List of changes in released versions.
 - Added `fillCircles()` method to draw circles with batching.
 - Added `fillRects()` method to draw rectangles with batching.
 - Slightly optimized collision world movement.
+- Added `getBoundingCircle()` to `Rectangle`.
+- Added `resize()` to `Rectangle`.
+- Improved collision rectangle radius calculation.
+- Added collision tilemap shape.
 
 # License
 

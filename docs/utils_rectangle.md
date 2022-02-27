@@ -32,6 +32,8 @@ Implement a simple 2d Rectangle.
         * [.collideRect(other)](#Rectangle+collideRect) ⇒ <code>Boolean</code>
         * [.collideLine(line)](#Rectangle+collideLine) ⇒ <code>Boolean</code>
         * [.collideCircle(circle)](#Rectangle+collideCircle) ⇒ <code>Boolean</code>
+        * [.getBoundingCircle()](#Rectangle+getBoundingCircle) ⇒ <code>Circle</code>
+        * [.resize(amount)](#Rectangle+resize) ⇒ [<code>Rectangle</code>](#Rectangle)
         * [.equals(other)](#Rectangle+equals)
     * _static_
         * [.fromPoints(points)](#Rectangle.fromPoints) ⇒ [<code>Rectangle</code>](#Rectangle)
@@ -202,6 +204,25 @@ Checks if this rectangle collides with a circle.
 | Param | Type | Description |
 | --- | --- | --- |
 | circle | <code>Circle</code> | Circle to check collision with. |
+
+<a name="Rectangle+getBoundingCircle"></a>
+
+### rectangle.getBoundingCircle() ⇒ <code>Circle</code>
+Get the smallest circle containing this rectangle.
+
+**Kind**: instance method of [<code>Rectangle</code>](#Rectangle)  
+**Returns**: <code>Circle</code> - Bounding circle.  
+<a name="Rectangle+resize"></a>
+
+### rectangle.resize(amount) ⇒ [<code>Rectangle</code>](#Rectangle)
+Return a resized rectangle with the same center point.
+
+**Kind**: instance method of [<code>Rectangle</code>](#Rectangle)  
+**Returns**: [<code>Rectangle</code>](#Rectangle) - resized rectangle.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| amount | <code>Number</code> \| <code>Vector2</code> | Amount to resize. |
 
 <a name="Rectangle+equals"></a>
 

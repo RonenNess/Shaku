@@ -26,6 +26,7 @@ You can view the entire docs as a single file [here](shaku_full.md), or by topic
 * [Collision: Shapes Point](collision_shapes_point.md)
 * [Collision: Shapes Rectangle](collision_shapes_rectangle.md)
 * [Collision: Shapes Shape](collision_shapes_shape.md)
+* [Collision: Shapes Tilemap](collision_shapes_tilemap.md)
 * [Gfx: Blend Modes](gfx_blend_modes.md)
 * [Gfx: Camera](gfx_camera.md)
 * [Gfx: Effects Basic](gfx_effects_basic.md)

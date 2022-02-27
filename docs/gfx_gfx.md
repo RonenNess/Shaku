@@ -47,9 +47,11 @@ To access the Graphics manager you use `Shaku.gfx`.
     * [.cover(texture, destRect, sourceRect, color, blendMode)](#Gfx+cover)
     * [.draw(texture, position, size, sourceRect, color, blendMode, rotation, origin, transform)](#Gfx+draw)
     * [.fillRect(destRect, color, blend, rotation)](#Gfx+fillRect)
+    * [.fillRects(destRects, colors, blend, rotation)](#Gfx+fillRects)
     * [.outlineRect(destRect, color, blend, rotation)](#Gfx+outlineRect)
     * [.outlineCircle(circle, color, blend, lineAmount)](#Gfx+outlineCircle)
     * [.fillCircle(circle, color, blend, lineAmount)](#Gfx+fillCircle)
+    * [.fillCircles(circles, colors, blend, lineAmount)](#Gfx+fillCircles)
     * [.drawLine(startPoint, endPoint, color, blendMode)](#Gfx+drawLine)
     * [.drawLinesStrip(points, colors, blendMode, looped)](#Gfx+drawLinesStrip)
     * [.drawLines(points, colors, blendMode)](#Gfx+drawLines)
@@ -544,6 +546,25 @@ Draw a filled colored rectangle.
 // draw a 50x50 red rectangle at position 100x100, that will rotate over time
 Shaku.gfx.fillRect(new Shaku.utils.Rectangle(100, 100, 50, 50), Shaku.utils.Color.red, null, Shaku.gameTime.elapsed);
 ```
+<a name="Gfx+fillRects"></a>
+
+### gfx.fillRects(destRects, colors, blend, rotation)
+Draw a list of filled colored rectangles as a batch.
+
+**Kind**: instance method of [<code>Gfx</code>](#Gfx)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| destRects | <code>Array.&lt;Rectangle&gt;</code> | Rectangles to fill. |
+| colors | <code>Array.&lt;Color&gt;</code> \| <code>Color</code> | Rectangles fill color. |
+| blend | <code>BlendModes</code> | Blend mode. |
+| rotation | <code>Number</code> | Rotate the rectangle around its center. |
+
+**Example**  
+```js
+// draw a 50x50 red rectangle at position 100x100, that will rotate over time
+Shaku.gfx.fillRects([new Shaku.utils.Rectangle(100, 100, 50, 50), new Shaku.utils.Rectangle(150, 150, 25, 25)], Shaku.utils.Color.red, null, Shaku.gameTime.elapsed);
+```
 <a name="Gfx+outlineRect"></a>
 
 ### gfx.outlineRect(destRect, color, blend, rotation)
@@ -600,6 +621,25 @@ Draw a filled colored circle.
 ```js
 // draw a filled circle at 50x50 with radius of 85
 Shaku.gfx.fillCircle(new Shaku.utils.Circle(new Shaku.utils.Vector2(50, 50), 85), Shaku.utils.Color.red);
+```
+<a name="Gfx+fillCircles"></a>
+
+### gfx.fillCircles(circles, colors, blend, lineAmount)
+Draw a list of filled colored circles using batches.
+
+**Kind**: instance method of [<code>Gfx</code>](#Gfx)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| circles | <code>Array.&lt;Circle&gt;</code> | Circles list to draw. |
+| colors | <code>Color</code> \| <code>Array.&lt;Color&gt;</code> | Circles fill color or a single color for all circles. |
+| blend | <code>BlendModes</code> | Blend mode. |
+| lineAmount | <code>Number</code> | How many lines to compose the circle from (bigger number = smoother circle). |
+
+**Example**  
+```js
+// draw a filled circle at 50x50 with radius of 85
+Shaku.gfx.fillCircles([new Shaku.utils.Circle(new Shaku.utils.Vector2(50, 50), 85), new Shaku.utils.Circle(new Shaku.utils.Vector2(150, 125), 35)], Shaku.utils.Color.red);
 ```
 <a name="Gfx+drawLine"></a>
 

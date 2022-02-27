@@ -69,6 +69,11 @@ This shape is made of one line or more.</p>
 <dt><a href="#CollisionShape">CollisionShape</a></dt>
 <dd><p>Collision shape base class.</p>
 </dd>
+<dt><a href="#TilemapShape">TilemapShape</a></dt>
+<dd><p>Collision tilemap class.
+A collision tilemap shape is a grid of equal-sized cells that can either block or not (+ have collision flags).
+Its the most efficient (both memory and CPU) way to implement grid based / tilemap collision.</p>
+</dd>
 <dt><a href="#Camera">Camera</a></dt>
 <dd><p>Implements a Camera object.</p>
 </dd>
@@ -921,6 +926,7 @@ To access the Collision manager you use `Shaku.collision`.
     * [.PointShape](#Collision+PointShape)
     * [.CircleShape](#Collision+CircleShape)
     * [.LinesShape](#Collision+LinesShape)
+    * [.TilemapShape](#Collision+TilemapShape)
     * [.createWorld(gridCellSize)](#Collision+createWorld) ⇒ [<code>CollisionWorld</code>](#CollisionWorld)
 
 <a name="new_Collision_new"></a>
@@ -957,6 +963,12 @@ Get the collision circle shape class.
 
 ### collision.LinesShape
 Get the collision lines shape class.
+
+**Kind**: instance property of [<code>Collision</code>](#Collision)  
+<a name="Collision+TilemapShape"></a>
+
+### collision.TilemapShape
+Get the tilemap collision shape class.
 
 **Kind**: instance property of [<code>Collision</code>](#Collision)  
 <a name="Collision+createWorld"></a>
@@ -1518,6 +1530,98 @@ Get shape center position.
 Remove self from parent world object.
 
 **Kind**: instance method of [<code>CollisionShape</code>](#CollisionShape)  
+<a name="TilemapShape"></a>
+
+## TilemapShape
+Collision tilemap class.
+A collision tilemap shape is a grid of equal-sized cells that can either block or not (+ have collision flags).
+Its the most efficient (both memory and CPU) way to implement grid based / tilemap collision.
+
+**Kind**: global class  
+
+* [TilemapShape](#TilemapShape)
+    * [new TilemapShape(offset, gridSize, tileSize, borderThickness)](#new_TilemapShape_new)
+    * [.setTile(index, haveCollision, collisionFlags)](#TilemapShape+setTile)
+    * [.getTileAt(position)](#TilemapShape+getTileAt) ⇒ [<code>RectangleShape</code>](#RectangleShape)
+    * [.getTilesAtRegion(region)](#TilemapShape+getTilesAtRegion) ⇒ [<code>Array.&lt;RectangleShape&gt;</code>](#RectangleShape)
+    * [._getRadius()](#TilemapShape+_getRadius)
+    * [._getBoundingBox()](#TilemapShape+_getBoundingBox)
+    * [.getCenter()](#TilemapShape+getCenter)
+    * [.debugDraw(opacity)](#TilemapShape+debugDraw)
+
+<a name="new_TilemapShape_new"></a>
+
+### new TilemapShape(offset, gridSize, tileSize, borderThickness)
+Create the collision tilemap.
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| offset | [<code>Vector2</code>](#Vector2) | Tilemap top-left corner. |
+| gridSize | [<code>Vector2</code>](#Vector2) | Number of tiles on X and Y axis. |
+| tileSize | [<code>Vector2</code>](#Vector2) | The size of a single tile. |
+| borderThickness | <code>Number</code> | Set a border collider with this thickness. |
+
+<a name="TilemapShape+setTile"></a>
+
+### tilemapShape.setTile(index, haveCollision, collisionFlags)
+Set the state of a tile.
+
+**Kind**: instance method of [<code>TilemapShape</code>](#TilemapShape)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| index | [<code>Vector2</code>](#Vector2) | Tile index. |
+| haveCollision | <code>Boolean</code> | Does this tile have collision? |
+| collisionFlags | <code>Number</code> | Optional collision flag to set for this tile. |
+
+<a name="TilemapShape+getTileAt"></a>
+
+### tilemapShape.getTileAt(position) ⇒ [<code>RectangleShape</code>](#RectangleShape)
+Get the collision shape of a tile at a given position.
+
+**Kind**: instance method of [<code>TilemapShape</code>](#TilemapShape)  
+**Returns**: [<code>RectangleShape</code>](#RectangleShape) - Collision shape at this position, or null if not set.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| position | [<code>Vector2</code>](#Vector2) | Position to get tile at. |
+
+<a name="TilemapShape+getTilesAtRegion"></a>
+
+### tilemapShape.getTilesAtRegion(region) ⇒ [<code>Array.&lt;RectangleShape&gt;</code>](#RectangleShape)
+Get all tiles in given region, represented by a rectangle.
+
+**Kind**: instance method of [<code>TilemapShape</code>](#TilemapShape)  
+**Returns**: [<code>Array.&lt;RectangleShape&gt;</code>](#RectangleShape) - Array with rectangle shapes or empty if none found.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| region | [<code>Rectangle</code>](#Rectangle) | Rectangle to get tiles for. |
+
+<a name="TilemapShape+_getRadius"></a>
+
+### tilemapShape.\_getRadius()
+**Kind**: instance method of [<code>TilemapShape</code>](#TilemapShape)  
+<a name="TilemapShape+_getBoundingBox"></a>
+
+### tilemapShape.\_getBoundingBox()
+**Kind**: instance method of [<code>TilemapShape</code>](#TilemapShape)  
+<a name="TilemapShape+getCenter"></a>
+
+### tilemapShape.getCenter()
+**Kind**: instance method of [<code>TilemapShape</code>](#TilemapShape)  
+<a name="TilemapShape+debugDraw"></a>
+
+### tilemapShape.debugDraw(opacity)
+Debug draw this shape.
+
+**Kind**: instance method of [<code>TilemapShape</code>](#TilemapShape)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| opacity | <code>Number</code> | Shape opacity factor. |
+
 <a name="Camera"></a>
 
 ## Camera
@@ -1898,9 +2002,11 @@ To access the Graphics manager you use `Shaku.gfx`.
     * [.cover(texture, destRect, sourceRect, color, blendMode)](#Gfx+cover)
     * [.draw(texture, position, size, sourceRect, color, blendMode, rotation, origin, transform)](#Gfx+draw)
     * [.fillRect(destRect, color, blend, rotation)](#Gfx+fillRect)
+    * [.fillRects(destRects, colors, blend, rotation)](#Gfx+fillRects)
     * [.outlineRect(destRect, color, blend, rotation)](#Gfx+outlineRect)
     * [.outlineCircle(circle, color, blend, lineAmount)](#Gfx+outlineCircle)
     * [.fillCircle(circle, color, blend, lineAmount)](#Gfx+fillCircle)
+    * [.fillCircles(circles, colors, blend, lineAmount)](#Gfx+fillCircles)
     * [.drawLine(startPoint, endPoint, color, blendMode)](#Gfx+drawLine)
     * [.drawLinesStrip(points, colors, blendMode, looped)](#Gfx+drawLinesStrip)
     * [.drawLines(points, colors, blendMode)](#Gfx+drawLines)
@@ -2395,6 +2501,25 @@ Draw a filled colored rectangle.
 // draw a 50x50 red rectangle at position 100x100, that will rotate over time
 Shaku.gfx.fillRect(new Shaku.utils.Rectangle(100, 100, 50, 50), Shaku.utils.Color.red, null, Shaku.gameTime.elapsed);
 ```
+<a name="Gfx+fillRects"></a>
+
+### gfx.fillRects(destRects, colors, blend, rotation)
+Draw a list of filled colored rectangles as a batch.
+
+**Kind**: instance method of [<code>Gfx</code>](#Gfx)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| destRects | [<code>Array.&lt;Rectangle&gt;</code>](#Rectangle) | Rectangles to fill. |
+| colors | [<code>Array.&lt;Color&gt;</code>](#Color) \| [<code>Color</code>](#Color) | Rectangles fill color. |
+| blend | <code>BlendModes</code> | Blend mode. |
+| rotation | <code>Number</code> | Rotate the rectangle around its center. |
+
+**Example**  
+```js
+// draw a 50x50 red rectangle at position 100x100, that will rotate over time
+Shaku.gfx.fillRects([new Shaku.utils.Rectangle(100, 100, 50, 50), new Shaku.utils.Rectangle(150, 150, 25, 25)], Shaku.utils.Color.red, null, Shaku.gameTime.elapsed);
+```
 <a name="Gfx+outlineRect"></a>
 
 ### gfx.outlineRect(destRect, color, blend, rotation)
@@ -2451,6 +2576,25 @@ Draw a filled colored circle.
 ```js
 // draw a filled circle at 50x50 with radius of 85
 Shaku.gfx.fillCircle(new Shaku.utils.Circle(new Shaku.utils.Vector2(50, 50), 85), Shaku.utils.Color.red);
+```
+<a name="Gfx+fillCircles"></a>
+
+### gfx.fillCircles(circles, colors, blend, lineAmount)
+Draw a list of filled colored circles using batches.
+
+**Kind**: instance method of [<code>Gfx</code>](#Gfx)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| circles | [<code>Array.&lt;Circle&gt;</code>](#Circle) | Circles list to draw. |
+| colors | [<code>Color</code>](#Color) \| [<code>Array.&lt;Color&gt;</code>](#Color) | Circles fill color or a single color for all circles. |
+| blend | <code>BlendModes</code> | Blend mode. |
+| lineAmount | <code>Number</code> | How many lines to compose the circle from (bigger number = smoother circle). |
+
+**Example**  
+```js
+// draw a filled circle at 50x50 with radius of 85
+Shaku.gfx.fillCircles([new Shaku.utils.Circle(new Shaku.utils.Vector2(50, 50), 85), new Shaku.utils.Circle(new Shaku.utils.Vector2(150, 125), 35)], Shaku.utils.Color.red);
 ```
 <a name="Gfx+drawLine"></a>
 
@@ -4799,6 +4943,8 @@ Implement a simple 2d Rectangle.
         * [.collideRect(other)](#Rectangle+collideRect) ⇒ <code>Boolean</code>
         * [.collideLine(line)](#Rectangle+collideLine) ⇒ <code>Boolean</code>
         * [.collideCircle(circle)](#Rectangle+collideCircle) ⇒ <code>Boolean</code>
+        * [.getBoundingCircle()](#Rectangle+getBoundingCircle) ⇒ [<code>Circle</code>](#Circle)
+        * [.resize(amount)](#Rectangle+resize) ⇒ [<code>Rectangle</code>](#Rectangle)
         * [.equals(other)](#Rectangle+equals)
     * _static_
         * [.fromPoints(points)](#Rectangle.fromPoints) ⇒ [<code>Rectangle</code>](#Rectangle)
@@ -4969,6 +5115,25 @@ Checks if this rectangle collides with a circle.
 | Param | Type | Description |
 | --- | --- | --- |
 | circle | [<code>Circle</code>](#Circle) | Circle to check collision with. |
+
+<a name="Rectangle+getBoundingCircle"></a>
+
+### rectangle.getBoundingCircle() ⇒ [<code>Circle</code>](#Circle)
+Get the smallest circle containing this rectangle.
+
+**Kind**: instance method of [<code>Rectangle</code>](#Rectangle)  
+**Returns**: [<code>Circle</code>](#Circle) - Bounding circle.  
+<a name="Rectangle+resize"></a>
+
+### rectangle.resize(amount) ⇒ [<code>Rectangle</code>](#Rectangle)
+Return a resized rectangle with the same center point.
+
+**Kind**: instance method of [<code>Rectangle</code>](#Rectangle)  
+**Returns**: [<code>Rectangle</code>](#Rectangle) - resized rectangle.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| amount | <code>Number</code> \| [<code>Vector2</code>](#Vector2) | Amount to resize. |
 
 <a name="Rectangle+equals"></a>
 
