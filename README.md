@@ -1621,7 +1621,7 @@ List of changes in released versions.
 - Updated demos.
 - Added `drawPoints()` and `drawPoint()` methods.
 
-## 1.4.3 [WIP]
+## 1.4.3
 
 - Removed the annoying quantity limitation when drawing shapes.
 - Fixed sprites batch culling.
