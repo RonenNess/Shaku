@@ -581,7 +581,7 @@ function generateRandomAssetName()
  
 // export assets manager
 module.exports = new Assets();
-},{"../assets/sound_asset.js":7,"../logger.js":40,"../manager.js":41,"./asset.js":1,"./binary_asset.js":3,"./font_texture_asset":4,"./json_asset.js":6,"./texture_asset.js":8}],3:[function(require,module,exports){
+},{"../assets/sound_asset.js":7,"../logger.js":41,"../manager.js":42,"./asset.js":1,"./binary_asset.js":3,"./font_texture_asset":4,"./json_asset.js":6,"./texture_asset.js":8}],3:[function(require,module,exports){
 /**
  * Implement binary data asset type.
  * 
@@ -1002,7 +1002,7 @@ function measureTextWidth(fontFamily, fontSize, char)
 
 // export the asset type.
 module.exports = FontTextureAsset;
-},{"../utils/rectangle":55,"../utils/vector2":57,"./asset":1,"./texture_asset":8}],5:[function(require,module,exports){
+},{"../utils/rectangle":56,"../utils/vector2":58,"./asset":1,"./texture_asset":8}],5:[function(require,module,exports){
 /**
  * Just an alias to main manager so we can require() this folder as a package.
  * 
@@ -1586,7 +1586,7 @@ function isPowerOf2(value) {
 
 // export the asset type.
 module.exports = TextureAsset;
-},{"../gfx/texture_filter_modes":34,"../gfx/texture_wrap_modes":35,"../logger.js":40,"../utils/color":49,"../utils/vector2":57,"./asset":1}],9:[function(require,module,exports){
+},{"../gfx/texture_filter_modes":35,"../gfx/texture_wrap_modes":36,"../logger.js":41,"../utils/color":50,"../utils/vector2":58,"./asset":1}],9:[function(require,module,exports){
 /**
  * Implement the collision manager.
  * 
@@ -1745,7 +1745,7 @@ class Collision extends IManager
 
 // export main object
 module.exports = new Collision();
-},{"../logger.js":40,"../manager.js":41,"../utils/vector2.js":57,"./collision_world.js":10,"./resolver":12,"./resolvers_imp":13,"./shapes/circle.js":15,"./shapes/lines.js":16,"./shapes/point.js":17,"./shapes/rectangle.js":18,"./shapes/tilemap.js":20}],10:[function(require,module,exports){
+},{"../logger.js":41,"../manager.js":42,"../utils/vector2.js":58,"./collision_world.js":10,"./resolver":12,"./resolvers_imp":13,"./shapes/circle.js":15,"./shapes/lines.js":16,"./shapes/point.js":17,"./shapes/rectangle.js":18,"./shapes/tilemap.js":20}],10:[function(require,module,exports){
 /**
  * Implement the collision manager.
  * 
@@ -2270,7 +2270,7 @@ function sortByDistanceShapes(sourceShape, options)
 
 // export collision world
 module.exports = CollisionWorld;
-},{"../logger.js":40,"../utils/circle":48,"../utils/color":49,"../utils/rectangle":55,"../utils/vector2":57,"./../gfx":27,"./resolver":12,"./result":14,"./shapes/circle":15,"./shapes/point":17,"./shapes/shape":19}],11:[function(require,module,exports){
+},{"../logger.js":41,"../utils/circle":49,"../utils/color":50,"../utils/rectangle":56,"../utils/vector2":58,"./../gfx":27,"./resolver":12,"./result":14,"./shapes/circle":15,"./shapes/point":17,"./shapes/shape":19}],11:[function(require,module,exports){
 /**
  * Just an alias to main manager so we can require() this folder as a package.
  * 
@@ -2395,7 +2395,7 @@ class CollisionResolver
 
 // export the collision resolver
 module.exports = CollisionResolver;
-},{"../logger.js":40,"../utils/vector2.js":57,"./result.js":14,"./shapes/shape.js":19}],13:[function(require,module,exports){
+},{"../logger.js":41,"../utils/vector2.js":58,"./result.js":14,"./shapes/shape.js":19}],13:[function(require,module,exports){
 /**
  * All default collision detection implementations.
  * 
@@ -2614,7 +2614,7 @@ class CollisionTestResult
 
 // export collision shape class
 module.exports = CollisionTestResult;
-},{"../utils/vector2":57,"./shapes/shape":19}],15:[function(require,module,exports){
+},{"../utils/vector2":58,"./shapes/shape":19}],15:[function(require,module,exports){
 /**
  * Implement collision circle.
  * 
@@ -2704,7 +2704,7 @@ class CircleShape extends CollisionShape
 
 // export collision shape class
 module.exports = CircleShape;
-},{"../../utils/circle":48,"../../utils/rectangle":55,"./../../gfx":27,"./shape":19}],16:[function(require,module,exports){
+},{"../../utils/circle":49,"../../utils/rectangle":56,"./../../gfx":27,"./shape":19}],16:[function(require,module,exports){
 /**
  * Implement collision lines.
  * 
@@ -2824,7 +2824,7 @@ class LinesShape extends CollisionShape
 
 // export collision lines class
 module.exports = LinesShape;
-},{"../../utils/circle":48,"../../utils/line":52,"../../utils/rectangle":55,"./../../gfx":27,"./shape":19}],17:[function(require,module,exports){
+},{"../../utils/circle":49,"../../utils/line":53,"../../utils/rectangle":56,"./../../gfx":27,"./shape":19}],17:[function(require,module,exports){
 /**
  * Implement collision point.
  * 
@@ -2919,7 +2919,7 @@ class PointShape extends CollisionShape
 
 // export collision shape class
 module.exports = PointShape;
-},{"../../utils/circle":48,"../../utils/rectangle":55,"../../utils/vector2":57,"./../../gfx":27,"./shape":19}],18:[function(require,module,exports){
+},{"../../utils/circle":49,"../../utils/rectangle":56,"../../utils/vector2":58,"./../../gfx":27,"./shape":19}],18:[function(require,module,exports){
 /**
  * Implement collision rectangle.
  * 
@@ -3008,7 +3008,7 @@ class RectangleShape extends CollisionShape
 
 // export collision shape class
 module.exports = RectangleShape;
-},{"../../utils/rectangle":55,"./../../gfx":27,"./shape":19}],19:[function(require,module,exports){
+},{"../../utils/rectangle":56,"./../../gfx":27,"./shape":19}],19:[function(require,module,exports){
 /**
  * Implement collision shape base class.
  * 
@@ -3188,7 +3188,7 @@ const defaultDebugColors = [Color.red, Color.blue, Color.green, Color.yellow, Co
 
 // export collision shape class
 module.exports = CollisionShape;
-},{"../../utils/color":49,"../../utils/rectangle":55,"../../utils/vector2":57,"../collision_world":10}],20:[function(require,module,exports){
+},{"../../utils/color":50,"../../utils/rectangle":56,"../../utils/vector2":58,"../collision_world":10}],20:[function(require,module,exports){
 /**
  * Implement collision tilemap.
  * 
@@ -3365,7 +3365,7 @@ class TilemapShape extends CollisionShape
 
 // export collision shape class
 module.exports = TilemapShape;
-},{"../../utils/rectangle":55,"../../utils/vector2":57,"./../../gfx":27,"./rectangle":18,"./shape":19}],21:[function(require,module,exports){
+},{"../../utils/rectangle":56,"../../utils/vector2":58,"./../../gfx":27,"./rectangle":18,"./shape":19}],21:[function(require,module,exports){
 /**
  * Define supported blend modes.
  * 
@@ -3520,7 +3520,7 @@ class Camera
 
 // export the camera object
 module.exports = Camera;
-},{"../utils/rectangle":55,"../utils/vector2":57,"./matrix":28}],23:[function(require,module,exports){
+},{"../utils/rectangle":56,"../utils/vector2":58,"./matrix":28}],23:[function(require,module,exports){
 /**
  * Implement a basic effect to draw sprites.
  * 
@@ -4201,7 +4201,7 @@ function _setTextureFilter(gl, filter)
 
 // export the effect class.
 module.exports = Effect;
-},{"../../assets/texture_asset.js":8,"../../logger.js":40,"../../utils/color.js":49,"../../utils/rectangle.js":55,"../matrix.js":28,"../texture_filter_modes":34,"../texture_wrap_modes":35}],25:[function(require,module,exports){
+},{"../../assets/texture_asset.js":8,"../../logger.js":41,"../../utils/color.js":50,"../../utils/rectangle.js":56,"../matrix.js":28,"../texture_filter_modes":35,"../texture_wrap_modes":36}],25:[function(require,module,exports){
 /**
  * Include all built-in effects.
  * 
@@ -4252,6 +4252,7 @@ const FontTextureAsset = require('../assets/font_texture_asset.js');
 const TextAlignment = require('./text_alignment.js');
 const Mesh = require('./mesh.js');
 const Circle = require('../utils/circle.js');
+const SpriteBatch = require('./sprite_batch.js');
 const _whiteColor = Color.white;
 const _logger = require('../logger.js').getLogger('gfx');
 
@@ -4288,6 +4289,7 @@ class Gfx extends IManager
         this._renderTarget = null;
         this._viewport = null;
         this._drawCallsCount = 0;
+        this.spritesBatch = null;
     }
 
     /**
@@ -4729,6 +4731,9 @@ class Gfx extends IManager
             }
             this._gl.bindBuffer(this._gl.ELEMENT_ARRAY_BUFFER, this._dynamicBuffers.linesIndexBuffer);
             this._gl.bufferData(this._gl.ELEMENT_ARRAY_BUFFER, lineIndices, this._gl.STATIC_DRAW);
+
+            // create sprites batch
+            this.spritesBatch = new SpriteBatch(this);
 
             // success!
             resolve();
@@ -5443,164 +5448,13 @@ class Gfx extends IManager
         // skip if empty
         if (group._sprites.length === 0) { return; }
 
-        // get transform and setup effect
+        // get transform
         var transform = group.getTransform();
 
-        // basic params
-        var gl = this._gl;
-        var positions = this._dynamicBuffers.positionArray;
-        var uvs = this._dynamicBuffers.textureArray;
-        var colors = this._dynamicBuffers.colorsArray;
-        var currTexture = null;
-        var currBlendMode = null;
-        var currBatchSpritesCount = 0;
-
-        // draw the current batch
-        let drawCurrentBatch = () =>
-        {
-            // set blend mode if needed
-            this._setBlendMode(currBlendMode);
-
-            // prepare effect and texture
-            let mesh = new Mesh(this._dynamicBuffers.positionBuffer, this._dynamicBuffers.textureCoordBuffer, this._dynamicBuffers.colorsBuffer, this._dynamicBuffers.indexBuffer, currBatchSpritesCount * 6);
-            this._activeEffect.prepareToDrawBatch(mesh, transform || Matrix.identity);
-            this._setActiveTexture(currTexture);
-
-            // should we slice the arrays?
-            let shouldSliceArrays = currBatchSpritesCount < this.batchSpritesCount / 2;
-
-            // copy position buffer
-            this._gl.bindBuffer(this._gl.ARRAY_BUFFER, this._dynamicBuffers.positionBuffer);
-            this._gl.bufferData(this._gl.ARRAY_BUFFER, 
-                shouldSliceArrays ? this._dynamicBuffers.positionArray.slice(0, currBatchSpritesCount * 4 * 3) : this._dynamicBuffers.positionArray, 
-                this._gl.DYNAMIC_DRAW);
-
-            // copy texture buffer
-            this._gl.bindBuffer(this._gl.ARRAY_BUFFER, this._dynamicBuffers.textureCoordBuffer);
-            this._gl.bufferData(this._gl.ARRAY_BUFFER, 
-                shouldSliceArrays ? this._dynamicBuffers.textureArray.slice(0, currBatchSpritesCount * 4 * 2) : this._dynamicBuffers.textureArray, 
-                this._gl.DYNAMIC_DRAW);
-
-            // copy color buffer
-            this._gl.bindBuffer(this._gl.ARRAY_BUFFER, this._dynamicBuffers.colorsBuffer);
-            this._gl.bufferData(this._gl.ARRAY_BUFFER, 
-                shouldSliceArrays ? this._dynamicBuffers.colorsArray.slice(0, currBatchSpritesCount * 4 * 4) : this._dynamicBuffers.colorsArray, 
-                this._gl.DYNAMIC_DRAW);
-
-            // set indices
-            gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this._dynamicBuffers.indexBuffer);
-            this._currIndices = null;
-
-            // draw elements
-            gl.drawElements(gl.TRIANGLES, currBatchSpritesCount * 6, gl.UNSIGNED_SHORT, 0);
-            this._drawCallsCount++;
-
-            // reset arrays
-            currBatchSpritesCount = 0;
-        }
-
-        // set starting texture and blend mode
-        currTexture = group._sprites[0].texture;
-        currBlendMode = group._sprites[0].blendMode;
-
-        // draw sprites
-        for (let i = 0; i < group._sprites.length; ++i) {
-
-            // get current sprite
-            let sprite = group._sprites[i];
-
-            // if texture changed, blend mode changed, or we have too many indices - draw current batch
-            if ((currBatchSpritesCount >= this.batchSpritesCount) || (sprite.blendMode !== currBlendMode) || (sprite.texture !== currTexture)) {
-                drawCurrentBatch();
-                currTexture = sprite.texture;
-                currBlendMode = sprite.blendMode;
-            }
-
-            // calculate vertices positions
-            let sizeX = sprite.size.x;
-            let sizeY = sprite.size.y;
-            let left = -sizeX * sprite.origin.x;
-            let top = -sizeY * sprite.origin.y;
-
-            // calculate corners
-            let topLeft = new Vector2(left, top);
-            let topRight = new Vector2(left + sizeX, top);
-            let bottomLeft = new Vector2(left, top + sizeY);
-            let bottomRight = new Vector2(left + sizeX, top + sizeY);
-
-            // apply rotation
-            if (sprite.rotation) {
-                let cos = Math.cos(sprite.rotation);
-                let sin = Math.sin(sprite.rotation);
-                function rotateVec(vector)
-                {
-                    let x = (vector.x * cos - vector.y * sin);
-                    let y = (vector.x * sin + vector.y * cos);
-                    vector.set(x, y);
-                }
-                rotateVec(topLeft);
-                rotateVec(topRight);
-                rotateVec(bottomLeft);
-                rotateVec(bottomRight);
-            }
-
-            // add sprite position
-            topLeft.addSelf(sprite.position);
-            topRight.addSelf(sprite.position);
-            bottomLeft.addSelf(sprite.position);
-            bottomRight.addSelf(sprite.position);
-
-            // cull out-of-screen sprites
-            if (cullOutOfScreen)
-            {
-                let region = this.getRenderingRegion();
-                let destRect = Rectangle.fromPoints([topLeft, topRight, bottomLeft, bottomRight]);
-                if (!region.collideRect(destRect)) {
-                    continue;
-                }
-            }
-
-            // update positions buffer
-            let pi = currBatchSpritesCount * 4 * 3;
-            positions[pi+0] = topLeft.x;             positions[pi+1] = topLeft.y;             positions[pi+2] = 0;
-            positions[pi+3] = topRight.x;            positions[pi+4] = topRight.y;            positions[pi+5] = 0;
-            positions[pi+6] = bottomLeft.x;          positions[pi+7] = bottomLeft.y;          positions[pi+8] = 0;
-            positions[pi+9] = bottomRight.x;         positions[pi+10] = bottomRight.y;        positions[pi+11] = 0;
-
-            // add uvs
-            let uvi = currBatchSpritesCount * 4 * 2;
-            if (sprite.sourceRect) {
-                let uvTl = {x: sprite.sourceRect.x / currTexture.width, y: sprite.sourceRect.y / currTexture.height};
-                let uvBr = {x: uvTl.x + sprite.sourceRect.width / currTexture.width, y: uvTl.y + sprite.sourceRect.height / currTexture.height};
-                uvs[uvi+0] = uvTl.x;  uvs[uvi+1] = uvTl.y;
-                uvs[uvi+2] = uvBr.x;  uvs[uvi+3] = uvTl.y;
-                uvs[uvi+4] = uvTl.x;  uvs[uvi+5] = uvBr.y;
-                uvs[uvi+6] = uvBr.x;  uvs[uvi+7] = uvBr.y;
-            }
-            else {
-                uvs[uvi+0] = 0;  uvs[uvi+1] = 0;
-                uvs[uvi+2] = 1;  uvs[uvi+3] = 0;
-                uvs[uvi+4] = 0;  uvs[uvi+5] = 1;
-                uvs[uvi+6] = 1;  uvs[uvi+7] = 1;
-            }
-
-            // add colors
-            let ci = currBatchSpritesCount * 4 * 4;
-            for (let x = 0; x < 4; ++x) {
-                colors[ci + x*4 + 0] = sprite.color.r;
-                colors[ci + x*4 + 1] = sprite.color.g;
-                colors[ci + x*4 + 2] = sprite.color.b;
-                colors[ci + x*4 + 3] = sprite.color.a;
-            }
-                    
-            // increase sprites count
-            currBatchSpritesCount++;
-        }
-
-        // draw last batch
-        if (currBatchSpritesCount > 0) {
-            drawCurrentBatch();
-        }
+        // draw batch
+        this.spritesBatch.begin(null, transform);
+        this.spritesBatch.draw(group._sprites, cullOutOfScreen);
+        this.spritesBatch.end();
     }
 
     /**
@@ -5862,6 +5716,10 @@ class Gfx extends IManager
      */
     endFrame()
     {
+        if (this.spritesBatch.drawing) {
+            _logger.warn("Got to gfx 'endFrame()' without completing a sprite batch!");
+            this.spritesBatch.end();
+        }
     }
 
     /** 
@@ -5876,7 +5734,7 @@ class Gfx extends IManager
 
 // export main object
 module.exports = new Gfx();
-},{"../assets/font_texture_asset.js":4,"../assets/texture_asset.js":8,"../logger.js":40,"../manager.js":41,"../utils/circle.js":48,"../utils/color.js":49,"../utils/rectangle.js":55,"../utils/vector2.js":57,"./blend_modes.js":21,"./camera.js":22,"./effects":25,"./matrix.js":28,"./mesh.js":29,"./mesh_generator.js":30,"./sprite.js":31,"./sprites_group.js":32,"./text_alignment.js":33,"./texture_filter_modes.js":34,"./texture_wrap_modes.js":35}],27:[function(require,module,exports){
+},{"../assets/font_texture_asset.js":4,"../assets/texture_asset.js":8,"../logger.js":41,"../manager.js":42,"../utils/circle.js":49,"../utils/color.js":50,"../utils/rectangle.js":56,"../utils/vector2.js":58,"./blend_modes.js":21,"./camera.js":22,"./effects":25,"./matrix.js":28,"./mesh.js":29,"./mesh_generator.js":30,"./sprite.js":31,"./sprite_batch.js":32,"./sprites_group.js":33,"./text_alignment.js":34,"./texture_filter_modes.js":35,"./texture_wrap_modes.js":36}],27:[function(require,module,exports){
 /**
  * Just an alias to main manager so we can require() this folder as a package.
  * 
@@ -6274,7 +6132,7 @@ const { Color } = require("../utils");
  
  // export the mesh class.
  module.exports = Mesh;
-},{"../utils":51}],30:[function(require,module,exports){
+},{"../utils":52}],30:[function(require,module,exports){
 /**
  * Define utility to generate meshes.
  * 
@@ -6512,7 +6370,286 @@ class Sprite
 
 // export the sprite class.
 module.exports = Sprite;
-},{"../assets/texture_asset":8,"../utils/color":49,"../utils/rectangle":55,"../utils/vector2":57,"./blend_modes":21}],32:[function(require,module,exports){
+},{"../assets/texture_asset":8,"../utils/color":50,"../utils/rectangle":56,"../utils/vector2":58,"./blend_modes":21}],32:[function(require,module,exports){
+/**
+ * Implement the gfx sprite batch renderer.
+ * 
+ * |-- copyright and license --|
+ * @package    Shaku
+ * @file       shaku\lib\gfx\gfx.js
+ * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
+ * @copyright  (c) 2021 Ronen Ness
+ * @license    MIT
+ * |-- end copyright and license --|
+ * 
+ */
+ 'use strict';
+const { Rectangle } = require('../utils');
+const Vector2 = require('../utils/vector2');
+const Matrix = require('./matrix');
+const Mesh = require('./mesh');
+const _logger = require('../logger.js').getLogger('gfx');
+
+
+/**
+ * Sprite batch renderer, responsible on drawing a batch of sprites with as little draw calls as possible.
+ */
+class SpriteBatch
+{
+    /**
+     * Create the spritebatch.
+     * @param {Gfx} gfx Gfx manager.
+     */
+    constructor(gfx)
+    {
+        this._gfx = gfx;
+        this._gl = gfx._gl;
+        this._positions = gfx._dynamicBuffers.positionArray;
+        this._uvs = gfx._dynamicBuffers.textureArray;
+        this._colors = gfx._dynamicBuffers.colorsArray;
+        this._positionsBuff = gfx._dynamicBuffers.positionBuffer;
+        this._uvsBuff = gfx._dynamicBuffers.textureCoordBuffer;
+        this._colorsBuff = gfx._dynamicBuffers.colorsBuffer;
+        this._indexBuff = gfx._dynamicBuffers.indexBuffer;
+    }
+
+    /**
+     * Get if batch is currently drawing.
+     * @returns {Boolean} True if batch is drawing.
+     */
+    get drawing()
+    {
+        return this._drawing;
+    }
+
+    /**
+     * Start drawing a batch.
+     * @param {Effect} effect Effect to use.
+     * @param {Matrix} transform Optional transformations to apply on all sprites.
+     */
+    begin(effect, transform)
+    {
+        if (this._drawing) {
+            _logger.error("Start drawing a batch while already drawing a batch!");
+        }
+
+        if (effect) {
+            this._gfx.useEffect(effect);
+        }
+        this._effect = this._gfx._activeEffect;
+        
+        this._currBlend = null;
+        this._currTexture = null;
+        this._currBatchCount = 0;
+
+        this._transform = transform;
+
+        this._drawing = true;
+    }
+
+    /**
+     * Finish drawing batch (and render whatever left in buffers).
+     */
+    end()
+    {
+        if (!this._drawing) {
+            _logger.error("Stop drawing a batch without starting it first!");
+        }
+
+        if (this._currBatchCount) {
+            this._drawCurrentBatch();
+        }
+        this._drawing = false;
+    }
+
+    /**
+     * Add sprite to batch.
+     * Note: changing texture or blend mode may trigger a draw call.
+     * @param {Sprite|Array<Sprite>} sprites Sprite or multiple sprites to draw.
+     * @param {Boolean} cullOutOfScreen If true, will cull sprites that are not visible.
+     */
+    draw(sprites, cullOutOfScreen)
+    {
+        if (sprites.length === undefined) { sprites = [sprites]; }
+        let region = cullOutOfScreen ? this._gfx.getRenderingRegion() : null;
+
+        for (let sprite of sprites) {
+
+            // if texture changed, blend mode changed, or we have too many indices - draw current batch
+            if (this._currBatchCount) {
+                if ((this._currBatchCount >= this.batchSpritesCount) || 
+                    (sprite.blendMode !== this._currBlend) || 
+                    (sprite.texture !== this._currTexture)) {
+                    this._drawCurrentBatch();
+                }
+            }
+
+            // set texture and blend (used internally when drawing batch)
+            this._currTexture = sprite.texture;
+            this._currBlend = sprite.blendMode;
+
+            // calculate vertices positions
+            let sizeX = sprite.size.x;
+            let sizeY = sprite.size.y;
+            let left = -sizeX * sprite.origin.x;
+            let top = -sizeY * sprite.origin.y;
+
+            // calculate corners
+            let topLeft = new Vector2(left, top);
+            let topRight = new Vector2(left + sizeX, top);
+            let bottomLeft = new Vector2(left, top + sizeY);
+            let bottomRight = new Vector2(left + sizeX, top + sizeY);
+
+            // apply rotation
+            if (sprite.rotation) {
+                let cos = Math.cos(sprite.rotation);
+                let sin = Math.sin(sprite.rotation);
+                function rotateVec(vector)
+                {
+                    let x = (vector.x * cos - vector.y * sin);
+                    let y = (vector.x * sin + vector.y * cos);
+                    vector.set(x, y);
+                }
+                rotateVec(topLeft);
+                rotateVec(topRight);
+                rotateVec(bottomLeft);
+                rotateVec(bottomRight);
+            }
+
+            // add sprite position
+            topLeft.addSelf(sprite.position);
+            topRight.addSelf(sprite.position);
+            bottomLeft.addSelf(sprite.position);
+            bottomRight.addSelf(sprite.position);
+
+            // cull out-of-screen sprites
+            if (cullOutOfScreen)
+            {
+                let destRect = Rectangle.fromPoints([topLeft, topRight, bottomLeft, bottomRight]);
+                if (!region.collideRect(destRect)) {
+                    continue;
+                }
+            }
+
+            // get buffers
+            let positions = this._positions;
+            let uvs = this._uvs;
+            let colors = this._colors;
+
+            // update positions buffer
+            let pi = this._currBatchCount * 4 * 3;
+            positions[pi+0] = topLeft.x;             positions[pi+1] = topLeft.y;             positions[pi+2] = 0;
+            positions[pi+3] = topRight.x;            positions[pi+4] = topRight.y;            positions[pi+5] = 0;
+            positions[pi+6] = bottomLeft.x;          positions[pi+7] = bottomLeft.y;          positions[pi+8] = 0;
+            positions[pi+9] = bottomRight.x;         positions[pi+10] = bottomRight.y;        positions[pi+11] = 0;
+
+            // add uvs
+            let uvi = this._currBatchCount * 4 * 2;
+            if (sprite.sourceRect) {
+                let uvTl = {x: sprite.sourceRect.x / this._currTexture.width, y: sprite.sourceRect.y / this._currTexture.height};
+                let uvBr = {x: uvTl.x + sprite.sourceRect.width / this._currTexture.width, y: uvTl.y + sprite.sourceRect.height / this._currTexture.height};
+                uvs[uvi+0] = uvTl.x;  uvs[uvi+1] = uvTl.y;
+                uvs[uvi+2] = uvBr.x;  uvs[uvi+3] = uvTl.y;
+                uvs[uvi+4] = uvTl.x;  uvs[uvi+5] = uvBr.y;
+                uvs[uvi+6] = uvBr.x;  uvs[uvi+7] = uvBr.y;
+            }
+            else {
+                uvs[uvi+0] = 0;  uvs[uvi+1] = 0;
+                uvs[uvi+2] = 1;  uvs[uvi+3] = 0;
+                uvs[uvi+4] = 0;  uvs[uvi+5] = 1;
+                uvs[uvi+6] = 1;  uvs[uvi+7] = 1;
+            }
+
+            // add colors
+            let ci = this._currBatchCount * 4 * 4;
+            for (let x = 0; x < 4; ++x) {
+                colors[ci + x*4 + 0] = sprite.color.r;
+                colors[ci + x*4 + 1] = sprite.color.g;
+                colors[ci + x*4 + 2] = sprite.color.b;
+                colors[ci + x*4 + 3] = sprite.color.a;
+            }
+                    
+            // increase sprites count
+            this._currBatchCount++;
+        }
+    }
+
+    /**
+     * How many sprites we can have in batch, in total.
+     */
+    get batchSpritesCount()
+    {
+        return this._gfx.batchSpritesCount;
+    }
+
+    /**
+     * Draw current batch.
+     * @private
+     */
+    _drawCurrentBatch()
+    {
+        // get some members
+        let gl = this._gl;
+        let transform = this._transform;
+        let positionArray = this._positions;
+        let textureArray = this._uvs;
+        let colorsArray = this._colors;
+        let positionBuffer = this._positionsBuff;
+        let textureCoordBuffer = this._uvsBuff;
+        let colorsBuffer = this._colorsBuff;
+        let indexBuffer = this._indexBuff;
+
+        // some sanity checks
+        if (this._effect !== this._gfx._activeEffect) {
+            _logger.error("Effect changed while drawing batch!");
+        }
+
+        // set blend mode if needed
+        this._gfx._setBlendMode(this._currBlend);
+
+        // prepare effect and texture
+        let mesh = new Mesh(positionBuffer, textureCoordBuffer, colorsBuffer, indexBuffer, this._currBatchCount * 6);
+        this._gfx._activeEffect.prepareToDrawBatch(mesh, transform || Matrix.identity);
+        this._gfx._setActiveTexture(this._currTexture);
+
+        // should we slice the arrays?
+        let shouldSliceArrays = this._currBatchCount < this.batchSpritesCount / 2;
+
+        // copy position buffer
+        gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, 
+            shouldSliceArrays ? positionArray.slice(0, this._currBatchCount * 4 * 3) : positionArray, 
+            gl.DYNAMIC_DRAW);
+
+        // copy texture buffer
+        gl.bindBuffer(gl.ARRAY_BUFFER, textureCoordBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, 
+            shouldSliceArrays ? textureArray.slice(0, this._currBatchCount * 4 * 2) : textureArray, 
+            gl.DYNAMIC_DRAW);
+
+        // copy color buffer
+        gl.bindBuffer(gl.ARRAY_BUFFER, colorsBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, 
+            shouldSliceArrays ? colorsArray.slice(0, this._currBatchCount * 4 * 4) : colorsArray, 
+            gl.DYNAMIC_DRAW);
+
+        // set indices
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+        this._currIndices = null;
+
+        // draw elements
+        gl.drawElements(gl.TRIANGLES, this._currBatchCount * 6, gl.UNSIGNED_SHORT, 0);
+        this._gfx._drawCallsCount++;
+
+        // reset current counter
+        this._currBatchCount = 0;
+    }
+}
+
+
+// export the sprite batch class
+module.exports = SpriteBatch;
+},{"../logger.js":41,"../utils":52,"../utils/vector2":58,"./matrix":28,"./mesh":29}],33:[function(require,module,exports){
 /**
  * Define a sprites group.
  * 
@@ -6667,7 +6804,7 @@ class SpritesGroup
 
 // export the sprites group class.
 module.exports = SpritesGroup;
-},{"../utils/color":49,"../utils/vector2":57,"./matrix":28,"./sprite":31}],33:[function(require,module,exports){
+},{"../utils/color":50,"../utils/vector2":58,"./matrix":28,"./sprite":31}],34:[function(require,module,exports){
 /**
  * Define possible text alignments.
  * 
@@ -6705,7 +6842,7 @@ const TextAlignment = {
 
 Object.freeze(TextAlignment);
 module.exports = TextAlignment;
-},{}],34:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 /**
  * Define possible texture filter modes.
  * 
@@ -6740,7 +6877,7 @@ Object.defineProperty(TextureFilterModes, '_values', {
 Object.freeze(TextureFilterModes);
 module.exports = TextureFilterModes;
 
-},{}],35:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 /**
  * Define possible texture wrap modes.
  * 
@@ -6771,7 +6908,7 @@ Object.defineProperty(TextureWrapModes, '_values', {
 
 Object.freeze(TextureWrapModes);
 module.exports = TextureWrapModes;
-},{}],36:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 /**
  * Entry point for the Shaku module.
  * 
@@ -6786,7 +6923,7 @@ module.exports = TextureWrapModes;
  */
 'use strict';
 module.exports = require('./shaku');
-},{"./shaku":46}],37:[function(require,module,exports){
+},{"./shaku":47}],38:[function(require,module,exports){
 /**
  * Just an alias to main manager so we can require() this folder as a package.
  * 
@@ -6801,7 +6938,7 @@ module.exports = require('./shaku');
  */
  'use strict';
  module.exports = require('./input');
-},{"./input":38}],38:[function(require,module,exports){
+},{"./input":39}],39:[function(require,module,exports){
 /**
  * Implement the input manager.
  * 
@@ -7479,7 +7616,7 @@ class Input extends IManager
 
 // export main object
 module.exports = new Input();
-},{"../logger.js":40,"../manager.js":41,"../utils/vector2.js":57,"./key_codes.js":39}],39:[function(require,module,exports){
+},{"../logger.js":41,"../manager.js":42,"../utils/vector2.js":58,"./key_codes.js":40}],40:[function(require,module,exports){
 /**
  * Define keyboard and mouse key codes.
  * 
@@ -7612,7 +7749,7 @@ const KeyboardKeys = {
 
 // export keyboard keys and mouse buttons
 module.exports = { KeyboardKeys: KeyboardKeys, MouseButtons: MouseButtons };
-},{}],40:[function(require,module,exports){
+},{}],41:[function(require,module,exports){
 /**
  * Implement basic logger.
  * By default, uses console for logging, but it can be replaced with setDrivers().
@@ -7773,7 +7910,7 @@ module.exports = {
         return this;
     }
 };
-},{}],41:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 /**
  * Define the managers interface.
  * 
@@ -7831,7 +7968,7 @@ class IManager
 
 // export the manager interface.
 module.exports = IManager
-},{}],42:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 /**
  * Just an alias to main manager so we can require() this folder as a package.
  * 
@@ -7846,7 +7983,7 @@ module.exports = IManager
  */
  'use strict';
  module.exports = require('./sfx');
-},{"./sfx":43}],43:[function(require,module,exports){
+},{"./sfx":44}],44:[function(require,module,exports){
 /**
  * Implement the sfx manager.
  * 
@@ -8030,7 +8167,7 @@ class Sfx extends IManager
 
 // export main object
 module.exports = new Sfx();
-},{"../assets/sound_asset.js":7,"../logger.js":40,"../manager.js":41,"./sound_instance.js":44,"./sound_mixer.js":45}],44:[function(require,module,exports){
+},{"../assets/sound_asset.js":7,"../logger.js":41,"../manager.js":42,"./sound_instance.js":45,"./sound_mixer.js":46}],45:[function(require,module,exports){
 /**
  * Implement a sound effect instance.
  * 
@@ -8246,7 +8383,7 @@ SoundInstance._masterVolume = 1;
 
 // export main object
 module.exports = SoundInstance;
-},{"../logger.js":40}],45:[function(require,module,exports){
+},{"../logger.js":41}],46:[function(require,module,exports){
 /**
  * Implement a sound mixer class.
  * 
@@ -8380,7 +8517,7 @@ class SoundMixer
 
 // export the sound mixer
 module.exports = SoundMixer;
-},{"./sound_instance.js":44}],46:[function(require,module,exports){
+},{"./sound_instance.js":45}],47:[function(require,module,exports){
 /**
  * Shaku Main.
  * 
@@ -8422,7 +8559,7 @@ let _totalFrameTimes = 0;
 
 
 // current version
-const version = "1.4.3";
+const version = "1.4.4";
 
 /**
  * Shaku's main object.
@@ -8640,7 +8777,7 @@ class Shaku
 
 // create and return the main object.
 module.exports = new Shaku();
-},{"./assets":5,"./collision":11,"./gfx":27,"./input":37,"./logger":40,"./manager":41,"./sfx":42,"./utils":51,"./utils/game_time":50}],47:[function(require,module,exports){
+},{"./assets":5,"./collision":11,"./gfx":27,"./input":38,"./logger":41,"./manager":42,"./sfx":43,"./utils":52,"./utils/game_time":51}],48:[function(require,module,exports){
 /**
  * Implement an animator helper class.
  * 
@@ -8979,7 +9116,7 @@ function lerp(start, end, amt) {
 
 // export the animator class.
 module.exports = Animator;
-},{}],48:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
 /**
  * Implement a simple 2d circle.
  * 
@@ -9060,7 +9197,7 @@ class Circle
 
 // export the circle class
 module.exports = Circle;
-},{"./math_helper":53,"./vector2":57}],49:[function(require,module,exports){
+},{"./math_helper":54,"./vector2":58}],50:[function(require,module,exports){
 /**
  * Define a color object.
  * 
@@ -9480,7 +9617,7 @@ function hexToColor(hex)
 
 // export Color object
 module.exports = Color;
-},{"./math_helper":53}],50:[function(require,module,exports){
+},{"./math_helper":54}],51:[function(require,module,exports){
 /**
  * A utility to hold gametime.
  * 
@@ -9575,7 +9712,7 @@ GameTime.rawTimestamp = getAccurateTimestampMs;
 
 // export the GameTime class.
 module.exports = GameTime;
-},{}],51:[function(require,module,exports){
+},{}],52:[function(require,module,exports){
 /**
  * Include all util classes.
  * 
@@ -9602,7 +9739,7 @@ module.exports = GameTime;
     SeededRandom: require('./seeded_random'),
     Perlin: require('./perlin')
  };
-},{"./animator":47,"./circle":48,"./color":49,"./game_time":50,"./line":52,"./math_helper":53,"./perlin":54,"./rectangle":55,"./seeded_random":56,"./vector2":57}],52:[function(require,module,exports){
+},{"./animator":48,"./circle":49,"./color":50,"./game_time":51,"./line":53,"./math_helper":54,"./perlin":55,"./rectangle":56,"./seeded_random":57,"./vector2":58}],53:[function(require,module,exports){
 /**
  * Implement a simple 2d line.
  * 
@@ -9758,7 +9895,7 @@ class Line
 
 // export the line class
 module.exports = Line;
-},{"./vector2":57}],53:[function(require,module,exports){
+},{"./vector2":58}],54:[function(require,module,exports){
 /**
  * Implement a math utilities class.
  * 
@@ -9929,7 +10066,7 @@ MathHelper.PI2 = Math.PI * 2;
 
 // export the math helper
 module.exports = MathHelper;
-},{}],54:[function(require,module,exports){
+},{}],55:[function(require,module,exports){
 /**
  * Implements 2d perlin noise generator.
  * Based on code from noisejs by Stefan Gustavson.
@@ -10105,7 +10242,7 @@ class Perlin
 
 // export the perlin generator
 module.exports = Perlin;
-},{"./math_helper":53}],55:[function(require,module,exports){
+},{"./math_helper":54}],56:[function(require,module,exports){
 /**
  * Implement a simple 2d rectangle.
  * 
@@ -10510,7 +10647,7 @@ function pointLineDistance(p1, l1, l2) {
 
 // export the rectangle class
 module.exports = Rectangle;
-},{"./circle":48,"./line":52,"./math_helper":53,"./vector2":57}],56:[function(require,module,exports){
+},{"./circle":49,"./line":53,"./math_helper":54,"./vector2":58}],57:[function(require,module,exports){
 /**
  * Implement a seeded random generator.
  * 
@@ -10577,7 +10714,7 @@ class SeededRandom
 
 // export the seeded random class.
 module.exports = SeededRandom;
-},{}],57:[function(require,module,exports){
+},{}],58:[function(require,module,exports){
 /**
  * Implement a simple 2d vector.
  * 
@@ -11099,5 +11236,5 @@ class Vector2
 
 // export vector object
 module.exports = Vector2;
-},{"./math_helper":53}]},{},[36])(36)
+},{"./math_helper":54}]},{},[37])(37)
 });

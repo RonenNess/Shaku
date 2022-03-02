@@ -1633,6 +1633,10 @@ List of changes in released versions.
 - Improved collision rectangle radius calculation.
 - Added collision tilemap shape.
 
+## 1.4.4
+
+- Refactored `gfx` manager to allow direct access to spriteBatch.
+
 # License
 
 *Shaku* is licensed under the permissive MIT license, so you can use it for any purpose (including commercially) and it should be compatible with most common licenses.
