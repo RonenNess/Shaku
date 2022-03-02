@@ -2491,13 +2491,14 @@ const CollisionsImp = {
      * Test collision between circle and tilemap.
      */
     circleTilemap: function(c1, tm) {     
-        let tiles = tm.getTilesAtRegion(c1._getBoundingBox());
-        for (let tile of tiles) {
+        let collide = false;
+        tm.iterateTilesAtRegion(c1._getBoundingBox(), (tile) => {
             if (CollisionsImp.circleRectangle(c1, tile)) {
-                return true;
+                collide = true;
+                return false;
             }
-        }
-        return false;
+        });
+        return collide;
     },
 
     /**
@@ -2523,13 +2524,12 @@ const CollisionsImp = {
      * Test collision between rectangle and tilemap.
      */
     rectangleTilemap: function(r1, tm) {     
-        let tiles = tm.getTilesAtRegion(r1._getBoundingBox());
-        for (let tile of tiles) {
-            if (CollisionsImp.rectangleRectangle(r1, tile)) {
-                return true;
-            }
-        }
-        return false;
+        let collide = false;
+        tm.iterateTilesAtRegion(r1._getBoundingBox(), (tile) => {
+            collide = true;
+            return false;
+        });
+        return collide;
     },
 
     /**
@@ -2550,13 +2550,14 @@ const CollisionsImp = {
      * Test collision between line and tilemap.
      */
     lineTilemap: function(l1, tm) {     
-        let tiles = tm.getTilesAtRegion(l1._getBoundingBox());
-        for (let tile of tiles) {
+        let collide = false;
+        tm.iterateTilesAtRegion(l1._getBoundingBox(), (tile) => {
             if (CollisionsImp.rectangleLine(tile, l1)) {
-                return true;
+                collide = true;
+                return false;
             }
-        }
-        return false;
+        });
+        return collide;
     },
 }
 
@@ -3293,27 +3294,39 @@ class TilemapShape extends CollisionShape
     }
     
     /**
+     * Iterate all tiles in given region, represented by a rectangle.
+     * @param {Rectangle} region Rectangle to get tiles for.
+     * @param {Function} callback Method to invoke for every tile. Return false to break iteration.
+     */
+    iterateTilesAtRegion(region, callback)
+    {
+        let topLeft = region.getTopLeft();
+        let bottomRight = region.getBottomRight();
+        let startIndex = new Vector2(Math.floor(topLeft.x / this._tileSize.x), Math.floor(topLeft.y / this._tileSize.y));
+        let endIndex = new Vector2(Math.floor(bottomRight.x / this._tileSize.x), Math.floor(bottomRight.y / this._tileSize.y));
+        for (let i = startIndex.x; i <= endIndex.x; ++i) {
+            for (let j = startIndex.y; j <= endIndex.y; ++j) {
+                let key = i + ',' + j;
+                let tile = this._tiles[key];
+                if (tile && (callback(tile) === false)) { 
+                    return; 
+                }
+            }
+        }
+    }
+    
+    /**
      * Get all tiles in given region, represented by a rectangle.
      * @param {Rectangle} region Rectangle to get tiles for.
      * @returns {Array<RectangleShape>} Array with rectangle shapes or empty if none found.
      */
     getTilesAtRegion(region)
     {
-        let topLeft = region.getTopLeft();
-        let bottomRight = region.getBottomRight();
-        let startIndex = new Vector2(Math.floor(topLeft.x / this._tileSize.x), Math.floor(topLeft.y / this._tileSize.y));
-        let endIndex = new Vector2(Math.floor(bottomRight.x / this._tileSize.x), Math.floor(bottomRight.y / this._tileSize.y));
         let ret = [];
-        for (let i = startIndex.x; i <= endIndex.x; ++i) {
-            for (let j = startIndex.y; j <= endIndex.y; ++j) {
-                let key = i + ',' + j;
-                let tile = this._tiles[key];
-                if (tile) { ret.push(tile); }
-            }
-        }
+        this.iterateTilesAtRegion(region, (tile) => { ret.push(tile); });
         return ret;
     }
-
+    
     /**
      * @inheritdoc
      */ 
@@ -5448,8 +5461,14 @@ class Gfx extends IManager
         // skip if empty
         if (group._sprites.length === 0) { return; }
 
+        // sanity
+        if (this.spritesBatch.drawing) {
+            _logger.warn("Started drawing a group while a batch was drawing.");
+            this.spritesBatch.end();
+        }
+
         // get transform
-        var transform = group.getTransform();
+        let transform = group.getTransform();
 
         // draw batch
         this.spritesBatch.begin(null, transform);
@@ -6376,7 +6395,7 @@ module.exports = Sprite;
  * 
  * |-- copyright and license --|
  * @package    Shaku
- * @file       shaku\lib\gfx\gfx.js
+ * @file       shaku\lib\gfx\sprite_batch.js
  * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
  * @copyright  (c) 2021 Ronen Ness
  * @license    MIT

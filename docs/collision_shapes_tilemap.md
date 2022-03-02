@@ -17,6 +17,7 @@ Its the most efficient (both memory and CPU) way to implement grid based / tilem
     * [new TilemapShape(offset, gridSize, tileSize, borderThickness)](#new_TilemapShape_new)
     * [.setTile(index, haveCollision, collisionFlags)](#TilemapShape+setTile)
     * [.getTileAt(position)](#TilemapShape+getTileAt) ⇒ <code>RectangleShape</code>
+    * [.iterateTilesAtRegion(region, callback)](#TilemapShape+iterateTilesAtRegion)
     * [.getTilesAtRegion(region)](#TilemapShape+getTilesAtRegion) ⇒ <code>Array.&lt;RectangleShape&gt;</code>
     * [._getRadius()](#TilemapShape+_getRadius)
     * [._getBoundingBox()](#TilemapShape+_getBoundingBox)
@@ -60,6 +61,18 @@ Get the collision shape of a tile at a given position.
 | Param | Type | Description |
 | --- | --- | --- |
 | position | <code>Vector2</code> | Position to get tile at. |
+
+<a name="TilemapShape+iterateTilesAtRegion"></a>
+
+### tilemapShape.iterateTilesAtRegion(region, callback)
+Iterate all tiles in given region, represented by a rectangle.
+
+**Kind**: instance method of [<code>TilemapShape</code>](#TilemapShape)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| region | <code>Rectangle</code> | Rectangle to get tiles for. |
+| callback | <code>function</code> | Method to invoke for every tile. Return false to break iteration. |
 
 <a name="TilemapShape+getTilesAtRegion"></a>
 

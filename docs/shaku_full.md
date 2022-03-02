@@ -99,6 +99,9 @@ Everything related to rendering and managing your game canvas goes here.</p>
 <dd><p>Sprite class.
 This object is a helper class to hold all the properties of a texture to render.</p>
 </dd>
+<dt><a href="#SpriteBatch">SpriteBatch</a></dt>
+<dd><p>Sprite batch renderer, responsible on drawing a batch of sprites with as little draw calls as possible.</p>
+</dd>
 <dt><a href="#SpritesGroup">SpritesGroup</a></dt>
 <dd><p>Sprites group class.
 This object is a container to hold sprites collection + parent transformations.
@@ -1543,6 +1546,7 @@ Its the most efficient (both memory and CPU) way to implement grid based / tilem
     * [new TilemapShape(offset, gridSize, tileSize, borderThickness)](#new_TilemapShape_new)
     * [.setTile(index, haveCollision, collisionFlags)](#TilemapShape+setTile)
     * [.getTileAt(position)](#TilemapShape+getTileAt) ⇒ [<code>RectangleShape</code>](#RectangleShape)
+    * [.iterateTilesAtRegion(region, callback)](#TilemapShape+iterateTilesAtRegion)
     * [.getTilesAtRegion(region)](#TilemapShape+getTilesAtRegion) ⇒ [<code>Array.&lt;RectangleShape&gt;</code>](#RectangleShape)
     * [._getRadius()](#TilemapShape+_getRadius)
     * [._getBoundingBox()](#TilemapShape+_getBoundingBox)
@@ -1586,6 +1590,18 @@ Get the collision shape of a tile at a given position.
 | Param | Type | Description |
 | --- | --- | --- |
 | position | [<code>Vector2</code>](#Vector2) | Position to get tile at. |
+
+<a name="TilemapShape+iterateTilesAtRegion"></a>
+
+### tilemapShape.iterateTilesAtRegion(region, callback)
+Iterate all tiles in given region, represented by a rectangle.
+
+**Kind**: instance method of [<code>TilemapShape</code>](#TilemapShape)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| region | [<code>Rectangle</code>](#Rectangle) | Rectangle to get tiles for. |
+| callback | <code>function</code> | Method to invoke for every tile. Return false to break iteration. |
 
 <a name="TilemapShape+getTilesAtRegion"></a>
 
@@ -3021,6 +3037,75 @@ Clone this sprite.
 
 **Kind**: instance method of [<code>Sprite</code>](#Sprite)  
 **Returns**: [<code>Sprite</code>](#Sprite) - cloned sprite.  
+<a name="SpriteBatch"></a>
+
+## SpriteBatch
+Sprite batch renderer, responsible on drawing a batch of sprites with as little draw calls as possible.
+
+**Kind**: global class  
+
+* [SpriteBatch](#SpriteBatch)
+    * [new SpriteBatch(gfx)](#new_SpriteBatch_new)
+    * [.drawing](#SpriteBatch+drawing) ⇒ <code>Boolean</code>
+    * [.batchSpritesCount](#SpriteBatch+batchSpritesCount)
+    * [.begin(effect, transform)](#SpriteBatch+begin)
+    * [.end()](#SpriteBatch+end)
+    * [.draw(sprites, cullOutOfScreen)](#SpriteBatch+draw)
+
+<a name="new_SpriteBatch_new"></a>
+
+### new SpriteBatch(gfx)
+Create the spritebatch.
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| gfx | [<code>Gfx</code>](#Gfx) | Gfx manager. |
+
+<a name="SpriteBatch+drawing"></a>
+
+### spriteBatch.drawing ⇒ <code>Boolean</code>
+Get if batch is currently drawing.
+
+**Kind**: instance property of [<code>SpriteBatch</code>](#SpriteBatch)  
+**Returns**: <code>Boolean</code> - True if batch is drawing.  
+<a name="SpriteBatch+batchSpritesCount"></a>
+
+### spriteBatch.batchSpritesCount
+How many sprites we can have in batch, in total.
+
+**Kind**: instance property of [<code>SpriteBatch</code>](#SpriteBatch)  
+<a name="SpriteBatch+begin"></a>
+
+### spriteBatch.begin(effect, transform)
+Start drawing a batch.
+
+**Kind**: instance method of [<code>SpriteBatch</code>](#SpriteBatch)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| effect | [<code>Effect</code>](#Effect) | Effect to use. |
+| transform | [<code>Matrix</code>](#Matrix) | Optional transformations to apply on all sprites. |
+
+<a name="SpriteBatch+end"></a>
+
+### spriteBatch.end()
+Finish drawing batch (and render whatever left in buffers).
+
+**Kind**: instance method of [<code>SpriteBatch</code>](#SpriteBatch)  
+<a name="SpriteBatch+draw"></a>
+
+### spriteBatch.draw(sprites, cullOutOfScreen)
+Add sprite to batch.
+Note: changing texture or blend mode may trigger a draw call.
+
+**Kind**: instance method of [<code>SpriteBatch</code>](#SpriteBatch)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| sprites | [<code>Sprite</code>](#Sprite) \| [<code>Array.&lt;Sprite&gt;</code>](#Sprite) | Sprite or multiple sprites to draw. |
+| cullOutOfScreen | <code>Boolean</code> | If true, will cull sprites that are not visible. |
+
 <a name="SpritesGroup"></a>
 
 ## SpritesGroup

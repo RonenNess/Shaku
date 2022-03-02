@@ -410,6 +410,20 @@ More on batching [here](#batching).
 Or a demo page with performance test can be found [here](https://ronenness.github.io/Shaku/demo/gfx_performance.html).
 
 
+### gfx.spriteBatch
+
+If you don't want to use sprite groups but want to enjoy batching, you can access the internal sprite batch directly and use it:
+
+```js
+// `effect` and `transform` are optional.
+Shaku.gfx.spriteBatch.begin(effect, transform);
+Shaku.gfx.spriteBatch.draw(sprite);
+Shaku.gfx.spriteBatch.end();
+```
+
+This gives you slightly more freedom over batch drawing. 
+
+
 ### Draw Text
 
 To draw a text with *Shaku* we need to perform 3 steps:
@@ -1636,6 +1650,7 @@ List of changes in released versions.
 ## 1.4.4
 
 - Refactored `gfx` manager to allow direct access to spriteBatch.
+- Slightly optimized tilemap collision.
 
 # License
 
