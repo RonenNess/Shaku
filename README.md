@@ -1652,6 +1652,11 @@ List of changes in released versions.
 - Refactored `gfx` manager to allow direct access to spriteBatch.
 - Slightly optimized tilemap collision.
 
+## 1.4.5 [WIP]
+
+- Minor bugfixes.
+- Added ready promise to assets.
+
 # License
 
 *Shaku* is licensed under the permissive MIT license, so you can use it for any purpose (including commercially) and it should be compatible with most common licenses.
