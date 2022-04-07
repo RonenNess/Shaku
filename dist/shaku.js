@@ -38,10 +38,21 @@ class Asset
     onReady(callback)
     {
         if (this.valid || this._waitingCallbacks === null) {
-            callback();
+            callback(this);
             return;
         }
         this._waitingCallbacks.push(callback);
+    }
+
+    /**
+     * Return a promise to resolve when ready.
+     * @returns {Promise} Promise to resolve when ready.
+     */
+    waitForReady()
+    {
+        return new Promise((resolve, reject) => {
+            this.onReady(resolve);
+        });
     }
 
     /**
@@ -52,7 +63,7 @@ class Asset
     {
         if (this._waitingCallbacks) {
             for (let i = 0; i < this._waitingCallbacks.length; ++i) {
-                this._waitingCallbacks[i]();
+                this._waitingCallbacks[i](this);
             }
             this._waitingCallbacks = null;
         }
@@ -5067,16 +5078,17 @@ class Gfx extends IManager
      * @param {Array<Rectangle>} destRects Rectangles to fill.
      * @param {Array<Color>|Color} colors Rectangles fill color.
      * @param {BlendModes} blend Blend mode.
-     * @param {Number} rotation Rotate the rectangle around its center.
+     * @param {Array<Number>|Number} rotation Rotate the rectangles around its center.
      */
     fillRects(destRects, colors, blend, rotation)
     {
         // build group
+        if (rotation === undefined) { rotation = 0; }
         let group = new SpritesGroup();
         for (let i = 0; i < destRects.length; ++i) {
             let sprite = new Sprite(this.whiteTexture);
             sprite.color = colors[i] || colors;
-            sprite.rotation = rotation;
+            sprite.rotation = rotation.length ? rotation[i] : rotation;
             sprite.blendMode = blend || BlendModes.Opaque;
             let destRect = destRects[i];
             sprite.size.set(destRect.width, destRect.height);
@@ -8578,7 +8590,7 @@ let _totalFrameTimes = 0;
 
 
 // current version
-const version = "1.4.4";
+const version = "1.4.5";
 
 /**
  * Shaku's main object.
@@ -9539,7 +9551,7 @@ class Color
      */
     static lerp(p1, p2, a)
     {
-    let lerpScalar = MathHelper.lerp;
+        let lerpScalar = MathHelper.lerp;
         return new Color(  lerpScalar(p1.r, p2.r, a), 
                         lerpScalar(p1.g, p2.g, a), 
                         lerpScalar(p1.b, p2.b, a), 
@@ -9629,7 +9641,7 @@ function hexToColor(hex)
     } : null;
 
     // create Color instance
-    if (!components) { throw new PintarConsole.Error("Invalid hex value to parse!"); }
+    if (!components) { throw new Error("Invalid hex value to parse!"); }
     return new Color(components.r, components.g, components.b, 1);
 }
 

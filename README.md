@@ -1655,7 +1655,8 @@ List of changes in released versions.
 ## 1.4.5 [WIP]
 
 - Minor bugfixes.
-- Added ready promise to assets.
+- Added `ready` promise to assets so you can use `await` on individual assets.
+- Changed `fillRects` to allow individual rectangles rotation.
 
 # License
 
