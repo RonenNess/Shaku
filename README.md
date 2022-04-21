@@ -1442,8 +1442,61 @@ So now that we understand the importance of `IGrid`, lets see how to use the `Pa
 Lets see an example on how to use the `PathFinder`:
 
 ```js
-TODO
+// a grid provider that simple use a 2d array of numbers to represent tile types.
+// tile type 0 = walls / out of bounds.
+// other types = walkable.
+class GridProvider extends Shaku.utils.PathFinder.IGrid
+{
+    constructor(grid)
+    {
+        super();
+        this.grid = grid;
+    }
+    
+    // blocking tiles = type 0, or out of bounds.
+    isBlocked(_from, _to)
+    {
+        return Boolean(this.getType(_to));
+    }
+ 
+    // get price - if same type, price is 1, if different types, price is double.
+    // this will make path "sticky" to same tile types, but to certain extent.
+    getPrice(_from, _to)
+    {
+        return (this.getType(_from) == this._getType(_to)) ? 1 : 2;
+    }
+    
+    // get type from index.
+    // return 0 (block) for out of bounds.
+    getType(index)
+    {
+        if (!this.grid[index.x]) {
+            return 0;
+        }
+        return this.grid[index.x][index.y] || 0;
+    }
+}
+
+// create grid
+let grid = [[1,2,1,1,1,1,1,1,1,1,1,1],
+            [1,2,1,1,1,1,1,1,1,1,1,1],
+            [1,1,1,0,1,1,1,1,1,1,1,1],
+            [1,1,1,0,0,0,1,1,1,1,1,1],
+            [1,1,1,1,1,0,1,1,1,1,1,1],
+            [1,1,1,2,2,0,1,0,0,0,1,1],
+            [1,1,1,2,1,0,1,0,1,1,1,1],
+            [1,1,1,1,1,1,1,0,1,1,1,1],
+            [1,1,0,1,1,1,1,0,1,2,1,1],
+            [1,1,0,1,1,0,0,0,1,2,2,1],
+            [1,1,0,1,1,1,1,1,1,2,2,1],
+            [1,1,0,1,1,1,1,1,1,1,2,1]];
+let gridProvider = new GridProvider(grid);
+
+// find path from top-left to bottom-right
+let path = findPath(gridProvider, {x:0, y:0}, {x:11, y:11});
 ```
+
+For more info check out the [API docs](docs/utils_path_finder.md).
 
 ## Miscellaneous
 
@@ -1705,7 +1758,7 @@ List of changes in released versions.
 - Minor bugfixes.
 - Added `ready` promise to assets so you can use `await` on individual assets.
 - Changed `fillRects` to allow individual rectangles rotation.
-- Added `pathfind` utility.
+- Added `pathFinder` utility.
 
 # License
 
