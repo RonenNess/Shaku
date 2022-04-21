@@ -1013,7 +1013,7 @@ function measureTextWidth(fontFamily, fontSize, char)
 
 // export the asset type.
 module.exports = FontTextureAsset;
-},{"../utils/rectangle":56,"../utils/vector2":58,"./asset":1,"./texture_asset":8}],5:[function(require,module,exports){
+},{"../utils/rectangle":57,"../utils/vector2":59,"./asset":1,"./texture_asset":8}],5:[function(require,module,exports){
 /**
  * Just an alias to main manager so we can require() this folder as a package.
  * 
@@ -1597,7 +1597,7 @@ function isPowerOf2(value) {
 
 // export the asset type.
 module.exports = TextureAsset;
-},{"../gfx/texture_filter_modes":35,"../gfx/texture_wrap_modes":36,"../logger.js":41,"../utils/color":50,"../utils/vector2":58,"./asset":1}],9:[function(require,module,exports){
+},{"../gfx/texture_filter_modes":35,"../gfx/texture_wrap_modes":36,"../logger.js":41,"../utils/color":50,"../utils/vector2":59,"./asset":1}],9:[function(require,module,exports){
 /**
  * Implement the collision manager.
  * 
@@ -1756,7 +1756,7 @@ class Collision extends IManager
 
 // export main object
 module.exports = new Collision();
-},{"../logger.js":41,"../manager.js":42,"../utils/vector2.js":58,"./collision_world.js":10,"./resolver":12,"./resolvers_imp":13,"./shapes/circle.js":15,"./shapes/lines.js":16,"./shapes/point.js":17,"./shapes/rectangle.js":18,"./shapes/tilemap.js":20}],10:[function(require,module,exports){
+},{"../logger.js":41,"../manager.js":42,"../utils/vector2.js":59,"./collision_world.js":10,"./resolver":12,"./resolvers_imp":13,"./shapes/circle.js":15,"./shapes/lines.js":16,"./shapes/point.js":17,"./shapes/rectangle.js":18,"./shapes/tilemap.js":20}],10:[function(require,module,exports){
 /**
  * Implement the collision manager.
  * 
@@ -2281,7 +2281,7 @@ function sortByDistanceShapes(sourceShape, options)
 
 // export collision world
 module.exports = CollisionWorld;
-},{"../logger.js":41,"../utils/circle":49,"../utils/color":50,"../utils/rectangle":56,"../utils/vector2":58,"./../gfx":27,"./resolver":12,"./result":14,"./shapes/circle":15,"./shapes/point":17,"./shapes/shape":19}],11:[function(require,module,exports){
+},{"../logger.js":41,"../utils/circle":49,"../utils/color":50,"../utils/rectangle":57,"../utils/vector2":59,"./../gfx":27,"./resolver":12,"./result":14,"./shapes/circle":15,"./shapes/point":17,"./shapes/shape":19}],11:[function(require,module,exports){
 /**
  * Just an alias to main manager so we can require() this folder as a package.
  * 
@@ -2406,7 +2406,7 @@ class CollisionResolver
 
 // export the collision resolver
 module.exports = CollisionResolver;
-},{"../logger.js":41,"../utils/vector2.js":58,"./result.js":14,"./shapes/shape.js":19}],13:[function(require,module,exports){
+},{"../logger.js":41,"../utils/vector2.js":59,"./result.js":14,"./shapes/shape.js":19}],13:[function(require,module,exports){
 /**
  * All default collision detection implementations.
  * 
@@ -2626,7 +2626,7 @@ class CollisionTestResult
 
 // export collision shape class
 module.exports = CollisionTestResult;
-},{"../utils/vector2":58,"./shapes/shape":19}],15:[function(require,module,exports){
+},{"../utils/vector2":59,"./shapes/shape":19}],15:[function(require,module,exports){
 /**
  * Implement collision circle.
  * 
@@ -2716,7 +2716,7 @@ class CircleShape extends CollisionShape
 
 // export collision shape class
 module.exports = CircleShape;
-},{"../../utils/circle":49,"../../utils/rectangle":56,"./../../gfx":27,"./shape":19}],16:[function(require,module,exports){
+},{"../../utils/circle":49,"../../utils/rectangle":57,"./../../gfx":27,"./shape":19}],16:[function(require,module,exports){
 /**
  * Implement collision lines.
  * 
@@ -2836,7 +2836,7 @@ class LinesShape extends CollisionShape
 
 // export collision lines class
 module.exports = LinesShape;
-},{"../../utils/circle":49,"../../utils/line":53,"../../utils/rectangle":56,"./../../gfx":27,"./shape":19}],17:[function(require,module,exports){
+},{"../../utils/circle":49,"../../utils/line":53,"../../utils/rectangle":57,"./../../gfx":27,"./shape":19}],17:[function(require,module,exports){
 /**
  * Implement collision point.
  * 
@@ -2931,7 +2931,7 @@ class PointShape extends CollisionShape
 
 // export collision shape class
 module.exports = PointShape;
-},{"../../utils/circle":49,"../../utils/rectangle":56,"../../utils/vector2":58,"./../../gfx":27,"./shape":19}],18:[function(require,module,exports){
+},{"../../utils/circle":49,"../../utils/rectangle":57,"../../utils/vector2":59,"./../../gfx":27,"./shape":19}],18:[function(require,module,exports){
 /**
  * Implement collision rectangle.
  * 
@@ -3020,7 +3020,7 @@ class RectangleShape extends CollisionShape
 
 // export collision shape class
 module.exports = RectangleShape;
-},{"../../utils/rectangle":56,"./../../gfx":27,"./shape":19}],19:[function(require,module,exports){
+},{"../../utils/rectangle":57,"./../../gfx":27,"./shape":19}],19:[function(require,module,exports){
 /**
  * Implement collision shape base class.
  * 
@@ -3200,7 +3200,7 @@ const defaultDebugColors = [Color.red, Color.blue, Color.green, Color.yellow, Co
 
 // export collision shape class
 module.exports = CollisionShape;
-},{"../../utils/color":50,"../../utils/rectangle":56,"../../utils/vector2":58,"../collision_world":10}],20:[function(require,module,exports){
+},{"../../utils/color":50,"../../utils/rectangle":57,"../../utils/vector2":59,"../collision_world":10}],20:[function(require,module,exports){
 /**
  * Implement collision tilemap.
  * 
@@ -3389,7 +3389,7 @@ class TilemapShape extends CollisionShape
 
 // export collision shape class
 module.exports = TilemapShape;
-},{"../../utils/rectangle":56,"../../utils/vector2":58,"./../../gfx":27,"./rectangle":18,"./shape":19}],21:[function(require,module,exports){
+},{"../../utils/rectangle":57,"../../utils/vector2":59,"./../../gfx":27,"./rectangle":18,"./shape":19}],21:[function(require,module,exports){
 /**
  * Define supported blend modes.
  * 
@@ -3544,7 +3544,7 @@ class Camera
 
 // export the camera object
 module.exports = Camera;
-},{"../utils/rectangle":56,"../utils/vector2":58,"./matrix":28}],23:[function(require,module,exports){
+},{"../utils/rectangle":57,"../utils/vector2":59,"./matrix":28}],23:[function(require,module,exports){
 /**
  * Implement a basic effect to draw sprites.
  * 
@@ -4225,7 +4225,7 @@ function _setTextureFilter(gl, filter)
 
 // export the effect class.
 module.exports = Effect;
-},{"../../assets/texture_asset.js":8,"../../logger.js":41,"../../utils/color.js":50,"../../utils/rectangle.js":56,"../matrix.js":28,"../texture_filter_modes":35,"../texture_wrap_modes":36}],25:[function(require,module,exports){
+},{"../../assets/texture_asset.js":8,"../../logger.js":41,"../../utils/color.js":50,"../../utils/rectangle.js":57,"../matrix.js":28,"../texture_filter_modes":35,"../texture_wrap_modes":36}],25:[function(require,module,exports){
 /**
  * Include all built-in effects.
  * 
@@ -5765,7 +5765,7 @@ class Gfx extends IManager
 
 // export main object
 module.exports = new Gfx();
-},{"../assets/font_texture_asset.js":4,"../assets/texture_asset.js":8,"../logger.js":41,"../manager.js":42,"../utils/circle.js":49,"../utils/color.js":50,"../utils/rectangle.js":56,"../utils/vector2.js":58,"./blend_modes.js":21,"./camera.js":22,"./effects":25,"./matrix.js":28,"./mesh.js":29,"./mesh_generator.js":30,"./sprite.js":31,"./sprite_batch.js":32,"./sprites_group.js":33,"./text_alignment.js":34,"./texture_filter_modes.js":35,"./texture_wrap_modes.js":36}],27:[function(require,module,exports){
+},{"../assets/font_texture_asset.js":4,"../assets/texture_asset.js":8,"../logger.js":41,"../manager.js":42,"../utils/circle.js":49,"../utils/color.js":50,"../utils/rectangle.js":57,"../utils/vector2.js":59,"./blend_modes.js":21,"./camera.js":22,"./effects":25,"./matrix.js":28,"./mesh.js":29,"./mesh_generator.js":30,"./sprite.js":31,"./sprite_batch.js":32,"./sprites_group.js":33,"./text_alignment.js":34,"./texture_filter_modes.js":35,"./texture_wrap_modes.js":36}],27:[function(require,module,exports){
 /**
  * Just an alias to main manager so we can require() this folder as a package.
  * 
@@ -6401,7 +6401,7 @@ class Sprite
 
 // export the sprite class.
 module.exports = Sprite;
-},{"../assets/texture_asset":8,"../utils/color":50,"../utils/rectangle":56,"../utils/vector2":58,"./blend_modes":21}],32:[function(require,module,exports){
+},{"../assets/texture_asset":8,"../utils/color":50,"../utils/rectangle":57,"../utils/vector2":59,"./blend_modes":21}],32:[function(require,module,exports){
 /**
  * Implement the gfx sprite batch renderer.
  * 
@@ -6680,7 +6680,7 @@ class SpriteBatch
 
 // export the sprite batch class
 module.exports = SpriteBatch;
-},{"../logger.js":41,"../utils":52,"../utils/vector2":58,"./matrix":28,"./mesh":29}],33:[function(require,module,exports){
+},{"../logger.js":41,"../utils":52,"../utils/vector2":59,"./matrix":28,"./mesh":29}],33:[function(require,module,exports){
 /**
  * Define a sprites group.
  * 
@@ -6835,7 +6835,7 @@ class SpritesGroup
 
 // export the sprites group class.
 module.exports = SpritesGroup;
-},{"../utils/color":50,"../utils/vector2":58,"./matrix":28,"./sprite":31}],34:[function(require,module,exports){
+},{"../utils/color":50,"../utils/vector2":59,"./matrix":28,"./sprite":31}],34:[function(require,module,exports){
 /**
  * Define possible text alignments.
  * 
@@ -7647,7 +7647,7 @@ class Input extends IManager
 
 // export main object
 module.exports = new Input();
-},{"../logger.js":41,"../manager.js":42,"../utils/vector2.js":58,"./key_codes.js":40}],40:[function(require,module,exports){
+},{"../logger.js":41,"../manager.js":42,"../utils/vector2.js":59,"./key_codes.js":40}],40:[function(require,module,exports){
 /**
  * Define keyboard and mouse key codes.
  * 
@@ -9228,7 +9228,7 @@ class Circle
 
 // export the circle class
 module.exports = Circle;
-},{"./math_helper":54,"./vector2":58}],50:[function(require,module,exports){
+},{"./math_helper":54,"./vector2":59}],50:[function(require,module,exports){
 /**
  * Define a color object.
  * 
@@ -9768,9 +9768,10 @@ module.exports = GameTime;
     GameTime: require('./game_time'),
     MathHelper: require('./math_helper'),
     SeededRandom: require('./seeded_random'),
-    Perlin: require('./perlin')
+    Perlin: require('./perlin'),
+    PathFinder: require('./path_finder')
  };
-},{"./animator":48,"./circle":49,"./color":50,"./game_time":51,"./line":53,"./math_helper":54,"./perlin":55,"./rectangle":56,"./seeded_random":57,"./vector2":58}],53:[function(require,module,exports){
+},{"./animator":48,"./circle":49,"./color":50,"./game_time":51,"./line":53,"./math_helper":54,"./path_finder":55,"./perlin":56,"./rectangle":57,"./seeded_random":58,"./vector2":59}],53:[function(require,module,exports){
 /**
  * Implement a simple 2d line.
  * 
@@ -9926,7 +9927,7 @@ class Line
 
 // export the line class
 module.exports = Line;
-},{"./vector2":58}],54:[function(require,module,exports){
+},{"./vector2":59}],54:[function(require,module,exports){
 /**
  * Implement a math utilities class.
  * 
@@ -10098,6 +10099,236 @@ MathHelper.PI2 = Math.PI * 2;
 // export the math helper
 module.exports = MathHelper;
 },{}],55:[function(require,module,exports){
+/**
+ * Provide a pathfinding algorithm.
+ * 
+ * |-- copyright and license --|
+ * @package    Shaku
+ * @file       shaku\lib\utils\path_finder.js
+ * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
+ * @copyright  (c) 2021 Ronen Ness
+ * @license    MIT
+ * |-- end copyright and license --|
+ * 
+*/
+'use strict';
+const Vector2 = require("./vector2");
+
+
+/**
+ * Interface for a supported grid.
+ */
+class IGrid
+{
+    /**
+     * Check if a given tile is blocked from a given neihbor.
+     * @param {Vector2|Vector3} _from Source tile index.
+     * @param {Vector2|Vector3} _to Target tile index. Must be a neighbor of _from.
+     * @returns {Boolean} Can we travel from _from to _to?
+     */
+    isBlocked(_from, _to) { throw new Error("Not Implemented"); }
+
+    /**
+     * Get the price to travel from one tile to another.
+     * Should return 1 for "normal" traveling price, > 1 for expensive travel, and < 1 for cheap travel.
+     * @param {Vector2|Vector3} _from Source tile index.
+     * @param {Vector2|Vector3} _to Target tile index. Must be a neighbor of _from.
+     * @returns {Number} Price factor to walk from _from to _to.
+     */
+    getPrice(_from, _to) { throw new Error("Not Implemented"); }
+}
+
+
+/**
+ * A path node.
+ */
+class Node
+{
+    constructor(position)
+    {
+        this.position = position;
+        this.gCost = 0;
+        this.hCost = 0;
+        this.parent = null;
+        this.price = 1;
+    }
+}
+
+
+/**
+ * Find a path between start to target.
+ * @param {IGrid} grid Grid provider to check if tiles are blocked.
+ * @param {Vector2|Vector3} startPos Starting tile index.
+ * @param {Vector2|Vector3} targetPos Target tile index.
+ * @param {*} options Additional options: { maxIterations, ignorePrices }
+ * @returns {Array<Vector2>} List of tiles to traverse.
+ */
+function findPath(grid, startPos, targetPos, options)
+{
+    let ret = _ImpFindPath(grid, startPos, targetPos, options || {});
+    return ret;
+}
+
+
+/**
+ * Internal function that implements the path-finding algorithm.
+ * @private
+ */
+function _ImpFindPath(grid, startPos, targetPos, options)
+{
+    // get / create node
+    let nodesCache = {};
+    function getOrCreateNode(fromPosition, position) {
+
+        // get from cache
+        let key = position.x + ',' + position.y;
+        if (nodesCache[key]) {
+            return nodesCache[key];
+        }
+
+        // create new
+        let ret = new Node(position);
+        if (options.ignorePrices) {
+            ret.price = 1;
+        }
+        else {
+            ret.price = fromPosition ? grid.getPrice(fromPosition, position) : 0;
+        }
+        nodesCache[key] = ret;
+        return ret;
+    }
+    
+    // create start and target node
+    let startNode = getOrCreateNode(null, startPos);
+    let targetNode = getOrCreateNode(null, targetPos);
+
+    // tiles we may still travel to
+    let openSet = [];
+    openSet.push(startNode);
+
+    // tiles we were blocked at
+    let closedSet = new Set();
+
+    // remove from array by value
+    function removeFromArray(arr, val) {
+        let index = arr.indexOf(val);
+        if (index !== -1) {
+            arr.splice(index, 1);
+        }
+    }
+
+    // while we got open way to go...
+    let iterationsCount = -1;
+    while (openSet.length > 0)
+    {
+        // check iterations count
+        if (options.maxIterations) {
+            if (iterationsCount++ > options.maxIterations) {
+                break;
+            }
+        }
+
+        // find optimal node to start from
+        let currentNode = openSet[0];
+        for (let i = 1; i < openSet.length; i++)
+        {
+            if (openSet[i].fCost < currentNode.fCost || openSet[i].fCost == currentNode.fCost && openSet[i].hCost < currentNode.hCost)
+            {
+                currentNode = openSet[i];
+            }
+        }
+
+        // add current node to close set
+        removeFromArray(openSet, currentNode);
+        closedSet.add(currentNode);
+
+        // did we reach target? :D
+        if (currentNode == targetNode)
+        {
+            let finalPath = retracePath(startNode, targetNode);
+            return finalPath;
+        }
+
+        // get neighbor tiles
+        let neighbors = [];
+        for (let nx = -1; nx <= 1; nx++)
+        {
+            for (let ny = -1; ny <= 1; ny++)
+            {
+                if (nx === 0 && ny === 0) { continue; }
+                neighbors.push(getOrCreateNode(currentNode, {x: currentNode.position.x+nx, y: currentNode.position.y+ny, z: currentNode.position.z}));
+            }
+        }
+
+        // iterate neighbors
+        for (let neighbor of neighbors)
+        {
+            // skip if already passed or can't walk there
+            if (closedSet.has(neighbor) || grid.isBlocked(currentNode.position, neighbor.position)) {
+                continue;
+            }
+
+            // calc price to walk there
+            let newMovementCostToNeighbour = currentNode.gCost + getDistance(currentNode, neighbor) * neighbor.price;
+
+            // update node price and add to open set
+            let isInOpenSet = (openSet.indexOf(neighbor) !== -1);
+            if ((newMovementCostToNeighbour < neighbor.gCost) || !isInOpenSet)
+            {
+                // update node price and parent
+                neighbor.gCost = newMovementCostToNeighbour;
+                neighbor.hCost = getDistance(neighbor, targetNode);
+                neighbor.parent = currentNode;
+
+                // add to open set
+                if (!isInOpenSet)
+                    openSet.push(neighbor);
+            }
+        }
+    }
+
+    // didn't find path
+    return null;
+}
+
+/**
+ * Convert nodes structure with parents into a list of tile indices.
+ * Go from end to start (for shortest path) and build list reversed.
+ * @private
+ */
+function retracePath(startNode, endNode)
+{
+    let path = [];
+    let currentNode = endNode;
+
+    while (currentNode !== startNode)
+    {
+        path.unshift(currentNode.position);
+        currentNode = currentNode.parent;
+    }
+
+    return path;
+}
+
+/**
+ * Get distance between two points on grid.
+ * This method is quick and dirty and takes diagonal into consideration.
+ */
+function getDistance(pa, pb)
+{
+    let dx = (pa.position.x - pb.position.x);
+    let dy = (pa.position.y - pb.position.y);
+    return Math.sqrt(dx*dx + dy*dy);
+}
+
+
+// export main method and grid interface.
+const PathFinder = {
+    findPath: findPath,
+    IGrid: IGrid
+};
+module.exports = PathFinder;
+},{"./vector2":59}],56:[function(require,module,exports){
 /**
  * Implements 2d perlin noise generator.
  * Based on code from noisejs by Stefan Gustavson.
@@ -10273,7 +10504,7 @@ class Perlin
 
 // export the perlin generator
 module.exports = Perlin;
-},{"./math_helper":54}],56:[function(require,module,exports){
+},{"./math_helper":54}],57:[function(require,module,exports){
 /**
  * Implement a simple 2d rectangle.
  * 
@@ -10678,7 +10909,7 @@ function pointLineDistance(p1, l1, l2) {
 
 // export the rectangle class
 module.exports = Rectangle;
-},{"./circle":49,"./line":53,"./math_helper":54,"./vector2":58}],57:[function(require,module,exports){
+},{"./circle":49,"./line":53,"./math_helper":54,"./vector2":59}],58:[function(require,module,exports){
 /**
  * Implement a seeded random generator.
  * 
@@ -10745,7 +10976,7 @@ class SeededRandom
 
 // export the seeded random class.
 module.exports = SeededRandom;
-},{}],58:[function(require,module,exports){
+},{}],59:[function(require,module,exports){
 /**
  * Implement a simple 2d vector.
  * 

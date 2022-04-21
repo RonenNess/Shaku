@@ -156,6 +156,12 @@ All color components are expected to be in 0.0 - 1.0 range (and not 0-255).</p>
 <dt><a href="#MathHelper">MathHelper</a></dt>
 <dd><p>Implement some math utilities functions.</p>
 </dd>
+<dt><a href="#IGrid">IGrid</a></dt>
+<dd><p>Interface for a supported grid.</p>
+</dd>
+<dt><a href="#Node">Node</a></dt>
+<dd><p>A path node.</p>
+</dd>
 <dt><a href="#Perlin">Perlin</a></dt>
 <dd><p>Generate 2d perlin noise.
 Based on code from noisejs by Stefan Gustavson.
@@ -185,6 +191,7 @@ All asset types inherit from this.
     * [.url](#Asset+url) ⇒ <code>String</code>
     * [.valid](#Asset+valid) ⇒ <code>Boolean</code>
     * [.onReady(callback)](#Asset+onReady)
+    * [.waitForReady()](#Asset+waitForReady) ⇒ <code>Promise</code>
     * [.load(params)](#Asset+load) ⇒ <code>Promise</code>
     * [.create(source, params)](#Asset+create) ⇒ <code>Promise</code>
     * [.destroy()](#Asset+destroy)
@@ -225,6 +232,13 @@ If asset is already in ready state, will invoke immediately.
 | --- | --- | --- |
 | callback | <code>function</code> | Callback to invoke when asset is ready. |
 
+<a name="Asset+waitForReady"></a>
+
+### asset.waitForReady() ⇒ <code>Promise</code>
+Return a promise to resolve when ready.
+
+**Kind**: instance method of [<code>Asset</code>](#Asset)  
+**Returns**: <code>Promise</code> - Promise to resolve when ready.  
 <a name="Asset+load"></a>
 
 ### asset.load(params) ⇒ <code>Promise</code>
@@ -2529,7 +2543,7 @@ Draw a list of filled colored rectangles as a batch.
 | destRects | [<code>Array.&lt;Rectangle&gt;</code>](#Rectangle) | Rectangles to fill. |
 | colors | [<code>Array.&lt;Color&gt;</code>](#Color) \| [<code>Color</code>](#Color) | Rectangles fill color. |
 | blend | <code>BlendModes</code> | Blend mode. |
-| rotation | <code>Number</code> | Rotate the rectangle around its center. |
+| rotation | <code>Array.&lt;Number&gt;</code> \| <code>Number</code> | Rotate the rectangles around its center. |
 
 **Example**  
 ```js
@@ -4935,6 +4949,50 @@ Wrap degrees value to be between 0 to 360.
 | --- | --- | --- |
 | degrees | <code>Number</code> | Degrees to wrap. |
 
+<a name="IGrid"></a>
+
+## IGrid
+Interface for a supported grid.
+
+**Kind**: global class  
+
+* [IGrid](#IGrid)
+    * [.isBlocked(_from, _to)](#IGrid+isBlocked) ⇒ <code>Boolean</code>
+    * [.getPrice(_from, _to)](#IGrid+getPrice) ⇒ <code>Number</code>
+
+<a name="IGrid+isBlocked"></a>
+
+### iGrid.isBlocked(_from, _to) ⇒ <code>Boolean</code>
+Check if a given tile is blocked from a given neihbor.
+
+**Kind**: instance method of [<code>IGrid</code>](#IGrid)  
+**Returns**: <code>Boolean</code> - Can we travel from _from to _to?  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| _from | [<code>Vector2</code>](#Vector2) \| <code>Vector3</code> | Source tile index. |
+| _to | [<code>Vector2</code>](#Vector2) \| <code>Vector3</code> | Target tile index. Must be a neighbor of _from. |
+
+<a name="IGrid+getPrice"></a>
+
+### iGrid.getPrice(_from, _to) ⇒ <code>Number</code>
+Get the price to travel from one tile to another.
+Should return 1 for "normal" traveling price, > 1 for expensive travel, and < 1 for cheap travel.
+
+**Kind**: instance method of [<code>IGrid</code>](#IGrid)  
+**Returns**: <code>Number</code> - Price factor to walk from _from to _to.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| _from | [<code>Vector2</code>](#Vector2) \| <code>Vector3</code> | Source tile index. |
+| _to | [<code>Vector2</code>](#Vector2) \| <code>Vector3</code> | Target tile index. Must be a neighbor of _from. |
+
+<a name="Node"></a>
+
+## Node
+A path node.
+
+**Kind**: global class  
 <a name="Perlin"></a>
 
 ## Perlin

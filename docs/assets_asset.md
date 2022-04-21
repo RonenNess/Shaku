@@ -17,6 +17,7 @@ All asset types inherit from this.
     * [.url](#Asset+url) ⇒ <code>String</code>
     * [.valid](#Asset+valid) ⇒ <code>Boolean</code>
     * [.onReady(callback)](#Asset+onReady)
+    * [.waitForReady()](#Asset+waitForReady) ⇒ <code>Promise</code>
     * [.load(params)](#Asset+load) ⇒ <code>Promise</code>
     * [.create(source, params)](#Asset+create) ⇒ <code>Promise</code>
     * [.destroy()](#Asset+destroy)
@@ -57,6 +58,13 @@ If asset is already in ready state, will invoke immediately.
 | --- | --- | --- |
 | callback | <code>function</code> | Callback to invoke when asset is ready. |
 
+<a name="Asset+waitForReady"></a>
+
+### asset.waitForReady() ⇒ <code>Promise</code>
+Return a promise to resolve when ready.
+
+**Kind**: instance method of [<code>Asset</code>](#Asset)  
+**Returns**: <code>Promise</code> - Promise to resolve when ready.  
 <a name="Asset+load"></a>
 
 ### asset.load(params) ⇒ <code>Promise</code>

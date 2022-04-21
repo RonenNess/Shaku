@@ -1396,6 +1396,54 @@ Play animation automatically, so you won't have to call `update()` yourself.
 Update animation progress with delta time.
 This is what you need to call manually when not using `play()`.
 
+### Perlin
+
+Utility to generate perlin noise.
+
+Usage example:
+
+```js
+// create perlin with random seed
+let seed = Math.random(); // use the same seed to get same results
+let perlin = new Shaku.utils.Perlin(seed);
+
+// get value from x,y position
+let value = perlin.generateSmooth(x / 25, y / 25, 0.15);
+```
+
+For more info check out the [API docs](docs/utils_perlin.md).
+
+### PathFinder
+
+`PathFinder` is a utility to find a valid walking path between two points on a 2d or 3d grid.
+
+To use it you must implement a *grid provider* class that will provide information about your grid to the algorithm, by implementing the `Shaku.utils.PathFinder.IGrid` interface.
+
+This interface have two main methods:
+
+- **isBlocked(_from, _to)**: tell the algorithm if its possible to walk from grid index `_from` to grid index `_to`. `true` = blocked, can't walk this path, `false` = can walk the path.
+- **getPrice(_from, _to)**: tell the algorithm the price it takes to walk from grid index `_from` to grid index `_to`. For example, if the walking npc is on a trail you might want to return a higher price to get off of it, to make the npc prefer to stay on trail unless he have to get off. `1 =` "normal" price, `< 1` = cheaper to walk, `> 1` = expensive to walk.
+
+If you know path finding algorithms you know they *typically* get a matrix of booleans (or numbers for costs) as input instead of a grid provider. However, using the `IGrid` interface gives additional information, source tile, which provides a lot of flexability in terms of what you can implement with it:
+
+- Can support 3D grid, you just need to provide Z index to your positions and use it.
+- Can implement slopes and cliffs or walls that are just the side of the grid cells and don't fill it completely (like the walls in Sims).
+- Can combine with prices to make the walker prefer to stick to the same tile types or stay on roads.
+
+So now that we understand the importance of `IGrid`, lets see how to use the `PathFinder`. This module only have one method, `findPath(grid, startPos, targetPos, options)`, which is what we use to calculate a walking path:
+
+- **grid**: Your `IGrid` instance.
+- **startPos**: Vector2 you want to travel *from*.
+- **targetPos**: Vector2 you want to travel *to*.
+- **options**: Optional dictionary with extra flags:
+- - maxIterations: limit the numbers of iterations we allow when searching the path (so your game won't get stuck if you accidentally scan a huge level).
+- - ignorePrices: if true, will ignore the pricing functionality completely. You may think its redundant as you can just not provide prices in your `IGrid`, but with this flag you can have support in prices but still ignore them in specific cases, liky flying units, without doing any ugly tricks with your `IGrid` class.
+
+Lets see an example on how to use the `PathFinder`:
+
+```js
+TODO
+```
 
 ## Miscellaneous
 
@@ -1652,11 +1700,12 @@ List of changes in released versions.
 - Refactored `gfx` manager to allow direct access to spriteBatch.
 - Slightly optimized tilemap collision.
 
-## 1.4.5 [WIP]
+## 1.4.5
 
 - Minor bugfixes.
 - Added `ready` promise to assets so you can use `await` on individual assets.
 - Changed `fillRects` to allow individual rectangles rotation.
+- Added `pathfind` utility.
 
 # License
 

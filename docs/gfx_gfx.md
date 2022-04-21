@@ -558,7 +558,7 @@ Draw a list of filled colored rectangles as a batch.
 | destRects | <code>Array.&lt;Rectangle&gt;</code> | Rectangles to fill. |
 | colors | <code>Array.&lt;Color&gt;</code> \| <code>Color</code> | Rectangles fill color. |
 | blend | <code>BlendModes</code> | Blend mode. |
-| rotation | <code>Number</code> | Rotate the rectangle around its center. |
+| rotation | <code>Array.&lt;Number&gt;</code> \| <code>Number</code> | Rotate the rectangles around its center. |
 
 **Example**  
 ```js
