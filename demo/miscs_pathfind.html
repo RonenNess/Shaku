@@ -13,7 +13,7 @@
     <h1 class="demo-title">Shaku Miscs Demo: Path Finding</h1>
       <p>This demo show how to use the built-in PathFinder utility.<br />
       Click on tiles to set their type and a new path will be calculated few moments after (path displayed as red dots). <br/>
-      Black tiles are blocking. Other colors are just different tile types. The algorithm will try to stick to the same tile type when possible.</p>
+      Black tiles are blocking. Other types are walkable with the following prices: green = 1, purple = 2, orange = 3.</p>
 
       <!-- include shaku -->
       <script src="js/demos.js"></script>
@@ -36,7 +36,7 @@
           // some consts
           const tilemapSize = 45;
           const tileSize = 900 / 45;
-          const tileColors = [Shaku.utils.Color.black, Shaku.utils.Color.green, Shaku.utils.Color.blue];
+          const tileColors = [Shaku.utils.Color.black, Shaku.utils.Color.green, Shaku.utils.Color.purple, Shaku.utils.Color.orange];
 
           // create tilemap
           let tiles = [];
@@ -64,11 +64,10 @@
                   return !Boolean(this.getType(_to));
               }
           
-              // get price - if same type, price is 1, if different types, price is x5.
-              // this will make path "sticky" to same tile types, but to certain extent.
-              getPrice(_from, _to)
+              // get price: price = tile type
+              getPrice(_index)
               {
-                  return (this.getType(_from) == this.getType(_to)) ? 1 : 5;
+                  return this.getType(_index);
               }
               
               // get type from index.
@@ -174,38 +173,37 @@
 
 <p class="noselect">The following shows a basic path finding example code.</p>
 <pre><code id="code-box" class="language-js">// a grid provider that simple use a 2d array of numbers to represent tile types.
-// tile type 0 = walls / out of bounds.
-// other types = walkable.
+// tile type 0 = blocking / out of bounds.
+// other types = walkable, price = type index.
 class GridProvider extends Shaku.utils.PathFinder.IGrid
 {
-    constructor(grid)
-    {
-        super();
-        this.grid = grid;
-    }
-    
-    // blocking tiles = type 0, or out of bounds.
-    isBlocked(_from, _to)
-    {
-        return !Boolean(this.getType(_to));
-    }
+  constructor(grid)
+  {
+    super();
+    this.grid = grid;
+  }
   
-    // get price - if same type, price is 1, if different types, price is x5.
-    // this will make path "sticky" to same tile types, but to certain extent.
-    getPrice(_from, _to)
-    {
-        return (this.getType(_from) == this.getType(_to)) ? 1 : 5;
+  // blocking tiles = type 0, or out of bounds.
+  isBlocked(_from, _to)
+  {
+    return !Boolean(this.getType(_to));
+  }
+
+  // get price: price = tile type
+  getPrice(_index)
+  {
+    return this.getType(_index);
+  }
+  
+  // get type from index.
+  // return 0 (block) for out of bounds.
+  getType(index)
+  {
+    if (!this.grid[index.x]) {
+        return 0;
     }
-    
-    // get type from index.
-    // return 0 (block) for out of bounds.
-    getType(index)
-    {
-        if (!this.grid[index.x]) {
-            return 0;
-        }
-        return this.grid[index.x][index.y] || 0;
-    }
+    return this.grid[index.x][index.y] || 0;
+  }
 }
 
 // create grid

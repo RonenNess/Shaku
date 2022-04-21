@@ -10129,13 +10129,12 @@ class IGrid
     isBlocked(_from, _to) { throw new Error("Not Implemented"); }
 
     /**
-     * Get the price to travel from one tile to another.
-     * Should return 1 for "normal" traveling price, > 1 for expensive travel, and < 1 for cheap travel.
-     * @param {Vector2|Vector3} _from Source tile index.
-     * @param {Vector2|Vector3} _to Target tile index. Must be a neighbor of _from.
-     * @returns {Number} Price factor to walk from _from to _to.
+     * Get the price to travel on a given tile.
+     * Should return 1 for "normal" traveling price, > 1 for expensive tile, and < 1 for a cheap tile to pass on.
+     * @param {Vector2|Vector3} _index Tile index.
+     * @returns {Number} Price factor to walk on.
      */
-    getPrice(_from, _to) { throw new Error("Not Implemented"); }
+    getPrice(_index) { throw new Error("Not Implemented"); }
 }
 
 
@@ -10231,8 +10230,7 @@ function _ImpFindPath(grid, startPos, targetPos, options)
         let currentNode = openSet[0];
         for (let i = 1; i < openSet.length; i++)
         {
-            let price = (options.ignorePrices) ? 1 : grid.getPrice(currentNode.position, openSet[i].position);
-            if ((openSet[i].fCost * price <= currentNode.fCost) && (openSet[i].hCost < currentNode.hCost))
+            if ((openSet[i].fCost <= currentNode.fCost) && (openSet[i].hCost < currentNode.hCost))
             {
                 currentNode = openSet[i];
             }
@@ -10268,12 +10266,13 @@ function _ImpFindPath(grid, startPos, targetPos, options)
                 continue;
             }
 
-            // calc price to walk there
-            let currStepCost = currentNode.gCost + getDistance(currentNode, neighbor);
+            // calc const and price to walk there
+            let price = (options.ignorePrices) ? 1 : grid.getPrice(neighbor.position);
+            let currStepCost = currentNode.gCost + getDistance(currentNode, neighbor) * price;
 
             // update node price and add to open set
             let isInOpenSet = (openSet.indexOf(neighbor) !== -1);
-            if ((currStepCost < neighbor.gCost) || !isInOpenSet)
+            if (!isInOpenSet || (currStepCost < neighbor.gCost))
             {
                 // update node price and parent
                 neighbor.gCost = currStepCost;

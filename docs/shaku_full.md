@@ -4958,7 +4958,7 @@ Interface for a supported grid.
 
 * [IGrid](#IGrid)
     * [.isBlocked(_from, _to)](#IGrid+isBlocked) ⇒ <code>Boolean</code>
-    * [.getPrice(_from, _to)](#IGrid+getPrice) ⇒ <code>Number</code>
+    * [.getPrice(_index)](#IGrid+getPrice) ⇒ <code>Number</code>
 
 <a name="IGrid+isBlocked"></a>
 
@@ -4975,17 +4975,16 @@ Check if a given tile is blocked from a given neihbor.
 
 <a name="IGrid+getPrice"></a>
 
-### iGrid.getPrice(_from, _to) ⇒ <code>Number</code>
-Get the price to travel from one tile to another.
-Should return 1 for "normal" traveling price, > 1 for expensive travel, and < 1 for cheap travel.
+### iGrid.getPrice(_index) ⇒ <code>Number</code>
+Get the price to travel on a given tile.
+Should return 1 for "normal" traveling price, > 1 for expensive tile, and < 1 for a cheap tile to pass on.
 
 **Kind**: instance method of [<code>IGrid</code>](#IGrid)  
-**Returns**: <code>Number</code> - Price factor to walk from _from to _to.  
+**Returns**: <code>Number</code> - Price factor to walk on.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| _from | [<code>Vector2</code>](#Vector2) \| <code>Vector3</code> | Source tile index. |
-| _to | [<code>Vector2</code>](#Vector2) \| <code>Vector3</code> | Target tile index. Must be a neighbor of _from. |
+| _index | [<code>Vector2</code>](#Vector2) \| <code>Vector3</code> | Tile index. |
 
 <a name="Node"></a>
 

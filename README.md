@@ -1422,22 +1422,21 @@ To use it you must implement a *grid provider* class that will provide informati
 This interface have two main methods:
 
 - **isBlocked(_from, _to)**: tell the algorithm if its possible to walk from grid index `_from` to grid index `_to`. `true` = blocked, can't walk this path, `false` = can walk the path.
-- **getPrice(_from, _to)**: tell the algorithm the price it takes to walk from grid index `_from` to grid index `_to`. For example, if the walking npc is on a trail you might want to return a higher price to get off of it, to make the npc prefer to stay on trail unless he have to get off. `1 =` "normal" price, `< 1` = cheaper to walk, `> 1` = expensive to walk.
+- **getPrice(index)**: tell the algorithm the price it takes to walk on a given tile. 1 = default price, 0-1 = cheaper, >1 = expensive.
 
-If you know path finding algorithms you know they *typically* get a matrix of booleans (or numbers for costs) as input instead of a grid provider. However, using the `IGrid` interface gives additional information, source tile, which provides a lot of flexability in terms of what you can implement with it:
+If you know path finding algorithms you know they *typically* get a matrix of booleans (or numbers for costs) as input, and not a grid provider class. However, using the grid provider shtick gives some extra flexability in terms of what you can implement with it:
 
-- Can support 3D grid, you just need to provide Z index to your positions and use it.
-- Can implement slopes and cliffs or walls that are just the side of the grid cells and don't fill it completely (like the walls in Sims).
-- Can combine with prices to make the walker prefer to stick to the same tile types or stay on roads.
+- Support 3D grid if taking z into consideration.
+- Implement slopes and cliffs, or walls that cover just a side of a grid cells and doesn't fill the entire of the tile (for example think about the walls in the first Sims game).
 
-So now that we understand the importance of `IGrid`, lets see how to use the `PathFinder`. This module only have one method, `findPath(grid, startPos, targetPos, options)`, which is what we use to calculate a walking path:
+Lets see how to use the `PathFinder`. This module only have one method, `findPath(grid, startPos, targetPos, options)`, which is what we use to calculate a walking path:
 
 - **grid**: Your `IGrid` instance.
 - **startPos**: Vector2 you want to travel *from*.
 - **targetPos**: Vector2 you want to travel *to*.
 - **options**: Optional dictionary with extra flags:
 - - maxIterations: limit the numbers of iterations we allow when searching the path (so your game won't get stuck if you accidentally scan a huge level).
-- - ignorePrices: if true, will ignore the pricing functionality completely. You may think its redundant as you can just not provide prices in your `IGrid`, but with this flag you can have support in prices but still ignore them in specific cases, liky flying units, without doing any ugly tricks with your `IGrid` class.
+- - ignorePrices: if true, will ignore the pricing functionality completely. It may seem redundant as you can just always return `1` from the `IGrid.getPrice()` method, however with this flag you can easily turn prices on and off *per search* while keeping the grid class intact.
 
 Lets see an example on how to use the `PathFinder`:
 
@@ -1459,11 +1458,10 @@ class GridProvider extends Shaku.utils.PathFinder.IGrid
         return !Boolean(this.getType(_to));
     }
  
-    // get price - if same type, price is 1, if different types, price is x5.
-    // this will make path "sticky" to same tile types, but to certain extent.
-    getPrice(_from, _to)
+    // get price: price = tile type
+    getPrice(_index)
     {
-        return (this.getType(_from) == this.getType(_to)) ? 1 : 5;
+        return this.getType(_index);
     }
     
     // get type from index.
