@@ -1456,14 +1456,14 @@ class GridProvider extends Shaku.utils.PathFinder.IGrid
     // blocking tiles = type 0, or out of bounds.
     isBlocked(_from, _to)
     {
-        return Boolean(this.getType(_to));
+        return !Boolean(this.getType(_to));
     }
  
-    // get price - if same type, price is 1, if different types, price is double.
+    // get price - if same type, price is 1, if different types, price is x5.
     // this will make path "sticky" to same tile types, but to certain extent.
     getPrice(_from, _to)
     {
-        return (this.getType(_from) == this._getType(_to)) ? 1 : 2;
+        return (this.getType(_from) == this.getType(_to)) ? 1 : 5;
     }
     
     // get type from index.
@@ -1493,7 +1493,7 @@ let grid = [[1,2,1,1,1,1,1,1,1,1,1,1],
 let gridProvider = new GridProvider(grid);
 
 // find path from top-left to bottom-right
-let path = findPath(gridProvider, {x:0, y:0}, {x:11, y:11});
+let path = Shaku.utils.PathFinder.findPath(gridProvider, {x:0, y:0}, {x:11, y:11});
 ```
 
 For more info check out the [API docs](docs/utils_path_finder.md).

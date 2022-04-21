@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Shaku</title>
+    <meta name="description" content="Shaku - a simple and easy-to-use javascript library for videogame programming.">
+    <meta name="author" content="Ronen Ness">
+    <link href="css/style.css" rel="stylesheet" type="text/css" media="all">
+  </head>
+  <body>
+    <div class="noselect">
+    <button class="view-code-btn" onclick="showSampleCode();">View Code</button> 
+    <h1 class="demo-title">Shaku Miscs Demo: Path Finding</h1>
+      <p>This demo show how to use the built-in PathFinder utility.<br />
+      Click on tiles to set their type and a new path will be calculated few moments after (path displayed as red dots). <br/>
+      Black tiles are blocking. Other colors are just different tile types. The algorithm will try to stick to the same tile type when possible.</p>
+
+      <!-- include shaku -->
+      <script src="js/demos.js"></script>
+      <script src="js/shaku.js"></script>
+
+      <!-- demo code -->
+      <script id="main-code">
+        async function runGame()
+        {
+          // make shaku only listen to gfx canvas
+          Shaku.input.setTargetElement(() => Shaku.gfx.canvas);
+
+          // init shaku
+          await Shaku.init();
+
+          // add shaku's canvas to document and set resolution to 800x600
+          document.body.appendChild(Shaku.gfx.canvas);
+          Shaku.gfx.setResolution(900, 900, true);
+
+          // some consts
+          const tilemapSize = 45;
+          const tileSize = 900 / 45;
+          const tileColors = [Shaku.utils.Color.black, Shaku.utils.Color.green, Shaku.utils.Color.blue];
+
+          // create tilemap
+          let tiles = [];
+          for (let i = 0; i < tilemapSize; ++i) {
+            tiles.push([]);
+            for (let j = 0; j < tilemapSize; ++j) {
+              tiles[i].push(1);
+            }
+          }
+
+          // a grid provider that simple use a 2d array of numbers to represent tile types.
+          // tile type 0 = walls / out of bounds.
+          // other types = walkable.
+          class GridProvider extends Shaku.utils.PathFinder.IGrid
+          {
+              constructor(grid)
+              {
+                  super();
+                  this.grid = grid;
+              }
+              
+              // blocking tiles = type 0, or out of bounds.
+              isBlocked(_from, _to)
+              {
+                  return !Boolean(this.getType(_to));
+              }
+          
+              // get price - if same type, price is 1, if different types, price is x5.
+              // this will make path "sticky" to same tile types, but to certain extent.
+              getPrice(_from, _to)
+              {
+                  return (this.getType(_from) == this.getType(_to)) ? 1 : 5;
+              }
+              
+              // get type from index.
+              // return 0 (block) for out of bounds.
+              getType(index)
+              {
+                  if (!this.grid[index.x]) {
+                      return 0;
+                  }
+                  return this.grid[index.x][index.y] || 0;
+              }
+          }
+          const gridProvider = new GridProvider(tiles);
+
+          // current path
+          let currPath = null;
+
+          // time to recalc path
+          let recalcPathTimeout = null;
+
+          // do a single main loop step
+          function step() 
+          {  
+            // start new frame and clear screen
+            Shaku.startFrame();
+            Shaku.gfx.clear(Shaku.utils.Color.gray);
+
+            // check if need to calculate a new path
+            if (!currPath) {
+              currPath = Shaku.utils.PathFinder.findPath(gridProvider, {x:4, y:4}, {x:40, y:40}) || [];
+            }
+
+            // draw the map
+            let rects = [];
+            let colors = [];
+            for (let i = 0; i < 45; ++i) {
+              for (let j = 0; j < 45; ++j) {
+                let type = tiles[i][j];
+                rects.push(new Shaku.utils.Rectangle(i * tileSize + 1, j * tileSize + 1, tileSize - 2, tileSize - 2));
+                colors.push(tileColors[type]);
+              }
+            }
+            Shaku.gfx.fillRects(rects, colors);
+
+            // draw start and end position
+            Shaku.gfx.fillCircle(new Shaku.utils.Circle(new Shaku.utils.Vector2(tileSize * 4.5, tileSize * 4.5), tileSize / 2), Shaku.utils.Color.red);
+            Shaku.gfx.fillCircle(new Shaku.utils.Circle(new Shaku.utils.Vector2(tileSize * 40.5, tileSize * 40.5), tileSize / 2), Shaku.utils.Color.red);
+
+            // draw path
+            if (currPath) {
+              let pathCircles = [];
+              for (let point of currPath) {
+                let currDot = new Shaku.utils.Circle(new Shaku.utils.Vector2(tileSize * (point.x + 0.5), tileSize * (point.y + 0.5)), tileSize / 3);
+                pathCircles.push(currDot);
+              }
+              Shaku.gfx.fillCircles(pathCircles, Shaku.utils.Color.red);
+            }
+
+            // change tiles
+            if (Shaku.input.released('mouse_left')) {
+
+              // remove current path
+              currPath = [];
+
+              // set tile
+              let indexX = Math.floor(Shaku.input.mousePosition.x / tileSize);
+              let indexY = Math.floor(Shaku.input.mousePosition.y / tileSize);
+              if (indexX >= 0 && indexX < tilemapSize && indexY >= 0 && indexY < tilemapSize) {
+                tiles[indexX][indexY]++;
+                if (tiles[indexX][indexY] >= tileColors.length) {
+                  tiles[indexX][indexY] = 0;
+                }
+              }
+
+              // reset timeout to calc new path
+              if (recalcPathTimeout) {
+                clearTimeout(recalcPathTimeout);
+              }
+              recalcPathTimeout = setTimeout(() => {
+                  currPath = null;
+                  recalcPathTimeout = null;
+              }, 500);
+            }
+
+            // end frame and request next frame
+            Shaku.endFrame();
+            Shaku.requestAnimationFrame(step);
+          }
+
+          // start main loop
+          step();
+        }
+
+        runGame();
+      </script>
+
+</div>
+
+<!-- code example part -->
+<div id="sample-code-modal" class="modal">
+  <div class="modal__overlay jsOverlay"></div>
+  <div class="modal__container">   
+
+<p class="noselect">The following shows a basic path finding example code.</p>
+<pre><code id="code-box" class="language-js">// a grid provider that simple use a 2d array of numbers to represent tile types.
+// tile type 0 = walls / out of bounds.
+// other types = walkable.
+class GridProvider extends Shaku.utils.PathFinder.IGrid
+{
+    constructor(grid)
+    {
+        super();
+        this.grid = grid;
+    }
+    
+    // blocking tiles = type 0, or out of bounds.
+    isBlocked(_from, _to)
+    {
+        return !Boolean(this.getType(_to));
+    }
+  
+    // get price - if same type, price is 1, if different types, price is x5.
+    // this will make path "sticky" to same tile types, but to certain extent.
+    getPrice(_from, _to)
+    {
+        return (this.getType(_from) == this.getType(_to)) ? 1 : 5;
+    }
+    
+    // get type from index.
+    // return 0 (block) for out of bounds.
+    getType(index)
+    {
+        if (!this.grid[index.x]) {
+            return 0;
+        }
+        return this.grid[index.x][index.y] || 0;
+    }
+}
+
+// create grid
+let grid = [[1,2,1,1,1,1,1,1,1,1,1,1],
+            [1,2,1,1,1,1,1,1,1,1,1,1],
+            [1,1,1,0,1,1,1,1,1,1,1,1],
+            [1,1,1,0,0,0,1,1,1,1,1,1],
+            [1,1,1,1,1,0,1,1,1,1,1,1],
+            [1,1,1,2,2,0,1,0,0,0,1,1],
+            [1,1,1,2,1,0,1,0,1,1,1,1],
+            [1,1,1,1,1,1,1,0,1,1,1,1],
+            [1,1,0,1,1,1,1,0,1,2,1,1],
+            [1,1,0,1,1,0,0,0,1,2,2,1],
+            [1,1,0,1,1,1,1,1,1,2,2,1],
+            [1,1,0,1,1,1,1,1,1,1,2,1]];
+let gridProvider = new GridProvider(grid);
+
+// find path from top-left to bottom-right
+let path = Shaku.utils.PathFinder.findPath(gridProvider, {x:0, y:0}, {x:11, y:11});</code></pre>
+  <button class="modal__close" onclick="closeModal('sample-code-modal')">&#10005;</button>
+</div>
+</div>
+
+<link href="prism/prism.css" rel="stylesheet" />
+<script src="prism/prism.js"></script>
+
+  </body>
+</html>
