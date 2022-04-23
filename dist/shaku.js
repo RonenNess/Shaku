@@ -444,9 +444,10 @@ class Assets extends IManager
      * @param {String} name Asset name (matched to URLs when using cache). If null, will not add to cache.
      * @param {Number} width Texture width.
      * @param {Number} height Texture height.
+     * @param {Number} channels Texture channels count. Defaults to 4 (RGBA).
      * @returns {Promise<Asset>} promise to resolve with asset instance, when loaded. You can access the loading asset with `.asset` on the promise.
      */
-    createRenderTarget(name, width, height)
+    createRenderTarget(name, width, height, channels)
     {
         // make sure we have valid size
         if (!width || !height) {
@@ -455,7 +456,7 @@ class Assets extends IManager
 
         // create asset and return promise
         return this._createAsset(name, TextureAsset, (asset) => {
-            asset.createRenderTarget(width, height);
+            asset.createRenderTarget(width, height, channels);
         });
     }
     
@@ -1384,8 +1385,9 @@ class TextureAsset extends Asset
      * Create this texture as an empty render target.
      * @param {Number} width Texture width.
      * @param {Number} height Texture height.
+     * @param {Number} channels Texture channels count. Defaults to 4 (RGBA).
      */
-    createRenderTarget(width, height)
+    createRenderTarget(width, height, channels)
     {
         // create to render to
         const targetTextureWidth = width;
@@ -1393,12 +1395,30 @@ class TextureAsset extends Asset
         const targetTexture = gl.createTexture();
         gl.bindTexture(gl.TEXTURE_2D, targetTexture);
         
+        // calculate format
+        var _format = gl.RGBA;
+        if (channels !== undefined) {
+            switch (channels) {
+                case 1:
+                    _format = gl.ALPHA;
+                    break;
+                case 3:
+                    _format = gl.RGB;
+                    break;
+                case 4:
+                    _format = gl.RGBA;
+                    break;
+                default:
+                    throw new Error("Unknown render target format!");
+            }
+        }
+
         {
             // create texture
             const level = 0;
-            const internalFormat = gl.RGBA;
+            const internalFormat = _format;
             const border = 0;
-            const format = gl.RGBA;
+            const format = _format;
             const type = gl.UNSIGNED_BYTE;
             const data = null;
             gl.texImage2D(gl.TEXTURE_2D, level, internalFormat,
@@ -6553,6 +6573,9 @@ class SpriteBatch
             bottomLeft.addSelf(sprite.position);
             bottomRight.addSelf(sprite.position);
 
+            // optional z position
+            let z = sprite.position.z || 0;
+
             // cull out-of-screen sprites
             if (cullOutOfScreen)
             {
@@ -6569,10 +6592,10 @@ class SpriteBatch
 
             // update positions buffer
             let pi = this._currBatchCount * 4 * 3;
-            positions[pi+0] = topLeft.x;             positions[pi+1] = topLeft.y;             positions[pi+2] = 0;
-            positions[pi+3] = topRight.x;            positions[pi+4] = topRight.y;            positions[pi+5] = 0;
-            positions[pi+6] = bottomLeft.x;          positions[pi+7] = bottomLeft.y;          positions[pi+8] = 0;
-            positions[pi+9] = bottomRight.x;         positions[pi+10] = bottomRight.y;        positions[pi+11] = 0;
+            positions[pi+0] = topLeft.x;             positions[pi+1] = topLeft.y;             positions[pi+2] = z;
+            positions[pi+3] = topRight.x;            positions[pi+4] = topRight.y;            positions[pi+5] = z;
+            positions[pi+6] = bottomLeft.x;          positions[pi+7] = bottomLeft.y;          positions[pi+8] = z;
+            positions[pi+9] = bottomRight.x;         positions[pi+10] = bottomRight.y;        positions[pi+11] = z;
 
             // add uvs
             let uvi = this._currBatchCount * 4 * 2;

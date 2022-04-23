@@ -1758,6 +1758,12 @@ List of changes in released versions.
 - Changed `fillRects` to allow individual rectangles rotation.
 - Added `pathFinder` utility.
 
+## 1.4.6 [WIP]
+
+- Added sprite z position to vertices buffer when drawing, to allow supporting z in shaders.
+- Added support in channels count for render targets.
+
+
 # License
 
 *Shaku* is licensed under the permissive MIT license, so you can use it for any purpose (including commercially) and it should be compatible with most common licenses.
