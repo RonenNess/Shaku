@@ -270,7 +270,7 @@ Set a render target (texture) to render on.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| texture | <code>TextureAsset</code> | Render target texture to set as render target, or null to reset and render back on canvas. |
+| texture | <code>TextureAsset</code> \| <code>Array.&lt;TextureAsset&gt;</code> | Render target texture to set as render target, or null to reset and render back on canvas. Can also be array for multiple targets, which will take layouts 0-15 by their order. |
 | keepCamera | <code>Boolean</code> | If true, will keep current camera settings. If false (default) will reset camera. |
 
 **Example**  

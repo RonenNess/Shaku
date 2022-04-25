@@ -1762,7 +1762,7 @@ List of changes in released versions.
 
 - Added sprite z position to vertices buffer when drawing, to allow supporting z in shaders.
 - Added support in channels count for render targets.
-- Added optional index when attaching render target.
+- Added option to set multiple render targets.
 
 
 # License

@@ -24,7 +24,7 @@ This asset type loads an image from URL or source, and turn it into a texture.
     * [.texture](#TextureAsset+texture)
     * [.valid](#TextureAsset+valid)
     * [.load(params)](#TextureAsset+load) ⇒ <code>Promise</code>
-    * [.createRenderTarget(width, height)](#TextureAsset+createRenderTarget)
+    * [.createRenderTarget(width, height, channels)](#TextureAsset+createRenderTarget)
     * [.fromImage(image, params)](#TextureAsset+fromImage)
     * [.create(source, params)](#TextureAsset+create) ⇒ <code>Promise</code>
     * [.getPixel(x, y)](#TextureAsset+getPixel) ⇒ <code>Color</code>
@@ -120,7 +120,7 @@ Load the texture from it's image URL.
 
 <a name="TextureAsset+createRenderTarget"></a>
 
-### textureAsset.createRenderTarget(width, height)
+### textureAsset.createRenderTarget(width, height, channels)
 Create this texture as an empty render target.
 
 **Kind**: instance method of [<code>TextureAsset</code>](#TextureAsset)  
@@ -129,6 +129,7 @@ Create this texture as an empty render target.
 | --- | --- | --- |
 | width | <code>Number</code> | Texture width. |
 | height | <code>Number</code> | Texture height. |
+| channels | <code>Number</code> | Texture channels count. Defaults to 4 (RGBA). |
 
 <a name="TextureAsset+fromImage"></a>
 

@@ -26,7 +26,7 @@ To access the Assets manager you use `Shaku.assets`.
     * [.getCached(url)](#Assets+getCached) ⇒ <code>Asset</code>
     * [.loadSound(url)](#Assets+loadSound) ⇒ <code>Promise.&lt;Asset&gt;</code>
     * [.loadTexture(url, params)](#Assets+loadTexture) ⇒ <code>Promise.&lt;Asset&gt;</code>
-    * [.createRenderTarget(name, width, height)](#Assets+createRenderTarget) ⇒ <code>Promise.&lt;Asset&gt;</code>
+    * [.createRenderTarget(name, width, height, channels)](#Assets+createRenderTarget) ⇒ <code>Promise.&lt;Asset&gt;</code>
     * [.loadFontTexture(url, params)](#Assets+loadFontTexture) ⇒ <code>Promise.&lt;Asset&gt;</code>
     * [.loadJson(url)](#Assets+loadJson) ⇒ <code>Promise.&lt;Asset&gt;</code>
     * [.createJson(name, data)](#Assets+createJson) ⇒ <code>Promise.&lt;Asset&gt;</code>
@@ -142,7 +142,7 @@ let texture = await Shaku.assets.loadTexture("assets/my_texture.png", {generateM
 ```
 <a name="Assets+createRenderTarget"></a>
 
-### assets.createRenderTarget(name, width, height) ⇒ <code>Promise.&lt;Asset&gt;</code>
+### assets.createRenderTarget(name, width, height, channels) ⇒ <code>Promise.&lt;Asset&gt;</code>
 Create a render target texture asset. If already loaded, will use cache.
 
 **Kind**: instance method of [<code>Assets</code>](#Assets)  
@@ -153,6 +153,7 @@ Create a render target texture asset. If already loaded, will use cache.
 | name | <code>String</code> | Asset name (matched to URLs when using cache). If null, will not add to cache. |
 | width | <code>Number</code> | Texture width. |
 | height | <code>Number</code> | Texture height. |
+| channels | <code>Number</code> | Texture channels count. Defaults to 4 (RGBA). |
 
 **Example**  
 ```js

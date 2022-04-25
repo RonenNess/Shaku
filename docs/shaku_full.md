@@ -292,7 +292,7 @@ To access the Assets manager you use `Shaku.assets`.
     * [.getCached(url)](#Assets+getCached) ⇒ [<code>Asset</code>](#Asset)
     * [.loadSound(url)](#Assets+loadSound) ⇒ [<code>Promise.&lt;Asset&gt;</code>](#Asset)
     * [.loadTexture(url, params)](#Assets+loadTexture) ⇒ [<code>Promise.&lt;Asset&gt;</code>](#Asset)
-    * [.createRenderTarget(name, width, height)](#Assets+createRenderTarget) ⇒ [<code>Promise.&lt;Asset&gt;</code>](#Asset)
+    * [.createRenderTarget(name, width, height, channels)](#Assets+createRenderTarget) ⇒ [<code>Promise.&lt;Asset&gt;</code>](#Asset)
     * [.loadFontTexture(url, params)](#Assets+loadFontTexture) ⇒ [<code>Promise.&lt;Asset&gt;</code>](#Asset)
     * [.loadJson(url)](#Assets+loadJson) ⇒ [<code>Promise.&lt;Asset&gt;</code>](#Asset)
     * [.createJson(name, data)](#Assets+createJson) ⇒ [<code>Promise.&lt;Asset&gt;</code>](#Asset)
@@ -408,7 +408,7 @@ let texture = await Shaku.assets.loadTexture("assets/my_texture.png", {generateM
 ```
 <a name="Assets+createRenderTarget"></a>
 
-### assets.createRenderTarget(name, width, height) ⇒ [<code>Promise.&lt;Asset&gt;</code>](#Asset)
+### assets.createRenderTarget(name, width, height, channels) ⇒ [<code>Promise.&lt;Asset&gt;</code>](#Asset)
 Create a render target texture asset. If already loaded, will use cache.
 
 **Kind**: instance method of [<code>Assets</code>](#Assets)  
@@ -419,6 +419,7 @@ Create a render target texture asset. If already loaded, will use cache.
 | name | <code>String</code> | Asset name (matched to URLs when using cache). If null, will not add to cache. |
 | width | <code>Number</code> | Texture width. |
 | height | <code>Number</code> | Texture height. |
+| channels | <code>Number</code> | Texture channels count. Defaults to 4 (RGBA). |
 
 **Example**  
 ```js
@@ -775,7 +776,7 @@ This asset type loads an image from URL or source, and turn it into a texture.
     * [.texture](#TextureAsset+texture)
     * [.valid](#TextureAsset+valid)
     * [.load(params)](#TextureAsset+load) ⇒ <code>Promise</code>
-    * [.createRenderTarget(width, height)](#TextureAsset+createRenderTarget)
+    * [.createRenderTarget(width, height, channels)](#TextureAsset+createRenderTarget)
     * [.fromImage(image, params)](#TextureAsset+fromImage)
     * [.create(source, params)](#TextureAsset+create) ⇒ <code>Promise</code>
     * [.getPixel(x, y)](#TextureAsset+getPixel) ⇒ [<code>Color</code>](#Color)
@@ -871,7 +872,7 @@ Load the texture from it's image URL.
 
 <a name="TextureAsset+createRenderTarget"></a>
 
-### textureAsset.createRenderTarget(width, height)
+### textureAsset.createRenderTarget(width, height, channels)
 Create this texture as an empty render target.
 
 **Kind**: instance method of [<code>TextureAsset</code>](#TextureAsset)  
@@ -880,6 +881,7 @@ Create this texture as an empty render target.
 | --- | --- | --- |
 | width | <code>Number</code> | Texture width. |
 | height | <code>Number</code> | Texture height. |
+| channels | <code>Number</code> | Texture channels count. Defaults to 4 (RGBA). |
 
 <a name="TextureAsset+fromImage"></a>
 
@@ -2255,7 +2257,7 @@ Set a render target (texture) to render on.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| texture | [<code>TextureAsset</code>](#TextureAsset) | Render target texture to set as render target, or null to reset and render back on canvas. |
+| texture | [<code>TextureAsset</code>](#TextureAsset) \| [<code>Array.&lt;TextureAsset&gt;</code>](#TextureAsset) | Render target texture to set as render target, or null to reset and render back on canvas. Can also be array for multiple targets, which will take layouts 0-15 by their order. |
 | keepCamera | <code>Boolean</code> | If true, will keep current camera settings. If false (default) will reset camera. |
 
 **Example**  

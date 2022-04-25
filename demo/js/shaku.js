@@ -4540,33 +4540,54 @@ class Gfx extends IManager
      * // note the negative height - render targets end up with flipped Y axis
      * Shaku.gfx.setRenderTarget(null);
      * Shaku.gfx.draw(renderTarget, new Shaku.utils.Vector2(screenX / 2, screenY / 2), new Shaku.utils.Vector2(screenX, -screenY));
-     * @param {TextureAsset} texture Render target texture to set as render target, or null to reset and render back on canvas.
+     * @param {TextureAsset|Array<TextureAsset>} texture Render target texture to set as render target, or null to reset and render back on canvas. Can also be array for multiple targets, which will take layouts 0-15 by their order.
      * @param {Boolean} keepCamera If true, will keep current camera settings. If false (default) will reset camera.
-     * @param {Number} index If provided, will attach this render target to a specific target index. Valid indices are 0-15. Only works with WebGL2.
      */
-    setRenderTarget(texture, keepCamera, index)
+    setRenderTarget(texture, keepCamera)
     {
         // if texture is null, remove any render target
         if (texture === null) {
             this._renderTarget = null;
+            //this._gl.drawBuffers([this._gl.BACK]);
             this._gl.bindFramebuffer(this._gl.FRAMEBUFFER, null);
+            this._gl.pixelStorei(this._gl.UNPACK_FLIP_Y_WEBGL, false);
             if (!keepCamera) {
                 this.resetCamera();
             }
             return;
         }
 
+        // convert texture to array
+        if (!(texture instanceof Array)) {
+            texture = [texture];
+        }
+
         // bind the framebuffer
         this._gl.bindFramebuffer(this._gl.FRAMEBUFFER, this._fb);
+        this._gl.pixelStorei(this._gl.UNPACK_FLIP_Y_WEBGL, false);
         
-        // attach the texture as the first color attachment
-        if (index === undefined) { index = 0; }
-        const attachmentPoint = this._gl['COLOR_ATTACHMENT' + index];
-        this._gl.framebufferTexture2D(
-        this._gl.FRAMEBUFFER, attachmentPoint, this._gl.TEXTURE_2D, texture.texture, 0);
-        if (index === 0) {
-            this._renderTarget = texture;
+        // set render targets
+        var drawBuffers = [];
+        for (let index = 0; index < texture.length; ++index) {
+            
+            // attach the texture as the first color attachment
+            const attachmentPoint = this._gl['COLOR_ATTACHMENT' + index];
+            this._gl.framebufferTexture2D(this._gl.FRAMEBUFFER, attachmentPoint, this._gl.TEXTURE_2D, texture[index].texture, 0);
+
+            // index 0 is the "main" render target
+            if (index === 0) {
+                this._renderTarget = texture[index];
+            }
+
+            // to set drawBuffers in the end
+            drawBuffers.push(attachmentPoint);
         }
+
+        // set draw buffers
+        this._gl.drawBuffers(drawBuffers);
+
+        // unbind frame buffer
+        //this._gl.bindFramebuffer(this._gl.FRAMEBUFFER, null);
 
         // reset camera
         if (!keepCamera) {
