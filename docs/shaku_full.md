@@ -2051,6 +2051,9 @@ To access the Graphics manager you use `Shaku.gfx`.
     * [.drawLines(points, colors, blendMode)](#Gfx+drawLines)
     * [.drawPoint(point, color, blendMode)](#Gfx+drawPoint)
     * [.drawPoints(points, colors, blendMode)](#Gfx+drawPoints)
+    * [.centerCanvas()](#Gfx+centerCanvas)
+    * [.inScreen(shape)](#Gfx+inScreen) ⇒ <code>Boolean</code>
+    * [.centerCamera(position, useCanvasSize)](#Gfx+centerCamera)
     * [.clear(color)](#Gfx+clear)
     * [.presentBufferedData()](#Gfx+presentBufferedData)
 
@@ -2398,7 +2401,7 @@ Shaku.gfx.drawGroup(text1, true);
 
 ### gfx.drawGroup(group, cullOutOfScreen)
 Draw a SpritesGroup object. 
-A SpritesGroup is a collection of sprites we can draw in bulks + transformations to apply on the entire group.
+A SpritesGroup is a collection of sprites we can draw in bulks with transformations to apply on the entire group.
 
 **Kind**: instance method of [<code>Gfx</code>](#Gfx)  
 
@@ -2425,7 +2428,7 @@ for (let i = 0; i < 5; ++i) {
   group.add(sprite)
 }
 
-// draw the group with batching
+// draw the group with automatic culling of invisible sprites
 Shaku.gfx.drawGroup(group, true);
 ```
 <a name="Gfx+drawSprite"></a>
@@ -2727,6 +2730,36 @@ let points = [new Shaku.utils.Vector2(50,50), new Shaku.utils.Vector2(150,50), n
 let colors = [Shaku.utils.Color.random(), Shaku.utils.Color.random(), Shaku.utils.Color.random()];
 Shaku.gfx.drawPoints(points, colors);
 ```
+<a name="Gfx+centerCanvas"></a>
+
+### gfx.centerCanvas()
+Make the renderer canvas centered.
+
+**Kind**: instance method of [<code>Gfx</code>](#Gfx)  
+<a name="Gfx+inScreen"></a>
+
+### gfx.inScreen(shape) ⇒ <code>Boolean</code>
+Check if a given shape is currently in screen bounds, not taking camera into consideration.
+
+**Kind**: instance method of [<code>Gfx</code>](#Gfx)  
+**Returns**: <code>Boolean</code> - True if given shape is in visible region.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| shape | [<code>Circle</code>](#Circle) \| <code>Vector</code> \| [<code>Rectangle</code>](#Rectangle) \| [<code>Line</code>](#Line) | Shape to check. |
+
+<a name="Gfx+centerCamera"></a>
+
+### gfx.centerCamera(position, useCanvasSize)
+Make a given vector the center of the camera.
+
+**Kind**: instance method of [<code>Gfx</code>](#Gfx)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| position | [<code>Vector2</code>](#Vector2) | Camera position. |
+| useCanvasSize | <code>Boolean</code> | If true, will always use cancas size when calculating center. If false and render target is set, will use render target's size. |
+
 <a name="Gfx+clear"></a>
 
 ### gfx.clear(color)
