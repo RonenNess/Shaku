@@ -220,7 +220,7 @@ This doc don't cover the entirely of the API, only the main parts of it. To see 
 
 ### Draw
 
-To draw a simple texture on screen:
+To draw a texture on screen:
 
 ```js
 // load texture (only need to call this once outside the main loop)
@@ -255,6 +255,39 @@ Shaku.gfx.draw(texture, position, size, sourceRect, color, blendMode, rotation, 
 * `transform` optional transformation matrix. Used internally (for example with groups drawing) but you can also use it by providing a transformation matrix. More on matrices later.
 
 A demo page that draw textures can be found [here](https://ronenness.github.io/Shaku/demo/gfx_draw.html).
+
+#### Z Values
+
+Despite *Shaku* being a 2D library, and despite `position` and `size` being 2D vectors, drawing does support Z values to certain extent.
+
+If you add a `z` value to a position, this value will be passed into the vertex shader as the `z` value of the position. If you add a `z` value to the size param, it will be added to the position's `z` for the bottom-left and bottom-right vertices.
+
+The default effect don't do anything with z-values, but you can implement your own custom effect that use the z values. For example, to pass z values to the effect:
+
+```js
+let texture = await Shaku.assets.loadTexture('assets/my_texture.png');
+let position = new Shaku.utils.Vector2(100, 125);
+position.z = 100; // <-- pass z position to effect
+let size = new Shaku.utils.Vector2(32, 64);
+size.x = 50; // <-- bottom-left and bottom-right positions will have z value of 100 + 50 = 150
+let sourceRect = new Shaku.utils.Rectangle(32, 0, 32, 64);
+let color = Shaku.utils.Color.red;
+let blendMode = Shaku.gfx.BlendModes.Additive;
+let rotation = Math.PI / 2;
+let origin = new Shaku.utils.Vector2(0.5, 1);
+let transform = Shaku.gfx.Matrix.translate(10, 10, 50);
+Shaku.gfx.draw(texture, position, size, sourceRect, color, blendMode, rotation, origin, transform);
+```
+
+### Batching
+
+When you draw something it won't always appear on screen immediately, due to batching. Sometimes it will only appear at the end of the frame, which is unnoticable to the user, but may be an issue if you're trying to debug and draw step-by-step.
+
+To flush everything to screen immediately, you can call:
+
+```js
+Shaku.gfx.presentBufferedData();
+```
 
 ### Cover
 
@@ -396,23 +429,17 @@ for (let i = 0; i < 3; ++i) {
 }
 
 // draw group
-let batching = true;
-Shaku.gfx.drawGroup(group, batching);
+Shaku.gfx.drawGroup(group);
 ```
 
+The advantage of groups is that you can apply matrix-based transformations on all sprites in the group, as if they were a single draw call.
+
 A demo page that draw with sprites group can be found [here](https://ronenness.github.io/Shaku/demo/gfx_sprites_group.html).
-
-Notice that `let batching = true` in the end - that's a very important optimization that batch together multiple sprites and reduce draw calls.
-If you draw lots of sprites that share the same texture and blending mode, always use batching. It will significantly increase your performance. 
-
-More on batching [here](#batching).
-
-Or a demo page with performance test can be found [here](https://ronenness.github.io/Shaku/demo/gfx_performance.html).
 
 
 ### gfx.spriteBatch
 
-If you don't want to use sprite groups but want to enjoy batching, you can access the internal sprite batch directly and use it:
+This object is used internally to draw batches of sprites. You can access it directly at your own risk:
 
 ```js
 // `effect` and `transform` are optional.
@@ -421,7 +448,13 @@ Shaku.gfx.spriteBatch.draw(sprite);
 Shaku.gfx.spriteBatch.end();
 ```
 
-This gives you slightly more freedom over batch drawing. 
+Note that since Shaku batch sprites internally, the `spriteBatch` may already be in use when you try to access it. To be safe, its best to call this every time you're about to access the `spriteBatch` directly:
+
+```js
+Shaku.gfx.presentBufferedData();
+```
+
+This will make sure everything that was in it is flushed to the screen.
 
 
 ### Draw Text
@@ -430,7 +463,7 @@ To draw a text with *Shaku* we need to perform 3 steps:
 
 1. Load a `Font Texture` asset, which is essentially a texture atlas with all the font characters, generated in runtime from a loaded font.
 2. Generate a group of sprites to represent the string with the given `Font Texture`.
-3. Draw the group with batching.
+3. Draw the group.
 
 Sounds like a lot of work, but its actually very simple. Lets take a look:
 
@@ -441,9 +474,9 @@ let fontTexture = await Shaku.assets.loadFontTexture('assets/DejaVuSansMono.ttf'
 // generate 'hello world!' text (note: you don't have to call this every frame, only when you want to change text)
 let text1 = Shaku.gfx.buildText(fontTexture, "Hello World!");
 
-// set text group position and draw it with batching
+// set text group position and draw it
 text1.position.set(40, 40);
-Shaku.gfx.drawGroup(text1, true);
+Shaku.gfx.drawGroup(text1);
 ```
 
 When loading the `FontTexture` you can provide additional parameters, to learn more about them check out the [API Docs](docs/assets_font_texture_asset.md).
@@ -1563,27 +1596,30 @@ Some extra stuff you should know.
 
 ## Batching
 
-What is the batching optimization when drawing sprites group?
+Shaku draw all sprites (and rectangle shapes) using sprite batches. But what is it exactly?
 
-One of the slowest things about using the GPU for rendering, is the communication between the CPU and the GPU. This happens every time you make any draw call to make the shaders start working. Simply put, a single draw call with 1,000 vertices would be significantly faster than a 100 draw calls with 10 vertices each, despite the same amount of work for the shaders.
+One of the slowest things when using GPU for rendering is communication from CPU to GPU, aka 'draw calls'. This basically happens every time you ask the GPU to run the shaders program to draw something. Simply put, a single draw call with 1,000 vertices would be significantly faster than a 100 draw calls with 10 vertices each, despite the same amount of vertices and fragments to calculate.
 
-The batching optimization collect a set of sprites and put them all in a single vertices buffer, so we can reduce the number of draw calls to the GPU. With batching we can draw thousands of sprites without taking any FPS hits.
+Sprite batching is an optimization that batch together a bunch of sprites and push them all in a single draw call. With batching we can draw tens of thousands of sprites without taking any FPS hits.
 
-However, just because you use batching doesn't mean you'll only get a single draw call. Batching will initiate a draw every time that:
+However, batching have some limitations you should be aware about. We can't batch together sprites that use different effect or texture, so batching will have to initiate a draw every time that:
 
 1. The internal buffer gets full.
 2. Texture changes.
 3. Blend mode changes.
+4. Effect or camera changes.
+5. Render target changes.
+6. You draw a shape (line, circle, rectangle..).
 
-This part is crucial to understand, because it means that if you can sort your sprites by texture and blend mode, it will improve performance. Yet another reason why texture atlases are useful.
+This part is crucial to understand, because it means that if you can sort your draws accordingly, you can optimize your draw calls. This is yet another reason why texture atlases are useful.
 
 ### Why Not Instancing?
 
 If you're savvy in computer graphics, you probably heard about *Instancing*, which is a more modern and often faster approach than batching. 
 
-In this case I chose batching because it allows us to use the same shaders with or without it, while instancing requires some changes to the shaders code itself. Since we only draw simple quads and not complex geometries, the advantage of instancing is is less significant than it would have been had we used complex geometries, so I sacrificed some performance for simplicity.
+For Shaku I chose batching because it keeps the shaders simple and straightforward, and shaders code remain agnostic to the batching (not the case with instancing). In addition, since we only draw simple quads and not complex geometries, the advantage of instancing is less significant than it would have been had we drawn actual 3d models.
 
-Note that if you really need instances you can probably implement it with a custom effect + extending the gfx with another method.
+Note that if you really need instances you can probably implement it with a custom effects.
 
 A demo project that demonstrate performance with batching can be found [here](https://ronenness.github.io/Shaku/demo/gfx_performance.html).
 
