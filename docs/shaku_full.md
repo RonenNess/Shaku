@@ -1784,6 +1784,7 @@ An effect = vertex shader + fragment shader + uniforms & attributes + setup code
     * [.enableDepthTest](#Effect+enableDepthTest)
     * [.enableFaceCulling](#Effect+enableFaceCulling)
     * [.enableStencilTest](#Effect+enableStencilTest)
+    * [.enableDithering](#Effect+enableDithering)
     * [.setAsActive()](#Effect+setAsActive)
     * [.prepareToDraw(mesh, color, world, sourceRect, texture)](#Effect+prepareToDraw)
     * [.prepareToDrawBatch(mesh, world)](#Effect+prepareToDrawBatch)
@@ -1855,6 +1856,12 @@ Should this effect enable face culling?
 
 ### effect.enableStencilTest
 Should this effect enable stencil test?
+
+**Kind**: instance property of [<code>Effect</code>](#Effect)  
+<a name="Effect+enableDithering"></a>
+
+### effect.enableDithering
+Should this effect enable dithering?
 
 **Kind**: instance property of [<code>Effect</code>](#Effect)  
 <a name="Effect+setAsActive"></a>

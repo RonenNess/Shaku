@@ -1400,7 +1400,7 @@ class TextureAsset extends Asset
         if (channels !== undefined) {
             switch (channels) {
                 case 1:
-                    _format = gl.ALPHA;
+                    _format = gl.LUMINANCE;
                     break;
                 case 3:
                     _format = gl.RGB;
@@ -3877,9 +3877,10 @@ class Effect
         this._gl.useProgram(this._program);
 
         // enable / disable some features
-        if (this.enableDepthTest) { this._gl.enable(gl.DEPTH_TEST); } else { this._gl.disable(this._gl.DEPTH_TEST); }
-        if (this.enableFaceCulling) { this._gl.enable(gl.CULL_FACE); } else { this._gl.disable(this._gl.CULL_FACE); }
-        if (this.enableStencilTest) { this._gl.enable(gl.STENCIL_TEST); } else { this._gl.disable(this._gl.STENCIL_TEST); }
+        if (this.enableDepthTest) { this._gl.enable(this._gl.DEPTH_TEST); } else { this._gl.disable(this._gl.DEPTH_TEST); }
+        if (this.enableFaceCulling) { this._gl.enable(this._gl.CULL_FACE); } else { this._gl.disable(this._gl.CULL_FACE); }
+        if (this.enableStencilTest) { this._gl.enable(this._gl.STENCIL_TEST); } else { this._gl.disable(this._gl.STENCIL_TEST); }
+        if (this.enableDithering) { this._gl.enable(this._gl.DITHER); } else { this._gl.disable(this._gl.DITHER); }
 
         // reset cached values
         this._cachedValues = {};
@@ -3977,6 +3978,14 @@ class Effect
      * Should this effect enable stencil test?
      */
     get enableStencilTest()
+    {
+        return false;
+    }
+
+    /**
+     * Should this effect enable dithering?
+     */
+    get enableDithering()
     {
         return false;
     }
@@ -6600,6 +6609,7 @@ class SpriteBatch
 
             // optional z position
             let z = sprite.position.z || 0;
+            let zDepth = sprite.size.z || 0;
 
             // cull out-of-screen sprites
             if (cullOutOfScreen)
@@ -6619,8 +6629,8 @@ class SpriteBatch
             let pi = this._currBatchCount * 4 * 3;
             positions[pi+0] = topLeft.x;             positions[pi+1] = topLeft.y;             positions[pi+2] = z;
             positions[pi+3] = topRight.x;            positions[pi+4] = topRight.y;            positions[pi+5] = z;
-            positions[pi+6] = bottomLeft.x;          positions[pi+7] = bottomLeft.y;          positions[pi+8] = z;
-            positions[pi+9] = bottomRight.x;         positions[pi+10] = bottomRight.y;        positions[pi+11] = z;
+            positions[pi+6] = bottomLeft.x;          positions[pi+7] = bottomLeft.y;          positions[pi+8] = z + zDepth;
+            positions[pi+9] = bottomRight.x;         positions[pi+10] = bottomRight.y;        positions[pi+11] = z + zDepth;
 
             // add uvs
             let uvi = this._currBatchCount * 4 * 2;
@@ -7118,7 +7128,7 @@ class Input extends IManager
                 'wheel': function(event) {_this._onMouseWheel(event); },
                 'touchstart': function(event) {_this._onTouchStart(event); if (this.preventDefaults) event.preventDefault(); },
                 'touchend': function(event) {_this._onMouseUp(event); if (this.preventDefaults) event.preventDefault(); },
-                'touchmove': function(event) {_this._onMouseMove(event); if (this.preventDefaults) event.preventDefault(); },
+                'touchmove': function(event) {_this._onTouchMove(event); if (this.preventDefaults) event.preventDefault(); },
                 'contextmenu': function(event) { if (_this.disableContextMenu) { event.preventDefault(); } },
             };
 
@@ -7587,8 +7597,9 @@ class Input extends IManager
             var x = touch.pageX || touch.offsetX || touch.clientX;
             var y = touch.pageY || touch.offsetY || touch.clientY;
             if (x !== undefined && y !== undefined) {
-                this._mousePos.x = x - this._targetElement.clientX;
-                this._mousePos.y = y - this._targetElement.clientY;
+                this._mousePos.x = x;
+                this._mousePos.y = y;
+                this._normalizeMousePos()
             }
         }
 
@@ -7630,6 +7641,7 @@ class Input extends IManager
      */
     _onTouchMove(event)
     {
+        event = this._getEvent(event);
         this._mousePos.x = event.touches[0].pageX;
         this._mousePos.y = event.touches[0].pageY;
         this._normalizeMousePos();
@@ -7674,7 +7686,7 @@ class Input extends IManager
      */
     _normalizeMousePos()
     {
-        if (this._targetElement.getBoundingClientRect) {
+        if (this._targetElement && this._targetElement.getBoundingClientRect) {
             var rect = this._targetElement.getBoundingClientRect();
             this._mousePos.x -= rect.left;
             this._mousePos.y -= rect.top;
@@ -8638,7 +8650,7 @@ let _totalFrameTimes = 0;
 
 
 // current version
-const version = "1.4.5";
+const version = "1.4.6";
 
 /**
  * Shaku's main object.

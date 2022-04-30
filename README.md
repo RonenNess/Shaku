@@ -1758,11 +1758,16 @@ List of changes in released versions.
 - Changed `fillRects` to allow individual rectangles rotation.
 - Added `pathFinder` utility.
 
-## 1.4.6 [WIP]
+## 1.4.6
 
 - Added sprite z position to vertices buffer when drawing, to allow supporting z in shaders.
 - Added support in channels count for render targets.
 - Added option to set multiple render targets.
+- Fixed bug in setting effect flags.
+- Added Dithering flag to custom effects.
+- Fixed single channel texture format.
+- Allowed to pass z value as size when drawing sprites.
+- Fixed "mouse" position bug in mobile.
 
 
 # License
