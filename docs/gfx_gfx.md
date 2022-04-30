@@ -41,11 +41,11 @@ To access the Graphics manager you use `Shaku.gfx`.
     * [.getRenderingRegion(includeOffset)](#Gfx+getRenderingRegion) ⇒ <code>Rectangle</code>
     * [.getRenderingSize()](#Gfx+getRenderingSize) ⇒ <code>Vector2</code>
     * [.getCanvasSize()](#Gfx+getCanvasSize) ⇒ <code>Vector2</code>
-    * [.buildText(fontTexture, text, fontSize, color, alignment, marginFactor)](#Gfx+buildText) ⇒ <code>SpritesGroup</code>
-    * [.drawGroup(group, useBatching, cullOutOfScreen)](#Gfx+drawGroup)
-    * [.drawSprite(sprite, transform)](#Gfx+drawSprite)
+    * [.buildText(fontTexture, text, fontSize, color, alignment, offset, marginFactor)](#Gfx+buildText) ⇒ <code>SpritesGroup</code>
+    * [.drawGroup(group, cullOutOfScreen)](#Gfx+drawGroup)
+    * [.drawSprite(sprite)](#Gfx+drawSprite)
     * [.cover(texture, destRect, sourceRect, color, blendMode)](#Gfx+cover)
-    * [.draw(texture, position, size, sourceRect, color, blendMode, rotation, origin, transform)](#Gfx+draw)
+    * [.draw(texture, position, size, sourceRect, color, blendMode, rotation, origin)](#Gfx+draw)
     * [.fillRect(destRect, color, blend, rotation)](#Gfx+fillRect)
     * [.fillRects(destRects, colors, blend, rotation)](#Gfx+fillRects)
     * [.outlineRect(destRect, color, blend, rotation)](#Gfx+outlineRect)
@@ -58,6 +58,7 @@ To access the Graphics manager you use `Shaku.gfx`.
     * [.drawPoint(point, color, blendMode)](#Gfx+drawPoint)
     * [.drawPoints(points, colors, blendMode)](#Gfx+drawPoints)
     * [.clear(color)](#Gfx+clear)
+    * [.presentBufferedData()](#Gfx+presentBufferedData)
 
 <a name="new_Gfx_new"></a>
 
@@ -368,7 +369,7 @@ Get canvas size as vector.
 **Returns**: <code>Vector2</code> - Canvas size.  
 <a name="Gfx+buildText"></a>
 
-### gfx.buildText(fontTexture, text, fontSize, color, alignment, marginFactor) ⇒ <code>SpritesGroup</code>
+### gfx.buildText(fontTexture, text, fontSize, color, alignment, offset, marginFactor) ⇒ <code>SpritesGroup</code>
 Generate a sprites group to render a string using a font texture.
 Take the result of this method and use with gfx.drawGroup() to render the text.
 This is what you use when you want to draw texts with `Shaku`.
@@ -384,6 +385,7 @@ Note: its best to always draw texts with *batching* enabled.
 | fontSize | <code>Number</code> | Font size, or undefined to use font texture base size. |
 | color | <code>Color</code> | Text sprites color. |
 | alignment | <code>TextAlignment</code> | Text alignment. |
+| offset | <code>Vector2</code> | Optional starting offset. |
 | marginFactor | <code>Vector2</code> | Optional factor for characters and line spacing. For example value of 2,1 will make double horizontal spacing. |
 
 **Example**  
@@ -400,7 +402,7 @@ Shaku.gfx.drawGroup(text1, true);
 ```
 <a name="Gfx+drawGroup"></a>
 
-### gfx.drawGroup(group, useBatching, cullOutOfScreen)
+### gfx.drawGroup(group, cullOutOfScreen)
 Draw a SpritesGroup object. 
 A SpritesGroup is a collection of sprites we can draw in bulks + transformations to apply on the entire group.
 
@@ -409,7 +411,6 @@ A SpritesGroup is a collection of sprites we can draw in bulks + transformations
 | Param | Type | Description |
 | --- | --- | --- |
 | group | <code>SpritesGroup</code> | Sprites group to draw. |
-| useBatching | <code>Boolean</code> | If true (default), will use batching while rendering the group. |
 | cullOutOfScreen | <code>Boolean</code> | If true and in batching mode, will cull automatically any quad that is completely out of screen. |
 
 **Example**  
@@ -435,7 +436,7 @@ Shaku.gfx.drawGroup(group, true);
 ```
 <a name="Gfx+drawSprite"></a>
 
-### gfx.drawSprite(sprite, transform)
+### gfx.drawSprite(sprite)
 Draw a single sprite object.
 Sprites are optional objects that store all the parameters for a `draw()` call. They are also used for batch rendering.
 
@@ -444,7 +445,6 @@ Sprites are optional objects that store all the parameters for a `draw()` call. 
 | Param | Type | Description |
 | --- | --- | --- |
 | sprite | <code>Sprite</code> | Sprite object to draw. |
-| transform | <code>Matrix</code> | Optional parent transformation matrix. |
 
 **Example**  
 ```js
@@ -492,7 +492,7 @@ Shaku.gfx.draw(texture, position, size, sourceRect, color, blendMode, rotation, 
 ```
 <a name="Gfx+draw"></a>
 
-### gfx.draw(texture, position, size, sourceRect, color, blendMode, rotation, origin, transform)
+### gfx.draw(texture, position, size, sourceRect, color, blendMode, rotation, origin)
 Draw a texture.
 
 **Kind**: instance method of [<code>Gfx</code>](#Gfx)  
@@ -507,7 +507,6 @@ Draw a texture.
 | blendMode | <code>BlendModes</code> | Blend mode, or undefined to use alpha blend. |
 | rotation | <code>Number</code> | Rotate sprite. |
 | origin | <code>Vector2</code> | Drawing origin. This will be the point at 'position' and rotation origin. |
-| transform | <code>Matrix</code> | Optional parent transformation matrix. |
 
 **Example**  
 ```js
@@ -749,3 +748,9 @@ Clear screen to a given color.
 ```js
 Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
 ```
+<a name="Gfx+presentBufferedData"></a>
+
+### gfx.presentBufferedData()
+Present all currently buffered data.
+
+**Kind**: instance method of [<code>Gfx</code>](#Gfx)  

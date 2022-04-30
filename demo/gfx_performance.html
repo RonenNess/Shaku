@@ -11,17 +11,10 @@
     <div class="noselect">
     <button class="view-code-btn" onclick="showSampleCode();">View Code</button> 
     <h1 class="demo-title">Shaku Gfx Demo: Performance Test</h1>
-      <p>This demo is a performance test to test the limits of Shaku on your machine, with and without sprite batching optimization.<br />
-      Note that it uses a single texture on purpose, to maximize the batching effectiveness; 
-      Using multiple textures decreases batching efficiency, which is why its important to use a texture atlas whenever possible.<br />
-      A multi-texture performance test can be found <a href="gfx_performance_multi_texture.html">here</a>.<br /><br />
-      Press <b>Z</b> to add sprites, and <b>X</b> to remove them. Try to see performance with or without batching, the difference should be quite impressive.</p>
+      <p>This demo is a performance test to test the limits of Shaku on your machine, with optimal batching (ie this should create minimal draw calls).<br />
+      A multi-textured performance test (cause more draw calls per frame) can be found <a href="gfx_performance_multi_texture.html">here</a>.<br /><br />
+      Press <b>Z</b> to add sprites, and <b>X</b> to remove sprites.</p>
 
-      <div>
-        <input type="checkbox" id="sprite-batch" name="sprite-batch"
-               checked>
-        <label for="sprite-batch">Use Sprite Batch</label>
-      </div>
       <p id="fps-data"></p>
 
       <!-- include shaku -->
@@ -90,8 +83,7 @@
             Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
 
             // draw sprites
-            let batching = document.getElementById('sprite-batch').checked;
-            Shaku.gfx.drawGroup(group, batching);
+            Shaku.gfx.drawGroup(group);
 
             // add sprites
             if (Shaku.input.down('z')) { for (let x = 0; x < 100; ++x) addSprite(); }
@@ -160,7 +152,7 @@ for (let i = 0; i < 100000; ++i) {
 // -------------------------------------------------------
 
 // draw sprites with batching
-Shaku.gfx.drawGroup(group, true);
+Shaku.gfx.drawGroup(group);
 
 // show current FPS count in element #show-fps
 document.getElementById('show-fps').innerHTML = Shaku.getFpsCount();</code></pre>

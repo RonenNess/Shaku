@@ -3589,16 +3589,13 @@ attribute vec4 color;
 uniform mat4 projection;
 uniform mat4 world;
 
-uniform vec2 uvOffset;
-uniform vec2 uvScale;
-
 varying vec2 v_texCoord;
 varying vec4 v_color;
 
 void main(void) {
     gl_Position = projection * world * vec4(position, 1.0);
     gl_PointSize = 1.0;
-    v_texCoord = uvOffset + (coord * uvScale);
+    v_texCoord = coord;
     v_color = color;
 }
     `;
@@ -3644,8 +3641,6 @@ class BasicEffect extends Effect
             "texture": { type: Effect.UniformTypes.Texture, bind: Effect.UniformBinds.MainTexture },
             "projection": { type: Effect.UniformTypes.Matrix, bind: Effect.UniformBinds.Projection },
             "world": { type: Effect.UniformTypes.Matrix, bind: Effect.UniformBinds.World },
-            "uvOffset": { type: Effect.UniformTypes.Float2, bind: Effect.UniformBinds.UvOffset },
-            "uvScale": { type: Effect.UniformTypes.Float2, bind: Effect.UniformBinds.UvScale },
         };
     }
 
@@ -4554,6 +4549,9 @@ class Gfx extends IManager
      */
     setRenderTarget(texture, keepCamera)
     {
+        // present buffered data
+        this.presentBufferedData();
+
         // if texture is null, remove any render target
         if (texture === null) {
             this._renderTarget = null;
@@ -4613,6 +4611,9 @@ class Gfx extends IManager
      */
     useEffect(effect)
     {
+        // present buffered data
+        this.presentBufferedData();
+
         // if null, use default
         if (effect === null) {
             this.useEffect(this.builtinEffects.Basic);
@@ -4641,6 +4642,8 @@ class Gfx extends IManager
      */
     setResolution(width, height, updateCanvasStyle)
     {
+        this.presentBufferedData();
+
         this._canvas.width = width;
         this._canvas.height = height;
         
@@ -4671,6 +4674,7 @@ class Gfx extends IManager
      */
     applyCamera(camera)
     {
+        this.presentBufferedData();
         this._viewport = camera.viewport;
         let viewport = this.getRenderingRegion(true);
         this._gl.viewport(viewport.x, viewport.y, viewport.width, viewport.height);
@@ -4760,13 +4764,6 @@ class Gfx extends IManager
             this.whiteTexture = new TextureAsset('__runtime_white_pixel__');
             this.whiteTexture.fromImage(whitePixelImage);
 
-            // use default effect
-            this.useEffect(null);
-
-            // create default camera
-            this._camera = this.createCamera();
-            this.applyCamera(this._camera);
-
             // dynamic buffers, used for batch rendering
             this._dynamicBuffers = {
                 
@@ -4809,9 +4806,16 @@ class Gfx extends IManager
             }
             this._gl.bindBuffer(this._gl.ELEMENT_ARRAY_BUFFER, this._dynamicBuffers.linesIndexBuffer);
             this._gl.bufferData(this._gl.ELEMENT_ARRAY_BUFFER, lineIndices, this._gl.STATIC_DRAW);
-
+            
             // create sprites batch
             this.spritesBatch = new SpriteBatch(this);
+
+            // use default effect
+            this.useEffect(null);
+
+            // create default camera
+            this._camera = this.createCamera();
+            this.applyCamera(this._camera);
 
             // success!
             resolve();
@@ -4838,10 +4842,11 @@ class Gfx extends IManager
      * @param {Number} fontSize Font size, or undefined to use font texture base size.
      * @param {Color} color Text sprites color.
      * @param {TextAlignment} alignment Text alignment.
+     * @param {Vector2} offset Optional starting offset.
      * @param {Vector2} marginFactor Optional factor for characters and line spacing. For example value of 2,1 will make double horizontal spacing. 
      * @returns {SpritesGroup} Sprites group containing the needed sprites to draw the given text with its properties.
      */
-    buildText(fontTexture, text, fontSize, color, alignment, marginFactor)
+    buildText(fontTexture, text, fontSize, color, alignment, offset, marginFactor)
     {
         // sanity
         if (!fontTexture || !fontTexture.valid) {
@@ -4948,13 +4953,18 @@ class Gfx extends IManager
         // call break line on last line, to adjust alignment for last line
         breakLine();
 
+        // set position
+        if (offset) {
+            ret.position.set(offset.x, offset.y);
+        }
+
         // return group
         return ret;
     }
 
     /**
      * Draw a SpritesGroup object. 
-     * A SpritesGroup is a collection of sprites we can draw in bulks + transformations to apply on the entire group.
+     * A SpritesGroup is a collection of sprites we can draw in bulks with transformations to apply on the entire group.
      * @example
      * // load texture
      * let texture = await Shaku.assets.loadTexture('assets/sprite.png');
@@ -4972,25 +4982,14 @@ class Gfx extends IManager
      *   group.add(sprite)
      * }
      * 
-     * // draw the group with batching
+     * // draw the group with automatic culling of invisible sprites
      * Shaku.gfx.drawGroup(group, true);
      * @param {SpritesGroup} group Sprites group to draw.
-     * @param {Boolean} useBatching If true (default), will use batching while rendering the group.
      * @param {Boolean} cullOutOfScreen If true and in batching mode, will cull automatically any quad that is completely out of screen.
      */
-    drawGroup(group, useBatching, cullOutOfScreen)
+    drawGroup(group, cullOutOfScreen)
     {
-        // draw with batching
-        if (useBatching || useBatching === undefined) {
-            this._drawBatch(group, Boolean(cullOutOfScreen));
-        }
-        // draw without batching
-        else {
-            let transform = group.getTransform();
-            for (let i = 0; i < group._sprites.length; ++i) {
-                this.drawSprite(group._sprites[i], transform);
-            }
-        }
+        this._drawBatch(group, Boolean(cullOutOfScreen));
     }
 
     /**
@@ -5008,11 +5007,12 @@ class Gfx extends IManager
      * // draw sprite
      * Shaku.gfx.drawSprite(sprite);
      * @param {Sprite} sprite Sprite object to draw.
-     * @param {Matrix} transform Optional parent transformation matrix.
      */
-    drawSprite(sprite, transform)
+    drawSprite(sprite)
     {
-        this.draw(sprite.texture, sprite.position, sprite.size, sprite.sourceRect, sprite.color, sprite.blendMode, sprite.rotation, sprite.origin, transform);
+        if (!sprite.texture || !sprite.texture.valid) { return; }
+        this.__startDrawingSprites(this._activeEffect, null);
+        this.spritesBatch.draw(sprite);
     }
 
     /**
@@ -5067,44 +5067,17 @@ class Gfx extends IManager
      * @param {BlendModes} blendMode Blend mode, or undefined to use alpha blend.
      * @param {Number} rotation Rotate sprite.
      * @param {Vector2} origin Drawing origin. This will be the point at 'position' and rotation origin.
-     * @param {Matrix} transform Optional parent transformation matrix.
      */
-    draw(texture, position, size, sourceRect, color, blendMode, rotation, origin, transform)
+    draw(texture, position, size, sourceRect, color, blendMode, rotation, origin)
     {
-        // not ready yet? skip
-        if (!texture.texture) { 
-            return;
-        }
-
-        // if number, convert size to vector
-        if (typeof size === 'number') { 
-            size = {x: size, y: size};
-        }
-
-        // default origin
-        if (!origin) {
-            origin = Vector2.half;
-        }
-        
-        // build world matrix
-        let world;
-        if (rotation) { 
-            world = Matrix.multiplyManyIntoFirst([
-                Matrix.translate(Math.floor(position.x), Math.floor(position.y), 0),
-                Matrix.rotateZ(-rotation),
-                Matrix.translate(Math.floor((1 - origin.x - 0.5) * size.x), Math.floor((1 - origin.y - 0.5) * size.y), 0),
-                Matrix.scale(Math.floor(size.x), Math.floor(size.y))
-            ]);
-        }
-        else {
-            world = Matrix.multiplyIntoFirst(
-                Matrix.translate(Math.floor(position.x + (1 - origin.x - 0.5) * size.x), Math.floor(position.y + (1 - origin.y - 0.5) * size.y), 0),
-                Matrix.scale(Math.floor(size.x), Math.floor(size.y))
-            );
-        }
-
-        // draw
-        this._drawImp(texture, sourceRect, color, blendMode, world, transform);
+        let sprite = new Sprite(texture, sourceRect);
+        sprite.position = position;
+        sprite.size = (typeof size === 'number') ? new Vector2(size, size) : size;
+        if (color) { sprite.color = color; }
+        if (blendMode) { sprite.blendMode = blendMode; }
+        if (rotation !== undefined) { sprite.rotation = rotation; }
+        if (origin) { sprite.origin = origin; }
+        this.drawSprite(sprite);
     }
 
     /**
@@ -5426,16 +5399,73 @@ class Gfx extends IManager
             this._drawCallsCount++;
         }, false, 1);
     }
-    
+
+    /**
+     * Make the renderer canvas centered.
+     */
+    centerCanvas()
+    {
+        let canvas = this._canvas;
+        let parent = canvas.parentElement;
+        let pwidth = Math.min(parent.clientWidth, window.innerWidth);
+        let pheight = Math.min(parent.clientHeight, window.innerHeight);
+        canvas.style.left = Math.round(pwidth / 2 - canvas.clientWidth / 2) + 'px';
+        canvas.style.top = Math.round(pheight / 2 - canvas.clientHeight / 2) + 'px';
+        canvas.style.display = 'block';
+        canvas.style.position = 'relative';
+    }
+        
+    /**
+     * Check if a given shape is currently in screen bounds, not taking camera into consideration.
+     * @param {Circle|Vector|Rectangle|Line} shape Shape to check.
+     * @returns {Boolean} True if given shape is in visible region.
+     */
+    inScreen(shape)
+    {
+        let region = this.getRenderingRegion();
+
+        if (shape instanceof Circle) {
+            return region.collideCircle(shape);
+        }
+        else if (shape instanceof Vector2) {
+            return region.containsVector(shape);
+        }
+        else if (shape instanceof Rectangle) {
+            return region.collideRect(shape);
+        }
+        else if (shape instanceof Line) {
+            return region.collideLine(shape);
+        }
+        else {
+            throw new Error("Unknown shape type to check!");
+        }
+    }
+
+    /**
+     * Make a given vector the center of the camera.
+     * @param {Vector2} position Camera position.
+     * @param {Boolean} useCanvasSize If true, will always use cancas size when calculating center. If false and render target is set, will use render target's size.
+     */
+    centerCamera(position, useCanvasSize)
+    {
+        let renderSize = useCanvasSize ? this.getCanvasSize() : this.getRenderingSize();
+        let halfScreenSize = renderSize.mul(0.5);
+        let centeredPos = position.sub(halfScreenSize);
+        this.setCameraOrthographic(centeredPos);
+    }
+        
     /**
      * Prepare buffers, effect and blend mode for shape rendering.
      * @private
      */
     _fillShapesBuffer(points, colors, blendMode, onReady, isStrip, groupsSize)
     {
-       // some defaults
-       colors = colors || _whiteColor;
-       blendMode = blendMode || BlendModes.Opaque;
+        // finish whatever we were drawing before
+        this.presentBufferedData();
+
+        // some defaults
+        colors = colors || _whiteColor;
+        blendMode = blendMode || BlendModes.Opaque;
 
         // sanity - make sure colors and vertices match
         if (colors.length !== undefined && colors.length !== points.length) {
@@ -5527,52 +5557,16 @@ class Gfx extends IManager
         // skip if empty
         if (group._sprites.length === 0) { return; }
 
-        // sanity
-        if (this.spritesBatch.drawing) {
-            _logger.warn("Started drawing a group while a batch was drawing.");
-            this.spritesBatch.end();
-        }
+        // finish previous drawings
+        this.presentBufferedData();
 
         // get transform
         let transform = group.getTransform();
 
         // draw batch
-        this.spritesBatch.begin(null, transform);
+        this.spritesBatch.begin(this._activeEffect, transform);
         this.spritesBatch.draw(group._sprites, cullOutOfScreen);
         this.spritesBatch.end();
-    }
-
-    /**
-     * Draw a texture internal implementation.
-     * @private
-     */
-    _drawImp(texture, sourceRect, color, blendMode, world, parentTransform)
-    {
-        // set blend mode if needed
-        this._setBlendMode(blendMode || BlendModes.AlphaBlend);
-        
-        // add parent to world matrix
-        if (parentTransform) {
-            world = Matrix.multiply(parentTransform, world);
-        }
-
-        // use quad buffers and other effect properties
-        let quad = this.meshes.quad;
-        quad.overrideColors(this._gl, color || _whiteColor);
-        this._activeEffect.prepareToDraw(quad, color, world, sourceRect, texture)
-
-        // set indices
-        if (quad.indices !== this._currIndices) {
-            this._gl.bindBuffer(this._gl.ELEMENT_ARRAY_BUFFER, quad.indices);
-            this._currIndices = quad.indices;
-        }
-
-        // set texture
-        this._setActiveTexture(texture);
-
-        // draw sprite
-        this._gl.drawArrays(this._gl.TRIANGLE_STRIP, 0, 4);
-        this._drawCallsCount++;
     }
 
     /**
@@ -5657,6 +5651,7 @@ class Gfx extends IManager
      */
     clear(color)
     {
+        this.presentBufferedData();
         color = color || Color.black;
         this._gl.clearColor(color.r, color.g, color.b, color.a);
         this._gl.clear(this._gl.COLOR_BUFFER_BIT | this._gl.DEPTH_BUFFER_BIT);
@@ -5784,6 +5779,44 @@ class Gfx extends IManager
         }
     }
     
+    /**
+     * Present all currently buffered data.
+     */
+    presentBufferedData()
+    {
+        this.__finishDrawingSprites();
+    }
+
+    /**
+     * Called internally before drawing a sprite to prepare some internal stuff.
+     * @private
+     */
+    __startDrawingSprites(activeEffect, transform)
+    {
+        // check if should break due to effect or transform change
+        if (this.spritesBatch.drawing) {
+            if (this.spritesBatch._effect !== activeEffect || this.spritesBatch._transform !== transform) {
+                this.spritesBatch.end();
+            }
+        }
+
+        // start sprites batch
+        if (!this.spritesBatch.drawing) {
+            this.spritesBatch.begin(activeEffect, transform);
+        }
+    }
+    
+    /**
+     * Called internally to present sprites batch, if currently drawing sprites.
+     * @private
+     */
+    __finishDrawingSprites()
+    {
+        if (this.spritesBatch.drawing) {
+            this.spritesBatch.end();
+        }
+    }
+    
     /** 
      * @inheritdoc
      * @private
@@ -5801,10 +5834,7 @@ class Gfx extends IManager
      */
     endFrame()
     {
-        if (this.spritesBatch.drawing) {
-            _logger.warn("Got to gfx 'endFrame()' without completing a sprite batch!");
-            this.spritesBatch.end();
-        }
+        this.presentBufferedData();
     }
 
     /** 
@@ -8650,7 +8680,7 @@ let _totalFrameTimes = 0;
 
 
 // current version
-const version = "1.4.6";
+const version = "1.5.0";
 
 /**
  * Shaku's main object.

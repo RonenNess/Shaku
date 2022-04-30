@@ -1769,6 +1769,15 @@ List of changes in released versions.
 - Allowed to pass z value as size when drawing sprites.
 - Fixed "mouse" position bug in mobile.
 
+## 1.5.0
+
+**Breaking Changes**
+
+- Removed `transformation` from single sprite drawing.
+- Internally made all sprites always draw with batching.
+- Removed UvScale and UvOffset params from the basic effect, they are not needed with batching.
+- Added offset param to build text.
+- Added misc `gfx` utilities.
 
 # License
 
