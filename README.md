@@ -28,6 +28,7 @@
   - [Batching](#batching)
   - [Shaku on NodeJS](#shaku-on-nodejs)
 - [Build Shaku](#build-shaku)
+- [Changes](#changes)
 - [License](#license)
 
 # About
