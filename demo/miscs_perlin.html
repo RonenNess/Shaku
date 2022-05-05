@@ -90,14 +90,16 @@
       <div class="modal__container">   
 
     <p class="noselect">The following is a code example on how to load a binary assets.</p>
-    <pre><code class="language-js">// load binary asset
-let bin = await Shaku.assets.loadBinary("assets/data.bin");
-
-// bin.data will contain a buffer of bytes with the loaded binary data
-alert(bin.data);
-
-// if your data is string, you can convert it to string:
-alert(bin.string());
+    <pre><code class="language-js">// generate array with perlin noise for a 100x100 matrix, using seed '123'
+const seed = 123;
+let perlin = new Shaku.utils.Perlin(seed);
+let noise = [];
+for (let x = 0; x < 100; ++x) {
+    for (let y = 0; y < 100; ++y) {
+      let val = perlin.generateSmooth(x / 25, y / 25, 0.15);
+      noise.push(val);
+    }
+}
 </code></pre>
 
       <button class="modal__close" onclick="closeModal('sample-code-modal')">&#10005;</button>

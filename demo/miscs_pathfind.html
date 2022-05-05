@@ -12,8 +12,22 @@
     <button class="view-code-btn" onclick="showSampleCode();">View Code</button> 
     <h1 class="demo-title">Shaku Miscs Demo: Path Finding</h1>
       <p>This demo show how to use the built-in PathFinder utility.<br />
-      Click on tiles to set their type and a new path will be calculated few moments after (path displayed as red dots). <br/>
-      Black tiles are blocking. Other types are walkable with the following prices: green = 1, purple = 2, orange = 3.</p>
+        <b>Click</b> on tiles to change their type and a new path will be calculated few moments after (path displayed as red dots). <br/>
+        <b>Hold Right Mouse Button</b> to paint blocking tiles.<br/>
+        <br /><b>Tile colors:</b> 
+        <ul>
+          <li>Black tiles are blocking.</li>
+          <li style="color:green">Green tiles are cheapest to walk on.</li>
+          <li style="color:purple">Purple tiles slightly more expensive.</li>
+          <li style="color:orange">Orange tiles are expensive to walk on.</li>
+        </ul>
+      </p>
+
+      <div>
+        <input type="checkbox" id="allowDiagonal" name="allowDiagonal" checked>
+        <label for="allowDiagonal">Allow Diagonal</label>
+      </div>
+      <br />
 
       <!-- include shaku -->
       <script src="js/demos.js"></script>
@@ -67,7 +81,7 @@
               // get price: price = tile type
               getPrice(_index)
               {
-                  return this.getType(_index);
+                  return this.getType(_index) * 5;
               }
               
               // get type from index.
@@ -85,6 +99,11 @@
           // current path
           let currPath = null;
 
+          // changing diagonal will recalculate
+          document.getElementById("allowDiagonal").onclick = () => {
+            currPath = null;
+          }
+
           // time to recalc path
           let recalcPathTimeout = null;
 
@@ -97,7 +116,8 @@
 
             // check if need to calculate a new path
             if (!currPath) {
-              currPath = Shaku.utils.PathFinder.findPath(gridProvider, {x:4, y:4}, {x:40, y:40}) || [];
+              const allowDiagonal = document.getElementById("allowDiagonal").checked;
+              currPath = Shaku.utils.PathFinder.findPath(gridProvider, {x:4, y:4}, {x:40, y:40}, {allowDiagonal: allowDiagonal}) || [];
             }
 
             // draw the map
@@ -127,7 +147,7 @@
             }
 
             // change tiles
-            if (Shaku.input.released('mouse_left')) {
+            if (Shaku.input.released('mouse_left') || Shaku.input.down('mouse_right')) {
 
               // remove current path
               currPath = [];
@@ -136,9 +156,15 @@
               let indexX = Math.floor(Shaku.input.mousePosition.x / tileSize);
               let indexY = Math.floor(Shaku.input.mousePosition.y / tileSize);
               if (indexX >= 0 && indexX < tilemapSize && indexY >= 0 && indexY < tilemapSize) {
-                tiles[indexX][indexY]++;
-                if (tiles[indexX][indexY] >= tileColors.length) {
-                  tiles[indexX][indexY] = 0;
+              
+                if (Shaku.input.down('mouse_right')) {
+                    tiles[indexX][indexY] = 0;
+                }
+                else {
+                    tiles[indexX][indexY]++;
+                    if (tiles[indexX][indexY] >= tileColors.length) {
+                      tiles[indexX][indexY] = 0;
+                    }
                 }
               }
 
@@ -222,7 +248,7 @@ let grid = [[1,2,1,1,1,1,1,1,1,1,1,1],
 let gridProvider = new GridProvider(grid);
 
 // find path from top-left to bottom-right
-let path = Shaku.utils.PathFinder.findPath(gridProvider, {x:0, y:0}, {x:11, y:11});</code></pre>
+let path = Shaku.utils.PathFinder.findPath(gridProvider, {x:0, y:0}, {x:11, y:11}, {allowDiagonal: true});</code></pre>
   <button class="modal__close" onclick="closeModal('sample-code-modal')">&#10005;</button>
 </div>
 </div>

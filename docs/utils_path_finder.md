@@ -83,7 +83,7 @@ Find a path between start to target.
 | grid | [<code>IGrid</code>](#IGrid) | Grid provider to check if tiles are blocked. |
 | startPos | <code>Vector2</code> \| <code>Vector3</code> | Starting tile index. |
 | targetPos | <code>Vector2</code> \| <code>Vector3</code> | Target tile index. |
-| options | <code>\*</code> | Additional options: { maxIterations, ignorePrices } |
+| options | <code>\*</code> | Additional options: { maxIterations, ignorePrices, allowDiagonal } |
 
 <a name="getDistance"></a>
 

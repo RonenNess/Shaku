@@ -1821,6 +1821,7 @@ List of changes in released versions.
 - Added API to set vertices directly in batch.
 - Added option to provide array of colors instead of a single color, to assign different color per sprite vertex.
 - Added some useful functions to vectors.
+- Added 'allowDiagonal' flag to pathfind utilitiy.
 
 # License
 
