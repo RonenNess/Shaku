@@ -15,13 +15,13 @@ This object is a helper class to hold all the properties of a texture to render.
 * [Sprite](#Sprite)
     * [new Sprite(texture, sourceRect)](#new_Sprite_new)
     * [.texture](#Sprite+texture) : <code>TextureAsset</code>
-    * [.position](#Sprite+position) : <code>Vector2</code>
-    * [.size](#Sprite+size) : <code>Vector2</code>
+    * [.position](#Sprite+position) : <code>Vector2</code> \| <code>Vector3</code>
+    * [.size](#Sprite+size) : <code>Vector2</code> \| <code>Vector3</code>
     * [.sourceRect](#Sprite+sourceRect) : <code>Rectangle</code>
     * [.blendMode](#Sprite+blendMode) : <code>BlendModes</code>
     * [.rotation](#Sprite+rotation) : <code>Number</code>
     * [.origin](#Sprite+origin) : <code>Vector2</code>
-    * [.color](#Sprite+color) : <code>Color</code>
+    * [.color](#Sprite+color) : <code>Color</code> \| <code>Array.&lt;Color&gt;</code>
     * [.flipX](#Sprite+flipX) ⇒ <code>Boolean</code>
     * [.flipX](#Sprite+flipX)
     * [.flipY](#Sprite+flipY) ⇒ <code>Boolean</code>
@@ -47,14 +47,16 @@ Texture to use for this sprite.
 **Kind**: instance property of [<code>Sprite</code>](#Sprite)  
 <a name="Sprite+position"></a>
 
-### sprite.position : <code>Vector2</code>
+### sprite.position : <code>Vector2</code> \| <code>Vector3</code>
 Sprite position.
+If Vector3 is provided, the z value will be passed to vertices position in shader code.
 
 **Kind**: instance property of [<code>Sprite</code>](#Sprite)  
 <a name="Sprite+size"></a>
 
-### sprite.size : <code>Vector2</code>
+### sprite.size : <code>Vector2</code> \| <code>Vector3</code>
 Sprite size.
+If Vector3 is provided, the z value will be passed to the bottom vertices position in shader code, as position.z + size.z.
 
 **Kind**: instance property of [<code>Sprite</code>](#Sprite)  
 <a name="Sprite+sourceRect"></a>
@@ -84,8 +86,9 @@ Sprite origin point.
 **Kind**: instance property of [<code>Sprite</code>](#Sprite)  
 <a name="Sprite+color"></a>
 
-### sprite.color : <code>Color</code>
+### sprite.color : <code>Color</code> \| <code>Array.&lt;Color&gt;</code>
 Sprite color.
+If array is set, will assign each color to different vertex, starting from top-left.
 
 **Kind**: instance property of [<code>Sprite</code>](#Sprite)  
 <a name="Sprite+flipX"></a>

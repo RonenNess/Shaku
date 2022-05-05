@@ -4301,6 +4301,7 @@ const TextAlignment = require('./text_alignment.js');
 const Mesh = require('./mesh.js');
 const Circle = require('../utils/circle.js');
 const SpriteBatch = require('./sprite_batch.js');
+const Vector3 = require('../utils/vector3.js');
 const _whiteColor = Color.white;
 const _logger = require('../logger.js').getLogger('gfx');
 
@@ -4840,7 +4841,7 @@ class Gfx extends IManager
      * @param {FontTextureAsset} fontTexture Font texture asset to use.
      * @param {String} text Text to generate sprites for.
      * @param {Number} fontSize Font size, or undefined to use font texture base size.
-     * @param {Color} color Text sprites color.
+     * @param {Color|Array<Color>} color Text sprites color. If array is set, will assign each color to different vertex, starting from top-left.
      * @param {TextAlignment} alignment Text alignment.
      * @param {Vector2} offset Optional starting offset.
      * @param {Vector2} marginFactor Optional factor for characters and line spacing. For example value of 2,1 will make double horizontal spacing. 
@@ -4935,7 +4936,15 @@ class Gfx extends IManager
                 let sprite = new Sprite(fontTexture.texture, sourceRect);
                 sprite.size = size;
                 sprite.position.copy(position);
-                sprite.color.copy(color);
+                if (color instanceof Color) {
+                    sprite.color.copy(color);
+                }
+                else {
+                    sprite.color = [];
+                    for (let col of color) {
+                        sprite.color.push(col.clone());
+                    }
+                }
                 sprite.origin.x = 0;
                 ret.add(sprite);
 
@@ -5030,14 +5039,14 @@ class Gfx extends IManager
      * let origin = new Shaku.utils.Vector2(0.5, 0.5);
      * Shaku.gfx.draw(texture, position, size, sourceRect, color, blendMode, rotation, origin);
      * @param {TextureAsset} texture Texture to draw.
-     * @param {Rectangle|Vector2} destRect Destination rectangle to draw on. If vector2 is provided, will draw from 0,0 with vector as size.
+     * @param {Rectangle|Vector2} destRect Destination rectangle to draw on. If vector is provided, will draw from 0,0 with vector as size.
      * @param {Rectangle} sourceRect Source rectangle, or undefined to use the entire texture.
-     * @param {Color} color Tint color, or undefined to not change color.
+     * @param {Color|Array<Color>} color Tint color, or undefined to not change color. If array is set, will assign each color to different vertex, starting from top-left.
      * @param {BlendModes} blendMode Blend mode, or undefined to use alpha blend.
      */
     cover(texture, destRect, sourceRect, color, blendMode)
     {
-        if (destRect instanceof Vector2) {
+        if ((destRect instanceof Vector2) || (destRect instanceof Vector3)) {
             destRect = new Rectangle(0, 0, destRect.x, destRect.y);
         }
         return this.draw(texture, destRect.getCenter(), destRect.getSize(), sourceRect, color, blendMode);
@@ -5060,10 +5069,10 @@ class Gfx extends IManager
      * let origin = new Shaku.utils.Vector2(0.5, 0.5);
      * Shaku.gfx.draw(texture, position, size, sourceRect, color, blendMode, rotation, origin);
      * @param {TextureAsset} texture Texture to draw.
-     * @param {Vector2} position Drawing position (at origin).
-     * @param {Vector2|Number} size Drawing size.
+     * @param {Vector2|Vector3} position Drawing position (at origin). If vector3 is provided, will pass z value to the shader code position attribute.
+     * @param {Vector2|Vector3|Number} size Drawing size. If vector3 is provided, will pass z value to the shader code position attribute for the bottom vertices, as position.z + size.z.
      * @param {Rectangle} sourceRect Source rectangle, or undefined to use the entire texture.
-     * @param {Color} color Tint color, or undefined to not change color.
+     * @param {Color|Array<Color>} color Tint color, or undefined to not change color. If array is set, will assign each color to different vertex, starting from top-left.
      * @param {BlendModes} blendMode Blend mode, or undefined to use alpha blend.
      * @param {Number} rotation Rotate sprite.
      * @param {Vector2} origin Drawing origin. This will be the point at 'position' and rotation origin.
@@ -5086,7 +5095,7 @@ class Gfx extends IManager
      * // draw a 50x50 red rectangle at position 100x100, that will rotate over time
      * Shaku.gfx.fillRect(new Shaku.utils.Rectangle(100, 100, 50, 50), Shaku.utils.Color.red, null, Shaku.gameTime.elapsed);
      * @param {Rectangle} destRect Rectangle to fill.
-     * @param {Color} color Rectangle fill color.
+     * @param {Color|Array<Color>} color Rectangle fill color.
      * @param {BlendModes} blend Blend mode.
      * @param {Number} rotation Rotate the rectangle around its center.
      */
@@ -5103,7 +5112,7 @@ class Gfx extends IManager
      * // draw a 50x50 red rectangle at position 100x100, that will rotate over time
      * Shaku.gfx.fillRects([new Shaku.utils.Rectangle(100, 100, 50, 50), new Shaku.utils.Rectangle(150, 150, 25, 25)], Shaku.utils.Color.red, null, Shaku.gameTime.elapsed);
      * @param {Array<Rectangle>} destRects Rectangles to fill.
-     * @param {Array<Color>|Color} colors Rectangles fill color.
+     * @param {Array<Color>|Color} colors Rectangles fill color. If array is set, will assign each color to different vertex, starting from top-left.
      * @param {BlendModes} blend Blend mode.
      * @param {Array<Number>|Number} rotation Rotate the rectangles around its center.
      */
@@ -5125,7 +5134,7 @@ class Gfx extends IManager
         }
 
         // draw group
-        this.drawGroup(group, true);
+        this.drawGroup(group);
     }
 
     /**
@@ -5849,7 +5858,7 @@ class Gfx extends IManager
 
 // export main object
 module.exports = new Gfx();
-},{"../assets/font_texture_asset.js":4,"../assets/texture_asset.js":8,"../logger.js":41,"../manager.js":42,"../utils/circle.js":49,"../utils/color.js":50,"../utils/rectangle.js":57,"../utils/vector2.js":59,"./blend_modes.js":21,"./camera.js":22,"./effects":25,"./matrix.js":28,"./mesh.js":29,"./mesh_generator.js":30,"./sprite.js":31,"./sprite_batch.js":32,"./sprites_group.js":33,"./text_alignment.js":34,"./texture_filter_modes.js":35,"./texture_wrap_modes.js":36}],27:[function(require,module,exports){
+},{"../assets/font_texture_asset.js":4,"../assets/texture_asset.js":8,"../logger.js":41,"../manager.js":42,"../utils/circle.js":49,"../utils/color.js":50,"../utils/rectangle.js":57,"../utils/vector2.js":59,"../utils/vector3.js":60,"./blend_modes.js":21,"./camera.js":22,"./effects":25,"./matrix.js":28,"./mesh.js":29,"./mesh_generator.js":30,"./sprite.js":31,"./sprite_batch.js":32,"./sprites_group.js":33,"./text_alignment.js":34,"./texture_filter_modes.js":35,"./texture_wrap_modes.js":36}],27:[function(require,module,exports){
 /**
  * Just an alias to main manager so we can require() this folder as a package.
  * 
@@ -6349,6 +6358,7 @@ const TextureAsset = require("../assets/texture_asset");
 const Color = require("../utils/color");
 const Rectangle = require("../utils/rectangle");
 const Vector2 = require("../utils/vector2");
+const Vector3 = require("../utils/vector3");
 const BlendModes = require("./blend_modes");
 
 /**
@@ -6373,15 +6383,17 @@ class Sprite
         
         /**
          * Sprite position.
+         * If Vector3 is provided, the z value will be passed to vertices position in shader code.
          * @name Sprite#position
-         * @type {Vector2}
+         * @type {Vector2|Vector3}
          */
         this.position = new Vector2(0, 0);
 
         /**
          * Sprite size.
+         * If Vector3 is provided, the z value will be passed to the bottom vertices position in shader code, as position.z + size.z.
          * @name Sprite#size
-         * @type {Vector2}
+         * @type {Vector2|Vector3}
          */
         this.size = new Vector2(100, 100);
 
@@ -6416,8 +6428,9 @@ class Sprite
 
         /**
          * Sprite color.
+         * If array is set, will assign each color to different vertex, starting from top-left.
          * @name Sprite#color
-         * @type {Color}
+         * @type {Color|Array<Color>}
          */
         this.color = Color.white;
     }
@@ -6485,7 +6498,7 @@ class Sprite
 
 // export the sprite class.
 module.exports = Sprite;
-},{"../assets/texture_asset":8,"../utils/color":50,"../utils/rectangle":57,"../utils/vector2":59,"./blend_modes":21}],32:[function(require,module,exports){
+},{"../assets/texture_asset":8,"../utils/color":50,"../utils/rectangle":57,"../utils/vector2":59,"../utils/vector3":60,"./blend_modes":21}],32:[function(require,module,exports){
 /**
  * Implement the gfx sprite batch renderer.
  * 
@@ -6499,8 +6512,10 @@ module.exports = Sprite;
  * 
  */
  'use strict';
-const { Rectangle } = require('../utils');
+const { Rectangle, Color } = require('../utils');
 const Vector2 = require('../utils/vector2');
+const Vector3 = require('../utils/vector3');
+const BlendModes = require('./blend_modes');
 const Matrix = require('./matrix');
 const Mesh = require('./mesh');
 const _logger = require('../logger.js').getLogger('gfx');
@@ -6529,6 +6544,18 @@ class SpriteBatch
     }
 
     /**
+     * Create and return a new vertex.
+     * @param {Vector2} position Vertex position.
+     * @param {Vector2} textureCoord Vertex texture coord.
+     * @param {Color} color Vertex color.
+     * @returns {Vertex} new vertex object.
+     */
+    vertex(position, textureCoord, color)
+    {
+        return new Vertex(position, textureCoord, color);
+    }
+
+    /**
      * Get if batch is currently drawing.
      * @returns {Boolean} True if batch is drawing.
      */
@@ -6553,7 +6580,7 @@ class SpriteBatch
         }
         this._effect = this._gfx._activeEffect;
         
-        this._currBlend = null;
+        this._currBlend = BlendModes.AlphaBlend;
         this._currTexture = null;
         this._currBatchCount = 0;
 
@@ -6578,6 +6605,20 @@ class SpriteBatch
     }
 
     /**
+     * Set the currently active texture.
+     * @param {Texture} texture Texture to set.
+     */
+    setTexture(texture)
+    {
+        if (texture !== this._currTexture) {
+            if (this._currBatchCount) {
+                this._drawCurrentBatch();
+            }
+            this._currTexture = texture;
+        }
+    }
+
+    /**
      * Add sprite to batch.
      * Note: changing texture or blend mode may trigger a draw call.
      * @param {Sprite|Array<Sprite>} sprites Sprite or multiple sprites to draw.
@@ -6585,9 +6626,17 @@ class SpriteBatch
      */
     draw(sprites, cullOutOfScreen)
     {
+        // if single sprite, turn to array
         if (sprites.length === undefined) { sprites = [sprites]; }
+
+        // get visible region
         let region = cullOutOfScreen ? this._gfx.getRenderingRegion() : null;
 
+        // get buffers
+        let positions = this._positions;
+        let uvs = this._uvs;
+        let colors = this._colors;
+        
         for (let sprite of sprites) {
 
             // if texture changed, blend mode changed, or we have too many indices - draw current batch
@@ -6650,11 +6699,6 @@ class SpriteBatch
                 }
             }
 
-            // get buffers
-            let positions = this._positions;
-            let uvs = this._uvs;
-            let colors = this._colors;
-
             // update positions buffer
             let pi = this._currBatchCount * 4 * 3;
             positions[pi+0] = topLeft.x;             positions[pi+1] = topLeft.y;             positions[pi+2] = z;
@@ -6681,16 +6725,85 @@ class SpriteBatch
 
             // add colors
             let ci = this._currBatchCount * 4 * 4;
-            for (let x = 0; x < 4; ++x) {
-                colors[ci + x*4 + 0] = sprite.color.r;
-                colors[ci + x*4 + 1] = sprite.color.g;
-                colors[ci + x*4 + 2] = sprite.color.b;
-                colors[ci + x*4 + 3] = sprite.color.a;
+
+            // array of colors
+            if (sprite.color instanceof Array) {
+                let lastColor = sprite.color[0];
+                for (let x = 0; x < 4; ++x) {
+                    let curr = (sprite.color[x] || lastColor);
+                    colors[ci + x*4 + 0] = curr.r;
+                    colors[ci + x*4 + 1] = curr.g;
+                    colors[ci + x*4 + 2] = curr.b;
+                    colors[ci + x*4 + 3] = curr.a;
+                    lastColor = curr;
+                }
+            }
+            // single color
+            else {
+                for (let x = 0; x < 4; ++x) {
+                    colors[ci + x*4 + 0] = sprite.color.r;
+                    colors[ci + x*4 + 1] = sprite.color.g;
+                    colors[ci + x*4 + 2] = sprite.color.b;
+                    colors[ci + x*4 + 3] = sprite.color.a;
+                }
             }
                     
             // increase sprites count
             this._currBatchCount++;
         }
+    }
+
+    /**
+     * Push vertices directly to batch.
+     * @param {Array<Vertex>} vertices Vertices to push.
+     */
+    pushVertices(vertices)
+    {
+        // sanity
+        if (!vertices || vertices.length !== 4) {
+            throw new Error("Vertices must be array of 4 values!");
+        }
+
+        // get buffers and offset
+        let positions = this._positions;
+        let uvs = this._uvs;
+        let colors = this._colors;
+
+        // push colors
+        for (let i = 0; i < vertices.length; ++i) 
+        {
+            let vertex = vertices[i];
+            let ci = (this._currBatchCount * (4 * 4)) + (i * 4);
+            colors[ci + 0] = vertex.color.r;
+            colors[ci + 1] = vertex.color.g;
+            colors[ci + 2] = vertex.color.b;
+            colors[ci + 3] = vertex.color.a;
+        }
+
+        // push positions
+        let topLeft = vertices[0].position;
+        let topRight = vertices[1].position;
+        let bottomLeft = vertices[2].position;
+        let bottomRight = vertices[3].position;
+        let pi = this._currBatchCount * 4 * 3;
+        positions[pi+0] = topLeft.x;             positions[pi+1] = topLeft.y;             positions[pi+2] = topLeft.z || 0;
+        positions[pi+3] = topRight.x;            positions[pi+4] = topRight.y;            positions[pi+5] = topRight.z || 0;
+        positions[pi+6] = bottomLeft.x;          positions[pi+7] = bottomLeft.y;          positions[pi+8] = bottomLeft.z || 0;
+        positions[pi+9] = bottomRight.x;         positions[pi+10] = bottomRight.y;        positions[pi+11] = bottomRight.z || 0;
+
+        // set texture coords
+        let uvi = (this._currBatchCount * (4 * 2));
+        uvs[uvi++] = vertices[0].textureCoord.x / this._currTexture.width; 
+        uvs[uvi++] = vertices[0].textureCoord.y / this._currTexture.height;
+        uvs[uvi++] = vertices[1].textureCoord.x / this._currTexture.width; 
+        uvs[uvi++] = vertices[1].textureCoord.y / this._currTexture.height;
+        uvs[uvi++] = vertices[2].textureCoord.x / this._currTexture.width; 
+        uvs[uvi++] = vertices[2].textureCoord.y / this._currTexture.height;
+        uvs[uvi++] = vertices[3].textureCoord.x / this._currTexture.width; 
+        uvs[uvi++] = vertices[3].textureCoord.y / this._currTexture.height;
+
+        // increase batch count
+        this._currBatchCount++;
     }
 
     /**
@@ -6766,9 +6879,29 @@ class SpriteBatch
 }
 
 
+/**
+ * A vertex we can push to sprite batch.
+ */
+class Vertex
+{
+    /**
+     * Create the vertex data.
+     * @param {Vector2|Vector3} position Vertex position.
+     * @param {Vector2} textureCoord Vertex texture coord (in pixels).
+     * @param {Color} color Vertex color (undefined will default to white).
+     */
+    constructor(position, textureCoord, color)
+    {
+        this.position = position;
+        this.textureCoord = textureCoord;
+        this.color = color || Color.white;
+    }
+}
+
+
 // export the sprite batch class
 module.exports = SpriteBatch;
-},{"../logger.js":41,"../utils":52,"../utils/vector2":59,"./matrix":28,"./mesh":29}],33:[function(require,module,exports){
+},{"../logger.js":41,"../utils":52,"../utils/vector2":59,"../utils/vector3":60,"./blend_modes":21,"./matrix":28,"./mesh":29}],33:[function(require,module,exports){
 /**
  * Define a sprites group.
  * 
@@ -8680,7 +8813,7 @@ let _totalFrameTimes = 0;
 
 
 // current version
-const version = "1.5.0";
+const version = "1.5.1";
 
 /**
  * Shaku's main object.
@@ -9850,6 +9983,7 @@ module.exports = GameTime;
 
  module.exports = {
     Vector2: require('./vector2'),
+    Vector3: require('./vector3'),
     Rectangle: require('./rectangle'),
     Circle: require('./circle'),
     Line: require('./line'),
@@ -9861,7 +9995,7 @@ module.exports = GameTime;
     Perlin: require('./perlin'),
     PathFinder: require('./path_finder')
  };
-},{"./animator":48,"./circle":49,"./color":50,"./game_time":51,"./line":53,"./math_helper":54,"./path_finder":55,"./perlin":56,"./rectangle":57,"./seeded_random":58,"./vector2":59}],53:[function(require,module,exports){
+},{"./animator":48,"./circle":49,"./color":50,"./game_time":51,"./line":53,"./math_helper":54,"./path_finder":55,"./perlin":56,"./rectangle":57,"./seeded_random":58,"./vector2":59,"./vector3":60}],53:[function(require,module,exports){
 /**
  * Implement a simple 2d line.
  * 
@@ -11353,11 +11487,17 @@ class Vector2
     /**
      * Return if vector approximately equals another vector.
      * @param {Vector2} other Other vector to compare to.
+     * @param {Number} threshold Distance threshold to consider as equal. Defaults to 1.
      * @returns {Boolean} if vectors are equal.
      */
-    approximate(other)
+    approximate(other, threshold)
     {
-        return ((this === other) || ((Math.abs(this.x - other.x) <= 1) && (Math.abs(this.y - other.y) <= 1)));
+        threshold = threshold || 1;
+        return ((this === other) || 
+                (
+                 (Math.abs(this.x - other.x) <= threshold) && 
+                 (Math.abs(this.y - other.y) <= threshold))
+                );
     }
 
     /**
@@ -11584,9 +11724,560 @@ class Vector2
         let parts = str.split(',');
         return new Vector2(parseFloat(parts[0].trim()), parseFloat(parts[1].trim()));
     }
+
+    /**
+     * Convert to array of numbers.
+     * @returns {Array<Number>} Vector components as array.
+     */
+    toArray()
+    {
+        return [this.x, this.y];
+    }
+
+    /**
+     * Create vector from array of numbers.
+     * @param {Array<Number>} arr Array of numbers to create vector from.
+     * @returns {Vector2} Vector instance.
+     */
+    static fromArray(arr)
+    {
+        return new Vector2(arr[0], arr[1]);
+    }
 }
 
 // export vector object
 module.exports = Vector2;
+},{"./math_helper":54}],60:[function(require,module,exports){
+/**
+ * Implement a 3d vector.
+ * 
+ * |-- copyright and license --|
+ * @package    Shaku
+ * @file       shaku\lib\utils\vector3.js
+ * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
+ * @copyright  (c) 2021 Ronen Ness
+ * @license    MIT
+ * |-- end copyright and license --|
+ * 
+ */
+'use strict';
+
+const MathHelper = require("./math_helper");
+
+/**
+ * A Vector object for 3d positions.
+ */
+class Vector3
+{
+    /**
+     * Create the Vector object.
+     * @param {number} x Vector X.
+     * @param {number} y Vector Y.
+     * @param {number} z Vector Z.
+     */
+    constructor(x = 0, y = 0, z = 0)
+    {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+    }
+    
+    /**
+     * Clone the vector.
+     * @returns {Vector3} cloned vector.
+     */
+    clone()
+    {
+        return new Vector3(this.x, this.y, this.z);
+    }
+    
+    /**
+     * Set vector value.
+     * @param {Number} x X component.
+     * @param {Number} y Y component.
+     * @param {Number} z Z component.
+     * @returns {Vector3} this.
+     */
+    set(x, y)
+    {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        return this;
+    }
+
+    /**
+     * Copy values from other vector into self.
+     * @returns {Vector3} this.
+     */
+    copy(other) 
+    {
+        this.x = other.x;
+        this.y = other.y;
+        this.z = other.z;
+        return this;
+    }
+    
+    /**
+     * Return a new vector of this + other.
+     * @param {Number|Vector3} Other Vector or number to add.
+     * @returns {Vector3} result vector.
+     */
+    add(other) 
+    {
+        if (typeof other === 'number') {
+            return new Vector3(
+                this.x + other, 
+                this.y + (arguments[1] === undefined ? other : arguments[1]),
+                this.z + (arguments[2] === undefined ? other : arguments[2])
+            );
+        }
+        return new Vector3(this.x + other.x, this.y + other.y, this.z + other.z);
+    }
+    
+    /**
+     * Return a new vector of this - other.
+     * @param {Number|Vector3} Other Vector or number to sub.
+     * @returns {Vector3} result vector.
+     */
+    sub(other) 
+    {
+        if (typeof other === 'number') {
+            return new Vector3(
+                this.x - other, 
+                this.y - (arguments[1] === undefined ? other : arguments[1]),
+                this.z - (arguments[2] === undefined ? other : arguments[2])
+            );
+        }
+        return new Vector3(this.x - other.x, this.y - other.y, this.z - other.z);
+    }
+    
+    /**
+     * Return a new vector of this / other.
+     * @param {Number|Vector3} Other Vector or number to divide.
+     * @returns {Vector3} result vector.
+     */
+    div(other) 
+    {
+        if (typeof other === 'number') {
+            return new Vector3(
+                this.x / other, 
+                this.y / (arguments[1] === undefined ? other : arguments[1]),
+                this.z / (arguments[2] === undefined ? other : arguments[2])
+            );
+        }
+        return new Vector3(this.x / other.x, this.y / other.y, this.z / other.z);
+    }
+    
+    /**
+     * Return a new vector of this * other.
+     * @param {Number|Vector3} Other Vector or number to multiply.
+     * @returns {Vector3} result vector.
+     */
+    mul(other) 
+    {
+        if (typeof other === 'number') {
+            return new Vector3(
+                this.x * other, 
+                this.y * (arguments[1] === undefined ? other : arguments[1]),
+                this.z * (arguments[2] === undefined ? other : arguments[2])
+            );
+        }
+        return new Vector3(this.x * other.x, this.y * other.y, this.z * other.z);
+    }
+    
+    /**
+     * Return a round copy of this vector.
+     * @returns {Vector3} result vector.
+     */
+    round() 
+    {
+        return new Vector3(Math.round(this.x), Math.round(this.y), Math.round(this.z));
+    }
+    
+    /**
+     * Return a floored copy of this vector.
+     * @returns {Vector3} result vector.
+     */
+    floor() 
+    {
+        return new Vector3(Math.floor(this.x), Math.floor(this.y), Math.floor(this.z));
+    }
+        
+    /**
+     * Return a ceiled copy of this vector.
+     * @returns {Vector3} result vector.
+     */
+    ceil() 
+    {
+        return new Vector3(Math.ceil(this.x), Math.ceil(this.y), Math.ceil(this.z));
+    }
+    
+    /**
+     * Return a normalized copy of this vector.
+     * @returns {Vector3} result vector.
+     */
+    normalized()
+    {
+        if (this.x == 0 && this.y == 0 && this.z == 0) { return Vector3.zero; }
+        let mag = this.length;
+        return new Vector3(this.x / mag, this.y / mag, this.z / mag);
+    }
+
+    /**
+     * Add other vector values to self.
+     * @param {Number|Vector3} Other Vector or number to add.
+     * @returns {Vector3} this.
+     */
+    addSelf(other) 
+    {
+        if (typeof other === 'number') {
+            this.x += other;
+            this.y += (arguments[1] === undefined ? other : arguments[1]);
+            this.z += (arguments[2] === undefined ? other : arguments[2]);
+        }
+        else {
+            this.x += other.x;
+            this.y += other.y;
+            this.z += other.z;
+        }
+        return this;
+    }
+
+    /**
+     * Sub other vector values from self.
+     * @param {Number|Vector3} Other Vector or number to substract.
+     * @returns {Vector3} this.
+     */
+    subSelf(other) 
+    {
+        if (typeof other === 'number') {
+            this.x -= other;
+            this.y -= (arguments[1] === undefined ? other : arguments[1]);
+            this.z -= (arguments[2] === undefined ? other : arguments[2]);
+        }
+        else {
+            this.x -= other.x;
+            this.y -= other.y;
+            this.z -= other.z;
+        }
+        return this;
+    }
+    
+    /**
+     * Divide this vector by other vector values.
+     * @param {Number|Vector3} Other Vector or number to divide by.
+     * @returns {Vector3} this.
+     */
+    divSelf(other) 
+    {
+        if (typeof other === 'number') {
+            this.x /= other;
+            this.y /= (arguments[1] === undefined ? other : arguments[1]);
+            this.z /= (arguments[2] === undefined ? other : arguments[2]);
+        }
+        else {
+            this.x /= other.x;
+            this.y /= other.y;
+            this.z /= other.z;
+        }
+        return this;
+    }
+
+    /**
+     * Multiply this vector by other vector values.
+     * @param {Number|Vector3} Other Vector or number to multiply by.
+     * @returns {Vector3} this.
+     */
+    mulSelf(other) 
+    {
+        if (typeof other === 'number') {
+            this.x *= other;
+            this.y *= (arguments[1] === undefined ? other : arguments[1]);
+            this.z *= (arguments[2] === undefined ? other : arguments[2]);
+        }
+        else {
+            this.x *= other.x;
+            this.y *= other.y;
+            this.z *= other.z;
+        }
+        return this;
+    }
+    
+    /**
+     * Round self.
+     * @returns {Vector3} this.
+     */
+    roundSelf() 
+    {
+        this.x = Math.round(this.x);
+        this.y = Math.round(this.y);
+        this.z = Math.round(this.z);
+        return this;
+    }
+    
+    /**
+     * Floor self.
+     * @returns {Vector3} this.
+     */
+    floorSelf() 
+    {
+        this.x = Math.floor(this.x);
+        this.y = Math.floor(this.y);
+        this.z = Math.floor(this.z);
+        return this;
+    }
+     
+    /**
+     * Ceil self.
+     * @returns {Vector3} this.
+     */
+    ceilSelf() 
+    {
+        this.x = Math.ceil(this.x);
+        this.y = Math.ceil(this.y);
+        this.z = Math.ceil(this.z);
+        return this;
+    }
+
+    /**
+     * Return a normalized copy of this vector.
+     * @returns {Vector3} this.
+     */
+    normalizeSelf()
+    {
+        if (this.x == 0 && this.y == 0 && this.z == 0) { return this; }
+        let mag = this.length;
+        this.x /= mag;
+        this.y /= mag;
+        this.z /= mag;
+        return this;
+    }
+    
+    /**
+     * Return if vector equals another vector.
+     * @param {Vector3} other Other vector to compare to.
+     * @returns {Boolean} if vectors are equal.
+     */
+    equals(other)
+    {
+        return ((this === other) || 
+                ((other.constructor === this.constructor) && 
+                this.x === other.x && this.y === other.y && this.z === other.z)
+            );
+    }
+    
+    /**
+     * Return if vector approximately equals another vector.
+     * @param {Vector3} other Other vector to compare to.
+     * @param {Number} threshold Distance threshold to consider as equal. Defaults to 1.
+     * @returns {Boolean} if vectors are equal.
+     */
+    approximate(other, threshold)
+    {
+        threshold = threshold || 1;
+        return (
+            (this === other) || 
+                ((Math.abs(this.x - other.x) <= threshold) && 
+                (Math.abs(this.y - other.y) <= threshold) && 
+                (Math.abs(this.z - other.z) <= threshold))
+            );
+    }
+
+    /**
+     * Return vector length (aka magnitude).
+     * @returns {Number} Vector length.
+     */
+    get length()
+    {
+        return Math.sqrt((this.x * this.x) + (this.y * this.y) + (this.z * this.z));
+    }
+
+    /**
+     * Return a copy of this vector multiplied by a factor.
+     * @returns {Vector3} result vector.
+     */
+    scaled(fac) 
+    {
+        return new Vector3(this.x * fac, this.y * fac, this.z * fac);
+    }
+
+    /**
+     * Get vector (0,0).
+     * @returns {Vector3} result vector.
+     */
+    static get zero()
+    {
+        return new Vector3();
+    }
+
+    /**
+     * Get vector with 1,1 values.
+     * @returns {Vector3} result vector.
+     */
+    static get one()
+    {
+        return new Vector3(1, 1, 1);
+    }
+
+    /**
+     * Get vector with 0.5,0.5 values.
+     * @returns {Vector3} result vector.
+     */
+    static get half()
+    {
+        return new Vector3(0.5, 0.5, 0.5);
+    }
+
+    /**
+     * Get vector with -1,0 values.
+     * @returns {Vector3} result vector.
+     */
+    static get left()
+    {
+        return new Vector3(-1, 0, 0);
+    }
+
+    /**
+     * Get vector with 1,0 values.
+     * @returns {Vector3} result vector.
+     */
+    static get right()
+    {
+        return new Vector3(1, 0, 0);
+    }
+
+    /**
+     * Get vector with 0,-1 values.
+     * @returns {Vector3} result vector.
+     */
+    static get up()
+    {
+        return new Vector3(0, -1, 0);
+    }
+
+    /**
+     * Get vector with 0,1 values.
+     * @returns {Vector3} result vector.
+     */
+    static get down()
+    {
+        return new Vector3(0, 1, 0);
+    }
+
+    /**
+     * Get vector with 0,0,-1 values.
+     * @returns {Vector3} result vector.
+     */
+    static get front()
+    {
+        return new Vector3(0, 0, -1);
+    }
+
+    /**
+     * Get vector with 0,0,1 values.
+     * @returns {Vector3} result vector.
+     */
+    static get back()
+    {
+        return new Vector3(0, 0, 1);
+    }
+    
+    /**
+     * Calculate distance between this vector and another vectors.
+     * @param {Vector3} other Other vector.
+     * @returns {Number} Distance between vectors.
+     */
+    distanceTo(other)
+    {
+        return Vector3.distance(this, other);
+    }
+    
+    /**
+     * Lerp between two vectors.
+     * @param {Vector3} p1 First vector.
+     * @param {Vector3} p2 Second vector.
+     * @param {Number} a Lerp factor (0.0 - 1.0).
+     * @returns {Vector3} result vector.
+     */
+    static lerp(p1, p2, a)
+    {
+        let lerpScalar = MathHelper.lerp;
+        return new Vector3(lerpScalar(p1.x, p2.x, a), lerpScalar(p1.y, p2.y, a), lerpScalar(p1.z, p2.z, a));
+    }
+
+    /**
+     * Calculate distance between two vectors.
+     * @param {Vector3} p1 First vector.
+     * @param {Vector3} p2 Second vector.
+     * @returns {Number} Distance between vectors.
+     */
+    static distance(p1, p2)
+    {
+        let a = p1.x - p2.x;
+        let b = p1.y - p2.y;
+        let c = p1.z - p2.z;
+        return Math.sqrt(a*a + b*b + c*c);
+    }
+
+    /**
+     * Return cross product between two vectors.
+     * @param {Vector3} p1 First vector.
+     * @param {Vector3} p2 Second vector.
+     * @returns {Vector3} Crossed vector.
+     */
+    static crossVector(p1, p2)
+    {
+        const ax = p1.x, ay = p1.y, az = p1.z;
+		const bx = p2.x, by = p2.y, bz = p2.z;
+
+		let x = ay * bz - az * by;
+		let y = az * bx - ax * bz;
+		let z = ax * by - ay * bx;
+
+		return new Vector3(x, y, z);
+    }
+
+    /**
+     * Convert to string.
+     */
+    string()
+    {
+        return this.x + ',' + this.y + ',' + this.z;
+    }
+
+    /**
+     * Parse and return a vector object from string in the form of "x,y".
+     * @param {String} str String to parse.
+     * @returns {Vector3} Parsed vector.
+     */
+    static parse(str)
+    {
+        let parts = str.split(',');
+        return new Vector3(parseFloat(parts[0].trim()), parseFloat(parts[1].trim()), parseFloat(parts[2].trim()));
+    }
+
+    /**
+     * Convert to array of numbers.
+     * @returns {Array<Number>} Vector components as array.
+     */
+    toArray()
+    {
+        return [this.x, this.y, this.z];
+    }
+
+    /**
+     * Create vector from array of numbers.
+     * @param {Array<Number>} arr Array of numbers to create vector from.
+     * @returns {Vector3} Vector instance.
+     */
+    static fromArray(arr)
+    {
+        return new Vector3(arr[0], arr[1], arr[2]);
+    }
+}
+
+// export vector object
+module.exports = Vector3;
 },{"./math_helper":54}]},{},[37])(37)
 });

@@ -102,6 +102,9 @@ This object is a helper class to hold all the properties of a texture to render.
 <dt><a href="#SpriteBatch">SpriteBatch</a></dt>
 <dd><p>Sprite batch renderer, responsible on drawing a batch of sprites with as little draw calls as possible.</p>
 </dd>
+<dt><a href="#Vertex">Vertex</a></dt>
+<dd><p>A vertex we can push to sprite batch.</p>
+</dd>
 <dt><a href="#SpritesGroup">SpritesGroup</a></dt>
 <dd><p>Sprites group class.
 This object is a container to hold sprites collection + parent transformations.
@@ -175,6 +178,9 @@ Based on code from noisejs by Stefan Gustavson.
 </dd>
 <dt><a href="#Vector2">Vector2</a></dt>
 <dd><p>A simple Vector object for 2d positions.</p>
+</dd>
+<dt><a href="#Vector3">Vector3</a></dt>
+<dd><p>A Vector object for 3d positions.</p>
 </dd>
 </dl>
 
@@ -2380,7 +2386,7 @@ Note: its best to always draw texts with *batching* enabled.
 | fontTexture | [<code>FontTextureAsset</code>](#FontTextureAsset) | Font texture asset to use. |
 | text | <code>String</code> | Text to generate sprites for. |
 | fontSize | <code>Number</code> | Font size, or undefined to use font texture base size. |
-| color | [<code>Color</code>](#Color) | Text sprites color. |
+| color | [<code>Color</code>](#Color) \| [<code>Array.&lt;Color&gt;</code>](#Color) | Text sprites color. If array is set, will assign each color to different vertex, starting from top-left. |
 | alignment | <code>TextAlignment</code> | Text alignment. |
 | offset | [<code>Vector2</code>](#Vector2) | Optional starting offset. |
 | marginFactor | [<code>Vector2</code>](#Vector2) | Optional factor for characters and line spacing. For example value of 2,1 will make double horizontal spacing. |
@@ -2466,9 +2472,9 @@ Draw a texture to cover a given destination rectangle.
 | Param | Type | Description |
 | --- | --- | --- |
 | texture | [<code>TextureAsset</code>](#TextureAsset) | Texture to draw. |
-| destRect | [<code>Rectangle</code>](#Rectangle) \| [<code>Vector2</code>](#Vector2) | Destination rectangle to draw on. If vector2 is provided, will draw from 0,0 with vector as size. |
+| destRect | [<code>Rectangle</code>](#Rectangle) \| [<code>Vector2</code>](#Vector2) | Destination rectangle to draw on. If vector is provided, will draw from 0,0 with vector as size. |
 | sourceRect | [<code>Rectangle</code>](#Rectangle) | Source rectangle, or undefined to use the entire texture. |
-| color | [<code>Color</code>](#Color) | Tint color, or undefined to not change color. |
+| color | [<code>Color</code>](#Color) \| [<code>Array.&lt;Color&gt;</code>](#Color) | Tint color, or undefined to not change color. If array is set, will assign each color to different vertex, starting from top-left. |
 | blendMode | <code>BlendModes</code> | Blend mode, or undefined to use alpha blend. |
 
 **Example**  
@@ -2497,10 +2503,10 @@ Draw a texture.
 | Param | Type | Description |
 | --- | --- | --- |
 | texture | [<code>TextureAsset</code>](#TextureAsset) | Texture to draw. |
-| position | [<code>Vector2</code>](#Vector2) | Drawing position (at origin). |
-| size | [<code>Vector2</code>](#Vector2) \| <code>Number</code> | Drawing size. |
+| position | [<code>Vector2</code>](#Vector2) \| [<code>Vector3</code>](#Vector3) | Drawing position (at origin). If vector3 is provided, will pass z value to the shader code position attribute. |
+| size | [<code>Vector2</code>](#Vector2) \| [<code>Vector3</code>](#Vector3) \| <code>Number</code> | Drawing size. If vector3 is provided, will pass z value to the shader code position attribute for the bottom vertices, as position.z + size.z. |
 | sourceRect | [<code>Rectangle</code>](#Rectangle) | Source rectangle, or undefined to use the entire texture. |
-| color | [<code>Color</code>](#Color) | Tint color, or undefined to not change color. |
+| color | [<code>Color</code>](#Color) \| [<code>Array.&lt;Color&gt;</code>](#Color) | Tint color, or undefined to not change color. If array is set, will assign each color to different vertex, starting from top-left. |
 | blendMode | <code>BlendModes</code> | Blend mode, or undefined to use alpha blend. |
 | rotation | <code>Number</code> | Rotate sprite. |
 | origin | [<code>Vector2</code>](#Vector2) | Drawing origin. This will be the point at 'position' and rotation origin. |
@@ -2533,7 +2539,7 @@ Draw a filled colored rectangle.
 | Param | Type | Description |
 | --- | --- | --- |
 | destRect | [<code>Rectangle</code>](#Rectangle) | Rectangle to fill. |
-| color | [<code>Color</code>](#Color) | Rectangle fill color. |
+| color | [<code>Color</code>](#Color) \| [<code>Array.&lt;Color&gt;</code>](#Color) | Rectangle fill color. |
 | blend | <code>BlendModes</code> | Blend mode. |
 | rotation | <code>Number</code> | Rotate the rectangle around its center. |
 
@@ -2552,7 +2558,7 @@ Draw a list of filled colored rectangles as a batch.
 | Param | Type | Description |
 | --- | --- | --- |
 | destRects | [<code>Array.&lt;Rectangle&gt;</code>](#Rectangle) | Rectangles to fill. |
-| colors | [<code>Array.&lt;Color&gt;</code>](#Color) \| [<code>Color</code>](#Color) | Rectangles fill color. |
+| colors | [<code>Array.&lt;Color&gt;</code>](#Color) \| [<code>Color</code>](#Color) | Rectangles fill color. If array is set, will assign each color to different vertex, starting from top-left. |
 | blend | <code>BlendModes</code> | Blend mode. |
 | rotation | <code>Array.&lt;Number&gt;</code> \| <code>Number</code> | Rotate the rectangles around its center. |
 
@@ -2978,13 +2984,13 @@ This object is a helper class to hold all the properties of a texture to render.
 * [Sprite](#Sprite)
     * [new Sprite(texture, sourceRect)](#new_Sprite_new)
     * [.texture](#Sprite+texture) : [<code>TextureAsset</code>](#TextureAsset)
-    * [.position](#Sprite+position) : [<code>Vector2</code>](#Vector2)
-    * [.size](#Sprite+size) : [<code>Vector2</code>](#Vector2)
+    * [.position](#Sprite+position) : [<code>Vector2</code>](#Vector2) \| [<code>Vector3</code>](#Vector3)
+    * [.size](#Sprite+size) : [<code>Vector2</code>](#Vector2) \| [<code>Vector3</code>](#Vector3)
     * [.sourceRect](#Sprite+sourceRect) : [<code>Rectangle</code>](#Rectangle)
     * [.blendMode](#Sprite+blendMode) : <code>BlendModes</code>
     * [.rotation](#Sprite+rotation) : <code>Number</code>
     * [.origin](#Sprite+origin) : [<code>Vector2</code>](#Vector2)
-    * [.color](#Sprite+color) : [<code>Color</code>](#Color)
+    * [.color](#Sprite+color) : [<code>Color</code>](#Color) \| [<code>Array.&lt;Color&gt;</code>](#Color)
     * [.flipX](#Sprite+flipX) ⇒ <code>Boolean</code>
     * [.flipX](#Sprite+flipX)
     * [.flipY](#Sprite+flipY) ⇒ <code>Boolean</code>
@@ -3010,14 +3016,16 @@ Texture to use for this sprite.
 **Kind**: instance property of [<code>Sprite</code>](#Sprite)  
 <a name="Sprite+position"></a>
 
-### sprite.position : [<code>Vector2</code>](#Vector2)
+### sprite.position : [<code>Vector2</code>](#Vector2) \| [<code>Vector3</code>](#Vector3)
 Sprite position.
+If Vector3 is provided, the z value will be passed to vertices position in shader code.
 
 **Kind**: instance property of [<code>Sprite</code>](#Sprite)  
 <a name="Sprite+size"></a>
 
-### sprite.size : [<code>Vector2</code>](#Vector2)
+### sprite.size : [<code>Vector2</code>](#Vector2) \| [<code>Vector3</code>](#Vector3)
 Sprite size.
+If Vector3 is provided, the z value will be passed to the bottom vertices position in shader code, as position.z + size.z.
 
 **Kind**: instance property of [<code>Sprite</code>](#Sprite)  
 <a name="Sprite+sourceRect"></a>
@@ -3047,8 +3055,9 @@ Sprite origin point.
 **Kind**: instance property of [<code>Sprite</code>](#Sprite)  
 <a name="Sprite+color"></a>
 
-### sprite.color : [<code>Color</code>](#Color)
+### sprite.color : [<code>Color</code>](#Color) \| [<code>Array.&lt;Color&gt;</code>](#Color)
 Sprite color.
+If array is set, will assign each color to different vertex, starting from top-left.
 
 **Kind**: instance property of [<code>Sprite</code>](#Sprite)  
 <a name="Sprite+flipX"></a>
@@ -3109,9 +3118,12 @@ Sprite batch renderer, responsible on drawing a batch of sprites with as little 
     * [new SpriteBatch(gfx)](#new_SpriteBatch_new)
     * [.drawing](#SpriteBatch+drawing) ⇒ <code>Boolean</code>
     * [.batchSpritesCount](#SpriteBatch+batchSpritesCount)
+    * [.vertex(position, textureCoord, color)](#SpriteBatch+vertex) ⇒ [<code>Vertex</code>](#Vertex)
     * [.begin(effect, transform)](#SpriteBatch+begin)
     * [.end()](#SpriteBatch+end)
+    * [.setTexture(texture)](#SpriteBatch+setTexture)
     * [.draw(sprites, cullOutOfScreen)](#SpriteBatch+draw)
+    * [.pushVertices(vertices)](#SpriteBatch+pushVertices)
 
 <a name="new_SpriteBatch_new"></a>
 
@@ -3136,6 +3148,20 @@ Get if batch is currently drawing.
 How many sprites we can have in batch, in total.
 
 **Kind**: instance property of [<code>SpriteBatch</code>](#SpriteBatch)  
+<a name="SpriteBatch+vertex"></a>
+
+### spriteBatch.vertex(position, textureCoord, color) ⇒ [<code>Vertex</code>](#Vertex)
+Create and return a new vertex.
+
+**Kind**: instance method of [<code>SpriteBatch</code>](#SpriteBatch)  
+**Returns**: [<code>Vertex</code>](#Vertex) - new vertex object.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| position | [<code>Vector2</code>](#Vector2) | Vertex position. |
+| textureCoord | [<code>Vector2</code>](#Vector2) | Vertex texture coord. |
+| color | [<code>Color</code>](#Color) | Vertex color. |
+
 <a name="SpriteBatch+begin"></a>
 
 ### spriteBatch.begin(effect, transform)
@@ -3154,6 +3180,17 @@ Start drawing a batch.
 Finish drawing batch (and render whatever left in buffers).
 
 **Kind**: instance method of [<code>SpriteBatch</code>](#SpriteBatch)  
+<a name="SpriteBatch+setTexture"></a>
+
+### spriteBatch.setTexture(texture)
+Set the currently active texture.
+
+**Kind**: instance method of [<code>SpriteBatch</code>](#SpriteBatch)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| texture | <code>Texture</code> | Texture to set. |
+
 <a name="SpriteBatch+draw"></a>
 
 ### spriteBatch.draw(sprites, cullOutOfScreen)
@@ -3166,6 +3203,35 @@ Note: changing texture or blend mode may trigger a draw call.
 | --- | --- | --- |
 | sprites | [<code>Sprite</code>](#Sprite) \| [<code>Array.&lt;Sprite&gt;</code>](#Sprite) | Sprite or multiple sprites to draw. |
 | cullOutOfScreen | <code>Boolean</code> | If true, will cull sprites that are not visible. |
+
+<a name="SpriteBatch+pushVertices"></a>
+
+### spriteBatch.pushVertices(vertices)
+Push vertices directly to batch.
+
+**Kind**: instance method of [<code>SpriteBatch</code>](#SpriteBatch)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| vertices | [<code>Array.&lt;Vertex&gt;</code>](#Vertex) | Vertices to push. |
+
+<a name="Vertex"></a>
+
+## Vertex
+A vertex we can push to sprite batch.
+
+**Kind**: global class  
+<a name="new_Vertex_new"></a>
+
+### new Vertex(position, textureCoord, color)
+Create the vertex data.
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| position | [<code>Vector2</code>](#Vector2) \| [<code>Vector3</code>](#Vector3) | Vertex position. |
+| textureCoord | [<code>Vector2</code>](#Vector2) | Vertex texture coord (in pixels). |
+| color | [<code>Color</code>](#Color) | Vertex color (undefined will default to white). |
 
 <a name="SpritesGroup"></a>
 
@@ -5017,8 +5083,8 @@ Check if a given tile is blocked from a given neihbor.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| _from | [<code>Vector2</code>](#Vector2) \| <code>Vector3</code> | Source tile index. |
-| _to | [<code>Vector2</code>](#Vector2) \| <code>Vector3</code> | Target tile index. Must be a neighbor of _from. |
+| _from | [<code>Vector2</code>](#Vector2) \| [<code>Vector3</code>](#Vector3) | Source tile index. |
+| _to | [<code>Vector2</code>](#Vector2) \| [<code>Vector3</code>](#Vector3) | Target tile index. Must be a neighbor of _from. |
 
 <a name="IGrid+getPrice"></a>
 
@@ -5031,7 +5097,7 @@ Should return 1 for "normal" traveling price, > 1 for expensive tile, and < 1 fo
 
 | Param | Type | Description |
 | --- | --- | --- |
-| _index | [<code>Vector2</code>](#Vector2) \| <code>Vector3</code> | Tile index. |
+| _index | [<code>Vector2</code>](#Vector2) \| [<code>Vector3</code>](#Vector3) | Tile index. |
 
 <a name="Node"></a>
 
@@ -5439,12 +5505,13 @@ A simple Vector object for 2d positions.
         * [.ceilSelf()](#Vector2+ceilSelf) ⇒ [<code>Vector2</code>](#Vector2)
         * [.normalizeSelf()](#Vector2+normalizeSelf) ⇒ [<code>Vector2</code>](#Vector2)
         * [.equals(other)](#Vector2+equals) ⇒ <code>Boolean</code>
-        * [.approximate(other)](#Vector2+approximate) ⇒ <code>Boolean</code>
+        * [.approximate(other, threshold)](#Vector2+approximate) ⇒ <code>Boolean</code>
         * [.scaled()](#Vector2+scaled) ⇒ [<code>Vector2</code>](#Vector2)
         * [.degreesTo(other)](#Vector2+degreesTo) ⇒ <code>Number</code>
         * [.radiansTo(other)](#Vector2+radiansTo) ⇒ <code>Number</code>
         * [.distanceTo(other)](#Vector2+distanceTo) ⇒ <code>Number</code>
         * [.string()](#Vector2+string)
+        * [.toArray()](#Vector2+toArray) ⇒ <code>Array.&lt;Number&gt;</code>
     * _static_
         * [.zero](#Vector2.zero) ⇒ [<code>Vector2</code>](#Vector2)
         * [.one](#Vector2.one) ⇒ [<code>Vector2</code>](#Vector2)
@@ -5462,6 +5529,7 @@ A simple Vector object for 2d positions.
         * [.cross(p1, p2)](#Vector2.cross) ⇒ <code>Number</code>
         * [.dot(p1, p2)](#Vector2.dot) ⇒ <code>Number</code>
         * [.parse(str)](#Vector2.parse) ⇒ [<code>Vector2</code>](#Vector2)
+        * [.fromArray(arr)](#Vector2.fromArray) ⇒ [<code>Vector2</code>](#Vector2)
 
 <a name="new_Vector2_new"></a>
 
@@ -5674,7 +5742,7 @@ Return if vector equals another vector.
 
 <a name="Vector2+approximate"></a>
 
-### vector2.approximate(other) ⇒ <code>Boolean</code>
+### vector2.approximate(other, threshold) ⇒ <code>Boolean</code>
 Return if vector approximately equals another vector.
 
 **Kind**: instance method of [<code>Vector2</code>](#Vector2)  
@@ -5683,6 +5751,7 @@ Return if vector approximately equals another vector.
 | Param | Type | Description |
 | --- | --- | --- |
 | other | [<code>Vector2</code>](#Vector2) | Other vector to compare to. |
+| threshold | <code>Number</code> | Distance threshold to consider as equal. Defaults to 1. |
 
 <a name="Vector2+scaled"></a>
 
@@ -5733,6 +5802,13 @@ Calculate distance between this vector and another vectors.
 Convert to string.
 
 **Kind**: instance method of [<code>Vector2</code>](#Vector2)  
+<a name="Vector2+toArray"></a>
+
+### vector2.toArray() ⇒ <code>Array.&lt;Number&gt;</code>
+Convert to array of numbers.
+
+**Kind**: instance method of [<code>Vector2</code>](#Vector2)  
+**Returns**: <code>Array.&lt;Number&gt;</code> - Vector components as array.  
 <a name="Vector2.zero"></a>
 
 ### Vector2.zero ⇒ [<code>Vector2</code>](#Vector2)
@@ -5896,4 +5972,451 @@ Parse and return a vector object from string in the form of "x,y".
 | Param | Type | Description |
 | --- | --- | --- |
 | str | <code>String</code> | String to parse. |
+
+<a name="Vector2.fromArray"></a>
+
+### Vector2.fromArray(arr) ⇒ [<code>Vector2</code>](#Vector2)
+Create vector from array of numbers.
+
+**Kind**: static method of [<code>Vector2</code>](#Vector2)  
+**Returns**: [<code>Vector2</code>](#Vector2) - Vector instance.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| arr | <code>Array.&lt;Number&gt;</code> | Array of numbers to create vector from. |
+
+<a name="Vector3"></a>
+
+## Vector3
+A Vector object for 3d positions.
+
+**Kind**: global class  
+
+* [Vector3](#Vector3)
+    * [new Vector3(x, y, z)](#new_Vector3_new)
+    * _instance_
+        * [.length](#Vector3+length) ⇒ <code>Number</code>
+        * [.clone()](#Vector3+clone) ⇒ [<code>Vector3</code>](#Vector3)
+        * [.set(x, y, z)](#Vector3+set) ⇒ [<code>Vector3</code>](#Vector3)
+        * [.copy()](#Vector3+copy) ⇒ [<code>Vector3</code>](#Vector3)
+        * [.add(Other)](#Vector3+add) ⇒ [<code>Vector3</code>](#Vector3)
+        * [.sub(Other)](#Vector3+sub) ⇒ [<code>Vector3</code>](#Vector3)
+        * [.div(Other)](#Vector3+div) ⇒ [<code>Vector3</code>](#Vector3)
+        * [.mul(Other)](#Vector3+mul) ⇒ [<code>Vector3</code>](#Vector3)
+        * [.round()](#Vector3+round) ⇒ [<code>Vector3</code>](#Vector3)
+        * [.floor()](#Vector3+floor) ⇒ [<code>Vector3</code>](#Vector3)
+        * [.ceil()](#Vector3+ceil) ⇒ [<code>Vector3</code>](#Vector3)
+        * [.normalized()](#Vector3+normalized) ⇒ [<code>Vector3</code>](#Vector3)
+        * [.addSelf(Other)](#Vector3+addSelf) ⇒ [<code>Vector3</code>](#Vector3)
+        * [.subSelf(Other)](#Vector3+subSelf) ⇒ [<code>Vector3</code>](#Vector3)
+        * [.divSelf(Other)](#Vector3+divSelf) ⇒ [<code>Vector3</code>](#Vector3)
+        * [.mulSelf(Other)](#Vector3+mulSelf) ⇒ [<code>Vector3</code>](#Vector3)
+        * [.roundSelf()](#Vector3+roundSelf) ⇒ [<code>Vector3</code>](#Vector3)
+        * [.floorSelf()](#Vector3+floorSelf) ⇒ [<code>Vector3</code>](#Vector3)
+        * [.ceilSelf()](#Vector3+ceilSelf) ⇒ [<code>Vector3</code>](#Vector3)
+        * [.normalizeSelf()](#Vector3+normalizeSelf) ⇒ [<code>Vector3</code>](#Vector3)
+        * [.equals(other)](#Vector3+equals) ⇒ <code>Boolean</code>
+        * [.approximate(other, threshold)](#Vector3+approximate) ⇒ <code>Boolean</code>
+        * [.scaled()](#Vector3+scaled) ⇒ [<code>Vector3</code>](#Vector3)
+        * [.distanceTo(other)](#Vector3+distanceTo) ⇒ <code>Number</code>
+        * [.string()](#Vector3+string)
+        * [.toArray()](#Vector3+toArray) ⇒ <code>Array.&lt;Number&gt;</code>
+    * _static_
+        * [.zero](#Vector3.zero) ⇒ [<code>Vector3</code>](#Vector3)
+        * [.one](#Vector3.one) ⇒ [<code>Vector3</code>](#Vector3)
+        * [.half](#Vector3.half) ⇒ [<code>Vector3</code>](#Vector3)
+        * [.left](#Vector3.left) ⇒ [<code>Vector3</code>](#Vector3)
+        * [.right](#Vector3.right) ⇒ [<code>Vector3</code>](#Vector3)
+        * [.up](#Vector3.up) ⇒ [<code>Vector3</code>](#Vector3)
+        * [.down](#Vector3.down) ⇒ [<code>Vector3</code>](#Vector3)
+        * [.front](#Vector3.front) ⇒ [<code>Vector3</code>](#Vector3)
+        * [.back](#Vector3.back) ⇒ [<code>Vector3</code>](#Vector3)
+        * [.lerp(p1, p2, a)](#Vector3.lerp) ⇒ [<code>Vector3</code>](#Vector3)
+        * [.distance(p1, p2)](#Vector3.distance) ⇒ <code>Number</code>
+        * [.crossVector(p1, p2)](#Vector3.crossVector) ⇒ [<code>Vector3</code>](#Vector3)
+        * [.parse(str)](#Vector3.parse) ⇒ [<code>Vector3</code>](#Vector3)
+        * [.fromArray(arr)](#Vector3.fromArray) ⇒ [<code>Vector3</code>](#Vector3)
+
+<a name="new_Vector3_new"></a>
+
+### new Vector3(x, y, z)
+Create the Vector object.
+
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| x | <code>number</code> | <code>0</code> | Vector X. |
+| y | <code>number</code> | <code>0</code> | Vector Y. |
+| z | <code>number</code> | <code>0</code> | Vector Z. |
+
+<a name="Vector3+length"></a>
+
+### vector3.length ⇒ <code>Number</code>
+Return vector length (aka magnitude).
+
+**Kind**: instance property of [<code>Vector3</code>](#Vector3)  
+**Returns**: <code>Number</code> - Vector length.  
+<a name="Vector3+clone"></a>
+
+### vector3.clone() ⇒ [<code>Vector3</code>](#Vector3)
+Clone the vector.
+
+**Kind**: instance method of [<code>Vector3</code>](#Vector3)  
+**Returns**: [<code>Vector3</code>](#Vector3) - cloned vector.  
+<a name="Vector3+set"></a>
+
+### vector3.set(x, y, z) ⇒ [<code>Vector3</code>](#Vector3)
+Set vector value.
+
+**Kind**: instance method of [<code>Vector3</code>](#Vector3)  
+**Returns**: [<code>Vector3</code>](#Vector3) - this.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| x | <code>Number</code> | X component. |
+| y | <code>Number</code> | Y component. |
+| z | <code>Number</code> | Z component. |
+
+<a name="Vector3+copy"></a>
+
+### vector3.copy() ⇒ [<code>Vector3</code>](#Vector3)
+Copy values from other vector into self.
+
+**Kind**: instance method of [<code>Vector3</code>](#Vector3)  
+**Returns**: [<code>Vector3</code>](#Vector3) - this.  
+<a name="Vector3+add"></a>
+
+### vector3.add(Other) ⇒ [<code>Vector3</code>](#Vector3)
+Return a new vector of this + other.
+
+**Kind**: instance method of [<code>Vector3</code>](#Vector3)  
+**Returns**: [<code>Vector3</code>](#Vector3) - result vector.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| Other | <code>Number</code> \| [<code>Vector3</code>](#Vector3) | Vector or number to add. |
+
+<a name="Vector3+sub"></a>
+
+### vector3.sub(Other) ⇒ [<code>Vector3</code>](#Vector3)
+Return a new vector of this - other.
+
+**Kind**: instance method of [<code>Vector3</code>](#Vector3)  
+**Returns**: [<code>Vector3</code>](#Vector3) - result vector.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| Other | <code>Number</code> \| [<code>Vector3</code>](#Vector3) | Vector or number to sub. |
+
+<a name="Vector3+div"></a>
+
+### vector3.div(Other) ⇒ [<code>Vector3</code>](#Vector3)
+Return a new vector of this / other.
+
+**Kind**: instance method of [<code>Vector3</code>](#Vector3)  
+**Returns**: [<code>Vector3</code>](#Vector3) - result vector.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| Other | <code>Number</code> \| [<code>Vector3</code>](#Vector3) | Vector or number to divide. |
+
+<a name="Vector3+mul"></a>
+
+### vector3.mul(Other) ⇒ [<code>Vector3</code>](#Vector3)
+Return a new vector of this * other.
+
+**Kind**: instance method of [<code>Vector3</code>](#Vector3)  
+**Returns**: [<code>Vector3</code>](#Vector3) - result vector.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| Other | <code>Number</code> \| [<code>Vector3</code>](#Vector3) | Vector or number to multiply. |
+
+<a name="Vector3+round"></a>
+
+### vector3.round() ⇒ [<code>Vector3</code>](#Vector3)
+Return a round copy of this vector.
+
+**Kind**: instance method of [<code>Vector3</code>](#Vector3)  
+**Returns**: [<code>Vector3</code>](#Vector3) - result vector.  
+<a name="Vector3+floor"></a>
+
+### vector3.floor() ⇒ [<code>Vector3</code>](#Vector3)
+Return a floored copy of this vector.
+
+**Kind**: instance method of [<code>Vector3</code>](#Vector3)  
+**Returns**: [<code>Vector3</code>](#Vector3) - result vector.  
+<a name="Vector3+ceil"></a>
+
+### vector3.ceil() ⇒ [<code>Vector3</code>](#Vector3)
+Return a ceiled copy of this vector.
+
+**Kind**: instance method of [<code>Vector3</code>](#Vector3)  
+**Returns**: [<code>Vector3</code>](#Vector3) - result vector.  
+<a name="Vector3+normalized"></a>
+
+### vector3.normalized() ⇒ [<code>Vector3</code>](#Vector3)
+Return a normalized copy of this vector.
+
+**Kind**: instance method of [<code>Vector3</code>](#Vector3)  
+**Returns**: [<code>Vector3</code>](#Vector3) - result vector.  
+<a name="Vector3+addSelf"></a>
+
+### vector3.addSelf(Other) ⇒ [<code>Vector3</code>](#Vector3)
+Add other vector values to self.
+
+**Kind**: instance method of [<code>Vector3</code>](#Vector3)  
+**Returns**: [<code>Vector3</code>](#Vector3) - this.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| Other | <code>Number</code> \| [<code>Vector3</code>](#Vector3) | Vector or number to add. |
+
+<a name="Vector3+subSelf"></a>
+
+### vector3.subSelf(Other) ⇒ [<code>Vector3</code>](#Vector3)
+Sub other vector values from self.
+
+**Kind**: instance method of [<code>Vector3</code>](#Vector3)  
+**Returns**: [<code>Vector3</code>](#Vector3) - this.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| Other | <code>Number</code> \| [<code>Vector3</code>](#Vector3) | Vector or number to substract. |
+
+<a name="Vector3+divSelf"></a>
+
+### vector3.divSelf(Other) ⇒ [<code>Vector3</code>](#Vector3)
+Divide this vector by other vector values.
+
+**Kind**: instance method of [<code>Vector3</code>](#Vector3)  
+**Returns**: [<code>Vector3</code>](#Vector3) - this.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| Other | <code>Number</code> \| [<code>Vector3</code>](#Vector3) | Vector or number to divide by. |
+
+<a name="Vector3+mulSelf"></a>
+
+### vector3.mulSelf(Other) ⇒ [<code>Vector3</code>](#Vector3)
+Multiply this vector by other vector values.
+
+**Kind**: instance method of [<code>Vector3</code>](#Vector3)  
+**Returns**: [<code>Vector3</code>](#Vector3) - this.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| Other | <code>Number</code> \| [<code>Vector3</code>](#Vector3) | Vector or number to multiply by. |
+
+<a name="Vector3+roundSelf"></a>
+
+### vector3.roundSelf() ⇒ [<code>Vector3</code>](#Vector3)
+Round self.
+
+**Kind**: instance method of [<code>Vector3</code>](#Vector3)  
+**Returns**: [<code>Vector3</code>](#Vector3) - this.  
+<a name="Vector3+floorSelf"></a>
+
+### vector3.floorSelf() ⇒ [<code>Vector3</code>](#Vector3)
+Floor self.
+
+**Kind**: instance method of [<code>Vector3</code>](#Vector3)  
+**Returns**: [<code>Vector3</code>](#Vector3) - this.  
+<a name="Vector3+ceilSelf"></a>
+
+### vector3.ceilSelf() ⇒ [<code>Vector3</code>](#Vector3)
+Ceil self.
+
+**Kind**: instance method of [<code>Vector3</code>](#Vector3)  
+**Returns**: [<code>Vector3</code>](#Vector3) - this.  
+<a name="Vector3+normalizeSelf"></a>
+
+### vector3.normalizeSelf() ⇒ [<code>Vector3</code>](#Vector3)
+Return a normalized copy of this vector.
+
+**Kind**: instance method of [<code>Vector3</code>](#Vector3)  
+**Returns**: [<code>Vector3</code>](#Vector3) - this.  
+<a name="Vector3+equals"></a>
+
+### vector3.equals(other) ⇒ <code>Boolean</code>
+Return if vector equals another vector.
+
+**Kind**: instance method of [<code>Vector3</code>](#Vector3)  
+**Returns**: <code>Boolean</code> - if vectors are equal.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| other | [<code>Vector3</code>](#Vector3) | Other vector to compare to. |
+
+<a name="Vector3+approximate"></a>
+
+### vector3.approximate(other, threshold) ⇒ <code>Boolean</code>
+Return if vector approximately equals another vector.
+
+**Kind**: instance method of [<code>Vector3</code>](#Vector3)  
+**Returns**: <code>Boolean</code> - if vectors are equal.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| other | [<code>Vector3</code>](#Vector3) | Other vector to compare to. |
+| threshold | <code>Number</code> | Distance threshold to consider as equal. Defaults to 1. |
+
+<a name="Vector3+scaled"></a>
+
+### vector3.scaled() ⇒ [<code>Vector3</code>](#Vector3)
+Return a copy of this vector multiplied by a factor.
+
+**Kind**: instance method of [<code>Vector3</code>](#Vector3)  
+**Returns**: [<code>Vector3</code>](#Vector3) - result vector.  
+<a name="Vector3+distanceTo"></a>
+
+### vector3.distanceTo(other) ⇒ <code>Number</code>
+Calculate distance between this vector and another vectors.
+
+**Kind**: instance method of [<code>Vector3</code>](#Vector3)  
+**Returns**: <code>Number</code> - Distance between vectors.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| other | [<code>Vector3</code>](#Vector3) | Other vector. |
+
+<a name="Vector3+string"></a>
+
+### vector3.string()
+Convert to string.
+
+**Kind**: instance method of [<code>Vector3</code>](#Vector3)  
+<a name="Vector3+toArray"></a>
+
+### vector3.toArray() ⇒ <code>Array.&lt;Number&gt;</code>
+Convert to array of numbers.
+
+**Kind**: instance method of [<code>Vector3</code>](#Vector3)  
+**Returns**: <code>Array.&lt;Number&gt;</code> - Vector components as array.  
+<a name="Vector3.zero"></a>
+
+### Vector3.zero ⇒ [<code>Vector3</code>](#Vector3)
+Get vector (0,0).
+
+**Kind**: static property of [<code>Vector3</code>](#Vector3)  
+**Returns**: [<code>Vector3</code>](#Vector3) - result vector.  
+<a name="Vector3.one"></a>
+
+### Vector3.one ⇒ [<code>Vector3</code>](#Vector3)
+Get vector with 1,1 values.
+
+**Kind**: static property of [<code>Vector3</code>](#Vector3)  
+**Returns**: [<code>Vector3</code>](#Vector3) - result vector.  
+<a name="Vector3.half"></a>
+
+### Vector3.half ⇒ [<code>Vector3</code>](#Vector3)
+Get vector with 0.5,0.5 values.
+
+**Kind**: static property of [<code>Vector3</code>](#Vector3)  
+**Returns**: [<code>Vector3</code>](#Vector3) - result vector.  
+<a name="Vector3.left"></a>
+
+### Vector3.left ⇒ [<code>Vector3</code>](#Vector3)
+Get vector with -1,0 values.
+
+**Kind**: static property of [<code>Vector3</code>](#Vector3)  
+**Returns**: [<code>Vector3</code>](#Vector3) - result vector.  
+<a name="Vector3.right"></a>
+
+### Vector3.right ⇒ [<code>Vector3</code>](#Vector3)
+Get vector with 1,0 values.
+
+**Kind**: static property of [<code>Vector3</code>](#Vector3)  
+**Returns**: [<code>Vector3</code>](#Vector3) - result vector.  
+<a name="Vector3.up"></a>
+
+### Vector3.up ⇒ [<code>Vector3</code>](#Vector3)
+Get vector with 0,-1 values.
+
+**Kind**: static property of [<code>Vector3</code>](#Vector3)  
+**Returns**: [<code>Vector3</code>](#Vector3) - result vector.  
+<a name="Vector3.down"></a>
+
+### Vector3.down ⇒ [<code>Vector3</code>](#Vector3)
+Get vector with 0,1 values.
+
+**Kind**: static property of [<code>Vector3</code>](#Vector3)  
+**Returns**: [<code>Vector3</code>](#Vector3) - result vector.  
+<a name="Vector3.front"></a>
+
+### Vector3.front ⇒ [<code>Vector3</code>](#Vector3)
+Get vector with 0,0,-1 values.
+
+**Kind**: static property of [<code>Vector3</code>](#Vector3)  
+**Returns**: [<code>Vector3</code>](#Vector3) - result vector.  
+<a name="Vector3.back"></a>
+
+### Vector3.back ⇒ [<code>Vector3</code>](#Vector3)
+Get vector with 0,0,1 values.
+
+**Kind**: static property of [<code>Vector3</code>](#Vector3)  
+**Returns**: [<code>Vector3</code>](#Vector3) - result vector.  
+<a name="Vector3.lerp"></a>
+
+### Vector3.lerp(p1, p2, a) ⇒ [<code>Vector3</code>](#Vector3)
+Lerp between two vectors.
+
+**Kind**: static method of [<code>Vector3</code>](#Vector3)  
+**Returns**: [<code>Vector3</code>](#Vector3) - result vector.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| p1 | [<code>Vector3</code>](#Vector3) | First vector. |
+| p2 | [<code>Vector3</code>](#Vector3) | Second vector. |
+| a | <code>Number</code> | Lerp factor (0.0 - 1.0). |
+
+<a name="Vector3.distance"></a>
+
+### Vector3.distance(p1, p2) ⇒ <code>Number</code>
+Calculate distance between two vectors.
+
+**Kind**: static method of [<code>Vector3</code>](#Vector3)  
+**Returns**: <code>Number</code> - Distance between vectors.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| p1 | [<code>Vector3</code>](#Vector3) | First vector. |
+| p2 | [<code>Vector3</code>](#Vector3) | Second vector. |
+
+<a name="Vector3.crossVector"></a>
+
+### Vector3.crossVector(p1, p2) ⇒ [<code>Vector3</code>](#Vector3)
+Return cross product between two vectors.
+
+**Kind**: static method of [<code>Vector3</code>](#Vector3)  
+**Returns**: [<code>Vector3</code>](#Vector3) - Crossed vector.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| p1 | [<code>Vector3</code>](#Vector3) | First vector. |
+| p2 | [<code>Vector3</code>](#Vector3) | Second vector. |
+
+<a name="Vector3.parse"></a>
+
+### Vector3.parse(str) ⇒ [<code>Vector3</code>](#Vector3)
+Parse and return a vector object from string in the form of "x,y".
+
+**Kind**: static method of [<code>Vector3</code>](#Vector3)  
+**Returns**: [<code>Vector3</code>](#Vector3) - Parsed vector.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| str | <code>String</code> | String to parse. |
+
+<a name="Vector3.fromArray"></a>
+
+### Vector3.fromArray(arr) ⇒ [<code>Vector3</code>](#Vector3)
+Create vector from array of numbers.
+
+**Kind**: static method of [<code>Vector3</code>](#Vector3)  
+**Returns**: [<code>Vector3</code>](#Vector3) - Vector instance.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| arr | <code>Array.&lt;Number&gt;</code> | Array of numbers to create vector from. |
 

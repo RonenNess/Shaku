@@ -1815,6 +1815,13 @@ List of changes in released versions.
 - Added offset param to build text.
 - Added misc `gfx` utilities.
 
+## 1.5.1
+
+- Added `Vector3` + full support in drawing API to pass Z value to shader (not actual 3d, 2d with z).
+- Added API to set vertices directly in batch.
+- Added option to provide array of colors instead of a single color, to assign different color per sprite vertex.
+- Added some useful functions to vectors.
+
 # License
 
 *Shaku* is licensed under the permissive MIT license, so you can use it for any purpose (including commercially) and it should be compatible with most common licenses.

@@ -35,12 +35,13 @@ A simple Vector object for 2d positions.
         * [.ceilSelf()](#Vector2+ceilSelf) ⇒ [<code>Vector2</code>](#Vector2)
         * [.normalizeSelf()](#Vector2+normalizeSelf) ⇒ [<code>Vector2</code>](#Vector2)
         * [.equals(other)](#Vector2+equals) ⇒ <code>Boolean</code>
-        * [.approximate(other)](#Vector2+approximate) ⇒ <code>Boolean</code>
+        * [.approximate(other, threshold)](#Vector2+approximate) ⇒ <code>Boolean</code>
         * [.scaled()](#Vector2+scaled) ⇒ [<code>Vector2</code>](#Vector2)
         * [.degreesTo(other)](#Vector2+degreesTo) ⇒ <code>Number</code>
         * [.radiansTo(other)](#Vector2+radiansTo) ⇒ <code>Number</code>
         * [.distanceTo(other)](#Vector2+distanceTo) ⇒ <code>Number</code>
         * [.string()](#Vector2+string)
+        * [.toArray()](#Vector2+toArray) ⇒ <code>Array.&lt;Number&gt;</code>
     * _static_
         * [.zero](#Vector2.zero) ⇒ [<code>Vector2</code>](#Vector2)
         * [.one](#Vector2.one) ⇒ [<code>Vector2</code>](#Vector2)
@@ -58,6 +59,7 @@ A simple Vector object for 2d positions.
         * [.cross(p1, p2)](#Vector2.cross) ⇒ <code>Number</code>
         * [.dot(p1, p2)](#Vector2.dot) ⇒ <code>Number</code>
         * [.parse(str)](#Vector2.parse) ⇒ [<code>Vector2</code>](#Vector2)
+        * [.fromArray(arr)](#Vector2.fromArray) ⇒ [<code>Vector2</code>](#Vector2)
 
 <a name="new_Vector2_new"></a>
 
@@ -270,7 +272,7 @@ Return if vector equals another vector.
 
 <a name="Vector2+approximate"></a>
 
-### vector2.approximate(other) ⇒ <code>Boolean</code>
+### vector2.approximate(other, threshold) ⇒ <code>Boolean</code>
 Return if vector approximately equals another vector.
 
 **Kind**: instance method of [<code>Vector2</code>](#Vector2)  
@@ -279,6 +281,7 @@ Return if vector approximately equals another vector.
 | Param | Type | Description |
 | --- | --- | --- |
 | other | [<code>Vector2</code>](#Vector2) | Other vector to compare to. |
+| threshold | <code>Number</code> | Distance threshold to consider as equal. Defaults to 1. |
 
 <a name="Vector2+scaled"></a>
 
@@ -329,6 +332,13 @@ Calculate distance between this vector and another vectors.
 Convert to string.
 
 **Kind**: instance method of [<code>Vector2</code>](#Vector2)  
+<a name="Vector2+toArray"></a>
+
+### vector2.toArray() ⇒ <code>Array.&lt;Number&gt;</code>
+Convert to array of numbers.
+
+**Kind**: instance method of [<code>Vector2</code>](#Vector2)  
+**Returns**: <code>Array.&lt;Number&gt;</code> - Vector components as array.  
 <a name="Vector2.zero"></a>
 
 ### Vector2.zero ⇒ [<code>Vector2</code>](#Vector2)
@@ -492,4 +502,16 @@ Parse and return a vector object from string in the form of "x,y".
 | Param | Type | Description |
 | --- | --- | --- |
 | str | <code>String</code> | String to parse. |
+
+<a name="Vector2.fromArray"></a>
+
+### Vector2.fromArray(arr) ⇒ [<code>Vector2</code>](#Vector2)
+Create vector from array of numbers.
+
+**Kind**: static method of [<code>Vector2</code>](#Vector2)  
+**Returns**: [<code>Vector2</code>](#Vector2) - Vector instance.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| arr | <code>Array.&lt;Number&gt;</code> | Array of numbers to create vector from. |
 

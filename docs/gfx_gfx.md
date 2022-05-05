@@ -386,7 +386,7 @@ Note: its best to always draw texts with *batching* enabled.
 | fontTexture | <code>FontTextureAsset</code> | Font texture asset to use. |
 | text | <code>String</code> | Text to generate sprites for. |
 | fontSize | <code>Number</code> | Font size, or undefined to use font texture base size. |
-| color | <code>Color</code> | Text sprites color. |
+| color | <code>Color</code> \| <code>Array.&lt;Color&gt;</code> | Text sprites color. If array is set, will assign each color to different vertex, starting from top-left. |
 | alignment | <code>TextAlignment</code> | Text alignment. |
 | offset | <code>Vector2</code> | Optional starting offset. |
 | marginFactor | <code>Vector2</code> | Optional factor for characters and line spacing. For example value of 2,1 will make double horizontal spacing. |
@@ -472,9 +472,9 @@ Draw a texture to cover a given destination rectangle.
 | Param | Type | Description |
 | --- | --- | --- |
 | texture | <code>TextureAsset</code> | Texture to draw. |
-| destRect | <code>Rectangle</code> \| <code>Vector2</code> | Destination rectangle to draw on. If vector2 is provided, will draw from 0,0 with vector as size. |
+| destRect | <code>Rectangle</code> \| <code>Vector2</code> | Destination rectangle to draw on. If vector is provided, will draw from 0,0 with vector as size. |
 | sourceRect | <code>Rectangle</code> | Source rectangle, or undefined to use the entire texture. |
-| color | <code>Color</code> | Tint color, or undefined to not change color. |
+| color | <code>Color</code> \| <code>Array.&lt;Color&gt;</code> | Tint color, or undefined to not change color. If array is set, will assign each color to different vertex, starting from top-left. |
 | blendMode | <code>BlendModes</code> | Blend mode, or undefined to use alpha blend. |
 
 **Example**  
@@ -503,10 +503,10 @@ Draw a texture.
 | Param | Type | Description |
 | --- | --- | --- |
 | texture | <code>TextureAsset</code> | Texture to draw. |
-| position | <code>Vector2</code> | Drawing position (at origin). |
-| size | <code>Vector2</code> \| <code>Number</code> | Drawing size. |
+| position | <code>Vector2</code> \| <code>Vector3</code> | Drawing position (at origin). If vector3 is provided, will pass z value to the shader code position attribute. |
+| size | <code>Vector2</code> \| <code>Vector3</code> \| <code>Number</code> | Drawing size. If vector3 is provided, will pass z value to the shader code position attribute for the bottom vertices, as position.z + size.z. |
 | sourceRect | <code>Rectangle</code> | Source rectangle, or undefined to use the entire texture. |
-| color | <code>Color</code> | Tint color, or undefined to not change color. |
+| color | <code>Color</code> \| <code>Array.&lt;Color&gt;</code> | Tint color, or undefined to not change color. If array is set, will assign each color to different vertex, starting from top-left. |
 | blendMode | <code>BlendModes</code> | Blend mode, or undefined to use alpha blend. |
 | rotation | <code>Number</code> | Rotate sprite. |
 | origin | <code>Vector2</code> | Drawing origin. This will be the point at 'position' and rotation origin. |
@@ -539,7 +539,7 @@ Draw a filled colored rectangle.
 | Param | Type | Description |
 | --- | --- | --- |
 | destRect | <code>Rectangle</code> | Rectangle to fill. |
-| color | <code>Color</code> | Rectangle fill color. |
+| color | <code>Color</code> \| <code>Array.&lt;Color&gt;</code> | Rectangle fill color. |
 | blend | <code>BlendModes</code> | Blend mode. |
 | rotation | <code>Number</code> | Rotate the rectangle around its center. |
 
@@ -558,7 +558,7 @@ Draw a list of filled colored rectangles as a batch.
 | Param | Type | Description |
 | --- | --- | --- |
 | destRects | <code>Array.&lt;Rectangle&gt;</code> | Rectangles to fill. |
-| colors | <code>Array.&lt;Color&gt;</code> \| <code>Color</code> | Rectangles fill color. |
+| colors | <code>Array.&lt;Color&gt;</code> \| <code>Color</code> | Rectangles fill color. If array is set, will assign each color to different vertex, starting from top-left. |
 | blend | <code>BlendModes</code> | Blend mode. |
 | rotation | <code>Array.&lt;Number&gt;</code> \| <code>Number</code> | Rotate the rectangles around its center. |
 

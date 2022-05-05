@@ -60,4 +60,5 @@ You can view the entire docs as a single file [here](shaku_full.md), or by topic
 * [Utils: Rectangle](utils_rectangle.md)
 * [Utils: Seeded Random](utils_seeded_random.md)
 * [Utils: Vector2](utils_vector2.md)
+* [Utils: Vector3](utils_vector3.md)
 
