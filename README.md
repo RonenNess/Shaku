@@ -1827,6 +1827,7 @@ List of changes in released versions.
 ## 1.5.2
 
 - Reduced texture atlas bleeding with rotation.
+- Added 'intermediateProcessor' to collision detection.
 
 # License
 
