@@ -1824,6 +1824,10 @@ List of changes in released versions.
 - Added some useful functions to vectors.
 - Added 'allowDiagonal' flag to pathfind utilitiy.
 
+## 1.5.2
+
+- Reduced texture atlas bleeding with rotation.
+
 # License
 
 *Shaku* is licensed under the permissive MIT license, so you can use it for any purpose (including commercially) and it should be compatible with most common licenses.

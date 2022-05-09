@@ -5775,7 +5775,7 @@ class Gfx extends IManager
                 case BlendModes.DestOut:
                     gl.enable(gl.BLEND);
                     gl.blendEquation(gl.FUNC_ADD);
-                    gl.blendFunc(gl.ZERO, gl.ONE_MINUS_SRC_ALPHA);
+                    gl.blendFunc(gl.ZERO, gl.ONE_MINUS_SRC_COLOR);
                     // can also use: gl.blendFunc(gl.ONE_MINUS_DST_COLOR, gl.ONE_MINUS_SRC_COLOR);
                     break;
 
@@ -6670,8 +6670,8 @@ class SpriteBatch
                 let sin = Math.sin(sprite.rotation);
                 function rotateVec(vector)
                 {
-                    let x = (vector.x * cos - vector.y * sin);
-                    let y = (vector.x * sin + vector.y * cos);
+                    let x = Math.floor(vector.x * cos - vector.y * sin);
+                    let y = Math.floor(vector.x * sin + vector.y * cos);
                     vector.set(x, y);
                 }
                 rotateVec(topLeft);
@@ -6709,8 +6709,10 @@ class SpriteBatch
             // add uvs
             let uvi = this._currBatchCount * 4 * 2;
             if (sprite.sourceRect) {
-                let uvTl = {x: sprite.sourceRect.x / this._currTexture.width, y: sprite.sourceRect.y / this._currTexture.height};
-                let uvBr = {x: uvTl.x + sprite.sourceRect.width / this._currTexture.width, y: uvTl.y + sprite.sourceRect.height / this._currTexture.height};
+                const marginX = 0.25 / this._currTexture.width;
+                const marginY = 0.25 / this._currTexture.height;
+                const uvTl = {x: sprite.sourceRect.x / this._currTexture.width + marginX, y: sprite.sourceRect.y / this._currTexture.height + marginY};
+                const uvBr = {x: uvTl.x + sprite.sourceRect.width / this._currTexture.width - marginX * 2, y: uvTl.y + sprite.sourceRect.height / this._currTexture.height - marginY * 2};
                 uvs[uvi+0] = uvTl.x;  uvs[uvi+1] = uvTl.y;
                 uvs[uvi+2] = uvBr.x;  uvs[uvi+3] = uvTl.y;
                 uvs[uvi+4] = uvTl.x;  uvs[uvi+5] = uvBr.y;
