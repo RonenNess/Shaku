@@ -1824,10 +1824,11 @@ List of changes in released versions.
 - Added some useful functions to vectors.
 - Added 'allowDiagonal' flag to pathfind utilitiy.
 
-## 1.5.2
+## 1.5.2 [WIP]
 
 - Reduced texture atlas bleeding with rotation.
-- Added 'intermediateProcessor' to collision detection.
+- Added `intermediateProcessor` to collision detection.
+- Added `skew` property to sprites.
 
 # License
 

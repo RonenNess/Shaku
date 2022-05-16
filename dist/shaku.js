@@ -6429,7 +6429,14 @@ class Sprite
          * @type {Vector2}
          */
         this.origin = new Vector2(0.5, 0.5);
-
+        
+        /**
+         * Skew the sprite corners on X and Y axis, around the origin point.
+         * @name Sprite#skew
+         * @type {Vector2}
+         */
+        this.skew = new Vector2(0, 0);
+        
         /**
          * Sprite color.
          * If array is set, will assign each color to different vertex, starting from top-left.
@@ -6667,6 +6674,22 @@ class SpriteBatch
             let topRight = new Vector2(left + sizeX, top);
             let bottomLeft = new Vector2(left, top + sizeY);
             let bottomRight = new Vector2(left + sizeX, top + sizeY);
+
+            // apply skew
+            if (sprite.skew) {
+                if (sprite.skew.x) {
+                    topLeft.x += sprite.skew.x * sprite.origin.x;
+                    topRight.x += sprite.skew.x * sprite.origin.x;
+                    bottomLeft.x -= sprite.skew.x * (1 - sprite.origin.x);
+                    bottomRight.x -= sprite.skew.x * (1 - sprite.origin.x);
+                }
+                if (sprite.skew.y) {
+                    topLeft.y += sprite.skew.y * sprite.origin.y;
+                    bottomLeft.y += sprite.skew.y * sprite.origin.y;
+                    topRight.y -= sprite.skew.y * (1 - sprite.origin.y);
+                    bottomRight.y -= sprite.skew.y * (1 - sprite.origin.y);
+                }
+            }
 
             // apply rotation
             if (sprite.rotation) {
@@ -8819,7 +8842,7 @@ let _totalFrameTimes = 0;
 
 
 // current version
-const version = "1.5.1";
+const version = "1.5.2";
 
 /**
  * Shaku's main object.
