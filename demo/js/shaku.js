@@ -798,6 +798,7 @@ class FontTextureAsset extends Asset
      *                      - enforceTexturePowerOfTwo (default=true): if true, will force texture size to be power of two.
      *                      - maxTextureWidth (default=1024): max texture width.
      *                      - charactersSet (default=FontTextureAsset.defaultCharactersSet): which characters to set in the texture.
+     *                      - extraPadding (default=0,0): Optional extra padding to add around characters in texture.
      * @returns {Promise} Promise to resolve when fully loaded.
      */
     load(params)
@@ -813,6 +814,9 @@ class FontTextureAsset extends Asset
     
             // set smoothing mode
             let smooth = params.smoothFont === undefined ? true : params.smoothFont;
+
+            // set extra margins
+            let extraPadding = params.extraPadding || {x: 0, y: 0};
     
             // set max texture size
             let maxTextureWidth = params.maxTextureWidth || 1024;
@@ -837,8 +841,8 @@ class FontTextureAsset extends Asset
 
             // measure font height
             let fontFullName = this.fontSize.toString() + 'px ' + this.fontName;
-            let fontHeight = measureTextHeight(this.fontName, this.fontSize);
-            let fontWidth = measureTextWidth(this.fontName, this.fontSize);
+            let fontHeight = measureTextHeight(this.fontName, this.fontSize, undefined, extraPadding.y);
+            let fontWidth = measureTextWidth(this.fontName, this.fontSize, undefined, extraPadding.x);
 
             // set line height
             this._lineHeight = fontHeight;
@@ -882,7 +886,7 @@ class FontTextureAsset extends Asset
                 
                 // get actual width of current character
                 let currChar = charsSet[i];
-                let currCharWidth = Math.ceil(ctx.measureText(currChar).width);
+                let currCharWidth = Math.ceil(ctx.measureText(currChar).width + extraPadding.x);
 
                 // check if need to break line down in texture
                 if (x + currCharWidth > textureWidth) {
@@ -978,7 +982,7 @@ function makePowerTwo(val)
 /**
  * Measure font's actual height.
  */
-function measureTextHeight(fontFamily, fontSize, char) 
+function measureTextHeight(fontFamily, fontSize, char, extraHeight) 
 {
     let text = document.createElement('pre');
     text.style.fontFamily = fontFamily;
@@ -987,7 +991,7 @@ function measureTextHeight(fontFamily, fontSize, char)
     text.style.marginBottom = text.style.marginLeft = text.style.marginTop = text.style.marginRight = '0px';
     text.textContent = char || "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 ";
     document.body.appendChild(text);
-    let result = text.getBoundingClientRect().height;
+    let result = text.getBoundingClientRect().height + (extraHeight || 0);
     document.body.removeChild(text);
     return Math.ceil(result);
 };
@@ -995,7 +999,7 @@ function measureTextHeight(fontFamily, fontSize, char)
 /**
  * Measure font's actual width.
  */
-function measureTextWidth(fontFamily, fontSize, char) 
+function measureTextWidth(fontFamily, fontSize, char, extraWidth) 
 {
     // special case to ignore \r and \n when measuring text width
     if (char === '\n' || char === '\r') { return 0; }
@@ -1007,7 +1011,7 @@ function measureTextWidth(fontFamily, fontSize, char)
     let result = 0;
     let text = char || "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 ";
     for (let i = 0; i < text.length; ++i) {
-        result = Math.max(result, context.measureText(text[i]).width);
+        result = Math.max(result, context.measureText(text[i]).width + (extraWidth || 0));
     }
     return Math.ceil(result);
 };
@@ -4853,12 +4857,14 @@ class Gfx extends IManager
      */
     buildText(fontTexture, text, fontSize, color, alignment, offset, marginFactor)
     {
+        // make sure text is a string
+        if (typeof text !== 'string') {
+            text = '' + text;
+        }
+
         // sanity
         if (!fontTexture || !fontTexture.valid) {
             throw new Error("Font texture is invalid!");
-        }
-        if (!text) {
-            throw new Error("Text is invalid!");
         }
 
         // default alignment
@@ -5080,8 +5086,9 @@ class Gfx extends IManager
      * @param {BlendModes} blendMode Blend mode, or undefined to use alpha blend.
      * @param {Number} rotation Rotate sprite.
      * @param {Vector2} origin Drawing origin. This will be the point at 'position' and rotation origin.
+     * @param {Vector2} skew Skew the drawing corners on X and Y axis, around the origin point.
      */
-    draw(texture, position, size, sourceRect, color, blendMode, rotation, origin)
+    draw(texture, position, size, sourceRect, color, blendMode, rotation, origin, skew)
     {
         let sprite = new Sprite(texture, sourceRect);
         sprite.position = position;
@@ -5090,6 +5097,7 @@ class Gfx extends IManager
         if (blendMode) { sprite.blendMode = blendMode; }
         if (rotation !== undefined) { sprite.rotation = rotation; }
         if (origin) { sprite.origin = origin; }
+        if (skew) { sprite.skew = skew; }
         this.drawSprite(sprite);
     }
 
@@ -6678,16 +6686,16 @@ class SpriteBatch
             // apply skew
             if (sprite.skew) {
                 if (sprite.skew.x) {
-                    topLeft.x += sprite.skew.x * sprite.origin.x;
-                    topRight.x += sprite.skew.x * sprite.origin.x;
-                    bottomLeft.x -= sprite.skew.x * (1 - sprite.origin.x);
-                    bottomRight.x -= sprite.skew.x * (1 - sprite.origin.x);
+                    topLeft.x += sprite.skew.x * sprite.origin.y;
+                    topRight.x += sprite.skew.x * sprite.origin.y;
+                    bottomLeft.x -= sprite.skew.x * (1 - sprite.origin.y);
+                    bottomRight.x -= sprite.skew.x * (1 - sprite.origin.y);
                 }
                 if (sprite.skew.y) {
-                    topLeft.y += sprite.skew.y * sprite.origin.y;
-                    bottomLeft.y += sprite.skew.y * sprite.origin.y;
-                    topRight.y -= sprite.skew.y * (1 - sprite.origin.y);
-                    bottomRight.y -= sprite.skew.y * (1 - sprite.origin.y);
+                    topLeft.y += sprite.skew.y * sprite.origin.x;
+                    bottomLeft.y += sprite.skew.y * sprite.origin.x;
+                    topRight.y -= sprite.skew.y * (1 - sprite.origin.x);
+                    bottomRight.y -= sprite.skew.y * (1 - sprite.origin.x);
                 }
             }
 
@@ -11635,6 +11643,28 @@ class Vector2
     };
     
     /**
+     * Get degrees between this vector and another vector.
+     * Return values between 0 to 360.
+     * @param {Vector2} other Other vector.
+     * @returns {Number} Angle between vectors in degrees.
+     */
+    degreesToFull(other) 
+    {
+        return Vector2.degreesBetweenFull(this, other);
+    };
+
+    /**
+     * Get radians between this vector and another vector.
+     * Return values between 0 to PI2.
+     * @param {Vector2} other Other vector.
+     * @returns {Number} Angle between vectors in radians.
+     */
+    radiansToFull(other) 
+    {
+        return Vector2.radiansBetweenFull(this, other);
+    };
+    
+    /**
      * Calculate distance between this vector and another vectors.
      * @param {Vector2} other Other vector.
      * @returns {Number} Distance between vectors.
@@ -11680,6 +11710,7 @@ class Vector2
 
     /**
      * Get degrees between two vectors.
+     * Return values between -180 to 180.
      * @param {Vector2} p1 First vector.
      * @param {Vector2} p2 Second vector.
      * @returns {Number} Angle between vectors in degrees.
@@ -11693,17 +11724,62 @@ class Vector2
 
     /**
      * Get radians between two vectors.
+     * Return values between -PI to PI.
      * @param {Vector2} p1 First vector.
      * @param {Vector2} p2 Second vector.
      * @returns {Number} Angle between vectors in radians.
      */
     static radiansBetween(P1, P2) 
     {
-        let deltaY = P2.y - P1.y,
-        deltaX = P2.x - P1.x;
-        return Math.atan2(deltaY, deltaX);
+        return MathHelper.toRadians(Vector2.degreesBetween(P1, P2));
     };
     
+    /**
+     * Get degrees between two vectors.
+     * Return values between 0 to 360.
+     * @param {Vector2} p1 First vector.
+     * @param {Vector2} p2 Second vector.
+     * @returns {Number} Angle between vectors in degrees.
+     */
+    static degreesBetweenFull(P1, P2) 
+    {
+        let temp = P2.sub(P1);
+        return temp.getDegrees();
+    };
+
+    /**
+     * Get vector's angle in degrees.
+     * @returns {Number} Vector angle in degrees.
+     */
+    getDegrees()
+    {
+        var angle = Math.atan2(this.y, this.x);
+        var degrees = 180 * angle / Math.PI;
+        return (360+Math.round(degrees)) % 360;
+    }
+
+    /**
+     * Get vector's angle in radians.
+     * @returns {Number} Vector angle in degrees.
+     */
+    getRadians()
+    {
+        var angle = Math.atan2(this.y, this.x);
+        return angle;
+    }
+    
+    /**
+     * Get radians between two vectors.
+     * Return values between 0 to PI2.
+     * @param {Vector2} p1 First vector.
+     * @param {Vector2} p2 Second vector.
+     * @returns {Number} Angle between vectors in radians.
+     */
+    static radiansBetweenFull(P1, P2) 
+    {
+        return MathHelper.toRadians(Vector2.degreesBetweenFull(P1, P2));
+    };
+
     /**
      * Calculate distance between two vectors.
      * @param {Vector2} p1 First vector.

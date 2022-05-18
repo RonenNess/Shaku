@@ -1829,6 +1829,10 @@ List of changes in released versions.
 - Reduced texture atlas bleeding with rotation.
 - Added `intermediateProcessor` to collision detection.
 - Added `skew` property to sprites.
+- Added `extraPadding` flag to font texture.
+- Added auto conversion to string in building text.
+- Improved vector2 degrees calculation.
+- Added vectors example.
 
 # License
 
