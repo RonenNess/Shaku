@@ -1428,11 +1428,6 @@ class TextureAsset extends Asset
             gl.texImage2D(gl.TEXTURE_2D, level, internalFormat,
                             targetTextureWidth, targetTextureHeight, border,
                             format, type, data);
-            
-            // set default wrap and filter modes
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
         }
 
         // store texture
@@ -1487,11 +1482,6 @@ class TextureAsset extends Asset
             } 
             gl.generateMipmap(gl.TEXTURE_2D);
         }
-
-        // default wrap and filters
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
 
         // success!
         this._texture = texture;
@@ -3774,8 +3764,6 @@ class Effect
                         _this._gl.activeTexture(textureCode);
                         _this._gl.bindTexture(_this._gl.TEXTURE_2D, glTexture);
                         _this._gl.uniform1i(location, (index || 0));
-                        if (texture.filter) { _setTextureFilter(_this._gl, texture.filter); }
-                        if (texture.wrapMode) { _setTextureWrapMode(_this._gl, texture.wrapMode); }
                     }
                 })(this, uniform, uniformLocation, uniformData.type);
             }
@@ -3890,24 +3878,6 @@ class Effect
     }
 
     /**
-     * Prepare effect before drawing it.
-     * @param {Mesh} mesh Mesh we're about to draw.
-     * @param {Color} color Optional color to set as the color uniform.
-     * @param {Matrix} world World matrix.
-     * @param {Rectangle} sourceRect Optional source rectangle.
-     * @param {TextureAsset} texture Texture asset.
-     */
-    prepareToDraw(mesh, color, world, sourceRect, texture)
-    {
-        this.setPositionsAttribute(mesh.positions);
-        this.setTextureCoordsAttribute(mesh.textureCoords);
-        this.setColorsAttribute(mesh.colors);
-        this.setColor(color || Color.white);
-        this.setWorldMatrix(world);
-        this.setUvOffsetAndScale(sourceRect, texture);
-    }
-
-    /**
      * Prepare effect before drawing it with batching.
      * @param {Mesh} mesh Mesh we're about to draw.
      * @param {Matrix} world World matrix.
@@ -3919,28 +3889,6 @@ class Effect
         this.setTextureCoordsAttribute(mesh.textureCoords);
         this.setColorsAttribute(mesh.colors);
         this.setWorldMatrix(world);
-        this.resetUvOffsetAndScale();
-    }
-
-    /**
-     * Reset UV offset and scale uniforms.
-     */
-    resetUvOffsetAndScale()
-    {
-        // set uv offset
-        let uvOffset = this._uniformBinds[Effect.UniformBinds.UvOffset];
-        if (uvOffset) {
-            this.uniforms[uvOffset](0, 0);
-        }
-        
-        // set uv scale
-        let uvScale = this._uniformBinds[Effect.UniformBinds.UvScale];
-        if (uvScale) {
-            this.uniforms[uvScale](1, 1);
-        }
-
-        // reset source rect in cached values
-        this._cachedValues.sourceRect = null;
     }
 
     /**
@@ -4009,6 +3957,8 @@ class Effect
             this._gl.activeTexture(this._gl.TEXTURE0);
             this._gl.bindTexture(this._gl.TEXTURE_2D, glTexture);
             this.uniforms[uniform](glTexture, 0);
+            if (texture.filter) { _setTextureFilter(this._gl, texture.filter); }
+            if (texture.wrapMode) { _setTextureWrapMode(this._gl, texture.wrapMode); }
             return true;
         }
         return false;
@@ -4233,7 +4183,7 @@ Object.freeze(Effect.AttributeBinds);
  */
 function _setTextureFilter(gl, filter)
 {
-    if (!TextureFilterModeslterModes._values.has(filter)) { throw new Error("Invalid texture filter mode! Please pick a value from 'TextureFilterModes'."); }
+    if (!TextureFilterModes._values.has(filter)) { throw new Error("Invalid texture filter mode! Please pick a value from 'TextureFilterModes'."); }
     let glMode = gl[filter];
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, glMode);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, glMode);
@@ -6560,6 +6510,11 @@ class SpriteBatch
         this._uvsBuff = gfx._dynamicBuffers.textureCoordBuffer;
         this._colorsBuff = gfx._dynamicBuffers.colorsBuffer;
         this._indexBuff = gfx._dynamicBuffers.indexBuffer;
+
+        /** 
+         * If true, will floor vertices positions before pushing them to batch.
+         */
+        this.snapPixels = true;
     }
 
     /**
@@ -6705,8 +6660,8 @@ class SpriteBatch
                 let sin = Math.sin(sprite.rotation);
                 function rotateVec(vector)
                 {
-                    let x = Math.floor(vector.x * cos - vector.y * sin);
-                    let y = Math.floor(vector.x * sin + vector.y * cos);
+                    let x = (vector.x * cos - vector.y * sin);
+                    let y = (vector.x * sin + vector.y * cos);
                     vector.set(x, y);
                 }
                 rotateVec(topLeft);
@@ -6720,6 +6675,15 @@ class SpriteBatch
             topRight.addSelf(sprite.position);
             bottomLeft.addSelf(sprite.position);
             bottomRight.addSelf(sprite.position);
+
+            // snap pixels
+            if (this.snapPixels)
+            {
+                topLeft.floorSelf();
+                topRight.floorSelf();
+                bottomLeft.floorSelf();
+                bottomRight.floorSelf();
+            }
 
             // optional z position
             let z = sprite.position.z || 0;
@@ -6744,10 +6708,8 @@ class SpriteBatch
             // add uvs
             let uvi = this._currBatchCount * 4 * 2;
             if (sprite.sourceRect) {
-                const marginX = 0.25 / this._currTexture.width;
-                const marginY = 0.25 / this._currTexture.height;
-                const uvTl = {x: sprite.sourceRect.x / this._currTexture.width + marginX, y: sprite.sourceRect.y / this._currTexture.height + marginY};
-                const uvBr = {x: uvTl.x + sprite.sourceRect.width / this._currTexture.width - marginX * 2, y: uvTl.y + sprite.sourceRect.height / this._currTexture.height - marginY * 2};
+                const uvTl = {x: sprite.sourceRect.x / this._currTexture.width, y: sprite.sourceRect.y / this._currTexture.height};
+                const uvBr = {x: uvTl.x + (sprite.sourceRect.width / this._currTexture.width), y: uvTl.y + (sprite.sourceRect.height / this._currTexture.height)};
                 uvs[uvi+0] = uvTl.x;  uvs[uvi+1] = uvTl.y;
                 uvs[uvi+2] = uvBr.x;  uvs[uvi+3] = uvTl.y;
                 uvs[uvi+4] = uvTl.x;  uvs[uvi+5] = uvBr.y;
@@ -8863,15 +8825,52 @@ class Shaku
      */
     constructor()
     {
-        // export utils
+        /**
+         * Different utilities and framework objects, like vectors, rectangles, colors, etc.
+         */
         this.utils = utils;
 
-        // provide access to all managers
+        /**
+         * Sound effects and music manager.
+         */
         this.sfx = sfx;
+
+        /**
+         * Graphics manager.
+         */
         this.gfx = gfx;
+
+        /**
+         * Input manager.
+         */
         this.input = input;
+
+        /**
+         * Assets manager.
+         */
         this.assets = assets;
+
+        /**
+         * Collision detection manager.
+         */
         this.collision = collision;
+
+        /**
+         * If true, will pause the updates and drawing calls when window is not focused.
+         * Will also not update elapsed time.
+         */
+        this.pauseWhenNotFocused = false;
+
+        /**
+         * Set to true to completely pause Shaku (will skip updates, drawing, and time counting).
+         */
+        this.paused = false;
+
+        // are managers currently in 'started' mode?
+        this._managersStarted = false;
+
+        // were we previously paused?
+        this._wasPaused = false;
     }
 
     /**
@@ -8888,7 +8887,7 @@ class Shaku
             _logger.info(`Initialize Shaku v${version}.`);
             
             // reset game start time
-            GameTime.resetGameStartTime();
+            GameTime.reset();
 
             // setup used managers
             _usedManagers = managers || (isBrowser ? [assets, sfx, gfx, input, collision] : [assets, collision]);
@@ -8921,15 +8920,38 @@ class Shaku
     }
 
     /**
+     * Get if the Shaku is currently paused.
+     */
+    get isPaused()
+    {
+        return this.paused || (this.pauseWhenNotFocused && !document.hasFocus());
+    }
+
+    /**
      * Start frame (update all managers).
      */
     startFrame()
     {
+        // if paused, skip
+        if (this.isPaused) { 
+            this._wasPaused = true;
+            return; 
+        }
+
+        // returning from pause
+        if (this._wasPaused) {
+            this._wasPaused = false;
+            GameTime.resetDelta();
+        }
+
+        // update times
+        GameTime.update();
+
         // get frame start time
         _startFrameTime = GameTime.rawTimestamp();
 
         // create new gameTime object
-        this._gameTime = new GameTime(_prevUpdateTime);
+        this._gameTime = new GameTime();
 
         // update animators
         utils.Animator.updateAutos(this._gameTime.delta);
@@ -8938,6 +8960,7 @@ class Shaku
         for (let i = 0; i < _usedManagers.length; ++i) {
             _usedManagers[i].startFrame();
         }
+        this._managersStarted = true;
     }
 
     /**
@@ -8946,9 +8969,15 @@ class Shaku
     endFrame()
     {
         // update managers
-        for (let i = 0; i < _usedManagers.length; ++i) {
-            _usedManagers[i].endFrame();
+        if (this._managersStarted) {
+            for (let i = 0; i < _usedManagers.length; ++i) {
+                _usedManagers[i].endFrame();
+            }
+            this._managersStarted = false;
         }
+
+        // if paused, skip
+        if (this.isPaused) { return; }
 
         // store previous gameTime object
         _prevUpdateTime = this._gameTime;
@@ -9931,35 +9960,31 @@ class GameTime
 {
     /**
      * create the gametime object with current time.
-     * @param {GameTime} prevTime The gameTime from previous call, required to calculate delta time from last frame.
      */
-    constructor(prevTime)
+    constructor()
     {
-        // get current timestamp
-        this.timestamp = getAccurateTimestampMs() - _startTime;
-        
         /**
-         * Elapsed time details in milliseconds and seconds.
+         * Current timestamp
          */
-        this.elapsedTime = {
-            milliseconds: this.timestamp - _startGameTime,
-            seconds: (this.timestamp - _startGameTime) / 1000.0
+        this.timestamp = _currElapsed;
+
+        /**
+         * Delta time struct.
+         * Contains: milliseconds, seconds.
+         */
+        this.deltaTime = {
+            milliseconds: _currDelta,
+            seconds: _currDelta / 1000.0,
         };
 
-        // calculate delta times
-        if (prevTime) {
-
-            /**
-             * Delta time details in milliseconds and seconds.
-             */
-            this.deltaTime = {
-                milliseconds: this.timestamp - prevTime.timestamp,
-                seconds: (this.timestamp - prevTime.timestamp) / 1000.0,
-            };
-        }
-        else {
-            this.deltaTime = null;
-        }
+        /**
+         * Elapsed time struct.
+         * Contains: milliseconds, seconds.
+         */
+        this.elapsedTime = {
+            milliseconds: _currElapsed,
+            seconds: _currElapsed / 1000.0
+        };
 
         /**
          * Delta time, in seconds, since last frame.
@@ -9974,6 +9999,56 @@ class GameTime
         // freeze object
         Object.freeze(this);
     }
+
+    /**
+     * Update game time.
+     */
+    static update()
+    {
+        // get current time
+        let curr = getAccurateTimestampMs();
+
+        // calculate delta time
+        let delta = 0;
+        if (_prevTime) {
+            delta = curr - _prevTime;
+        }
+
+        // update previous time
+        _prevTime = curr;
+
+        // update delta and elapsed
+        _currDelta = delta;
+        _currElapsed += delta;
+    }
+
+    /**
+     * Get raw timestamp in milliseconds.
+     * @returns {Number} raw timestamp in milliseconds.
+     */
+    static rawTimestamp()
+    {
+        return getAccurateTimestampMs();
+    }
+
+    /**
+     * Reset elapsed and delta time.
+     */
+    static reset()
+    {
+        _prevTime = null;
+        _currDelta = 0;
+        _currElapsed = 0;
+    }
+
+    /**
+     * Reset current frame's delta time.
+     */ 
+    static resetDelta()
+    {
+        _prevTime = null;
+        _currDelta = 0;
+    }
 }
 
 // do we have the performance.now method?
@@ -9987,19 +10062,12 @@ function getAccurateTimestampMs() {
     return Date.now();
 }
 
-// start time (from the moment this file was first included).
-const _startTime = getAccurateTimestampMs();
+// previous time (to calculate delta).
+var _prevTime = null;
 
-// actually start game time (from the moment the game main loop started).
-var _startGameTime = getAccurateTimestampMs();
-
-// reset the time that represent the start of the game main loop.
-GameTime.resetGameStartTime = () => {
-    _startGameTime = getAccurateTimestampMs();
-}
-
-// export the method to get raw timestamp in milliseconds.
-GameTime.rawTimestamp = getAccurateTimestampMs;
+// current delta and elapsed
+var _currDelta = 0;
+var _currElapsed = 0;
 
 // export the GameTime class.
 module.exports = GameTime;

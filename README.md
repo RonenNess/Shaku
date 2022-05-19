@@ -1826,13 +1826,17 @@ List of changes in released versions.
 
 ## 1.5.2 [WIP]
 
-- Reduced texture atlas bleeding with rotation.
+- Reduced texture atlas bleeding.
 - Added `intermediateProcessor` to collision detection.
 - Added `skew` property to sprites.
 - Added `extraPadding` flag to font texture.
 - Added auto conversion to string in building text.
 - Improved vector2 degrees calculation.
 - Added vectors example.
+- Added support in full engine pause + auto pausing on lost focus.
+- Improved the internal works of the GameTime object.
+- Fixed bug in texture wrap and filters not applying properly.
+- Removed some dead code.
 
 # License
 
