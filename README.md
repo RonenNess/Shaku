@@ -176,6 +176,7 @@ Since the initialization process and asset loading is mostly asynchronous operat
 (async function runGame()
 {
     // init shaku
+    Shaku.gfx.setContextAttributes({antialias: false}); // <-- for pixel art best to add this.
     await Shaku.init();
 
     // add shaku's canvas to document and set resolution to 800x600
