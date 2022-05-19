@@ -12,32 +12,42 @@ Class to hold current game time (elapse and deltatime).
 **Kind**: global class  
 
 * [GameTime](#GameTime)
-    * [new GameTime(prevTime)](#new_GameTime_new)
-    * [.elapsedTime](#GameTime+elapsedTime)
-    * [.deltaTime](#GameTime+deltaTime)
-    * [.delta](#GameTime+delta)
-    * [.elapsed](#GameTime+elapsed)
+    * [new GameTime()](#new_GameTime_new)
+    * _instance_
+        * [.timestamp](#GameTime+timestamp)
+        * [.deltaTime](#GameTime+deltaTime)
+        * [.elapsedTime](#GameTime+elapsedTime)
+        * [.delta](#GameTime+delta)
+        * [.elapsed](#GameTime+elapsed)
+    * _static_
+        * [.update()](#GameTime.update)
+        * [.rawTimestamp()](#GameTime.rawTimestamp) ⇒ <code>Number</code>
+        * [.reset()](#GameTime.reset)
+        * [.resetDelta()](#GameTime.resetDelta)
 
 <a name="new_GameTime_new"></a>
 
-### new GameTime(prevTime)
+### new GameTime()
 create the gametime object with current time.
 
+<a name="GameTime+timestamp"></a>
 
-| Param | Type | Description |
-| --- | --- | --- |
-| prevTime | [<code>GameTime</code>](#GameTime) | The gameTime from previous call, required to calculate delta time from last frame. |
-
-<a name="GameTime+elapsedTime"></a>
-
-### gameTime.elapsedTime
-Elapsed time details in milliseconds and seconds.
+### gameTime.timestamp
+Current timestamp
 
 **Kind**: instance property of [<code>GameTime</code>](#GameTime)  
 <a name="GameTime+deltaTime"></a>
 
 ### gameTime.deltaTime
-Delta time details in milliseconds and seconds.
+Delta time struct.
+Contains: milliseconds, seconds.
+
+**Kind**: instance property of [<code>GameTime</code>](#GameTime)  
+<a name="GameTime+elapsedTime"></a>
+
+### gameTime.elapsedTime
+Elapsed time struct.
+Contains: milliseconds, seconds.
 
 **Kind**: instance property of [<code>GameTime</code>](#GameTime)  
 <a name="GameTime+delta"></a>
@@ -52,3 +62,28 @@ Delta time, in seconds, since last frame.
 Total time, in seconds, since Shaku was initialized.
 
 **Kind**: instance property of [<code>GameTime</code>](#GameTime)  
+<a name="GameTime.update"></a>
+
+### GameTime.update()
+Update game time.
+
+**Kind**: static method of [<code>GameTime</code>](#GameTime)  
+<a name="GameTime.rawTimestamp"></a>
+
+### GameTime.rawTimestamp() ⇒ <code>Number</code>
+Get raw timestamp in milliseconds.
+
+**Kind**: static method of [<code>GameTime</code>](#GameTime)  
+**Returns**: <code>Number</code> - raw timestamp in milliseconds.  
+<a name="GameTime.reset"></a>
+
+### GameTime.reset()
+Reset elapsed and delta time.
+
+**Kind**: static method of [<code>GameTime</code>](#GameTime)  
+<a name="GameTime.resetDelta"></a>
+
+### GameTime.resetDelta()
+Reset current frame's delta time.
+
+**Kind**: static method of [<code>GameTime</code>](#GameTime)  

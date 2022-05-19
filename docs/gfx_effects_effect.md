@@ -47,9 +47,7 @@ An effect = vertex shader + fragment shader + uniforms & attributes + setup code
     * [.enableStencilTest](#Effect+enableStencilTest)
     * [.enableDithering](#Effect+enableDithering)
     * [.setAsActive()](#Effect+setAsActive)
-    * [.prepareToDraw(mesh, color, world, sourceRect, texture)](#Effect+prepareToDraw)
     * [.prepareToDrawBatch(mesh, world)](#Effect+prepareToDrawBatch)
-    * [.resetUvOffsetAndScale()](#Effect+resetUvOffsetAndScale)
     * [.setTexture(texture)](#Effect+setTexture) ⇒ <code>Boolean</code>
     * [.setColor(color)](#Effect+setColor)
     * [.setUvOffsetAndScale(sourceRect, texture)](#Effect+setUvOffsetAndScale)
@@ -131,21 +129,6 @@ Should this effect enable dithering?
 Make this effect active.
 
 **Kind**: instance method of [<code>Effect</code>](#Effect)  
-<a name="Effect+prepareToDraw"></a>
-
-### effect.prepareToDraw(mesh, color, world, sourceRect, texture)
-Prepare effect before drawing it.
-
-**Kind**: instance method of [<code>Effect</code>](#Effect)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| mesh | <code>Mesh</code> | Mesh we're about to draw. |
-| color | <code>Color</code> | Optional color to set as the color uniform. |
-| world | <code>Matrix</code> | World matrix. |
-| sourceRect | <code>Rectangle</code> | Optional source rectangle. |
-| texture | <code>TextureAsset</code> | Texture asset. |
-
 <a name="Effect+prepareToDrawBatch"></a>
 
 ### effect.prepareToDrawBatch(mesh, world)
@@ -158,12 +141,6 @@ Prepare effect before drawing it with batching.
 | mesh | <code>Mesh</code> | Mesh we're about to draw. |
 | world | <code>Matrix</code> | World matrix. |
 
-<a name="Effect+resetUvOffsetAndScale"></a>
-
-### effect.resetUvOffsetAndScale()
-Reset UV offset and scale uniforms.
-
-**Kind**: instance method of [<code>Effect</code>](#Effect)  
 <a name="Effect+setTexture"></a>
 
 ### effect.setTexture(texture) ⇒ <code>Boolean</code>

@@ -665,7 +665,7 @@ Generate the font texture from a font found in given URL.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| params | <code>\*</code> | Additional params. Possible values are:                      - fontName: mandatory font name. on some browsers if the font name does not match the font you actually load via the URL, it will not be loaded properly.                      - missingCharPlaceholder (default='?'): character to use for missing characters.                      - smoothFont (default=true): if true, will set font to smooth mode.                      - fontSize (default=52): font size in texture. larget font size will take more memory, but allow for sharper text rendering in larger scales.                      - enforceTexturePowerOfTwo (default=true): if true, will force texture size to be power of two.                      - maxTextureWidth (default=1024): max texture width.                      - charactersSet (default=FontTextureAsset.defaultCharactersSet): which characters to set in the texture. |
+| params | <code>\*</code> | Additional params. Possible values are:                      - fontName: mandatory font name. on some browsers if the font name does not match the font you actually load via the URL, it will not be loaded properly.                      - missingCharPlaceholder (default='?'): character to use for missing characters.                      - smoothFont (default=true): if true, will set font to smooth mode.                      - fontSize (default=52): font size in texture. larget font size will take more memory, but allow for sharper text rendering in larger scales.                      - enforceTexturePowerOfTwo (default=true): if true, will force texture size to be power of two.                      - maxTextureWidth (default=1024): max texture width.                      - charactersSet (default=FontTextureAsset.defaultCharactersSet): which characters to set in the texture.                      - extraPadding (default=0,0): Optional extra padding to add around characters in texture. |
 
 <a name="FontTextureAsset+getSourceRect"></a>
 
@@ -1023,7 +1023,7 @@ You can use different collision worlds to represent different levels or differen
     * [.addShape(shape)](#CollisionWorld+addShape)
     * [.removeShape(shape)](#CollisionWorld+removeShape)
     * [.testCollision(sourceShape, sortByDistance, mask, predicate)](#CollisionWorld+testCollision) ⇒ [<code>CollisionTestResult</code>](#CollisionTestResult)
-    * [.testCollisionMany(sourceShape, sortByDistance, mask, predicate)](#CollisionWorld+testCollisionMany) ⇒ [<code>Array.&lt;CollisionTestResult&gt;</code>](#CollisionTestResult)
+    * [.testCollisionMany(sourceShape, sortByDistance, mask, predicate, intermediateProcessor)](#CollisionWorld+testCollisionMany) ⇒ [<code>Array.&lt;CollisionTestResult&gt;</code>](#CollisionTestResult)
     * [.pick(position, radius, sortByDistance, mask, predicate)](#CollisionWorld+pick) ⇒ [<code>Array.&lt;CollisionShape&gt;</code>](#CollisionShape)
     * [.debugDraw(gridColor, gridHighlitColor, opacity, camera)](#CollisionWorld+debugDraw)
 
@@ -1095,7 +1095,7 @@ Test collision with shapes in world, and return just the first result found.
 
 <a name="CollisionWorld+testCollisionMany"></a>
 
-### collisionWorld.testCollisionMany(sourceShape, sortByDistance, mask, predicate) ⇒ [<code>Array.&lt;CollisionTestResult&gt;</code>](#CollisionTestResult)
+### collisionWorld.testCollisionMany(sourceShape, sortByDistance, mask, predicate, intermediateProcessor) ⇒ [<code>Array.&lt;CollisionTestResult&gt;</code>](#CollisionTestResult)
 Test collision with shapes in world, and return all results found.
 
 **Kind**: instance method of [<code>CollisionWorld</code>](#CollisionWorld)  
@@ -1107,6 +1107,7 @@ Test collision with shapes in world, and return all results found.
 | sortByDistance | <code>Boolean</code> | If true will sort results by distance. |
 | mask | <code>Number</code> | Optional mask of bits to match against shapes collisionFlags. Will only return shapes that have at least one common bit. |
 | predicate | <code>function</code> | Optional filter to run on any shape we're about to test collision with. If the predicate returns false, we will skip this shape. |
+| intermediateProcessor | <code>function</code> | Optional method to run after each positive result with the collision result as param. Return false to stop and return results. |
 
 <a name="CollisionWorld+pick"></a>
 
@@ -1792,9 +1793,7 @@ An effect = vertex shader + fragment shader + uniforms & attributes + setup code
     * [.enableStencilTest](#Effect+enableStencilTest)
     * [.enableDithering](#Effect+enableDithering)
     * [.setAsActive()](#Effect+setAsActive)
-    * [.prepareToDraw(mesh, color, world, sourceRect, texture)](#Effect+prepareToDraw)
     * [.prepareToDrawBatch(mesh, world)](#Effect+prepareToDrawBatch)
-    * [.resetUvOffsetAndScale()](#Effect+resetUvOffsetAndScale)
     * [.setTexture(texture)](#Effect+setTexture) ⇒ <code>Boolean</code>
     * [.setColor(color)](#Effect+setColor)
     * [.setUvOffsetAndScale(sourceRect, texture)](#Effect+setUvOffsetAndScale)
@@ -1876,21 +1875,6 @@ Should this effect enable dithering?
 Make this effect active.
 
 **Kind**: instance method of [<code>Effect</code>](#Effect)  
-<a name="Effect+prepareToDraw"></a>
-
-### effect.prepareToDraw(mesh, color, world, sourceRect, texture)
-Prepare effect before drawing it.
-
-**Kind**: instance method of [<code>Effect</code>](#Effect)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| mesh | [<code>Mesh</code>](#Mesh) | Mesh we're about to draw. |
-| color | [<code>Color</code>](#Color) | Optional color to set as the color uniform. |
-| world | [<code>Matrix</code>](#Matrix) | World matrix. |
-| sourceRect | [<code>Rectangle</code>](#Rectangle) | Optional source rectangle. |
-| texture | [<code>TextureAsset</code>](#TextureAsset) | Texture asset. |
-
 <a name="Effect+prepareToDrawBatch"></a>
 
 ### effect.prepareToDrawBatch(mesh, world)
@@ -1903,12 +1887,6 @@ Prepare effect before drawing it with batching.
 | mesh | [<code>Mesh</code>](#Mesh) | Mesh we're about to draw. |
 | world | [<code>Matrix</code>](#Matrix) | World matrix. |
 
-<a name="Effect+resetUvOffsetAndScale"></a>
-
-### effect.resetUvOffsetAndScale()
-Reset UV offset and scale uniforms.
-
-**Kind**: instance method of [<code>Effect</code>](#Effect)  
 <a name="Effect+setTexture"></a>
 
 ### effect.setTexture(texture) ⇒ <code>Boolean</code>
@@ -2045,7 +2023,7 @@ To access the Graphics manager you use `Shaku.gfx`.
     * [.drawGroup(group, cullOutOfScreen)](#Gfx+drawGroup)
     * [.drawSprite(sprite)](#Gfx+drawSprite)
     * [.cover(texture, destRect, sourceRect, color, blendMode)](#Gfx+cover)
-    * [.draw(texture, position, size, sourceRect, color, blendMode, rotation, origin)](#Gfx+draw)
+    * [.draw(texture, position, size, sourceRect, color, blendMode, rotation, origin, skew)](#Gfx+draw)
     * [.fillRect(destRect, color, blend, rotation)](#Gfx+fillRect)
     * [.fillRects(destRects, colors, blend, rotation)](#Gfx+fillRects)
     * [.outlineRect(destRect, color, blend, rotation)](#Gfx+outlineRect)
@@ -2495,7 +2473,7 @@ Shaku.gfx.draw(texture, position, size, sourceRect, color, blendMode, rotation, 
 ```
 <a name="Gfx+draw"></a>
 
-### gfx.draw(texture, position, size, sourceRect, color, blendMode, rotation, origin)
+### gfx.draw(texture, position, size, sourceRect, color, blendMode, rotation, origin, skew)
 Draw a texture.
 
 **Kind**: instance method of [<code>Gfx</code>](#Gfx)  
@@ -2510,6 +2488,7 @@ Draw a texture.
 | blendMode | <code>BlendModes</code> | Blend mode, or undefined to use alpha blend. |
 | rotation | <code>Number</code> | Rotate sprite. |
 | origin | [<code>Vector2</code>](#Vector2) | Drawing origin. This will be the point at 'position' and rotation origin. |
+| skew | [<code>Vector2</code>](#Vector2) | Skew the drawing corners on X and Y axis, around the origin point. |
 
 **Example**  
 ```js
@@ -2990,6 +2969,7 @@ This object is a helper class to hold all the properties of a texture to render.
     * [.blendMode](#Sprite+blendMode) : <code>BlendModes</code>
     * [.rotation](#Sprite+rotation) : <code>Number</code>
     * [.origin](#Sprite+origin) : [<code>Vector2</code>](#Vector2)
+    * [.skew](#Sprite+skew) : [<code>Vector2</code>](#Vector2)
     * [.color](#Sprite+color) : [<code>Color</code>](#Color) \| [<code>Array.&lt;Color&gt;</code>](#Color)
     * [.flipX](#Sprite+flipX) ⇒ <code>Boolean</code>
     * [.flipX](#Sprite+flipX)
@@ -3051,6 +3031,12 @@ Sprite rotation in radians.
 
 ### sprite.origin : [<code>Vector2</code>](#Vector2)
 Sprite origin point.
+
+**Kind**: instance property of [<code>Sprite</code>](#Sprite)  
+<a name="Sprite+skew"></a>
+
+### sprite.skew : [<code>Vector2</code>](#Vector2)
+Skew the sprite corners on X and Y axis, around the origin point.
 
 **Kind**: instance property of [<code>Sprite</code>](#Sprite)  
 <a name="Sprite+color"></a>
@@ -3116,6 +3102,7 @@ Sprite batch renderer, responsible on drawing a batch of sprites with as little 
 
 * [SpriteBatch](#SpriteBatch)
     * [new SpriteBatch(gfx)](#new_SpriteBatch_new)
+    * [.snapPixels](#SpriteBatch+snapPixels)
     * [.drawing](#SpriteBatch+drawing) ⇒ <code>Boolean</code>
     * [.batchSpritesCount](#SpriteBatch+batchSpritesCount)
     * [.vertex(position, textureCoord, color)](#SpriteBatch+vertex) ⇒ [<code>Vertex</code>](#Vertex)
@@ -3135,6 +3122,12 @@ Create the spritebatch.
 | --- | --- | --- |
 | gfx | [<code>Gfx</code>](#Gfx) | Gfx manager. |
 
+<a name="SpriteBatch+snapPixels"></a>
+
+### spriteBatch.snapPixels
+If true, will floor vertices positions before pushing them to batch.
+
+**Kind**: instance property of [<code>SpriteBatch</code>](#SpriteBatch)  
 <a name="SpriteBatch+drawing"></a>
 
 ### spriteBatch.drawing ⇒ <code>Boolean</code>
@@ -4108,6 +4101,15 @@ This object wraps the entire lib namespace, and this is what you use to access a
 
 * [Shaku](#Shaku)
     * [new Shaku()](#new_Shaku_new)
+    * [.utils](#Shaku+utils)
+    * [.sfx](#Shaku+sfx)
+    * [.gfx](#Shaku+gfx)
+    * [.input](#Shaku+input)
+    * [.assets](#Shaku+assets)
+    * [.collision](#Shaku+collision)
+    * [.pauseWhenNotFocused](#Shaku+pauseWhenNotFocused)
+    * [.paused](#Shaku+paused)
+    * [.isPaused](#Shaku+isPaused)
     * [.gameTime](#Shaku+gameTime) ⇒ [<code>GameTime</code>](#GameTime)
     * [.version](#Shaku+version) ⇒ <code>String</code>
     * [.init(managers)](#Shaku+init) ⇒ <code>Promise</code>
@@ -4127,6 +4129,61 @@ This object wraps the entire lib namespace, and this is what you use to access a
 ### new Shaku()
 Create the Shaku main object.
 
+<a name="Shaku+utils"></a>
+
+### shaku.utils
+Different utilities and framework objects, like vectors, rectangles, colors, etc.
+
+**Kind**: instance property of [<code>Shaku</code>](#Shaku)  
+<a name="Shaku+sfx"></a>
+
+### shaku.sfx
+Sound effects and music manager.
+
+**Kind**: instance property of [<code>Shaku</code>](#Shaku)  
+<a name="Shaku+gfx"></a>
+
+### shaku.gfx
+Graphics manager.
+
+**Kind**: instance property of [<code>Shaku</code>](#Shaku)  
+<a name="Shaku+input"></a>
+
+### shaku.input
+Input manager.
+
+**Kind**: instance property of [<code>Shaku</code>](#Shaku)  
+<a name="Shaku+assets"></a>
+
+### shaku.assets
+Assets manager.
+
+**Kind**: instance property of [<code>Shaku</code>](#Shaku)  
+<a name="Shaku+collision"></a>
+
+### shaku.collision
+Collision detection manager.
+
+**Kind**: instance property of [<code>Shaku</code>](#Shaku)  
+<a name="Shaku+pauseWhenNotFocused"></a>
+
+### shaku.pauseWhenNotFocused
+If true, will pause the updates and drawing calls when window is not focused.
+Will also not update elapsed time.
+
+**Kind**: instance property of [<code>Shaku</code>](#Shaku)  
+<a name="Shaku+paused"></a>
+
+### shaku.paused
+Set to true to completely pause Shaku (will skip updates, drawing, and time counting).
+
+**Kind**: instance property of [<code>Shaku</code>](#Shaku)  
+<a name="Shaku+isPaused"></a>
+
+### shaku.isPaused
+Get if the Shaku is currently paused.
+
+**Kind**: instance property of [<code>Shaku</code>](#Shaku)  
 <a name="Shaku+gameTime"></a>
 
 ### shaku.gameTime ⇒ [<code>GameTime</code>](#GameTime)
@@ -4770,32 +4827,42 @@ Class to hold current game time (elapse and deltatime).
 **Kind**: global class  
 
 * [GameTime](#GameTime)
-    * [new GameTime(prevTime)](#new_GameTime_new)
-    * [.elapsedTime](#GameTime+elapsedTime)
-    * [.deltaTime](#GameTime+deltaTime)
-    * [.delta](#GameTime+delta)
-    * [.elapsed](#GameTime+elapsed)
+    * [new GameTime()](#new_GameTime_new)
+    * _instance_
+        * [.timestamp](#GameTime+timestamp)
+        * [.deltaTime](#GameTime+deltaTime)
+        * [.elapsedTime](#GameTime+elapsedTime)
+        * [.delta](#GameTime+delta)
+        * [.elapsed](#GameTime+elapsed)
+    * _static_
+        * [.update()](#GameTime.update)
+        * [.rawTimestamp()](#GameTime.rawTimestamp) ⇒ <code>Number</code>
+        * [.reset()](#GameTime.reset)
+        * [.resetDelta()](#GameTime.resetDelta)
 
 <a name="new_GameTime_new"></a>
 
-### new GameTime(prevTime)
+### new GameTime()
 create the gametime object with current time.
 
+<a name="GameTime+timestamp"></a>
 
-| Param | Type | Description |
-| --- | --- | --- |
-| prevTime | [<code>GameTime</code>](#GameTime) | The gameTime from previous call, required to calculate delta time from last frame. |
-
-<a name="GameTime+elapsedTime"></a>
-
-### gameTime.elapsedTime
-Elapsed time details in milliseconds and seconds.
+### gameTime.timestamp
+Current timestamp
 
 **Kind**: instance property of [<code>GameTime</code>](#GameTime)  
 <a name="GameTime+deltaTime"></a>
 
 ### gameTime.deltaTime
-Delta time details in milliseconds and seconds.
+Delta time struct.
+Contains: milliseconds, seconds.
+
+**Kind**: instance property of [<code>GameTime</code>](#GameTime)  
+<a name="GameTime+elapsedTime"></a>
+
+### gameTime.elapsedTime
+Elapsed time struct.
+Contains: milliseconds, seconds.
 
 **Kind**: instance property of [<code>GameTime</code>](#GameTime)  
 <a name="GameTime+delta"></a>
@@ -4810,6 +4877,31 @@ Delta time, in seconds, since last frame.
 Total time, in seconds, since Shaku was initialized.
 
 **Kind**: instance property of [<code>GameTime</code>](#GameTime)  
+<a name="GameTime.update"></a>
+
+### GameTime.update()
+Update game time.
+
+**Kind**: static method of [<code>GameTime</code>](#GameTime)  
+<a name="GameTime.rawTimestamp"></a>
+
+### GameTime.rawTimestamp() ⇒ <code>Number</code>
+Get raw timestamp in milliseconds.
+
+**Kind**: static method of [<code>GameTime</code>](#GameTime)  
+**Returns**: <code>Number</code> - raw timestamp in milliseconds.  
+<a name="GameTime.reset"></a>
+
+### GameTime.reset()
+Reset elapsed and delta time.
+
+**Kind**: static method of [<code>GameTime</code>](#GameTime)  
+<a name="GameTime.resetDelta"></a>
+
+### GameTime.resetDelta()
+Reset current frame's delta time.
+
+**Kind**: static method of [<code>GameTime</code>](#GameTime)  
 <a name="Line"></a>
 
 ## Line
@@ -5509,7 +5601,11 @@ A simple Vector object for 2d positions.
         * [.scaled()](#Vector2+scaled) ⇒ [<code>Vector2</code>](#Vector2)
         * [.degreesTo(other)](#Vector2+degreesTo) ⇒ <code>Number</code>
         * [.radiansTo(other)](#Vector2+radiansTo) ⇒ <code>Number</code>
+        * [.degreesToFull(other)](#Vector2+degreesToFull) ⇒ <code>Number</code>
+        * [.radiansToFull(other)](#Vector2+radiansToFull) ⇒ <code>Number</code>
         * [.distanceTo(other)](#Vector2+distanceTo) ⇒ <code>Number</code>
+        * [.getDegrees()](#Vector2+getDegrees) ⇒ <code>Number</code>
+        * [.getRadians()](#Vector2+getRadians) ⇒ <code>Number</code>
         * [.string()](#Vector2+string)
         * [.toArray()](#Vector2+toArray) ⇒ <code>Array.&lt;Number&gt;</code>
     * _static_
@@ -5525,6 +5621,8 @@ A simple Vector object for 2d positions.
         * [.lerp(p1, p2, a)](#Vector2.lerp) ⇒ [<code>Vector2</code>](#Vector2)
         * [.degreesBetween(p1, p2)](#Vector2.degreesBetween) ⇒ <code>Number</code>
         * [.radiansBetween(p1, p2)](#Vector2.radiansBetween) ⇒ <code>Number</code>
+        * [.degreesBetweenFull(p1, p2)](#Vector2.degreesBetweenFull) ⇒ <code>Number</code>
+        * [.radiansBetweenFull(p1, p2)](#Vector2.radiansBetweenFull) ⇒ <code>Number</code>
         * [.distance(p1, p2)](#Vector2.distance) ⇒ <code>Number</code>
         * [.cross(p1, p2)](#Vector2.cross) ⇒ <code>Number</code>
         * [.dot(p1, p2)](#Vector2.dot) ⇒ <code>Number</code>
@@ -5784,6 +5882,32 @@ Get radians between this vector and another vector.
 | --- | --- | --- |
 | other | [<code>Vector2</code>](#Vector2) | Other vector. |
 
+<a name="Vector2+degreesToFull"></a>
+
+### vector2.degreesToFull(other) ⇒ <code>Number</code>
+Get degrees between this vector and another vector.
+Return values between 0 to 360.
+
+**Kind**: instance method of [<code>Vector2</code>](#Vector2)  
+**Returns**: <code>Number</code> - Angle between vectors in degrees.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| other | [<code>Vector2</code>](#Vector2) | Other vector. |
+
+<a name="Vector2+radiansToFull"></a>
+
+### vector2.radiansToFull(other) ⇒ <code>Number</code>
+Get radians between this vector and another vector.
+Return values between 0 to PI2.
+
+**Kind**: instance method of [<code>Vector2</code>](#Vector2)  
+**Returns**: <code>Number</code> - Angle between vectors in radians.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| other | [<code>Vector2</code>](#Vector2) | Other vector. |
+
 <a name="Vector2+distanceTo"></a>
 
 ### vector2.distanceTo(other) ⇒ <code>Number</code>
@@ -5796,6 +5920,20 @@ Calculate distance between this vector and another vectors.
 | --- | --- | --- |
 | other | [<code>Vector2</code>](#Vector2) | Other vector. |
 
+<a name="Vector2+getDegrees"></a>
+
+### vector2.getDegrees() ⇒ <code>Number</code>
+Get vector's angle in degrees.
+
+**Kind**: instance method of [<code>Vector2</code>](#Vector2)  
+**Returns**: <code>Number</code> - Vector angle in degrees.  
+<a name="Vector2+getRadians"></a>
+
+### vector2.getRadians() ⇒ <code>Number</code>
+Get vector's angle in radians.
+
+**Kind**: instance method of [<code>Vector2</code>](#Vector2)  
+**Returns**: <code>Number</code> - Vector angle in degrees.  
 <a name="Vector2+string"></a>
 
 ### vector2.string()
@@ -5900,6 +6038,7 @@ Lerp between two vectors.
 
 ### Vector2.degreesBetween(p1, p2) ⇒ <code>Number</code>
 Get degrees between two vectors.
+Return values between -180 to 180.
 
 **Kind**: static method of [<code>Vector2</code>](#Vector2)  
 **Returns**: <code>Number</code> - Angle between vectors in degrees.  
@@ -5913,6 +6052,35 @@ Get degrees between two vectors.
 
 ### Vector2.radiansBetween(p1, p2) ⇒ <code>Number</code>
 Get radians between two vectors.
+Return values between -PI to PI.
+
+**Kind**: static method of [<code>Vector2</code>](#Vector2)  
+**Returns**: <code>Number</code> - Angle between vectors in radians.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| p1 | [<code>Vector2</code>](#Vector2) | First vector. |
+| p2 | [<code>Vector2</code>](#Vector2) | Second vector. |
+
+<a name="Vector2.degreesBetweenFull"></a>
+
+### Vector2.degreesBetweenFull(p1, p2) ⇒ <code>Number</code>
+Get degrees between two vectors.
+Return values between 0 to 360.
+
+**Kind**: static method of [<code>Vector2</code>](#Vector2)  
+**Returns**: <code>Number</code> - Angle between vectors in degrees.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| p1 | [<code>Vector2</code>](#Vector2) | First vector. |
+| p2 | [<code>Vector2</code>](#Vector2) | Second vector. |
+
+<a name="Vector2.radiansBetweenFull"></a>
+
+### Vector2.radiansBetweenFull(p1, p2) ⇒ <code>Number</code>
+Get radians between two vectors.
+Return values between 0 to PI2.
 
 **Kind**: static method of [<code>Vector2</code>](#Vector2)  
 **Returns**: <code>Number</code> - Angle between vectors in radians.  

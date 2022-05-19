@@ -39,7 +39,11 @@ A simple Vector object for 2d positions.
         * [.scaled()](#Vector2+scaled) ⇒ [<code>Vector2</code>](#Vector2)
         * [.degreesTo(other)](#Vector2+degreesTo) ⇒ <code>Number</code>
         * [.radiansTo(other)](#Vector2+radiansTo) ⇒ <code>Number</code>
+        * [.degreesToFull(other)](#Vector2+degreesToFull) ⇒ <code>Number</code>
+        * [.radiansToFull(other)](#Vector2+radiansToFull) ⇒ <code>Number</code>
         * [.distanceTo(other)](#Vector2+distanceTo) ⇒ <code>Number</code>
+        * [.getDegrees()](#Vector2+getDegrees) ⇒ <code>Number</code>
+        * [.getRadians()](#Vector2+getRadians) ⇒ <code>Number</code>
         * [.string()](#Vector2+string)
         * [.toArray()](#Vector2+toArray) ⇒ <code>Array.&lt;Number&gt;</code>
     * _static_
@@ -55,6 +59,8 @@ A simple Vector object for 2d positions.
         * [.lerp(p1, p2, a)](#Vector2.lerp) ⇒ [<code>Vector2</code>](#Vector2)
         * [.degreesBetween(p1, p2)](#Vector2.degreesBetween) ⇒ <code>Number</code>
         * [.radiansBetween(p1, p2)](#Vector2.radiansBetween) ⇒ <code>Number</code>
+        * [.degreesBetweenFull(p1, p2)](#Vector2.degreesBetweenFull) ⇒ <code>Number</code>
+        * [.radiansBetweenFull(p1, p2)](#Vector2.radiansBetweenFull) ⇒ <code>Number</code>
         * [.distance(p1, p2)](#Vector2.distance) ⇒ <code>Number</code>
         * [.cross(p1, p2)](#Vector2.cross) ⇒ <code>Number</code>
         * [.dot(p1, p2)](#Vector2.dot) ⇒ <code>Number</code>
@@ -314,6 +320,32 @@ Get radians between this vector and another vector.
 | --- | --- | --- |
 | other | [<code>Vector2</code>](#Vector2) | Other vector. |
 
+<a name="Vector2+degreesToFull"></a>
+
+### vector2.degreesToFull(other) ⇒ <code>Number</code>
+Get degrees between this vector and another vector.
+Return values between 0 to 360.
+
+**Kind**: instance method of [<code>Vector2</code>](#Vector2)  
+**Returns**: <code>Number</code> - Angle between vectors in degrees.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| other | [<code>Vector2</code>](#Vector2) | Other vector. |
+
+<a name="Vector2+radiansToFull"></a>
+
+### vector2.radiansToFull(other) ⇒ <code>Number</code>
+Get radians between this vector and another vector.
+Return values between 0 to PI2.
+
+**Kind**: instance method of [<code>Vector2</code>](#Vector2)  
+**Returns**: <code>Number</code> - Angle between vectors in radians.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| other | [<code>Vector2</code>](#Vector2) | Other vector. |
+
 <a name="Vector2+distanceTo"></a>
 
 ### vector2.distanceTo(other) ⇒ <code>Number</code>
@@ -326,6 +358,20 @@ Calculate distance between this vector and another vectors.
 | --- | --- | --- |
 | other | [<code>Vector2</code>](#Vector2) | Other vector. |
 
+<a name="Vector2+getDegrees"></a>
+
+### vector2.getDegrees() ⇒ <code>Number</code>
+Get vector's angle in degrees.
+
+**Kind**: instance method of [<code>Vector2</code>](#Vector2)  
+**Returns**: <code>Number</code> - Vector angle in degrees.  
+<a name="Vector2+getRadians"></a>
+
+### vector2.getRadians() ⇒ <code>Number</code>
+Get vector's angle in radians.
+
+**Kind**: instance method of [<code>Vector2</code>](#Vector2)  
+**Returns**: <code>Number</code> - Vector angle in degrees.  
 <a name="Vector2+string"></a>
 
 ### vector2.string()
@@ -430,6 +476,7 @@ Lerp between two vectors.
 
 ### Vector2.degreesBetween(p1, p2) ⇒ <code>Number</code>
 Get degrees between two vectors.
+Return values between -180 to 180.
 
 **Kind**: static method of [<code>Vector2</code>](#Vector2)  
 **Returns**: <code>Number</code> - Angle between vectors in degrees.  
@@ -443,6 +490,35 @@ Get degrees between two vectors.
 
 ### Vector2.radiansBetween(p1, p2) ⇒ <code>Number</code>
 Get radians between two vectors.
+Return values between -PI to PI.
+
+**Kind**: static method of [<code>Vector2</code>](#Vector2)  
+**Returns**: <code>Number</code> - Angle between vectors in radians.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| p1 | [<code>Vector2</code>](#Vector2) | First vector. |
+| p2 | [<code>Vector2</code>](#Vector2) | Second vector. |
+
+<a name="Vector2.degreesBetweenFull"></a>
+
+### Vector2.degreesBetweenFull(p1, p2) ⇒ <code>Number</code>
+Get degrees between two vectors.
+Return values between 0 to 360.
+
+**Kind**: static method of [<code>Vector2</code>](#Vector2)  
+**Returns**: <code>Number</code> - Angle between vectors in degrees.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| p1 | [<code>Vector2</code>](#Vector2) | First vector. |
+| p2 | [<code>Vector2</code>](#Vector2) | Second vector. |
+
+<a name="Vector2.radiansBetweenFull"></a>
+
+### Vector2.radiansBetweenFull(p1, p2) ⇒ <code>Number</code>
+Get radians between two vectors.
+Return values between 0 to PI2.
 
 **Kind**: static method of [<code>Vector2</code>](#Vector2)  
 **Returns**: <code>Number</code> - Angle between vectors in radians.  

@@ -14,6 +14,15 @@ This object wraps the entire lib namespace, and this is what you use to access a
 
 * [Shaku](#Shaku)
     * [new Shaku()](#new_Shaku_new)
+    * [.utils](#Shaku+utils)
+    * [.sfx](#Shaku+sfx)
+    * [.gfx](#Shaku+gfx)
+    * [.input](#Shaku+input)
+    * [.assets](#Shaku+assets)
+    * [.collision](#Shaku+collision)
+    * [.pauseWhenNotFocused](#Shaku+pauseWhenNotFocused)
+    * [.paused](#Shaku+paused)
+    * [.isPaused](#Shaku+isPaused)
     * [.gameTime](#Shaku+gameTime) ⇒ <code>GameTime</code>
     * [.version](#Shaku+version) ⇒ <code>String</code>
     * [.init(managers)](#Shaku+init) ⇒ <code>Promise</code>
@@ -33,6 +42,61 @@ This object wraps the entire lib namespace, and this is what you use to access a
 ### new Shaku()
 Create the Shaku main object.
 
+<a name="Shaku+utils"></a>
+
+### shaku.utils
+Different utilities and framework objects, like vectors, rectangles, colors, etc.
+
+**Kind**: instance property of [<code>Shaku</code>](#Shaku)  
+<a name="Shaku+sfx"></a>
+
+### shaku.sfx
+Sound effects and music manager.
+
+**Kind**: instance property of [<code>Shaku</code>](#Shaku)  
+<a name="Shaku+gfx"></a>
+
+### shaku.gfx
+Graphics manager.
+
+**Kind**: instance property of [<code>Shaku</code>](#Shaku)  
+<a name="Shaku+input"></a>
+
+### shaku.input
+Input manager.
+
+**Kind**: instance property of [<code>Shaku</code>](#Shaku)  
+<a name="Shaku+assets"></a>
+
+### shaku.assets
+Assets manager.
+
+**Kind**: instance property of [<code>Shaku</code>](#Shaku)  
+<a name="Shaku+collision"></a>
+
+### shaku.collision
+Collision detection manager.
+
+**Kind**: instance property of [<code>Shaku</code>](#Shaku)  
+<a name="Shaku+pauseWhenNotFocused"></a>
+
+### shaku.pauseWhenNotFocused
+If true, will pause the updates and drawing calls when window is not focused.
+Will also not update elapsed time.
+
+**Kind**: instance property of [<code>Shaku</code>](#Shaku)  
+<a name="Shaku+paused"></a>
+
+### shaku.paused
+Set to true to completely pause Shaku (will skip updates, drawing, and time counting).
+
+**Kind**: instance property of [<code>Shaku</code>](#Shaku)  
+<a name="Shaku+isPaused"></a>
+
+### shaku.isPaused
+Get if the Shaku is currently paused.
+
+**Kind**: instance property of [<code>Shaku</code>](#Shaku)  
 <a name="Shaku+gameTime"></a>
 
 ### shaku.gameTime ⇒ <code>GameTime</code>

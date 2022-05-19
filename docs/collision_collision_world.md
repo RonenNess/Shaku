@@ -19,7 +19,7 @@ You can use different collision worlds to represent different levels or differen
     * [.addShape(shape)](#CollisionWorld+addShape)
     * [.removeShape(shape)](#CollisionWorld+removeShape)
     * [.testCollision(sourceShape, sortByDistance, mask, predicate)](#CollisionWorld+testCollision) ⇒ <code>CollisionTestResult</code>
-    * [.testCollisionMany(sourceShape, sortByDistance, mask, predicate)](#CollisionWorld+testCollisionMany) ⇒ <code>Array.&lt;CollisionTestResult&gt;</code>
+    * [.testCollisionMany(sourceShape, sortByDistance, mask, predicate, intermediateProcessor)](#CollisionWorld+testCollisionMany) ⇒ <code>Array.&lt;CollisionTestResult&gt;</code>
     * [.pick(position, radius, sortByDistance, mask, predicate)](#CollisionWorld+pick) ⇒ <code>Array.&lt;CollisionShape&gt;</code>
     * [.debugDraw(gridColor, gridHighlitColor, opacity, camera)](#CollisionWorld+debugDraw)
 
@@ -91,7 +91,7 @@ Test collision with shapes in world, and return just the first result found.
 
 <a name="CollisionWorld+testCollisionMany"></a>
 
-### collisionWorld.testCollisionMany(sourceShape, sortByDistance, mask, predicate) ⇒ <code>Array.&lt;CollisionTestResult&gt;</code>
+### collisionWorld.testCollisionMany(sourceShape, sortByDistance, mask, predicate, intermediateProcessor) ⇒ <code>Array.&lt;CollisionTestResult&gt;</code>
 Test collision with shapes in world, and return all results found.
 
 **Kind**: instance method of [<code>CollisionWorld</code>](#CollisionWorld)  
@@ -103,6 +103,7 @@ Test collision with shapes in world, and return all results found.
 | sortByDistance | <code>Boolean</code> | If true will sort results by distance. |
 | mask | <code>Number</code> | Optional mask of bits to match against shapes collisionFlags. Will only return shapes that have at least one common bit. |
 | predicate | <code>function</code> | Optional filter to run on any shape we're about to test collision with. If the predicate returns false, we will skip this shape. |
+| intermediateProcessor | <code>function</code> | Optional method to run after each positive result with the collision result as param. Return false to stop and return results. |
 
 <a name="CollisionWorld+pick"></a>
 

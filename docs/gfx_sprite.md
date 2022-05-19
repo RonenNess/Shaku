@@ -21,6 +21,7 @@ This object is a helper class to hold all the properties of a texture to render.
     * [.blendMode](#Sprite+blendMode) : <code>BlendModes</code>
     * [.rotation](#Sprite+rotation) : <code>Number</code>
     * [.origin](#Sprite+origin) : <code>Vector2</code>
+    * [.skew](#Sprite+skew) : <code>Vector2</code>
     * [.color](#Sprite+color) : <code>Color</code> \| <code>Array.&lt;Color&gt;</code>
     * [.flipX](#Sprite+flipX) ⇒ <code>Boolean</code>
     * [.flipX](#Sprite+flipX)
@@ -82,6 +83,12 @@ Sprite rotation in radians.
 
 ### sprite.origin : <code>Vector2</code>
 Sprite origin point.
+
+**Kind**: instance property of [<code>Sprite</code>](#Sprite)  
+<a name="Sprite+skew"></a>
+
+### sprite.skew : <code>Vector2</code>
+Skew the sprite corners on X and Y axis, around the origin point.
 
 **Kind**: instance property of [<code>Sprite</code>](#Sprite)  
 <a name="Sprite+color"></a>

@@ -24,6 +24,7 @@ Sprite batch renderer, responsible on drawing a batch of sprites with as little 
 
 * [SpriteBatch](#SpriteBatch)
     * [new SpriteBatch(gfx)](#new_SpriteBatch_new)
+    * [.snapPixels](#SpriteBatch+snapPixels)
     * [.drawing](#SpriteBatch+drawing) ⇒ <code>Boolean</code>
     * [.batchSpritesCount](#SpriteBatch+batchSpritesCount)
     * [.vertex(position, textureCoord, color)](#SpriteBatch+vertex) ⇒ [<code>Vertex</code>](#Vertex)
@@ -43,6 +44,12 @@ Create the spritebatch.
 | --- | --- | --- |
 | gfx | <code>Gfx</code> | Gfx manager. |
 
+<a name="SpriteBatch+snapPixels"></a>
+
+### spriteBatch.snapPixels
+If true, will floor vertices positions before pushing them to batch.
+
+**Kind**: instance property of [<code>SpriteBatch</code>](#SpriteBatch)  
 <a name="SpriteBatch+drawing"></a>
 
 ### spriteBatch.drawing ⇒ <code>Boolean</code>

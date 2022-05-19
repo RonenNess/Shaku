@@ -45,7 +45,7 @@ To access the Graphics manager you use `Shaku.gfx`.
     * [.drawGroup(group, cullOutOfScreen)](#Gfx+drawGroup)
     * [.drawSprite(sprite)](#Gfx+drawSprite)
     * [.cover(texture, destRect, sourceRect, color, blendMode)](#Gfx+cover)
-    * [.draw(texture, position, size, sourceRect, color, blendMode, rotation, origin)](#Gfx+draw)
+    * [.draw(texture, position, size, sourceRect, color, blendMode, rotation, origin, skew)](#Gfx+draw)
     * [.fillRect(destRect, color, blend, rotation)](#Gfx+fillRect)
     * [.fillRects(destRects, colors, blend, rotation)](#Gfx+fillRects)
     * [.outlineRect(destRect, color, blend, rotation)](#Gfx+outlineRect)
@@ -495,7 +495,7 @@ Shaku.gfx.draw(texture, position, size, sourceRect, color, blendMode, rotation, 
 ```
 <a name="Gfx+draw"></a>
 
-### gfx.draw(texture, position, size, sourceRect, color, blendMode, rotation, origin)
+### gfx.draw(texture, position, size, sourceRect, color, blendMode, rotation, origin, skew)
 Draw a texture.
 
 **Kind**: instance method of [<code>Gfx</code>](#Gfx)  
@@ -510,6 +510,7 @@ Draw a texture.
 | blendMode | <code>BlendModes</code> | Blend mode, or undefined to use alpha blend. |
 | rotation | <code>Number</code> | Rotate sprite. |
 | origin | <code>Vector2</code> | Drawing origin. This will be the point at 'position' and rotation origin. |
+| skew | <code>Vector2</code> | Skew the drawing corners on X and Y axis, around the origin point. |
 
 **Example**  
 ```js
