@@ -1833,7 +1833,7 @@ List of changes in released versions.
 - Added some useful functions to vectors.
 - Added 'allowDiagonal' flag to pathfind utilitiy.
 
-## 1.5.2 [WIP]
+## 1.5.2
 
 - Reduced texture atlas bleeding.
 - Added `intermediateProcessor` to collision detection.

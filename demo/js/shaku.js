@@ -1428,6 +1428,11 @@ class TextureAsset extends Asset
             gl.texImage2D(gl.TEXTURE_2D, level, internalFormat,
                             targetTextureWidth, targetTextureHeight, border,
                             format, type, data);
+            
+            // set default wrap and filter modes
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
         }
 
         // store texture
@@ -1482,6 +1487,11 @@ class TextureAsset extends Asset
             } 
             gl.generateMipmap(gl.TEXTURE_2D);
         }
+
+        // default wrap and filters
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
 
         // success!
         this._texture = texture;
@@ -3764,6 +3774,8 @@ class Effect
                         _this._gl.activeTexture(textureCode);
                         _this._gl.bindTexture(_this._gl.TEXTURE_2D, glTexture);
                         _this._gl.uniform1i(location, (index || 0));
+                        if (texture.filter) { _setTextureFilter(_this._gl, texture.filter); }
+                        if (texture.wrapMode) { _setTextureWrapMode(_this._gl, texture.wrapMode); }
                     }
                 })(this, uniform, uniformLocation, uniformData.type);
             }
@@ -3956,9 +3968,7 @@ class Effect
             let glTexture = texture.texture || texture;
             this._gl.activeTexture(this._gl.TEXTURE0);
             this._gl.bindTexture(this._gl.TEXTURE_2D, glTexture);
-            this.uniforms[uniform](glTexture, 0);
-            if (texture.filter) { _setTextureFilter(this._gl, texture.filter); }
-            if (texture.wrapMode) { _setTextureWrapMode(this._gl, texture.wrapMode); }
+            this.uniforms[uniform](texture, 0);
             return true;
         }
         return false;

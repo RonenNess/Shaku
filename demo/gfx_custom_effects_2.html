@@ -90,6 +90,7 @@
             // start frame and clear screen
             Shaku.startFrame();
             Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
+            Shaku.gfx.useEffect(effect);
 
             // update effect custom uniform
             effect.uniforms.elapsedTime(Shaku.gameTime.elapsed * 0.1);
@@ -99,6 +100,7 @@
             Shaku.gfx.draw(sprite, new Shaku.utils.Vector2(screenX / 2, screenY / 2), 400);
 
             // end frame and request next frame
+            Shaku.gfx.useEffect(null);
             Shaku.endFrame();
             Shaku.requestAnimationFrame(step);
           }
