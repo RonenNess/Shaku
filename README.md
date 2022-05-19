@@ -458,6 +458,14 @@ Shaku.gfx.presentBufferedData();
 This will make sure everything that was in it is flushed to the screen.
 
 
+### Disable Antialias
+
+If your game have pixel art its best to disable antialias, especially when using *texture atlas*. To do so, call the following **before** initializing *Shaku*:
+
+```js
+Shaku.gfx.setContextAttributes({antialias: false});
+```
+
 ### Draw Text
 
 To draw a text with *Shaku* we need to perform 3 steps:
