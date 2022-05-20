@@ -1847,6 +1847,10 @@ List of changes in released versions.
 - Fixed bug in texture wrap and filters not applying properly.
 - Removed some dead code.
 
+## 1.5.3 [WIP]
+
+- Collision detection optimization (accidentally did lots of long string conversion - fixed that).
+
 # License
 
 *Shaku* is licensed under the permissive MIT license, so you can use it for any purpose (including commercially) and it should be compatible with most common licenses.
