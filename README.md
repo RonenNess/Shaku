@@ -1850,6 +1850,7 @@ List of changes in released versions.
 ## 1.5.3 [WIP]
 
 - Collision detection optimization (accidentally did lots of long string conversion - fixed that).
+- Added `pauseTime` option.
 
 # License
 

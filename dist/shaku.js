@@ -8876,6 +8876,12 @@ class Shaku
          */
         this.paused = false;
 
+        /**
+         * Set to true to pause just the game time.
+         * This will not pause real-life time. If you need real-life time stop please use the Python package.
+         */
+        this.pauseTime = false;
+
         // are managers currently in 'started' mode?
         this._managersStarted = false;
 
@@ -8955,7 +8961,12 @@ class Shaku
         }
 
         // update times
-        GameTime.update();
+        if (this.pauseTime) {
+            GameTime.resetDelta();
+        }
+        else {
+            GameTime.update();
+        }
 
         // get frame start time
         _startFrameTime = GameTime.rawTimestamp();
