@@ -22,6 +22,7 @@ This object wraps the entire lib namespace, and this is what you use to access a
     * [.collision](#Shaku+collision)
     * [.pauseWhenNotFocused](#Shaku+pauseWhenNotFocused)
     * [.paused](#Shaku+paused)
+    * [.pauseTime](#Shaku+pauseTime)
     * [.isPaused](#Shaku+isPaused)
     * [.gameTime](#Shaku+gameTime) ⇒ <code>GameTime</code>
     * [.version](#Shaku+version) ⇒ <code>String</code>
@@ -89,6 +90,13 @@ Will also not update elapsed time.
 
 ### shaku.paused
 Set to true to completely pause Shaku (will skip updates, drawing, and time counting).
+
+**Kind**: instance property of [<code>Shaku</code>](#Shaku)  
+<a name="Shaku+pauseTime"></a>
+
+### shaku.pauseTime
+Set to true to pause just the game time.
+This will not pause real-life time. If you need real-life time stop please use the Python package.
 
 **Kind**: instance property of [<code>Shaku</code>](#Shaku)  
 <a name="Shaku+isPaused"></a>

@@ -4475,27 +4475,37 @@ class Gfx extends IManager
      * Set resolution and canvas to the max size of its parent element or screen.
      * If the canvas is directly under document body, it will take the max size of the page.
      * @param {Boolean} limitToParent if true, will use parent element size. If false, will stretch on entire document.
+     * @param {Boolean} allowOddNumbers if true, will permit odd numbers, which could lead to small artefacts when drawing pixel art. If false (default) will round to even numbers.
      */
-    maximizeCanvasSize(limitToParent)
+    maximizeCanvasSize(limitToParent, allowOddNumbers)
     {
+        // new width and height
+        let width = 0;
+        let height = 0;
+
         // parent
         if (limitToParent) {
             let parent = this._canvas.parentElement;
-            let width = parent.clientWidth - this._canvas.offsetLeft;
-            let height = parent.clientHeight - this._canvas.offsetTop;
-            if ((this._canvas.width !== width) || (this._canvas.height !== height)) {
-                this.setResolution(width, height, true);
-            }
+            width = parent.clientWidth - this._canvas.offsetLeft;
+            height = parent.clientHeight - this._canvas.offsetTop;
         }
         // entire screen
         else {
-            let width = window.innerWidth;
-            let height = window.innerHeight;
+            width = window.innerWidth;
+            height = window.innerHeight;
             this._canvas.style.left = '0px';
             this._canvas.style.top = '0px';
-            if ((this._canvas.width !== width) || (this._canvas.height !== height)) {
-                this.setResolution(width, height, true);
-            }
+        }
+
+        // make sure even numbers
+        if (!allowOddNumbers) {
+            if (width % 2 !== 0) { width++; }
+            if (height % 2 !== 0) { height++; }
+        }
+
+        // if changed, set resolution
+        if ((this._canvas.width !== width) || (this._canvas.height !== height)) {
+            this.setResolution(width, height, true);
         }
     }
 
@@ -4615,6 +4625,10 @@ class Gfx extends IManager
 
         this._canvas.width = width;
         this._canvas.height = height;
+
+        if (width % 2 !== 0 || height % 2 !== 0) {
+            _logger.warn("Resolution to set is not even numbers; This might cause minor artefacts when using texture atlases. Consider using even numbers instead.");
+        }
         
         if (updateCanvasStyle) {
             this._canvas.style.width = width + 'px';

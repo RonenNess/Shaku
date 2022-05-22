@@ -2010,7 +2010,7 @@ To access the Graphics manager you use `Shaku.gfx`.
     * [.createCamera(withViewport)](#Gfx+createCamera) ⇒ [<code>Camera</code>](#Camera)
     * [.setCameraOrthographic(offset)](#Gfx+setCameraOrthographic) ⇒ [<code>Camera</code>](#Camera)
     * [.createEffect(type)](#Gfx+createEffect) ⇒ [<code>Effect</code>](#Effect)
-    * [.maximizeCanvasSize(limitToParent)](#Gfx+maximizeCanvasSize)
+    * [.maximizeCanvasSize(limitToParent, allowOddNumbers)](#Gfx+maximizeCanvasSize)
     * [.setRenderTarget(texture, keepCamera)](#Gfx+setRenderTarget)
     * [.useEffect(effect)](#Gfx+useEffect)
     * [.setResolution(width, height, updateCanvasStyle)](#Gfx+setResolution)
@@ -2233,7 +2233,7 @@ Create and return an effect instance.
 
 <a name="Gfx+maximizeCanvasSize"></a>
 
-### gfx.maximizeCanvasSize(limitToParent)
+### gfx.maximizeCanvasSize(limitToParent, allowOddNumbers)
 Set resolution and canvas to the max size of its parent element or screen.
 If the canvas is directly under document body, it will take the max size of the page.
 
@@ -2242,6 +2242,7 @@ If the canvas is directly under document body, it will take the max size of the 
 | Param | Type | Description |
 | --- | --- | --- |
 | limitToParent | <code>Boolean</code> | if true, will use parent element size. If false, will stretch on entire document. |
+| allowOddNumbers | <code>Boolean</code> | if true, will permit odd numbers, which could lead to small artefacts when drawing pixel art. If false (default) will round to even numbers. |
 
 <a name="Gfx+setRenderTarget"></a>
 
@@ -4109,6 +4110,7 @@ This object wraps the entire lib namespace, and this is what you use to access a
     * [.collision](#Shaku+collision)
     * [.pauseWhenNotFocused](#Shaku+pauseWhenNotFocused)
     * [.paused](#Shaku+paused)
+    * [.pauseTime](#Shaku+pauseTime)
     * [.isPaused](#Shaku+isPaused)
     * [.gameTime](#Shaku+gameTime) ⇒ [<code>GameTime</code>](#GameTime)
     * [.version](#Shaku+version) ⇒ <code>String</code>
@@ -4176,6 +4178,13 @@ Will also not update elapsed time.
 
 ### shaku.paused
 Set to true to completely pause Shaku (will skip updates, drawing, and time counting).
+
+**Kind**: instance property of [<code>Shaku</code>](#Shaku)  
+<a name="Shaku+pauseTime"></a>
+
+### shaku.pauseTime
+Set to true to pause just the game time.
+This will not pause real-life time. If you need real-life time stop please use the Python package.
 
 **Kind**: instance property of [<code>Shaku</code>](#Shaku)  
 <a name="Shaku+isPaused"></a>

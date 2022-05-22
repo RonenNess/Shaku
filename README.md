@@ -1847,10 +1847,11 @@ List of changes in released versions.
 - Fixed bug in texture wrap and filters not applying properly.
 - Removed some dead code.
 
-## 1.5.3 [WIP]
+## 1.5.3
 
 - Collision detection optimization (accidentally did lots of long string conversion - fixed that).
 - Added `pauseTime` option.
+- Fixed artefacts with resolution with odd numbers.
 
 # License
 

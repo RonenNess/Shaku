@@ -32,7 +32,7 @@ To access the Graphics manager you use `Shaku.gfx`.
     * [.createCamera(withViewport)](#Gfx+createCamera) ⇒ <code>Camera</code>
     * [.setCameraOrthographic(offset)](#Gfx+setCameraOrthographic) ⇒ <code>Camera</code>
     * [.createEffect(type)](#Gfx+createEffect) ⇒ <code>Effect</code>
-    * [.maximizeCanvasSize(limitToParent)](#Gfx+maximizeCanvasSize)
+    * [.maximizeCanvasSize(limitToParent, allowOddNumbers)](#Gfx+maximizeCanvasSize)
     * [.setRenderTarget(texture, keepCamera)](#Gfx+setRenderTarget)
     * [.useEffect(effect)](#Gfx+useEffect)
     * [.setResolution(width, height, updateCanvasStyle)](#Gfx+setResolution)
@@ -255,7 +255,7 @@ Create and return an effect instance.
 
 <a name="Gfx+maximizeCanvasSize"></a>
 
-### gfx.maximizeCanvasSize(limitToParent)
+### gfx.maximizeCanvasSize(limitToParent, allowOddNumbers)
 Set resolution and canvas to the max size of its parent element or screen.
 If the canvas is directly under document body, it will take the max size of the page.
 
@@ -264,6 +264,7 @@ If the canvas is directly under document body, it will take the max size of the 
 | Param | Type | Description |
 | --- | --- | --- |
 | limitToParent | <code>Boolean</code> | if true, will use parent element size. If false, will stretch on entire document. |
+| allowOddNumbers | <code>Boolean</code> | if true, will permit odd numbers, which could lead to small artefacts when drawing pixel art. If false (default) will round to even numbers. |
 
 <a name="Gfx+setRenderTarget"></a>
 
