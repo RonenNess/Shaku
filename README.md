@@ -1853,6 +1853,11 @@ List of changes in released versions.
 - Added `pauseTime` option.
 - Fixed artefacts with resolution with odd numbers.
 
+## 1.5.4 [WIP]
+
+- Added default `desynchronized` init flag.
+- Added anti bleeding with rotation.
+
 # License
 
 *Shaku* is licensed under the permissive MIT license, so you can use it for any purpose (including commercially) and it should be compatible with most common licenses.

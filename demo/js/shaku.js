@@ -4289,7 +4289,7 @@ class Gfx extends IManager
     {
         super();
         this._gl = null;
-        this._initSettings = { antialias: true, alpha: true, depth: false, premultipliedAlpha: true };
+        this._initSettings = { antialias: true, alpha: true, depth: false, premultipliedAlpha: true, desynchronized: false };
         this._canvas = null;
         this._lastBlendMode = null;
         this._activeEffect = null;
@@ -4338,6 +4338,7 @@ class Gfx extends IManager
      * - alpha: true.
      * - depth: false.
      * - premultipliedAlpha: true.
+     * - desynchronized: false.
      * @example
      * Shaku.gfx.setContextAttributes({ antialias: true, alpha: false });
      * @param {Dictionary} flags WebGL init flags to set.
@@ -6539,6 +6540,11 @@ class SpriteBatch
          * If true, will floor vertices positions before pushing them to batch.
          */
         this.snapPixels = true;
+
+        /**
+         * If true, will slightly offset texture uv when rotating sprites, to prevent bleeding while using texture atlas.
+         */
+        this.applyAntiBleeding = true;
     }
 
     /**
@@ -6734,6 +6740,14 @@ class SpriteBatch
             if (sprite.sourceRect) {
                 const uvTl = {x: sprite.sourceRect.x / this._currTexture.width, y: sprite.sourceRect.y / this._currTexture.height};
                 const uvBr = {x: uvTl.x + (sprite.sourceRect.width / this._currTexture.width), y: uvTl.y + (sprite.sourceRect.height / this._currTexture.height)};
+                if (sprite.rotation && this.applyAntiBleeding) {
+                    let marginX = 0.015 / this._currTexture.width;
+                    let marginY = 0.015 / this._currTexture.height;
+                    uvTl.x += marginX;
+                    uvBr.x -= marginX * 2;
+                    uvTl.y += marginY;
+                    uvBr.y -= marginY * 2;
+                }
                 uvs[uvi+0] = uvTl.x;  uvs[uvi+1] = uvTl.y;
                 uvs[uvi+2] = uvBr.x;  uvs[uvi+3] = uvTl.y;
                 uvs[uvi+4] = uvTl.x;  uvs[uvi+5] = uvBr.y;
@@ -8836,7 +8850,7 @@ let _totalFrameTimes = 0;
 
 
 // current version
-const version = "1.5.3";
+const version = "1.5.4";
 
 /**
  * Shaku's main object.

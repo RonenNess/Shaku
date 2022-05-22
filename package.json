@@ -1,6 +1,6 @@
 {
   "name": "shaku",
-  "version": "1.5.3",
+  "version": "1.5.4",
   "description": "A simple yet effective web game development framework that knows its place!",
   "main": "lib/index.js",
   "directories": {
