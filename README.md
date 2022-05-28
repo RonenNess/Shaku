@@ -1857,6 +1857,7 @@ List of changes in released versions.
 
 - Added default `desynchronized` init flag.
 - Added anti bleeding with rotation.
+- Added some degrees-related helper methods.
 
 # License
 
