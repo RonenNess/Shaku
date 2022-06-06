@@ -7640,7 +7640,7 @@ class Input extends IManager
 
     /**
      * Return if a mouse or keyboard button is currently down.
-     * @param {string} code Keyboard or mouse code. 
+     * @param {string|Array<String>} code Keyboard or mouse code. Can be array of codes to test if any of them is down.
      *                          For mouse buttons: mouse_left, mouse_right or mouse_middle.
      *                          For keyboard buttons: use one of the keys of KeyboardKeys (for example 'a', 'alt', 'up_arrow', etc..)
      *                          For numbers (0-9): you can use the number.
@@ -7648,12 +7648,18 @@ class Input extends IManager
      */
     down(code)
     {
-        return Boolean(this._getValueWithCode(code, this.mouseDown, this.keyDown));
+        if (!(code instanceof Array)) { code = [code]; }
+        for (let c of code) {
+            if (Boolean(this._getValueWithCode(c, this.mouseDown, this.keyDown))) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
      * Return if a mouse or keyboard button was released in this frame.
-     * @param {string} code Keyboard or mouse code. 
+     * @param {string|Array<String>} code Keyboard or mouse code. Can be array of codes to test if any of them is released.
      *                          For mouse buttons: mouse_left, mouse_right or mouse_middle.
      *                          For keyboard buttons: use one of the keys of KeyboardKeys (for example 'a', 'alt', 'up_arrow', etc..)
      *                          For numbers (0-9): you can use the number.
@@ -7661,12 +7667,18 @@ class Input extends IManager
      */
     released(code)
     {
-        return Boolean(this._getValueWithCode(code, this.mouseReleased, this.keyReleased));
+        if (!(code instanceof Array)) { code = [code]; }
+        for (let c of code) {
+            if (Boolean(this._getValueWithCode(c, this.mouseReleased, this.keyReleased))) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
      * Return if a mouse or keyboard button was pressed in this frame.
-     * @param {string} code Keyboard or mouse code. 
+     * @param {string|Array<String>} code Keyboard or mouse code. Can be array of codes to test if any of them is pressed.
      *                          For mouse buttons: mouse_left, mouse_right or mouse_middle.
      *                          For keyboard buttons: use one of the keys of KeyboardKeys (for example 'a', 'alt', 'up_arrow', etc..)
      *                          For numbers (0-9): you can use the number.
@@ -7674,7 +7686,13 @@ class Input extends IManager
      */
     pressed(code)
     {
-        return Boolean(this._getValueWithCode(code, this.mousePressed, this.keyPressed));
+        if (!(code instanceof Array)) { code = [code]; }
+        for (let c of code) {
+            if (Boolean(this._getValueWithCode(c, this.mousePressed, this.keyPressed))) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

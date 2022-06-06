@@ -189,6 +189,7 @@ By default, *Shaku* will init WebGL context with the following flags:
 - alpha: true.
 - depth: false.
 - premultipliedAlpha: true.
+- desynchronized: false.
 
 **Kind**: instance method of [<code>Gfx</code>](#Gfx)  
 

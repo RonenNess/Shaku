@@ -25,6 +25,7 @@ Sprite batch renderer, responsible on drawing a batch of sprites with as little 
 * [SpriteBatch](#SpriteBatch)
     * [new SpriteBatch(gfx)](#new_SpriteBatch_new)
     * [.snapPixels](#SpriteBatch+snapPixels)
+    * [.applyAntiBleeding](#SpriteBatch+applyAntiBleeding)
     * [.drawing](#SpriteBatch+drawing) ⇒ <code>Boolean</code>
     * [.batchSpritesCount](#SpriteBatch+batchSpritesCount)
     * [.vertex(position, textureCoord, color)](#SpriteBatch+vertex) ⇒ [<code>Vertex</code>](#Vertex)
@@ -48,6 +49,12 @@ Create the spritebatch.
 
 ### spriteBatch.snapPixels
 If true, will floor vertices positions before pushing them to batch.
+
+**Kind**: instance property of [<code>SpriteBatch</code>](#SpriteBatch)  
+<a name="SpriteBatch+applyAntiBleeding"></a>
+
+### spriteBatch.applyAntiBleeding
+If true, will slightly offset texture uv when rotating sprites, to prevent bleeding while using texture atlas.
 
 **Kind**: instance property of [<code>SpriteBatch</code>](#SpriteBatch)  
 <a name="SpriteBatch+drawing"></a>

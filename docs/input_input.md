@@ -247,7 +247,7 @@ Return if a mouse or keyboard button is currently down.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| code | <code>string</code> | Keyboard or mouse code.                           For mouse buttons: mouse_left, mouse_right or mouse_middle.                          For keyboard buttons: use one of the keys of KeyboardKeys (for example 'a', 'alt', 'up_arrow', etc..)                          For numbers (0-9): you can use the number. |
+| code | <code>string</code> \| <code>Array.&lt;String&gt;</code> | Keyboard or mouse code. Can be array of codes to test if any of them is down.                          For mouse buttons: mouse_left, mouse_right or mouse_middle.                          For keyboard buttons: use one of the keys of KeyboardKeys (for example 'a', 'alt', 'up_arrow', etc..)                          For numbers (0-9): you can use the number. |
 
 <a name="Input+released"></a>
 
@@ -259,7 +259,7 @@ Return if a mouse or keyboard button was released in this frame.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| code | <code>string</code> | Keyboard or mouse code.                           For mouse buttons: mouse_left, mouse_right or mouse_middle.                          For keyboard buttons: use one of the keys of KeyboardKeys (for example 'a', 'alt', 'up_arrow', etc..)                          For numbers (0-9): you can use the number. |
+| code | <code>string</code> \| <code>Array.&lt;String&gt;</code> | Keyboard or mouse code. Can be array of codes to test if any of them is released.                          For mouse buttons: mouse_left, mouse_right or mouse_middle.                          For keyboard buttons: use one of the keys of KeyboardKeys (for example 'a', 'alt', 'up_arrow', etc..)                          For numbers (0-9): you can use the number. |
 
 <a name="Input+pressed"></a>
 
@@ -271,5 +271,5 @@ Return if a mouse or keyboard button was pressed in this frame.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| code | <code>string</code> | Keyboard or mouse code.                           For mouse buttons: mouse_left, mouse_right or mouse_middle.                          For keyboard buttons: use one of the keys of KeyboardKeys (for example 'a', 'alt', 'up_arrow', etc..)                          For numbers (0-9): you can use the number. |
+| code | <code>string</code> \| <code>Array.&lt;String&gt;</code> | Keyboard or mouse code. Can be array of codes to test if any of them is pressed.                          For mouse buttons: mouse_left, mouse_right or mouse_middle.                          For keyboard buttons: use one of the keys of KeyboardKeys (for example 'a', 'alt', 'up_arrow', etc..)                          For numbers (0-9): you can use the number. |
 

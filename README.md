@@ -1853,11 +1853,12 @@ List of changes in released versions.
 - Added `pauseTime` option.
 - Fixed artefacts with resolution with odd numbers.
 
-## 1.5.4 [WIP]
+## 1.5.4
 
 - Added default `desynchronized` init flag.
 - Added anti bleeding with rotation.
 - Added some degrees-related helper methods.
+- Added option to provide multiple key codes for main input methods.
 
 # License
 

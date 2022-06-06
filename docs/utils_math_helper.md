@@ -19,6 +19,8 @@ Implement some math utilities functions.
     * [.toDegrees(radians)](#MathHelper.toDegrees) ⇒ <code>Number</code>
     * [.radiansDistanceSigned(a1, a2)](#MathHelper.radiansDistanceSigned) ⇒ <code>Number</code>
     * [.radiansDistance(a1, a2)](#MathHelper.radiansDistance) ⇒ <code>Number</code>
+    * [.degreesDistanceSigned(a1, a2)](#MathHelper.degreesDistanceSigned) ⇒ <code>Number</code>
+    * [.degreesDistance(a1, a2)](#MathHelper.degreesDistance) ⇒ <code>Number</code>
     * [.lerpRadians(a1, a2, alpha)](#MathHelper.lerpRadians) ⇒ <code>Number</code>
     * [.lerpDegrees(a1, a2, alpha)](#MathHelper.lerpDegrees) ⇒ <code>Number</code>
     * [.round10(num)](#MathHelper.round10) ⇒ <code>Number</code>
@@ -108,6 +110,32 @@ Find shortest distance between two radians.
 | --- | --- | --- |
 | a1 | <code>Number</code> | First radian. |
 | a2 | <code>Number</code> | Second radian. |
+
+<a name="MathHelper.degreesDistanceSigned"></a>
+
+### MathHelper.degreesDistanceSigned(a1, a2) ⇒ <code>Number</code>
+Find shortest distance between two angles in degrees, with sign (ie distance can be negative).
+
+**Kind**: static method of [<code>MathHelper</code>](#MathHelper)  
+**Returns**: <code>Number</code> - Shortest distance between angles.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| a1 | <code>Number</code> | First angle. |
+| a2 | <code>Number</code> | Second angle. |
+
+<a name="MathHelper.degreesDistance"></a>
+
+### MathHelper.degreesDistance(a1, a2) ⇒ <code>Number</code>
+Find shortest distance between two angles in degrees.
+
+**Kind**: static method of [<code>MathHelper</code>](#MathHelper)  
+**Returns**: <code>Number</code> - Shortest distance between angles.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| a1 | <code>Number</code> | First angle. |
+| a2 | <code>Number</code> | Second angle. |
 
 <a name="MathHelper.lerpRadians"></a>
 

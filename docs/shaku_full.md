@@ -2167,6 +2167,7 @@ By default, *Shaku* will init WebGL context with the following flags:
 - alpha: true.
 - depth: false.
 - premultipliedAlpha: true.
+- desynchronized: false.
 
 **Kind**: instance method of [<code>Gfx</code>](#Gfx)  
 
@@ -3104,6 +3105,7 @@ Sprite batch renderer, responsible on drawing a batch of sprites with as little 
 * [SpriteBatch](#SpriteBatch)
     * [new SpriteBatch(gfx)](#new_SpriteBatch_new)
     * [.snapPixels](#SpriteBatch+snapPixels)
+    * [.applyAntiBleeding](#SpriteBatch+applyAntiBleeding)
     * [.drawing](#SpriteBatch+drawing) ⇒ <code>Boolean</code>
     * [.batchSpritesCount](#SpriteBatch+batchSpritesCount)
     * [.vertex(position, textureCoord, color)](#SpriteBatch+vertex) ⇒ [<code>Vertex</code>](#Vertex)
@@ -3127,6 +3129,12 @@ Create the spritebatch.
 
 ### spriteBatch.snapPixels
 If true, will floor vertices positions before pushing them to batch.
+
+**Kind**: instance property of [<code>SpriteBatch</code>](#SpriteBatch)  
+<a name="SpriteBatch+applyAntiBleeding"></a>
+
+### spriteBatch.applyAntiBleeding
+If true, will slightly offset texture uv when rotating sprites, to prevent bleeding while using texture atlas.
 
 **Kind**: instance property of [<code>SpriteBatch</code>](#SpriteBatch)  
 <a name="SpriteBatch+drawing"></a>
@@ -3580,7 +3588,7 @@ Return if a mouse or keyboard button is currently down.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| code | <code>string</code> | Keyboard or mouse code.                           For mouse buttons: mouse_left, mouse_right or mouse_middle.                          For keyboard buttons: use one of the keys of KeyboardKeys (for example 'a', 'alt', 'up_arrow', etc..)                          For numbers (0-9): you can use the number. |
+| code | <code>string</code> \| <code>Array.&lt;String&gt;</code> | Keyboard or mouse code. Can be array of codes to test if any of them is down.                          For mouse buttons: mouse_left, mouse_right or mouse_middle.                          For keyboard buttons: use one of the keys of KeyboardKeys (for example 'a', 'alt', 'up_arrow', etc..)                          For numbers (0-9): you can use the number. |
 
 <a name="Input+released"></a>
 
@@ -3592,7 +3600,7 @@ Return if a mouse or keyboard button was released in this frame.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| code | <code>string</code> | Keyboard or mouse code.                           For mouse buttons: mouse_left, mouse_right or mouse_middle.                          For keyboard buttons: use one of the keys of KeyboardKeys (for example 'a', 'alt', 'up_arrow', etc..)                          For numbers (0-9): you can use the number. |
+| code | <code>string</code> \| <code>Array.&lt;String&gt;</code> | Keyboard or mouse code. Can be array of codes to test if any of them is released.                          For mouse buttons: mouse_left, mouse_right or mouse_middle.                          For keyboard buttons: use one of the keys of KeyboardKeys (for example 'a', 'alt', 'up_arrow', etc..)                          For numbers (0-9): you can use the number. |
 
 <a name="Input+pressed"></a>
 
@@ -3604,7 +3612,7 @@ Return if a mouse or keyboard button was pressed in this frame.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| code | <code>string</code> | Keyboard or mouse code.                           For mouse buttons: mouse_left, mouse_right or mouse_middle.                          For keyboard buttons: use one of the keys of KeyboardKeys (for example 'a', 'alt', 'up_arrow', etc..)                          For numbers (0-9): you can use the number. |
+| code | <code>string</code> \| <code>Array.&lt;String&gt;</code> | Keyboard or mouse code. Can be array of codes to test if any of them is pressed.                          For mouse buttons: mouse_left, mouse_right or mouse_middle.                          For keyboard buttons: use one of the keys of KeyboardKeys (for example 'a', 'alt', 'up_arrow', etc..)                          For numbers (0-9): you can use the number. |
 
 <a name="Logger"></a>
 
@@ -5024,6 +5032,8 @@ Implement some math utilities functions.
     * [.toDegrees(radians)](#MathHelper.toDegrees) ⇒ <code>Number</code>
     * [.radiansDistanceSigned(a1, a2)](#MathHelper.radiansDistanceSigned) ⇒ <code>Number</code>
     * [.radiansDistance(a1, a2)](#MathHelper.radiansDistance) ⇒ <code>Number</code>
+    * [.degreesDistanceSigned(a1, a2)](#MathHelper.degreesDistanceSigned) ⇒ <code>Number</code>
+    * [.degreesDistance(a1, a2)](#MathHelper.degreesDistance) ⇒ <code>Number</code>
     * [.lerpRadians(a1, a2, alpha)](#MathHelper.lerpRadians) ⇒ <code>Number</code>
     * [.lerpDegrees(a1, a2, alpha)](#MathHelper.lerpDegrees) ⇒ <code>Number</code>
     * [.round10(num)](#MathHelper.round10) ⇒ <code>Number</code>
@@ -5107,6 +5117,32 @@ Find shortest distance between two radians.
 | --- | --- | --- |
 | a1 | <code>Number</code> | First radian. |
 | a2 | <code>Number</code> | Second radian. |
+
+<a name="MathHelper.degreesDistanceSigned"></a>
+
+### MathHelper.degreesDistanceSigned(a1, a2) ⇒ <code>Number</code>
+Find shortest distance between two angles in degrees, with sign (ie distance can be negative).
+
+**Kind**: static method of [<code>MathHelper</code>](#MathHelper)  
+**Returns**: <code>Number</code> - Shortest distance between angles.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| a1 | <code>Number</code> | First angle. |
+| a2 | <code>Number</code> | Second angle. |
+
+<a name="MathHelper.degreesDistance"></a>
+
+### MathHelper.degreesDistance(a1, a2) ⇒ <code>Number</code>
+Find shortest distance between two angles in degrees.
+
+**Kind**: static method of [<code>MathHelper</code>](#MathHelper)  
+**Returns**: <code>Number</code> - Shortest distance between angles.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| a1 | <code>Number</code> | First angle. |
+| a2 | <code>Number</code> | Second angle. |
 
 <a name="MathHelper.lerpRadians"></a>
 
