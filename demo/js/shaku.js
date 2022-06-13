@@ -8868,7 +8868,7 @@ let _totalFrameTimes = 0;
 
 
 // current version
-const version = "1.5.4";
+const version = "1.5.5";
 
 /**
  * Shaku's main object.
@@ -9801,6 +9801,25 @@ class Color
     }
 
     /**
+     * Create color from a dictionary.
+     * @param {*} data Dictionary with {r,g,b,a}.
+     * @returns {Color} Newly created color.
+     */
+    static fromDict(data)
+    {
+        return new Color(data.r, data.g, data.b, data.a || 1);
+    }
+
+    /**
+     * Convert to dictionary.
+     * @returns {*} Dictionary with {r,g,b,a}
+     */
+    toDict()
+    {
+        return {r: this.r, g: this.g, b: this.b, a: this.a};
+    }
+
+    /**
      * Convert this color to decimal number.
      * @returns {Number} Color as decimal RGBA.
      */
@@ -9868,7 +9887,7 @@ class Color
      */
     static fromBytesArray(bytes)
     {
-        return new Color(bytes[0] / 255, bytes[1] / 255, bytes[2] / 255, (bytes[3] / 255) || 1);
+        return new Color(bytes[0] / 255, bytes[1] / 255, bytes[2] / 255, bytes[3] !== undefined ? (bytes[3] / 255) : 1);
     }
 
     /**
@@ -10992,6 +11011,20 @@ class Rectangle
     }
 
     /**
+     * Copy another rectangle.
+     * @param {other} other Rectangle to copy.
+     * @returns {Rectangle} this.
+     */
+    copy(other)
+    {
+        this.x = other.x;
+        this.y = other.y;
+        this.width = other.width;
+        this.height = other.height;
+        return this;
+    }
+
+    /**
      * Get position as Vector2.
      * @returns {Vector2} Position vector.
      */
@@ -11288,6 +11321,25 @@ class Rectangle
                             lerpScalar(p1.width, p2.width, a), 
                             lerpScalar(p1.height, p2.height, a)
                         );
+    }
+
+    /**
+     * Create rectangle from a dictionary.
+     * @param {*} data Dictionary with {x,y,width,height}.
+     * @returns {Rectangle} Newly created rectangle.
+     */
+    static fromDict(data)
+    {
+        return new Rectangle(data.x, data.y, data.width, data.height);
+    }
+
+    /**
+     * Convert to dictionary.
+     * @returns {*} Dictionary with {x,y,width,height}
+     */
+    toDict()
+    {
+        return {x: this.x, y: this.y, width: this.width, height: this.height};
     }
 }
 
@@ -12016,6 +12068,25 @@ class Vector2
     {
         return new Vector2(arr[0], arr[1]);
     }
+
+    /**
+     * Create vector from a dictionary.
+     * @param {*} data Dictionary with {x,y}.
+     * @returns {Vector2} Newly created vector.
+     */
+    static fromDict(data)
+    {
+        return new Vector2(data.x, data.y);
+    }
+
+    /**
+     * Convert to dictionary.
+     * @returns {*} Dictionary with {x,y}
+     */
+    toDict()
+    {
+        return {x: this.x, y: this.y};
+    }
 }
 
 // export vector object
@@ -12547,6 +12618,25 @@ class Vector3
     static fromArray(arr)
     {
         return new Vector3(arr[0], arr[1], arr[2]);
+    }
+
+    /**
+     * Create vector from a dictionary.
+     * @param {*} data Dictionary with {x,y,z}.
+     * @returns {Vector3} Newly created vector.
+     */
+    static fromDict(data)
+    {
+        return new Vector3(data.x, data.y, data.z);
+    }
+
+    /**
+     * Convert to dictionary.
+     * @returns {*} Dictionary with {x,y,z}
+     */
+    toDict()
+    {
+        return {x: this.x, y: this.y, z: this.z};
     }
 }
 

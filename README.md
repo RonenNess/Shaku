@@ -1860,6 +1860,10 @@ List of changes in released versions.
 - Added some degrees-related helper methods.
 - Added option to provide multiple key codes for main input methods.
 
+## 1.5.5 [WIP]
+
+- Added some utils nice-to-have methods.
+
 # License
 
 *Shaku* is licensed under the permissive MIT license, so you can use it for any purpose (including commercially) and it should be compatible with most common licenses.
