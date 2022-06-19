@@ -1863,6 +1863,7 @@ List of changes in released versions.
 ## 1.5.5 [WIP]
 
 - Added some utils nice-to-have methods.
+- Fixed log typo.
 
 # License
 

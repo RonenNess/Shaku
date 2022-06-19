@@ -227,13 +227,13 @@ class Assets extends IManager
 
                 // got errors?
                 if (this._failedAssets.size !== 0) {
-                    _logger.warn("Dont waiting for assets: had errors.");
+                    _logger.warn("Done waiting for assets: had errors.");
                     return reject(this.failedAssets);
                 }
 
                 // all done?
 				if (this._waitingAssets.size === 0) {
-                    _logger.debug("Dont waiting for assets: everything loaded successfully.");
+                    _logger.debug("Done waiting for assets: everything loaded successfully.");
 					return resolve();
 				}
 
