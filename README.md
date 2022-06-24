@@ -1864,6 +1864,8 @@ List of changes in released versions.
 
 - Added some utils nice-to-have methods.
 - Fixed log typo.
+- Added static sprites optimization.
+- Added quadsDrawCount metric.
 
 # License
 

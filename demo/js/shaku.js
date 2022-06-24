@@ -4306,6 +4306,7 @@ class Gfx extends IManager
         this._renderTarget = null;
         this._viewport = null;
         this._drawCallsCount = 0;
+        this._drawQuadsCount = 0;
         this.spritesBatch = null;
     }
 
@@ -5640,6 +5641,15 @@ class Gfx extends IManager
     }
 
     /**
+     * Get number of textured / colored quads we drawn since the beginning of the frame.
+     * @returns {Number} Number of quads drawn in this frame..
+     */
+    get quadsDrawCount()
+    {
+        return this._drawQuadsCount;
+    }
+
+    /**
      * Clear screen to a given color.
      * @example
      * Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
@@ -5822,6 +5832,7 @@ class Gfx extends IManager
         // reset some states
         this._lastBlendMode = null;
         this._drawCallsCount = 0;
+        this._drawQuadsCount = 0;
     }
 
     /** 
@@ -6371,6 +6382,7 @@ class Sprite
         /**
          * Sprite position.
          * If Vector3 is provided, the z value will be passed to vertices position in shader code.
+         * This property is locked when static=true.
          * @name Sprite#position
          * @type {Vector2|Vector3}
          */
@@ -6379,6 +6391,7 @@ class Sprite
         /**
          * Sprite size.
          * If Vector3 is provided, the z value will be passed to the bottom vertices position in shader code, as position.z + size.z.
+         * This property is locked when static=true.
          * @name Sprite#size
          * @type {Vector2|Vector3}
          */
@@ -6387,6 +6400,7 @@ class Sprite
         /**
          * Sprite source rectangle in texture.
          * Null will take entire texture.
+         * This property is locked when static=true.
          * @name Sprite#sourceRect
          * @type {Rectangle}
          */
@@ -6401,6 +6415,7 @@ class Sprite
         
         /**
          * Sprite rotation in radians.
+         * This property is locked when static=true.
          * @name Sprite#rotation
          * @type {Number}
          */
@@ -6408,6 +6423,7 @@ class Sprite
         
         /**
          * Sprite origin point.
+         * This property is locked when static=true.
          * @name Sprite#origin
          * @type {Vector2}
          */
@@ -6415,6 +6431,7 @@ class Sprite
         
         /**
          * Skew the sprite corners on X and Y axis, around the origin point.
+         * This property is locked when static=true.
          * @name Sprite#skew
          * @type {Vector2}
          */
@@ -6427,6 +6444,16 @@ class Sprite
          * @type {Color|Array<Color>}
          */
         this.color = Color.white;
+
+        /**
+         * Is this a static sprite.
+         * Static sprites will only calculate vertices properties once, and reuse them in following render calls.
+         * This will improve performance, but also means that once the sprite is rendered once, changing things like position, size, rotation, etc.
+         * won't affect the output. To refresh the properties of a static sprite, you need to call updateStaticProperties() manually.
+         * @name Sprite#static
+         * @type {Boolean}
+         */
+        this.static = false;
     }
 
     /**
@@ -6442,7 +6469,16 @@ class Sprite
         ret.rotation = this.rotation;
         ret.origin = this.origin.clone();
         ret.color = this.color.clone();
+        ret.static = this.static;
         return ret;
+    }
+
+    /**
+     * Manually update the static properties (position, size, rotation, origin, source rectangle, etc.) of a static sprite.
+     */
+    updateStaticProperties()
+    {
+        this._cachedVertices = null;
     }
 
     /**
@@ -6656,6 +6692,59 @@ class SpriteBatch
             this._currTexture = sprite.texture;
             this._currBlend = sprite.blendMode;
 
+            // set colors batch
+            let ci = this._currBatchCount * 4 * 4;
+
+            // array of colors
+            if (sprite.color instanceof Array) {
+                let lastColor = sprite.color[0];
+                for (let x = 0; x < 4; ++x) {
+                    let curr = (sprite.color[x] || lastColor);
+                    colors[ci + x*4 + 0] = curr.r;
+                    colors[ci + x*4 + 1] = curr.g;
+                    colors[ci + x*4 + 2] = curr.b;
+                    colors[ci + x*4 + 3] = curr.a;
+                    lastColor = curr;
+                }
+            }
+            // single color
+            else {
+                for (let x = 0; x < 4; ++x) {
+                    colors[ci + x*4 + 0] = sprite.color.r;
+                    colors[ci + x*4 + 1] = sprite.color.g;
+                    colors[ci + x*4 + 2] = sprite.color.b;
+                    colors[ci + x*4 + 3] = sprite.color.a;
+                }
+            }
+
+            // check if its a static sprite with cached properties. if so, we'll use it.
+            if (sprite.static && sprite._cachedVertices) {
+
+                // get vertices from cache
+                let topLeft = sprite._cachedVertices[0];
+                let topRight = sprite._cachedVertices[1];
+                let bottomLeft = sprite._cachedVertices[2];
+                let bottomRight = sprite._cachedVertices[3];
+
+                // set positions
+                let pi = this._currBatchCount * 4 * 3;
+                positions[pi+0] = topLeft.position.x;             positions[pi+1] = topLeft.position.y;             positions[pi+2] = topLeft.position.z || 0;
+                positions[pi+3] = topRight.position.x;            positions[pi+4] = topRight.position.y;            positions[pi+5] = topRight.position.z || 0;
+                positions[pi+6] = bottomLeft.position.x;          positions[pi+7] = bottomLeft.position.y;          positions[pi+8] = bottomLeft.position.z || 0;
+                positions[pi+9] = bottomRight.position.x;         positions[pi+10] = bottomRight.position.y;        positions[pi+11] = bottomRight.position.z || 0;
+        
+                // set uvs
+                let uvi = this._currBatchCount * 4 * 2;
+                uvs[uvi+0] = topLeft.uv.x;          uvs[uvi+1] = topLeft.uv.y;
+                uvs[uvi+2] = bottomRight.uv.x;      uvs[uvi+3] = topLeft.uv.y;
+                uvs[uvi+4] = topLeft.uv.x;          uvs[uvi+5] = bottomRight.uv.y;
+                uvs[uvi+6] = bottomRight.uv.x;      uvs[uvi+7] = bottomRight.uv.y;
+
+                // increase sprites count and continue
+                this._currBatchCount++;
+                continue;
+            }
+
             // calculate vertices positions
             let sizeX = sprite.size.x;
             let sizeY = sprite.size.y;
@@ -6735,11 +6824,15 @@ class SpriteBatch
             positions[pi+6] = bottomLeft.x;          positions[pi+7] = bottomLeft.y;          positions[pi+8] = z + zDepth;
             positions[pi+9] = bottomRight.x;         positions[pi+10] = bottomRight.y;        positions[pi+11] = z + zDepth;
 
-            // add uvs
+            // set uvs buffer
             let uvi = this._currBatchCount * 4 * 2;
+            var uvTl;
+            var uvBr;
+
+            // got source rect, apply uvs
             if (sprite.sourceRect) {
-                const uvTl = {x: sprite.sourceRect.x / this._currTexture.width, y: sprite.sourceRect.y / this._currTexture.height};
-                const uvBr = {x: uvTl.x + (sprite.sourceRect.width / this._currTexture.width), y: uvTl.y + (sprite.sourceRect.height / this._currTexture.height)};
+                uvTl = {x: sprite.sourceRect.x / this._currTexture.width, y: sprite.sourceRect.y / this._currTexture.height};
+                uvBr = {x: uvTl.x + (sprite.sourceRect.width / this._currTexture.width), y: uvTl.y + (sprite.sourceRect.height / this._currTexture.height)};
                 if (sprite.rotation && this.applyAntiBleeding) {
                     let marginX = 0.015 / this._currTexture.width;
                     let marginY = 0.015 / this._currTexture.height;
@@ -6753,6 +6846,7 @@ class SpriteBatch
                 uvs[uvi+4] = uvTl.x;  uvs[uvi+5] = uvBr.y;
                 uvs[uvi+6] = uvBr.x;  uvs[uvi+7] = uvBr.y;
             }
+            // no source rect, take entire texture
             else {
                 uvs[uvi+0] = 0;  uvs[uvi+1] = 0;
                 uvs[uvi+2] = 1;  uvs[uvi+3] = 0;
@@ -6760,29 +6854,14 @@ class SpriteBatch
                 uvs[uvi+6] = 1;  uvs[uvi+7] = 1;
             }
 
-            // add colors
-            let ci = this._currBatchCount * 4 * 4;
-
-            // array of colors
-            if (sprite.color instanceof Array) {
-                let lastColor = sprite.color[0];
-                for (let x = 0; x < 4; ++x) {
-                    let curr = (sprite.color[x] || lastColor);
-                    colors[ci + x*4 + 0] = curr.r;
-                    colors[ci + x*4 + 1] = curr.g;
-                    colors[ci + x*4 + 2] = curr.b;
-                    colors[ci + x*4 + 3] = curr.a;
-                    lastColor = curr;
-                }
-            }
-            // single color
-            else {
-                for (let x = 0; x < 4; ++x) {
-                    colors[ci + x*4 + 0] = sprite.color.r;
-                    colors[ci + x*4 + 1] = sprite.color.g;
-                    colors[ci + x*4 + 2] = sprite.color.b;
-                    colors[ci + x*4 + 3] = sprite.color.a;
-                }
+            // set cached vertices
+            if (sprite.static) {
+                sprite._cachedVertices = [
+                    {position: topLeft, uv: uvTl || {x:0, y:0}},
+                    {position: topRight},
+                    {position: bottomLeft},
+                    {position: bottomRight, uv: uvBr || {x:1, y:1}},
+                ];
             }
                     
             // increase sprites count
@@ -6909,6 +6988,7 @@ class SpriteBatch
         // draw elements
         gl.drawElements(gl.TRIANGLES, this._currBatchCount * 6, gl.UNSIGNED_SHORT, 0);
         this._gfx._drawCallsCount++;
+        this._gfx._drawQuadsCount += this._currBatchCount;
 
         // reset current counter
         this._currBatchCount = 0;

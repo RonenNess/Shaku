@@ -10,10 +10,14 @@
   <body>
     <div class="noselect">
     <button class="view-code-btn" onclick="showSampleCode();">View Code</button> 
-    <h1 class="demo-title">Shaku Gfx Demo: Performance Test</h1>
-      <p>This demo is a performance test to test the limits of Shaku on your machine, with optimal batching (ie this should create minimal draw calls).<br />
-      A multi-textured performance test (cause more draw calls per frame) can be found <a href="gfx_performance_multi_texture.html">here</a>.<br /><br />
+    <h1 class="demo-title">Shaku Gfx Demo: Performance Test - Static Sprites</h1>
+      <p>This demo is a performance test to examine the efficiency of the static sprite optimization.<br /><br />
       Press <b>Z</b> to add sprites, and <b>X</b> to remove sprites.</p>
+
+      <div>
+        <input type="checkbox" id="static-sprites" name="static-sprites" checked>
+        <label for="static-sprites">Use Static Sprites.</label>
+      </div>
 
       <p id="fps-data"></p>
 
@@ -41,6 +45,9 @@
 
           // create sprites group
           let group = new Shaku.gfx.SpritesGroup();
+          
+          // to detect changes
+          var _lastStaticValue = true;
 
           // add a new sprite to group
           function addSprite()
@@ -65,12 +72,15 @@
             // randomize velocity
             sprite.velocity = new Shaku.utils.Vector2(Math.random() * 2 - 1, Math.random() * 2 - 1);
 
+            // set as static
+            sprite.static = _lastStaticValue;
+
             // add to group
             group.add(sprite);
           }
 
           // create starting sprites
-          let spritesCount = 50000;
+          let spritesCount = 150000;
           for (let i = 0; i < spritesCount; ++i) {
             addSprite();
           }
@@ -85,28 +95,18 @@
             // draw sprites
             Shaku.gfx.drawGroup(group);
 
+            // check if should use static sprites
+            const staticSprites = document.getElementById('static-sprites').checked;
+            if (_lastStaticValue !== staticSprites) {
+              group.forEach(sprite => {
+                sprite.static = staticSprites;
+              });
+              _lastStaticValue = staticSprites;
+            }
+
             // add sprites
             if (Shaku.input.down('z')) { for (let x = 0; x < 100; ++x) addSprite(); }
             if (Shaku.input.down('x')) { for (let x = 0; x < 100 && group.count > 1; ++x) group.shift(); }
-
-            // animate stuff
-            group.forEach(sprite => {
-              
-              // move sprite
-              sprite.position.x += sprite.velocity.x * Shaku.gameTime.delta * 45;
-              sprite.position.y += sprite.velocity.y * Shaku.gameTime.delta * 45;
-              if ((sprite.velocity.x < 0 && sprite.position.x < 16) || (sprite.velocity.x > 0 && sprite.position.x > screenX - 16)) {
-                sprite.velocity.x *= -1;
-              }
-              if ((sprite.velocity.y < 0 && sprite.position.y < 24) || (sprite.velocity.y > 0 && sprite.position.y > screenY - 24)) {
-                sprite.velocity.y *= -1;
-              }
-
-              // rotate sprite
-              if (sprite.rotationSpeed) {
-                sprite.rotation += sprite.rotationSpeed * Shaku.gameTime.delta;
-              }
-            });
 
             // end frame and request next frame
             Shaku.endFrame();
