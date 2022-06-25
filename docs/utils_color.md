@@ -49,6 +49,7 @@ All color components are expected to be in 0.0 - 1.0 range (and not 0-255).
         * [.set(r, g, b, a)](#Color+set) ⇒ [<code>Color</code>](#Color)
         * [.setByte(r, g, b, a)](#Color+setByte) ⇒ [<code>Color</code>](#Color)
         * [.copy(other)](#Color+copy) ⇒ [<code>Color</code>](#Color)
+        * [.toDict()](#Color+toDict) ⇒ <code>\*</code>
         * [.clone()](#Color+clone) ⇒ <code>Number</code>
         * [.string()](#Color+string)
         * [.equals(other)](#Color+equals)
@@ -57,6 +58,7 @@ All color components are expected to be in 0.0 - 1.0 range (and not 0-255).
         * [.componentToHex(c)](#Color.componentToHex) ⇒ <code>String</code>
         * [.fromHex(val)](#Color.fromHex) ⇒ [<code>Color</code>](#Color)
         * [.fromDecimal(val, includeAlpha)](#Color.fromDecimal) ⇒ [<code>Color</code>](#Color)
+        * [.fromDict(data)](#Color.fromDict) ⇒ [<code>Color</code>](#Color)
         * [.random(includeAlpha)](#Color.random) ⇒ [<code>Color</code>](#Color)
         * [.fromBytesArray(bytes)](#Color.fromBytesArray) ⇒ [<code>Color</code>](#Color)
         * [.lerp(p1, p2, a)](#Color.lerp) ⇒ [<code>Color</code>](#Color)
@@ -211,6 +213,13 @@ Copy all component values from another color.
 | --- | --- | --- |
 | other | [<code>Color</code>](#Color) | Color to copy values from. |
 
+<a name="Color+toDict"></a>
+
+### color.toDict() ⇒ <code>\*</code>
+Convert to dictionary.
+
+**Kind**: instance method of [<code>Color</code>](#Color)  
+**Returns**: <code>\*</code> - Dictionary with {r,g,b,a}  
 <a name="Color+clone"></a>
 
 ### color.clone() ⇒ <code>Number</code>
@@ -278,6 +287,18 @@ Create color from decimal value.
 | --- | --- | --- |
 | val | <code>Number</code> | Number value (int). |
 | includeAlpha | <code>Number</code> | If true, will include alpha value. |
+
+<a name="Color.fromDict"></a>
+
+### Color.fromDict(data) ⇒ [<code>Color</code>](#Color)
+Create color from a dictionary.
+
+**Kind**: static method of [<code>Color</code>](#Color)  
+**Returns**: [<code>Color</code>](#Color) - Newly created color.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| data | <code>\*</code> | Dictionary with {r,g,b,a}. |
 
 <a name="Color.random"></a>
 

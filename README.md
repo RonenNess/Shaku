@@ -1860,12 +1860,12 @@ List of changes in released versions.
 - Added some degrees-related helper methods.
 - Added option to provide multiple key codes for main input methods.
 
-## 1.5.5 [WIP]
+## 1.5.5
 
 - Added some utils nice-to-have methods.
 - Fixed log typo.
 - Added static sprites optimization.
-- Added quadsDrawCount metric.
+- Added quads draw count metric.
 
 # License
 

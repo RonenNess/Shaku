@@ -46,6 +46,7 @@ A simple Vector object for 2d positions.
         * [.getRadians()](#Vector2+getRadians) ⇒ <code>Number</code>
         * [.string()](#Vector2+string)
         * [.toArray()](#Vector2+toArray) ⇒ <code>Array.&lt;Number&gt;</code>
+        * [.toDict()](#Vector2+toDict) ⇒ <code>\*</code>
     * _static_
         * [.zero](#Vector2.zero) ⇒ [<code>Vector2</code>](#Vector2)
         * [.one](#Vector2.one) ⇒ [<code>Vector2</code>](#Vector2)
@@ -66,6 +67,7 @@ A simple Vector object for 2d positions.
         * [.dot(p1, p2)](#Vector2.dot) ⇒ <code>Number</code>
         * [.parse(str)](#Vector2.parse) ⇒ [<code>Vector2</code>](#Vector2)
         * [.fromArray(arr)](#Vector2.fromArray) ⇒ [<code>Vector2</code>](#Vector2)
+        * [.fromDict(data)](#Vector2.fromDict) ⇒ [<code>Vector2</code>](#Vector2)
 
 <a name="new_Vector2_new"></a>
 
@@ -385,6 +387,13 @@ Convert to array of numbers.
 
 **Kind**: instance method of [<code>Vector2</code>](#Vector2)  
 **Returns**: <code>Array.&lt;Number&gt;</code> - Vector components as array.  
+<a name="Vector2+toDict"></a>
+
+### vector2.toDict() ⇒ <code>\*</code>
+Convert to dictionary.
+
+**Kind**: instance method of [<code>Vector2</code>](#Vector2)  
+**Returns**: <code>\*</code> - Dictionary with {x,y}  
 <a name="Vector2.zero"></a>
 
 ### Vector2.zero ⇒ [<code>Vector2</code>](#Vector2)
@@ -590,4 +599,16 @@ Create vector from array of numbers.
 | Param | Type | Description |
 | --- | --- | --- |
 | arr | <code>Array.&lt;Number&gt;</code> | Array of numbers to create vector from. |
+
+<a name="Vector2.fromDict"></a>
+
+### Vector2.fromDict(data) ⇒ [<code>Vector2</code>](#Vector2)
+Create vector from a dictionary.
+
+**Kind**: static method of [<code>Vector2</code>](#Vector2)  
+**Returns**: [<code>Vector2</code>](#Vector2) - Newly created vector.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| data | <code>\*</code> | Dictionary with {x,y}. |
 

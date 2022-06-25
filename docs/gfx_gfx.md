@@ -27,6 +27,7 @@ To access the Graphics manager you use `Shaku.gfx`.
     * [.TextureWrapModes](#Gfx+TextureWrapModes)
     * [.TextureFilterModes](#Gfx+TextureFilterModes)
     * [.drawCallsCount](#Gfx+drawCallsCount) ⇒ <code>Number</code>
+    * [.quadsDrawCount](#Gfx+quadsDrawCount) ⇒ <code>Number</code>
     * [.setContextAttributes(flags)](#Gfx+setContextAttributes)
     * [.setCanvas(element)](#Gfx+setCanvas)
     * [.createCamera(withViewport)](#Gfx+createCamera) ⇒ <code>Camera</code>
@@ -178,6 +179,13 @@ Get number of actual WebGL draw calls we performed since the beginning of the fr
 
 **Kind**: instance property of [<code>Gfx</code>](#Gfx)  
 **Returns**: <code>Number</code> - Number of WebGL draw calls this frame.  
+<a name="Gfx+quadsDrawCount"></a>
+
+### gfx.quadsDrawCount ⇒ <code>Number</code>
+Get number of textured / colored quads we drawn since the beginning of the frame.
+
+**Kind**: instance property of [<code>Gfx</code>](#Gfx)  
+**Returns**: <code>Number</code> - Number of quads drawn in this frame..  
 <a name="Gfx+setContextAttributes"></a>
 
 ### gfx.setContextAttributes(flags)

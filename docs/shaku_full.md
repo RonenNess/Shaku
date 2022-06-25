@@ -2005,6 +2005,7 @@ To access the Graphics manager you use `Shaku.gfx`.
     * [.TextureWrapModes](#Gfx+TextureWrapModes)
     * [.TextureFilterModes](#Gfx+TextureFilterModes)
     * [.drawCallsCount](#Gfx+drawCallsCount) ⇒ <code>Number</code>
+    * [.quadsDrawCount](#Gfx+quadsDrawCount) ⇒ <code>Number</code>
     * [.setContextAttributes(flags)](#Gfx+setContextAttributes)
     * [.setCanvas(element)](#Gfx+setCanvas)
     * [.createCamera(withViewport)](#Gfx+createCamera) ⇒ [<code>Camera</code>](#Camera)
@@ -2156,6 +2157,13 @@ Get number of actual WebGL draw calls we performed since the beginning of the fr
 
 **Kind**: instance property of [<code>Gfx</code>](#Gfx)  
 **Returns**: <code>Number</code> - Number of WebGL draw calls this frame.  
+<a name="Gfx+quadsDrawCount"></a>
+
+### gfx.quadsDrawCount ⇒ <code>Number</code>
+Get number of textured / colored quads we drawn since the beginning of the frame.
+
+**Kind**: instance property of [<code>Gfx</code>](#Gfx)  
+**Returns**: <code>Number</code> - Number of quads drawn in this frame..  
 <a name="Gfx+setContextAttributes"></a>
 
 ### gfx.setContextAttributes(flags)
@@ -2973,11 +2981,13 @@ This object is a helper class to hold all the properties of a texture to render.
     * [.origin](#Sprite+origin) : [<code>Vector2</code>](#Vector2)
     * [.skew](#Sprite+skew) : [<code>Vector2</code>](#Vector2)
     * [.color](#Sprite+color) : [<code>Color</code>](#Color) \| [<code>Array.&lt;Color&gt;</code>](#Color)
+    * [.static](#Sprite+static) : <code>Boolean</code>
     * [.flipX](#Sprite+flipX) ⇒ <code>Boolean</code>
     * [.flipX](#Sprite+flipX)
     * [.flipY](#Sprite+flipY) ⇒ <code>Boolean</code>
     * [.flipY](#Sprite+flipY)
     * [.clone()](#Sprite+clone) ⇒ [<code>Sprite</code>](#Sprite)
+    * [.updateStaticProperties()](#Sprite+updateStaticProperties)
 
 <a name="new_Sprite_new"></a>
 
@@ -3001,6 +3011,7 @@ Texture to use for this sprite.
 ### sprite.position : [<code>Vector2</code>](#Vector2) \| [<code>Vector3</code>](#Vector3)
 Sprite position.
 If Vector3 is provided, the z value will be passed to vertices position in shader code.
+This property is locked when static=true.
 
 **Kind**: instance property of [<code>Sprite</code>](#Sprite)  
 <a name="Sprite+size"></a>
@@ -3008,6 +3019,7 @@ If Vector3 is provided, the z value will be passed to vertices position in shade
 ### sprite.size : [<code>Vector2</code>](#Vector2) \| [<code>Vector3</code>](#Vector3)
 Sprite size.
 If Vector3 is provided, the z value will be passed to the bottom vertices position in shader code, as position.z + size.z.
+This property is locked when static=true.
 
 **Kind**: instance property of [<code>Sprite</code>](#Sprite)  
 <a name="Sprite+sourceRect"></a>
@@ -3015,6 +3027,7 @@ If Vector3 is provided, the z value will be passed to the bottom vertices positi
 ### sprite.sourceRect : [<code>Rectangle</code>](#Rectangle)
 Sprite source rectangle in texture.
 Null will take entire texture.
+This property is locked when static=true.
 
 **Kind**: instance property of [<code>Sprite</code>](#Sprite)  
 <a name="Sprite+blendMode"></a>
@@ -3027,18 +3040,21 @@ Sprite blend mode.
 
 ### sprite.rotation : <code>Number</code>
 Sprite rotation in radians.
+This property is locked when static=true.
 
 **Kind**: instance property of [<code>Sprite</code>](#Sprite)  
 <a name="Sprite+origin"></a>
 
 ### sprite.origin : [<code>Vector2</code>](#Vector2)
 Sprite origin point.
+This property is locked when static=true.
 
 **Kind**: instance property of [<code>Sprite</code>](#Sprite)  
 <a name="Sprite+skew"></a>
 
 ### sprite.skew : [<code>Vector2</code>](#Vector2)
 Skew the sprite corners on X and Y axis, around the origin point.
+This property is locked when static=true.
 
 **Kind**: instance property of [<code>Sprite</code>](#Sprite)  
 <a name="Sprite+color"></a>
@@ -3046,6 +3062,15 @@ Skew the sprite corners on X and Y axis, around the origin point.
 ### sprite.color : [<code>Color</code>](#Color) \| [<code>Array.&lt;Color&gt;</code>](#Color)
 Sprite color.
 If array is set, will assign each color to different vertex, starting from top-left.
+
+**Kind**: instance property of [<code>Sprite</code>](#Sprite)  
+<a name="Sprite+static"></a>
+
+### sprite.static : <code>Boolean</code>
+Is this a static sprite.
+Static sprites will only calculate vertices properties once, and reuse them in following render calls.
+This will improve performance, but also means that once the sprite is rendered once, changing things like position, size, rotation, etc.
+won't affect the output. To refresh the properties of a static sprite, you need to call updateStaticProperties() manually.
 
 **Kind**: instance property of [<code>Sprite</code>](#Sprite)  
 <a name="Sprite+flipX"></a>
@@ -3095,6 +3120,12 @@ Clone this sprite.
 
 **Kind**: instance method of [<code>Sprite</code>](#Sprite)  
 **Returns**: [<code>Sprite</code>](#Sprite) - cloned sprite.  
+<a name="Sprite+updateStaticProperties"></a>
+
+### sprite.updateStaticProperties()
+Manually update the static properties (position, size, rotation, origin, source rectangle, etc.) of a static sprite.
+
+**Kind**: instance method of [<code>Sprite</code>](#Sprite)  
 <a name="SpriteBatch"></a>
 
 ## SpriteBatch
@@ -4568,6 +4599,7 @@ All color components are expected to be in 0.0 - 1.0 range (and not 0-255).
         * [.set(r, g, b, a)](#Color+set) ⇒ [<code>Color</code>](#Color)
         * [.setByte(r, g, b, a)](#Color+setByte) ⇒ [<code>Color</code>](#Color)
         * [.copy(other)](#Color+copy) ⇒ [<code>Color</code>](#Color)
+        * [.toDict()](#Color+toDict) ⇒ <code>\*</code>
         * [.clone()](#Color+clone) ⇒ <code>Number</code>
         * [.string()](#Color+string)
         * [.equals(other)](#Color+equals)
@@ -4576,6 +4608,7 @@ All color components are expected to be in 0.0 - 1.0 range (and not 0-255).
         * [.componentToHex(c)](#Color.componentToHex) ⇒ <code>String</code>
         * [.fromHex(val)](#Color.fromHex) ⇒ [<code>Color</code>](#Color)
         * [.fromDecimal(val, includeAlpha)](#Color.fromDecimal) ⇒ [<code>Color</code>](#Color)
+        * [.fromDict(data)](#Color.fromDict) ⇒ [<code>Color</code>](#Color)
         * [.random(includeAlpha)](#Color.random) ⇒ [<code>Color</code>](#Color)
         * [.fromBytesArray(bytes)](#Color.fromBytesArray) ⇒ [<code>Color</code>](#Color)
         * [.lerp(p1, p2, a)](#Color.lerp) ⇒ [<code>Color</code>](#Color)
@@ -4730,6 +4763,13 @@ Copy all component values from another color.
 | --- | --- | --- |
 | other | [<code>Color</code>](#Color) | Color to copy values from. |
 
+<a name="Color+toDict"></a>
+
+### color.toDict() ⇒ <code>\*</code>
+Convert to dictionary.
+
+**Kind**: instance method of [<code>Color</code>](#Color)  
+**Returns**: <code>\*</code> - Dictionary with {r,g,b,a}  
 <a name="Color+clone"></a>
 
 ### color.clone() ⇒ <code>Number</code>
@@ -4797,6 +4837,18 @@ Create color from decimal value.
 | --- | --- | --- |
 | val | <code>Number</code> | Number value (int). |
 | includeAlpha | <code>Number</code> | If true, will include alpha value. |
+
+<a name="Color.fromDict"></a>
+
+### Color.fromDict(data) ⇒ [<code>Color</code>](#Color)
+Create color from a dictionary.
+
+**Kind**: static method of [<code>Color</code>](#Color)  
+**Returns**: [<code>Color</code>](#Color) - Newly created color.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| data | <code>\*</code> | Dictionary with {r,g,b,a}. |
 
 <a name="Color.random"></a>
 
@@ -5322,6 +5374,7 @@ Implement a simple 2d Rectangle.
         * [.top](#Rectangle+top) ⇒ <code>Number</code>
         * [.bottom](#Rectangle+bottom) ⇒ <code>Number</code>
         * [.set(x, y, width, height)](#Rectangle+set) ⇒ [<code>Rectangle</code>](#Rectangle)
+        * [.copy(other)](#Rectangle+copy) ⇒ [<code>Rectangle</code>](#Rectangle)
         * [.getPosition()](#Rectangle+getPosition) ⇒ [<code>Vector2</code>](#Vector2)
         * [.getSize()](#Rectangle+getSize) ⇒ [<code>Vector2</code>](#Vector2)
         * [.getCenter()](#Rectangle+getCenter) ⇒ [<code>Vector2</code>](#Vector2)
@@ -5338,9 +5391,11 @@ Implement a simple 2d Rectangle.
         * [.getBoundingCircle()](#Rectangle+getBoundingCircle) ⇒ [<code>Circle</code>](#Circle)
         * [.resize(amount)](#Rectangle+resize) ⇒ [<code>Rectangle</code>](#Rectangle)
         * [.equals(other)](#Rectangle+equals)
+        * [.toDict()](#Rectangle+toDict) ⇒ <code>\*</code>
     * _static_
         * [.fromPoints(points)](#Rectangle.fromPoints) ⇒ [<code>Rectangle</code>](#Rectangle)
         * [.lerp(p1, p2, a)](#Rectangle.lerp) ⇒ [<code>Rectangle</code>](#Rectangle)
+        * [.fromDict(data)](#Rectangle.fromDict) ⇒ [<code>Rectangle</code>](#Rectangle)
 
 <a name="new_Rectangle_new"></a>
 
@@ -5397,6 +5452,18 @@ Set rectangle values.
 | y | <code>Number</code> | Rectangle y position. |
 | width | <code>Number</code> | Rectangle width. |
 | height | <code>Number</code> | Rectangle height. |
+
+<a name="Rectangle+copy"></a>
+
+### rectangle.copy(other) ⇒ [<code>Rectangle</code>](#Rectangle)
+Copy another rectangle.
+
+**Kind**: instance method of [<code>Rectangle</code>](#Rectangle)  
+**Returns**: [<code>Rectangle</code>](#Rectangle) - this.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| other | <code>other</code> | Rectangle to copy. |
 
 <a name="Rectangle+getPosition"></a>
 
@@ -5538,6 +5605,13 @@ Check if equal to another rectangle.
 | --- | --- | --- |
 | other | [<code>Rectangle</code>](#Rectangle) | Other rectangle to compare to. |
 
+<a name="Rectangle+toDict"></a>
+
+### rectangle.toDict() ⇒ <code>\*</code>
+Convert to dictionary.
+
+**Kind**: instance method of [<code>Rectangle</code>](#Rectangle)  
+**Returns**: <code>\*</code> - Dictionary with {x,y,width,height}  
 <a name="Rectangle.fromPoints"></a>
 
 ### Rectangle.fromPoints(points) ⇒ [<code>Rectangle</code>](#Rectangle)
@@ -5563,6 +5637,18 @@ Lerp between two rectangles.
 | p1 | [<code>Rectangle</code>](#Rectangle) | First rectangles. |
 | p2 | [<code>Rectangle</code>](#Rectangle) | Second rectangles. |
 | a | <code>Number</code> | Lerp factor (0.0 - 1.0). |
+
+<a name="Rectangle.fromDict"></a>
+
+### Rectangle.fromDict(data) ⇒ [<code>Rectangle</code>](#Rectangle)
+Create rectangle from a dictionary.
+
+**Kind**: static method of [<code>Rectangle</code>](#Rectangle)  
+**Returns**: [<code>Rectangle</code>](#Rectangle) - Newly created rectangle.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| data | <code>\*</code> | Dictionary with {x,y,width,height}. |
 
 <a name="SeededRandom"></a>
 
@@ -5653,6 +5739,7 @@ A simple Vector object for 2d positions.
         * [.getRadians()](#Vector2+getRadians) ⇒ <code>Number</code>
         * [.string()](#Vector2+string)
         * [.toArray()](#Vector2+toArray) ⇒ <code>Array.&lt;Number&gt;</code>
+        * [.toDict()](#Vector2+toDict) ⇒ <code>\*</code>
     * _static_
         * [.zero](#Vector2.zero) ⇒ [<code>Vector2</code>](#Vector2)
         * [.one](#Vector2.one) ⇒ [<code>Vector2</code>](#Vector2)
@@ -5673,6 +5760,7 @@ A simple Vector object for 2d positions.
         * [.dot(p1, p2)](#Vector2.dot) ⇒ <code>Number</code>
         * [.parse(str)](#Vector2.parse) ⇒ [<code>Vector2</code>](#Vector2)
         * [.fromArray(arr)](#Vector2.fromArray) ⇒ [<code>Vector2</code>](#Vector2)
+        * [.fromDict(data)](#Vector2.fromDict) ⇒ [<code>Vector2</code>](#Vector2)
 
 <a name="new_Vector2_new"></a>
 
@@ -5992,6 +6080,13 @@ Convert to array of numbers.
 
 **Kind**: instance method of [<code>Vector2</code>](#Vector2)  
 **Returns**: <code>Array.&lt;Number&gt;</code> - Vector components as array.  
+<a name="Vector2+toDict"></a>
+
+### vector2.toDict() ⇒ <code>\*</code>
+Convert to dictionary.
+
+**Kind**: instance method of [<code>Vector2</code>](#Vector2)  
+**Returns**: <code>\*</code> - Dictionary with {x,y}  
 <a name="Vector2.zero"></a>
 
 ### Vector2.zero ⇒ [<code>Vector2</code>](#Vector2)
@@ -6198,6 +6293,18 @@ Create vector from array of numbers.
 | --- | --- | --- |
 | arr | <code>Array.&lt;Number&gt;</code> | Array of numbers to create vector from. |
 
+<a name="Vector2.fromDict"></a>
+
+### Vector2.fromDict(data) ⇒ [<code>Vector2</code>](#Vector2)
+Create vector from a dictionary.
+
+**Kind**: static method of [<code>Vector2</code>](#Vector2)  
+**Returns**: [<code>Vector2</code>](#Vector2) - Newly created vector.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| data | <code>\*</code> | Dictionary with {x,y}. |
+
 <a name="Vector3"></a>
 
 ## Vector3
@@ -6234,6 +6341,7 @@ A Vector object for 3d positions.
         * [.distanceTo(other)](#Vector3+distanceTo) ⇒ <code>Number</code>
         * [.string()](#Vector3+string)
         * [.toArray()](#Vector3+toArray) ⇒ <code>Array.&lt;Number&gt;</code>
+        * [.toDict()](#Vector3+toDict) ⇒ <code>\*</code>
     * _static_
         * [.zero](#Vector3.zero) ⇒ [<code>Vector3</code>](#Vector3)
         * [.one](#Vector3.one) ⇒ [<code>Vector3</code>](#Vector3)
@@ -6249,6 +6357,7 @@ A Vector object for 3d positions.
         * [.crossVector(p1, p2)](#Vector3.crossVector) ⇒ [<code>Vector3</code>](#Vector3)
         * [.parse(str)](#Vector3.parse) ⇒ [<code>Vector3</code>](#Vector3)
         * [.fromArray(arr)](#Vector3.fromArray) ⇒ [<code>Vector3</code>](#Vector3)
+        * [.fromDict(data)](#Vector3.fromDict) ⇒ [<code>Vector3</code>](#Vector3)
 
 <a name="new_Vector3_new"></a>
 
@@ -6506,6 +6615,13 @@ Convert to array of numbers.
 
 **Kind**: instance method of [<code>Vector3</code>](#Vector3)  
 **Returns**: <code>Array.&lt;Number&gt;</code> - Vector components as array.  
+<a name="Vector3+toDict"></a>
+
+### vector3.toDict() ⇒ <code>\*</code>
+Convert to dictionary.
+
+**Kind**: instance method of [<code>Vector3</code>](#Vector3)  
+**Returns**: <code>\*</code> - Dictionary with {x,y,z}  
 <a name="Vector3.zero"></a>
 
 ### Vector3.zero ⇒ [<code>Vector3</code>](#Vector3)
@@ -6632,4 +6748,16 @@ Create vector from array of numbers.
 | Param | Type | Description |
 | --- | --- | --- |
 | arr | <code>Array.&lt;Number&gt;</code> | Array of numbers to create vector from. |
+
+<a name="Vector3.fromDict"></a>
+
+### Vector3.fromDict(data) ⇒ [<code>Vector3</code>](#Vector3)
+Create vector from a dictionary.
+
+**Kind**: static method of [<code>Vector3</code>](#Vector3)  
+**Returns**: [<code>Vector3</code>](#Vector3) - Newly created vector.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| data | <code>\*</code> | Dictionary with {x,y,z}. |
 

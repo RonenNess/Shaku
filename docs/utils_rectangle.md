@@ -19,6 +19,7 @@ Implement a simple 2d Rectangle.
         * [.top](#Rectangle+top) ⇒ <code>Number</code>
         * [.bottom](#Rectangle+bottom) ⇒ <code>Number</code>
         * [.set(x, y, width, height)](#Rectangle+set) ⇒ [<code>Rectangle</code>](#Rectangle)
+        * [.copy(other)](#Rectangle+copy) ⇒ [<code>Rectangle</code>](#Rectangle)
         * [.getPosition()](#Rectangle+getPosition) ⇒ <code>Vector2</code>
         * [.getSize()](#Rectangle+getSize) ⇒ <code>Vector2</code>
         * [.getCenter()](#Rectangle+getCenter) ⇒ <code>Vector2</code>
@@ -35,9 +36,11 @@ Implement a simple 2d Rectangle.
         * [.getBoundingCircle()](#Rectangle+getBoundingCircle) ⇒ <code>Circle</code>
         * [.resize(amount)](#Rectangle+resize) ⇒ [<code>Rectangle</code>](#Rectangle)
         * [.equals(other)](#Rectangle+equals)
+        * [.toDict()](#Rectangle+toDict) ⇒ <code>\*</code>
     * _static_
         * [.fromPoints(points)](#Rectangle.fromPoints) ⇒ [<code>Rectangle</code>](#Rectangle)
         * [.lerp(p1, p2, a)](#Rectangle.lerp) ⇒ [<code>Rectangle</code>](#Rectangle)
+        * [.fromDict(data)](#Rectangle.fromDict) ⇒ [<code>Rectangle</code>](#Rectangle)
 
 <a name="new_Rectangle_new"></a>
 
@@ -94,6 +97,18 @@ Set rectangle values.
 | y | <code>Number</code> | Rectangle y position. |
 | width | <code>Number</code> | Rectangle width. |
 | height | <code>Number</code> | Rectangle height. |
+
+<a name="Rectangle+copy"></a>
+
+### rectangle.copy(other) ⇒ [<code>Rectangle</code>](#Rectangle)
+Copy another rectangle.
+
+**Kind**: instance method of [<code>Rectangle</code>](#Rectangle)  
+**Returns**: [<code>Rectangle</code>](#Rectangle) - this.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| other | <code>other</code> | Rectangle to copy. |
 
 <a name="Rectangle+getPosition"></a>
 
@@ -235,6 +250,13 @@ Check if equal to another rectangle.
 | --- | --- | --- |
 | other | [<code>Rectangle</code>](#Rectangle) | Other rectangle to compare to. |
 
+<a name="Rectangle+toDict"></a>
+
+### rectangle.toDict() ⇒ <code>\*</code>
+Convert to dictionary.
+
+**Kind**: instance method of [<code>Rectangle</code>](#Rectangle)  
+**Returns**: <code>\*</code> - Dictionary with {x,y,width,height}  
 <a name="Rectangle.fromPoints"></a>
 
 ### Rectangle.fromPoints(points) ⇒ [<code>Rectangle</code>](#Rectangle)
@@ -260,4 +282,16 @@ Lerp between two rectangles.
 | p1 | [<code>Rectangle</code>](#Rectangle) | First rectangles. |
 | p2 | [<code>Rectangle</code>](#Rectangle) | Second rectangles. |
 | a | <code>Number</code> | Lerp factor (0.0 - 1.0). |
+
+<a name="Rectangle.fromDict"></a>
+
+### Rectangle.fromDict(data) ⇒ [<code>Rectangle</code>](#Rectangle)
+Create rectangle from a dictionary.
+
+**Kind**: static method of [<code>Rectangle</code>](#Rectangle)  
+**Returns**: [<code>Rectangle</code>](#Rectangle) - Newly created rectangle.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| data | <code>\*</code> | Dictionary with {x,y,width,height}. |
 

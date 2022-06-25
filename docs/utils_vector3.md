@@ -40,6 +40,7 @@ A Vector object for 3d positions.
         * [.distanceTo(other)](#Vector3+distanceTo) ⇒ <code>Number</code>
         * [.string()](#Vector3+string)
         * [.toArray()](#Vector3+toArray) ⇒ <code>Array.&lt;Number&gt;</code>
+        * [.toDict()](#Vector3+toDict) ⇒ <code>\*</code>
     * _static_
         * [.zero](#Vector3.zero) ⇒ [<code>Vector3</code>](#Vector3)
         * [.one](#Vector3.one) ⇒ [<code>Vector3</code>](#Vector3)
@@ -55,6 +56,7 @@ A Vector object for 3d positions.
         * [.crossVector(p1, p2)](#Vector3.crossVector) ⇒ [<code>Vector3</code>](#Vector3)
         * [.parse(str)](#Vector3.parse) ⇒ [<code>Vector3</code>](#Vector3)
         * [.fromArray(arr)](#Vector3.fromArray) ⇒ [<code>Vector3</code>](#Vector3)
+        * [.fromDict(data)](#Vector3.fromDict) ⇒ [<code>Vector3</code>](#Vector3)
 
 <a name="new_Vector3_new"></a>
 
@@ -312,6 +314,13 @@ Convert to array of numbers.
 
 **Kind**: instance method of [<code>Vector3</code>](#Vector3)  
 **Returns**: <code>Array.&lt;Number&gt;</code> - Vector components as array.  
+<a name="Vector3+toDict"></a>
+
+### vector3.toDict() ⇒ <code>\*</code>
+Convert to dictionary.
+
+**Kind**: instance method of [<code>Vector3</code>](#Vector3)  
+**Returns**: <code>\*</code> - Dictionary with {x,y,z}  
 <a name="Vector3.zero"></a>
 
 ### Vector3.zero ⇒ [<code>Vector3</code>](#Vector3)
@@ -438,4 +447,16 @@ Create vector from array of numbers.
 | Param | Type | Description |
 | --- | --- | --- |
 | arr | <code>Array.&lt;Number&gt;</code> | Array of numbers to create vector from. |
+
+<a name="Vector3.fromDict"></a>
+
+### Vector3.fromDict(data) ⇒ [<code>Vector3</code>](#Vector3)
+Create vector from a dictionary.
+
+**Kind**: static method of [<code>Vector3</code>](#Vector3)  
+**Returns**: [<code>Vector3</code>](#Vector3) - Newly created vector.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| data | <code>\*</code> | Dictionary with {x,y,z}. |
 

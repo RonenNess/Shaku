@@ -23,11 +23,13 @@ This object is a helper class to hold all the properties of a texture to render.
     * [.origin](#Sprite+origin) : <code>Vector2</code>
     * [.skew](#Sprite+skew) : <code>Vector2</code>
     * [.color](#Sprite+color) : <code>Color</code> \| <code>Array.&lt;Color&gt;</code>
+    * [.static](#Sprite+static) : <code>Boolean</code>
     * [.flipX](#Sprite+flipX) ⇒ <code>Boolean</code>
     * [.flipX](#Sprite+flipX)
     * [.flipY](#Sprite+flipY) ⇒ <code>Boolean</code>
     * [.flipY](#Sprite+flipY)
     * [.clone()](#Sprite+clone) ⇒ [<code>Sprite</code>](#Sprite)
+    * [.updateStaticProperties()](#Sprite+updateStaticProperties)
 
 <a name="new_Sprite_new"></a>
 
@@ -51,6 +53,7 @@ Texture to use for this sprite.
 ### sprite.position : <code>Vector2</code> \| <code>Vector3</code>
 Sprite position.
 If Vector3 is provided, the z value will be passed to vertices position in shader code.
+This property is locked when static=true.
 
 **Kind**: instance property of [<code>Sprite</code>](#Sprite)  
 <a name="Sprite+size"></a>
@@ -58,6 +61,7 @@ If Vector3 is provided, the z value will be passed to vertices position in shade
 ### sprite.size : <code>Vector2</code> \| <code>Vector3</code>
 Sprite size.
 If Vector3 is provided, the z value will be passed to the bottom vertices position in shader code, as position.z + size.z.
+This property is locked when static=true.
 
 **Kind**: instance property of [<code>Sprite</code>](#Sprite)  
 <a name="Sprite+sourceRect"></a>
@@ -65,6 +69,7 @@ If Vector3 is provided, the z value will be passed to the bottom vertices positi
 ### sprite.sourceRect : <code>Rectangle</code>
 Sprite source rectangle in texture.
 Null will take entire texture.
+This property is locked when static=true.
 
 **Kind**: instance property of [<code>Sprite</code>](#Sprite)  
 <a name="Sprite+blendMode"></a>
@@ -77,18 +82,21 @@ Sprite blend mode.
 
 ### sprite.rotation : <code>Number</code>
 Sprite rotation in radians.
+This property is locked when static=true.
 
 **Kind**: instance property of [<code>Sprite</code>](#Sprite)  
 <a name="Sprite+origin"></a>
 
 ### sprite.origin : <code>Vector2</code>
 Sprite origin point.
+This property is locked when static=true.
 
 **Kind**: instance property of [<code>Sprite</code>](#Sprite)  
 <a name="Sprite+skew"></a>
 
 ### sprite.skew : <code>Vector2</code>
 Skew the sprite corners on X and Y axis, around the origin point.
+This property is locked when static=true.
 
 **Kind**: instance property of [<code>Sprite</code>](#Sprite)  
 <a name="Sprite+color"></a>
@@ -96,6 +104,15 @@ Skew the sprite corners on X and Y axis, around the origin point.
 ### sprite.color : <code>Color</code> \| <code>Array.&lt;Color&gt;</code>
 Sprite color.
 If array is set, will assign each color to different vertex, starting from top-left.
+
+**Kind**: instance property of [<code>Sprite</code>](#Sprite)  
+<a name="Sprite+static"></a>
+
+### sprite.static : <code>Boolean</code>
+Is this a static sprite.
+Static sprites will only calculate vertices properties once, and reuse them in following render calls.
+This will improve performance, but also means that once the sprite is rendered once, changing things like position, size, rotation, etc.
+won't affect the output. To refresh the properties of a static sprite, you need to call updateStaticProperties() manually.
 
 **Kind**: instance property of [<code>Sprite</code>](#Sprite)  
 <a name="Sprite+flipX"></a>
@@ -145,3 +162,9 @@ Clone this sprite.
 
 **Kind**: instance method of [<code>Sprite</code>](#Sprite)  
 **Returns**: [<code>Sprite</code>](#Sprite) - cloned sprite.  
+<a name="Sprite+updateStaticProperties"></a>
+
+### sprite.updateStaticProperties()
+Manually update the static properties (position, size, rotation, origin, source rectangle, etc.) of a static sprite.
+
+**Kind**: instance method of [<code>Sprite</code>](#Sprite)  
