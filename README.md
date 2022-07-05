@@ -1867,6 +1867,10 @@ List of changes in released versions.
 - Added static sprites optimization.
 - Added quads draw count metric.
 
+## 1.5.6 [WIP]
+
+- Added `Vector2.random`.
+
 # License
 
 *Shaku* is licensed under the permissive MIT license, so you can use it for any purpose (including commercially) and it should be compatible with most common licenses.
