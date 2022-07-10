@@ -1870,6 +1870,7 @@ List of changes in released versions.
 ## 1.5.6 [WIP]
 
 - Added `Vector2.random`.
+- Added support in methods as values in animators.
 
 # License
 

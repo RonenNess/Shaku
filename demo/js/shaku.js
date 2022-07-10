@@ -8948,7 +8948,7 @@ let _totalFrameTimes = 0;
 
 
 // current version
-const version = "1.5.5";
+const version = "1.5.6";
 
 /**
  * Shaku's main object.
@@ -9337,7 +9337,17 @@ class Animator
                     throw new Error(`Animator issue: missing origin value for key '${key}' and property not found in target object.`);
                 }
             }
+
+            // if to-value is a method, call it
+            if (typeof toValue === 'function') {
+                toValue = toValue();
+            }
             
+            // if from-value is a method, call it
+            if (typeof fromValue === 'function') {
+                fromValue = toValue();
+            }
+
             // get lerp factor
             let a = (this._smoothDamp && this._progress < 1) ? (this._progress * (1 + 1 - this._progress)) : this._progress;
 
@@ -9409,7 +9419,7 @@ class Animator
      */
     _validateValueType(value)
     {
-        return (typeof value === 'number') || (value && value.constructor && value.constructor.lerp);
+        return (typeof value === 'number') || (typeof value === 'function') || (value && value.constructor && value.constructor.lerp);
     }
 
     /**
@@ -9459,7 +9469,7 @@ class Animator
     {
         for (let key in values) {
             if (!this._validateValueType(values[key])) {
-                throw new Error("Illegal value type to use with Animator! All values must be either numbers, or a class instance that has a static lerp() method.");
+                throw new Error("Illegal value type to use with Animator! All values must be either numbers, methods, or a class instance that has a static lerp() method.");
             }
             this._fromValues[key] = values[key];
         }
@@ -9477,7 +9487,7 @@ class Animator
     {
         for (let key in values) {
             if (!this._validateValueType(values[key])) {
-                throw new Error("Illegal value type to use with Animator! All values must be either numbers, or a class instance that has a static lerp() method.");
+                throw new Error("Illegal value type to use with Animator! All values must be either numbers, methods, or a class instance that has a static lerp() method.");
             }
             this._toValues[key] = {keyParts: key.split('.'), value: values[key]};
         }
@@ -11916,6 +11926,15 @@ class Vector2
     static get down()
     {
         return new Vector2(0, 1);
+    }
+
+    /**
+     * Get a random vector with length of 1.
+     * @returns {Vector2} result vector.
+     */
+    static get random()
+    {
+        return Vector2.fromDegree(Math.random() * 360);
     }
 
     /**
