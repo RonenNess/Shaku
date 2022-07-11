@@ -8490,6 +8490,7 @@ class Sfx extends IManager
         if (playbackRate !== undefined) { sound.playbackRate = playbackRate; }
         if (preservesPitch !== undefined) { sound.preservesPitch = preservesPitch; }
         sound.play();
+        sound.disposeWhenDone();
     }
 
     /**
@@ -8592,6 +8593,30 @@ class SoundInstance
         this._sfx = sfxManager;
         this._audio = new Audio(url);
         this._volume = 1;
+    }
+
+    /**
+     * Dispose the audio object when done playing the sound.
+     * This will call dispose() automatically when audio ends.
+     */
+    disposeWhenDone()
+    {
+        this._audio.onended = () => {
+            this.dispose();
+        }
+    }
+
+    /**
+     * Dispose the audio object and clear its resources.
+     * When playing lots of sounds its important to call dispose on sounds you no longer use, to avoid getting hit by
+     * "Blocked attempt to create a WebMediaPlayer" exception.
+     */
+    dispose()
+    {
+        this._audio.src = "";
+        this._audio.srcObject = null;
+        this._audio.remove();
+        this._audio = null;
     }
 
     /**
