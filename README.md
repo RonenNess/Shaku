@@ -1871,6 +1871,8 @@ List of changes in released versions.
 
 - Added `Vector2.random`.
 - Added support in methods as values in animators.
+- Added dispose to sound effects + auto dispose when playing sound, to avoid hitting max media players limit.
+- Removed risky `constructor.name` usage from collision utils.
 
 # License
 

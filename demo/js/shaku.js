@@ -1681,23 +1681,23 @@ class Collision extends IManager
             _logger.info("Setup collision manager..");
 
             this.resolver._init();
-            this.resolver.setHandler(PointShape, PointShape, ResolverImp.pointPoint);
-            this.resolver.setHandler(PointShape, CircleShape, ResolverImp.pointCircle);
-            this.resolver.setHandler(PointShape, RectangleShape, ResolverImp.pointRectangle);
-            this.resolver.setHandler(PointShape, LinesShape, ResolverImp.pointLine);
-            this.resolver.setHandler(PointShape, TilemapShape, ResolverImp.pointTilemap);
+            this.resolver.setHandler("point", "point", ResolverImp.pointPoint);
+            this.resolver.setHandler("point", "circle", ResolverImp.pointCircle);
+            this.resolver.setHandler("point", "rect", ResolverImp.pointRectangle);
+            this.resolver.setHandler("point", "lines", ResolverImp.pointLine);
+            this.resolver.setHandler("point", "tilemap", ResolverImp.pointTilemap);
 
-            this.resolver.setHandler(CircleShape, CircleShape, ResolverImp.circleCircle);
-            this.resolver.setHandler(CircleShape, RectangleShape, ResolverImp.circleRectangle);
-            this.resolver.setHandler(CircleShape, LinesShape, ResolverImp.circleLine);
-            this.resolver.setHandler(CircleShape, TilemapShape, ResolverImp.circleTilemap);
+            this.resolver.setHandler("circle", "circle", ResolverImp.circleCircle);
+            this.resolver.setHandler("circle", "rect", ResolverImp.circleRectangle);
+            this.resolver.setHandler("circle", "lines", ResolverImp.circleLine);
+            this.resolver.setHandler("circle", "tilemap", ResolverImp.circleTilemap);
 
-            this.resolver.setHandler(RectangleShape, RectangleShape, ResolverImp.rectangleRectangle);
-            this.resolver.setHandler(RectangleShape, LinesShape, ResolverImp.rectangleLine);
-            this.resolver.setHandler(RectangleShape, TilemapShape, ResolverImp.rectangleTilemap);
+            this.resolver.setHandler("rect", "rect", ResolverImp.rectangleRectangle);
+            this.resolver.setHandler("rect", "lines", ResolverImp.rectangleLine);
+            this.resolver.setHandler("rect", "tilemap", ResolverImp.rectangleTilemap);
 
-            this.resolver.setHandler(LinesShape, LinesShape, ResolverImp.lineLine);
-            this.resolver.setHandler(LinesShape, TilemapShape, ResolverImp.lineTilemap);
+            this.resolver.setHandler("lines", "lines", ResolverImp.lineLine);
+            this.resolver.setHandler("lines", "tilemap", ResolverImp.lineTilemap);
 
             resolve();
         });
@@ -2369,22 +2369,22 @@ class CollisionResolver
     /**
      * Set the method used to test collision between two shapes.
      * Note: you don't need to register the same handler twice for reverse order, its done automatically inside.
-     * @param {Class} firstShapeClass The shape type the handler recieves as first argument.
-     * @param {Class} secondShapeClass The shape type the handler recieves as second argument.
+     * @param {String} firstShapeId The shape identifier the handler recieves as first argument.
+     * @param {String} secondShapeId The shape identifier the handler recieves as second argument.
      * @param {Function} handler Method to test collision between the shapes. Return false if don't collide, return either Vector2 with collision position or 'true' for collision.
      */
-    setHandler(firstShapeClass, secondShapeClass, handler)
+    setHandler(firstShapeId, secondShapeId, handler)
     {
-        _logger.debug(`Register handler for shapes '${firstShapeClass.name}' and '${secondShapeClass.name}'.`);
+        _logger.debug(`Register handler for shapes '${firstShapeId}' and '${secondShapeId}'.`);
 
         // register handler
-        if (!this._handlers[firstShapeClass.name]) { this._handlers[firstShapeClass.name] = {}; }
-        this._handlers[firstShapeClass.name][secondShapeClass.name] = handler;
+        if (!this._handlers[firstShapeId]) { this._handlers[firstShapeId] = {}; }
+        this._handlers[firstShapeId][secondShapeId] = handler;
 
         // register reverse order handler
-        if (firstShapeClass !== secondShapeClass) {
-            if (!this._handlers[secondShapeClass.name]) { this._handlers[secondShapeClass.name] = {}; }
-            this._handlers[secondShapeClass.name][firstShapeClass.name] = (f, s) => { return handler(s, f); };
+        if (firstShapeId !== secondShapeId) {
+            if (!this._handlers[secondShapeId]) { this._handlers[secondShapeId] = {}; }
+            this._handlers[secondShapeId][firstShapeId] = (f, s) => { return handler(s, f); };
         }
     }
 
@@ -2399,7 +2399,7 @@ class CollisionResolver
         // get method and make sure we got a handler
         let handler = this._getCollisionMethod(first, second);
         if (!handler) {
-            _logger.warn(`Missing collision handler for shapes '${first.constructor.name}' and '${second.constructor.name}'.`);
+            _logger.warn(`Missing collision handler for shapes '${first.shapeId}' and '${second.shapeId}'.`);
             return null;
         }
 
@@ -2425,8 +2425,9 @@ class CollisionResolver
      */
     _getCollisionMethod(first, second)
     {
-        if (this._handlers[first.constructor.name]) {
-            return this._handlers[first.constructor.name][second.constructor.name] || null;
+        let handlersFrom = this._handlers[first.shapeId];
+        if (handlersFrom) {
+            return handlersFrom[second.shapeId] || null;
         }
         return null;
     }
@@ -2690,6 +2691,14 @@ class CircleShape extends CollisionShape
     }
 
     /**
+     * @inheritdoc
+     */
+    get shapeId()
+    {
+        return "circle";
+    }
+
+    /**
      * Set this collision shape from circle.
      * @param {Circle} circle Circle shape.
      */
@@ -2782,6 +2791,14 @@ class LinesShape extends CollisionShape
         this.addLines(lines);
     }
 
+    /**
+     * @inheritdoc
+     */
+    get shapeId()
+    {
+        return "lines";
+    }
+    
     /**
      * Add line or lines to this collision shape.
      * @param {Array<Line>|Line} lines Line / lines to add.
@@ -2901,6 +2918,14 @@ class PointShape extends CollisionShape
     }
 
     /**
+     * @inheritdoc
+     */
+    get shapeId()
+    {
+        return "point";
+    }
+    
+    /**
      * Set this collision shape from vector2.
      * @param {Vector2} position Point position.
      */
@@ -2994,6 +3019,14 @@ class RectangleShape extends CollisionShape
     }
 
     /**
+     * @inheritdoc
+     */
+    get shapeId()
+    {
+        return "rect";
+    }
+
+    /**
      * Set this collision shape from rectangle.
      * @param {Rectangle} rectangle Rectangle shape.
      */
@@ -3083,6 +3116,15 @@ class CollisionShape
         this._debugColor = null;
         this._forceDebugColor = null;
         this._collisionFlags = Number.MAX_SAFE_INTEGER;
+    }
+
+    /**
+     * Get the collision shape's unique identifier.
+     * @returns {String} Shape's unique identifier
+     */
+    get shapeId()
+    {
+        throw new Error("Not Implemented!");
     }
 
     /**
@@ -3276,6 +3318,14 @@ class TilemapShape extends CollisionShape
         this._gridSize =  gridSize.clone();
         this._tileSize = tileSize.clone();
         this._tiles = {};
+    }
+
+    /**
+     * @inheritdoc
+     */
+    get shapeId()
+    {
+        return "tilemap";
     }
 
     /**
