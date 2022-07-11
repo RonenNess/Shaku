@@ -2138,8 +2138,9 @@ class CollisionWorld
             sortByDistanceShapes(sourceShape, options);
 
             // check collision sorted
-            for (let i = 0; i < options.length; ++i) {
-                result = this.resolver.test(sourceShape, options[i]);
+            var handlers = this.resolver.getHandlers(sourceShape);
+            for (let other of options) {
+                result = this.resolver.testWithHandler(sourceShape, other, handlers[other.shapeId]);
                 if (result) {
                     break;
                 }
@@ -2149,10 +2150,11 @@ class CollisionWorld
         else
         {
             // iterate possible shapes and test collision
+            var handlers = this.resolver.getHandlers(sourceShape);
             this._iterateBroadPhase(sourceShape, (other) => {
 
                 // test collision and continue iterating if we don't have a result
-                result = this.resolver.test(sourceShape, other);
+                result = this.resolver.testWithHandler(sourceShape, other, handlers[other.shapeId]);
                 return !result;
 
             }, mask, predicate);
@@ -2178,8 +2180,9 @@ class CollisionWorld
 
         // get collisions
         var ret = [];
+        var handlers = this.resolver.getHandlers(sourceShape);
         this._iterateBroadPhase(sourceShape, (other) => {
-            let result = this.resolver.test(sourceShape, other);
+            let result = this.resolver.testWithHandler(sourceShape, other, handlers[other.shapeId]);
             if (result) {
                 ret.push(result);
                 if (intermediateProcessor && intermediateProcessor(result) === false) {
@@ -2396,8 +2399,20 @@ class CollisionResolver
      */
     test(first, second)
     {
-        // get method and make sure we got a handler
         let handler = this._getCollisionMethod(first, second);
+        return this.testWithHandler(first, second, handler);
+    }
+
+    /**
+     * Check a collision between two shapes.
+     * @param {CollisionShape} first First collision shape to test.
+     * @param {CollisionShape} second Second collision shape to test.
+     * @param {Function} handler Method to test collision between the shapes.
+     * @returns {CollisionTestResult} collision detection result or null if they don't collide.
+     */
+    testWithHandler(first, second, handler)
+    {
+        // missing handler?
         if (!handler) {
             _logger.warn(`Missing collision handler for shapes '${first.shapeId}' and '${second.shapeId}'.`);
             return null;
@@ -2416,6 +2431,14 @@ class CollisionResolver
         return null;
     }
 
+    /**
+     * Get handlers dictionary for a given shape.
+     */
+    getHandlers(shape)
+    {
+        return this._handlers[shape.shapeId];
+    }
+    
     /**
      * Get the collision detection method for two given shapes.
      * @private
