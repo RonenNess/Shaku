@@ -1867,7 +1867,7 @@ List of changes in released versions.
 - Added static sprites optimization.
 - Added quads draw count metric.
 
-## 1.5.6 [WIP]
+## 1.5.6
 
 - Added `Vector2.random`.
 - Added support in methods as values in animators.
