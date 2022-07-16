@@ -1875,6 +1875,10 @@ List of changes in released versions.
 - Removed risky `constructor.name` usage from collision utils.
 - Minor optimization in collision detection.
 
+## 1.5.7 [WIP]
+
+- Added `Storage` utility.
+
 # License
 
 *Shaku* is licensed under the permissive MIT license, so you can use it for any purpose (including commercially) and it should be compatible with most common licenses.

@@ -1018,7 +1018,7 @@ function measureTextWidth(fontFamily, fontSize, char, extraWidth)
 
 // export the asset type.
 module.exports = FontTextureAsset;
-},{"../utils/rectangle":57,"../utils/vector2":59,"./asset":1,"./texture_asset":8}],5:[function(require,module,exports){
+},{"../utils/rectangle":57,"../utils/vector2":61,"./asset":1,"./texture_asset":8}],5:[function(require,module,exports){
 /**
  * Just an alias to main manager so we can require() this folder as a package.
  * 
@@ -1621,7 +1621,7 @@ function isPowerOf2(value) {
 
 // export the asset type.
 module.exports = TextureAsset;
-},{"../gfx/texture_filter_modes":35,"../gfx/texture_wrap_modes":36,"../logger.js":41,"../utils/color":50,"../utils/vector2":59,"./asset":1}],9:[function(require,module,exports){
+},{"../gfx/texture_filter_modes":35,"../gfx/texture_wrap_modes":36,"../logger.js":41,"../utils/color":50,"../utils/vector2":61,"./asset":1}],9:[function(require,module,exports){
 /**
  * Implement the collision manager.
  * 
@@ -1780,7 +1780,7 @@ class Collision extends IManager
 
 // export main object
 module.exports = new Collision();
-},{"../logger.js":41,"../manager.js":42,"../utils/vector2.js":59,"./collision_world.js":10,"./resolver":12,"./resolvers_imp":13,"./shapes/circle.js":15,"./shapes/lines.js":16,"./shapes/point.js":17,"./shapes/rectangle.js":18,"./shapes/tilemap.js":20}],10:[function(require,module,exports){
+},{"../logger.js":41,"../manager.js":42,"../utils/vector2.js":61,"./collision_world.js":10,"./resolver":12,"./resolvers_imp":13,"./shapes/circle.js":15,"./shapes/lines.js":16,"./shapes/point.js":17,"./shapes/rectangle.js":18,"./shapes/tilemap.js":20}],10:[function(require,module,exports){
 /**
  * Implement the collision manager.
  * 
@@ -2312,7 +2312,7 @@ function sortByDistanceShapes(sourceShape, options)
 
 // export collision world
 module.exports = CollisionWorld;
-},{"../logger.js":41,"../utils/circle":49,"../utils/color":50,"../utils/rectangle":57,"../utils/vector2":59,"./../gfx":27,"./resolver":12,"./result":14,"./shapes/circle":15,"./shapes/point":17,"./shapes/shape":19}],11:[function(require,module,exports){
+},{"../logger.js":41,"../utils/circle":49,"../utils/color":50,"../utils/rectangle":57,"../utils/vector2":61,"./../gfx":27,"./resolver":12,"./result":14,"./shapes/circle":15,"./shapes/point":17,"./shapes/shape":19}],11:[function(require,module,exports){
 /**
  * Just an alias to main manager so we can require() this folder as a package.
  * 
@@ -2458,7 +2458,7 @@ class CollisionResolver
 
 // export the collision resolver
 module.exports = CollisionResolver;
-},{"../logger.js":41,"../utils/vector2.js":59,"./result.js":14,"./shapes/shape.js":19}],13:[function(require,module,exports){
+},{"../logger.js":41,"../utils/vector2.js":61,"./result.js":14,"./shapes/shape.js":19}],13:[function(require,module,exports){
 /**
  * All default collision detection implementations.
  * 
@@ -2678,7 +2678,7 @@ class CollisionTestResult
 
 // export collision shape class
 module.exports = CollisionTestResult;
-},{"../utils/vector2":59,"./shapes/shape":19}],15:[function(require,module,exports){
+},{"../utils/vector2":61,"./shapes/shape":19}],15:[function(require,module,exports){
 /**
  * Implement collision circle.
  * 
@@ -3007,7 +3007,7 @@ class PointShape extends CollisionShape
 
 // export collision shape class
 module.exports = PointShape;
-},{"../../utils/circle":49,"../../utils/rectangle":57,"../../utils/vector2":59,"./../../gfx":27,"./shape":19}],18:[function(require,module,exports){
+},{"../../utils/circle":49,"../../utils/rectangle":57,"../../utils/vector2":61,"./../../gfx":27,"./shape":19}],18:[function(require,module,exports){
 /**
  * Implement collision rectangle.
  * 
@@ -3293,7 +3293,7 @@ const defaultDebugColors = [Color.red, Color.blue, Color.green, Color.yellow, Co
 
 // export collision shape class
 module.exports = CollisionShape;
-},{"../../utils/color":50,"../../utils/rectangle":57,"../../utils/vector2":59,"../collision_world":10}],20:[function(require,module,exports){
+},{"../../utils/color":50,"../../utils/rectangle":57,"../../utils/vector2":61,"../collision_world":10}],20:[function(require,module,exports){
 /**
  * Implement collision tilemap.
  * 
@@ -3490,7 +3490,7 @@ class TilemapShape extends CollisionShape
 
 // export collision shape class
 module.exports = TilemapShape;
-},{"../../utils/rectangle":57,"../../utils/vector2":59,"./../../gfx":27,"./rectangle":18,"./shape":19}],21:[function(require,module,exports){
+},{"../../utils/rectangle":57,"../../utils/vector2":61,"./../../gfx":27,"./rectangle":18,"./shape":19}],21:[function(require,module,exports){
 /**
  * Define supported blend modes.
  * 
@@ -3645,7 +3645,7 @@ class Camera
 
 // export the camera object
 module.exports = Camera;
-},{"../utils/rectangle":57,"../utils/vector2":59,"./matrix":28}],23:[function(require,module,exports){
+},{"../utils/rectangle":57,"../utils/vector2":61,"./matrix":28}],23:[function(require,module,exports){
 /**
  * Implement a basic effect to draw sprites.
  * 
@@ -5929,7 +5929,7 @@ class Gfx extends IManager
 
 // export main object
 module.exports = new Gfx();
-},{"../assets/font_texture_asset.js":4,"../assets/texture_asset.js":8,"../logger.js":41,"../manager.js":42,"../utils/circle.js":49,"../utils/color.js":50,"../utils/rectangle.js":57,"../utils/vector2.js":59,"../utils/vector3.js":60,"./blend_modes.js":21,"./camera.js":22,"./effects":25,"./matrix.js":28,"./mesh.js":29,"./mesh_generator.js":30,"./sprite.js":31,"./sprite_batch.js":32,"./sprites_group.js":33,"./text_alignment.js":34,"./texture_filter_modes.js":35,"./texture_wrap_modes.js":36}],27:[function(require,module,exports){
+},{"../assets/font_texture_asset.js":4,"../assets/texture_asset.js":8,"../logger.js":41,"../manager.js":42,"../utils/circle.js":49,"../utils/color.js":50,"../utils/rectangle.js":57,"../utils/vector2.js":61,"../utils/vector3.js":62,"./blend_modes.js":21,"./camera.js":22,"./effects":25,"./matrix.js":28,"./mesh.js":29,"./mesh_generator.js":30,"./sprite.js":31,"./sprite_batch.js":32,"./sprites_group.js":33,"./text_alignment.js":34,"./texture_filter_modes.js":35,"./texture_wrap_modes.js":36}],27:[function(require,module,exports){
 /**
  * Just an alias to main manager so we can require() this folder as a package.
  * 
@@ -6601,7 +6601,7 @@ class Sprite
 
 // export the sprite class.
 module.exports = Sprite;
-},{"../assets/texture_asset":8,"../utils/color":50,"../utils/rectangle":57,"../utils/vector2":59,"../utils/vector3":60,"./blend_modes":21}],32:[function(require,module,exports){
+},{"../assets/texture_asset":8,"../utils/color":50,"../utils/rectangle":57,"../utils/vector2":61,"../utils/vector3":62,"./blend_modes":21}],32:[function(require,module,exports){
 /**
  * Implement the gfx sprite batch renderer.
  * 
@@ -7091,7 +7091,7 @@ class Vertex
 
 // export the sprite batch class
 module.exports = SpriteBatch;
-},{"../logger.js":41,"../utils":52,"../utils/vector2":59,"../utils/vector3":60,"./blend_modes":21,"./matrix":28,"./mesh":29}],33:[function(require,module,exports){
+},{"../logger.js":41,"../utils":52,"../utils/vector2":61,"../utils/vector3":62,"./blend_modes":21,"./matrix":28,"./mesh":29}],33:[function(require,module,exports){
 /**
  * Define a sprites group.
  * 
@@ -7246,7 +7246,7 @@ class SpritesGroup
 
 // export the sprites group class.
 module.exports = SpritesGroup;
-},{"../utils/color":50,"../utils/vector2":59,"./matrix":28,"./sprite":31}],34:[function(require,module,exports){
+},{"../utils/color":50,"../utils/vector2":61,"./matrix":28,"./sprite":31}],34:[function(require,module,exports){
 /**
  * Define possible text alignments.
  * 
@@ -8078,7 +8078,7 @@ class Input extends IManager
 
 // export main object
 module.exports = new Input();
-},{"../logger.js":41,"../manager.js":42,"../utils/vector2.js":59,"./key_codes.js":40}],40:[function(require,module,exports){
+},{"../logger.js":41,"../manager.js":42,"../utils/vector2.js":61,"./key_codes.js":40}],40:[function(require,module,exports){
 /**
  * Define keyboard and mouse key codes.
  * 
@@ -9772,7 +9772,7 @@ class Circle
 
 // export the circle class
 module.exports = Circle;
-},{"./math_helper":54,"./vector2":59}],50:[function(require,module,exports){
+},{"./math_helper":54,"./vector2":61}],50:[function(require,module,exports){
 /**
  * Define a color object.
  * 
@@ -10372,9 +10372,11 @@ module.exports = GameTime;
     MathHelper: require('./math_helper'),
     SeededRandom: require('./seeded_random'),
     Perlin: require('./perlin'),
+    Storage: require('./storage'),
+    StorageAdapter: require('./storage_adapter'),
     PathFinder: require('./path_finder')
  };
-},{"./animator":48,"./circle":49,"./color":50,"./game_time":51,"./line":53,"./math_helper":54,"./path_finder":55,"./perlin":56,"./rectangle":57,"./seeded_random":58,"./vector2":59,"./vector3":60}],53:[function(require,module,exports){
+},{"./animator":48,"./circle":49,"./color":50,"./game_time":51,"./line":53,"./math_helper":54,"./path_finder":55,"./perlin":56,"./rectangle":57,"./seeded_random":58,"./storage":59,"./storage_adapter":60,"./vector2":61,"./vector3":62}],53:[function(require,module,exports){
 /**
  * Implement a simple 2d line.
  * 
@@ -10530,7 +10532,7 @@ class Line
 
 // export the line class
 module.exports = Line;
-},{"./vector2":59}],54:[function(require,module,exports){
+},{"./vector2":61}],54:[function(require,module,exports){
 /**
  * Implement a math utilities class.
  * 
@@ -10964,7 +10966,7 @@ const PathFinder = {
     IGrid: IGrid
 };
 module.exports = PathFinder;
-},{"./vector2":59}],56:[function(require,module,exports){
+},{"./vector2":61}],56:[function(require,module,exports){
 /**
  * Implements 2d perlin noise generator.
  * Based on code from noisejs by Stefan Gustavson.
@@ -11578,7 +11580,7 @@ function pointLineDistance(p1, l1, l2) {
 
 // export the rectangle class
 module.exports = Rectangle;
-},{"./circle":49,"./line":53,"./math_helper":54,"./vector2":59}],58:[function(require,module,exports){
+},{"./circle":49,"./line":53,"./math_helper":54,"./vector2":61}],58:[function(require,module,exports){
 /**
  * Implement a seeded random generator.
  * 
@@ -11646,6 +11648,434 @@ class SeededRandom
 // export the seeded random class.
 module.exports = SeededRandom;
 },{}],59:[function(require,module,exports){
+/**
+ * Implement a storage wrapper.
+ * 
+ * |-- copyright and license --|
+ * @package    Shaku
+ * @file       shaku\lib\utils\seeded_random.js
+ * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
+ * @copyright  (c) 2021 Ronen Ness
+ * @license    MIT
+ * |-- end copyright and license --|
+ * 
+ */
+'use strict';
+const StorageAdapter = require("./storage_adapter");
+
+
+/**
+ * A thin wrapper layer around storage utility.
+ */
+class Storage
+{
+    /**
+     * Create the storage.
+     * @param {Array<StorageAdapter>} adapters List of storage adapters to pick from. Will use the first option returning 'isValid()' = true.
+     * @param {String} prefix Optional prefix to add to all keys under this storage instance.
+     */
+    constructor(adapters, prefix)
+    {
+        // default adapters
+        adapters = adapters || Storage.defaultAdapters;
+
+        // choose adapter
+        this._adapter = null;
+        for (let adapter of adapters) {
+            if (adapter.isValid()) {
+                this._adapter = adapter;
+                break;
+            }
+        }
+
+        // set prefix
+        this._keysPrefix = 'shaku_storage_' + (prefix || '') + '_';
+    }
+
+    /**
+     * Return if this storage adapter is persistent storage or not.
+     * @returns {Boolean} True if this storage type is persistent.
+     */
+    get persistent()
+    {
+        return this.isValid() && this._adapter.persistent;
+    }
+
+    /**
+     * Check if this storage instance has a valid adapter.
+     * @returns {Boolean} True if found a valid adapter to use, false otherwise.
+     */
+    isValid()
+    {
+        return Boolean(this._adapter);
+    }
+
+    /**
+     * Convert key to string and add prefix if needed.
+     * @private
+     * @param {String} key Key to normalize.
+     * @returns {String} Normalized key.
+     */
+    normalizeKey(key)
+    {
+        return this._keysPrefix + key.toString();
+    }
+
+    /**
+     * Check if a key exists.
+     * @param {String} key Key to check.
+     * @returns {Boolean} True if key exists in storage.
+     */
+    exists(key)
+    {
+        if (typeof key !== 'string') { throw new Error("Key must be a string!"); }
+        key = this.normalizeKey(key);
+        return this._adapter.exists(key);
+    }
+
+    /**
+     * Set value.
+     * @private
+     */
+    _set(key, value)
+    {
+        value = JSON.stringify({
+            data: value,
+            timestamp: (new Date()).getTime(),
+            src: "Shaku",
+            sver: 1.0
+        });
+        this._adapter.setItem(key, value);
+    }
+
+    /**
+     * Set value.
+     * @param {String} key Key to set.
+     * @param {String} value Value to set.
+     */
+    setItem(key, value)
+    {
+        // sanity and normalize key
+        if (typeof key !== 'string') { throw new Error("Key must be a string!"); }
+        if (typeof value !== 'string') { throw new Error("Value must be a string!"); }
+        key = this.normalizeKey(key);
+
+        // write value with metadata
+        this._set(key, value);
+    }
+
+    /**
+     * Get value.
+     * @param {String} key Key to get.
+     * @returns {String} Value or null if not set.
+     */
+    getItem(key)
+    {
+        // sanity and normalize key
+        if (typeof key !== 'string') { throw new Error("Key must be a string!"); }
+        key = this.normalizeKey(key);
+
+        // get value with metadata
+        const ret = this._adapter.getItem(key);
+
+        // not found? return null
+        if (!ret) {
+            return null;
+        }
+
+        // extract just data
+        return JSON.parse(ret).data;
+    }
+
+    /**
+     * Get value and JSON parse it.
+     * @param {String} key Key to get.
+     * @returns {*} Value as a dictionary object or null if not set.
+     */
+    getJson(key)
+    {
+        return this.getItem(key) || null;
+    }
+
+    /**
+     * Set value as JSON.
+     * @param {String} key Key to set.
+     * @param {*} value Value to set as a dictionary.
+     */
+    setJson(key, value)
+    {
+        key = this.normalizeKey(key);
+        this._set(key, value);
+    }
+
+    /**
+     * Delete value.
+     * @param {String} key Key to delete.
+     */
+    deleteItem(key)
+    {
+        if (typeof key !== 'string') { throw new Error("Key must be a string!"); }
+        key = this.normalizeKey(key);
+        this._adapter.deleteItem(key);
+    }
+    
+    /**
+     * Clear all values from this storage instance, based on prefix + adapter type.
+     */
+    clear()
+    {
+        this._adapter.clear(this._keysPrefix);
+    }
+}
+
+
+/**
+ * Default adapters to use when no adapters list is provided.
+ */
+Storage.defaultAdapters = [new StorageAdapter.localStorage(), new StorageAdapter.memory()];
+
+
+// export the storage class
+module.exports = Storage;
+},{"./storage_adapter":60}],60:[function(require,module,exports){
+/**
+ * Implement a storage adapter.
+ * 
+ * |-- copyright and license --|
+ * @package    Shaku
+ * @file       shaku\lib\utils\seeded_random.js
+ * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
+ * @copyright  (c) 2021 Ronen Ness
+ * @license    MIT
+ * |-- end copyright and license --|
+ * 
+ */
+'use strict';
+
+
+/**
+ * Storage adapter class that implement access to a storage device.
+ * Used by the Storage utilitiy.
+ */
+class StorageAdapter
+{
+    /**
+     * Return if this storage adapter is persistent storage or not.
+     * @returns {Boolean} True if this storage type is persistent.
+     */
+    get persistent()
+    {
+        throw new Error("Not Implemented.");
+    }
+
+    /**
+     * Check if this adapter is OK to be used.
+     * For example, an adapter for localStorage will make sure it exists and not null.
+     * @returns {Boolean} True if storage adapter is valid to be used.
+     */
+    isValid()
+    {
+        throw new Error("Not Implemented.");
+    }
+
+    /**
+     * Check if a key exists.
+     * @param {String} key Key to check.
+     * @returns {Boolean} True if key exists in storage.
+     */
+    exists(key)
+    {
+        throw new Error("Not Implemented.");
+    }
+
+    /**
+     * Set value.
+     * @param {String} key Key to set.
+     * @param {String} value Value to set.
+     */
+    setItem(key, value)
+    {
+        throw new Error("Not Implemented.");
+    }
+
+    /**
+     * Get value.
+     * @param {String} key Key to get.
+     * @returns {String} Value or null if not set.
+     */
+    getItem(key)
+    {
+        throw new Error("Not Implemented.");
+    }
+
+    /**
+     * Delete value.
+     * @param {String} key Key to delete.
+     */
+    deleteItem(key)
+    {
+        throw new Error("Not Implemented.");
+    }
+    
+    /**
+     * Clear all values from this storage device.
+     * @param {String} prefix Storage keys prefix.
+     */
+    clear(prefix)
+    {
+        throw new Error("Not Implemented.");
+    }
+}
+
+
+/**
+ * Implement simple memory storage adapter.
+ */
+class StorageAdapterMemory
+{
+    /**
+     * Create the memory storage adapter.
+     */
+    constructor()
+    {
+        this._data = {};
+    }
+
+    /**
+     * @inheritdoc
+     */
+    get persistent()
+    {
+        return false;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    isValid()
+    {
+        return true;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    exists(key)
+    {
+        return Boolean(this._data[key]);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    setItem(key, value)
+    {
+        this._data[key] = value;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    getItem(key)
+    {
+        return this._data[key];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    deleteItem(key)
+    {
+        delete this._data[key];
+    }
+    
+    /**
+     * @inheritdoc
+     */
+    clear(prefix)
+    {
+        for (let key in this._data) {
+            if (key.indexOf(prefix) === 0) {
+                delete this._data[key];
+            }
+        }
+    }
+}
+StorageAdapter.memory = StorageAdapterMemory;
+
+
+/**
+ * Implement simple localstorage storage adapter.
+ */
+class StorageAdapterLocalStorage
+{
+    /**
+     * @inheritdoc
+     */
+    get persistent()
+    {
+        return true;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    isValid()
+    {
+        return (typeof localStorage !== "undefined") && (localStorage !== null);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    exists(key)
+    {
+        return localStorage.getItem(key) !== null;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    setItem(key, value)
+    {
+        localStorage.setItem(key, value);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    getItem(key)
+    {
+        return localStorage.getItem(key);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    deleteItem(key)
+    {
+        localStorage.deleteItem(key);
+    }
+    
+    /**
+     * @inheritdoc
+     */
+    clear(prefix)
+    {
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key.indexOf(prefix) === 0) {
+                delete localStorage.deleteItem(key);
+            }
+        }
+    }
+}
+StorageAdapter.localStorage = StorageAdapterLocalStorage;
+
+
+// export the storage adapter class
+module.exports = StorageAdapter;
+},{}],61:[function(require,module,exports){
 /**
  * Implement a simple 2d vector.
  * 
@@ -12288,7 +12718,7 @@ class Vector2
 
 // export vector object
 module.exports = Vector2;
-},{"./math_helper":54}],60:[function(require,module,exports){
+},{"./math_helper":54}],62:[function(require,module,exports){
 /**
  * Implement a 3d vector.
  * 
