@@ -15,6 +15,7 @@ Its the most efficient (both memory and CPU) way to implement grid based / tilem
 
 * [TilemapShape](#TilemapShape)
     * [new TilemapShape(offset, gridSize, tileSize, borderThickness)](#new_TilemapShape_new)
+    * [.shapeId](#TilemapShape+shapeId)
     * [.setTile(index, haveCollision, collisionFlags)](#TilemapShape+setTile)
     * [.getTileAt(position)](#TilemapShape+getTileAt) ⇒ <code>RectangleShape</code>
     * [.iterateTilesAtRegion(region, callback)](#TilemapShape+iterateTilesAtRegion)
@@ -37,6 +38,10 @@ Create the collision tilemap.
 | tileSize | <code>Vector2</code> | The size of a single tile. |
 | borderThickness | <code>Number</code> | Set a border collider with this thickness. |
 
+<a name="TilemapShape+shapeId"></a>
+
+### tilemapShape.shapeId
+**Kind**: instance property of [<code>TilemapShape</code>](#TilemapShape)  
 <a name="TilemapShape+setTile"></a>
 
 ### tilemapShape.setTile(index, haveCollision, collisionFlags)

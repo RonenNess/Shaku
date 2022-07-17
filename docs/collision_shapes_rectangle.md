@@ -13,6 +13,7 @@ Collision rectangle class.
 
 * [RectangleShape](#RectangleShape)
     * [new RectangleShape(rectangle)](#new_RectangleShape_new)
+    * [.shapeId](#RectangleShape+shapeId)
     * [.setShape(rectangle)](#RectangleShape+setShape)
     * [._getRadius()](#RectangleShape+_getRadius)
     * [._getBoundingBox()](#RectangleShape+_getBoundingBox)
@@ -29,6 +30,10 @@ Create the collision shape.
 | --- | --- | --- |
 | rectangle | <code>Rectangle</code> | the rectangle shape. |
 
+<a name="RectangleShape+shapeId"></a>
+
+### rectangleShape.shapeId
+**Kind**: instance property of [<code>RectangleShape</code>](#RectangleShape)  
 <a name="RectangleShape+setShape"></a>
 
 ### rectangleShape.setShape(rectangle)

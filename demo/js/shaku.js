@@ -11653,7 +11653,7 @@ module.exports = SeededRandom;
  * 
  * |-- copyright and license --|
  * @package    Shaku
- * @file       shaku\lib\utils\seeded_random.js
+ * @file       shaku\lib\utils\storage.js
  * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
  * @copyright  (c) 2021 Ronen Ness
  * @license    MIT
@@ -11673,11 +11673,18 @@ class Storage
      * Create the storage.
      * @param {Array<StorageAdapter>} adapters List of storage adapters to pick from. Will use the first option returning 'isValid()' = true.
      * @param {String} prefix Optional prefix to add to all keys under this storage instance.
+     * @param {Boolean} valuesAsBase64 If true, will encode and decode data as base64.
+     * @param {Boolean} keysAsBase64 If true, will encode and decode keys as base64.
      */
-    constructor(adapters, prefix)
+    constructor(adapters, prefix, valuesAsBase64, keysAsBase64)
     {
         // default adapters
         adapters = adapters || Storage.defaultAdapters;
+
+        // default to array
+        if (!(adapters instanceof Array)) {
+            adapters = [adapters];
+        }
 
         // choose adapter
         this._adapter = null;
@@ -11687,6 +11694,10 @@ class Storage
                 break;
             }
         }
+
+        // set if should use base64
+        this.valuesAsBase64 = Boolean(valuesAsBase64);
+        this.keysAsBase64 = Boolean(keysAsBase64);
 
         // set prefix
         this._keysPrefix = 'shaku_storage_' + (prefix || '') + '_';
@@ -11705,7 +11716,7 @@ class Storage
      * Check if this storage instance has a valid adapter.
      * @returns {Boolean} True if found a valid adapter to use, false otherwise.
      */
-    isValid()
+    get isValid()
     {
         return Boolean(this._adapter);
     }
@@ -11718,7 +11729,11 @@ class Storage
      */
     normalizeKey(key)
     {
-        return this._keysPrefix + key.toString();
+        key = this._keysPrefix + key.toString();
+        if (this.keysAsBase64) {
+            key = btoa(key);
+        }
+        return key;
     }
 
     /**
@@ -11739,15 +11754,59 @@ class Storage
      */
     _set(key, value)
     {
+        // json stringify
         value = JSON.stringify({
             data: value,
             timestamp: (new Date()).getTime(),
             src: "Shaku",
             sver: 1.0
         });
+
+        // convert to base64
+        if (this.valuesAsBase64) {
+            value = btoa(value);
+        }
+
+        // store value
         this._adapter.setItem(key, value);
     }
 
+    /**
+     * Get value.
+     * @private
+     */
+    _get(key)
+    {
+        // get value
+        var value = this._adapter.getItem(key);
+
+        // not found? return null
+        if (value === null) {
+            return null;
+        }
+
+        // convert from base64
+        if (this.valuesAsBase64) {
+            try {
+                value = atob(value);
+            }
+            catch (e) {
+                throw new Error("Failed to parse Base64 string while reading data. Did you try to read a value as Base64 that wasn't encoded as Base64 when written to storage?");
+            }
+        }
+
+        // parse json
+        try {
+            value = JSON.parse(value);
+        }
+        catch (e) {
+            throw new Error("Failed to JSON-parse data from storage. Did you try to read something that wasn't written with the Storage utility?");
+        }
+
+        // return value
+        return value.data;
+    }
+    
     /**
      * Set value.
      * @param {String} key Key to set.
@@ -11757,7 +11816,6 @@ class Storage
     {
         // sanity and normalize key
         if (typeof key !== 'string') { throw new Error("Key must be a string!"); }
-        if (typeof value !== 'string') { throw new Error("Value must be a string!"); }
         key = this.normalizeKey(key);
 
         // write value with metadata
@@ -11775,16 +11833,8 @@ class Storage
         if (typeof key !== 'string') { throw new Error("Key must be a string!"); }
         key = this.normalizeKey(key);
 
-        // get value with metadata
-        const ret = this._adapter.getItem(key);
-
-        // not found? return null
-        if (!ret) {
-            return null;
-        }
-
-        // extract just data
-        return JSON.parse(ret).data;
+        // read value from metadata
+        return this._get(key);
     }
 
     /**
@@ -11832,7 +11882,7 @@ class Storage
 /**
  * Default adapters to use when no adapters list is provided.
  */
-Storage.defaultAdapters = [new StorageAdapter.localStorage(), new StorageAdapter.memory()];
+Storage.defaultAdapters = [new StorageAdapter.localStorage(), new StorageAdapter.sessionStorage(), new StorageAdapter.memory()];
 
 
 // export the storage class
@@ -11843,7 +11893,7 @@ module.exports = Storage;
  * 
  * |-- copyright and license --|
  * @package    Shaku
- * @file       shaku\lib\utils\seeded_random.js
+ * @file       shaku\lib\utils\storage_adapter.js
  * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
  * @copyright  (c) 2021 Ronen Ness
  * @license    MIT
@@ -12071,6 +12121,75 @@ class StorageAdapterLocalStorage
     }
 }
 StorageAdapter.localStorage = StorageAdapterLocalStorage;
+
+
+/**
+ * Implement simple sessionStorage storage adapter.
+ */
+class StorageAdapterSessionStorage
+{
+    /**
+     * @inheritdoc
+     */
+    get persistent()
+    {
+        return false;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    isValid()
+    {
+        return (typeof sessionStorage !== "undefined") && (sessionStorage !== null);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    exists(key)
+    {
+        return sessionStorage.getItem(key) !== null;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    setItem(key, value)
+    {
+        sessionStorage.setItem(key, value);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    getItem(key)
+    {
+        return sessionStorage.getItem(key);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    deleteItem(key)
+    {
+        sessionStorage.deleteItem(key);
+    }
+    
+    /**
+     * @inheritdoc
+     */
+    clear(prefix)
+    {
+        for (let i = 0; i < sessionStorage.length; i++) {
+            const key = sessionStorage.key(i);
+            if (key.indexOf(prefix) === 0) {
+                delete sessionStorage.deleteItem(key);
+            }
+        }
+    }
+}
+StorageAdapter.sessionStorage = StorageAdapterSessionStorage;
 
 
 // export the storage adapter class

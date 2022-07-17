@@ -176,6 +176,22 @@ Based on code from noisejs by Stefan Gustavson.
 <dt><a href="#SeededRandom">SeededRandom</a></dt>
 <dd><p>Class to generate random numbers with seed.</p>
 </dd>
+<dt><a href="#Storage">Storage</a></dt>
+<dd><p>A thin wrapper layer around storage utility.</p>
+</dd>
+<dt><a href="#StorageAdapter">StorageAdapter</a></dt>
+<dd><p>Storage adapter class that implement access to a storage device.
+Used by the Storage utilitiy.</p>
+</dd>
+<dt><a href="#StorageAdapterMemory">StorageAdapterMemory</a></dt>
+<dd><p>Implement simple memory storage adapter.</p>
+</dd>
+<dt><a href="#StorageAdapterLocalStorage">StorageAdapterLocalStorage</a></dt>
+<dd><p>Implement simple localstorage storage adapter.</p>
+</dd>
+<dt><a href="#StorageAdapterSessionStorage">StorageAdapterSessionStorage</a></dt>
+<dd><p>Implement simple sessionStorage storage adapter.</p>
+</dd>
 <dt><a href="#Vector2">Vector2</a></dt>
 <dd><p>A simple Vector object for 2d positions.</p>
 </dd>
@@ -1152,8 +1168,10 @@ The collision resolver is responsible to implement collision detection between p
 
 * [CollisionResolver](#CollisionResolver)
     * [new CollisionResolver()](#new_CollisionResolver_new)
-    * [.setHandler(firstShapeClass, secondShapeClass, handler)](#CollisionResolver+setHandler)
+    * [.setHandler(firstShapeId, secondShapeId, handler)](#CollisionResolver+setHandler)
     * [.test(first, second)](#CollisionResolver+test) ⇒ [<code>CollisionTestResult</code>](#CollisionTestResult)
+    * [.testWithHandler(first, second, handler)](#CollisionResolver+testWithHandler) ⇒ [<code>CollisionTestResult</code>](#CollisionTestResult)
+    * [.getHandlers()](#CollisionResolver+getHandlers)
 
 <a name="new_CollisionResolver_new"></a>
 
@@ -1162,7 +1180,7 @@ Create the resolver.
 
 <a name="CollisionResolver+setHandler"></a>
 
-### collisionResolver.setHandler(firstShapeClass, secondShapeClass, handler)
+### collisionResolver.setHandler(firstShapeId, secondShapeId, handler)
 Set the method used to test collision between two shapes.
 Note: you don't need to register the same handler twice for reverse order, its done automatically inside.
 
@@ -1170,8 +1188,8 @@ Note: you don't need to register the same handler twice for reverse order, its d
 
 | Param | Type | Description |
 | --- | --- | --- |
-| firstShapeClass | <code>Class</code> | The shape type the handler recieves as first argument. |
-| secondShapeClass | <code>Class</code> | The shape type the handler recieves as second argument. |
+| firstShapeId | <code>String</code> | The shape identifier the handler recieves as first argument. |
+| secondShapeId | <code>String</code> | The shape identifier the handler recieves as second argument. |
 | handler | <code>function</code> | Method to test collision between the shapes. Return false if don't collide, return either Vector2 with collision position or 'true' for collision. |
 
 <a name="CollisionResolver+test"></a>
@@ -1187,6 +1205,26 @@ Check a collision between two shapes.
 | first | [<code>CollisionShape</code>](#CollisionShape) | First collision shape to test. |
 | second | [<code>CollisionShape</code>](#CollisionShape) | Second collision shape to test. |
 
+<a name="CollisionResolver+testWithHandler"></a>
+
+### collisionResolver.testWithHandler(first, second, handler) ⇒ [<code>CollisionTestResult</code>](#CollisionTestResult)
+Check a collision between two shapes.
+
+**Kind**: instance method of [<code>CollisionResolver</code>](#CollisionResolver)  
+**Returns**: [<code>CollisionTestResult</code>](#CollisionTestResult) - collision detection result or null if they don't collide.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| first | [<code>CollisionShape</code>](#CollisionShape) | First collision shape to test. |
+| second | [<code>CollisionShape</code>](#CollisionShape) | Second collision shape to test. |
+| handler | <code>function</code> | Method to test collision between the shapes. |
+
+<a name="CollisionResolver+getHandlers"></a>
+
+### collisionResolver.getHandlers()
+Get handlers dictionary for a given shape.
+
+**Kind**: instance method of [<code>CollisionResolver</code>](#CollisionResolver)  
 <a name="CollisionTestResult"></a>
 
 ## CollisionTestResult
@@ -1240,6 +1278,7 @@ Collision circle class.
 
 * [CircleShape](#CircleShape)
     * [new CircleShape(circle)](#new_CircleShape_new)
+    * [.shapeId](#CircleShape+shapeId)
     * [.setShape(circle)](#CircleShape+setShape)
     * [._getRadius()](#CircleShape+_getRadius)
     * [.getCenter()](#CircleShape+getCenter)
@@ -1256,6 +1295,10 @@ Create the collision shape.
 | --- | --- | --- |
 | circle | [<code>Circle</code>](#Circle) | the circle shape. |
 
+<a name="CircleShape+shapeId"></a>
+
+### circleShape.shapeId
+**Kind**: instance property of [<code>CircleShape</code>](#CircleShape)  
 <a name="CircleShape+setShape"></a>
 
 ### circleShape.setShape(circle)
@@ -1300,6 +1343,7 @@ This shape is made of one line or more.
 
 * [LinesShape](#LinesShape)
     * [new LinesShape(lines)](#new_LinesShape_new)
+    * [.shapeId](#LinesShape+shapeId)
     * [.addLines(lines)](#LinesShape+addLines)
     * [.setLines(lines)](#LinesShape+setLines)
     * [._getRadius()](#LinesShape+_getRadius)
@@ -1317,6 +1361,10 @@ Create the collision shape.
 | --- | --- | --- |
 | lines | [<code>Array.&lt;Line&gt;</code>](#Line) \| [<code>Line</code>](#Line) | Starting line / lines. |
 
+<a name="LinesShape+shapeId"></a>
+
+### linesShape.shapeId
+**Kind**: instance property of [<code>LinesShape</code>](#LinesShape)  
 <a name="LinesShape+addLines"></a>
 
 ### linesShape.addLines(lines)
@@ -1371,6 +1419,7 @@ Collision point class.
 
 * [PointShape](#PointShape)
     * [new PointShape(position)](#new_PointShape_new)
+    * [.shapeId](#PointShape+shapeId)
     * [.setPosition(position)](#PointShape+setPosition)
     * [.getPosition()](#PointShape+getPosition) ⇒ [<code>Vector2</code>](#Vector2)
     * [.getCenter()](#PointShape+getCenter)
@@ -1388,6 +1437,10 @@ Create the collision shape.
 | --- | --- | --- |
 | position | [<code>Vector2</code>](#Vector2) | Point position. |
 
+<a name="PointShape+shapeId"></a>
+
+### pointShape.shapeId
+**Kind**: instance property of [<code>PointShape</code>](#PointShape)  
 <a name="PointShape+setPosition"></a>
 
 ### pointShape.setPosition(position)
@@ -1438,6 +1491,7 @@ Collision rectangle class.
 
 * [RectangleShape](#RectangleShape)
     * [new RectangleShape(rectangle)](#new_RectangleShape_new)
+    * [.shapeId](#RectangleShape+shapeId)
     * [.setShape(rectangle)](#RectangleShape+setShape)
     * [._getRadius()](#RectangleShape+_getRadius)
     * [._getBoundingBox()](#RectangleShape+_getBoundingBox)
@@ -1454,6 +1508,10 @@ Create the collision shape.
 | --- | --- | --- |
 | rectangle | [<code>Rectangle</code>](#Rectangle) | the rectangle shape. |
 
+<a name="RectangleShape+shapeId"></a>
+
+### rectangleShape.shapeId
+**Kind**: instance property of [<code>RectangleShape</code>](#RectangleShape)  
 <a name="RectangleShape+setShape"></a>
 
 ### rectangleShape.setShape(rectangle)
@@ -1497,6 +1555,7 @@ Collision shape base class.
 
 * [CollisionShape](#CollisionShape)
     * [new CollisionShape()](#new_CollisionShape_new)
+    * [.shapeId](#CollisionShape+shapeId) ⇒ <code>String</code>
     * [.collisionFlags](#CollisionShape+collisionFlags)
     * [.collisionFlags](#CollisionShape+collisionFlags)
     * [.setDebugColor(color)](#CollisionShape+setDebugColor)
@@ -1509,6 +1568,13 @@ Collision shape base class.
 ### new CollisionShape()
 Create the collision shape.
 
+<a name="CollisionShape+shapeId"></a>
+
+### collisionShape.shapeId ⇒ <code>String</code>
+Get the collision shape's unique identifier.
+
+**Kind**: instance property of [<code>CollisionShape</code>](#CollisionShape)  
+**Returns**: <code>String</code> - Shape's unique identifier  
 <a name="CollisionShape+collisionFlags"></a>
 
 ### collisionShape.collisionFlags
@@ -1567,6 +1633,7 @@ Its the most efficient (both memory and CPU) way to implement grid based / tilem
 
 * [TilemapShape](#TilemapShape)
     * [new TilemapShape(offset, gridSize, tileSize, borderThickness)](#new_TilemapShape_new)
+    * [.shapeId](#TilemapShape+shapeId)
     * [.setTile(index, haveCollision, collisionFlags)](#TilemapShape+setTile)
     * [.getTileAt(position)](#TilemapShape+getTileAt) ⇒ [<code>RectangleShape</code>](#RectangleShape)
     * [.iterateTilesAtRegion(region, callback)](#TilemapShape+iterateTilesAtRegion)
@@ -1589,6 +1656,10 @@ Create the collision tilemap.
 | tileSize | [<code>Vector2</code>](#Vector2) | The size of a single tile. |
 | borderThickness | <code>Number</code> | Set a border collider with this thickness. |
 
+<a name="TilemapShape+shapeId"></a>
+
+### tilemapShape.shapeId
+**Kind**: instance property of [<code>TilemapShape</code>](#TilemapShape)  
 <a name="TilemapShape+setTile"></a>
 
 ### tilemapShape.setTile(index, haveCollision, collisionFlags)
@@ -3896,6 +3967,8 @@ A sound effect instance you can play and stop.
     * [.paused](#SoundInstance+paused) ⇒ <code>Boolean</code>
     * [.playing](#SoundInstance+playing) ⇒ <code>Boolean</code>
     * [.finished](#SoundInstance+finished) ⇒ <code>Boolean</code>
+    * [.disposeWhenDone()](#SoundInstance+disposeWhenDone)
+    * [.dispose()](#SoundInstance+dispose)
     * [.play()](#SoundInstance+play)
     * [.pause()](#SoundInstance+pause)
     * [.replay()](#SoundInstance+replay)
@@ -4030,6 +4103,21 @@ Get if finished playing.
 
 **Kind**: instance property of [<code>SoundInstance</code>](#SoundInstance)  
 **Returns**: <code>Boolean</code> - True if sound reached the end and didn't loop.  
+<a name="SoundInstance+disposeWhenDone"></a>
+
+### soundInstance.disposeWhenDone()
+Dispose the audio object when done playing the sound.
+This will call dispose() automatically when audio ends.
+
+**Kind**: instance method of [<code>SoundInstance</code>](#SoundInstance)  
+<a name="SoundInstance+dispose"></a>
+
+### soundInstance.dispose()
+Dispose the audio object and clear its resources.
+When playing lots of sounds its important to call dispose on sounds you no longer use, to avoid getting hit by
+"Blocked attempt to create a WebMediaPlayer" exception.
+
+**Kind**: instance method of [<code>SoundInstance</code>](#SoundInstance)  
 <a name="SoundInstance+play"></a>
 
 ### soundInstance.play()
@@ -5697,6 +5785,357 @@ Pick a random value from array.
 | --- | --- | --- |
 | options | <code>Array</code> | Options to pick random value from. |
 
+<a name="Storage"></a>
+
+## Storage
+A thin wrapper layer around storage utility.
+
+**Kind**: global class  
+
+* [Storage](#Storage)
+    * [new Storage(adapters, prefix, valuesAsBase64, keysAsBase64)](#new_Storage_new)
+    * [.persistent](#Storage+persistent) ⇒ <code>Boolean</code>
+    * [.isValid](#Storage+isValid) ⇒ <code>Boolean</code>
+    * [.exists(key)](#Storage+exists) ⇒ <code>Boolean</code>
+    * [.setItem(key, value)](#Storage+setItem)
+    * [.getItem(key)](#Storage+getItem) ⇒ <code>String</code>
+    * [.getJson(key)](#Storage+getJson) ⇒ <code>\*</code>
+    * [.setJson(key, value)](#Storage+setJson)
+    * [.deleteItem(key)](#Storage+deleteItem)
+    * [.clear()](#Storage+clear)
+
+<a name="new_Storage_new"></a>
+
+### new Storage(adapters, prefix, valuesAsBase64, keysAsBase64)
+Create the storage.
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| adapters | [<code>Array.&lt;StorageAdapter&gt;</code>](#StorageAdapter) | List of storage adapters to pick from. Will use the first option returning 'isValid()' = true. |
+| prefix | <code>String</code> | Optional prefix to add to all keys under this storage instance. |
+| valuesAsBase64 | <code>Boolean</code> | If true, will encode and decode data as base64. |
+| keysAsBase64 | <code>Boolean</code> | If true, will encode and decode keys as base64. |
+
+<a name="Storage+persistent"></a>
+
+### storage.persistent ⇒ <code>Boolean</code>
+Return if this storage adapter is persistent storage or not.
+
+**Kind**: instance property of [<code>Storage</code>](#Storage)  
+**Returns**: <code>Boolean</code> - True if this storage type is persistent.  
+<a name="Storage+isValid"></a>
+
+### storage.isValid ⇒ <code>Boolean</code>
+Check if this storage instance has a valid adapter.
+
+**Kind**: instance property of [<code>Storage</code>](#Storage)  
+**Returns**: <code>Boolean</code> - True if found a valid adapter to use, false otherwise.  
+<a name="Storage+exists"></a>
+
+### storage.exists(key) ⇒ <code>Boolean</code>
+Check if a key exists.
+
+**Kind**: instance method of [<code>Storage</code>](#Storage)  
+**Returns**: <code>Boolean</code> - True if key exists in storage.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| key | <code>String</code> | Key to check. |
+
+<a name="Storage+setItem"></a>
+
+### storage.setItem(key, value)
+Set value.
+
+**Kind**: instance method of [<code>Storage</code>](#Storage)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| key | <code>String</code> | Key to set. |
+| value | <code>String</code> | Value to set. |
+
+<a name="Storage+getItem"></a>
+
+### storage.getItem(key) ⇒ <code>String</code>
+Get value.
+
+**Kind**: instance method of [<code>Storage</code>](#Storage)  
+**Returns**: <code>String</code> - Value or null if not set.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| key | <code>String</code> | Key to get. |
+
+<a name="Storage+getJson"></a>
+
+### storage.getJson(key) ⇒ <code>\*</code>
+Get value and JSON parse it.
+
+**Kind**: instance method of [<code>Storage</code>](#Storage)  
+**Returns**: <code>\*</code> - Value as a dictionary object or null if not set.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| key | <code>String</code> | Key to get. |
+
+<a name="Storage+setJson"></a>
+
+### storage.setJson(key, value)
+Set value as JSON.
+
+**Kind**: instance method of [<code>Storage</code>](#Storage)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| key | <code>String</code> | Key to set. |
+| value | <code>\*</code> | Value to set as a dictionary. |
+
+<a name="Storage+deleteItem"></a>
+
+### storage.deleteItem(key)
+Delete value.
+
+**Kind**: instance method of [<code>Storage</code>](#Storage)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| key | <code>String</code> | Key to delete. |
+
+<a name="Storage+clear"></a>
+
+### storage.clear()
+Clear all values from this storage instance, based on prefix + adapter type.
+
+**Kind**: instance method of [<code>Storage</code>](#Storage)  
+<a name="StorageAdapter"></a>
+
+## StorageAdapter
+Storage adapter class that implement access to a storage device.
+Used by the Storage utilitiy.
+
+**Kind**: global class  
+
+* [StorageAdapter](#StorageAdapter)
+    * [.persistent](#StorageAdapter+persistent) ⇒ <code>Boolean</code>
+    * [.isValid()](#StorageAdapter+isValid) ⇒ <code>Boolean</code>
+    * [.exists(key)](#StorageAdapter+exists) ⇒ <code>Boolean</code>
+    * [.setItem(key, value)](#StorageAdapter+setItem)
+    * [.getItem(key)](#StorageAdapter+getItem) ⇒ <code>String</code>
+    * [.deleteItem(key)](#StorageAdapter+deleteItem)
+    * [.clear(prefix)](#StorageAdapter+clear)
+
+<a name="StorageAdapter+persistent"></a>
+
+### storageAdapter.persistent ⇒ <code>Boolean</code>
+Return if this storage adapter is persistent storage or not.
+
+**Kind**: instance property of [<code>StorageAdapter</code>](#StorageAdapter)  
+**Returns**: <code>Boolean</code> - True if this storage type is persistent.  
+<a name="StorageAdapter+isValid"></a>
+
+### storageAdapter.isValid() ⇒ <code>Boolean</code>
+Check if this adapter is OK to be used.
+For example, an adapter for localStorage will make sure it exists and not null.
+
+**Kind**: instance method of [<code>StorageAdapter</code>](#StorageAdapter)  
+**Returns**: <code>Boolean</code> - True if storage adapter is valid to be used.  
+<a name="StorageAdapter+exists"></a>
+
+### storageAdapter.exists(key) ⇒ <code>Boolean</code>
+Check if a key exists.
+
+**Kind**: instance method of [<code>StorageAdapter</code>](#StorageAdapter)  
+**Returns**: <code>Boolean</code> - True if key exists in storage.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| key | <code>String</code> | Key to check. |
+
+<a name="StorageAdapter+setItem"></a>
+
+### storageAdapter.setItem(key, value)
+Set value.
+
+**Kind**: instance method of [<code>StorageAdapter</code>](#StorageAdapter)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| key | <code>String</code> | Key to set. |
+| value | <code>String</code> | Value to set. |
+
+<a name="StorageAdapter+getItem"></a>
+
+### storageAdapter.getItem(key) ⇒ <code>String</code>
+Get value.
+
+**Kind**: instance method of [<code>StorageAdapter</code>](#StorageAdapter)  
+**Returns**: <code>String</code> - Value or null if not set.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| key | <code>String</code> | Key to get. |
+
+<a name="StorageAdapter+deleteItem"></a>
+
+### storageAdapter.deleteItem(key)
+Delete value.
+
+**Kind**: instance method of [<code>StorageAdapter</code>](#StorageAdapter)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| key | <code>String</code> | Key to delete. |
+
+<a name="StorageAdapter+clear"></a>
+
+### storageAdapter.clear(prefix)
+Clear all values from this storage device.
+
+**Kind**: instance method of [<code>StorageAdapter</code>](#StorageAdapter)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| prefix | <code>String</code> | Storage keys prefix. |
+
+<a name="StorageAdapterMemory"></a>
+
+## StorageAdapterMemory
+Implement simple memory storage adapter.
+
+**Kind**: global class  
+
+* [StorageAdapterMemory](#StorageAdapterMemory)
+    * [new StorageAdapterMemory()](#new_StorageAdapterMemory_new)
+    * [.persistent](#StorageAdapterMemory+persistent)
+    * [.isValid()](#StorageAdapterMemory+isValid)
+    * [.exists()](#StorageAdapterMemory+exists)
+    * [.setItem()](#StorageAdapterMemory+setItem)
+    * [.getItem()](#StorageAdapterMemory+getItem)
+    * [.deleteItem()](#StorageAdapterMemory+deleteItem)
+    * [.clear()](#StorageAdapterMemory+clear)
+
+<a name="new_StorageAdapterMemory_new"></a>
+
+### new StorageAdapterMemory()
+Create the memory storage adapter.
+
+<a name="StorageAdapterMemory+persistent"></a>
+
+### storageAdapterMemory.persistent
+**Kind**: instance property of [<code>StorageAdapterMemory</code>](#StorageAdapterMemory)  
+<a name="StorageAdapterMemory+isValid"></a>
+
+### storageAdapterMemory.isValid()
+**Kind**: instance method of [<code>StorageAdapterMemory</code>](#StorageAdapterMemory)  
+<a name="StorageAdapterMemory+exists"></a>
+
+### storageAdapterMemory.exists()
+**Kind**: instance method of [<code>StorageAdapterMemory</code>](#StorageAdapterMemory)  
+<a name="StorageAdapterMemory+setItem"></a>
+
+### storageAdapterMemory.setItem()
+**Kind**: instance method of [<code>StorageAdapterMemory</code>](#StorageAdapterMemory)  
+<a name="StorageAdapterMemory+getItem"></a>
+
+### storageAdapterMemory.getItem()
+**Kind**: instance method of [<code>StorageAdapterMemory</code>](#StorageAdapterMemory)  
+<a name="StorageAdapterMemory+deleteItem"></a>
+
+### storageAdapterMemory.deleteItem()
+**Kind**: instance method of [<code>StorageAdapterMemory</code>](#StorageAdapterMemory)  
+<a name="StorageAdapterMemory+clear"></a>
+
+### storageAdapterMemory.clear()
+**Kind**: instance method of [<code>StorageAdapterMemory</code>](#StorageAdapterMemory)  
+<a name="StorageAdapterLocalStorage"></a>
+
+## StorageAdapterLocalStorage
+Implement simple localstorage storage adapter.
+
+**Kind**: global class  
+
+* [StorageAdapterLocalStorage](#StorageAdapterLocalStorage)
+    * [.persistent](#StorageAdapterLocalStorage+persistent)
+    * [.isValid()](#StorageAdapterLocalStorage+isValid)
+    * [.exists()](#StorageAdapterLocalStorage+exists)
+    * [.setItem()](#StorageAdapterLocalStorage+setItem)
+    * [.getItem()](#StorageAdapterLocalStorage+getItem)
+    * [.deleteItem()](#StorageAdapterLocalStorage+deleteItem)
+    * [.clear()](#StorageAdapterLocalStorage+clear)
+
+<a name="StorageAdapterLocalStorage+persistent"></a>
+
+### storageAdapterLocalStorage.persistent
+**Kind**: instance property of [<code>StorageAdapterLocalStorage</code>](#StorageAdapterLocalStorage)  
+<a name="StorageAdapterLocalStorage+isValid"></a>
+
+### storageAdapterLocalStorage.isValid()
+**Kind**: instance method of [<code>StorageAdapterLocalStorage</code>](#StorageAdapterLocalStorage)  
+<a name="StorageAdapterLocalStorage+exists"></a>
+
+### storageAdapterLocalStorage.exists()
+**Kind**: instance method of [<code>StorageAdapterLocalStorage</code>](#StorageAdapterLocalStorage)  
+<a name="StorageAdapterLocalStorage+setItem"></a>
+
+### storageAdapterLocalStorage.setItem()
+**Kind**: instance method of [<code>StorageAdapterLocalStorage</code>](#StorageAdapterLocalStorage)  
+<a name="StorageAdapterLocalStorage+getItem"></a>
+
+### storageAdapterLocalStorage.getItem()
+**Kind**: instance method of [<code>StorageAdapterLocalStorage</code>](#StorageAdapterLocalStorage)  
+<a name="StorageAdapterLocalStorage+deleteItem"></a>
+
+### storageAdapterLocalStorage.deleteItem()
+**Kind**: instance method of [<code>StorageAdapterLocalStorage</code>](#StorageAdapterLocalStorage)  
+<a name="StorageAdapterLocalStorage+clear"></a>
+
+### storageAdapterLocalStorage.clear()
+**Kind**: instance method of [<code>StorageAdapterLocalStorage</code>](#StorageAdapterLocalStorage)  
+<a name="StorageAdapterSessionStorage"></a>
+
+## StorageAdapterSessionStorage
+Implement simple sessionStorage storage adapter.
+
+**Kind**: global class  
+
+* [StorageAdapterSessionStorage](#StorageAdapterSessionStorage)
+    * [.persistent](#StorageAdapterSessionStorage+persistent)
+    * [.isValid()](#StorageAdapterSessionStorage+isValid)
+    * [.exists()](#StorageAdapterSessionStorage+exists)
+    * [.setItem()](#StorageAdapterSessionStorage+setItem)
+    * [.getItem()](#StorageAdapterSessionStorage+getItem)
+    * [.deleteItem()](#StorageAdapterSessionStorage+deleteItem)
+    * [.clear()](#StorageAdapterSessionStorage+clear)
+
+<a name="StorageAdapterSessionStorage+persistent"></a>
+
+### storageAdapterSessionStorage.persistent
+**Kind**: instance property of [<code>StorageAdapterSessionStorage</code>](#StorageAdapterSessionStorage)  
+<a name="StorageAdapterSessionStorage+isValid"></a>
+
+### storageAdapterSessionStorage.isValid()
+**Kind**: instance method of [<code>StorageAdapterSessionStorage</code>](#StorageAdapterSessionStorage)  
+<a name="StorageAdapterSessionStorage+exists"></a>
+
+### storageAdapterSessionStorage.exists()
+**Kind**: instance method of [<code>StorageAdapterSessionStorage</code>](#StorageAdapterSessionStorage)  
+<a name="StorageAdapterSessionStorage+setItem"></a>
+
+### storageAdapterSessionStorage.setItem()
+**Kind**: instance method of [<code>StorageAdapterSessionStorage</code>](#StorageAdapterSessionStorage)  
+<a name="StorageAdapterSessionStorage+getItem"></a>
+
+### storageAdapterSessionStorage.getItem()
+**Kind**: instance method of [<code>StorageAdapterSessionStorage</code>](#StorageAdapterSessionStorage)  
+<a name="StorageAdapterSessionStorage+deleteItem"></a>
+
+### storageAdapterSessionStorage.deleteItem()
+**Kind**: instance method of [<code>StorageAdapterSessionStorage</code>](#StorageAdapterSessionStorage)  
+<a name="StorageAdapterSessionStorage+clear"></a>
+
+### storageAdapterSessionStorage.clear()
+**Kind**: instance method of [<code>StorageAdapterSessionStorage</code>](#StorageAdapterSessionStorage)  
 <a name="Vector2"></a>
 
 ## Vector2
@@ -5748,6 +6187,7 @@ A simple Vector object for 2d positions.
         * [.right](#Vector2.right) ⇒ [<code>Vector2</code>](#Vector2)
         * [.up](#Vector2.up) ⇒ [<code>Vector2</code>](#Vector2)
         * [.down](#Vector2.down) ⇒ [<code>Vector2</code>](#Vector2)
+        * [.random](#Vector2.random) ⇒ [<code>Vector2</code>](#Vector2)
         * [.fromDegree(degrees)](#Vector2.fromDegree) ⇒ [<code>Vector2</code>](#Vector2)
         * [.fromRadians(radians)](#Vector2.fromRadians) ⇒ [<code>Vector2</code>](#Vector2)
         * [.lerp(p1, p2, a)](#Vector2.lerp) ⇒ [<code>Vector2</code>](#Vector2)
@@ -6133,6 +6573,13 @@ Get vector with 0,-1 values.
 
 ### Vector2.down ⇒ [<code>Vector2</code>](#Vector2)
 Get vector with 0,1 values.
+
+**Kind**: static property of [<code>Vector2</code>](#Vector2)  
+**Returns**: [<code>Vector2</code>](#Vector2) - result vector.  
+<a name="Vector2.random"></a>
+
+### Vector2.random ⇒ [<code>Vector2</code>](#Vector2)
+Get a random vector with length of 1.
 
 **Kind**: static property of [<code>Vector2</code>](#Vector2)  
 **Returns**: [<code>Vector2</code>](#Vector2) - result vector.  

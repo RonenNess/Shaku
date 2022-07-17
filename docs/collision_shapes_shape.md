@@ -13,6 +13,7 @@ Collision shape base class.
 
 * [CollisionShape](#CollisionShape)
     * [new CollisionShape()](#new_CollisionShape_new)
+    * [.shapeId](#CollisionShape+shapeId) ⇒ <code>String</code>
     * [.collisionFlags](#CollisionShape+collisionFlags)
     * [.collisionFlags](#CollisionShape+collisionFlags)
     * [.setDebugColor(color)](#CollisionShape+setDebugColor)
@@ -25,6 +26,13 @@ Collision shape base class.
 ### new CollisionShape()
 Create the collision shape.
 
+<a name="CollisionShape+shapeId"></a>
+
+### collisionShape.shapeId ⇒ <code>String</code>
+Get the collision shape's unique identifier.
+
+**Kind**: instance property of [<code>CollisionShape</code>](#CollisionShape)  
+**Returns**: <code>String</code> - Shape's unique identifier  
 <a name="CollisionShape+collisionFlags"></a>
 
 ### collisionShape.collisionFlags

@@ -1539,6 +1539,113 @@ let path = Shaku.utils.PathFinder.findPath(gridProvider, {x:0, y:0}, {x:11, y:11
 
 For more info check out the [API docs](docs/utils_path_finder.md).
 
+
+### Storage
+
+`Storage` is a small utility that wraps `localStorage` and provides a slightly more convinient interface with fallback to `sessionStorage` and if none available - in-memory storage.
+
+When storing data with this utility it will also store some metadata (like insert timestamp) and add prefix to keys, so that later we can clear only values related to your game while not touching the rest.
+
+Usage example:
+
+```js
+// create storage
+const storage = new Shaku.utils.Storage();
+
+// did we manage to find an available storage device to use?
+// in the case above it will always be true, because we allow fallback to memory. later we'll see when this can be false..
+console.log("Got valid storage: " + storage.isValid);
+
+// did we get persistent localStorage? or fallback to session / memory?
+console.log("Got persistent storage: " + storage.persistent);
+
+// store string value
+storage.setItem('item_key', 'some value to store');
+
+// get string value
+const value = storage.getItem('item_key');
+
+// store json value
+storage.setJson('json_item_key', {hello: 'world'});
+
+// get json value
+const value = storage.getJson('json_item_key');
+```
+
+Keep in mind that `Storage` is more of a DB access layer rather than the DB itself. This means that two different storage instances with the same adapter can override and access each other's keys:
+
+```js
+const storage = new Shaku.utils.Storage();
+const otherStorage = new Shaku.utils.Storage();
+
+storage.setItem('item_key', 'some value to store');
+const value = otherStorage.getItem('item_key'); // value == 'some value to store'
+```
+
+
+#### Storage Adapters
+
+When creating a new storage manager, we can provide a list of adapters to use, and the storage will pick the first adapter available.
+
+An adapter is a small class that wraps a native storage device by a unified interface. For example, an adapter for localStorage will wrap the localStorage object with an interface that the `Storage` utility is familiar with.
+
+By default, if you don't provide an adapters list, `Storage` will try the following adapters in the following order:
+
+1. localStorage (persistent).
+2. sessionStorage (not persistent but lives through page changes).
+3. In-memory (not persistent, simple dictionary).
+
+Which means, it can either be persistent or not. If you want for example only persistent localStorage, you can limit the adapters list:
+
+```js
+const persistentStorage = new Shaku.utils.Storage(new Shaku.utils.StorageAdapter.localStorage());
+```
+
+But since we removed the always-working memory fallback, you better make sure it didn't fail:
+
+```js
+if (!storage.isValid) {
+    alert("localStorage required!");
+}
+```
+
+#### Prefix
+
+You can add keys prefix to storage instances. Storages with different prefixes should not affect each other's values:
+
+```js
+// create players storage (null is to use default adapters)
+const playersStorage = new Shaku.utils.Storage(null, 'players');
+
+// create npcs storage (null is to use default adapters)
+const npcsStorage = new Shaku.utils.Storage(null, 'npcs');
+
+// we can now use the same keys in both storages, and they won't mix:
+playersStorage.setJson('knight', {health: 100});
+npcsStorage.setJson('knight', {health: 54});
+const playerKnightHealth = playersStorage.getJson('knight').health; // playerKnightHealth == 100
+```
+
+#### Base64
+
+`Storage` manager can encode keys and data as base64. This will make your data slightly less readable in the developer console, but needless to say, it won't provide any actual layer of security. It will just make it slightly less easy to read. To encode keys and value with Base64:
+
+```js
+storage.valuesAsBase64 = true;
+storage.keysAsBase64 = true;
+storage.setJson('some_key', {hello: "world"});  // <-- this data will have key and values as base64.
+```
+
+With base64 encoding, an entry like this in localStorage:
+
+`shaku_storage__some_key` -> `{"data":{"hello":"world"},"timestamp":1658069288877,"src":"Shaku","sver":1}`
+
+Will turn into something like this:
+
+`c2hha3Vfc3RvcmFnZV9fc29tZV9rZXk=` -> `eyJkYXRhIjp7ImhlbGxvIjoid29ybGQifSwidGltZXN0YW1wIjoxNjU4MDY5MjEwMDIzLCJzcmMiOiJTaGFrdSIsInN2ZXIiOjF9`
+
+Note that you can't read Base64 values without the Base64 flag set to true and vice versa.
+
 ## Miscellaneous
 
 The following are some useful miscellaneous you should know about.

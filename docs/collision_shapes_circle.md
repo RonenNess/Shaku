@@ -13,6 +13,7 @@ Collision circle class.
 
 * [CircleShape](#CircleShape)
     * [new CircleShape(circle)](#new_CircleShape_new)
+    * [.shapeId](#CircleShape+shapeId)
     * [.setShape(circle)](#CircleShape+setShape)
     * [._getRadius()](#CircleShape+_getRadius)
     * [.getCenter()](#CircleShape+getCenter)
@@ -29,6 +30,10 @@ Create the collision shape.
 | --- | --- | --- |
 | circle | <code>Circle</code> | the circle shape. |
 
+<a name="CircleShape+shapeId"></a>
+
+### circleShape.shapeId
+**Kind**: instance property of [<code>CircleShape</code>](#CircleShape)  
 <a name="CircleShape+setShape"></a>
 
 ### circleShape.setShape(circle)

@@ -13,6 +13,7 @@ Collision point class.
 
 * [PointShape](#PointShape)
     * [new PointShape(position)](#new_PointShape_new)
+    * [.shapeId](#PointShape+shapeId)
     * [.setPosition(position)](#PointShape+setPosition)
     * [.getPosition()](#PointShape+getPosition) ⇒ <code>Vector2</code>
     * [.getCenter()](#PointShape+getCenter)
@@ -30,6 +31,10 @@ Create the collision shape.
 | --- | --- | --- |
 | position | <code>Vector2</code> | Point position. |
 
+<a name="PointShape+shapeId"></a>
+
+### pointShape.shapeId
+**Kind**: instance property of [<code>PointShape</code>](#PointShape)  
 <a name="PointShape+setPosition"></a>
 
 ### pointShape.setPosition(position)

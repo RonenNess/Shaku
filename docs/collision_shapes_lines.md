@@ -14,6 +14,7 @@ This shape is made of one line or more.
 
 * [LinesShape](#LinesShape)
     * [new LinesShape(lines)](#new_LinesShape_new)
+    * [.shapeId](#LinesShape+shapeId)
     * [.addLines(lines)](#LinesShape+addLines)
     * [.setLines(lines)](#LinesShape+setLines)
     * [._getRadius()](#LinesShape+_getRadius)
@@ -31,6 +32,10 @@ Create the collision shape.
 | --- | --- | --- |
 | lines | <code>Array.&lt;Line&gt;</code> \| <code>Line</code> | Starting line / lines. |
 
+<a name="LinesShape+shapeId"></a>
+
+### linesShape.shapeId
+**Kind**: instance property of [<code>LinesShape</code>](#LinesShape)  
 <a name="LinesShape+addLines"></a>
 
 ### linesShape.addLines(lines)

@@ -27,6 +27,8 @@ A sound effect instance you can play and stop.
     * [.paused](#SoundInstance+paused) ⇒ <code>Boolean</code>
     * [.playing](#SoundInstance+playing) ⇒ <code>Boolean</code>
     * [.finished](#SoundInstance+finished) ⇒ <code>Boolean</code>
+    * [.disposeWhenDone()](#SoundInstance+disposeWhenDone)
+    * [.dispose()](#SoundInstance+dispose)
     * [.play()](#SoundInstance+play)
     * [.pause()](#SoundInstance+pause)
     * [.replay()](#SoundInstance+replay)
@@ -161,6 +163,21 @@ Get if finished playing.
 
 **Kind**: instance property of [<code>SoundInstance</code>](#SoundInstance)  
 **Returns**: <code>Boolean</code> - True if sound reached the end and didn't loop.  
+<a name="SoundInstance+disposeWhenDone"></a>
+
+### soundInstance.disposeWhenDone()
+Dispose the audio object when done playing the sound.
+This will call dispose() automatically when audio ends.
+
+**Kind**: instance method of [<code>SoundInstance</code>](#SoundInstance)  
+<a name="SoundInstance+dispose"></a>
+
+### soundInstance.dispose()
+Dispose the audio object and clear its resources.
+When playing lots of sounds its important to call dispose on sounds you no longer use, to avoid getting hit by
+"Blocked attempt to create a WebMediaPlayer" exception.
+
+**Kind**: instance method of [<code>SoundInstance</code>](#SoundInstance)  
 <a name="SoundInstance+play"></a>
 
 ### soundInstance.play()

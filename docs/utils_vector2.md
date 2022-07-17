@@ -55,6 +55,7 @@ A simple Vector object for 2d positions.
         * [.right](#Vector2.right) ⇒ [<code>Vector2</code>](#Vector2)
         * [.up](#Vector2.up) ⇒ [<code>Vector2</code>](#Vector2)
         * [.down](#Vector2.down) ⇒ [<code>Vector2</code>](#Vector2)
+        * [.random](#Vector2.random) ⇒ [<code>Vector2</code>](#Vector2)
         * [.fromDegree(degrees)](#Vector2.fromDegree) ⇒ [<code>Vector2</code>](#Vector2)
         * [.fromRadians(radians)](#Vector2.fromRadians) ⇒ [<code>Vector2</code>](#Vector2)
         * [.lerp(p1, p2, a)](#Vector2.lerp) ⇒ [<code>Vector2</code>](#Vector2)
@@ -440,6 +441,13 @@ Get vector with 0,-1 values.
 
 ### Vector2.down ⇒ [<code>Vector2</code>](#Vector2)
 Get vector with 0,1 values.
+
+**Kind**: static property of [<code>Vector2</code>](#Vector2)  
+**Returns**: [<code>Vector2</code>](#Vector2) - result vector.  
+<a name="Vector2.random"></a>
+
+### Vector2.random ⇒ [<code>Vector2</code>](#Vector2)
+Get a random vector with length of 1.
 
 **Kind**: static property of [<code>Vector2</code>](#Vector2)  
 **Returns**: [<code>Vector2</code>](#Vector2) - result vector.  
