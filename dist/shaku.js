@@ -9227,7 +9227,19 @@ class Shaku
         // store previous gameTime object
         _prevUpdateTime = this._gameTime;
 
-        // count fps 
+        // count fps and time stats
+        if (this._gameTime) {
+            this._updateFpsAndTimeStats();
+        }
+    }
+
+    /**
+     * Measure FPS and averege update times.
+     * @private
+     */
+    _updateFpsAndTimeStats()
+    {
+        // update fps count and second counter
         _currFpsCounter++;
         _countSecond += this._gameTime.delta;
 

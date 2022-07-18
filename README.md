@@ -1985,6 +1985,7 @@ List of changes in released versions.
 ## 1.5.7 [WIP]
 
 - Added `Storage` utility.
+- Small bug fix when switching `pauseWhenNotFocused` during an update while being unfocused.
 
 # License
 
