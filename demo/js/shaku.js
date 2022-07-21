@@ -1350,6 +1350,7 @@ class TextureAsset extends Asset
      * Load the texture from it's image URL.
      * @param {*} params Optional additional params. Possible values are:
      *                      - generateMipMaps (default=false): should we generate mipmaps for this texture?
+     *                      - crossOrigin (default=undefined): if set, will set the crossOrigin property with this value.
      * @returns {Promise} Promise to resolve when fully loaded.
      */
     load(params)
@@ -1364,7 +1365,10 @@ class TextureAsset extends Asset
             }
 
             // create image to load
-            const image = new Image();    
+            const image = new Image();
+            if (params.crossOrigin) {
+                image.crossOrigin = params.crossOrigin;
+            }
             image.onload = async () =>
             {
                 try {
@@ -1515,6 +1519,9 @@ class TextureAsset extends Asset
                     this.fromImage(source, params);
                     this._notifyReady();
                     resolve();
+                }
+                if (params.crossOrigin) {
+                    img.crossOrigin = params.crossOrigin;
                 }
                 img.src = source;
             }

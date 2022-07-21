@@ -74,16 +74,16 @@ It's a lean and mean package with zero dependencies and only minimal necessary a
 
 *Shaku* provides the following key features:
 
-* Assets loader fetch textures, sound effects, JSON, and other game resources.
-* WebGL-based 2d rendering engine.
-* Custom effects, render targets, batching and other graphics essentials.
-* Input manager for mouse & keyboard input, plus query changes from last frame.
-* Playing sound effects, music, change pitch and mix tracks.
-* Basic utility objects such as Vectors, Matrices, Rectangles, GameTime and more.
-* Animator helpers to animate any built-in component or numeric value.
-* *Tiny lib with no dependencies*! All you need to use *Shaku* is a single minified JS weighting less than 100Kb.
+* Assets loader fetch textures, sound effects, JSON, and other resources.
+* Ultra-fast WebGL rendering engine.
+* Custom effects, render targets, batching and other graphics-essentials.
+* Input manager for simple touch, mouse and keyboard state-based input.
+* Sound effects, music, tracks mixer, pitch and everything you need for sfx.
+* Basic utilities such as Vectors, Matrices, 2D Shapes, GameTime and much more.
+* Animators framework to animate any object with numeric values.
+* Collision detection utility, path finder, perlin random generator, and much more!
+* *All packed in a tiny lib with no other dependencies*! A single minified 150Kb JS is all you need.*
 
-Plus, *Shaku* is written in pure modern JavaScript.
 
 If you want to play with *Shaku* while reading the docs, you can check out the [Sandbox Demo](https://ronenness.github.io/Shaku/demo/sandbox.html). 
 See the [demos assets](demo/assets) folder to see which assets you can use for the sandbox (or load from external sources).
@@ -1986,6 +1986,7 @@ List of changes in released versions.
 
 - Added `Storage` utility.
 - Small bug fix when switching `pauseWhenNotFocused` during an update while being unfocused.
+- Added option to set the `crossOrigin` property while loading a texture.
 
 # License
 
