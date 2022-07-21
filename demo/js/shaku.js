@@ -1366,7 +1366,7 @@ class TextureAsset extends Asset
 
             // create image to load
             const image = new Image();
-            if (params.crossOrigin) {
+            if (params.crossOrigin !== undefined) {
                 image.crossOrigin = params.crossOrigin;
             }
             image.onload = async () =>
@@ -1520,7 +1520,7 @@ class TextureAsset extends Asset
                     this._notifyReady();
                     resolve();
                 }
-                if (params.crossOrigin) {
+                if (params.crossOrigin !== undefined) {
                     img.crossOrigin = params.crossOrigin;
                 }
                 img.src = source;
