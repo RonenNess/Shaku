@@ -9053,7 +9053,7 @@ let _totalFrameTimes = 0;
 
 
 // current version
-const version = "1.5.6";
+const version = "1.5.7";
 
 /**
  * Shaku's main object.
@@ -12091,7 +12091,12 @@ class StorageAdapterLocalStorage
      */
     isValid()
     {
-        return (typeof localStorage !== "undefined") && (localStorage !== null);
+        try {
+            return (typeof localStorage !== "undefined") && (localStorage !== null);
+        }
+        catch (e) {
+            return false;
+        }
     }
 
     /**
@@ -12160,7 +12165,12 @@ class StorageAdapterSessionStorage
      */
     isValid()
     {
-        return (typeof sessionStorage !== "undefined") && (sessionStorage !== null);
+        try {
+            return (typeof sessionStorage !== "undefined") && (sessionStorage !== null);
+        }
+        catch (e) {
+            return false;
+        }
     }
 
     /**

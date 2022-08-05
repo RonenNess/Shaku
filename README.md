@@ -1982,7 +1982,7 @@ List of changes in released versions.
 - Removed risky `constructor.name` usage from collision utils.
 - Minor optimization in collision detection.
 
-## 1.5.7 [WIP]
+## 1.5.7
 
 - Added `Storage` utility.
 - Small bug fix when switching `pauseWhenNotFocused` during an update while being unfocused.
