@@ -30,6 +30,9 @@ Implements a matrix.
         * [.multiplyMany(matrices)](#Matrix.multiplyMany) ⇒ [<code>Matrix</code>](#Matrix)
         * [.multiplyIntoFirst()](#Matrix.multiplyIntoFirst) ⇒ [<code>Matrix</code>](#Matrix)
         * [.multiplyManyIntoFirst(matrices)](#Matrix.multiplyManyIntoFirst) ⇒ [<code>Matrix</code>](#Matrix)
+        * [.transformVertex(matrix, vertex)](#Matrix.transformVertex) ⇒ <code>Vertex</code>
+        * [.transformVector2(matrix, vector)](#Matrix.transformVector2) ⇒ <code>Vector2</code>
+        * [.transformVector3(matrix, vector)](#Matrix.transformVector3) ⇒ <code>Vector3</code>
 
 <a name="new_Matrix_new"></a>
 
@@ -159,4 +162,43 @@ Multiply an array of matrices into the first matrix in the array.
 | Param | Type | Description |
 | --- | --- | --- |
 | matrices | [<code>Array.&lt;Matrix&gt;</code>](#Matrix) | Matrices to multiply. |
+
+<a name="Matrix.transformVertex"></a>
+
+### Matrix.transformVertex(matrix, vertex) ⇒ <code>Vertex</code>
+Transform a 2d vertex.
+
+**Kind**: static method of [<code>Matrix</code>](#Matrix)  
+**Returns**: <code>Vertex</code> - A transformed vertex (cloned, not the original).  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| matrix | [<code>Matrix</code>](#Matrix) | Matrix to use to transform vector. |
+| vertex | <code>Vertex</code> | Vertex to transform. |
+
+<a name="Matrix.transformVector2"></a>
+
+### Matrix.transformVector2(matrix, vector) ⇒ <code>Vector2</code>
+Transform a 2d vector.
+
+**Kind**: static method of [<code>Matrix</code>](#Matrix)  
+**Returns**: <code>Vector2</code> - Transformed vector.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| matrix | [<code>Matrix</code>](#Matrix) | Matrix to use to transform vector. |
+| vector | <code>Vector2</code> | Vector to transform. |
+
+<a name="Matrix.transformVector3"></a>
+
+### Matrix.transformVector3(matrix, vector) ⇒ <code>Vector3</code>
+Transform a 3d vector.
+
+**Kind**: static method of [<code>Matrix</code>](#Matrix)  
+**Returns**: <code>Vector3</code> - Transformed vector.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| matrix | [<code>Matrix</code>](#Matrix) | Matrix to use to transform vector. |
+| vector | <code>Vector3</code> | Vector to transform. |
 

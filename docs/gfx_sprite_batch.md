@@ -4,17 +4,6 @@
 
 # Sprite Batch
 
-## Classes
-
-<dl>
-<dt><a href="#SpriteBatch">SpriteBatch</a></dt>
-<dd><p>Sprite batch renderer, responsible on drawing a batch of sprites with as little draw calls as possible.</p>
-</dd>
-<dt><a href="#Vertex">Vertex</a></dt>
-<dd><p>A vertex we can push to sprite batch.</p>
-</dd>
-</dl>
-
 <a name="SpriteBatch"></a>
 
 ## SpriteBatch
@@ -28,7 +17,7 @@ Sprite batch renderer, responsible on drawing a batch of sprites with as little 
     * [.applyAntiBleeding](#SpriteBatch+applyAntiBleeding)
     * [.drawing](#SpriteBatch+drawing) ⇒ <code>Boolean</code>
     * [.batchSpritesCount](#SpriteBatch+batchSpritesCount)
-    * [.vertex(position, textureCoord, color)](#SpriteBatch+vertex) ⇒ [<code>Vertex</code>](#Vertex)
+    * [.vertex(position, textureCoord, color)](#SpriteBatch+vertex) ⇒ <code>Vertex</code>
     * [.begin(effect, transform)](#SpriteBatch+begin)
     * [.end()](#SpriteBatch+end)
     * [.setTexture(texture)](#SpriteBatch+setTexture)
@@ -72,11 +61,11 @@ How many sprites we can have in batch, in total.
 **Kind**: instance property of [<code>SpriteBatch</code>](#SpriteBatch)  
 <a name="SpriteBatch+vertex"></a>
 
-### spriteBatch.vertex(position, textureCoord, color) ⇒ [<code>Vertex</code>](#Vertex)
+### spriteBatch.vertex(position, textureCoord, color) ⇒ <code>Vertex</code>
 Create and return a new vertex.
 
 **Kind**: instance method of [<code>SpriteBatch</code>](#SpriteBatch)  
-**Returns**: [<code>Vertex</code>](#Vertex) - new vertex object.  
+**Returns**: <code>Vertex</code> - new vertex object.  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -135,23 +124,5 @@ Push vertices directly to batch.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| vertices | [<code>Array.&lt;Vertex&gt;</code>](#Vertex) | Vertices to push. |
-
-<a name="Vertex"></a>
-
-## Vertex
-A vertex we can push to sprite batch.
-
-**Kind**: global class  
-<a name="new_Vertex_new"></a>
-
-### new Vertex(position, textureCoord, color)
-Create the vertex data.
-
-
-| Param | Type | Description |
-| --- | --- | --- |
-| position | <code>Vector2</code> \| <code>Vector3</code> | Vertex position. |
-| textureCoord | <code>Vector2</code> | Vertex texture coord (in pixels). |
-| color | <code>Color</code> | Vertex color (undefined will default to white). |
+| vertices | <code>Array.&lt;Vertex&gt;</code> | Vertices to push. |
 

@@ -593,7 +593,7 @@ function generateRandomAssetName()
  
 // export assets manager
 module.exports = new Assets();
-},{"../assets/sound_asset.js":7,"../logger.js":41,"../manager.js":42,"./asset.js":1,"./binary_asset.js":3,"./font_texture_asset":4,"./json_asset.js":6,"./texture_asset.js":8}],3:[function(require,module,exports){
+},{"../assets/sound_asset.js":7,"../logger.js":42,"../manager.js":43,"./asset.js":1,"./binary_asset.js":3,"./font_texture_asset":4,"./json_asset.js":6,"./texture_asset.js":8}],3:[function(require,module,exports){
 /**
  * Implement binary data asset type.
  * 
@@ -1018,7 +1018,7 @@ function measureTextWidth(fontFamily, fontSize, char, extraWidth)
 
 // export the asset type.
 module.exports = FontTextureAsset;
-},{"../utils/rectangle":57,"../utils/vector2":61,"./asset":1,"./texture_asset":8}],5:[function(require,module,exports){
+},{"../utils/rectangle":58,"../utils/vector2":62,"./asset":1,"./texture_asset":8}],5:[function(require,module,exports){
 /**
  * Just an alias to main manager so we can require() this folder as a package.
  * 
@@ -1628,7 +1628,7 @@ function isPowerOf2(value) {
 
 // export the asset type.
 module.exports = TextureAsset;
-},{"../gfx/texture_filter_modes":35,"../gfx/texture_wrap_modes":36,"../logger.js":41,"../utils/color":50,"../utils/vector2":61,"./asset":1}],9:[function(require,module,exports){
+},{"../gfx/texture_filter_modes":35,"../gfx/texture_wrap_modes":36,"../logger.js":42,"../utils/color":51,"../utils/vector2":62,"./asset":1}],9:[function(require,module,exports){
 /**
  * Implement the collision manager.
  * 
@@ -1787,7 +1787,7 @@ class Collision extends IManager
 
 // export main object
 module.exports = new Collision();
-},{"../logger.js":41,"../manager.js":42,"../utils/vector2.js":61,"./collision_world.js":10,"./resolver":12,"./resolvers_imp":13,"./shapes/circle.js":15,"./shapes/lines.js":16,"./shapes/point.js":17,"./shapes/rectangle.js":18,"./shapes/tilemap.js":20}],10:[function(require,module,exports){
+},{"../logger.js":42,"../manager.js":43,"../utils/vector2.js":62,"./collision_world.js":10,"./resolver":12,"./resolvers_imp":13,"./shapes/circle.js":15,"./shapes/lines.js":16,"./shapes/point.js":17,"./shapes/rectangle.js":18,"./shapes/tilemap.js":20}],10:[function(require,module,exports){
 /**
  * Implement the collision manager.
  * 
@@ -2319,7 +2319,7 @@ function sortByDistanceShapes(sourceShape, options)
 
 // export collision world
 module.exports = CollisionWorld;
-},{"../logger.js":41,"../utils/circle":49,"../utils/color":50,"../utils/rectangle":57,"../utils/vector2":61,"./../gfx":27,"./resolver":12,"./result":14,"./shapes/circle":15,"./shapes/point":17,"./shapes/shape":19}],11:[function(require,module,exports){
+},{"../logger.js":42,"../utils/circle":50,"../utils/color":51,"../utils/rectangle":58,"../utils/vector2":62,"./../gfx":27,"./resolver":12,"./result":14,"./shapes/circle":15,"./shapes/point":17,"./shapes/shape":19}],11:[function(require,module,exports){
 /**
  * Just an alias to main manager so we can require() this folder as a package.
  * 
@@ -2465,7 +2465,7 @@ class CollisionResolver
 
 // export the collision resolver
 module.exports = CollisionResolver;
-},{"../logger.js":41,"../utils/vector2.js":61,"./result.js":14,"./shapes/shape.js":19}],13:[function(require,module,exports){
+},{"../logger.js":42,"../utils/vector2.js":62,"./result.js":14,"./shapes/shape.js":19}],13:[function(require,module,exports){
 /**
  * All default collision detection implementations.
  * 
@@ -2685,7 +2685,7 @@ class CollisionTestResult
 
 // export collision shape class
 module.exports = CollisionTestResult;
-},{"../utils/vector2":61,"./shapes/shape":19}],15:[function(require,module,exports){
+},{"../utils/vector2":62,"./shapes/shape":19}],15:[function(require,module,exports){
 /**
  * Implement collision circle.
  * 
@@ -2783,7 +2783,7 @@ class CircleShape extends CollisionShape
 
 // export collision shape class
 module.exports = CircleShape;
-},{"../../utils/circle":49,"../../utils/rectangle":57,"./../../gfx":27,"./shape":19}],16:[function(require,module,exports){
+},{"../../utils/circle":50,"../../utils/rectangle":58,"./../../gfx":27,"./shape":19}],16:[function(require,module,exports){
 /**
  * Implement collision lines.
  * 
@@ -2911,7 +2911,7 @@ class LinesShape extends CollisionShape
 
 // export collision lines class
 module.exports = LinesShape;
-},{"../../utils/circle":49,"../../utils/line":53,"../../utils/rectangle":57,"./../../gfx":27,"./shape":19}],17:[function(require,module,exports){
+},{"../../utils/circle":50,"../../utils/line":54,"../../utils/rectangle":58,"./../../gfx":27,"./shape":19}],17:[function(require,module,exports){
 /**
  * Implement collision point.
  * 
@@ -3014,7 +3014,7 @@ class PointShape extends CollisionShape
 
 // export collision shape class
 module.exports = PointShape;
-},{"../../utils/circle":49,"../../utils/rectangle":57,"../../utils/vector2":61,"./../../gfx":27,"./shape":19}],18:[function(require,module,exports){
+},{"../../utils/circle":50,"../../utils/rectangle":58,"../../utils/vector2":62,"./../../gfx":27,"./shape":19}],18:[function(require,module,exports){
 /**
  * Implement collision rectangle.
  * 
@@ -3111,7 +3111,7 @@ class RectangleShape extends CollisionShape
 
 // export collision shape class
 module.exports = RectangleShape;
-},{"../../utils/rectangle":57,"./../../gfx":27,"./shape":19}],19:[function(require,module,exports){
+},{"../../utils/rectangle":58,"./../../gfx":27,"./shape":19}],19:[function(require,module,exports){
 /**
  * Implement collision shape base class.
  * 
@@ -3300,7 +3300,7 @@ const defaultDebugColors = [Color.red, Color.blue, Color.green, Color.yellow, Co
 
 // export collision shape class
 module.exports = CollisionShape;
-},{"../../utils/color":50,"../../utils/rectangle":57,"../../utils/vector2":61,"../collision_world":10}],20:[function(require,module,exports){
+},{"../../utils/color":51,"../../utils/rectangle":58,"../../utils/vector2":62,"../collision_world":10}],20:[function(require,module,exports){
 /**
  * Implement collision tilemap.
  * 
@@ -3497,7 +3497,7 @@ class TilemapShape extends CollisionShape
 
 // export collision shape class
 module.exports = TilemapShape;
-},{"../../utils/rectangle":57,"../../utils/vector2":61,"./../../gfx":27,"./rectangle":18,"./shape":19}],21:[function(require,module,exports){
+},{"../../utils/rectangle":58,"../../utils/vector2":62,"./../../gfx":27,"./rectangle":18,"./shape":19}],21:[function(require,module,exports){
 /**
  * Define supported blend modes.
  * 
@@ -3652,7 +3652,7 @@ class Camera
 
 // export the camera object
 module.exports = Camera;
-},{"../utils/rectangle":57,"../utils/vector2":61,"./matrix":28}],23:[function(require,module,exports){
+},{"../utils/rectangle":58,"../utils/vector2":62,"./matrix":28}],23:[function(require,module,exports){
 /**
  * Implement a basic effect to draw sprites.
  * 
@@ -4041,9 +4041,16 @@ class Effect
      */
     setTexture(texture)
     {
+        // already using this texture? skip
+        if (texture === this._cachedValues.texture) { 
+            return false; 
+        }
+
+        // get texture uniform
         let uniform = this._uniformBinds[Effect.UniformBinds.MainTexture];
+
+        // set texture
         if (uniform) {
-            if (texture === this._cachedValues.texture) { return false; }
             this._cachedValues.texture = texture;
             let glTexture = texture.texture || texture;
             this._gl.activeTexture(this._gl.TEXTURE0);
@@ -4297,7 +4304,7 @@ function _setTextureFilter(gl, filter)
 
 // export the effect class.
 module.exports = Effect;
-},{"../../assets/texture_asset.js":8,"../../logger.js":41,"../../utils/color.js":50,"../../utils/rectangle.js":57,"../matrix.js":28,"../texture_filter_modes":35,"../texture_wrap_modes":36}],25:[function(require,module,exports){
+},{"../../assets/texture_asset.js":8,"../../logger.js":42,"../../utils/color.js":51,"../../utils/rectangle.js":58,"../matrix.js":28,"../texture_filter_modes":35,"../texture_wrap_modes":36}],25:[function(require,module,exports){
 /**
  * Include all built-in effects.
  * 
@@ -4350,6 +4357,7 @@ const Mesh = require('./mesh.js');
 const Circle = require('../utils/circle.js');
 const SpriteBatch = require('./sprite_batch.js');
 const Vector3 = require('../utils/vector3.js');
+const Vertex = require('./vertex');
 const _whiteColor = Color.white;
 const _logger = require('../logger.js').getLogger('gfx');
 
@@ -4498,6 +4506,15 @@ class Gfx extends IManager
     get Matrix()
     {
         return Matrix;
+    }
+
+    /**
+     * Get the vertex object.
+     * @see Vertex
+     */
+    get Vertex()
+    {
+        return Vertex;
     }
 
     /**
@@ -5155,6 +5172,21 @@ class Gfx extends IManager
         if (origin) { sprite.origin = origin; }
         if (skew) { sprite.skew = skew; }
         this.drawSprite(sprite);
+    }
+
+    /**
+     * Draw a textured quad from vertices.
+     * @param {TextureAsset} texture Texture to draw.
+     * @param {Array<Vertex>} vertices Quad vertices to draw (should be: top-left, top-right, bottom-left, bottom-right).
+     * @param {BlendModes} blendMode Blend mode to set.
+     */
+    drawQuadFromVertices(texture, vertices, blendMode)
+    {
+        if (!texture || !texture.valid) { return; }
+        this.__startDrawingSprites(this._activeEffect, null);
+        this._setBlendMode(blendMode || BlendModes.AlphaBlend);
+        this.spritesBatch.setTexture(texture);
+        this.spritesBatch.pushVertices(vertices);
     }
 
     /**
@@ -5936,7 +5968,7 @@ class Gfx extends IManager
 
 // export main object
 module.exports = new Gfx();
-},{"../assets/font_texture_asset.js":4,"../assets/texture_asset.js":8,"../logger.js":41,"../manager.js":42,"../utils/circle.js":49,"../utils/color.js":50,"../utils/rectangle.js":57,"../utils/vector2.js":61,"../utils/vector3.js":62,"./blend_modes.js":21,"./camera.js":22,"./effects":25,"./matrix.js":28,"./mesh.js":29,"./mesh_generator.js":30,"./sprite.js":31,"./sprite_batch.js":32,"./sprites_group.js":33,"./text_alignment.js":34,"./texture_filter_modes.js":35,"./texture_wrap_modes.js":36}],27:[function(require,module,exports){
+},{"../assets/font_texture_asset.js":4,"../assets/texture_asset.js":8,"../logger.js":42,"../manager.js":43,"../utils/circle.js":50,"../utils/color.js":51,"../utils/rectangle.js":58,"../utils/vector2.js":62,"../utils/vector3.js":63,"./blend_modes.js":21,"./camera.js":22,"./effects":25,"./matrix.js":28,"./mesh.js":29,"./mesh_generator.js":30,"./sprite.js":31,"./sprite_batch.js":32,"./sprites_group.js":33,"./text_alignment.js":34,"./texture_filter_modes.js":35,"./texture_wrap_modes.js":36,"./vertex":37}],27:[function(require,module,exports){
 /**
  * Just an alias to main manager so we can require() this folder as a package.
  * 
@@ -5965,11 +5997,13 @@ module.exports = new Gfx();
  * |-- end copyright and license --|
  * 
  */
- 'use strict';
+'use strict';
+const Vector2 = require("../utils/vector2");
+const Vertex = require("./vertex");
 
- /**
-  * Implements a matrix.
-  */
+/**
+ * Implements a matrix.
+ */
 class Matrix
 {
     /**
@@ -5979,9 +6013,16 @@ class Matrix
      */
     constructor(values, cloneValues)
     {
+        // if no values are set, use identity
+        if (!values) {
+            values = Matrix.identity.values;
+        }
+
+        // clone values
         if (cloneValues || cloneValues === undefined) {
             this.values = values.slice(0);
         }
+        // copy values reference
         else {
             this.values = values;
         }
@@ -5990,14 +6031,14 @@ class Matrix
     /**
      * Set the matrix values.
      */
-     set(v11, v12, v13, v14, v21, v22, v23, v24, v31, v32, v33, v34, v41, v42, v43, v44)
-     {
-         this.values = new Float32Array([ v11, v12, v13, v14,
-                         v21, v22, v23, v24,
-                         v31, v32, v33, v34,
-                         v41, v42, v43, v44
-                     ]);
-     }
+    set(v11, v12, v13, v14, v21, v22, v23, v24, v31, v32, v33, v34, v41, v42, v43, v44)
+    {
+        this.values = new Float32Array([ v11, v12, v13, v14,
+                        v21, v22, v23, v24,
+                        v31, v32, v33, v34,
+                        v41, v42, v43, v44
+                    ]);
+    }
 
     /**
      * Clone the matrix.
@@ -6211,14 +6252,64 @@ class Matrix
      * @param {Array<Matrix>} matrices Matrices to multiply.
      * @returns {Matrix} first matrix in array, after it was modified.
      */
-     static multiplyManyIntoFirst(matrices)
-     {
-         let ret = matrices[0];
-         for(let i = 1; i < matrices.length; i++) {
-             ret = Matrix.multiplyIntoFirst(ret, matrices[i]);
-         }        
-         return ret;
-     }
+    static multiplyManyIntoFirst(matrices)
+    {
+        let ret = matrices[0];
+        for(let i = 1; i < matrices.length; i++) {
+            ret = Matrix.multiplyIntoFirst(ret, matrices[i]);
+        }        
+        return ret;
+    }
+
+    /**
+     * Transform a 2d vertex.
+     * @param {Matrix} matrix Matrix to use to transform vector.
+     * @param {Vertex} vertex Vertex to transform.
+     * @returns {Vertex} A transformed vertex (cloned, not the original).
+     */
+    static transformVertex(matrix, vertex)
+    {
+        return new Vertex(Matrix.transformVector2(matrix, vertex.position), vertex.textureCoord, vertex.color);
+    }
+
+    /**
+     * Transform a 2d vector.
+     * @param {Matrix} matrix Matrix to use to transform vector.
+     * @param {Vector2} vector Vector to transform.
+     * @returns {Vector2} Transformed vector.
+     */
+    static transformVector2(matrix, vector)
+    {
+        const x = vector.x, y = vector.y, z = vector.z || 0;
+		const e = matrix.values;
+
+		const w = 1 / ( e[ 3 ] * x + e[ 7 ] * y + e[ 11 ] * z + e[ 15 ] );
+
+		const resx = ( e[ 0 ] * x + e[ 4 ] * y + e[ 8 ] * z + e[ 12 ] ) * w;
+		const resy = ( e[ 1 ] * x + e[ 5 ] * y + e[ 9 ] * z + e[ 13 ] ) * w;
+
+        return new Vector2(resx, resy);
+    }
+
+    /**
+     * Transform a 3d vector.
+     * @param {Matrix} matrix Matrix to use to transform vector.
+     * @param {Vector3} vector Vector to transform.
+     * @returns {Vector3} Transformed vector.
+     */
+    static transformVector3(matrix, vector)
+    {
+        const x = vector.x, y = vector.y, z = vector.z || 0;
+        const e = matrix.values;
+
+        const w = 1 / ( e[ 3 ] * x + e[ 7 ] * y + e[ 11 ] * z + e[ 15 ] );
+
+        const resx = ( e[ 0 ] * x + e[ 4 ] * y + e[ 8 ] * z + e[ 12 ] ) * w;
+        const resy = ( e[ 1 ] * x + e[ 5 ] * y + e[ 9 ] * z + e[ 13 ] ) * w;
+        const resz = ( e[ 2 ] * x + e[ 6 ] * y + e[ 10 ] * z + e[ 14 ] ) * w;
+
+        return new Vector3(resx, resy, resz);
+    }
 }
 
 
@@ -6269,7 +6360,7 @@ Object.freeze(Matrix.identity);
 
 // export the matrix object
 module.exports = Matrix;
-},{}],29:[function(require,module,exports){
+},{"../utils/vector2":62,"./vertex":37}],29:[function(require,module,exports){
 /**
  * Define a mesh object.
  * 
@@ -6334,7 +6425,7 @@ const { Color } = require("../utils");
  
  // export the mesh class.
  module.exports = Mesh;
-},{"../utils":52}],30:[function(require,module,exports){
+},{"../utils":53}],30:[function(require,module,exports){
 /**
  * Define utility to generate meshes.
  * 
@@ -6608,7 +6699,7 @@ class Sprite
 
 // export the sprite class.
 module.exports = Sprite;
-},{"../assets/texture_asset":8,"../utils/color":50,"../utils/rectangle":57,"../utils/vector2":61,"../utils/vector3":62,"./blend_modes":21}],32:[function(require,module,exports){
+},{"../assets/texture_asset":8,"../utils/color":51,"../utils/rectangle":58,"../utils/vector2":62,"../utils/vector3":63,"./blend_modes":21}],32:[function(require,module,exports){
 /**
  * Implement the gfx sprite batch renderer.
  * 
@@ -6621,10 +6712,10 @@ module.exports = Sprite;
  * |-- end copyright and license --|
  * 
  */
- 'use strict';
+'use strict';
 const { Rectangle, Color } = require('../utils');
 const Vector2 = require('../utils/vector2');
-const Vector3 = require('../utils/vector3');
+const Vertex = require('./vertex');
 const BlendModes = require('./blend_modes');
 const Matrix = require('./matrix');
 const Mesh = require('./mesh');
@@ -7076,29 +7167,9 @@ class SpriteBatch
 }
 
 
-/**
- * A vertex we can push to sprite batch.
- */
-class Vertex
-{
-    /**
-     * Create the vertex data.
-     * @param {Vector2|Vector3} position Vertex position.
-     * @param {Vector2} textureCoord Vertex texture coord (in pixels).
-     * @param {Color} color Vertex color (undefined will default to white).
-     */
-    constructor(position, textureCoord, color)
-    {
-        this.position = position;
-        this.textureCoord = textureCoord;
-        this.color = color || Color.white;
-    }
-}
-
-
 // export the sprite batch class
 module.exports = SpriteBatch;
-},{"../logger.js":41,"../utils":52,"../utils/vector2":61,"../utils/vector3":62,"./blend_modes":21,"./matrix":28,"./mesh":29}],33:[function(require,module,exports){
+},{"../logger.js":42,"../utils":53,"../utils/vector2":62,"./blend_modes":21,"./matrix":28,"./mesh":29,"./vertex":37}],33:[function(require,module,exports){
 /**
  * Define a sprites group.
  * 
@@ -7253,7 +7324,7 @@ class SpritesGroup
 
 // export the sprites group class.
 module.exports = SpritesGroup;
-},{"../utils/color":50,"../utils/vector2":61,"./matrix":28,"./sprite":31}],34:[function(require,module,exports){
+},{"../utils/color":51,"../utils/vector2":62,"./matrix":28,"./sprite":31}],34:[function(require,module,exports){
 /**
  * Define possible text alignments.
  * 
@@ -7359,6 +7430,87 @@ Object.freeze(TextureWrapModes);
 module.exports = TextureWrapModes;
 },{}],37:[function(require,module,exports){
 /**
+ * Implement the gfx vertex container.
+ * 
+ * |-- copyright and license --|
+ * @package    Shaku
+ * @file       shaku\lib\gfx\vertex.js
+ * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
+ * @copyright  (c) 2021 Ronen Ness
+ * @license    MIT
+ * |-- end copyright and license --|
+ * 
+ */
+'use strict';
+const { Vector2, Color } = require("../utils");
+const Matrix = require("./matrix");
+
+/**
+ * A vertex we can push to sprite batch.
+ */
+class Vertex
+{
+    /**
+     * Create the vertex data.
+     * @param {Vector2|Vector3} position Vertex position.
+     * @param {Vector2} textureCoord Vertex texture coord (in pixels).
+     * @param {Color} color Vertex color (undefined will default to white).
+     */
+    constructor(position, textureCoord, color)
+    {
+        this.position = position || Vector2.zero;
+        this.textureCoord = textureCoord || Vector2.zero;
+        this.color = color || Color.white;
+    }
+
+    /**
+     * Transform this vertex position from a matrix.
+     * @param {Matrix} matrix Transformation matrix.
+     * @returns {Vertex} this.
+     */
+    transform(matrix)
+    {
+        return this;
+    }
+
+    /**
+     * Set position.
+     * @param {Vector2|Vector3} position Vertex position.
+     * @returns {Vertex} this.
+     */
+    setPosition(position)
+    {
+        this.position = position.clone();
+        return this;
+    }
+
+    /**
+     * Set texture coordinates.
+     * @param {Vector2} textureCoord Vertex texture coord (in pixels).
+     * @returns {Vertex} this.
+     */
+    setTextureCoords(textureCoord)
+    {
+        this.textureCoord = textureCoord.clone();
+        return this;
+    }
+
+    /**
+     * Set vertex color.
+     * @param {Color} color Vertex color.
+     * @returns {Vertex} this.
+     */
+    setColor(color)
+    {
+        this.color = color.clone();
+        return this;
+    }
+}
+
+// export the vertex class
+module.exports = Vertex;
+},{"../utils":53,"./matrix":28}],38:[function(require,module,exports){
+/**
  * Entry point for the Shaku module.
  * 
  * |-- copyright and license --|
@@ -7372,7 +7524,7 @@ module.exports = TextureWrapModes;
  */
 'use strict';
 module.exports = require('./shaku');
-},{"./shaku":47}],38:[function(require,module,exports){
+},{"./shaku":48}],39:[function(require,module,exports){
 /**
  * Just an alias to main manager so we can require() this folder as a package.
  * 
@@ -7387,7 +7539,7 @@ module.exports = require('./shaku');
  */
  'use strict';
  module.exports = require('./input');
-},{"./input":39}],39:[function(require,module,exports){
+},{"./input":40}],40:[function(require,module,exports){
 /**
  * Implement the input manager.
  * 
@@ -8085,7 +8237,7 @@ class Input extends IManager
 
 // export main object
 module.exports = new Input();
-},{"../logger.js":41,"../manager.js":42,"../utils/vector2.js":61,"./key_codes.js":40}],40:[function(require,module,exports){
+},{"../logger.js":42,"../manager.js":43,"../utils/vector2.js":62,"./key_codes.js":41}],41:[function(require,module,exports){
 /**
  * Define keyboard and mouse key codes.
  * 
@@ -8218,7 +8370,7 @@ const KeyboardKeys = {
 
 // export keyboard keys and mouse buttons
 module.exports = { KeyboardKeys: KeyboardKeys, MouseButtons: MouseButtons };
-},{}],41:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 /**
  * Implement basic logger.
  * By default, uses console for logging, but it can be replaced with setDrivers().
@@ -8379,7 +8531,7 @@ module.exports = {
         return this;
     }
 };
-},{}],42:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 /**
  * Define the managers interface.
  * 
@@ -8437,7 +8589,7 @@ class IManager
 
 // export the manager interface.
 module.exports = IManager
-},{}],43:[function(require,module,exports){
+},{}],44:[function(require,module,exports){
 /**
  * Just an alias to main manager so we can require() this folder as a package.
  * 
@@ -8452,7 +8604,7 @@ module.exports = IManager
  */
  'use strict';
  module.exports = require('./sfx');
-},{"./sfx":44}],44:[function(require,module,exports){
+},{"./sfx":45}],45:[function(require,module,exports){
 /**
  * Implement the sfx manager.
  * 
@@ -8637,7 +8789,7 @@ class Sfx extends IManager
 
 // export main object
 module.exports = new Sfx();
-},{"../assets/sound_asset.js":7,"../logger.js":41,"../manager.js":42,"./sound_instance.js":45,"./sound_mixer.js":46}],45:[function(require,module,exports){
+},{"../assets/sound_asset.js":7,"../logger.js":42,"../manager.js":43,"./sound_instance.js":46,"./sound_mixer.js":47}],46:[function(require,module,exports){
 /**
  * Implement a sound effect instance.
  * 
@@ -8877,7 +9029,7 @@ SoundInstance._masterVolume = 1;
 
 // export main object
 module.exports = SoundInstance;
-},{"../logger.js":41}],46:[function(require,module,exports){
+},{"../logger.js":42}],47:[function(require,module,exports){
 /**
  * Implement a sound mixer class.
  * 
@@ -9011,7 +9163,7 @@ class SoundMixer
 
 // export the sound mixer
 module.exports = SoundMixer;
-},{"./sound_instance.js":45}],47:[function(require,module,exports){
+},{"./sound_instance.js":46}],48:[function(require,module,exports){
 /**
  * Shaku Main.
  * 
@@ -9053,7 +9205,7 @@ let _totalFrameTimes = 0;
 
 
 // current version
-const version = "1.5.7";
+const version = "1.5.8";
 
 /**
  * Shaku's main object.
@@ -9361,7 +9513,7 @@ class Shaku
 
 // create and return the main object.
 module.exports = new Shaku();
-},{"./assets":5,"./collision":11,"./gfx":27,"./input":38,"./logger":41,"./manager":42,"./sfx":43,"./utils":52,"./utils/game_time":51}],48:[function(require,module,exports){
+},{"./assets":5,"./collision":11,"./gfx":27,"./input":39,"./logger":42,"./manager":43,"./sfx":44,"./utils":53,"./utils/game_time":52}],49:[function(require,module,exports){
 /**
  * Implement an animator helper class.
  * 
@@ -9710,7 +9862,7 @@ function lerp(start, end, amt) {
 
 // export the animator class.
 module.exports = Animator;
-},{}],49:[function(require,module,exports){
+},{}],50:[function(require,module,exports){
 /**
  * Implement a simple 2d circle.
  * 
@@ -9791,7 +9943,7 @@ class Circle
 
 // export the circle class
 module.exports = Circle;
-},{"./math_helper":54,"./vector2":61}],50:[function(require,module,exports){
+},{"./math_helper":55,"./vector2":62}],51:[function(require,module,exports){
 /**
  * Define a color object.
  * 
@@ -10230,7 +10382,7 @@ function hexToColor(hex)
 
 // export Color object
 module.exports = Color;
-},{"./math_helper":54}],51:[function(require,module,exports){
+},{"./math_helper":55}],52:[function(require,module,exports){
 /**
  * A utility to hold gametime.
  * 
@@ -10364,7 +10516,7 @@ var _currElapsed = 0;
 
 // export the GameTime class.
 module.exports = GameTime;
-},{}],52:[function(require,module,exports){
+},{}],53:[function(require,module,exports){
 /**
  * Include all util classes.
  * 
@@ -10395,7 +10547,7 @@ module.exports = GameTime;
     StorageAdapter: require('./storage_adapter'),
     PathFinder: require('./path_finder')
  };
-},{"./animator":48,"./circle":49,"./color":50,"./game_time":51,"./line":53,"./math_helper":54,"./path_finder":55,"./perlin":56,"./rectangle":57,"./seeded_random":58,"./storage":59,"./storage_adapter":60,"./vector2":61,"./vector3":62}],53:[function(require,module,exports){
+},{"./animator":49,"./circle":50,"./color":51,"./game_time":52,"./line":54,"./math_helper":55,"./path_finder":56,"./perlin":57,"./rectangle":58,"./seeded_random":59,"./storage":60,"./storage_adapter":61,"./vector2":62,"./vector3":63}],54:[function(require,module,exports){
 /**
  * Implement a simple 2d line.
  * 
@@ -10551,7 +10703,7 @@ class Line
 
 // export the line class
 module.exports = Line;
-},{"./vector2":61}],54:[function(require,module,exports){
+},{"./vector2":62}],55:[function(require,module,exports){
 /**
  * Implement a math utilities class.
  * 
@@ -10751,7 +10903,7 @@ MathHelper.PI2 = Math.PI * 2;
 
 // export the math helper
 module.exports = MathHelper;
-},{}],55:[function(require,module,exports){
+},{}],56:[function(require,module,exports){
 /**
  * Provide a pathfinding algorithm.
  * 
@@ -10985,7 +11137,7 @@ const PathFinder = {
     IGrid: IGrid
 };
 module.exports = PathFinder;
-},{"./vector2":61}],56:[function(require,module,exports){
+},{"./vector2":62}],57:[function(require,module,exports){
 /**
  * Implements 2d perlin noise generator.
  * Based on code from noisejs by Stefan Gustavson.
@@ -11161,7 +11313,7 @@ class Perlin
 
 // export the perlin generator
 module.exports = Perlin;
-},{"./math_helper":54}],57:[function(require,module,exports){
+},{"./math_helper":55}],58:[function(require,module,exports){
 /**
  * Implement a simple 2d rectangle.
  * 
@@ -11599,7 +11751,7 @@ function pointLineDistance(p1, l1, l2) {
 
 // export the rectangle class
 module.exports = Rectangle;
-},{"./circle":49,"./line":53,"./math_helper":54,"./vector2":61}],58:[function(require,module,exports){
+},{"./circle":50,"./line":54,"./math_helper":55,"./vector2":62}],59:[function(require,module,exports){
 /**
  * Implement a seeded random generator.
  * 
@@ -11666,7 +11818,7 @@ class SeededRandom
 
 // export the seeded random class.
 module.exports = SeededRandom;
-},{}],59:[function(require,module,exports){
+},{}],60:[function(require,module,exports){
 /**
  * Implement a storage wrapper.
  * 
@@ -11906,7 +12058,7 @@ Storage.defaultAdapters = [new StorageAdapter.localStorage(), new StorageAdapter
 
 // export the storage class
 module.exports = Storage;
-},{"./storage_adapter":60}],60:[function(require,module,exports){
+},{"./storage_adapter":61}],61:[function(require,module,exports){
 /**
  * Implement a storage adapter.
  * 
@@ -12223,7 +12375,7 @@ StorageAdapter.sessionStorage = StorageAdapterSessionStorage;
 
 // export the storage adapter class
 module.exports = StorageAdapter;
-},{}],61:[function(require,module,exports){
+},{}],62:[function(require,module,exports){
 /**
  * Implement a simple 2d vector.
  * 
@@ -12866,7 +13018,7 @@ class Vector2
 
 // export vector object
 module.exports = Vector2;
-},{"./math_helper":54}],62:[function(require,module,exports){
+},{"./math_helper":55}],63:[function(require,module,exports){
 /**
  * Implement a 3d vector.
  * 
@@ -13417,5 +13569,5 @@ class Vector3
 
 // export vector object
 module.exports = Vector3;
-},{"./math_helper":54}]},{},[37])(37)
+},{"./math_helper":55}]},{},[38])(38)
 });

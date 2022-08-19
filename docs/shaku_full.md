@@ -102,13 +102,13 @@ This object is a helper class to hold all the properties of a texture to render.
 <dt><a href="#SpriteBatch">SpriteBatch</a></dt>
 <dd><p>Sprite batch renderer, responsible on drawing a batch of sprites with as little draw calls as possible.</p>
 </dd>
-<dt><a href="#Vertex">Vertex</a></dt>
-<dd><p>A vertex we can push to sprite batch.</p>
-</dd>
 <dt><a href="#SpritesGroup">SpritesGroup</a></dt>
 <dd><p>Sprites group class.
 This object is a container to hold sprites collection + parent transformations.
 You need SpritesGroup to use batched rendering.</p>
+</dd>
+<dt><a href="#Vertex">Vertex</a></dt>
+<dd><p>A vertex we can push to sprite batch.</p>
 </dd>
 <dt><a href="#Input">Input</a></dt>
 <dd><p>Input manager. 
@@ -890,7 +890,7 @@ Load the texture from it's image URL.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| params | <code>\*</code> | Optional additional params. Possible values are:                      - generateMipMaps (default=false): should we generate mipmaps for this texture? |
+| params | <code>\*</code> | Optional additional params. Possible values are:                      - generateMipMaps (default=false): should we generate mipmaps for this texture?                      - crossOrigin (default=undefined): if set, will set the crossOrigin property with this value. |
 
 <a name="TextureAsset+createRenderTarget"></a>
 
@@ -2071,6 +2071,7 @@ To access the Graphics manager you use `Shaku.gfx`.
     * [.Sprite](#Gfx+Sprite)
     * [.SpritesGroup](#Gfx+SpritesGroup)
     * [.Matrix](#Gfx+Matrix)
+    * [.Vertex](#Gfx+Vertex)
     * [.TextAlignment](#Gfx+TextAlignment)
     * [.BlendModes](#Gfx+BlendModes)
     * [.TextureWrapModes](#Gfx+TextureWrapModes)
@@ -2096,6 +2097,7 @@ To access the Graphics manager you use `Shaku.gfx`.
     * [.drawSprite(sprite)](#Gfx+drawSprite)
     * [.cover(texture, destRect, sourceRect, color, blendMode)](#Gfx+cover)
     * [.draw(texture, position, size, sourceRect, color, blendMode, rotation, origin, skew)](#Gfx+draw)
+    * [.drawQuadFromVertices(texture, vertices, blendMode)](#Gfx+drawQuadFromVertices)
     * [.fillRect(destRect, color, blend, rotation)](#Gfx+fillRect)
     * [.fillRects(destRects, colors, blend, rotation)](#Gfx+fillRects)
     * [.outlineRect(destRect, color, blend, rotation)](#Gfx+outlineRect)
@@ -2165,6 +2167,13 @@ Get the matrix object.
 
 **Kind**: instance property of [<code>Gfx</code>](#Gfx)  
 **See**: Matrix  
+<a name="Gfx+Vertex"></a>
+
+### gfx.Vertex
+Get the vertex object.
+
+**Kind**: instance property of [<code>Gfx</code>](#Gfx)  
+**See**: Vertex  
 <a name="Gfx+TextAlignment"></a>
 
 ### gfx.TextAlignment
@@ -2589,6 +2598,19 @@ let rotation = Math.PI / 4;
 let origin = new Shaku.utils.Vector2(0.5, 0.5);
 Shaku.gfx.draw(texture, position, size, sourceRect, color, blendMode, rotation, origin);
 ```
+<a name="Gfx+drawQuadFromVertices"></a>
+
+### gfx.drawQuadFromVertices(texture, vertices, blendMode)
+Draw a textured quad from vertices.
+
+**Kind**: instance method of [<code>Gfx</code>](#Gfx)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| texture | [<code>TextureAsset</code>](#TextureAsset) | Texture to draw. |
+| vertices | [<code>Array.&lt;Vertex&gt;</code>](#Vertex) | Quad vertices to draw (should be: top-left, top-right, bottom-left, bottom-right). |
+| blendMode | <code>BlendModes</code> | Blend mode to set. |
+
 <a name="Gfx+fillRect"></a>
 
 ### gfx.fillRect(destRect, color, blend, rotation)
@@ -2872,6 +2894,9 @@ Implements a matrix.
         * [.multiplyMany(matrices)](#Matrix.multiplyMany) ⇒ [<code>Matrix</code>](#Matrix)
         * [.multiplyIntoFirst()](#Matrix.multiplyIntoFirst) ⇒ [<code>Matrix</code>](#Matrix)
         * [.multiplyManyIntoFirst(matrices)](#Matrix.multiplyManyIntoFirst) ⇒ [<code>Matrix</code>](#Matrix)
+        * [.transformVertex(matrix, vertex)](#Matrix.transformVertex) ⇒ [<code>Vertex</code>](#Vertex)
+        * [.transformVector2(matrix, vector)](#Matrix.transformVector2) ⇒ [<code>Vector2</code>](#Vector2)
+        * [.transformVector3(matrix, vector)](#Matrix.transformVector3) ⇒ [<code>Vector3</code>](#Vector3)
 
 <a name="new_Matrix_new"></a>
 
@@ -2995,6 +3020,45 @@ Multiply an array of matrices into the first matrix in the array.
 | Param | Type | Description |
 | --- | --- | --- |
 | matrices | [<code>Array.&lt;Matrix&gt;</code>](#Matrix) | Matrices to multiply. |
+
+<a name="Matrix.transformVertex"></a>
+
+### Matrix.transformVertex(matrix, vertex) ⇒ [<code>Vertex</code>](#Vertex)
+Transform a 2d vertex.
+
+**Kind**: static method of [<code>Matrix</code>](#Matrix)  
+**Returns**: [<code>Vertex</code>](#Vertex) - A transformed vertex (cloned, not the original).  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| matrix | [<code>Matrix</code>](#Matrix) | Matrix to use to transform vector. |
+| vertex | [<code>Vertex</code>](#Vertex) | Vertex to transform. |
+
+<a name="Matrix.transformVector2"></a>
+
+### Matrix.transformVector2(matrix, vector) ⇒ [<code>Vector2</code>](#Vector2)
+Transform a 2d vector.
+
+**Kind**: static method of [<code>Matrix</code>](#Matrix)  
+**Returns**: [<code>Vector2</code>](#Vector2) - Transformed vector.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| matrix | [<code>Matrix</code>](#Matrix) | Matrix to use to transform vector. |
+| vector | [<code>Vector2</code>](#Vector2) | Vector to transform. |
+
+<a name="Matrix.transformVector3"></a>
+
+### Matrix.transformVector3(matrix, vector) ⇒ [<code>Vector3</code>](#Vector3)
+Transform a 3d vector.
+
+**Kind**: static method of [<code>Matrix</code>](#Matrix)  
+**Returns**: [<code>Vector3</code>](#Vector3) - Transformed vector.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| matrix | [<code>Matrix</code>](#Matrix) | Matrix to use to transform vector. |
+| vector | [<code>Vector3</code>](#Vector3) | Vector to transform. |
 
 <a name="Mesh"></a>
 
@@ -3319,24 +3383,6 @@ Push vertices directly to batch.
 | --- | --- | --- |
 | vertices | [<code>Array.&lt;Vertex&gt;</code>](#Vertex) | Vertices to push. |
 
-<a name="Vertex"></a>
-
-## Vertex
-A vertex we can push to sprite batch.
-
-**Kind**: global class  
-<a name="new_Vertex_new"></a>
-
-### new Vertex(position, textureCoord, color)
-Create the vertex data.
-
-
-| Param | Type | Description |
-| --- | --- | --- |
-| position | [<code>Vector2</code>](#Vector2) \| [<code>Vector3</code>](#Vector3) | Vertex position. |
-| textureCoord | [<code>Vector2</code>](#Vector2) | Vertex texture coord (in pixels). |
-| color | [<code>Color</code>](#Color) | Vertex color (undefined will default to white). |
-
 <a name="SpritesGroup"></a>
 
 ## SpritesGroup
@@ -3447,6 +3493,80 @@ Sort by texture and blend mode for maximum efficiency in batching.
 This will change sprites order.
 
 **Kind**: instance method of [<code>SpritesGroup</code>](#SpritesGroup)  
+<a name="Vertex"></a>
+
+## Vertex
+A vertex we can push to sprite batch.
+
+**Kind**: global class  
+
+* [Vertex](#Vertex)
+    * [new Vertex(position, textureCoord, color)](#new_Vertex_new)
+    * [.transform(matrix)](#Vertex+transform) ⇒ [<code>Vertex</code>](#Vertex)
+    * [.setPosition(position)](#Vertex+setPosition) ⇒ [<code>Vertex</code>](#Vertex)
+    * [.setTextureCoords(textureCoord)](#Vertex+setTextureCoords) ⇒ [<code>Vertex</code>](#Vertex)
+    * [.setColor(color)](#Vertex+setColor) ⇒ [<code>Vertex</code>](#Vertex)
+
+<a name="new_Vertex_new"></a>
+
+### new Vertex(position, textureCoord, color)
+Create the vertex data.
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| position | [<code>Vector2</code>](#Vector2) \| [<code>Vector3</code>](#Vector3) | Vertex position. |
+| textureCoord | [<code>Vector2</code>](#Vector2) | Vertex texture coord (in pixels). |
+| color | [<code>Color</code>](#Color) | Vertex color (undefined will default to white). |
+
+<a name="Vertex+transform"></a>
+
+### vertex.transform(matrix) ⇒ [<code>Vertex</code>](#Vertex)
+Transform this vertex position from a matrix.
+
+**Kind**: instance method of [<code>Vertex</code>](#Vertex)  
+**Returns**: [<code>Vertex</code>](#Vertex) - this.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| matrix | [<code>Matrix</code>](#Matrix) | Transformation matrix. |
+
+<a name="Vertex+setPosition"></a>
+
+### vertex.setPosition(position) ⇒ [<code>Vertex</code>](#Vertex)
+Set position.
+
+**Kind**: instance method of [<code>Vertex</code>](#Vertex)  
+**Returns**: [<code>Vertex</code>](#Vertex) - this.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| position | [<code>Vector2</code>](#Vector2) \| [<code>Vector3</code>](#Vector3) | Vertex position. |
+
+<a name="Vertex+setTextureCoords"></a>
+
+### vertex.setTextureCoords(textureCoord) ⇒ [<code>Vertex</code>](#Vertex)
+Set texture coordinates.
+
+**Kind**: instance method of [<code>Vertex</code>](#Vertex)  
+**Returns**: [<code>Vertex</code>](#Vertex) - this.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| textureCoord | [<code>Vector2</code>](#Vector2) | Vertex texture coord (in pixels). |
+
+<a name="Vertex+setColor"></a>
+
+### vertex.setColor(color) ⇒ [<code>Vertex</code>](#Vertex)
+Set vertex color.
+
+**Kind**: instance method of [<code>Vertex</code>](#Vertex)  
+**Returns**: [<code>Vertex</code>](#Vertex) - this.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| color | [<code>Color</code>](#Color) | Vertex color. |
+
 <a name="Input"></a>
 
 ## Input

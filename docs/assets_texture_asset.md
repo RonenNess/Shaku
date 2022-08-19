@@ -116,7 +116,7 @@ Load the texture from it's image URL.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| params | <code>\*</code> | Optional additional params. Possible values are:                      - generateMipMaps (default=false): should we generate mipmaps for this texture? |
+| params | <code>\*</code> | Optional additional params. Possible values are:                      - generateMipMaps (default=false): should we generate mipmaps for this texture?                      - crossOrigin (default=undefined): if set, will set the crossOrigin property with this value. |
 
 <a name="TextureAsset+createRenderTarget"></a>
 

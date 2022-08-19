@@ -41,6 +41,7 @@ You can view the entire docs as a single file [here](shaku_full.md), or by topic
 * [Gfx: Text Alignment](gfx_text_alignment.md)
 * [Gfx: Texture Filter Modes](gfx_texture_filter_modes.md)
 * [Gfx: Texture Wrap Modes](gfx_texture_wrap_modes.md)
+* [Gfx: Vertex](gfx_vertex.md)
 * [Input: Input](input_input.md)
 * [Input: Key Codes](input_key_codes.md)
 * [Logger](logger.md)

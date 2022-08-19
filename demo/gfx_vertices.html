@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Shaku</title>
+    <meta name="description" content="Shaku - a simple and easy-to-use javascript library for videogame programming.">
+    <meta name="author" content="Ronen Ness">
+    <link href="css/style.css" rel="stylesheet" type="text/css" media="all">
+  </head>
+  <body>
+    <div class="noselect">
+    <button class="view-code-btn" onclick="showSampleCode();">View Code</button> 
+    <h1 class="demo-title">Shaku Gfx Demo: Vertices</h1>
+      <p>This demo demonstrate how to draw vertices directly. The vertices are transformed by a matrix.<br /><br />
+      Use <b>Arrows</b> or <b>WASD</b> to move the sprite.</br>
+      Press <b>Z/X</b> to rotate the sprite.</p>
+      
+      <!-- include shaku -->
+      <script src="js/demos.js"></script>
+      <script src="js/shaku.js"></script>
+
+      <!-- demo code -->
+      <script>
+        async function runDemo()
+        {
+          // init shaku
+          await Shaku.init();
+
+          // screen size
+          let screenX = 1000;
+          let screenY = 700;
+
+          // add canvas to document
+          document.body.appendChild(Shaku.gfx.canvas);
+          Shaku.gfx.setResolution(screenX, screenY, true);
+
+          // load texture and font
+          let spriteTexture = await Shaku.assets.loadTexture('assets/sprite.png');
+          let fontTexture = await Shaku.assets.loadFontTexture('assets/DejaVuSansMono.ttf', {fontName: 'DejaVuSansMono'});
+
+          // sprite size and position
+          const spriteSize = new Shaku.utils.Vector2(spriteTexture.width * 2, spriteTexture.height * 2);
+          const position = new Shaku.utils.Vector2(100, 100);
+          var rotation = 0;
+
+          // create sprite vertices
+          const v1 = (new Shaku.gfx.Vertex())
+                      .setPosition(new Shaku.utils.Vector2(-spriteSize.x / 2, -spriteSize.y / 2))
+                      .setTextureCoords(new Shaku.utils.Vector2(0, 0));
+          const v2 = (new Shaku.gfx.Vertex())
+                      .setPosition(new Shaku.utils.Vector2(spriteSize.x / 2, -spriteSize.y / 2))
+                      .setTextureCoords(new Shaku.utils.Vector2(spriteTexture.width, 0));
+          const v3 = (new Shaku.gfx.Vertex())
+                      .setPosition(new Shaku.utils.Vector2(-spriteSize.x / 2, spriteSize.y / 2))
+                      .setTextureCoords(new Shaku.utils.Vector2(0, spriteTexture.height));
+          const v4 = (new Shaku.gfx.Vertex())
+                      .setPosition(new Shaku.utils.Vector2(spriteSize.x / 2, spriteSize.y / 2))
+                      .setTextureCoords(new Shaku.utils.Vector2(spriteTexture.width, spriteTexture.height));
+
+          // do a main loop step.
+          function step() {
+            
+            Shaku.startFrame();
+            Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
+
+            // create transformation matrix
+            const translateMatrix = Shaku.gfx.Matrix.translate(position.x, position.y, 0, 0);
+            const rotateMatrix = Shaku.gfx.Matrix.rotateZ(rotation);
+            const matrix = Shaku.gfx.Matrix.multiplyMany([translateMatrix, rotateMatrix]);
+
+            // draw sprite from vertices
+            const vertices = [Shaku.gfx.Matrix.transformVertex(matrix, v1), 
+                              Shaku.gfx.Matrix.transformVertex(matrix, v2), 
+                              Shaku.gfx.Matrix.transformVertex(matrix, v3), 
+                              Shaku.gfx.Matrix.transformVertex(matrix, v4)];
+            Shaku.gfx.drawQuadFromVertices(spriteTexture, vertices);
+
+            // update sprite position
+            if (Shaku.input.down('left') || Shaku.input.down('a')) { 
+              position.x -= Shaku.gameTime.delta * 175;
+            }
+            if (Shaku.input.down('right') || Shaku.input.down('d')) { 
+              position.x += Shaku.gameTime.delta * 175;
+            }
+            if (Shaku.input.down('up') || Shaku.input.down('w')) { 
+              position.y -= Shaku.gameTime.delta * 175;
+            }
+            if (Shaku.input.down('down') || Shaku.input.down('s')) { 
+              position.y += Shaku.gameTime.delta * 175;
+            }
+
+            // rotate sprite
+            if (Shaku.input.down('z')) { 
+              rotation -= Shaku.gameTime.delta * 2;
+            }
+            if (Shaku.input.down('x')) { 
+              rotation += Shaku.gameTime.delta * 2;
+            }
+
+            Shaku.endFrame();
+            Shaku.requestAnimationFrame(step);
+          }
+          step();
+        }
+
+        // start demo
+        runDemo();
+
+      </script>
+
+</div>
+
+<!-- code example part -->
+<div id="sample-code-modal" class="modal">
+  <div class="modal__overlay jsOverlay"></div>
+  <div class="modal__container">   
+
+<p class="noselect">The following is a minimal code example on how to use sprites.</i>
+</p>
+<pre><code class="language-js">// load sprite's texture asset
+let texture = await Shaku.assets.loadTexture('assets/sprite.png');
+
+// create sprite vertices
+const spriteSize = new Shaku.utils.Vector2(100, 100);
+const v1 = (new Shaku.gfx.Vertex())
+            .setPosition(new Shaku.utils.Vector2(-spriteSize.x / 2, -spriteSize.y / 2))
+            .setTextureCoords(new Shaku.utils.Vector2(0, 0));
+const v2 = (new Shaku.gfx.Vertex())
+            .setPosition(new Shaku.utils.Vector2(spriteSize.x / 2, -spriteSize.y / 2))
+            .setTextureCoords(new Shaku.utils.Vector2(texture.width, 0));
+const v3 = (new Shaku.gfx.Vertex())
+            .setPosition(new Shaku.utils.Vector2(-spriteSize.x / 2, spriteSize.y / 2))
+            .setTextureCoords(new Shaku.utils.Vector2(0, texture.height));
+const v4 = (new Shaku.gfx.Vertex())
+            .setPosition(new Shaku.utils.Vector2(spriteSize.x / 2, spriteSize.y / 2))
+            .setTextureCoords(new Shaku.utils.Vector2(texture.width, texture.height));
+
+// part below goes between startFrame() and endFrame()
+// -------------------------------------------------------
+
+const vertices = [v1, v2, v3, v4];
+Shaku.gfx.drawQuadFromVertices(texture, vertices);</code></pre>
+
+  <button class="modal__close" onclick="closeModal('sample-code-modal')">&#10005;</button>
+</div>
+</div>
+
+<link href="prism/prism.css" rel="stylesheet" />
+<script src="prism/prism.js"></script>
+
+  </body>
+</html>

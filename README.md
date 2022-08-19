@@ -1988,6 +1988,13 @@ List of changes in released versions.
 - Small bug fix when switching `pauseWhenNotFocused` during an update while being unfocused.
 - Added option to set the `crossOrigin` property while loading a texture.
 
+## 1.5.8
+
+- Added method to draw vertices directly under `gfx` manager.
+- Made the `Vertex` object public, and extended its API.
+- Extended `Matrix` API.
+- Added vertices rendering demo.
+
 # License
 
 *Shaku* is licensed under the permissive MIT license, so you can use it for any purpose (including commercially) and it should be compatible with most common licenses.

@@ -22,6 +22,7 @@ To access the Graphics manager you use `Shaku.gfx`.
     * [.Sprite](#Gfx+Sprite)
     * [.SpritesGroup](#Gfx+SpritesGroup)
     * [.Matrix](#Gfx+Matrix)
+    * [.Vertex](#Gfx+Vertex)
     * [.TextAlignment](#Gfx+TextAlignment)
     * [.BlendModes](#Gfx+BlendModes)
     * [.TextureWrapModes](#Gfx+TextureWrapModes)
@@ -47,6 +48,7 @@ To access the Graphics manager you use `Shaku.gfx`.
     * [.drawSprite(sprite)](#Gfx+drawSprite)
     * [.cover(texture, destRect, sourceRect, color, blendMode)](#Gfx+cover)
     * [.draw(texture, position, size, sourceRect, color, blendMode, rotation, origin, skew)](#Gfx+draw)
+    * [.drawQuadFromVertices(texture, vertices, blendMode)](#Gfx+drawQuadFromVertices)
     * [.fillRect(destRect, color, blend, rotation)](#Gfx+fillRect)
     * [.fillRects(destRects, colors, blend, rotation)](#Gfx+fillRects)
     * [.outlineRect(destRect, color, blend, rotation)](#Gfx+outlineRect)
@@ -116,6 +118,13 @@ Get the matrix object.
 
 **Kind**: instance property of [<code>Gfx</code>](#Gfx)  
 **See**: Matrix  
+<a name="Gfx+Vertex"></a>
+
+### gfx.Vertex
+Get the vertex object.
+
+**Kind**: instance property of [<code>Gfx</code>](#Gfx)  
+**See**: Vertex  
 <a name="Gfx+TextAlignment"></a>
 
 ### gfx.TextAlignment
@@ -540,6 +549,19 @@ let rotation = Math.PI / 4;
 let origin = new Shaku.utils.Vector2(0.5, 0.5);
 Shaku.gfx.draw(texture, position, size, sourceRect, color, blendMode, rotation, origin);
 ```
+<a name="Gfx+drawQuadFromVertices"></a>
+
+### gfx.drawQuadFromVertices(texture, vertices, blendMode)
+Draw a textured quad from vertices.
+
+**Kind**: instance method of [<code>Gfx</code>](#Gfx)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| texture | <code>TextureAsset</code> | Texture to draw. |
+| vertices | <code>Array.&lt;Vertex&gt;</code> | Quad vertices to draw (should be: top-left, top-right, bottom-left, bottom-right). |
+| blendMode | <code>BlendModes</code> | Blend mode to set. |
+
 <a name="Gfx+fillRect"></a>
 
 ### gfx.fillRect(destRect, color, blend, rotation)
