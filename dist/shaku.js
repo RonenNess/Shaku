@@ -9211,7 +9211,7 @@ const version = "1.5.8";
  * Shaku's main object.
  * This object wraps the entire lib namespace, and this is what you use to access all managers and manage your main loop.
  */
-class Shaku 
+class _Shaku 
 {
     /**
      * Create the Shaku main object.
@@ -9512,7 +9512,8 @@ class Shaku
 };
 
 // create and return the main object.
-module.exports = new Shaku();
+const Shaku = new _Shaku();
+module.exports = Shaku;
 },{"./assets":5,"./collision":11,"./gfx":27,"./input":39,"./logger":42,"./manager":43,"./sfx":44,"./utils":53,"./utils/game_time":52}],49:[function(require,module,exports){
 /**
  * Implement an animator helper class.

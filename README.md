@@ -1995,6 +1995,7 @@ List of changes in released versions.
 - Made the `Vertex` object public, and extended its API.
 - Extended `Matrix` API.
 - Added vertices rendering demo.
+- Tiny change in how we return the main object to it will better be identified by code analyzers.
 
 # License
 
