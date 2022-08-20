@@ -9207,11 +9207,12 @@ let _totalFrameTimes = 0;
 // current version
 const version = "1.5.8";
 
+
 /**
  * Shaku's main object.
  * This object wraps the entire lib namespace, and this is what you use to access all managers and manage your main loop.
- */
-class _Shaku 
+*/
+class Shaku 
 {
     /**
      * Create the Shaku main object.
@@ -9511,9 +9512,9 @@ class _Shaku
     }
 };
 
-// create and return the main object.
-const Shaku = new _Shaku();
-module.exports = Shaku;
+
+// return the main Shaku object.
+module.exports = new Shaku();
 },{"./assets":5,"./collision":11,"./gfx":27,"./input":39,"./logger":42,"./manager":43,"./sfx":44,"./utils":53,"./utils/game_time":52}],49:[function(require,module,exports){
 /**
  * Implement an animator helper class.
@@ -12532,6 +12533,26 @@ class Vector2
         return new Vector2(this.x / mag, this.y / mag);
     }
 
+    /**
+     * Get a copy of this vector rotated by radians.
+     * @param {Number} radians Radians to rotate by. 
+     * @returns {Vector2} New vector with the length of this vector and direction rotated by given radians.
+     */
+    rotatedRadians(radians)
+    {
+        return Vector2.fromRadians(this.getRadians() + radians).mulSelf(this.length());
+    }
+
+    /**
+     * Get a copy of this vector rotated by degrees.
+     * @param {Number} degrees Degrees to rotate by. 
+     * @returns {Vector2} New vector with the length of this vector and direction rotated by given degrees.
+     */
+    rotatedDegrees(degrees)
+    {
+        return Vector2.fromDegree(this.getDegrees() + degrees).mulSelf(this.length());
+    }
+    
     /**
      * Add other vector values to self.
      * @param {Number|Vector2} Other Vector or number to add.

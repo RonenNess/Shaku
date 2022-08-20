@@ -26,6 +26,8 @@ A simple Vector object for 2d positions.
         * [.floor()](#Vector2+floor) ⇒ [<code>Vector2</code>](#Vector2)
         * [.ceil()](#Vector2+ceil) ⇒ [<code>Vector2</code>](#Vector2)
         * [.normalized()](#Vector2+normalized) ⇒ [<code>Vector2</code>](#Vector2)
+        * [.rotatedRadians(radians)](#Vector2+rotatedRadians) ⇒ [<code>Vector2</code>](#Vector2)
+        * [.rotatedDegrees(degrees)](#Vector2+rotatedDegrees) ⇒ [<code>Vector2</code>](#Vector2)
         * [.addSelf(Other)](#Vector2+addSelf) ⇒ [<code>Vector2</code>](#Vector2)
         * [.subSelf(Other)](#Vector2+subSelf) ⇒ [<code>Vector2</code>](#Vector2)
         * [.divSelf(Other)](#Vector2+divSelf) ⇒ [<code>Vector2</code>](#Vector2)
@@ -191,6 +193,30 @@ Return a normalized copy of this vector.
 
 **Kind**: instance method of [<code>Vector2</code>](#Vector2)  
 **Returns**: [<code>Vector2</code>](#Vector2) - result vector.  
+<a name="Vector2+rotatedRadians"></a>
+
+### vector2.rotatedRadians(radians) ⇒ [<code>Vector2</code>](#Vector2)
+Get a copy of this vector rotated by radians.
+
+**Kind**: instance method of [<code>Vector2</code>](#Vector2)  
+**Returns**: [<code>Vector2</code>](#Vector2) - New vector with the length of this vector and direction rotated by given radians.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| radians | <code>Number</code> | Radians to rotate by. |
+
+<a name="Vector2+rotatedDegrees"></a>
+
+### vector2.rotatedDegrees(degrees) ⇒ [<code>Vector2</code>](#Vector2)
+Get a copy of this vector rotated by degrees.
+
+**Kind**: instance method of [<code>Vector2</code>](#Vector2)  
+**Returns**: [<code>Vector2</code>](#Vector2) - New vector with the length of this vector and direction rotated by given degrees.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| degrees | <code>Number</code> | Degrees to rotate by. |
+
 <a name="Vector2+addSelf"></a>
 
 ### vector2.addSelf(Other) ⇒ [<code>Vector2</code>](#Vector2)
