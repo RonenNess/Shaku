@@ -9510,6 +9510,14 @@ class Shaku
     {
         logger.setDrivers(loggerHandler);
     }
+
+    /**
+     * Get / create a custom logger.
+     */
+    getLogger(name)
+    {
+        return logger.getLogger(name);
+    }
 };
 
 
@@ -12540,7 +12548,7 @@ class Vector2
      */
     rotatedRadians(radians)
     {
-        return Vector2.fromRadians(this.getRadians() + radians).mulSelf(this.length());
+        return Vector2.fromRadians(this.getRadians() + radians).mulSelf(this.length);
     }
 
     /**
@@ -12550,7 +12558,7 @@ class Vector2
      */
     rotatedDegrees(degrees)
     {
-        return Vector2.fromDegree(this.getDegrees() + degrees).mulSelf(this.length());
+        return Vector2.fromDegree(this.getDegrees() + degrees).mulSelf(this.length);
     }
     
     /**

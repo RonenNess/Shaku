@@ -1997,6 +1997,7 @@ List of changes in released versions.
 - Added vertices rendering demo.
 - Tiny change in how we return the main object to it will better be identified by code analyzers.
 - Added some useful methods to `Vector2` class.
+- Added method to get logger.
 
 # License
 
