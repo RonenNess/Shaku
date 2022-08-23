@@ -1989,7 +1989,7 @@ List of changes in released versions.
 - Small bug fix when switching `pauseWhenNotFocused` during an update while being unfocused.
 - Added option to set the `crossOrigin` property while loading a texture.
 
-## 1.5.8 [WIP]
+## 1.5.8
 
 - Added method to draw vertices directly under `gfx` manager.
 - Made the `Vertex` object public, and extended its API.
