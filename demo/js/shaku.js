@@ -9937,6 +9937,32 @@ class Circle
     }
 
     /**
+     * Create circle from a dictionary.
+     * @param {*} data Dictionary with {center, radius}.
+     * @returns {Circle} Newly created circle.
+     */
+    static fromDict(data)
+    {
+        return new Circle(Vector2.fromDict(data.center || {}), data.radius || 0);
+    }
+
+    /**
+     * Convert to dictionary.
+     * @param {Boolean} minimized If true, will not include keys that their values are 0. You can use fromDict on minimized dicts.
+     * @returns {*} Dictionary with {center, radius}.
+     */
+    toDict(minimized)
+    {
+        if (minimized) {
+            const ret = {};
+            if (this.radius) { ret.radius = this.radius; }
+            if (this.center.x || this.center.y) { ret.center = this.center.toDict(true); }
+            return ret;
+        }
+        return {center: this.center.toDict(), radius: this.radius};
+    }
+     
+    /**
      * Lerp between two circle.
      * @param {Circle} p1 First circle.
      * @param {Circle} p2 Second circle.
@@ -10176,15 +10202,24 @@ class Color
      */
     static fromDict(data)
     {
-        return new Color(data.r, data.g, data.b, data.a || 1);
+        return new Color(data.r || 0, data.g || 0, data.b || 0, (data.a !== undefined) ? data.a : 1);
     }
 
     /**
      * Convert to dictionary.
+     * @param {Boolean} minimized If true, will not include keys that their values are 0 (in alpha case: 1). You can use fromDict on minimized dicts.
      * @returns {*} Dictionary with {r,g,b,a}
      */
-    toDict()
+    toDict(minimized)
     {
+        if (minimized) {
+            const ret = {};
+            if (this.r) { ret.r = this.r; }
+            if (this.g) { ret.g = this.g; }
+            if (this.b) { ret.b = this.b; }
+            if (this.a !== 1) { ret.a = this.a; }
+            return ret;
+        }
         return {r: this.r, g: this.g, b: this.b, a: this.a};
     }
 
@@ -10597,6 +10632,32 @@ class Line
     clone()
     {
         return new Line(this.from, this.to);
+    }
+
+    /**
+     * Create Line from a dictionary.
+     * @param {*} data Dictionary with {from, to}.
+     * @returns {Line} Newly created line.
+     */
+    static fromDict(data)
+    {
+        return new Line(Vector2.fromDict(data.from || {}), Vector2.fromDict(data.to || {}));
+    }
+
+    /**
+     * Convert to dictionary.
+     * @param {Boolean} minimized If true, will not include keys that their values are 0. You can use fromDict on minimized dicts.
+     * @returns {*} Dictionary with {from, to}.
+     */
+    toDict(minimized)
+    {
+        if (minimized) {
+            const ret = {};
+            if (this.from.x || this.from.y) { ret.from = this.from.toDict(true); }
+            if (this.to.x || this.to.y) { ret.to = this.to.toDict(true); }
+            return ret;
+        }
+        return {from: this.from.toDict(), to: this.to.toDict()};
     }
 
     /**
@@ -11701,15 +11762,24 @@ class Rectangle
      */
     static fromDict(data)
     {
-        return new Rectangle(data.x, data.y, data.width, data.height);
+        return new Rectangle(data.x || 0, data.y || 0, data.width || 0, data.height || 0);
     }
 
     /**
      * Convert to dictionary.
+     * @param {Boolean} minimized If true, will not include keys that their values are 0. You can use fromDict on minimized dicts.
      * @returns {*} Dictionary with {x,y,width,height}
      */
-    toDict()
+    toDict(minimized)
     {
+        if (minimized) {
+            const ret = {};
+            if (this.x) { ret.x = this.x; }
+            if (this.y) { ret.y = this.y; }
+            if (this.width) { ret.width = this.width; }
+            if (this.height) { ret.height = this.height; }
+            return ret;
+        }
         return {x: this.x, y: this.y, width: this.width, height: this.height};
     }
 }
@@ -13033,15 +13103,22 @@ class Vector2
      */
     static fromDict(data)
     {
-        return new Vector2(data.x, data.y);
+        return new Vector2(data.x || 0, data.y || 0);
     }
 
     /**
      * Convert to dictionary.
+     * @param {Boolean} minimized If true, will not include keys that their values are 0. You can use fromDict on minimized dicts.
      * @returns {*} Dictionary with {x,y}
      */
-    toDict()
+    toDict(minimized)
     {
+        if (minimized) {
+            const ret = {};
+            if (this.x) { ret.x = this.x; }
+            if (this.y) { ret.y = this.y; }
+            return ret;
+        }
         return {x: this.x, y: this.y};
     }
 }
@@ -13584,15 +13661,23 @@ class Vector3
      */
     static fromDict(data)
     {
-        return new Vector3(data.x, data.y, data.z);
+        return new Vector3(data.x || 0, data.y || 0, data.z || 0);
     }
 
     /**
      * Convert to dictionary.
+     * @param {Boolean} minimized If true, will not include keys that their values are 0. You can use fromDict on minimized dicts.
      * @returns {*} Dictionary with {x,y,z}
      */
-    toDict()
+    toDict(minimized)
     {
+        if (minimized) {
+            const ret = {};
+            if (this.x) { ret.x = this.x; }
+            if (this.y) { ret.y = this.y; }
+            if (this.z) { ret.z = this.z; }
+            return ret;
+        }
         return {x: this.x, y: this.y, z: this.z};
     }
 }

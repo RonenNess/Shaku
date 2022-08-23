@@ -1998,6 +1998,9 @@ List of changes in released versions.
 - Tiny change in how we return the main object to it will better be identified by code analyzers.
 - Added some useful methods to `Vector2` class.
 - Added method to get logger.
+- Added `fromDict` and `toDict` to more util objects.
+- Added `minimize` flag to all `toDict` methods.
+- Fixed bug in Color `fromDict` turning alpha value of 0 to 1.
 
 # License
 
