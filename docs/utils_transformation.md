@@ -10,13 +10,6 @@
 <dt><a href="#Transformation">Transformation</a></dt>
 <dd><p>Transformations helper class to store 2d position, rotation and scale.
 Can also perform transformations inheritance, where we combine local with parent transformations.</p>
-<p>Usage example:</p>
-<p>const transform = new Shaku.utils.Transformation();
-const worldTransform = new Shaku.utils.Transformation();</p>
-<p>worldTransform.setPosition({x: 100, y:50});
-transform.setRotation(5);</p>
-<p>const combined = Shaku.utils.Transformation.combine(transform, worldTransform);
-const matrix = combined.asMatrix();</p>
 </dd>
 </dl>
 
@@ -39,17 +32,6 @@ const matrix = combined.asMatrix();</p>
 ## Transformation
 Transformations helper class to store 2d position, rotation and scale.
 Can also perform transformations inheritance, where we combine local with parent transformations.
-
-Usage example:
-
-const transform = new Shaku.utils.Transformation();
-const worldTransform = new Shaku.utils.Transformation();
-
-worldTransform.setPosition({x: 100, y:50});
-transform.setRotation(5);
-
-const combined = Shaku.utils.Transformation.combine(transform, worldTransform);
-const matrix = combined.asMatrix();
 
 **Kind**: global class  
 
@@ -97,6 +79,18 @@ Create the transformations.
 | rotation | <code>Number</code> | Optional rotation value. |
 | scale | <code>Vector2</code> | Optional sscale value. |
 
+**Example**  
+```js
+// create local and world transformations
+const transform = new Shaku.utils.Transformation();
+const worldTransform = new Shaku.utils.Transformation();
+// set offset to world transofm and rotation to local transform
+worldTransform.setPosition({x: 100, y:50});
+transform.setRotation(5);
+// combine transformations and convert to a matrix
+const combined = Shaku.utils.Transformation.combine(transform, worldTransform);
+const matrix = combined.asMatrix();
+```
 <a name="Transformation+onChange"></a>
 
 ### transformation.onChange : <code>function</code>

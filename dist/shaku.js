@@ -12537,14 +12537,14 @@ _defaults.rotationMode = TransformModes.Relative;
  * Transformations helper class to store 2d position, rotation and scale.
  * Can also perform transformations inheritance, where we combine local with parent transformations.
  * 
- * Usage example:
- * 
+ * @example
+ * // create local and world transformations
  * const transform = new Shaku.utils.Transformation();
  * const worldTransform = new Shaku.utils.Transformation();
- * 
+ * // set offset to world transofm and rotation to local transform
  * worldTransform.setPosition({x: 100, y:50});
  * transform.setRotation(5);
- * 
+ * // combine transformations and convert to a matrix
  * const combined = Shaku.utils.Transformation.combine(transform, worldTransform);
  * const matrix = combined.asMatrix();
  */
