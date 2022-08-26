@@ -36,7 +36,7 @@ Implement a simple 2d Rectangle.
         * [.getBoundingCircle()](#Rectangle+getBoundingCircle) ⇒ <code>Circle</code>
         * [.resize(amount)](#Rectangle+resize) ⇒ [<code>Rectangle</code>](#Rectangle)
         * [.equals(other)](#Rectangle+equals)
-        * [.toDict()](#Rectangle+toDict) ⇒ <code>\*</code>
+        * [.toDict(minimized)](#Rectangle+toDict) ⇒ <code>\*</code>
     * _static_
         * [.fromPoints(points)](#Rectangle.fromPoints) ⇒ [<code>Rectangle</code>](#Rectangle)
         * [.lerp(p1, p2, a)](#Rectangle.lerp) ⇒ [<code>Rectangle</code>](#Rectangle)
@@ -252,11 +252,16 @@ Check if equal to another rectangle.
 
 <a name="Rectangle+toDict"></a>
 
-### rectangle.toDict() ⇒ <code>\*</code>
+### rectangle.toDict(minimized) ⇒ <code>\*</code>
 Convert to dictionary.
 
 **Kind**: instance method of [<code>Rectangle</code>](#Rectangle)  
 **Returns**: <code>\*</code> - Dictionary with {x,y,width,height}  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| minimized | <code>Boolean</code> | If true, will not include keys that their values are 0. You can use fromDict on minimized dicts. |
+
 <a name="Rectangle.fromPoints"></a>
 
 ### Rectangle.fromPoints(points) ⇒ [<code>Rectangle</code>](#Rectangle)

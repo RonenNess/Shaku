@@ -1018,7 +1018,7 @@ function measureTextWidth(fontFamily, fontSize, char, extraWidth)
 
 // export the asset type.
 module.exports = FontTextureAsset;
-},{"../utils/rectangle":58,"../utils/vector2":62,"./asset":1,"./texture_asset":8}],5:[function(require,module,exports){
+},{"../utils/rectangle":58,"../utils/vector2":64,"./asset":1,"./texture_asset":8}],5:[function(require,module,exports){
 /**
  * Just an alias to main manager so we can require() this folder as a package.
  * 
@@ -1628,7 +1628,7 @@ function isPowerOf2(value) {
 
 // export the asset type.
 module.exports = TextureAsset;
-},{"../gfx/texture_filter_modes":35,"../gfx/texture_wrap_modes":36,"../logger.js":42,"../utils/color":51,"../utils/vector2":62,"./asset":1}],9:[function(require,module,exports){
+},{"../gfx/texture_filter_modes":35,"../gfx/texture_wrap_modes":36,"../logger.js":42,"../utils/color":51,"../utils/vector2":64,"./asset":1}],9:[function(require,module,exports){
 /**
  * Implement the collision manager.
  * 
@@ -1787,7 +1787,7 @@ class Collision extends IManager
 
 // export main object
 module.exports = new Collision();
-},{"../logger.js":42,"../manager.js":43,"../utils/vector2.js":62,"./collision_world.js":10,"./resolver":12,"./resolvers_imp":13,"./shapes/circle.js":15,"./shapes/lines.js":16,"./shapes/point.js":17,"./shapes/rectangle.js":18,"./shapes/tilemap.js":20}],10:[function(require,module,exports){
+},{"../logger.js":42,"../manager.js":43,"../utils/vector2.js":64,"./collision_world.js":10,"./resolver":12,"./resolvers_imp":13,"./shapes/circle.js":15,"./shapes/lines.js":16,"./shapes/point.js":17,"./shapes/rectangle.js":18,"./shapes/tilemap.js":20}],10:[function(require,module,exports){
 /**
  * Implement the collision manager.
  * 
@@ -2319,7 +2319,7 @@ function sortByDistanceShapes(sourceShape, options)
 
 // export collision world
 module.exports = CollisionWorld;
-},{"../logger.js":42,"../utils/circle":50,"../utils/color":51,"../utils/rectangle":58,"../utils/vector2":62,"./../gfx":27,"./resolver":12,"./result":14,"./shapes/circle":15,"./shapes/point":17,"./shapes/shape":19}],11:[function(require,module,exports){
+},{"../logger.js":42,"../utils/circle":50,"../utils/color":51,"../utils/rectangle":58,"../utils/vector2":64,"./../gfx":27,"./resolver":12,"./result":14,"./shapes/circle":15,"./shapes/point":17,"./shapes/shape":19}],11:[function(require,module,exports){
 /**
  * Just an alias to main manager so we can require() this folder as a package.
  * 
@@ -2465,7 +2465,7 @@ class CollisionResolver
 
 // export the collision resolver
 module.exports = CollisionResolver;
-},{"../logger.js":42,"../utils/vector2.js":62,"./result.js":14,"./shapes/shape.js":19}],13:[function(require,module,exports){
+},{"../logger.js":42,"../utils/vector2.js":64,"./result.js":14,"./shapes/shape.js":19}],13:[function(require,module,exports){
 /**
  * All default collision detection implementations.
  * 
@@ -2685,7 +2685,7 @@ class CollisionTestResult
 
 // export collision shape class
 module.exports = CollisionTestResult;
-},{"../utils/vector2":62,"./shapes/shape":19}],15:[function(require,module,exports){
+},{"../utils/vector2":64,"./shapes/shape":19}],15:[function(require,module,exports){
 /**
  * Implement collision circle.
  * 
@@ -3014,7 +3014,7 @@ class PointShape extends CollisionShape
 
 // export collision shape class
 module.exports = PointShape;
-},{"../../utils/circle":50,"../../utils/rectangle":58,"../../utils/vector2":62,"./../../gfx":27,"./shape":19}],18:[function(require,module,exports){
+},{"../../utils/circle":50,"../../utils/rectangle":58,"../../utils/vector2":64,"./../../gfx":27,"./shape":19}],18:[function(require,module,exports){
 /**
  * Implement collision rectangle.
  * 
@@ -3300,7 +3300,7 @@ const defaultDebugColors = [Color.red, Color.blue, Color.green, Color.yellow, Co
 
 // export collision shape class
 module.exports = CollisionShape;
-},{"../../utils/color":51,"../../utils/rectangle":58,"../../utils/vector2":62,"../collision_world":10}],20:[function(require,module,exports){
+},{"../../utils/color":51,"../../utils/rectangle":58,"../../utils/vector2":64,"../collision_world":10}],20:[function(require,module,exports){
 /**
  * Implement collision tilemap.
  * 
@@ -3497,7 +3497,7 @@ class TilemapShape extends CollisionShape
 
 // export collision shape class
 module.exports = TilemapShape;
-},{"../../utils/rectangle":58,"../../utils/vector2":62,"./../../gfx":27,"./rectangle":18,"./shape":19}],21:[function(require,module,exports){
+},{"../../utils/rectangle":58,"../../utils/vector2":64,"./../../gfx":27,"./rectangle":18,"./shape":19}],21:[function(require,module,exports){
 /**
  * Define supported blend modes.
  * 
@@ -3652,7 +3652,7 @@ class Camera
 
 // export the camera object
 module.exports = Camera;
-},{"../utils/rectangle":58,"../utils/vector2":62,"./matrix":28}],23:[function(require,module,exports){
+},{"../utils/rectangle":58,"../utils/vector2":64,"./matrix":28}],23:[function(require,module,exports){
 /**
  * Implement a basic effect to draw sprites.
  * 
@@ -5968,7 +5968,7 @@ class Gfx extends IManager
 
 // export main object
 module.exports = new Gfx();
-},{"../assets/font_texture_asset.js":4,"../assets/texture_asset.js":8,"../logger.js":42,"../manager.js":43,"../utils/circle.js":50,"../utils/color.js":51,"../utils/rectangle.js":58,"../utils/vector2.js":62,"../utils/vector3.js":63,"./blend_modes.js":21,"./camera.js":22,"./effects":25,"./matrix.js":28,"./mesh.js":29,"./mesh_generator.js":30,"./sprite.js":31,"./sprite_batch.js":32,"./sprites_group.js":33,"./text_alignment.js":34,"./texture_filter_modes.js":35,"./texture_wrap_modes.js":36,"./vertex":37}],27:[function(require,module,exports){
+},{"../assets/font_texture_asset.js":4,"../assets/texture_asset.js":8,"../logger.js":42,"../manager.js":43,"../utils/circle.js":50,"../utils/color.js":51,"../utils/rectangle.js":58,"../utils/vector2.js":64,"../utils/vector3.js":65,"./blend_modes.js":21,"./camera.js":22,"./effects":25,"./matrix.js":28,"./mesh.js":29,"./mesh_generator.js":30,"./sprite.js":31,"./sprite_batch.js":32,"./sprites_group.js":33,"./text_alignment.js":34,"./texture_filter_modes.js":35,"./texture_wrap_modes.js":36,"./vertex":37}],27:[function(require,module,exports){
 /**
  * Just an alias to main manager so we can require() this folder as a package.
  * 
@@ -6360,7 +6360,7 @@ Object.freeze(Matrix.identity);
 
 // export the matrix object
 module.exports = Matrix;
-},{"../utils/vector2":62,"./vertex":37}],29:[function(require,module,exports){
+},{"../utils/vector2":64,"./vertex":37}],29:[function(require,module,exports){
 /**
  * Define a mesh object.
  * 
@@ -6699,7 +6699,7 @@ class Sprite
 
 // export the sprite class.
 module.exports = Sprite;
-},{"../assets/texture_asset":8,"../utils/color":51,"../utils/rectangle":58,"../utils/vector2":62,"../utils/vector3":63,"./blend_modes":21}],32:[function(require,module,exports){
+},{"../assets/texture_asset":8,"../utils/color":51,"../utils/rectangle":58,"../utils/vector2":64,"../utils/vector3":65,"./blend_modes":21}],32:[function(require,module,exports){
 /**
  * Implement the gfx sprite batch renderer.
  * 
@@ -7169,7 +7169,7 @@ class SpriteBatch
 
 // export the sprite batch class
 module.exports = SpriteBatch;
-},{"../logger.js":42,"../utils":53,"../utils/vector2":62,"./blend_modes":21,"./matrix":28,"./mesh":29,"./vertex":37}],33:[function(require,module,exports){
+},{"../logger.js":42,"../utils":53,"../utils/vector2":64,"./blend_modes":21,"./matrix":28,"./mesh":29,"./vertex":37}],33:[function(require,module,exports){
 /**
  * Define a sprites group.
  * 
@@ -7324,7 +7324,7 @@ class SpritesGroup
 
 // export the sprites group class.
 module.exports = SpritesGroup;
-},{"../utils/color":51,"../utils/vector2":62,"./matrix":28,"./sprite":31}],34:[function(require,module,exports){
+},{"../utils/color":51,"../utils/vector2":64,"./matrix":28,"./sprite":31}],34:[function(require,module,exports){
 /**
  * Define possible text alignments.
  * 
@@ -8237,7 +8237,7 @@ class Input extends IManager
 
 // export main object
 module.exports = new Input();
-},{"../logger.js":42,"../manager.js":43,"../utils/vector2.js":62,"./key_codes.js":41}],41:[function(require,module,exports){
+},{"../logger.js":42,"../manager.js":43,"../utils/vector2.js":64,"./key_codes.js":41}],41:[function(require,module,exports){
 /**
  * Define keyboard and mouse key codes.
  * 
@@ -9205,7 +9205,7 @@ let _totalFrameTimes = 0;
 
 
 // current version
-const version = "1.5.8";
+const version = "1.5.9";
 
 
 /**
@@ -9979,7 +9979,7 @@ class Circle
 
 // export the circle class
 module.exports = Circle;
-},{"./math_helper":55,"./vector2":62}],51:[function(require,module,exports){
+},{"./math_helper":55,"./vector2":64}],51:[function(require,module,exports){
 /**
  * Define a color object.
  * 
@@ -10595,9 +10595,11 @@ module.exports = GameTime;
     Perlin: require('./perlin'),
     Storage: require('./storage'),
     StorageAdapter: require('./storage_adapter'),
-    PathFinder: require('./path_finder')
+    PathFinder: require('./path_finder'),
+    Transformations: require('./transformation'),
+    TransformationModes: require('./transform_modes')
  };
-},{"./animator":49,"./circle":50,"./color":51,"./game_time":52,"./line":54,"./math_helper":55,"./path_finder":56,"./perlin":57,"./rectangle":58,"./seeded_random":59,"./storage":60,"./storage_adapter":61,"./vector2":62,"./vector3":63}],54:[function(require,module,exports){
+},{"./animator":49,"./circle":50,"./color":51,"./game_time":52,"./line":54,"./math_helper":55,"./path_finder":56,"./perlin":57,"./rectangle":58,"./seeded_random":59,"./storage":60,"./storage_adapter":61,"./transform_modes":62,"./transformation":63,"./vector2":64,"./vector3":65}],54:[function(require,module,exports){
 /**
  * Implement a simple 2d line.
  * 
@@ -10779,7 +10781,7 @@ class Line
 
 // export the line class
 module.exports = Line;
-},{"./vector2":62}],55:[function(require,module,exports){
+},{"./vector2":64}],55:[function(require,module,exports){
 /**
  * Implement a math utilities class.
  * 
@@ -11213,7 +11215,7 @@ const PathFinder = {
     IGrid: IGrid
 };
 module.exports = PathFinder;
-},{"./vector2":62}],57:[function(require,module,exports){
+},{"./vector2":64}],57:[function(require,module,exports){
 /**
  * Implements 2d perlin noise generator.
  * Based on code from noisejs by Stefan Gustavson.
@@ -11836,7 +11838,7 @@ function pointLineDistance(p1, l1, l2) {
 
 // export the rectangle class
 module.exports = Rectangle;
-},{"./circle":50,"./line":54,"./math_helper":55,"./vector2":62}],59:[function(require,module,exports){
+},{"./circle":50,"./line":54,"./math_helper":55,"./vector2":64}],59:[function(require,module,exports){
 /**
  * Implement a seeded random generator.
  * 
@@ -12461,6 +12463,612 @@ StorageAdapter.sessionStorage = StorageAdapterSessionStorage;
 // export the storage adapter class
 module.exports = StorageAdapter;
 },{}],62:[function(require,module,exports){
+/**
+ * Transformation modes.
+ * 
+ * |-- copyright and license --|
+ * @package    Shaku
+ * @file       shaku\lib\utils\transform_modes.js
+ * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
+ * @copyright  (c) 2021 Ronen Ness
+ * @license    MIT
+ * |-- end copyright and license --|
+ * 
+ */
+'use strict';
+
+/**
+ * Different ways we can combine local transformations with parent transformations.
+ */
+const TransformModes = {
+    
+    /**
+     * The vector or scalar will be relative to the entity's parent transformations, and the local axis will be rotated by the parent's rotation.
+     * For example, if we have an entity that renders a blue ball and a child entity that renders a red ball with offset of {100,0}, when we rotate the parent blue ball, the red ball will rotate around it, keeping a distance of 100 pixels. 
+     */
+    Relative: 'relative',
+
+    /**
+     * The vector or scalar will be relative to the entity's parent transformations, but local axis will be constant.
+     * For example, if we have an entity that renders a blue ball and a child entity that renders a red ball with offset of {100,0}, no matter how we rotate the parent blue ball, the red ball will always keep offset of {100,0} from it, ie be rendered on its right. 
+     */
+    AxisAligned: 'axis-aligned',
+
+    /**
+     * The vector or scalar will ignore any parent transformations.
+     * This means that the local transformations of the entity will always be its world transformations as well, no matter what it parent does.
+     */
+    Absolute: 'absolute'
+}
+
+
+// export the transform modes.
+module.exports = TransformModes;
+},{}],63:[function(require,module,exports){
+/**
+ * Transformations object to store position, rotation and scale, that also support transformations inheritance.
+ * 
+ * |-- copyright and license --|
+ * @package    Shaku
+ * @file       shaku\lib\utils\transformation.js
+ * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
+ * @copyright  (c) 2021 Ronen Ness
+ * @license    MIT
+ * |-- end copyright and license --|
+ * 
+ */
+'use strict';
+const MathHelper = require("./math_helper");
+const TransformModes = require("./transform_modes");
+const Matrix = require("../gfx/matrix");
+const Vector2 = require("./vector2");
+
+// some default values
+const _defaults = {};
+_defaults.position = Vector2.zero;
+_defaults.positionMode = TransformModes.Relative;
+_defaults.scale = Vector2.one;
+_defaults.scaleMode = TransformModes.AxisAligned;
+_defaults.rotation = 0;
+_defaults.rotationMode = TransformModes.Relative;
+
+
+/**
+ * Transformations helper class to store 2d position, rotation and scale.
+ * Can also perform transformations inheritance, where we combine local with parent transformations.
+ * 
+ * Usage example:
+ * 
+ * const transform = new Shaku.utils.Transformation();
+ * const worldTransform = new Shaku.utils.Transformation();
+ * 
+ * worldTransform.setPosition({x: 100, y:50});
+ * transform.setRotation(5);
+ * 
+ * const combined = Shaku.utils.Transformation.combine(transform, worldTransform);
+ * const matrix = combined.asMatrix();
+ */
+class Transformation
+{
+    /**
+     * Create the transformations.
+     * @param {Vector2} position Optional position value.
+     * @param {Number} rotation Optional rotation value.
+     * @param {Vector2} scale Optional sscale value.
+     */
+    constructor(position, rotation, scale)
+    {
+        /**
+         * @private
+         * Transformation local position.
+         * @name Transformation#position
+         * @type {Vector2}
+         */
+        this._position = position || _defaults.position.clone();
+        
+        /**
+         * @private
+         * Position transformation mode.
+         * @name Transformation#positionMode
+         * @type {TransformModes}
+         */
+        this._positionMode = _defaults.positionMode;
+
+        /**
+         * @private
+         * Transformation local scale.
+         * @name Transformation#scale
+         * @type {Vector2}
+         */
+        this._scale = scale || _defaults.scale.clone();
+
+        /**
+         * @private
+         * Scale transformation mode.
+         * @name Transformation#scaleMode
+         * @type {TransformModes}
+         */
+        this._scaleMode = _defaults.scaleMode;
+
+        /**
+         * @private
+         * Transformation local rotation.
+         * @name Transformation#rotation
+         * @type {Number}
+         */
+        this._rotation = rotation || _defaults.rotation;
+
+        /**
+         * @private
+         * Rotation transformation mode.
+         * @name Transformation#rotationMode
+         * @type {TransformModes}
+         */
+        this._rotationMode = _defaults.rotationMode;
+
+        /**
+         * Method to call when this transformation change.
+         * Function params: transformation instance (this), properties changed (boolean), transform modes changed (boolean).
+         * @name Transformation#onChange
+         * @type {Function}
+         */
+        this.onChange = null;
+    }
+
+    /**
+     * Get position.
+     * @returns {Vector2} Position.
+     */
+    getPosition()
+    {
+        return this._position.clone();
+    }
+
+    /**
+     * Get position transformations mode.
+     * @returns {TransformModes} Position transformation mode.
+     */
+    getPositionMode()
+    {
+        return this._positionMode;
+    }
+
+    /**
+     * Set position.
+     * @param {Vector2} value New position.
+     * @returns {Transformation} this.
+     */
+    setPosition(value)
+    {
+        if (this._position.equals(value)) { return; }
+        this._position.copy(value);
+        this._markDirty(true, false);
+        return this;
+    }
+
+    /**
+     * Move position by a given vector.
+     * @param {Vector2} value Vector to move position by.
+     * @returns {Transformation} this.
+     */
+    move(value)
+    {
+        this._position.addSelf(value);
+        this._markDirty(true, false);
+        return this;
+    }
+    
+    /**
+     * Set position transformations mode.
+     * @param {TransformModes} value Position transformation mode.
+     * @returns {Transformation} this.
+     */
+    setPositionMode(value)
+    {
+        if (this._positionMode === value) { return; }
+        this._positionMode = value;
+        this._markDirty(false, true);
+        return this;
+    }
+
+    /**
+     * Get scale.
+     * @returns {Vector2} Scale.
+     */
+    getScale()
+    {
+        return this._scale.clone();
+    }
+
+    /**
+     * Get scale transformations mode.
+     * @returns {TransformModes} Scale transformation mode.
+     */
+    getScaleMode()
+    {
+        return this._scaleMode;
+    }
+
+    /**
+     * Set scale.
+     * @param {Vector2} value New scale.
+     * @returns {Transformation} this.
+     */
+    setScale(value)
+    {
+        if (this._scale.equals(value)) { return; }
+        this._scale.copy(value);
+        this._markDirty(true, false);
+        return this;
+    }
+
+    /**
+     * Scale by a given vector.
+     * @param {Vector2} value Vector to scale by.
+     * @returns {Transformation} this.
+     */
+    scale(value)
+    {
+        this._scale.mulSelf(value);
+        this._markDirty(true, false);
+        return this;
+    }
+
+    /**
+     * Set scale transformations mode.
+     * @param {TransformModes} value Scale transformation mode.
+     * @returns {Transformation} this.
+     */
+    setScaleMode(value)
+    {
+        if (this._scaleMode === value) { return; }
+        this._scaleMode = value;
+        this._markDirty(false, true);
+        return this;
+    }
+
+    /**
+     * Get rotation.
+     * @returns {Number} rotation.
+     */
+    getRotation()
+    {
+        return this._rotation;
+    }
+    
+    /**
+     * Get rotation as degrees.
+     * @returns {Number} rotation.
+     */
+    getRotationDegrees()
+    {
+        return MathHelper.toDegrees(this._rotation);
+    }
+
+    /**
+     * Get rotation as degrees, wrapped between 0 to 360.
+     * @returns {Number} rotation.
+     */
+    getRotationDegreesWrapped()
+    {
+        let ret = this.getRotationDegrees();
+        return MathHelper.wrapDegrees(ret);
+    }
+
+    /**
+     * Get rotation transformations mode.
+     * @returns {TransformModes} Rotation transformations mode.
+     */
+    getRotationMode()
+    {
+        return this._rotationMode;
+    }
+
+    /**
+     * Set rotation.
+     * @param {Number} value New rotation.
+     * @returns {Transformation} this.
+     */
+    setRotation(value)
+    {
+        if (this._rotation === value) { return; }
+        this._rotation = value;
+        if ((this._rotation < 0) || (this._rotation > (Math.PI * 2))) {
+            this._rotation = Math.atan2(Math.sin(this._rotation), Math.cos(this._rotation));
+        }
+        this._markDirty(true, false);
+        return this;
+    }
+
+    /**
+     * Rotate transformation by given radians.
+     * @param {Number} value Rotate value in radians.
+     * @returns {Transformation} this.
+     */
+    rotate(value)
+    {
+        this.setRotation(this._rotation + value);
+        return this;
+    }
+
+    /**
+     * Set rotation as degrees.
+     * @param {Number} value New rotation.
+     * @returns {Transformation} this.
+     */
+    setRotationDegrees(value)
+    {
+        const rads = MathHelper.toRadians(value);
+        return this.setRotation(rads);
+    }
+
+    /**
+     * Rotate transformation by given degrees.
+     * @param {Number} value Rotate value in degrees.
+     * @returns {Transformation} this.
+     */
+    rotateDegrees(value)
+    {
+        this._rotation += MathHelper.toRadians(value);
+        this._markDirty(true, false);
+        return this;
+    }
+        
+    /**
+     * Set rotation transformations mode.
+     * @param {TransformModes} value Rotation transformation mode.
+     * @returns {Transformation} this.
+     */
+    setRotationMode(value)
+    {
+        if (this._rotationMode === value) { return; }
+        this._rotationMode = value;
+        this._markDirty(false, true);
+        return this;
+    }
+
+    /**
+     * Notify about changes in values.
+     * @param {Boolean} localTransform Local transformations changed. 
+     * @param {Boolean} transformationModes Transformation modes changed.
+     */
+    _markDirty(localTransform, transformationModes)
+    {
+        this._matrix = null;
+        if (this.onChange) {
+            this.onChange(this, localTransform, transformationModes);
+        }
+    }
+    
+    /**
+     * Check if this transformation equals another.
+     * @param {Transformation} other Other transform to compare to.
+     * @returns {Boolean} True if equal, false otherwise.
+     */
+    equals(other)
+    {
+        return  (this._rotation === other._rotation) && 
+                (this._position.equals(other._position)) && 
+                (this._scale.equals(other._scale));
+    }
+
+    /**
+     * Return a clone of this transformations.
+     * @returns {Transformation} Cloned transformations.
+     */
+    clone()
+    {
+        // create cloned transformation
+        const ret = new Transformation(this._position.clone(), this._rotation, this._scale.clone());
+
+        // copy transformation modes
+        ret._rotationMode = this._rotationMode;
+        ret._positionMode = this._positionMode;
+        ret._scaleMode = this._scaleMode;
+        
+        // clone matrix
+        ret._matrix = this._matrix;
+
+        // return clone
+        return ret;
+    }
+
+    /**
+     * Serialize this transformation into a dictionary.
+     */
+    serialize()
+    {
+        const ret = {};
+
+        // position + mode
+        if (!this._position.equals(_defaults.position)) {
+            ret.pos = this._position;
+        }
+        if (this._positionMode !== _defaults.positionMode) {
+            ret.posm = this._positionMode;
+        }
+
+        // scale + mode
+        if (!this._scale.equals(_defaults.scale)) {
+            ret.scl = this._scale;
+        }
+        if (this._scaleMode !== _defaults.scaleMode) {
+            ret.sclm = this._scaleMode;
+        }
+
+        // rotation + mode
+        if (this._rotation !== _defaults.rotation) {
+            ret.rot = Math.floor(MathHelper.toDegrees(this._rotation));
+        }
+        if (this._rotationMode !== _defaults.rotationMode) {
+            ret.rotm = this._rotationMode;
+        }
+
+        return ret;
+    }
+
+    /**
+     * Deserialize this transformation from a dictionary.
+     * @param {*} data Data to set.
+     */
+    deserialize(data)
+    {
+        this._position.copy(data.pos || _defaults.position);
+        this._scale.copy(data.scl || _defaults.scale);
+        this._rotation = MathHelper.toRadians(data.rot || _defaults.rotation);
+        this._positionMode = data.posm || _defaults.positionMode;
+        this._scaleMode = data.sclm || _defaults.scaleMode;
+        this._rotationMode = data.rotm || _defaults.rotationMode;
+        this._markDirty(true, true);
+    }
+    
+    /**
+     * Create and return a transformation matrix.
+     * @returns {Matrix} New transformation matrix.
+     */
+    asMatrix()
+    {
+        // return cached
+        if (this._matrix) {
+            return this._matrix;
+        }
+
+        // get matrix type and create list of matrices to combine
+        let matrices = [];
+
+        // apply position
+        if ((this._position.x !== 0) || (this._position.y !== 0)) 
+        { 
+            matrices.push(Matrix.translate(this._position.x, this._position.y, 0));
+        }
+        
+        // apply rotation
+        if (this._rotation) 
+        { 
+            matrices.push(Matrix.rotateZ(-this._rotation));
+        }
+        
+        // apply scale
+        if ((this._scale.x !== 1) || (this._scale.y !== 1)) 
+        { 
+            matrices.push(Matrix.scale(this._scale.x, this._scale.y));
+        }
+
+        // no transformations? identity matrix
+        if (matrices.length === 0) { 
+            this._matrix = Matrix.identity; 
+        }
+        // only one transformation? return it
+        else if (matrices.length === 1) { 
+            this._matrix = matrices[0]; 
+        }
+        // more than one transformation? combine matrices
+        else { 
+            this._matrix = Matrix.multiplyMany(matrices); 
+        }
+
+        // return matrix
+        return this._matrix;
+    }
+
+    /**
+     * Combine child transformations with parent transformations.
+     * @param {Transformation} child Child transformations.
+     * @param {Transformation} parent Parent transformations.
+     * @returns {Transformation} Combined transformations.
+     */
+    static combine(child, parent)
+    {
+        var position = combineVector(child._position, parent._position, parent, child._positionMode);
+        var scale = combineVectorMul(child._scale, parent._scale, parent, child._scaleMode);
+        var rotation = combineScalar(child._rotation, parent._rotation, parent, child._rotationMode);
+        return new Transformation(position, rotation, scale);
+    }
+}
+
+
+/**
+ * Combine child scalar value with parent using a transformation mode.
+ * @param {Number} childValue Child value. 
+ * @param {Number} parentValue Parent value.
+ * @param {Transformation} parent Parent transformations.
+ * @param {TransformModes} mode Transformation mode. 
+ * @returns {Number} Combined value.
+ */
+function combineScalar(childValue, parentValue, parent, mode)
+{
+    switch (mode)
+    {
+        case TransformModes.Absolute:
+            return childValue;
+
+        case TransformModes.AxisAligned:
+        case TransformModes.Relative:
+            return parentValue + childValue;
+
+        default:
+            throw new Error("Unknown transform mode!");
+    }
+}
+
+
+/**
+ * Combine child vector value with parent using a transformation mode.
+ * @param {Vector2} childValue Child value. 
+ * @param {Vector2} parentValue Parent value.
+ * @param {Transformation} parent Parent transformations.
+ * @param {TransformModes} mode Transformation mode.
+ * @returns {Vector2} Combined value.
+ */
+function combineVector(childValue, parentValue, parent, mode)
+{
+    switch (mode)
+    {
+        case TransformModes.Absolute:
+            return childValue.clone();
+
+        case TransformModes.AxisAligned:
+            return parentValue.add(childValue);
+
+        case TransformModes.Relative:
+            return parentValue.add(childValue.rotatedRadians(parent._rotation));
+
+        default:
+            throw new Error("Unknown transform mode!");
+    }
+}
+
+
+/**
+ * Combine child vector value with parent using a transformation mode and multiplication.
+ * @param {Vector2} childValue Child value. 
+ * @param {Vector2} parentValue Parent value.
+ * @param {Transformation} parent Parent transformations.
+ * @param {TransformModes} mode Transformation mode.
+ * @returns {Vector2} Combined value.
+ */
+function combineVectorMul(childValue, parentValue, parent, mode)
+{
+    switch (mode)
+    {
+        case TransformModes.Absolute:
+            return childValue.clone();
+
+        case TransformModes.AxisAligned:
+            return parentValue.mul(childValue);
+
+        case TransformModes.Relative:
+            return parentValue.mul(childValue.rotatedRadians(parent._rotation));
+
+        default:
+            throw new Error("Unknown transform mode!");
+    }
+}
+
+
+// export the transformation object
+module.exports = Transformation;
+},{"../gfx/matrix":28,"./math_helper":55,"./transform_modes":62,"./vector2":64}],64:[function(require,module,exports){
 /**
  * Implement a simple 2d vector.
  * 
@@ -13130,7 +13738,7 @@ class Vector2
 
 // export vector object
 module.exports = Vector2;
-},{"./math_helper":55}],63:[function(require,module,exports){
+},{"./math_helper":55}],65:[function(require,module,exports){
 /**
  * Implement a 3d vector.
  * 

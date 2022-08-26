@@ -192,6 +192,17 @@ Used by the Storage utilitiy.</p>
 <dt><a href="#StorageAdapterSessionStorage">StorageAdapterSessionStorage</a></dt>
 <dd><p>Implement simple sessionStorage storage adapter.</p>
 </dd>
+<dt><a href="#Transformation">Transformation</a></dt>
+<dd><p>Transformations helper class to store 2d position, rotation and scale.
+Can also perform transformations inheritance, where we combine local with parent transformations.</p>
+<p>Usage example:</p>
+<p>const transform = new Shaku.utils.Transformation();
+const worldTransform = new Shaku.utils.Transformation();</p>
+<p>worldTransform.setPosition({x: 100, y:50});
+transform.setRotation(5);</p>
+<p>const combined = Shaku.utils.Transformation.combine(transform, worldTransform);
+const matrix = combined.asMatrix();</p>
+</dd>
 <dt><a href="#Vector2">Vector2</a></dt>
 <dd><p>A simple Vector object for 2d positions.</p>
 </dd>
@@ -4372,6 +4383,7 @@ This object wraps the entire lib namespace, and this is what you use to access a
     * [.requestAnimationFrame(callback)](#Shaku+requestAnimationFrame) ⇒ <code>Number</code>
     * [.cancelAnimationFrame(id)](#Shaku+cancelAnimationFrame)
     * [.setLogger(loggerHandler)](#Shaku+setLogger)
+    * [.getLogger()](#Shaku+getLogger)
 
 <a name="new_Shaku_new"></a>
 
@@ -4553,6 +4565,12 @@ Set the logger writer class (will replace the default console output).
 | --- | --- | --- |
 | loggerHandler | <code>\*</code> | New logger handler (must implement trace, debug, info, warn, error methods). |
 
+<a name="Shaku+getLogger"></a>
+
+### shaku.getLogger()
+Get / create a custom logger.
+
+**Kind**: instance method of [<code>Shaku</code>](#Shaku)  
 <a name="Animator"></a>
 
 ## Animator
@@ -4720,7 +4738,9 @@ Implement a simple 2d Circle.
         * [.clone()](#Circle+clone) ⇒ [<code>Circle</code>](#Circle)
         * [.containsVector(p)](#Circle+containsVector) ⇒ <code>Boolean</code>
         * [.equals(other)](#Circle+equals) ⇒ <code>Boolean</code>
+        * [.toDict(minimized)](#Circle+toDict) ⇒ <code>\*</code>
     * _static_
+        * [.fromDict(data)](#Circle.fromDict) ⇒ [<code>Circle</code>](#Circle)
         * [.lerp(p1, p2, a)](#Circle.lerp) ⇒ [<code>Circle</code>](#Circle)
 
 <a name="new_Circle_new"></a>
@@ -4765,6 +4785,30 @@ Check if equal to another circle.
 | --- | --- | --- |
 | other | [<code>Circle</code>](#Circle) | Other circle to compare to. |
 
+<a name="Circle+toDict"></a>
+
+### circle.toDict(minimized) ⇒ <code>\*</code>
+Convert to dictionary.
+
+**Kind**: instance method of [<code>Circle</code>](#Circle)  
+**Returns**: <code>\*</code> - Dictionary with {center, radius}.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| minimized | <code>Boolean</code> | If true, will not include keys that their values are 0. You can use fromDict on minimized dicts. |
+
+<a name="Circle.fromDict"></a>
+
+### Circle.fromDict(data) ⇒ [<code>Circle</code>](#Circle)
+Create circle from a dictionary.
+
+**Kind**: static method of [<code>Circle</code>](#Circle)  
+**Returns**: [<code>Circle</code>](#Circle) - Newly created circle.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| data | <code>\*</code> | Dictionary with {center, radius}. |
+
 <a name="Circle.lerp"></a>
 
 ### Circle.lerp(p1, p2, a) ⇒ [<code>Circle</code>](#Circle)
@@ -4807,7 +4851,7 @@ All color components are expected to be in 0.0 - 1.0 range (and not 0-255).
         * [.set(r, g, b, a)](#Color+set) ⇒ [<code>Color</code>](#Color)
         * [.setByte(r, g, b, a)](#Color+setByte) ⇒ [<code>Color</code>](#Color)
         * [.copy(other)](#Color+copy) ⇒ [<code>Color</code>](#Color)
-        * [.toDict()](#Color+toDict) ⇒ <code>\*</code>
+        * [.toDict(minimized)](#Color+toDict) ⇒ <code>\*</code>
         * [.clone()](#Color+clone) ⇒ <code>Number</code>
         * [.string()](#Color+string)
         * [.equals(other)](#Color+equals)
@@ -4973,11 +5017,16 @@ Copy all component values from another color.
 
 <a name="Color+toDict"></a>
 
-### color.toDict() ⇒ <code>\*</code>
+### color.toDict(minimized) ⇒ <code>\*</code>
 Convert to dictionary.
 
 **Kind**: instance method of [<code>Color</code>](#Color)  
 **Returns**: <code>\*</code> - Dictionary with {r,g,b,a}  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| minimized | <code>Boolean</code> | If true, will not include keys that their values are 1. You can use fromDict on minimized dicts. |
+
 <a name="Color+clone"></a>
 
 ### color.clone() ⇒ <code>Number</code>
@@ -5190,11 +5239,13 @@ Implement a simple 2d Line.
     * [new Line(from, to)](#new_Line_new)
     * _instance_
         * [.clone()](#Line+clone) ⇒ [<code>Line</code>](#Line)
+        * [.toDict(minimized)](#Line+toDict) ⇒ <code>\*</code>
         * [.containsVector(p, threshold)](#Line+containsVector) ⇒ <code>Boolean</code>
         * [.collideLine(other)](#Line+collideLine) ⇒ <code>Boolean</code>
         * [.distanceToVector(v)](#Line+distanceToVector) ⇒ <code>Number</code>
         * [.equals(other)](#Line+equals) ⇒ <code>Boolean</code>
     * _static_
+        * [.fromDict(data)](#Line.fromDict) ⇒ [<code>Line</code>](#Line)
         * [.lerp(l1, l2, a)](#Line.lerp) ⇒ [<code>Line</code>](#Line)
 
 <a name="new_Line_new"></a>
@@ -5215,6 +5266,18 @@ Return a clone of this line.
 
 **Kind**: instance method of [<code>Line</code>](#Line)  
 **Returns**: [<code>Line</code>](#Line) - Cloned line.  
+<a name="Line+toDict"></a>
+
+### line.toDict(minimized) ⇒ <code>\*</code>
+Convert to dictionary.
+
+**Kind**: instance method of [<code>Line</code>](#Line)  
+**Returns**: <code>\*</code> - Dictionary with {from, to}.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| minimized | <code>Boolean</code> | If true, will not include keys that their values are 0. You can use fromDict on minimized dicts. |
+
 <a name="Line+containsVector"></a>
 
 ### line.containsVector(p, threshold) ⇒ <code>Boolean</code>
@@ -5263,6 +5326,18 @@ Check if equal to another circle.
 | Param | Type | Description |
 | --- | --- | --- |
 | other | [<code>Circle</code>](#Circle) | Other circle to compare to. |
+
+<a name="Line.fromDict"></a>
+
+### Line.fromDict(data) ⇒ [<code>Line</code>](#Line)
+Create Line from a dictionary.
+
+**Kind**: static method of [<code>Line</code>](#Line)  
+**Returns**: [<code>Line</code>](#Line) - Newly created line.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| data | <code>\*</code> | Dictionary with {from, to}. |
 
 <a name="Line.lerp"></a>
 
@@ -5599,7 +5674,7 @@ Implement a simple 2d Rectangle.
         * [.getBoundingCircle()](#Rectangle+getBoundingCircle) ⇒ [<code>Circle</code>](#Circle)
         * [.resize(amount)](#Rectangle+resize) ⇒ [<code>Rectangle</code>](#Rectangle)
         * [.equals(other)](#Rectangle+equals)
-        * [.toDict()](#Rectangle+toDict) ⇒ <code>\*</code>
+        * [.toDict(minimized)](#Rectangle+toDict) ⇒ <code>\*</code>
     * _static_
         * [.fromPoints(points)](#Rectangle.fromPoints) ⇒ [<code>Rectangle</code>](#Rectangle)
         * [.lerp(p1, p2, a)](#Rectangle.lerp) ⇒ [<code>Rectangle</code>](#Rectangle)
@@ -5815,11 +5890,16 @@ Check if equal to another rectangle.
 
 <a name="Rectangle+toDict"></a>
 
-### rectangle.toDict() ⇒ <code>\*</code>
+### rectangle.toDict(minimized) ⇒ <code>\*</code>
 Convert to dictionary.
 
 **Kind**: instance method of [<code>Rectangle</code>](#Rectangle)  
 **Returns**: <code>\*</code> - Dictionary with {x,y,width,height}  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| minimized | <code>Boolean</code> | If true, will not include keys that their values are 0. You can use fromDict on minimized dicts. |
+
 <a name="Rectangle.fromPoints"></a>
 
 ### Rectangle.fromPoints(points) ⇒ [<code>Rectangle</code>](#Rectangle)
@@ -6256,6 +6336,332 @@ Implement simple sessionStorage storage adapter.
 
 ### storageAdapterSessionStorage.clear()
 **Kind**: instance method of [<code>StorageAdapterSessionStorage</code>](#StorageAdapterSessionStorage)  
+<a name="Transformation"></a>
+
+## Transformation
+Transformations helper class to store 2d position, rotation and scale.
+Can also perform transformations inheritance, where we combine local with parent transformations.
+
+Usage example:
+
+const transform = new Shaku.utils.Transformation();
+const worldTransform = new Shaku.utils.Transformation();
+
+worldTransform.setPosition({x: 100, y:50});
+transform.setRotation(5);
+
+const combined = Shaku.utils.Transformation.combine(transform, worldTransform);
+const matrix = combined.asMatrix();
+
+**Kind**: global class  
+
+* [Transformation](#Transformation)
+    * [new Transformation(position, rotation, scale)](#new_Transformation_new)
+    * _instance_
+        * [.onChange](#Transformation+onChange) : <code>function</code>
+        * [.getPosition()](#Transformation+getPosition) ⇒ [<code>Vector2</code>](#Vector2)
+        * [.getPositionMode()](#Transformation+getPositionMode) ⇒ <code>TransformModes</code>
+        * [.setPosition(value)](#Transformation+setPosition) ⇒ [<code>Transformation</code>](#Transformation)
+        * [.move(value)](#Transformation+move) ⇒ [<code>Transformation</code>](#Transformation)
+        * [.setPositionMode(value)](#Transformation+setPositionMode) ⇒ [<code>Transformation</code>](#Transformation)
+        * [.getScale()](#Transformation+getScale) ⇒ [<code>Vector2</code>](#Vector2)
+        * [.getScaleMode()](#Transformation+getScaleMode) ⇒ <code>TransformModes</code>
+        * [.setScale(value)](#Transformation+setScale) ⇒ [<code>Transformation</code>](#Transformation)
+        * [.scale(value)](#Transformation+scale) ⇒ [<code>Transformation</code>](#Transformation)
+        * [.setScaleMode(value)](#Transformation+setScaleMode) ⇒ [<code>Transformation</code>](#Transformation)
+        * [.getRotation()](#Transformation+getRotation) ⇒ <code>Number</code>
+        * [.getRotationDegrees()](#Transformation+getRotationDegrees) ⇒ <code>Number</code>
+        * [.getRotationDegreesWrapped()](#Transformation+getRotationDegreesWrapped) ⇒ <code>Number</code>
+        * [.getRotationMode()](#Transformation+getRotationMode) ⇒ <code>TransformModes</code>
+        * [.setRotation(value)](#Transformation+setRotation) ⇒ [<code>Transformation</code>](#Transformation)
+        * [.rotate(value)](#Transformation+rotate) ⇒ [<code>Transformation</code>](#Transformation)
+        * [.setRotationDegrees(value)](#Transformation+setRotationDegrees) ⇒ [<code>Transformation</code>](#Transformation)
+        * [.rotateDegrees(value)](#Transformation+rotateDegrees) ⇒ [<code>Transformation</code>](#Transformation)
+        * [.setRotationMode(value)](#Transformation+setRotationMode) ⇒ [<code>Transformation</code>](#Transformation)
+        * [._markDirty(localTransform, transformationModes)](#Transformation+_markDirty)
+        * [.equals(other)](#Transformation+equals) ⇒ <code>Boolean</code>
+        * [.clone()](#Transformation+clone) ⇒ [<code>Transformation</code>](#Transformation)
+        * [.serialize()](#Transformation+serialize)
+        * [.deserialize(data)](#Transformation+deserialize)
+        * [.asMatrix()](#Transformation+asMatrix) ⇒ [<code>Matrix</code>](#Matrix)
+    * _static_
+        * [.combine(child, parent)](#Transformation.combine) ⇒ [<code>Transformation</code>](#Transformation)
+
+<a name="new_Transformation_new"></a>
+
+### new Transformation(position, rotation, scale)
+Create the transformations.
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| position | [<code>Vector2</code>](#Vector2) | Optional position value. |
+| rotation | <code>Number</code> | Optional rotation value. |
+| scale | [<code>Vector2</code>](#Vector2) | Optional sscale value. |
+
+<a name="Transformation+onChange"></a>
+
+### transformation.onChange : <code>function</code>
+Method to call when this transformation change.
+Function params: transformation instance (this), properties changed (boolean), transform modes changed (boolean).
+
+**Kind**: instance property of [<code>Transformation</code>](#Transformation)  
+<a name="Transformation+getPosition"></a>
+
+### transformation.getPosition() ⇒ [<code>Vector2</code>](#Vector2)
+Get position.
+
+**Kind**: instance method of [<code>Transformation</code>](#Transformation)  
+**Returns**: [<code>Vector2</code>](#Vector2) - Position.  
+<a name="Transformation+getPositionMode"></a>
+
+### transformation.getPositionMode() ⇒ <code>TransformModes</code>
+Get position transformations mode.
+
+**Kind**: instance method of [<code>Transformation</code>](#Transformation)  
+**Returns**: <code>TransformModes</code> - Position transformation mode.  
+<a name="Transformation+setPosition"></a>
+
+### transformation.setPosition(value) ⇒ [<code>Transformation</code>](#Transformation)
+Set position.
+
+**Kind**: instance method of [<code>Transformation</code>](#Transformation)  
+**Returns**: [<code>Transformation</code>](#Transformation) - this.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| value | [<code>Vector2</code>](#Vector2) | New position. |
+
+<a name="Transformation+move"></a>
+
+### transformation.move(value) ⇒ [<code>Transformation</code>](#Transformation)
+Move position by a given vector.
+
+**Kind**: instance method of [<code>Transformation</code>](#Transformation)  
+**Returns**: [<code>Transformation</code>](#Transformation) - this.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| value | [<code>Vector2</code>](#Vector2) | Vector to move position by. |
+
+<a name="Transformation+setPositionMode"></a>
+
+### transformation.setPositionMode(value) ⇒ [<code>Transformation</code>](#Transformation)
+Set position transformations mode.
+
+**Kind**: instance method of [<code>Transformation</code>](#Transformation)  
+**Returns**: [<code>Transformation</code>](#Transformation) - this.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| value | <code>TransformModes</code> | Position transformation mode. |
+
+<a name="Transformation+getScale"></a>
+
+### transformation.getScale() ⇒ [<code>Vector2</code>](#Vector2)
+Get scale.
+
+**Kind**: instance method of [<code>Transformation</code>](#Transformation)  
+**Returns**: [<code>Vector2</code>](#Vector2) - Scale.  
+<a name="Transformation+getScaleMode"></a>
+
+### transformation.getScaleMode() ⇒ <code>TransformModes</code>
+Get scale transformations mode.
+
+**Kind**: instance method of [<code>Transformation</code>](#Transformation)  
+**Returns**: <code>TransformModes</code> - Scale transformation mode.  
+<a name="Transformation+setScale"></a>
+
+### transformation.setScale(value) ⇒ [<code>Transformation</code>](#Transformation)
+Set scale.
+
+**Kind**: instance method of [<code>Transformation</code>](#Transformation)  
+**Returns**: [<code>Transformation</code>](#Transformation) - this.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| value | [<code>Vector2</code>](#Vector2) | New scale. |
+
+<a name="Transformation+scale"></a>
+
+### transformation.scale(value) ⇒ [<code>Transformation</code>](#Transformation)
+Scale by a given vector.
+
+**Kind**: instance method of [<code>Transformation</code>](#Transformation)  
+**Returns**: [<code>Transformation</code>](#Transformation) - this.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| value | [<code>Vector2</code>](#Vector2) | Vector to scale by. |
+
+<a name="Transformation+setScaleMode"></a>
+
+### transformation.setScaleMode(value) ⇒ [<code>Transformation</code>](#Transformation)
+Set scale transformations mode.
+
+**Kind**: instance method of [<code>Transformation</code>](#Transformation)  
+**Returns**: [<code>Transformation</code>](#Transformation) - this.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| value | <code>TransformModes</code> | Scale transformation mode. |
+
+<a name="Transformation+getRotation"></a>
+
+### transformation.getRotation() ⇒ <code>Number</code>
+Get rotation.
+
+**Kind**: instance method of [<code>Transformation</code>](#Transformation)  
+**Returns**: <code>Number</code> - rotation.  
+<a name="Transformation+getRotationDegrees"></a>
+
+### transformation.getRotationDegrees() ⇒ <code>Number</code>
+Get rotation as degrees.
+
+**Kind**: instance method of [<code>Transformation</code>](#Transformation)  
+**Returns**: <code>Number</code> - rotation.  
+<a name="Transformation+getRotationDegreesWrapped"></a>
+
+### transformation.getRotationDegreesWrapped() ⇒ <code>Number</code>
+Get rotation as degrees, wrapped between 0 to 360.
+
+**Kind**: instance method of [<code>Transformation</code>](#Transformation)  
+**Returns**: <code>Number</code> - rotation.  
+<a name="Transformation+getRotationMode"></a>
+
+### transformation.getRotationMode() ⇒ <code>TransformModes</code>
+Get rotation transformations mode.
+
+**Kind**: instance method of [<code>Transformation</code>](#Transformation)  
+**Returns**: <code>TransformModes</code> - Rotation transformations mode.  
+<a name="Transformation+setRotation"></a>
+
+### transformation.setRotation(value) ⇒ [<code>Transformation</code>](#Transformation)
+Set rotation.
+
+**Kind**: instance method of [<code>Transformation</code>](#Transformation)  
+**Returns**: [<code>Transformation</code>](#Transformation) - this.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| value | <code>Number</code> | New rotation. |
+
+<a name="Transformation+rotate"></a>
+
+### transformation.rotate(value) ⇒ [<code>Transformation</code>](#Transformation)
+Rotate transformation by given radians.
+
+**Kind**: instance method of [<code>Transformation</code>](#Transformation)  
+**Returns**: [<code>Transformation</code>](#Transformation) - this.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| value | <code>Number</code> | Rotate value in radians. |
+
+<a name="Transformation+setRotationDegrees"></a>
+
+### transformation.setRotationDegrees(value) ⇒ [<code>Transformation</code>](#Transformation)
+Set rotation as degrees.
+
+**Kind**: instance method of [<code>Transformation</code>](#Transformation)  
+**Returns**: [<code>Transformation</code>](#Transformation) - this.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| value | <code>Number</code> | New rotation. |
+
+<a name="Transformation+rotateDegrees"></a>
+
+### transformation.rotateDegrees(value) ⇒ [<code>Transformation</code>](#Transformation)
+Rotate transformation by given degrees.
+
+**Kind**: instance method of [<code>Transformation</code>](#Transformation)  
+**Returns**: [<code>Transformation</code>](#Transformation) - this.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| value | <code>Number</code> | Rotate value in degrees. |
+
+<a name="Transformation+setRotationMode"></a>
+
+### transformation.setRotationMode(value) ⇒ [<code>Transformation</code>](#Transformation)
+Set rotation transformations mode.
+
+**Kind**: instance method of [<code>Transformation</code>](#Transformation)  
+**Returns**: [<code>Transformation</code>](#Transformation) - this.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| value | <code>TransformModes</code> | Rotation transformation mode. |
+
+<a name="Transformation+_markDirty"></a>
+
+### transformation.\_markDirty(localTransform, transformationModes)
+Notify about changes in values.
+
+**Kind**: instance method of [<code>Transformation</code>](#Transformation)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| localTransform | <code>Boolean</code> | Local transformations changed. |
+| transformationModes | <code>Boolean</code> | Transformation modes changed. |
+
+<a name="Transformation+equals"></a>
+
+### transformation.equals(other) ⇒ <code>Boolean</code>
+Check if this transformation equals another.
+
+**Kind**: instance method of [<code>Transformation</code>](#Transformation)  
+**Returns**: <code>Boolean</code> - True if equal, false otherwise.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| other | [<code>Transformation</code>](#Transformation) | Other transform to compare to. |
+
+<a name="Transformation+clone"></a>
+
+### transformation.clone() ⇒ [<code>Transformation</code>](#Transformation)
+Return a clone of this transformations.
+
+**Kind**: instance method of [<code>Transformation</code>](#Transformation)  
+**Returns**: [<code>Transformation</code>](#Transformation) - Cloned transformations.  
+<a name="Transformation+serialize"></a>
+
+### transformation.serialize()
+Serialize this transformation into a dictionary.
+
+**Kind**: instance method of [<code>Transformation</code>](#Transformation)  
+<a name="Transformation+deserialize"></a>
+
+### transformation.deserialize(data)
+Deserialize this transformation from a dictionary.
+
+**Kind**: instance method of [<code>Transformation</code>](#Transformation)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| data | <code>\*</code> | Data to set. |
+
+<a name="Transformation+asMatrix"></a>
+
+### transformation.asMatrix() ⇒ [<code>Matrix</code>](#Matrix)
+Create and return a transformation matrix.
+
+**Kind**: instance method of [<code>Transformation</code>](#Transformation)  
+**Returns**: [<code>Matrix</code>](#Matrix) - New transformation matrix.  
+<a name="Transformation.combine"></a>
+
+### Transformation.combine(child, parent) ⇒ [<code>Transformation</code>](#Transformation)
+Combine child transformations with parent transformations.
+
+**Kind**: static method of [<code>Transformation</code>](#Transformation)  
+**Returns**: [<code>Transformation</code>](#Transformation) - Combined transformations.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| child | [<code>Transformation</code>](#Transformation) | Child transformations. |
+| parent | [<code>Transformation</code>](#Transformation) | Parent transformations. |
+
 <a name="Vector2"></a>
 
 ## Vector2
@@ -6300,7 +6706,7 @@ A simple Vector object for 2d positions.
         * [.getRadians()](#Vector2+getRadians) ⇒ <code>Number</code>
         * [.string()](#Vector2+string)
         * [.toArray()](#Vector2+toArray) ⇒ <code>Array.&lt;Number&gt;</code>
-        * [.toDict()](#Vector2+toDict) ⇒ <code>\*</code>
+        * [.toDict(minimized)](#Vector2+toDict) ⇒ <code>\*</code>
     * _static_
         * [.zero](#Vector2.zero) ⇒ [<code>Vector2</code>](#Vector2)
         * [.one](#Vector2.one) ⇒ [<code>Vector2</code>](#Vector2)
@@ -6668,11 +7074,16 @@ Convert to array of numbers.
 **Returns**: <code>Array.&lt;Number&gt;</code> - Vector components as array.  
 <a name="Vector2+toDict"></a>
 
-### vector2.toDict() ⇒ <code>\*</code>
+### vector2.toDict(minimized) ⇒ <code>\*</code>
 Convert to dictionary.
 
 **Kind**: instance method of [<code>Vector2</code>](#Vector2)  
 **Returns**: <code>\*</code> - Dictionary with {x,y}  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| minimized | <code>Boolean</code> | If true, will not include keys that their values are 0. You can use fromDict on minimized dicts. |
+
 <a name="Vector2.zero"></a>
 
 ### Vector2.zero ⇒ [<code>Vector2</code>](#Vector2)
@@ -6934,7 +7345,7 @@ A Vector object for 3d positions.
         * [.distanceTo(other)](#Vector3+distanceTo) ⇒ <code>Number</code>
         * [.string()](#Vector3+string)
         * [.toArray()](#Vector3+toArray) ⇒ <code>Array.&lt;Number&gt;</code>
-        * [.toDict()](#Vector3+toDict) ⇒ <code>\*</code>
+        * [.toDict(minimized)](#Vector3+toDict) ⇒ <code>\*</code>
     * _static_
         * [.zero](#Vector3.zero) ⇒ [<code>Vector3</code>](#Vector3)
         * [.one](#Vector3.one) ⇒ [<code>Vector3</code>](#Vector3)
@@ -7210,11 +7621,16 @@ Convert to array of numbers.
 **Returns**: <code>Array.&lt;Number&gt;</code> - Vector components as array.  
 <a name="Vector3+toDict"></a>
 
-### vector3.toDict() ⇒ <code>\*</code>
+### vector3.toDict(minimized) ⇒ <code>\*</code>
 Convert to dictionary.
 
 **Kind**: instance method of [<code>Vector3</code>](#Vector3)  
 **Returns**: <code>\*</code> - Dictionary with {x,y,z}  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| minimized | <code>Boolean</code> | If true, will not include keys that their values are 0. You can use fromDict on minimized dicts. |
+
 <a name="Vector3.zero"></a>
 
 ### Vector3.zero ⇒ [<code>Vector3</code>](#Vector3)

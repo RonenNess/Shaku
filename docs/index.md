@@ -62,6 +62,8 @@ You can view the entire docs as a single file [here](shaku_full.md), or by topic
 * [Utils: Seeded Random](utils_seeded_random.md)
 * [Utils: Storage](utils_storage.md)
 * [Utils: Storage Adapter](utils_storage_adapter.md)
+* [Utils: Transform Modes](utils_transform_modes.md)
+* [Utils: Transformation](utils_transformation.md)
 * [Utils: Vector2](utils_vector2.md)
 * [Utils: Vector3](utils_vector3.md)
 

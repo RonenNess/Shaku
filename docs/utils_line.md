@@ -15,11 +15,13 @@ Implement a simple 2d Line.
     * [new Line(from, to)](#new_Line_new)
     * _instance_
         * [.clone()](#Line+clone) ⇒ [<code>Line</code>](#Line)
+        * [.toDict(minimized)](#Line+toDict) ⇒ <code>\*</code>
         * [.containsVector(p, threshold)](#Line+containsVector) ⇒ <code>Boolean</code>
         * [.collideLine(other)](#Line+collideLine) ⇒ <code>Boolean</code>
         * [.distanceToVector(v)](#Line+distanceToVector) ⇒ <code>Number</code>
         * [.equals(other)](#Line+equals) ⇒ <code>Boolean</code>
     * _static_
+        * [.fromDict(data)](#Line.fromDict) ⇒ [<code>Line</code>](#Line)
         * [.lerp(l1, l2, a)](#Line.lerp) ⇒ [<code>Line</code>](#Line)
 
 <a name="new_Line_new"></a>
@@ -40,6 +42,18 @@ Return a clone of this line.
 
 **Kind**: instance method of [<code>Line</code>](#Line)  
 **Returns**: [<code>Line</code>](#Line) - Cloned line.  
+<a name="Line+toDict"></a>
+
+### line.toDict(minimized) ⇒ <code>\*</code>
+Convert to dictionary.
+
+**Kind**: instance method of [<code>Line</code>](#Line)  
+**Returns**: <code>\*</code> - Dictionary with {from, to}.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| minimized | <code>Boolean</code> | If true, will not include keys that their values are 0. You can use fromDict on minimized dicts. |
+
 <a name="Line+containsVector"></a>
 
 ### line.containsVector(p, threshold) ⇒ <code>Boolean</code>
@@ -88,6 +102,18 @@ Check if equal to another circle.
 | Param | Type | Description |
 | --- | --- | --- |
 | other | <code>Circle</code> | Other circle to compare to. |
+
+<a name="Line.fromDict"></a>
+
+### Line.fromDict(data) ⇒ [<code>Line</code>](#Line)
+Create Line from a dictionary.
+
+**Kind**: static method of [<code>Line</code>](#Line)  
+**Returns**: [<code>Line</code>](#Line) - Newly created line.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| data | <code>\*</code> | Dictionary with {from, to}. |
 
 <a name="Line.lerp"></a>
 

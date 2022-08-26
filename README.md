@@ -2002,6 +2002,10 @@ List of changes in released versions.
 - Added `minimize` flag to all `toDict` methods.
 - Fixed bug in Color `fromDict` turning alpha value of 0 to 1.
 
+## 1.5.9 [WIP]
+
+- Added transformation utility class to help implement scene hierarchy and ECS frameworks using Shaku.
+
 # License
 
 *Shaku* is licensed under the permissive MIT license, so you can use it for any purpose (including commercially) and it should be compatible with most common licenses.

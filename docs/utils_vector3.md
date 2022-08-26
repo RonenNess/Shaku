@@ -40,7 +40,7 @@ A Vector object for 3d positions.
         * [.distanceTo(other)](#Vector3+distanceTo) ⇒ <code>Number</code>
         * [.string()](#Vector3+string)
         * [.toArray()](#Vector3+toArray) ⇒ <code>Array.&lt;Number&gt;</code>
-        * [.toDict()](#Vector3+toDict) ⇒ <code>\*</code>
+        * [.toDict(minimized)](#Vector3+toDict) ⇒ <code>\*</code>
     * _static_
         * [.zero](#Vector3.zero) ⇒ [<code>Vector3</code>](#Vector3)
         * [.one](#Vector3.one) ⇒ [<code>Vector3</code>](#Vector3)
@@ -316,11 +316,16 @@ Convert to array of numbers.
 **Returns**: <code>Array.&lt;Number&gt;</code> - Vector components as array.  
 <a name="Vector3+toDict"></a>
 
-### vector3.toDict() ⇒ <code>\*</code>
+### vector3.toDict(minimized) ⇒ <code>\*</code>
 Convert to dictionary.
 
 **Kind**: instance method of [<code>Vector3</code>](#Vector3)  
 **Returns**: <code>\*</code> - Dictionary with {x,y,z}  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| minimized | <code>Boolean</code> | If true, will not include keys that their values are 0. You can use fromDict on minimized dicts. |
+
 <a name="Vector3.zero"></a>
 
 ### Vector3.zero ⇒ [<code>Vector3</code>](#Vector3)

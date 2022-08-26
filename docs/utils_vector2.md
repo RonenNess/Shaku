@@ -48,7 +48,7 @@ A simple Vector object for 2d positions.
         * [.getRadians()](#Vector2+getRadians) ⇒ <code>Number</code>
         * [.string()](#Vector2+string)
         * [.toArray()](#Vector2+toArray) ⇒ <code>Array.&lt;Number&gt;</code>
-        * [.toDict()](#Vector2+toDict) ⇒ <code>\*</code>
+        * [.toDict(minimized)](#Vector2+toDict) ⇒ <code>\*</code>
     * _static_
         * [.zero](#Vector2.zero) ⇒ [<code>Vector2</code>](#Vector2)
         * [.one](#Vector2.one) ⇒ [<code>Vector2</code>](#Vector2)
@@ -416,11 +416,16 @@ Convert to array of numbers.
 **Returns**: <code>Array.&lt;Number&gt;</code> - Vector components as array.  
 <a name="Vector2+toDict"></a>
 
-### vector2.toDict() ⇒ <code>\*</code>
+### vector2.toDict(minimized) ⇒ <code>\*</code>
 Convert to dictionary.
 
 **Kind**: instance method of [<code>Vector2</code>](#Vector2)  
 **Returns**: <code>\*</code> - Dictionary with {x,y}  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| minimized | <code>Boolean</code> | If true, will not include keys that their values are 0. You can use fromDict on minimized dicts. |
+
 <a name="Vector2.zero"></a>
 
 ### Vector2.zero ⇒ [<code>Vector2</code>](#Vector2)

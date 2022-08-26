@@ -17,7 +17,9 @@ Implement a simple 2d Circle.
         * [.clone()](#Circle+clone) ⇒ [<code>Circle</code>](#Circle)
         * [.containsVector(p)](#Circle+containsVector) ⇒ <code>Boolean</code>
         * [.equals(other)](#Circle+equals) ⇒ <code>Boolean</code>
+        * [.toDict(minimized)](#Circle+toDict) ⇒ <code>\*</code>
     * _static_
+        * [.fromDict(data)](#Circle.fromDict) ⇒ [<code>Circle</code>](#Circle)
         * [.lerp(p1, p2, a)](#Circle.lerp) ⇒ [<code>Circle</code>](#Circle)
 
 <a name="new_Circle_new"></a>
@@ -61,6 +63,30 @@ Check if equal to another circle.
 | Param | Type | Description |
 | --- | --- | --- |
 | other | [<code>Circle</code>](#Circle) | Other circle to compare to. |
+
+<a name="Circle+toDict"></a>
+
+### circle.toDict(minimized) ⇒ <code>\*</code>
+Convert to dictionary.
+
+**Kind**: instance method of [<code>Circle</code>](#Circle)  
+**Returns**: <code>\*</code> - Dictionary with {center, radius}.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| minimized | <code>Boolean</code> | If true, will not include keys that their values are 0. You can use fromDict on minimized dicts. |
+
+<a name="Circle.fromDict"></a>
+
+### Circle.fromDict(data) ⇒ [<code>Circle</code>](#Circle)
+Create circle from a dictionary.
+
+**Kind**: static method of [<code>Circle</code>](#Circle)  
+**Returns**: [<code>Circle</code>](#Circle) - Newly created circle.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| data | <code>\*</code> | Dictionary with {center, radius}. |
 
 <a name="Circle.lerp"></a>
 

@@ -49,7 +49,7 @@ All color components are expected to be in 0.0 - 1.0 range (and not 0-255).
         * [.set(r, g, b, a)](#Color+set) ⇒ [<code>Color</code>](#Color)
         * [.setByte(r, g, b, a)](#Color+setByte) ⇒ [<code>Color</code>](#Color)
         * [.copy(other)](#Color+copy) ⇒ [<code>Color</code>](#Color)
-        * [.toDict()](#Color+toDict) ⇒ <code>\*</code>
+        * [.toDict(minimized)](#Color+toDict) ⇒ <code>\*</code>
         * [.clone()](#Color+clone) ⇒ <code>Number</code>
         * [.string()](#Color+string)
         * [.equals(other)](#Color+equals)
@@ -215,11 +215,16 @@ Copy all component values from another color.
 
 <a name="Color+toDict"></a>
 
-### color.toDict() ⇒ <code>\*</code>
+### color.toDict(minimized) ⇒ <code>\*</code>
 Convert to dictionary.
 
 **Kind**: instance method of [<code>Color</code>](#Color)  
 **Returns**: <code>\*</code> - Dictionary with {r,g,b,a}  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| minimized | <code>Boolean</code> | If true, will not include keys that their values are 1. You can use fromDict on minimized dicts. |
+
 <a name="Color+clone"></a>
 
 ### color.clone() ⇒ <code>Number</code>
