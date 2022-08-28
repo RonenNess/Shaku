@@ -10596,7 +10596,7 @@ module.exports = GameTime;
     Storage: require('./storage'),
     StorageAdapter: require('./storage_adapter'),
     PathFinder: require('./path_finder'),
-    Transformations: require('./transformation'),
+    Transformation: require('./transformation'),
     TransformationModes: require('./transform_modes')
  };
 },{"./animator":49,"./circle":50,"./color":51,"./game_time":52,"./line":54,"./math_helper":55,"./path_finder":56,"./perlin":57,"./rectangle":58,"./seeded_random":59,"./storage":60,"./storage_adapter":61,"./transform_modes":62,"./transformation":63,"./vector2":64,"./vector3":65}],54:[function(require,module,exports){
@@ -12647,6 +12647,32 @@ class Transformation
     }
 
     /**
+     * Set position X value.
+     * @param {Number} value New position.x value.
+     * @returns {Transformation} this.
+     */
+    setPositionX(value)
+    {
+        if (this._position.x === value) { return; }
+        this._position.x = value;
+        this._markDirty(true, false);
+        return this;
+    }
+
+    /**
+     * Set position Y value.
+     * @param {Number} value New position.y value.
+     * @returns {Transformation} this.
+     */
+    setPositionY(value)
+    {
+        if (this._position.y === value) { return; }
+        this._position.y = value;
+        this._markDirty(true, false);
+        return this;
+    }
+
+    /**
      * Move position by a given vector.
      * @param {Vector2} value Vector to move position by.
      * @returns {Transformation} this.
@@ -12698,6 +12724,32 @@ class Transformation
     {
         if (this._scale.equals(value)) { return; }
         this._scale.copy(value);
+        this._markDirty(true, false);
+        return this;
+    }
+
+    /**
+     * Set scale X value.
+     * @param {Number} value New scale.x value.
+     * @returns {Transformation} this.
+     */
+    setScaleX(value)
+    {
+        if (this._scale.x === value) { return; }
+        this._scale.x = value;
+        this._markDirty(true, false);
+        return this;
+    }
+    
+    /**
+     * Set scale Y value.
+     * @param {Number} value New scale.y value.
+     * @returns {Transformation} this.
+     */
+    setScaleY(value)
+    {
+        if (this._scale.y === value) { return; }
+        this._scale.y = value;
         this._markDirty(true, false);
         return this;
     }
@@ -12767,13 +12819,14 @@ class Transformation
     /**
      * Set rotation.
      * @param {Number} value New rotation.
+     * @param {Boolean} wrap If true, will wrap value if out of possible range.
      * @returns {Transformation} this.
      */
-    setRotation(value)
+    setRotation(value, wrap)
     {
         if (this._rotation === value) { return; }
         this._rotation = value;
-        if ((this._rotation < 0) || (this._rotation > (Math.PI * 2))) {
+        if (wrap && ((this._rotation < 0) || (this._rotation > (Math.PI * 2)))) {
             this._rotation = Math.atan2(Math.sin(this._rotation), Math.cos(this._rotation));
         }
         this._markDirty(true, false);
@@ -12783,22 +12836,24 @@ class Transformation
     /**
      * Rotate transformation by given radians.
      * @param {Number} value Rotate value in radians.
+     * @param {Boolean} wrap If true, will wrap value if out of possible range.
      * @returns {Transformation} this.
      */
-    rotate(value)
+    rotate(value, wrap)
     {
-        this.setRotation(this._rotation + value);
+        this.setRotation(this._rotation + value, wrap);
         return this;
     }
 
     /**
      * Set rotation as degrees.
      * @param {Number} value New rotation.
+     * @param {Boolean} wrap If true, will wrap value if out of possible range.
      * @returns {Transformation} this.
      */
-    setRotationDegrees(value)
+    setRotationDegrees(value, wrap)
     {
-        const rads = MathHelper.toRadians(value);
+        const rads = MathHelper.toRadians(value, wrap);
         return this.setRotation(rads);
     }
 
