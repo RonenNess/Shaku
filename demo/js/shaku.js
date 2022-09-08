@@ -103,7 +103,7 @@ class Asset
      * @param {*} params Optional additional params.
      * @returns {Promise} Promise to resolve when asset is ready.
      */
-    create(source)
+    create(source, params)
     {
         throw new Error("Not Supported for this asset type.");
     }
@@ -140,6 +140,7 @@ const BinaryAsset = require('./binary_asset.js');
 const JsonAsset = require('./json_asset.js');
 const TextureAsset = require('./texture_asset.js');
 const FontTextureAsset = require('./font_texture_asset');
+const MsdfFontTextureAsset = require('./msdf_font_texture_asset.js');
 const Asset = require('./asset.js');
 const _logger = require('../logger.js').getLogger('assets');
 
@@ -415,7 +416,7 @@ class Assets extends IManager
      * @example
      * let sound = await Shaku.assets.loadSound("assets/my_sound.ogg");
      * @param {String} url Asset URL.
-     * @returns {Promise<Asset>} promise to resolve with asset instance, when loaded. You can access the loading asset with `.asset` on the promise.
+     * @returns {Promise<SoundAsset>} promise to resolve with asset instance, when loaded. You can access the loading asset with `.asset` on the promise.
      */
     loadSound(url)
     {
@@ -427,8 +428,8 @@ class Assets extends IManager
      * @example
      * let texture = await Shaku.assets.loadTexture("assets/my_texture.png", {generateMipMaps: false});
      * @param {String} url Asset URL.
-     * @param {*} params Optional params dictionary. See TextureAsset.load() for more details.
-     * @returns {Promise<Asset>} promise to resolve with asset instance, when loaded. You can access the loading asset with `.asset` on the promise.
+     * @param {*=} params Optional params dictionary. See TextureAsset.load() for more details.
+     * @returns {Promise<TextureAsset>} promise to resolve with asset instance, when loaded. You can access the loading asset with `.asset` on the promise.
      */
     loadTexture(url, params)
     {
@@ -445,7 +446,7 @@ class Assets extends IManager
      * @param {Number} width Texture width.
      * @param {Number} height Texture height.
      * @param {Number} channels Texture channels count. Defaults to 4 (RGBA).
-     * @returns {Promise<Asset>} promise to resolve with asset instance, when loaded. You can access the loading asset with `.asset` on the promise.
+     * @returns {Promise<TextureAsset>} promise to resolve with asset instance, when loaded. You can access the loading asset with `.asset` on the promise.
      */
     createRenderTarget(name, width, height, channels)
     {
@@ -466,11 +467,24 @@ class Assets extends IManager
      * let fontTexture = await Shaku.assets.loadFontTexture('assets/DejaVuSansMono.ttf', {fontName: 'DejaVuSansMono'});
      * @param {String} url Asset URL.
      * @param {*} params Optional params dictionary. See FontTextureAsset.load() for more details.
-     * @returns {Promise<Asset>} promise to resolve with asset instance, when loaded. You can access the loading asset with `.asset` on the promise.
+     * @returns {Promise<FontTextureAsset>} promise to resolve with asset instance, when loaded. You can access the loading asset with `.asset` on the promise.
      */
     loadFontTexture(url, params)
     {
         return this._loadAssetType(url, FontTextureAsset, params);
+    }
+    
+    /**
+     * Load a MSDF font texture asset. If already loaded, will use cache.
+     * @example
+     * let fontTexture = await Shaku.assets.loadMsdfFontTexture('DejaVuSansMono.font', {jsonUrl: 'assets/DejaVuSansMono.json', textureUrl: 'assets/DejaVuSansMono.png'});
+     * @param {String} url Asset URL.
+     * @param {*=} params Optional params dictionary. See MsdfFontTextureAsset.load() for more details.
+     * @returns {Promise<MsdfFontTextureAsset>} promise to resolve with asset instance, when loaded. You can access the loading asset with `.asset` on the promise.
+     */
+    loadMsdfFontTexture(url, params)
+    {
+        return this._loadAssetType(url, MsdfFontTextureAsset, params);
     }
     
     /**
@@ -479,7 +493,7 @@ class Assets extends IManager
      * let jsonData = await Shaku.assets.loadJson('assets/my_json_data.json');
      * console.log(jsonData.data);
      * @param {String} url Asset URL.
-     * @returns {Promise<Asset>} promise to resolve with asset instance, when loaded. You can access the loading asset with `.asset` on the promise.
+     * @returns {Promise<JsonAsset>} promise to resolve with asset instance, when loaded. You can access the loading asset with `.asset` on the promise.
      */
     loadJson(url)
     {
@@ -493,7 +507,7 @@ class Assets extends IManager
      * // you can now load this asset from anywhere in your code using 'optional_json_data_id' as url
      * @param {String} name Asset name (matched to URLs when using cache). If null, will not add to cache.
      * @param {Object|String} data Optional starting data.
-     * @returns {Promise<Asset>} promise to resolve with asset instance, when ready. You can access the loading asset with `.asset` on the promise.
+     * @returns {Promise<JsonAsset>} promise to resolve with asset instance, when ready. You can access the loading asset with `.asset` on the promise.
      */
     createJson(name, data)
     {
@@ -514,7 +528,7 @@ class Assets extends IManager
      * let binData = await Shaku.assets.loadBinary('assets/my_bin_data.dat');
      * console.log(binData.data);
      * @param {String} url Asset URL.
-     * @returns {Promise<Asset>} promise to resolve with asset instance, when loaded. You can access the loading asset with `.asset` on the promise.
+     * @returns {Promise<BinaryAsset>} promise to resolve with asset instance, when loaded. You can access the loading asset with `.asset` on the promise.
      */
     loadBinary(url)
     {
@@ -528,7 +542,7 @@ class Assets extends IManager
      * // you can now load this asset from anywhere in your code using 'optional_bin_data_id' as url
      * @param {String} name Asset name (matched to URLs when using cache). If null, will not add to cache.
      * @param {Array<Number>|Uint8Array} data Binary data to set.
-     * @returns {Promise<Asset>} promise to resolve with asset instance, when ready. You can access the loading asset with `.asset` on the promise.
+     * @returns {Promise<BinaryAsset>} promise to resolve with asset instance, when ready. You can access the loading asset with `.asset` on the promise.
      */
     createBinary(name, data)
     {
@@ -593,7 +607,7 @@ function generateRandomAssetName()
  
 // export assets manager
 module.exports = new Assets();
-},{"../assets/sound_asset.js":7,"../logger.js":42,"../manager.js":43,"./asset.js":1,"./binary_asset.js":3,"./font_texture_asset":4,"./json_asset.js":6,"./texture_asset.js":8}],3:[function(require,module,exports){
+},{"../assets/sound_asset.js":8,"../logger.js":44,"../manager.js":45,"./asset.js":1,"./binary_asset.js":3,"./font_texture_asset":4,"./json_asset.js":6,"./msdf_font_texture_asset.js":7,"./texture_asset.js":9}],3:[function(require,module,exports){
 /**
  * Implement binary data asset type.
  * 
@@ -874,6 +888,7 @@ class FontTextureAsset extends Asset
                 canvas.style.textRendering = "geometricPrecision";
             }
             let ctx = canvas.getContext('2d');
+            ctx.textBaseline =  "bottom"
 
             // set font and white color
             ctx.font = fontFullName;
@@ -895,7 +910,7 @@ class FontTextureAsset extends Asset
                 }
 
                 // calc source rect
-                let sourceRect = new Rectangle(x, y + Math.round(fontHeight / 4), currCharWidth, fontHeight);
+                let sourceRect = new Rectangle(x, y, currCharWidth, fontHeight);
                 this._sourceRects[currChar] = sourceRect;
 
                 // draw character
@@ -949,6 +964,24 @@ class FontTextureAsset extends Asset
     getSourceRect(character)
     {
         return this._sourceRects[character] || this._sourceRects[this.placeholderCharacter];
+    }
+
+    /**
+     * When drawing the character, get the offset to add to the cursor.
+     * @param {Character} character Character to get the offset for.
+     * @returns {Vector2} Offset to add to the cursor before drawing the character.
+     */
+    getPositionOffset (character) {
+        return Vector2.zero;
+    }
+
+    /**
+     * Get how much to advance the cursor when drawing this character.
+     * @param {Character} character Character to get the advance for.
+     * @returns {Number} Distance to move the cursor after drawing the character.
+     */
+    getXAdvance (character) {
+        return this.getSourceRect(character).width;
     }
 
     /** @inheritdoc */
@@ -1018,7 +1051,7 @@ function measureTextWidth(fontFamily, fontSize, char, extraWidth)
 
 // export the asset type.
 module.exports = FontTextureAsset;
-},{"../utils/rectangle":58,"../utils/vector2":64,"./asset":1,"./texture_asset":8}],5:[function(require,module,exports){
+},{"../utils/rectangle":60,"../utils/vector2":66,"./asset":1,"./texture_asset":9}],5:[function(require,module,exports){
 /**
  * Just an alias to main manager so we can require() this folder as a package.
  * 
@@ -1168,6 +1201,133 @@ class JsonAsset extends Asset
 module.exports = JsonAsset;
 },{"./asset":1}],7:[function(require,module,exports){
 /**
+ * Implement a MSDF font texture asset type.
+ * 
+ * |-- copyright and license --|
+ * @package    Shaku
+ * @file       shaku\lib\assets\font_texture_asset.js
+ * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
+ * @copyright  (c) 2021 Ronen Ness
+ * @license    MIT
+ * |-- end copyright and license --|
+ * 
+ */
+'use strict';
+const Vector2 = require("../utils/vector2");
+const Rectangle = require("../utils/rectangle");
+const TextureAsset = require("./texture_asset");
+const FontTextureAsset = require('./font_texture_asset')
+const JsonAsset = require('./json_asset')
+const TextureFilterModes = require('../gfx/texture_filter_modes')
+
+
+/**
+ * A MSDF font texture asset, from a pregenerated msdf texture atlas (from msdf-bmfont-xml, for example).
+ * This asset uses a signed distance field atlas to render characters as sprites at high res.
+ */
+class MsdfFontTextureAsset extends FontTextureAsset
+{
+    /** @inheritdoc */
+    constructor(url)
+    {
+        super(url)
+        this._positionOffsets = null
+        this._xAdvances = null
+    }
+
+    /**
+     * Generate the font metadata and texture from the given URL.
+     * @param {*} params Additional params. Possible values are:
+     *                      - jsonUrl: mandatory url for the font's json metadata (generated via msdf-bmfont-xml, for example)
+     *                      - textureUrl: mandatory url for the font's texture atlas (generated via msdf-bmfont-xml, for example)
+     *                      - missingCharPlaceholder (default='?'): character to use for missing characters.
+     *                      
+     * @returns {Promise} Promise to resolve when fully loaded.
+     */
+    load(params)
+    {
+        return new Promise(async (resolve, reject) => {
+            
+            if (!params || !params.jsonUrl || !params.textureUrl) {
+                return reject("When loading an msdf font you must provide params with a 'jsonUrl' and a 'textureUrl'!");
+            }
+
+            // TODO: allow atlas with multiple textures
+            // TODO: infer textureUrl from json contents
+            // TODO: infer jsonUrl from url
+
+            let atlas_json = new JsonAsset(params.jsonUrl);
+            let atlas_texture = new TextureAsset(params.textureUrl);
+            await Promise.all([atlas_json.load(), atlas_texture.load()]);
+
+            let atlas_metadata = atlas_json.data;
+            atlas_texture.filter = TextureFilterModes.Linear;
+
+            if (atlas_metadata.common.pages > 1) {
+                throw new Error("Can't use MSDF font with several pages");
+            }
+
+            // set default missing char placeholder + store it
+            this._placeholderChar = (params.missingCharPlaceholder || '?')[0];
+
+            if (!atlas_metadata.info.charset.includes(this._placeholderChar)) {
+                throw new Error("The atlas' charset doesn't include the given placeholder character");
+            }
+
+            this._fontName = atlas_metadata.info.face;
+            this._fontSize = atlas_metadata.info.size;
+
+            // set line height
+            this._lineHeight = atlas_metadata.common.lineHeight;
+
+            // dictionaries to store per-character data
+            this._sourceRects = {};
+            this._positionOffsets = {};
+            this._xAdvances = {};
+            this._kernings = {};
+
+            for (const charData of atlas_metadata.chars) {
+                let currChar = charData.char;
+        
+                let sourceRect = new Rectangle(charData.x, charData.y, charData.width, charData.height)
+                this._sourceRects[currChar] = sourceRect;
+                this._positionOffsets[currChar] = new Vector2(
+                  charData.xoffset,
+                  charData.yoffset
+                )
+                this._xAdvances[currChar] = charData.xadvance
+            }
+
+            this._texture = atlas_texture;
+            this._notifyReady();
+            resolve();
+        });
+    }
+
+    /** @inheritdoc */
+    getPositionOffset (character) {
+        return this._positionOffsets[character] || this._positionOffsets[this.placeholderCharacter];
+    }
+
+    /** @inheritdoc */
+    getXAdvance (character) {
+        return this._xAdvances[character] || this._xAdvances[this.placeholderCharacter];
+    }
+
+    /** @inheritdoc */
+    destroy()
+    {
+        super.destroy();
+        this._positionOffsets = null
+        this._xAdvances = null
+        this._kernings = null
+    }
+}
+
+// export the asset type.
+module.exports = MsdfFontTextureAsset;
+},{"../gfx/texture_filter_modes":37,"../utils/rectangle":60,"../utils/vector2":66,"./font_texture_asset":4,"./json_asset":6,"./texture_asset":9}],8:[function(require,module,exports){
+/**
  * Implement sound asset type.
  * 
  * |-- copyright and license --|
@@ -1255,7 +1415,7 @@ class SoundAsset extends Asset
  
 // export the asset type.
 module.exports = SoundAsset;
-},{"./asset":1}],8:[function(require,module,exports){
+},{"./asset":1}],9:[function(require,module,exports){
 /**
  * Implement texture asset type.
  * 
@@ -1628,7 +1788,7 @@ function isPowerOf2(value) {
 
 // export the asset type.
 module.exports = TextureAsset;
-},{"../gfx/texture_filter_modes":35,"../gfx/texture_wrap_modes":36,"../logger.js":42,"../utils/color":51,"../utils/vector2":64,"./asset":1}],9:[function(require,module,exports){
+},{"../gfx/texture_filter_modes":37,"../gfx/texture_wrap_modes":38,"../logger.js":44,"../utils/color":53,"../utils/vector2":66,"./asset":1}],10:[function(require,module,exports){
 /**
  * Implement the collision manager.
  * 
@@ -1787,7 +1947,7 @@ class Collision extends IManager
 
 // export main object
 module.exports = new Collision();
-},{"../logger.js":42,"../manager.js":43,"../utils/vector2.js":64,"./collision_world.js":10,"./resolver":12,"./resolvers_imp":13,"./shapes/circle.js":15,"./shapes/lines.js":16,"./shapes/point.js":17,"./shapes/rectangle.js":18,"./shapes/tilemap.js":20}],10:[function(require,module,exports){
+},{"../logger.js":44,"../manager.js":45,"../utils/vector2.js":66,"./collision_world.js":11,"./resolver":13,"./resolvers_imp":14,"./shapes/circle.js":16,"./shapes/lines.js":17,"./shapes/point.js":18,"./shapes/rectangle.js":19,"./shapes/tilemap.js":21}],11:[function(require,module,exports){
 /**
  * Implement the collision manager.
  * 
@@ -2319,7 +2479,7 @@ function sortByDistanceShapes(sourceShape, options)
 
 // export collision world
 module.exports = CollisionWorld;
-},{"../logger.js":42,"../utils/circle":50,"../utils/color":51,"../utils/rectangle":58,"../utils/vector2":64,"./../gfx":27,"./resolver":12,"./result":14,"./shapes/circle":15,"./shapes/point":17,"./shapes/shape":19}],11:[function(require,module,exports){
+},{"../logger.js":44,"../utils/circle":52,"../utils/color":53,"../utils/rectangle":60,"../utils/vector2":66,"./../gfx":29,"./resolver":13,"./result":15,"./shapes/circle":16,"./shapes/point":18,"./shapes/shape":20}],12:[function(require,module,exports){
 /**
  * Just an alias to main manager so we can require() this folder as a package.
  * 
@@ -2334,7 +2494,7 @@ module.exports = CollisionWorld;
  */
  'use strict';
  module.exports = require('./collision');
-},{"./collision":9}],12:[function(require,module,exports){
+},{"./collision":10}],13:[function(require,module,exports){
 /**
  * Implement the collision resolver class.
  * 
@@ -2465,7 +2625,7 @@ class CollisionResolver
 
 // export the collision resolver
 module.exports = CollisionResolver;
-},{"../logger.js":42,"../utils/vector2.js":64,"./result.js":14,"./shapes/shape.js":19}],13:[function(require,module,exports){
+},{"../logger.js":44,"../utils/vector2.js":66,"./result.js":15,"./shapes/shape.js":20}],14:[function(require,module,exports){
 /**
  * All default collision detection implementations.
  * 
@@ -2634,7 +2794,7 @@ const CollisionsImp = {
 
 // export the collisions implementation
 module.exports = CollisionsImp;
-},{}],14:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 /**
  * An object to store collision detection result.
  * 
@@ -2685,7 +2845,7 @@ class CollisionTestResult
 
 // export collision shape class
 module.exports = CollisionTestResult;
-},{"../utils/vector2":64,"./shapes/shape":19}],15:[function(require,module,exports){
+},{"../utils/vector2":66,"./shapes/shape":20}],16:[function(require,module,exports){
 /**
  * Implement collision circle.
  * 
@@ -2783,7 +2943,7 @@ class CircleShape extends CollisionShape
 
 // export collision shape class
 module.exports = CircleShape;
-},{"../../utils/circle":50,"../../utils/rectangle":58,"./../../gfx":27,"./shape":19}],16:[function(require,module,exports){
+},{"../../utils/circle":52,"../../utils/rectangle":60,"./../../gfx":29,"./shape":20}],17:[function(require,module,exports){
 /**
  * Implement collision lines.
  * 
@@ -2911,7 +3071,7 @@ class LinesShape extends CollisionShape
 
 // export collision lines class
 module.exports = LinesShape;
-},{"../../utils/circle":50,"../../utils/line":54,"../../utils/rectangle":58,"./../../gfx":27,"./shape":19}],17:[function(require,module,exports){
+},{"../../utils/circle":52,"../../utils/line":56,"../../utils/rectangle":60,"./../../gfx":29,"./shape":20}],18:[function(require,module,exports){
 /**
  * Implement collision point.
  * 
@@ -3014,7 +3174,7 @@ class PointShape extends CollisionShape
 
 // export collision shape class
 module.exports = PointShape;
-},{"../../utils/circle":50,"../../utils/rectangle":58,"../../utils/vector2":64,"./../../gfx":27,"./shape":19}],18:[function(require,module,exports){
+},{"../../utils/circle":52,"../../utils/rectangle":60,"../../utils/vector2":66,"./../../gfx":29,"./shape":20}],19:[function(require,module,exports){
 /**
  * Implement collision rectangle.
  * 
@@ -3111,7 +3271,7 @@ class RectangleShape extends CollisionShape
 
 // export collision shape class
 module.exports = RectangleShape;
-},{"../../utils/rectangle":58,"./../../gfx":27,"./shape":19}],19:[function(require,module,exports){
+},{"../../utils/rectangle":60,"./../../gfx":29,"./shape":20}],20:[function(require,module,exports){
 /**
  * Implement collision shape base class.
  * 
@@ -3300,7 +3460,7 @@ const defaultDebugColors = [Color.red, Color.blue, Color.green, Color.yellow, Co
 
 // export collision shape class
 module.exports = CollisionShape;
-},{"../../utils/color":51,"../../utils/rectangle":58,"../../utils/vector2":64,"../collision_world":10}],20:[function(require,module,exports){
+},{"../../utils/color":53,"../../utils/rectangle":60,"../../utils/vector2":66,"../collision_world":11}],21:[function(require,module,exports){
 /**
  * Implement collision tilemap.
  * 
@@ -3497,7 +3657,7 @@ class TilemapShape extends CollisionShape
 
 // export collision shape class
 module.exports = TilemapShape;
-},{"../../utils/rectangle":58,"../../utils/vector2":64,"./../../gfx":27,"./rectangle":18,"./shape":19}],21:[function(require,module,exports){
+},{"../../utils/rectangle":60,"../../utils/vector2":66,"./../../gfx":29,"./rectangle":19,"./shape":20}],22:[function(require,module,exports){
 /**
  * Define supported blend modes.
  * 
@@ -3537,7 +3697,7 @@ Object.defineProperty(BlendModes, '_values', {
 Object.freeze(BlendModes);
 
 module.exports = BlendModes;
-},{}],22:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 /**
  * Camera class.
  * 
@@ -3652,7 +3812,7 @@ class Camera
 
 // export the camera object
 module.exports = Camera;
-},{"../utils/rectangle":58,"../utils/vector2":64,"./matrix":28}],23:[function(require,module,exports){
+},{"../utils/rectangle":60,"../utils/vector2":66,"./matrix":30}],24:[function(require,module,exports){
 /**
  * Implement a basic effect to draw sprites.
  * 
@@ -3746,7 +3906,7 @@ class BasicEffect extends Effect
 
 // export the basic shader
 module.exports = BasicEffect;
-},{"./effect":24}],24:[function(require,module,exports){
+},{"./effect":25}],25:[function(require,module,exports){
 /**
  * Effect base class.
  * 
@@ -4304,7 +4464,7 @@ function _setTextureFilter(gl, filter)
 
 // export the effect class.
 module.exports = Effect;
-},{"../../assets/texture_asset.js":8,"../../logger.js":42,"../../utils/color.js":51,"../../utils/rectangle.js":58,"../matrix.js":28,"../texture_filter_modes":35,"../texture_wrap_modes":36}],25:[function(require,module,exports){
+},{"../../assets/texture_asset.js":9,"../../logger.js":44,"../../utils/color.js":53,"../../utils/rectangle.js":60,"../matrix.js":30,"../texture_filter_modes":37,"../texture_wrap_modes":38}],26:[function(require,module,exports){
 /**
  * Include all built-in effects.
  * 
@@ -4322,8 +4482,110 @@ module.exports = Effect;
  module.exports = {
     Effect: require('./effect'),
     BasicEffect: require('./basic'),
+    MsdfFontEffect: require('./msdf_font'),
  }
-},{"./basic":23,"./effect":24}],26:[function(require,module,exports){
+},{"./basic":24,"./effect":25,"./msdf_font":27}],27:[function(require,module,exports){
+/**
+ * Implement an effect to draw MSDF font textures.
+ * 
+ * |-- copyright and license --|
+ * @package    Shaku
+ * @file       shaku\lib\gfx\effects\basic.js
+ * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
+ * @copyright  (c) 2021 Ronen Ness
+ * @license    MIT
+ * |-- end copyright and license --|
+ * 
+ */
+'use strict';
+const Effect = require("./effect");
+
+// vertex shader code
+const vertexShader = `#version 300 es
+in vec3 a_position;
+in vec2 a_coord;
+in vec4 a_color;
+
+uniform mat4 u_projection;
+uniform mat4 u_world;
+
+out vec2 v_texCoord;
+out vec4 v_color;
+
+void main(void) {
+    gl_Position = u_projection * u_world * vec4(a_position, 1.0);
+    gl_PointSize = 1.0;
+    v_texCoord = a_coord;
+    v_color = a_color;
+}`;
+
+// fragment shader code
+const fragmentShader = `#version 300 es
+precision highp float;
+
+uniform sampler2D u_texture;
+
+in vec2 v_texCoord;
+in vec4 v_color;
+
+out vec4 FragColor;
+
+float median(float r, float g, float b) {
+  return max(min(r, g), min(max(r, g), b));
+}
+
+void main(void) {
+  vec3 _sample = texture(u_texture, v_texCoord).rgb;
+  float sigDist = median(_sample.r, _sample.g, _sample.b) - 0.5;
+  float alpha = clamp(sigDist / fwidth(sigDist) + 0.5, 0.0, 1.0);
+  // float alpha = clamp((sigDist / (fwidth(sigDist) * 1.5)) + 0.5, 0.0, 1.0);
+
+  vec3 color = v_color.rgb * alpha;
+  FragColor = vec4(color, alpha) * v_color.a;
+}`;
+
+/**
+ * Default effect to draw MSDF font textures.
+ */
+class MsdfFontEffect extends Effect
+{
+    /** @inheritdoc */
+    get vertexCode() 
+    { 
+        return vertexShader; 
+    }
+
+    /** @inheritdoc */
+    get fragmentCode()
+    { 
+        return fragmentShader;
+    }
+
+    /** @inheritdoc */
+    get uniformTypes()
+    {
+        return {
+            "u_texture": { type: Effect.UniformTypes.Texture, bind: Effect.UniformBinds.MainTexture },
+            "u_projection": { type: Effect.UniformTypes.Matrix, bind: Effect.UniformBinds.Projection },
+            "u_world": { type: Effect.UniformTypes.Matrix, bind: Effect.UniformBinds.World },
+        };
+    }
+
+    /** @inheritdoc */
+    get attributeTypes()
+    {
+        return {
+            "a_position": { size: 3, type: Effect.AttributeTypes.Float, normalize: false, bind: Effect.AttributeBinds.Position },
+            "a_coord": { size: 2, type: Effect.AttributeTypes.Float, normalize: false, bind: Effect.AttributeBinds.TextureCoords },
+            "a_color": { size: 4, type: Effect.AttributeTypes.Float, normalize: false, bind: Effect.AttributeBinds.Colors },
+        };
+    }
+}
+
+
+// export the basic shader
+module.exports = MsdfFontEffect;
+},{"./effect":25}],28:[function(require,module,exports){
 /**
  * Implement the gfx manager.
  * 
@@ -4341,7 +4603,7 @@ const IManager = require('../manager.js');
 const Color = require('../utils/color.js');
 const BlendModes = require('./blend_modes.js');
 const Rectangle = require('../utils/rectangle.js');
-const { Effect, BasicEffect } = require('./effects');
+const { Effect, BasicEffect, MsdfFontEffect } = require('./effects');
 const TextureAsset = require('../assets/texture_asset.js');
 const TextureFilterModes = require('./texture_filter_modes.js');
 const TextureWrapModes = require('./texture_wrap_modes.js');
@@ -4352,6 +4614,7 @@ const Sprite = require('./sprite.js');
 const SpritesGroup = require('./sprites_group.js');
 const Vector2 = require('../utils/vector2.js');
 const FontTextureAsset = require('../assets/font_texture_asset.js');
+const MsdfFontTextureAsset = require('../assets/msdf_font_texture_asset.js');
 const TextAlignment = require('./text_alignment.js');
 const Mesh = require('./mesh.js');
 const Circle = require('../utils/circle.js');
@@ -4443,7 +4706,7 @@ class Gfx extends IManager
      * You must call this *before* initializing Shaku. Calling this will prevent Shaku from creating its own canvas.
      * @example
      * Shaku.gfx.setCanvas(document.getElementById('my-canvas')); 
-     * @param {Canvas} element Canvas element to initialize on.
+     * @param {HTMLCanvasElement} element Canvas element to initialize on.
      */
     setCanvas(element)
     {
@@ -4456,7 +4719,7 @@ class Gfx extends IManager
      * If you didn't provide your own canvas before initialization, you must add this canvas to your document after initializing `Shaku`.
      * @example
      * document.body.appendChild(Shaku.gfx.canvas);
-     * @returns {Canvas} Canvas we use for rendering.
+     * @returns {HTMLCanvasElement} Canvas we use for rendering.
      */
     get canvas()
     {
@@ -4481,6 +4744,15 @@ class Gfx extends IManager
         return BasicEffect;
     }
     
+    /**
+     * Get the Effect for rendering fonts with an MSDF texture.
+     * @see MsdfFontEffect
+     */
+    get MsdfFontEffect()
+    {
+        return MsdfFontEffect;
+    }    
+
     /**
      * Get the sprite class.
      * @see Sprite
@@ -4685,7 +4957,7 @@ class Gfx extends IManager
      * @example
      * let effect = Shaku.gfx.createEffect(MyEffectType);
      * Shaku.gfx.useEffect(effect);
-     * @param {Effect} effect Effect to use or null to use the basic builtin effect.
+     * @param {Effect | null} effect Effect to use or null to use the basic builtin effect.
      */
     useEffect(effect)
     {
@@ -4825,6 +5097,7 @@ class Gfx extends IManager
 
             // create default effects
             this.builtinEffects.Basic = this.createEffect(BasicEffect);
+            this.builtinEffects.MsdfFont = this.createEffect(MsdfFontEffect);
 
             // setup textures assets gl context
             TextureAsset._setWebGl(this._gl);
@@ -4921,12 +5194,12 @@ class Gfx extends IManager
      * Shaku.gfx.drawGroup(text1, true);
      * @param {FontTextureAsset} fontTexture Font texture asset to use.
      * @param {String} text Text to generate sprites for.
-     * @param {Number} fontSize Font size, or undefined to use font texture base size.
-     * @param {Color|Array<Color>} color Text sprites color. If array is set, will assign each color to different vertex, starting from top-left.
-     * @param {TextAlignment} alignment Text alignment.
-     * @param {Vector2} offset Optional starting offset.
-     * @param {Vector2} marginFactor Optional factor for characters and line spacing. For example value of 2,1 will make double horizontal spacing. 
-     * @returns {SpritesGroup} Sprites group containing the needed sprites to draw the given text with its properties.
+     * @param {Number=} fontSize Font size, or undefined to use font texture base size.
+     * @param {Color|Array<Color>=} color Text sprites color. If array is set, will assign each color to different vertex, starting from top-left.
+     * @param {TextAlignment=} alignment Text alignment.
+     * @param {Vector2=} offset Optional starting offset.
+     * @param {Vector2=} marginFactor Optional factor for characters and line spacing. For example value of 2,1 will make double horizontal spacing. 
+     * @returns {SpritesGroup=} Sprites group containing the needed sprites to draw the given text with its properties.
      */
     buildText(fontTexture, text, fontSize, color, alignment, offset, marginFactor)
     {
@@ -5018,7 +5291,8 @@ class Gfx extends IManager
                 // create sprite and add to group
                 let sprite = new Sprite(fontTexture.texture, sourceRect);
                 sprite.size = size;
-                sprite.position.copy(position);
+                sprite.origin.set(0,0);
+                sprite.position.copy(position).addSelf(fontTexture.getPositionOffset(character).mul(scale));
                 if (color instanceof Color) {
                     sprite.color.copy(color);
                 }
@@ -5035,11 +5309,13 @@ class Gfx extends IManager
                 currentLineSprites.push(sprite);
             }
 
+            let moveCursorAmount = fontTexture.getXAdvance(character) * scale * marginFactor.x;
+
             // update current line width
-            lineWidth += size.x * marginFactor.x;
+            lineWidth += moveCursorAmount;
 
             // set position for next character
-            position.x += size.x * marginFactor.x;
+            position.x += moveCursorAmount;
         }
 
         // call break line on last line, to adjust alignment for last line
@@ -5244,8 +5520,8 @@ class Gfx extends IManager
      * Shaku.gfx.outlineRect(new Shaku.utils.Rectangle(100, 100, 50, 50), Shaku.utils.Color.red, null, Shaku.gameTime.elapsed);
      * @param {Rectangle} destRect Rectangle to draw outline for.
      * @param {Color} color Rectangle outline color.
-     * @param {BlendModes} blend Blend mode.
-     * @param {Number} rotation Rotate the rectangle around its center.
+     * @param {BlendModes=} blend Blend mode.
+     * @param {Number=} rotation Rotate the rectangle around its center.
      */
     outlineRect(destRect, color, blend, rotation)
     {
@@ -5968,7 +6244,7 @@ class Gfx extends IManager
 
 // export main object
 module.exports = new Gfx();
-},{"../assets/font_texture_asset.js":4,"../assets/texture_asset.js":8,"../logger.js":42,"../manager.js":43,"../utils/circle.js":50,"../utils/color.js":51,"../utils/rectangle.js":58,"../utils/vector2.js":64,"../utils/vector3.js":65,"./blend_modes.js":21,"./camera.js":22,"./effects":25,"./matrix.js":28,"./mesh.js":29,"./mesh_generator.js":30,"./sprite.js":31,"./sprite_batch.js":32,"./sprites_group.js":33,"./text_alignment.js":34,"./texture_filter_modes.js":35,"./texture_wrap_modes.js":36,"./vertex":37}],27:[function(require,module,exports){
+},{"../assets/font_texture_asset.js":4,"../assets/msdf_font_texture_asset.js":7,"../assets/texture_asset.js":9,"../logger.js":44,"../manager.js":45,"../utils/circle.js":52,"../utils/color.js":53,"../utils/rectangle.js":60,"../utils/vector2.js":66,"../utils/vector3.js":67,"./blend_modes.js":22,"./camera.js":23,"./effects":26,"./matrix.js":30,"./mesh.js":31,"./mesh_generator.js":32,"./sprite.js":33,"./sprite_batch.js":34,"./sprites_group.js":35,"./text_alignment.js":36,"./texture_filter_modes.js":37,"./texture_wrap_modes.js":38,"./vertex":39}],29:[function(require,module,exports){
 /**
  * Just an alias to main manager so we can require() this folder as a package.
  * 
@@ -5983,7 +6259,7 @@ module.exports = new Gfx();
  */
  'use strict';
  module.exports = require('./gfx');
-},{"./gfx":26}],28:[function(require,module,exports){
+},{"./gfx":28}],30:[function(require,module,exports){
 /**
  * Matrix class.
  * Based on code from https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API/Matrix_math_for_the_web
@@ -6360,7 +6636,7 @@ Object.freeze(Matrix.identity);
 
 // export the matrix object
 module.exports = Matrix;
-},{"../utils/vector2":64,"./vertex":37}],29:[function(require,module,exports){
+},{"../utils/vector2":66,"./vertex":39}],31:[function(require,module,exports){
 /**
  * Define a mesh object.
  * 
@@ -6425,7 +6701,7 @@ const { Color } = require("../utils");
  
  // export the mesh class.
  module.exports = Mesh;
-},{"../utils":53}],30:[function(require,module,exports){
+},{"../utils":55}],32:[function(require,module,exports){
 /**
  * Define utility to generate meshes.
  * 
@@ -6508,7 +6784,7 @@ class MeshGenerator
 
 // export the meshes generator.
 module.exports = MeshGenerator;
-},{"./mesh":29}],31:[function(require,module,exports){
+},{"./mesh":31}],33:[function(require,module,exports){
 /**
  * Define a sprite object.
  * 
@@ -6539,7 +6815,7 @@ class Sprite
     /**
      * Create the texture object.
      * @param {TextureAsset} texture Texture asset.
-     * @param {Rectangle} sourceRect Optional source rect.
+     * @param {Rectangle=} sourceRect Optional source rect.
      */
     constructor(texture, sourceRect)
     {
@@ -6566,7 +6842,11 @@ class Sprite
          * @name Sprite#size
          * @type {Vector2|Vector3}
          */
-        this.size = new Vector2(100, 100);
+        if (sourceRect) {
+            this.size = sourceRect.getSize();
+        } else {
+            this.size = texture.size.clone();
+        }
 
         /**
          * Sprite source rectangle in texture.
@@ -6625,6 +6905,33 @@ class Sprite
          * @type {Boolean}
          */
         this.static = false;
+    }
+
+    /**
+     * Set the source Rectangle automatically from spritesheet.
+     * This method get sprite index in sheet and how many sprites there are in total, and calculate the desired
+     * offset and size in source Rectangle based on it + source image size.
+     * @param {Vector2} index Sprite index in spritesheet.
+     * @param {Vector2} spritesCount How many sprites there are in spritesheet in total.
+     * @param {Number=} margin How many pixels to trim from the tile (default is 0).
+     * @param {Boolean=} setSize If true will also set width and height based on source rectangle (default is true).
+     */
+    setSourceFromSpritesheet(index, spritesCount, margin, setSize) {
+        margin = margin || 0;
+        let w = this.texture.width / spritesCount.x;
+        let h = this.texture.height / spritesCount.y;
+        let x = w * index.x + margin;
+        let y = h * index.y + margin;
+        w -= 2*margin;
+        h -= 2*margin;
+        if (setSize || setSize === undefined) {
+            this.size.set(w, h)
+        }
+        if (this.sourceRect) {
+            this.sourceRect.set(x, y, w, h);
+        } else {
+            this.sourceRect = new Rectangle(x, y, w, h);
+        }
     }
 
     /**
@@ -6699,7 +7006,7 @@ class Sprite
 
 // export the sprite class.
 module.exports = Sprite;
-},{"../assets/texture_asset":8,"../utils/color":51,"../utils/rectangle":58,"../utils/vector2":64,"../utils/vector3":65,"./blend_modes":21}],32:[function(require,module,exports){
+},{"../assets/texture_asset":9,"../utils/color":53,"../utils/rectangle":60,"../utils/vector2":66,"../utils/vector3":67,"./blend_modes":22}],34:[function(require,module,exports){
 /**
  * Implement the gfx sprite batch renderer.
  * 
@@ -7169,7 +7476,7 @@ class SpriteBatch
 
 // export the sprite batch class
 module.exports = SpriteBatch;
-},{"../logger.js":42,"../utils":53,"../utils/vector2":64,"./blend_modes":21,"./matrix":28,"./mesh":29,"./vertex":37}],33:[function(require,module,exports){
+},{"../logger.js":44,"../utils":55,"../utils/vector2":66,"./blend_modes":22,"./matrix":30,"./mesh":31,"./vertex":39}],35:[function(require,module,exports){
 /**
  * Define a sprites group.
  * 
@@ -7324,7 +7631,7 @@ class SpritesGroup
 
 // export the sprites group class.
 module.exports = SpritesGroup;
-},{"../utils/color":51,"../utils/vector2":64,"./matrix":28,"./sprite":31}],34:[function(require,module,exports){
+},{"../utils/color":53,"../utils/vector2":66,"./matrix":30,"./sprite":33}],36:[function(require,module,exports){
 /**
  * Define possible text alignments.
  * 
@@ -7362,7 +7669,7 @@ const TextAlignment = {
 
 Object.freeze(TextAlignment);
 module.exports = TextAlignment;
-},{}],35:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 /**
  * Define possible texture filter modes.
  * 
@@ -7397,7 +7704,7 @@ Object.defineProperty(TextureFilterModes, '_values', {
 Object.freeze(TextureFilterModes);
 module.exports = TextureFilterModes;
 
-},{}],36:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 /**
  * Define possible texture wrap modes.
  * 
@@ -7428,7 +7735,7 @@ Object.defineProperty(TextureWrapModes, '_values', {
 
 Object.freeze(TextureWrapModes);
 module.exports = TextureWrapModes;
-},{}],37:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 /**
  * Implement the gfx vertex container.
  * 
@@ -7509,7 +7816,7 @@ class Vertex
 
 // export the vertex class
 module.exports = Vertex;
-},{"../utils":53,"./matrix":28}],38:[function(require,module,exports){
+},{"../utils":55,"./matrix":30}],40:[function(require,module,exports){
 /**
  * Entry point for the Shaku module.
  * 
@@ -7524,7 +7831,7 @@ module.exports = Vertex;
  */
 'use strict';
 module.exports = require('./shaku');
-},{"./shaku":48}],39:[function(require,module,exports){
+},{"./shaku":50}],41:[function(require,module,exports){
 /**
  * Just an alias to main manager so we can require() this folder as a package.
  * 
@@ -7539,7 +7846,7 @@ module.exports = require('./shaku');
  */
  'use strict';
  module.exports = require('./input');
-},{"./input":40}],40:[function(require,module,exports){
+},{"./input":42}],42:[function(require,module,exports){
 /**
  * Implement the input manager.
  * 
@@ -7889,6 +8196,20 @@ class Input extends IManager
     }
 
     /**
+     * Get if any keyboard key was pressed this frame.
+     * @returns {Boolean} True if any key was pressed down this frame.
+     */
+    get anyKeyPressed()
+    {
+        for (var key in this._keyboardState) {
+            if (this._keyboardState[key] && !this._keyboardPrevState[key]) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Get if any keyboard key is currently down.
      * @returns {Boolean} True if there's a key pressed down.
      */
@@ -7901,6 +8222,20 @@ class Input extends IManager
         }
         return false;
     }
+
+    /**
+     * Get if any mouse button was pressed this frame.
+     * @returns {Boolean} True if any of the mouse buttons were pressed this frame.
+     */
+     get anyMouseButtonPressed()
+     {
+         for (var key in this._mouseState) {
+             if (this._mouseState[key] && !this._mousePrevState[key]) {
+                 return true;
+             }
+         }
+         return false;
+     }
 
     /**
      * Get if any mouse button is down.
@@ -8237,7 +8572,7 @@ class Input extends IManager
 
 // export main object
 module.exports = new Input();
-},{"../logger.js":42,"../manager.js":43,"../utils/vector2.js":64,"./key_codes.js":41}],41:[function(require,module,exports){
+},{"../logger.js":44,"../manager.js":45,"../utils/vector2.js":66,"./key_codes.js":43}],43:[function(require,module,exports){
 /**
  * Define keyboard and mouse key codes.
  * 
@@ -8370,7 +8705,7 @@ const KeyboardKeys = {
 
 // export keyboard keys and mouse buttons
 module.exports = { KeyboardKeys: KeyboardKeys, MouseButtons: MouseButtons };
-},{}],42:[function(require,module,exports){
+},{}],44:[function(require,module,exports){
 /**
  * Implement basic logger.
  * By default, uses console for logging, but it can be replaced with setDrivers().
@@ -8531,7 +8866,7 @@ module.exports = {
         return this;
     }
 };
-},{}],43:[function(require,module,exports){
+},{}],45:[function(require,module,exports){
 /**
  * Define the managers interface.
  * 
@@ -8589,7 +8924,7 @@ class IManager
 
 // export the manager interface.
 module.exports = IManager
-},{}],44:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 /**
  * Just an alias to main manager so we can require() this folder as a package.
  * 
@@ -8604,7 +8939,7 @@ module.exports = IManager
  */
  'use strict';
  module.exports = require('./sfx');
-},{"./sfx":45}],45:[function(require,module,exports){
+},{"./sfx":47}],47:[function(require,module,exports){
 /**
  * Implement the sfx manager.
  * 
@@ -8789,7 +9124,7 @@ class Sfx extends IManager
 
 // export main object
 module.exports = new Sfx();
-},{"../assets/sound_asset.js":7,"../logger.js":42,"../manager.js":43,"./sound_instance.js":46,"./sound_mixer.js":47}],46:[function(require,module,exports){
+},{"../assets/sound_asset.js":8,"../logger.js":44,"../manager.js":45,"./sound_instance.js":48,"./sound_mixer.js":49}],48:[function(require,module,exports){
 /**
  * Implement a sound effect instance.
  * 
@@ -9029,7 +9364,7 @@ SoundInstance._masterVolume = 1;
 
 // export main object
 module.exports = SoundInstance;
-},{"../logger.js":42}],47:[function(require,module,exports){
+},{"../logger.js":44}],49:[function(require,module,exports){
 /**
  * Implement a sound mixer class.
  * 
@@ -9163,7 +9498,7 @@ class SoundMixer
 
 // export the sound mixer
 module.exports = SoundMixer;
-},{"./sound_instance.js":46}],48:[function(require,module,exports){
+},{"./sound_instance.js":48}],50:[function(require,module,exports){
 /**
  * Shaku Main.
  * 
@@ -9275,7 +9610,7 @@ class Shaku
 
     /**
      * Method to select managers to use + initialize them.
-     * @param {Array<IManager>} managers Array with list of managers to use or null to use all.
+     * @param {Array<IManager> | null} managers Array with list of managers to use or null to use all.
      * @returns {Promise} promise to resolve when finish initialization.
      */
     async init(managers)
@@ -9523,7 +9858,7 @@ class Shaku
 
 // return the main Shaku object.
 module.exports = new Shaku();
-},{"./assets":5,"./collision":11,"./gfx":27,"./input":39,"./logger":42,"./manager":43,"./sfx":44,"./utils":53,"./utils/game_time":52}],49:[function(require,module,exports){
+},{"./assets":5,"./collision":12,"./gfx":29,"./input":41,"./logger":44,"./manager":45,"./sfx":46,"./utils":55,"./utils/game_time":54}],51:[function(require,module,exports){
 /**
  * Implement an animator helper class.
  * 
@@ -9872,7 +10207,7 @@ function lerp(start, end, amt) {
 
 // export the animator class.
 module.exports = Animator;
-},{}],50:[function(require,module,exports){
+},{}],52:[function(require,module,exports){
 /**
  * Implement a simple 2d circle.
  * 
@@ -9979,7 +10314,7 @@ class Circle
 
 // export the circle class
 module.exports = Circle;
-},{"./math_helper":55,"./vector2":64}],51:[function(require,module,exports){
+},{"./math_helper":57,"./vector2":66}],53:[function(require,module,exports){
 /**
  * Define a color object.
  * 
@@ -10008,7 +10343,7 @@ class Color
      * @param {Number} r Color red component (value range: 0-1).
      * @param {Number} g Color green component (value range: 0-1).
      * @param {Number} b Color blue component (value range: 0-1).
-     * @param {Number} a Color alpha component (value range: 0-1).
+     * @param {Number=} a Color alpha component (value range: 0-1).
      */
     constructor(r, g, b, a)
     {
@@ -10167,7 +10502,7 @@ class Color
 
     /**
      * Create color from hex value.
-     * @param {Number} val Number value (hex), as 0xrrggbbaa.
+     * @param {String} val Number value (hex), as #rrggbbaa.
      * @returns {Color} New color value.
      */
     static fromHex(val)
@@ -10432,7 +10767,7 @@ function hexToColor(hex)
 
 // export Color object
 module.exports = Color;
-},{"./math_helper":55}],52:[function(require,module,exports){
+},{"./math_helper":57}],54:[function(require,module,exports){
 /**
  * A utility to hold gametime.
  * 
@@ -10566,7 +10901,7 @@ var _currElapsed = 0;
 
 // export the GameTime class.
 module.exports = GameTime;
-},{}],53:[function(require,module,exports){
+},{}],55:[function(require,module,exports){
 /**
  * Include all util classes.
  * 
@@ -10599,7 +10934,7 @@ module.exports = GameTime;
     Transformation: require('./transformation'),
     TransformationModes: require('./transform_modes')
  };
-},{"./animator":49,"./circle":50,"./color":51,"./game_time":52,"./line":54,"./math_helper":55,"./path_finder":56,"./perlin":57,"./rectangle":58,"./seeded_random":59,"./storage":60,"./storage_adapter":61,"./transform_modes":62,"./transformation":63,"./vector2":64,"./vector3":65}],54:[function(require,module,exports){
+},{"./animator":51,"./circle":52,"./color":53,"./game_time":54,"./line":56,"./math_helper":57,"./path_finder":58,"./perlin":59,"./rectangle":60,"./seeded_random":61,"./storage":62,"./storage_adapter":63,"./transform_modes":64,"./transformation":65,"./vector2":66,"./vector3":67}],56:[function(require,module,exports){
 /**
  * Implement a simple 2d line.
  * 
@@ -10781,7 +11116,7 @@ class Line
 
 // export the line class
 module.exports = Line;
-},{"./vector2":64}],55:[function(require,module,exports){
+},{"./vector2":66}],57:[function(require,module,exports){
 /**
  * Implement a math utilities class.
  * 
@@ -10981,7 +11316,7 @@ MathHelper.PI2 = Math.PI * 2;
 
 // export the math helper
 module.exports = MathHelper;
-},{}],56:[function(require,module,exports){
+},{}],58:[function(require,module,exports){
 /**
  * Provide a pathfinding algorithm.
  * 
@@ -11215,7 +11550,7 @@ const PathFinder = {
     IGrid: IGrid
 };
 module.exports = PathFinder;
-},{"./vector2":64}],57:[function(require,module,exports){
+},{"./vector2":66}],59:[function(require,module,exports){
 /**
  * Implements 2d perlin noise generator.
  * Based on code from noisejs by Stefan Gustavson.
@@ -11391,7 +11726,7 @@ class Perlin
 
 // export the perlin generator
 module.exports = Perlin;
-},{"./math_helper":55}],58:[function(require,module,exports){
+},{"./math_helper":57}],60:[function(require,module,exports){
 /**
  * Implement a simple 2d rectangle.
  * 
@@ -11838,7 +12173,7 @@ function pointLineDistance(p1, l1, l2) {
 
 // export the rectangle class
 module.exports = Rectangle;
-},{"./circle":50,"./line":54,"./math_helper":55,"./vector2":64}],59:[function(require,module,exports){
+},{"./circle":52,"./line":56,"./math_helper":57,"./vector2":66}],61:[function(require,module,exports){
 /**
  * Implement a seeded random generator.
  * 
@@ -11905,7 +12240,7 @@ class SeededRandom
 
 // export the seeded random class.
 module.exports = SeededRandom;
-},{}],60:[function(require,module,exports){
+},{}],62:[function(require,module,exports){
 /**
  * Implement a storage wrapper.
  * 
@@ -12145,7 +12480,7 @@ Storage.defaultAdapters = [new StorageAdapter.localStorage(), new StorageAdapter
 
 // export the storage class
 module.exports = Storage;
-},{"./storage_adapter":61}],61:[function(require,module,exports){
+},{"./storage_adapter":63}],63:[function(require,module,exports){
 /**
  * Implement a storage adapter.
  * 
@@ -12462,7 +12797,7 @@ StorageAdapter.sessionStorage = StorageAdapterSessionStorage;
 
 // export the storage adapter class
 module.exports = StorageAdapter;
-},{}],62:[function(require,module,exports){
+},{}],64:[function(require,module,exports){
 /**
  * Transformation modes.
  * 
@@ -12504,7 +12839,7 @@ const TransformModes = {
 
 // export the transform modes.
 module.exports = TransformModes;
-},{}],63:[function(require,module,exports){
+},{}],65:[function(require,module,exports){
 /**
  * Transformations object to store position, rotation and scale, that also support transformations inheritance.
  * 
@@ -13123,7 +13458,7 @@ function combineVectorMul(childValue, parentValue, parent, mode)
 
 // export the transformation object
 module.exports = Transformation;
-},{"../gfx/matrix":28,"./math_helper":55,"./transform_modes":62,"./vector2":64}],64:[function(require,module,exports){
+},{"../gfx/matrix":30,"./math_helper":57,"./transform_modes":64,"./vector2":66}],66:[function(require,module,exports){
 /**
  * Implement a simple 2d vector.
  * 
@@ -13793,7 +14128,7 @@ class Vector2
 
 // export vector object
 module.exports = Vector2;
-},{"./math_helper":55}],65:[function(require,module,exports){
+},{"./math_helper":57}],67:[function(require,module,exports){
 /**
  * Implement a 3d vector.
  * 
@@ -14352,5 +14687,5 @@ class Vector3
 
 // export vector object
 module.exports = Vector3;
-},{"./math_helper":55}]},{},[38])(38)
+},{"./math_helper":57}]},{},[40])(40)
 });
