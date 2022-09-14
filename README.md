@@ -2005,6 +2005,7 @@ List of changes in released versions.
 ## 1.5.9 [WIP]
 
 - Added transformation utility class to help implement scene hierarchy and ECS frameworks using Shaku.
+- Added option to `await` on playing sounds.
 
 # License
 

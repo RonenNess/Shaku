@@ -8714,6 +8714,7 @@ class Sfx extends IManager
      * @param {Number} volume Volume to play sound (default to max).
      * @param {Number} playbackRate Optional playback rate factor.
      * @param {Boolean} preservesPitch Optional preserve pitch when changing rate factor.
+     * @returns {Promise} Promise to resolve when sound starts playing.
      */
     play(sound, volume, playbackRate, preservesPitch)
     {
@@ -8721,8 +8722,9 @@ class Sfx extends IManager
         sound.volume = volume !== undefined ? volume : 1;
         if (playbackRate !== undefined) { sound.playbackRate = playbackRate; }
         if (preservesPitch !== undefined) { sound.preservesPitch = preservesPitch; }
-        sound.play();
+        let ret = sound.play();
         sound.disposeWhenDone();
+        return ret;
     }
 
     /**
@@ -8853,12 +8855,14 @@ class SoundInstance
 
     /**
     * Play sound.
+    * @returns {Promise} Promise to return when sound start playing.
     */
     play()
     {
         if (this.playing) { return; }
-        this._audio.play();
+        let promise = this._audio.play();
         this._sfx._playingSounds.add(this);
+        return promise;
     }
 
     /**
@@ -8909,20 +8913,28 @@ class SoundInstance
 
     /**
     * Replay sound from start.
+    * @returns {Promise} Promise to return when sound start playing.
     */
     replay()
     {
         this.stop();
-        this.play();
+        return this.play();
     }
 
     /**
     * Stop the sound and go back to start.
+    * @returns {Boolean} True if successfully stopped sound, false otherwise.
     */
     stop()
     {
-        this.pause();
-        this.currentTime = 0;
+        try {
+            this.pause();
+            this.currentTime = 0;
+            return true;
+        }
+        catch(e) {
+            return false;
+        }
     }
 
     /**
