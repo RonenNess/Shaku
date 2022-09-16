@@ -42,20 +42,24 @@ Can also perform transformations inheritance, where we combine local with parent
         * [.getPosition()](#Transformation+getPosition) ⇒ <code>Vector2</code>
         * [.getPositionMode()](#Transformation+getPositionMode) ⇒ <code>TransformModes</code>
         * [.setPosition(value)](#Transformation+setPosition) ⇒ [<code>Transformation</code>](#Transformation)
+        * [.setPositionX(value)](#Transformation+setPositionX) ⇒ [<code>Transformation</code>](#Transformation)
+        * [.setPositionY(value)](#Transformation+setPositionY) ⇒ [<code>Transformation</code>](#Transformation)
         * [.move(value)](#Transformation+move) ⇒ [<code>Transformation</code>](#Transformation)
         * [.setPositionMode(value)](#Transformation+setPositionMode) ⇒ [<code>Transformation</code>](#Transformation)
         * [.getScale()](#Transformation+getScale) ⇒ <code>Vector2</code>
         * [.getScaleMode()](#Transformation+getScaleMode) ⇒ <code>TransformModes</code>
         * [.setScale(value)](#Transformation+setScale) ⇒ [<code>Transformation</code>](#Transformation)
+        * [.setScaleX(value)](#Transformation+setScaleX) ⇒ [<code>Transformation</code>](#Transformation)
+        * [.setScaleY(value)](#Transformation+setScaleY) ⇒ [<code>Transformation</code>](#Transformation)
         * [.scale(value)](#Transformation+scale) ⇒ [<code>Transformation</code>](#Transformation)
         * [.setScaleMode(value)](#Transformation+setScaleMode) ⇒ [<code>Transformation</code>](#Transformation)
         * [.getRotation()](#Transformation+getRotation) ⇒ <code>Number</code>
         * [.getRotationDegrees()](#Transformation+getRotationDegrees) ⇒ <code>Number</code>
         * [.getRotationDegreesWrapped()](#Transformation+getRotationDegreesWrapped) ⇒ <code>Number</code>
         * [.getRotationMode()](#Transformation+getRotationMode) ⇒ <code>TransformModes</code>
-        * [.setRotation(value)](#Transformation+setRotation) ⇒ [<code>Transformation</code>](#Transformation)
-        * [.rotate(value)](#Transformation+rotate) ⇒ [<code>Transformation</code>](#Transformation)
-        * [.setRotationDegrees(value)](#Transformation+setRotationDegrees) ⇒ [<code>Transformation</code>](#Transformation)
+        * [.setRotation(value, wrap)](#Transformation+setRotation) ⇒ [<code>Transformation</code>](#Transformation)
+        * [.rotate(value, wrap)](#Transformation+rotate) ⇒ [<code>Transformation</code>](#Transformation)
+        * [.setRotationDegrees(value, wrap)](#Transformation+setRotationDegrees) ⇒ [<code>Transformation</code>](#Transformation)
         * [.rotateDegrees(value)](#Transformation+rotateDegrees) ⇒ [<code>Transformation</code>](#Transformation)
         * [.setRotationMode(value)](#Transformation+setRotationMode) ⇒ [<code>Transformation</code>](#Transformation)
         * [._markDirty(localTransform, transformationModes)](#Transformation+_markDirty)
@@ -124,6 +128,30 @@ Set position.
 | --- | --- | --- |
 | value | <code>Vector2</code> | New position. |
 
+<a name="Transformation+setPositionX"></a>
+
+### transformation.setPositionX(value) ⇒ [<code>Transformation</code>](#Transformation)
+Set position X value.
+
+**Kind**: instance method of [<code>Transformation</code>](#Transformation)  
+**Returns**: [<code>Transformation</code>](#Transformation) - this.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| value | <code>Number</code> | New position.x value. |
+
+<a name="Transformation+setPositionY"></a>
+
+### transformation.setPositionY(value) ⇒ [<code>Transformation</code>](#Transformation)
+Set position Y value.
+
+**Kind**: instance method of [<code>Transformation</code>](#Transformation)  
+**Returns**: [<code>Transformation</code>](#Transformation) - this.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| value | <code>Number</code> | New position.y value. |
+
 <a name="Transformation+move"></a>
 
 ### transformation.move(value) ⇒ [<code>Transformation</code>](#Transformation)
@@ -173,6 +201,30 @@ Set scale.
 | Param | Type | Description |
 | --- | --- | --- |
 | value | <code>Vector2</code> | New scale. |
+
+<a name="Transformation+setScaleX"></a>
+
+### transformation.setScaleX(value) ⇒ [<code>Transformation</code>](#Transformation)
+Set scale X value.
+
+**Kind**: instance method of [<code>Transformation</code>](#Transformation)  
+**Returns**: [<code>Transformation</code>](#Transformation) - this.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| value | <code>Number</code> | New scale.x value. |
+
+<a name="Transformation+setScaleY"></a>
+
+### transformation.setScaleY(value) ⇒ [<code>Transformation</code>](#Transformation)
+Set scale Y value.
+
+**Kind**: instance method of [<code>Transformation</code>](#Transformation)  
+**Returns**: [<code>Transformation</code>](#Transformation) - this.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| value | <code>Number</code> | New scale.y value. |
 
 <a name="Transformation+scale"></a>
 
@@ -228,7 +280,7 @@ Get rotation transformations mode.
 **Returns**: <code>TransformModes</code> - Rotation transformations mode.  
 <a name="Transformation+setRotation"></a>
 
-### transformation.setRotation(value) ⇒ [<code>Transformation</code>](#Transformation)
+### transformation.setRotation(value, wrap) ⇒ [<code>Transformation</code>](#Transformation)
 Set rotation.
 
 **Kind**: instance method of [<code>Transformation</code>](#Transformation)  
@@ -237,10 +289,11 @@ Set rotation.
 | Param | Type | Description |
 | --- | --- | --- |
 | value | <code>Number</code> | New rotation. |
+| wrap | <code>Boolean</code> | If true, will wrap value if out of possible range. |
 
 <a name="Transformation+rotate"></a>
 
-### transformation.rotate(value) ⇒ [<code>Transformation</code>](#Transformation)
+### transformation.rotate(value, wrap) ⇒ [<code>Transformation</code>](#Transformation)
 Rotate transformation by given radians.
 
 **Kind**: instance method of [<code>Transformation</code>](#Transformation)  
@@ -249,10 +302,11 @@ Rotate transformation by given radians.
 | Param | Type | Description |
 | --- | --- | --- |
 | value | <code>Number</code> | Rotate value in radians. |
+| wrap | <code>Boolean</code> | If true, will wrap value if out of possible range. |
 
 <a name="Transformation+setRotationDegrees"></a>
 
-### transformation.setRotationDegrees(value) ⇒ [<code>Transformation</code>](#Transformation)
+### transformation.setRotationDegrees(value, wrap) ⇒ [<code>Transformation</code>](#Transformation)
 Set rotation as degrees.
 
 **Kind**: instance method of [<code>Transformation</code>](#Transformation)  
@@ -261,6 +315,7 @@ Set rotation as degrees.
 | Param | Type | Description |
 | --- | --- | --- |
 | value | <code>Number</code> | New rotation. |
+| wrap | <code>Boolean</code> | If true, will wrap value if out of possible range. |
 
 <a name="Transformation+rotateDegrees"></a>
 

@@ -29,10 +29,10 @@ A sound effect instance you can play and stop.
     * [.finished](#SoundInstance+finished) ⇒ <code>Boolean</code>
     * [.disposeWhenDone()](#SoundInstance+disposeWhenDone)
     * [.dispose()](#SoundInstance+dispose)
-    * [.play()](#SoundInstance+play)
+    * [.play()](#SoundInstance+play) ⇒ <code>Promise</code>
     * [.pause()](#SoundInstance+pause)
-    * [.replay()](#SoundInstance+replay)
-    * [.stop()](#SoundInstance+stop)
+    * [.replay()](#SoundInstance+replay) ⇒ <code>Promise</code>
+    * [.stop()](#SoundInstance+stop) ⇒ <code>Boolean</code>
 
 <a name="new_SoundInstance_new"></a>
 
@@ -180,10 +180,11 @@ When playing lots of sounds its important to call dispose on sounds you no longe
 **Kind**: instance method of [<code>SoundInstance</code>](#SoundInstance)  
 <a name="SoundInstance+play"></a>
 
-### soundInstance.play()
+### soundInstance.play() ⇒ <code>Promise</code>
 Play sound.
 
 **Kind**: instance method of [<code>SoundInstance</code>](#SoundInstance)  
+**Returns**: <code>Promise</code> - Promise to return when sound start playing.  
 <a name="SoundInstance+pause"></a>
 
 ### soundInstance.pause()
@@ -192,13 +193,15 @@ Pause the sound.
 **Kind**: instance method of [<code>SoundInstance</code>](#SoundInstance)  
 <a name="SoundInstance+replay"></a>
 
-### soundInstance.replay()
+### soundInstance.replay() ⇒ <code>Promise</code>
 Replay sound from start.
 
 **Kind**: instance method of [<code>SoundInstance</code>](#SoundInstance)  
+**Returns**: <code>Promise</code> - Promise to return when sound start playing.  
 <a name="SoundInstance+stop"></a>
 
-### soundInstance.stop()
+### soundInstance.stop() ⇒ <code>Boolean</code>
 Stop the sound and go back to start.
 
 **Kind**: instance method of [<code>SoundInstance</code>](#SoundInstance)  
+**Returns**: <code>Boolean</code> - True if successfully stopped sound, false otherwise.  

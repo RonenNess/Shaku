@@ -2002,7 +2002,7 @@ List of changes in released versions.
 - Added `minimize` flag to all `toDict` methods.
 - Fixed bug in Color `fromDict` turning alpha value of 0 to 1.
 
-## 1.5.9 [WIP]
+## 1.5.9
 
 - Added transformation utility class to help implement scene hierarchy and ECS frameworks using Shaku.
 - Added option to `await` on playing sounds.

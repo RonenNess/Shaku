@@ -20,7 +20,7 @@ To access the Sfx manager use `Shaku.sfx`.
     * [.playingSoundsCount](#Sfx+playingSoundsCount) ⇒ <code>Number</code>
     * [.masterVolume](#Sfx+masterVolume) ⇒ <code>Number</code>
     * [.masterVolume](#Sfx+masterVolume)
-    * [.play(sound, volume, playbackRate, preservesPitch)](#Sfx+play)
+    * [.play(sound, volume, playbackRate, preservesPitch)](#Sfx+play) ⇒ <code>Promise</code>
     * [.stopAll()](#Sfx+stopAll)
     * [.createSound(sound)](#Sfx+createSound) ⇒ <code>SoundInstance</code>
 
@@ -65,11 +65,12 @@ This affect all sound effects volumes.
 
 <a name="Sfx+play"></a>
 
-### sfx.play(sound, volume, playbackRate, preservesPitch)
+### sfx.play(sound, volume, playbackRate, preservesPitch) ⇒ <code>Promise</code>
 Play a sound once without any special properties and without returning a sound instance.
 Its a more convinient method to play sounds, but less efficient than 'createSound()' if you want to play multiple times.
 
 **Kind**: instance method of [<code>Sfx</code>](#Sfx)  
+**Returns**: <code>Promise</code> - Promise to resolve when sound starts playing.  
 
 | Param | Type | Description |
 | --- | --- | --- |
