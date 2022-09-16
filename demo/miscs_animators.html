@@ -39,6 +39,7 @@
           let text1 = Shaku.gfx.buildText(fontTexture, "Animate position.x and color (to red):", 20, Shaku.utils.Color.white);
           text1.position.set(40, 40);
           let sprite1 = new Shaku.gfx.Sprite(texture);
+          sprite1.size.set(100, 100);
           sprite1.position.set(50, 150);
           (new Shaku.utils.Animator(sprite1)).repeats(true).to({'position.x': 700, 'color': Shaku.utils.Color.red}).duration(5).play();
 
@@ -46,6 +47,7 @@
           let text2 = Shaku.gfx.buildText(fontTexture, "Animate position.x & size back and forth, smooth damp:", 20, Shaku.utils.Color.white);
           text2.position.set(40, 240);
           let sprite2 = new Shaku.gfx.Sprite(texture);
+          sprite2.size.set(100, 100);
           sprite2.position.set(50, 340);
           (new Shaku.utils.Animator(sprite2)).repeats(true, true).to({'position.x': 700, 'size': new Shaku.utils.Vector2(150, 150)}).duration(5).smoothDamp(true).play();
 
@@ -53,6 +55,7 @@
           let text3 = Shaku.gfx.buildText(fontTexture, "Press 'A' for heartbeat pulse effect:", 20, Shaku.utils.Color.white);
           text3.position.set(40, 440);
           let sprite3 = new Shaku.gfx.Sprite(texture);
+          sprite3.size.set(100, 100);
           sprite3.position.set(100, 540);
           let heartbeat = (new Shaku.utils.Animator(sprite3)).to({'size': new Shaku.utils.Vector2(170, 170)}).repeats(1, true).duration(0.5).smoothDamp(true);
 
