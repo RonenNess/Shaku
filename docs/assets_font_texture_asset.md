@@ -41,6 +41,8 @@ This asset type creates an atlas of all the font's characters as textures, so we
     * [.valid](#FontTextureAsset+valid)
     * [.load(params)](#FontTextureAsset+load) ⇒ <code>Promise</code>
     * [.getSourceRect(character)](#FontTextureAsset+getSourceRect) ⇒ <code>Rectangle</code>
+    * [.getPositionOffset(character)](#FontTextureAsset+getPositionOffset) ⇒ <code>Vector2</code>
+    * [.getXAdvance(character)](#FontTextureAsset+getXAdvance) ⇒ <code>Number</code>
     * [.destroy()](#FontTextureAsset+destroy)
 
 <a name="FontTextureAsset+lineHeight"></a>
@@ -100,6 +102,30 @@ Get the source rectangle for a given character in texture.
 | Param | Type | Description |
 | --- | --- | --- |
 | character | <code>Character</code> | Character to get source rect for. |
+
+<a name="FontTextureAsset+getPositionOffset"></a>
+
+### fontTextureAsset.getPositionOffset(character) ⇒ <code>Vector2</code>
+When drawing the character, get the offset to add to the cursor.
+
+**Kind**: instance method of [<code>FontTextureAsset</code>](#FontTextureAsset)  
+**Returns**: <code>Vector2</code> - Offset to add to the cursor before drawing the character.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| character | <code>Character</code> | Character to get the offset for. |
+
+<a name="FontTextureAsset+getXAdvance"></a>
+
+### fontTextureAsset.getXAdvance(character) ⇒ <code>Number</code>
+Get how much to advance the cursor when drawing this character.
+
+**Kind**: instance method of [<code>FontTextureAsset</code>](#FontTextureAsset)  
+**Returns**: <code>Number</code> - Distance to move the cursor after drawing the character.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| character | <code>Character</code> | Character to get the advance for. |
 
 <a name="FontTextureAsset+destroy"></a>
 
