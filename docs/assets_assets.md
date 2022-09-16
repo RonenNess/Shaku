@@ -24,14 +24,15 @@ To access the Assets manager you use `Shaku.assets`.
     * [._wrapUrl(url)](#Assets+_wrapUrl) ⇒ <code>String</code>
     * [.waitForAll()](#Assets+waitForAll) ⇒ <code>Promise</code>
     * [.getCached(url)](#Assets+getCached) ⇒ <code>Asset</code>
-    * [.loadSound(url)](#Assets+loadSound) ⇒ <code>Promise.&lt;Asset&gt;</code>
-    * [.loadTexture(url, params)](#Assets+loadTexture) ⇒ <code>Promise.&lt;Asset&gt;</code>
-    * [.createRenderTarget(name, width, height, channels)](#Assets+createRenderTarget) ⇒ <code>Promise.&lt;Asset&gt;</code>
-    * [.loadFontTexture(url, params)](#Assets+loadFontTexture) ⇒ <code>Promise.&lt;Asset&gt;</code>
-    * [.loadJson(url)](#Assets+loadJson) ⇒ <code>Promise.&lt;Asset&gt;</code>
-    * [.createJson(name, data)](#Assets+createJson) ⇒ <code>Promise.&lt;Asset&gt;</code>
-    * [.loadBinary(url)](#Assets+loadBinary) ⇒ <code>Promise.&lt;Asset&gt;</code>
-    * [.createBinary(name, data)](#Assets+createBinary) ⇒ <code>Promise.&lt;Asset&gt;</code>
+    * [.loadSound(url)](#Assets+loadSound) ⇒ <code>Promise.&lt;SoundAsset&gt;</code>
+    * [.loadTexture(url, [params])](#Assets+loadTexture) ⇒ <code>Promise.&lt;TextureAsset&gt;</code>
+    * [.createRenderTarget(name, width, height, channels)](#Assets+createRenderTarget) ⇒ <code>Promise.&lt;TextureAsset&gt;</code>
+    * [.loadFontTexture(url, params)](#Assets+loadFontTexture) ⇒ <code>Promise.&lt;FontTextureAsset&gt;</code>
+    * [.loadMsdfFontTexture(url, [params])](#Assets+loadMsdfFontTexture) ⇒ <code>Promise.&lt;MsdfFontTextureAsset&gt;</code>
+    * [.loadJson(url)](#Assets+loadJson) ⇒ <code>Promise.&lt;JsonAsset&gt;</code>
+    * [.createJson(name, data)](#Assets+createJson) ⇒ <code>Promise.&lt;JsonAsset&gt;</code>
+    * [.loadBinary(url)](#Assets+loadBinary) ⇒ <code>Promise.&lt;BinaryAsset&gt;</code>
+    * [.createBinary(name, data)](#Assets+createBinary) ⇒ <code>Promise.&lt;BinaryAsset&gt;</code>
     * [.free(url)](#Assets+free)
     * [.clearCache()](#Assets+clearCache)
 
@@ -109,11 +110,11 @@ Get asset directly from cache, synchronous and without a Promise.
 
 <a name="Assets+loadSound"></a>
 
-### assets.loadSound(url) ⇒ <code>Promise.&lt;Asset&gt;</code>
+### assets.loadSound(url) ⇒ <code>Promise.&lt;SoundAsset&gt;</code>
 Load a sound asset. If already loaded, will use cache.
 
 **Kind**: instance method of [<code>Assets</code>](#Assets)  
-**Returns**: <code>Promise.&lt;Asset&gt;</code> - promise to resolve with asset instance, when loaded. You can access the loading asset with `.asset` on the promise.  
+**Returns**: <code>Promise.&lt;SoundAsset&gt;</code> - promise to resolve with asset instance, when loaded. You can access the loading asset with `.asset` on the promise.  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -125,16 +126,16 @@ let sound = await Shaku.assets.loadSound("assets/my_sound.ogg");
 ```
 <a name="Assets+loadTexture"></a>
 
-### assets.loadTexture(url, params) ⇒ <code>Promise.&lt;Asset&gt;</code>
+### assets.loadTexture(url, [params]) ⇒ <code>Promise.&lt;TextureAsset&gt;</code>
 Load a texture asset. If already loaded, will use cache.
 
 **Kind**: instance method of [<code>Assets</code>](#Assets)  
-**Returns**: <code>Promise.&lt;Asset&gt;</code> - promise to resolve with asset instance, when loaded. You can access the loading asset with `.asset` on the promise.  
+**Returns**: <code>Promise.&lt;TextureAsset&gt;</code> - promise to resolve with asset instance, when loaded. You can access the loading asset with `.asset` on the promise.  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | url | <code>String</code> | Asset URL. |
-| params | <code>\*</code> | Optional params dictionary. See TextureAsset.load() for more details. |
+| [params] | <code>\*</code> | Optional params dictionary. See TextureAsset.load() for more details. |
 
 **Example**  
 ```js
@@ -142,11 +143,11 @@ let texture = await Shaku.assets.loadTexture("assets/my_texture.png", {generateM
 ```
 <a name="Assets+createRenderTarget"></a>
 
-### assets.createRenderTarget(name, width, height, channels) ⇒ <code>Promise.&lt;Asset&gt;</code>
+### assets.createRenderTarget(name, width, height, channels) ⇒ <code>Promise.&lt;TextureAsset&gt;</code>
 Create a render target texture asset. If already loaded, will use cache.
 
 **Kind**: instance method of [<code>Assets</code>](#Assets)  
-**Returns**: <code>Promise.&lt;Asset&gt;</code> - promise to resolve with asset instance, when loaded. You can access the loading asset with `.asset` on the promise.  
+**Returns**: <code>Promise.&lt;TextureAsset&gt;</code> - promise to resolve with asset instance, when loaded. You can access the loading asset with `.asset` on the promise.  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -163,11 +164,11 @@ let renderTarget = await Shaku.assets.createRenderTarget("optional_render_target
 ```
 <a name="Assets+loadFontTexture"></a>
 
-### assets.loadFontTexture(url, params) ⇒ <code>Promise.&lt;Asset&gt;</code>
+### assets.loadFontTexture(url, params) ⇒ <code>Promise.&lt;FontTextureAsset&gt;</code>
 Load a font texture asset. If already loaded, will use cache.
 
 **Kind**: instance method of [<code>Assets</code>](#Assets)  
-**Returns**: <code>Promise.&lt;Asset&gt;</code> - promise to resolve with asset instance, when loaded. You can access the loading asset with `.asset` on the promise.  
+**Returns**: <code>Promise.&lt;FontTextureAsset&gt;</code> - promise to resolve with asset instance, when loaded. You can access the loading asset with `.asset` on the promise.  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -178,13 +179,30 @@ Load a font texture asset. If already loaded, will use cache.
 ```js
 let fontTexture = await Shaku.assets.loadFontTexture('assets/DejaVuSansMono.ttf', {fontName: 'DejaVuSansMono'});
 ```
+<a name="Assets+loadMsdfFontTexture"></a>
+
+### assets.loadMsdfFontTexture(url, [params]) ⇒ <code>Promise.&lt;MsdfFontTextureAsset&gt;</code>
+Load a MSDF font texture asset. If already loaded, will use cache.
+
+**Kind**: instance method of [<code>Assets</code>](#Assets)  
+**Returns**: <code>Promise.&lt;MsdfFontTextureAsset&gt;</code> - promise to resolve with asset instance, when loaded. You can access the loading asset with `.asset` on the promise.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| url | <code>String</code> | Asset URL. |
+| [params] | <code>\*</code> | Optional params dictionary. See MsdfFontTextureAsset.load() for more details. |
+
+**Example**  
+```js
+let fontTexture = await Shaku.assets.loadMsdfFontTexture('DejaVuSansMono.font', {jsonUrl: 'assets/DejaVuSansMono.json', textureUrl: 'assets/DejaVuSansMono.png'});
+```
 <a name="Assets+loadJson"></a>
 
-### assets.loadJson(url) ⇒ <code>Promise.&lt;Asset&gt;</code>
+### assets.loadJson(url) ⇒ <code>Promise.&lt;JsonAsset&gt;</code>
 Load a json asset. If already loaded, will use cache.
 
 **Kind**: instance method of [<code>Assets</code>](#Assets)  
-**Returns**: <code>Promise.&lt;Asset&gt;</code> - promise to resolve with asset instance, when loaded. You can access the loading asset with `.asset` on the promise.  
+**Returns**: <code>Promise.&lt;JsonAsset&gt;</code> - promise to resolve with asset instance, when loaded. You can access the loading asset with `.asset` on the promise.  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -197,11 +215,11 @@ console.log(jsonData.data);
 ```
 <a name="Assets+createJson"></a>
 
-### assets.createJson(name, data) ⇒ <code>Promise.&lt;Asset&gt;</code>
+### assets.createJson(name, data) ⇒ <code>Promise.&lt;JsonAsset&gt;</code>
 Create a new json asset. If already exist, will reject promise.
 
 **Kind**: instance method of [<code>Assets</code>](#Assets)  
-**Returns**: <code>Promise.&lt;Asset&gt;</code> - promise to resolve with asset instance, when ready. You can access the loading asset with `.asset` on the promise.  
+**Returns**: <code>Promise.&lt;JsonAsset&gt;</code> - promise to resolve with asset instance, when ready. You can access the loading asset with `.asset` on the promise.  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -215,11 +233,11 @@ let jsonData = await Shaku.assets.createJson('optional_json_data_id', {"foo": "b
 ```
 <a name="Assets+loadBinary"></a>
 
-### assets.loadBinary(url) ⇒ <code>Promise.&lt;Asset&gt;</code>
+### assets.loadBinary(url) ⇒ <code>Promise.&lt;BinaryAsset&gt;</code>
 Load a binary data asset. If already loaded, will use cache.
 
 **Kind**: instance method of [<code>Assets</code>](#Assets)  
-**Returns**: <code>Promise.&lt;Asset&gt;</code> - promise to resolve with asset instance, when loaded. You can access the loading asset with `.asset` on the promise.  
+**Returns**: <code>Promise.&lt;BinaryAsset&gt;</code> - promise to resolve with asset instance, when loaded. You can access the loading asset with `.asset` on the promise.  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -232,11 +250,11 @@ console.log(binData.data);
 ```
 <a name="Assets+createBinary"></a>
 
-### assets.createBinary(name, data) ⇒ <code>Promise.&lt;Asset&gt;</code>
+### assets.createBinary(name, data) ⇒ <code>Promise.&lt;BinaryAsset&gt;</code>
 Create a new binary asset. If already exist, will reject promise.
 
 **Kind**: instance method of [<code>Assets</code>](#Assets)  
-**Returns**: <code>Promise.&lt;Asset&gt;</code> - promise to resolve with asset instance, when ready. You can access the loading asset with `.asset` on the promise.  
+**Returns**: <code>Promise.&lt;BinaryAsset&gt;</code> - promise to resolve with asset instance, when ready. You can access the loading asset with `.asset` on the promise.  
 
 | Param | Type | Description |
 | --- | --- | --- |

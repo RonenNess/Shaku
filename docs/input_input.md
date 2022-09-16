@@ -23,7 +23,9 @@ To access the Input manager use `Shaku.input`.
     * [.shiftDown](#Input+shiftDown) ⇒ <code>Boolean</code>
     * [.ctrlDown](#Input+ctrlDown) ⇒ <code>Boolean</code>
     * [.altDown](#Input+altDown) ⇒ <code>Boolean</code>
+    * [.anyKeyPressed](#Input+anyKeyPressed) ⇒ <code>Boolean</code>
     * [.anyKeyDown](#Input+anyKeyDown) ⇒ <code>Boolean</code>
+    * [.anyMouseButtonPressed](#Input+anyMouseButtonPressed) ⇒ <code>Boolean</code>
     * [.anyMouseButtonDown](#Input+anyMouseButtonDown) ⇒ <code>Boolean</code>
     * [.mouseWheelSign](#Input+mouseWheelSign) ⇒ <code>Number</code>
     * [.mouseWheel](#Input+mouseWheel) ⇒ <code>Number</code>
@@ -94,6 +96,13 @@ Get if any of the Alt keys are currently down.
 
 **Kind**: instance property of [<code>Input</code>](#Input)  
 **Returns**: <code>Boolean</code> - True if there's an Alt key pressed down.  
+<a name="Input+anyKeyPressed"></a>
+
+### input.anyKeyPressed ⇒ <code>Boolean</code>
+Get if any keyboard key was pressed this frame.
+
+**Kind**: instance property of [<code>Input</code>](#Input)  
+**Returns**: <code>Boolean</code> - True if any key was pressed down this frame.  
 <a name="Input+anyKeyDown"></a>
 
 ### input.anyKeyDown ⇒ <code>Boolean</code>
@@ -101,6 +110,13 @@ Get if any keyboard key is currently down.
 
 **Kind**: instance property of [<code>Input</code>](#Input)  
 **Returns**: <code>Boolean</code> - True if there's a key pressed down.  
+<a name="Input+anyMouseButtonPressed"></a>
+
+### input.anyMouseButtonPressed ⇒ <code>Boolean</code>
+Get if any mouse button was pressed this frame.
+
+**Kind**: instance property of [<code>Input</code>](#Input)  
+**Returns**: <code>Boolean</code> - True if any of the mouse buttons were pressed this frame.  
 <a name="Input+anyMouseButtonDown"></a>
 
 ### input.anyMouseButtonDown ⇒ <code>Boolean</code>

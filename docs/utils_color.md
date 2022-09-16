@@ -30,7 +30,7 @@ All color components are expected to be in 0.0 - 1.0 range (and not 0-255).
 **Kind**: global class  
 
 * [Color](#Color)
-    * [new Color(r, g, b, a)](#new_Color_new)
+    * [new Color(r, g, b, [a])](#new_Color_new)
     * _instance_
         * [.r](#Color+r) ⇒ <code>Number</code>
         * [.g](#Color+g) ⇒ <code>Number</code>
@@ -65,7 +65,7 @@ All color components are expected to be in 0.0 - 1.0 range (and not 0-255).
 
 <a name="new_Color_new"></a>
 
-### new Color(r, g, b, a)
+### new Color(r, g, b, [a])
 Create the color.
 
 
@@ -74,7 +74,7 @@ Create the color.
 | r | <code>Number</code> | Color red component (value range: 0-1). |
 | g | <code>Number</code> | Color green component (value range: 0-1). |
 | b | <code>Number</code> | Color blue component (value range: 0-1). |
-| a | <code>Number</code> | Color alpha component (value range: 0-1). |
+| [a] | <code>Number</code> | Color alpha component (value range: 0-1). |
 
 <a name="Color+r"></a>
 
@@ -278,7 +278,7 @@ Create color from hex value.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| val | <code>Number</code> | Number value (hex), as 0xrrggbbaa. |
+| val | <code>String</code> | Number value (hex), as #rrggbbaa. |
 
 <a name="Color.fromDecimal"></a>
 

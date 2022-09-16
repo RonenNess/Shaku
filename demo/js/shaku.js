@@ -1205,7 +1205,7 @@ module.exports = JsonAsset;
  * 
  * |-- copyright and license --|
  * @package    Shaku
- * @file       shaku\lib\assets\font_texture_asset.js
+ * @file       shaku\lib\assets\msdf_font_texture_asset.js
  * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
  * @copyright  (c) 2021 Ronen Ness
  * @license    MIT
@@ -4490,7 +4490,7 @@ module.exports = Effect;
  * 
  * |-- copyright and license --|
  * @package    Shaku
- * @file       shaku\lib\gfx\effects\basic.js
+ * @file       shaku\lib\gfx\effects\msdf_font.js
  * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
  * @copyright  (c) 2021 Ronen Ness
  * @license    MIT
@@ -6844,8 +6844,11 @@ class Sprite
          */
         if (sourceRect) {
             this.size = sourceRect.getSize();
-        } else {
+        } else if (texture && texture.valid) {
             this.size = texture.size.clone();
+        }
+        else {
+            this.size = new Vector2(100, 100);
         }
 
         /**

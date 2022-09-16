@@ -16,9 +16,10 @@ To access the Graphics manager you use `Shaku.gfx`.
 
 * [Gfx](#Gfx)
     * [new Gfx()](#new_Gfx_new)
-    * [.canvas](#Gfx+canvas) ⇒ <code>Canvas</code>
+    * [.canvas](#Gfx+canvas) ⇒ <code>HTMLCanvasElement</code>
     * [.Effect](#Gfx+Effect)
     * [.BasicEffect](#Gfx+BasicEffect)
+    * [.MsdfFontEffect](#Gfx+MsdfFontEffect)
     * [.Sprite](#Gfx+Sprite)
     * [.SpritesGroup](#Gfx+SpritesGroup)
     * [.Matrix](#Gfx+Matrix)
@@ -43,7 +44,7 @@ To access the Graphics manager you use `Shaku.gfx`.
     * [.getRenderingRegion(includeOffset)](#Gfx+getRenderingRegion) ⇒ <code>Rectangle</code>
     * [.getRenderingSize()](#Gfx+getRenderingSize) ⇒ <code>Vector2</code>
     * [.getCanvasSize()](#Gfx+getCanvasSize) ⇒ <code>Vector2</code>
-    * [.buildText(fontTexture, text, fontSize, color, alignment, offset, marginFactor)](#Gfx+buildText) ⇒ <code>SpritesGroup</code>
+    * [.buildText(fontTexture, text, [fontSize], color, [alignment], [offset], [marginFactor])](#Gfx+buildText) ⇒ <code>SpritesGroup</code>
     * [.drawGroup(group, cullOutOfScreen)](#Gfx+drawGroup)
     * [.drawSprite(sprite)](#Gfx+drawSprite)
     * [.cover(texture, destRect, sourceRect, color, blendMode)](#Gfx+cover)
@@ -51,7 +52,7 @@ To access the Graphics manager you use `Shaku.gfx`.
     * [.drawQuadFromVertices(texture, vertices, blendMode)](#Gfx+drawQuadFromVertices)
     * [.fillRect(destRect, color, blend, rotation)](#Gfx+fillRect)
     * [.fillRects(destRects, colors, blend, rotation)](#Gfx+fillRects)
-    * [.outlineRect(destRect, color, blend, rotation)](#Gfx+outlineRect)
+    * [.outlineRect(destRect, color, [blend], [rotation])](#Gfx+outlineRect)
     * [.outlineCircle(circle, color, blend, lineAmount)](#Gfx+outlineCircle)
     * [.fillCircle(circle, color, blend, lineAmount)](#Gfx+fillCircle)
     * [.fillCircles(circles, colors, blend, lineAmount)](#Gfx+fillCircles)
@@ -73,12 +74,12 @@ Create the manager.
 
 <a name="Gfx+canvas"></a>
 
-### gfx.canvas ⇒ <code>Canvas</code>
+### gfx.canvas ⇒ <code>HTMLCanvasElement</code>
 Get the canvas element controlled by the gfx manager.
 If you didn't provide your own canvas before initialization, you must add this canvas to your document after initializing `Shaku`.
 
 **Kind**: instance property of [<code>Gfx</code>](#Gfx)  
-**Returns**: <code>Canvas</code> - Canvas we use for rendering.  
+**Returns**: <code>HTMLCanvasElement</code> - Canvas we use for rendering.  
 **Example**  
 ```js
 document.body.appendChild(Shaku.gfx.canvas);
@@ -97,6 +98,13 @@ Get the default Effect class, which is required to implement custom effects that
 
 **Kind**: instance property of [<code>Gfx</code>](#Gfx)  
 **See**: BasicEffect  
+<a name="Gfx+MsdfFontEffect"></a>
+
+### gfx.MsdfFontEffect
+Get the Effect for rendering fonts with an MSDF texture.
+
+**Kind**: instance property of [<code>Gfx</code>](#Gfx)  
+**See**: MsdfFontEffect  
 <a name="Gfx+Sprite"></a>
 
 ### gfx.Sprite
@@ -228,7 +236,7 @@ You must call this *before* initializing Shaku. Calling this will prevent Shaku 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| element | <code>Canvas</code> | Canvas element to initialize on. |
+| element | <code>HTMLCanvasElement</code> | Canvas element to initialize on. |
 
 **Example**  
 ```js
@@ -319,7 +327,7 @@ Set effect to use for future draw calls.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| effect | <code>Effect</code> | Effect to use or null to use the basic builtin effect. |
+| effect | <code>Effect</code> \| <code>null</code> | Effect to use or null to use the basic builtin effect. |
 
 **Example**  
 ```js
@@ -391,7 +399,7 @@ Get canvas size as vector.
 **Returns**: <code>Vector2</code> - Canvas size.  
 <a name="Gfx+buildText"></a>
 
-### gfx.buildText(fontTexture, text, fontSize, color, alignment, offset, marginFactor) ⇒ <code>SpritesGroup</code>
+### gfx.buildText(fontTexture, text, [fontSize], color, [alignment], [offset], [marginFactor]) ⇒ <code>SpritesGroup</code>
 Generate a sprites group to render a string using a font texture.
 Take the result of this method and use with gfx.drawGroup() to render the text.
 This is what you use when you want to draw texts with `Shaku`.
@@ -404,11 +412,11 @@ Note: its best to always draw texts with *batching* enabled.
 | --- | --- | --- |
 | fontTexture | <code>FontTextureAsset</code> | Font texture asset to use. |
 | text | <code>String</code> | Text to generate sprites for. |
-| fontSize | <code>Number</code> | Font size, or undefined to use font texture base size. |
-| color | <code>Color</code> \| <code>Array.&lt;Color&gt;</code> | Text sprites color. If array is set, will assign each color to different vertex, starting from top-left. |
-| alignment | <code>TextAlignment</code> | Text alignment. |
-| offset | <code>Vector2</code> | Optional starting offset. |
-| marginFactor | <code>Vector2</code> | Optional factor for characters and line spacing. For example value of 2,1 will make double horizontal spacing. |
+| [fontSize] | <code>Number</code> | Font size, or undefined to use font texture base size. |
+| color | <code>Color</code> \| <code>Array.&lt;Color&gt;&#x3D;</code> | Text sprites color. If array is set, will assign each color to different vertex, starting from top-left. |
+| [alignment] | <code>TextAlignment</code> | Text alignment. |
+| [offset] | <code>Vector2</code> | Optional starting offset. |
+| [marginFactor] | <code>Vector2</code> | Optional factor for characters and line spacing. For example value of 2,1 will make double horizontal spacing. |
 
 **Example**  
 ```js
@@ -602,7 +610,7 @@ Shaku.gfx.fillRects([new Shaku.utils.Rectangle(100, 100, 50, 50), new Shaku.util
 ```
 <a name="Gfx+outlineRect"></a>
 
-### gfx.outlineRect(destRect, color, blend, rotation)
+### gfx.outlineRect(destRect, color, [blend], [rotation])
 Draw an outline colored rectangle.
 
 **Kind**: instance method of [<code>Gfx</code>](#Gfx)  
@@ -611,8 +619,8 @@ Draw an outline colored rectangle.
 | --- | --- | --- |
 | destRect | <code>Rectangle</code> | Rectangle to draw outline for. |
 | color | <code>Color</code> | Rectangle outline color. |
-| blend | <code>BlendModes</code> | Blend mode. |
-| rotation | <code>Number</code> | Rotate the rectangle around its center. |
+| [blend] | <code>BlendModes</code> | Blend mode. |
+| [rotation] | <code>Number</code> | Rotate the rectangle around its center. |
 
 **Example**  
 ```js

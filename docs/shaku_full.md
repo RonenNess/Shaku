@@ -29,6 +29,10 @@ This asset type creates an atlas of all the font&#39;s characters as textures, s
 <dd><p>A loadable json asset.
 This asset type loads JSON from a remote file.</p>
 </dd>
+<dt><a href="#MsdfFontTextureAsset">MsdfFontTextureAsset</a></dt>
+<dd><p>A MSDF font texture asset, from a pregenerated msdf texture atlas (from msdf-bmfont-xml, for example).
+This asset uses a signed distance field atlas to render characters as sprites at high res.</p>
+</dd>
 <dt><a href="#SoundAsset">SoundAsset</a></dt>
 <dd><p>A loadable sound asset.
 This is the asset type you use to play sounds.</p>
@@ -83,6 +87,9 @@ Its the most efficient (both memory and CPU) way to implement grid based / tilem
 <dt><a href="#Effect">Effect</a></dt>
 <dd><p>Effect base class.
 An effect = vertex shader + fragment shader + uniforms &amp; attributes + setup code.</p>
+</dd>
+<dt><a href="#MsdfFontEffect">MsdfFontEffect</a></dt>
+<dd><p>Default effect to draw MSDF font textures.</p>
 </dd>
 <dt><a href="#Gfx">Gfx</a></dt>
 <dd><p>Gfx is the graphics manager. 
@@ -316,14 +323,15 @@ To access the Assets manager you use `Shaku.assets`.
     * [._wrapUrl(url)](#Assets+_wrapUrl) ⇒ <code>String</code>
     * [.waitForAll()](#Assets+waitForAll) ⇒ <code>Promise</code>
     * [.getCached(url)](#Assets+getCached) ⇒ [<code>Asset</code>](#Asset)
-    * [.loadSound(url)](#Assets+loadSound) ⇒ [<code>Promise.&lt;Asset&gt;</code>](#Asset)
-    * [.loadTexture(url, params)](#Assets+loadTexture) ⇒ [<code>Promise.&lt;Asset&gt;</code>](#Asset)
-    * [.createRenderTarget(name, width, height, channels)](#Assets+createRenderTarget) ⇒ [<code>Promise.&lt;Asset&gt;</code>](#Asset)
-    * [.loadFontTexture(url, params)](#Assets+loadFontTexture) ⇒ [<code>Promise.&lt;Asset&gt;</code>](#Asset)
-    * [.loadJson(url)](#Assets+loadJson) ⇒ [<code>Promise.&lt;Asset&gt;</code>](#Asset)
-    * [.createJson(name, data)](#Assets+createJson) ⇒ [<code>Promise.&lt;Asset&gt;</code>](#Asset)
-    * [.loadBinary(url)](#Assets+loadBinary) ⇒ [<code>Promise.&lt;Asset&gt;</code>](#Asset)
-    * [.createBinary(name, data)](#Assets+createBinary) ⇒ [<code>Promise.&lt;Asset&gt;</code>](#Asset)
+    * [.loadSound(url)](#Assets+loadSound) ⇒ [<code>Promise.&lt;SoundAsset&gt;</code>](#SoundAsset)
+    * [.loadTexture(url, [params])](#Assets+loadTexture) ⇒ [<code>Promise.&lt;TextureAsset&gt;</code>](#TextureAsset)
+    * [.createRenderTarget(name, width, height, channels)](#Assets+createRenderTarget) ⇒ [<code>Promise.&lt;TextureAsset&gt;</code>](#TextureAsset)
+    * [.loadFontTexture(url, params)](#Assets+loadFontTexture) ⇒ [<code>Promise.&lt;FontTextureAsset&gt;</code>](#FontTextureAsset)
+    * [.loadMsdfFontTexture(url, [params])](#Assets+loadMsdfFontTexture) ⇒ [<code>Promise.&lt;MsdfFontTextureAsset&gt;</code>](#MsdfFontTextureAsset)
+    * [.loadJson(url)](#Assets+loadJson) ⇒ [<code>Promise.&lt;JsonAsset&gt;</code>](#JsonAsset)
+    * [.createJson(name, data)](#Assets+createJson) ⇒ [<code>Promise.&lt;JsonAsset&gt;</code>](#JsonAsset)
+    * [.loadBinary(url)](#Assets+loadBinary) ⇒ [<code>Promise.&lt;BinaryAsset&gt;</code>](#BinaryAsset)
+    * [.createBinary(name, data)](#Assets+createBinary) ⇒ [<code>Promise.&lt;BinaryAsset&gt;</code>](#BinaryAsset)
     * [.free(url)](#Assets+free)
     * [.clearCache()](#Assets+clearCache)
 
@@ -401,11 +409,11 @@ Get asset directly from cache, synchronous and without a Promise.
 
 <a name="Assets+loadSound"></a>
 
-### assets.loadSound(url) ⇒ [<code>Promise.&lt;Asset&gt;</code>](#Asset)
+### assets.loadSound(url) ⇒ [<code>Promise.&lt;SoundAsset&gt;</code>](#SoundAsset)
 Load a sound asset. If already loaded, will use cache.
 
 **Kind**: instance method of [<code>Assets</code>](#Assets)  
-**Returns**: [<code>Promise.&lt;Asset&gt;</code>](#Asset) - promise to resolve with asset instance, when loaded. You can access the loading asset with `.asset` on the promise.  
+**Returns**: [<code>Promise.&lt;SoundAsset&gt;</code>](#SoundAsset) - promise to resolve with asset instance, when loaded. You can access the loading asset with `.asset` on the promise.  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -417,16 +425,16 @@ let sound = await Shaku.assets.loadSound("assets/my_sound.ogg");
 ```
 <a name="Assets+loadTexture"></a>
 
-### assets.loadTexture(url, params) ⇒ [<code>Promise.&lt;Asset&gt;</code>](#Asset)
+### assets.loadTexture(url, [params]) ⇒ [<code>Promise.&lt;TextureAsset&gt;</code>](#TextureAsset)
 Load a texture asset. If already loaded, will use cache.
 
 **Kind**: instance method of [<code>Assets</code>](#Assets)  
-**Returns**: [<code>Promise.&lt;Asset&gt;</code>](#Asset) - promise to resolve with asset instance, when loaded. You can access the loading asset with `.asset` on the promise.  
+**Returns**: [<code>Promise.&lt;TextureAsset&gt;</code>](#TextureAsset) - promise to resolve with asset instance, when loaded. You can access the loading asset with `.asset` on the promise.  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | url | <code>String</code> | Asset URL. |
-| params | <code>\*</code> | Optional params dictionary. See TextureAsset.load() for more details. |
+| [params] | <code>\*</code> | Optional params dictionary. See TextureAsset.load() for more details. |
 
 **Example**  
 ```js
@@ -434,11 +442,11 @@ let texture = await Shaku.assets.loadTexture("assets/my_texture.png", {generateM
 ```
 <a name="Assets+createRenderTarget"></a>
 
-### assets.createRenderTarget(name, width, height, channels) ⇒ [<code>Promise.&lt;Asset&gt;</code>](#Asset)
+### assets.createRenderTarget(name, width, height, channels) ⇒ [<code>Promise.&lt;TextureAsset&gt;</code>](#TextureAsset)
 Create a render target texture asset. If already loaded, will use cache.
 
 **Kind**: instance method of [<code>Assets</code>](#Assets)  
-**Returns**: [<code>Promise.&lt;Asset&gt;</code>](#Asset) - promise to resolve with asset instance, when loaded. You can access the loading asset with `.asset` on the promise.  
+**Returns**: [<code>Promise.&lt;TextureAsset&gt;</code>](#TextureAsset) - promise to resolve with asset instance, when loaded. You can access the loading asset with `.asset` on the promise.  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -455,11 +463,11 @@ let renderTarget = await Shaku.assets.createRenderTarget("optional_render_target
 ```
 <a name="Assets+loadFontTexture"></a>
 
-### assets.loadFontTexture(url, params) ⇒ [<code>Promise.&lt;Asset&gt;</code>](#Asset)
+### assets.loadFontTexture(url, params) ⇒ [<code>Promise.&lt;FontTextureAsset&gt;</code>](#FontTextureAsset)
 Load a font texture asset. If already loaded, will use cache.
 
 **Kind**: instance method of [<code>Assets</code>](#Assets)  
-**Returns**: [<code>Promise.&lt;Asset&gt;</code>](#Asset) - promise to resolve with asset instance, when loaded. You can access the loading asset with `.asset` on the promise.  
+**Returns**: [<code>Promise.&lt;FontTextureAsset&gt;</code>](#FontTextureAsset) - promise to resolve with asset instance, when loaded. You can access the loading asset with `.asset` on the promise.  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -470,13 +478,30 @@ Load a font texture asset. If already loaded, will use cache.
 ```js
 let fontTexture = await Shaku.assets.loadFontTexture('assets/DejaVuSansMono.ttf', {fontName: 'DejaVuSansMono'});
 ```
+<a name="Assets+loadMsdfFontTexture"></a>
+
+### assets.loadMsdfFontTexture(url, [params]) ⇒ [<code>Promise.&lt;MsdfFontTextureAsset&gt;</code>](#MsdfFontTextureAsset)
+Load a MSDF font texture asset. If already loaded, will use cache.
+
+**Kind**: instance method of [<code>Assets</code>](#Assets)  
+**Returns**: [<code>Promise.&lt;MsdfFontTextureAsset&gt;</code>](#MsdfFontTextureAsset) - promise to resolve with asset instance, when loaded. You can access the loading asset with `.asset` on the promise.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| url | <code>String</code> | Asset URL. |
+| [params] | <code>\*</code> | Optional params dictionary. See MsdfFontTextureAsset.load() for more details. |
+
+**Example**  
+```js
+let fontTexture = await Shaku.assets.loadMsdfFontTexture('DejaVuSansMono.font', {jsonUrl: 'assets/DejaVuSansMono.json', textureUrl: 'assets/DejaVuSansMono.png'});
+```
 <a name="Assets+loadJson"></a>
 
-### assets.loadJson(url) ⇒ [<code>Promise.&lt;Asset&gt;</code>](#Asset)
+### assets.loadJson(url) ⇒ [<code>Promise.&lt;JsonAsset&gt;</code>](#JsonAsset)
 Load a json asset. If already loaded, will use cache.
 
 **Kind**: instance method of [<code>Assets</code>](#Assets)  
-**Returns**: [<code>Promise.&lt;Asset&gt;</code>](#Asset) - promise to resolve with asset instance, when loaded. You can access the loading asset with `.asset` on the promise.  
+**Returns**: [<code>Promise.&lt;JsonAsset&gt;</code>](#JsonAsset) - promise to resolve with asset instance, when loaded. You can access the loading asset with `.asset` on the promise.  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -489,11 +514,11 @@ console.log(jsonData.data);
 ```
 <a name="Assets+createJson"></a>
 
-### assets.createJson(name, data) ⇒ [<code>Promise.&lt;Asset&gt;</code>](#Asset)
+### assets.createJson(name, data) ⇒ [<code>Promise.&lt;JsonAsset&gt;</code>](#JsonAsset)
 Create a new json asset. If already exist, will reject promise.
 
 **Kind**: instance method of [<code>Assets</code>](#Assets)  
-**Returns**: [<code>Promise.&lt;Asset&gt;</code>](#Asset) - promise to resolve with asset instance, when ready. You can access the loading asset with `.asset` on the promise.  
+**Returns**: [<code>Promise.&lt;JsonAsset&gt;</code>](#JsonAsset) - promise to resolve with asset instance, when ready. You can access the loading asset with `.asset` on the promise.  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -507,11 +532,11 @@ let jsonData = await Shaku.assets.createJson('optional_json_data_id', {"foo": "b
 ```
 <a name="Assets+loadBinary"></a>
 
-### assets.loadBinary(url) ⇒ [<code>Promise.&lt;Asset&gt;</code>](#Asset)
+### assets.loadBinary(url) ⇒ [<code>Promise.&lt;BinaryAsset&gt;</code>](#BinaryAsset)
 Load a binary data asset. If already loaded, will use cache.
 
 **Kind**: instance method of [<code>Assets</code>](#Assets)  
-**Returns**: [<code>Promise.&lt;Asset&gt;</code>](#Asset) - promise to resolve with asset instance, when loaded. You can access the loading asset with `.asset` on the promise.  
+**Returns**: [<code>Promise.&lt;BinaryAsset&gt;</code>](#BinaryAsset) - promise to resolve with asset instance, when loaded. You can access the loading asset with `.asset` on the promise.  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -524,11 +549,11 @@ console.log(binData.data);
 ```
 <a name="Assets+createBinary"></a>
 
-### assets.createBinary(name, data) ⇒ [<code>Promise.&lt;Asset&gt;</code>](#Asset)
+### assets.createBinary(name, data) ⇒ [<code>Promise.&lt;BinaryAsset&gt;</code>](#BinaryAsset)
 Create a new binary asset. If already exist, will reject promise.
 
 **Kind**: instance method of [<code>Assets</code>](#Assets)  
-**Returns**: [<code>Promise.&lt;Asset&gt;</code>](#Asset) - promise to resolve with asset instance, when ready. You can access the loading asset with `.asset` on the promise.  
+**Returns**: [<code>Promise.&lt;BinaryAsset&gt;</code>](#BinaryAsset) - promise to resolve with asset instance, when ready. You can access the loading asset with `.asset` on the promise.  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -639,6 +664,8 @@ This asset type creates an atlas of all the font's characters as textures, so we
     * [.valid](#FontTextureAsset+valid)
     * [.load(params)](#FontTextureAsset+load) ⇒ <code>Promise</code>
     * [.getSourceRect(character)](#FontTextureAsset+getSourceRect) ⇒ [<code>Rectangle</code>](#Rectangle)
+    * [.getPositionOffset(character)](#FontTextureAsset+getPositionOffset) ⇒ [<code>Vector2</code>](#Vector2)
+    * [.getXAdvance(character)](#FontTextureAsset+getXAdvance) ⇒ <code>Number</code>
     * [.destroy()](#FontTextureAsset+destroy)
 
 <a name="FontTextureAsset+lineHeight"></a>
@@ -699,6 +726,30 @@ Get the source rectangle for a given character in texture.
 | --- | --- | --- |
 | character | <code>Character</code> | Character to get source rect for. |
 
+<a name="FontTextureAsset+getPositionOffset"></a>
+
+### fontTextureAsset.getPositionOffset(character) ⇒ [<code>Vector2</code>](#Vector2)
+When drawing the character, get the offset to add to the cursor.
+
+**Kind**: instance method of [<code>FontTextureAsset</code>](#FontTextureAsset)  
+**Returns**: [<code>Vector2</code>](#Vector2) - Offset to add to the cursor before drawing the character.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| character | <code>Character</code> | Character to get the offset for. |
+
+<a name="FontTextureAsset+getXAdvance"></a>
+
+### fontTextureAsset.getXAdvance(character) ⇒ <code>Number</code>
+Get how much to advance the cursor when drawing this character.
+
+**Kind**: instance method of [<code>FontTextureAsset</code>](#FontTextureAsset)  
+**Returns**: <code>Number</code> - Distance to move the cursor after drawing the character.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| character | <code>Character</code> | Character to get the advance for. |
+
 <a name="FontTextureAsset+destroy"></a>
 
 ### fontTextureAsset.destroy()
@@ -752,6 +803,44 @@ Create the JSON data asset from object or string.
 
 ### jsonAsset.destroy()
 **Kind**: instance method of [<code>JsonAsset</code>](#JsonAsset)  
+<a name="MsdfFontTextureAsset"></a>
+
+## MsdfFontTextureAsset
+A MSDF font texture asset, from a pregenerated msdf texture atlas (from msdf-bmfont-xml, for example).
+This asset uses a signed distance field atlas to render characters as sprites at high res.
+
+**Kind**: global class  
+
+* [MsdfFontTextureAsset](#MsdfFontTextureAsset)
+    * [.load(params)](#MsdfFontTextureAsset+load) ⇒ <code>Promise</code>
+    * [.getPositionOffset()](#MsdfFontTextureAsset+getPositionOffset)
+    * [.getXAdvance()](#MsdfFontTextureAsset+getXAdvance)
+    * [.destroy()](#MsdfFontTextureAsset+destroy)
+
+<a name="MsdfFontTextureAsset+load"></a>
+
+### msdfFontTextureAsset.load(params) ⇒ <code>Promise</code>
+Generate the font metadata and texture from the given URL.
+
+**Kind**: instance method of [<code>MsdfFontTextureAsset</code>](#MsdfFontTextureAsset)  
+**Returns**: <code>Promise</code> - Promise to resolve when fully loaded.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| params | <code>\*</code> | Additional params. Possible values are:                      - jsonUrl: mandatory url for the font's json metadata (generated via msdf-bmfont-xml, for example)                      - textureUrl: mandatory url for the font's texture atlas (generated via msdf-bmfont-xml, for example)                      - missingCharPlaceholder (default='?'): character to use for missing characters. |
+
+<a name="MsdfFontTextureAsset+getPositionOffset"></a>
+
+### msdfFontTextureAsset.getPositionOffset()
+**Kind**: instance method of [<code>MsdfFontTextureAsset</code>](#MsdfFontTextureAsset)  
+<a name="MsdfFontTextureAsset+getXAdvance"></a>
+
+### msdfFontTextureAsset.getXAdvance()
+**Kind**: instance method of [<code>MsdfFontTextureAsset</code>](#MsdfFontTextureAsset)  
+<a name="MsdfFontTextureAsset+destroy"></a>
+
+### msdfFontTextureAsset.destroy()
+**Kind**: instance method of [<code>MsdfFontTextureAsset</code>](#MsdfFontTextureAsset)  
 <a name="SoundAsset"></a>
 
 ## SoundAsset
@@ -2057,6 +2146,35 @@ Only works if there's an attribute type bound to 'Colors'.
 | --- | --- | --- |
 | buffer | <code>WebGLBuffer</code> | Vertices colors buffer. |
 
+<a name="MsdfFontEffect"></a>
+
+## MsdfFontEffect
+Default effect to draw MSDF font textures.
+
+**Kind**: global class  
+
+* [MsdfFontEffect](#MsdfFontEffect)
+    * [.vertexCode](#MsdfFontEffect+vertexCode)
+    * [.fragmentCode](#MsdfFontEffect+fragmentCode)
+    * [.uniformTypes](#MsdfFontEffect+uniformTypes)
+    * [.attributeTypes](#MsdfFontEffect+attributeTypes)
+
+<a name="MsdfFontEffect+vertexCode"></a>
+
+### msdfFontEffect.vertexCode
+**Kind**: instance property of [<code>MsdfFontEffect</code>](#MsdfFontEffect)  
+<a name="MsdfFontEffect+fragmentCode"></a>
+
+### msdfFontEffect.fragmentCode
+**Kind**: instance property of [<code>MsdfFontEffect</code>](#MsdfFontEffect)  
+<a name="MsdfFontEffect+uniformTypes"></a>
+
+### msdfFontEffect.uniformTypes
+**Kind**: instance property of [<code>MsdfFontEffect</code>](#MsdfFontEffect)  
+<a name="MsdfFontEffect+attributeTypes"></a>
+
+### msdfFontEffect.attributeTypes
+**Kind**: instance property of [<code>MsdfFontEffect</code>](#MsdfFontEffect)  
 <a name="Gfx"></a>
 
 ## Gfx
@@ -2069,9 +2187,10 @@ To access the Graphics manager you use `Shaku.gfx`.
 
 * [Gfx](#Gfx)
     * [new Gfx()](#new_Gfx_new)
-    * [.canvas](#Gfx+canvas) ⇒ <code>Canvas</code>
+    * [.canvas](#Gfx+canvas) ⇒ <code>HTMLCanvasElement</code>
     * [.Effect](#Gfx+Effect)
     * [.BasicEffect](#Gfx+BasicEffect)
+    * [.MsdfFontEffect](#Gfx+MsdfFontEffect)
     * [.Sprite](#Gfx+Sprite)
     * [.SpritesGroup](#Gfx+SpritesGroup)
     * [.Matrix](#Gfx+Matrix)
@@ -2096,7 +2215,7 @@ To access the Graphics manager you use `Shaku.gfx`.
     * [.getRenderingRegion(includeOffset)](#Gfx+getRenderingRegion) ⇒ [<code>Rectangle</code>](#Rectangle)
     * [.getRenderingSize()](#Gfx+getRenderingSize) ⇒ [<code>Vector2</code>](#Vector2)
     * [.getCanvasSize()](#Gfx+getCanvasSize) ⇒ [<code>Vector2</code>](#Vector2)
-    * [.buildText(fontTexture, text, fontSize, color, alignment, offset, marginFactor)](#Gfx+buildText) ⇒ [<code>SpritesGroup</code>](#SpritesGroup)
+    * [.buildText(fontTexture, text, [fontSize], color, [alignment], [offset], [marginFactor])](#Gfx+buildText) ⇒ [<code>SpritesGroup</code>](#SpritesGroup)
     * [.drawGroup(group, cullOutOfScreen)](#Gfx+drawGroup)
     * [.drawSprite(sprite)](#Gfx+drawSprite)
     * [.cover(texture, destRect, sourceRect, color, blendMode)](#Gfx+cover)
@@ -2104,7 +2223,7 @@ To access the Graphics manager you use `Shaku.gfx`.
     * [.drawQuadFromVertices(texture, vertices, blendMode)](#Gfx+drawQuadFromVertices)
     * [.fillRect(destRect, color, blend, rotation)](#Gfx+fillRect)
     * [.fillRects(destRects, colors, blend, rotation)](#Gfx+fillRects)
-    * [.outlineRect(destRect, color, blend, rotation)](#Gfx+outlineRect)
+    * [.outlineRect(destRect, color, [blend], [rotation])](#Gfx+outlineRect)
     * [.outlineCircle(circle, color, blend, lineAmount)](#Gfx+outlineCircle)
     * [.fillCircle(circle, color, blend, lineAmount)](#Gfx+fillCircle)
     * [.fillCircles(circles, colors, blend, lineAmount)](#Gfx+fillCircles)
@@ -2126,12 +2245,12 @@ Create the manager.
 
 <a name="Gfx+canvas"></a>
 
-### gfx.canvas ⇒ <code>Canvas</code>
+### gfx.canvas ⇒ <code>HTMLCanvasElement</code>
 Get the canvas element controlled by the gfx manager.
 If you didn't provide your own canvas before initialization, you must add this canvas to your document after initializing `Shaku`.
 
 **Kind**: instance property of [<code>Gfx</code>](#Gfx)  
-**Returns**: <code>Canvas</code> - Canvas we use for rendering.  
+**Returns**: <code>HTMLCanvasElement</code> - Canvas we use for rendering.  
 **Example**  
 ```js
 document.body.appendChild(Shaku.gfx.canvas);
@@ -2150,6 +2269,13 @@ Get the default Effect class, which is required to implement custom effects that
 
 **Kind**: instance property of [<code>Gfx</code>](#Gfx)  
 **See**: BasicEffect  
+<a name="Gfx+MsdfFontEffect"></a>
+
+### gfx.MsdfFontEffect
+Get the Effect for rendering fonts with an MSDF texture.
+
+**Kind**: instance property of [<code>Gfx</code>](#Gfx)  
+**See**: MsdfFontEffect  
 <a name="Gfx+Sprite"></a>
 
 ### gfx.Sprite
@@ -2281,7 +2407,7 @@ You must call this *before* initializing Shaku. Calling this will prevent Shaku 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| element | <code>Canvas</code> | Canvas element to initialize on. |
+| element | <code>HTMLCanvasElement</code> | Canvas element to initialize on. |
 
 **Example**  
 ```js
@@ -2372,7 +2498,7 @@ Set effect to use for future draw calls.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| effect | [<code>Effect</code>](#Effect) | Effect to use or null to use the basic builtin effect. |
+| effect | [<code>Effect</code>](#Effect) \| <code>null</code> | Effect to use or null to use the basic builtin effect. |
 
 **Example**  
 ```js
@@ -2444,7 +2570,7 @@ Get canvas size as vector.
 **Returns**: [<code>Vector2</code>](#Vector2) - Canvas size.  
 <a name="Gfx+buildText"></a>
 
-### gfx.buildText(fontTexture, text, fontSize, color, alignment, offset, marginFactor) ⇒ [<code>SpritesGroup</code>](#SpritesGroup)
+### gfx.buildText(fontTexture, text, [fontSize], color, [alignment], [offset], [marginFactor]) ⇒ [<code>SpritesGroup</code>](#SpritesGroup)
 Generate a sprites group to render a string using a font texture.
 Take the result of this method and use with gfx.drawGroup() to render the text.
 This is what you use when you want to draw texts with `Shaku`.
@@ -2457,11 +2583,11 @@ Note: its best to always draw texts with *batching* enabled.
 | --- | --- | --- |
 | fontTexture | [<code>FontTextureAsset</code>](#FontTextureAsset) | Font texture asset to use. |
 | text | <code>String</code> | Text to generate sprites for. |
-| fontSize | <code>Number</code> | Font size, or undefined to use font texture base size. |
-| color | [<code>Color</code>](#Color) \| [<code>Array.&lt;Color&gt;</code>](#Color) | Text sprites color. If array is set, will assign each color to different vertex, starting from top-left. |
-| alignment | <code>TextAlignment</code> | Text alignment. |
-| offset | [<code>Vector2</code>](#Vector2) | Optional starting offset. |
-| marginFactor | [<code>Vector2</code>](#Vector2) | Optional factor for characters and line spacing. For example value of 2,1 will make double horizontal spacing. |
+| [fontSize] | <code>Number</code> | Font size, or undefined to use font texture base size. |
+| color | [<code>Color</code>](#Color) \| [<code>Array.&lt;Color&gt;&#x3D;</code>](#Color) | Text sprites color. If array is set, will assign each color to different vertex, starting from top-left. |
+| [alignment] | <code>TextAlignment</code> | Text alignment. |
+| [offset] | [<code>Vector2</code>](#Vector2) | Optional starting offset. |
+| [marginFactor] | [<code>Vector2</code>](#Vector2) | Optional factor for characters and line spacing. For example value of 2,1 will make double horizontal spacing. |
 
 **Example**  
 ```js
@@ -2655,7 +2781,7 @@ Shaku.gfx.fillRects([new Shaku.utils.Rectangle(100, 100, 50, 50), new Shaku.util
 ```
 <a name="Gfx+outlineRect"></a>
 
-### gfx.outlineRect(destRect, color, blend, rotation)
+### gfx.outlineRect(destRect, color, [blend], [rotation])
 Draw an outline colored rectangle.
 
 **Kind**: instance method of [<code>Gfx</code>](#Gfx)  
@@ -2664,8 +2790,8 @@ Draw an outline colored rectangle.
 | --- | --- | --- |
 | destRect | [<code>Rectangle</code>](#Rectangle) | Rectangle to draw outline for. |
 | color | [<code>Color</code>](#Color) | Rectangle outline color. |
-| blend | <code>BlendModes</code> | Blend mode. |
-| rotation | <code>Number</code> | Rotate the rectangle around its center. |
+| [blend] | <code>BlendModes</code> | Blend mode. |
+| [rotation] | <code>Number</code> | Rotate the rectangle around its center. |
 
 **Example**  
 ```js
@@ -3110,7 +3236,7 @@ This object is a helper class to hold all the properties of a texture to render.
 **Kind**: global class  
 
 * [Sprite](#Sprite)
-    * [new Sprite(texture, sourceRect)](#new_Sprite_new)
+    * [new Sprite(texture, [sourceRect])](#new_Sprite_new)
     * [.texture](#Sprite+texture) : [<code>TextureAsset</code>](#TextureAsset)
     * [.position](#Sprite+position) : [<code>Vector2</code>](#Vector2) \| [<code>Vector3</code>](#Vector3)
     * [.size](#Sprite+size) : [<code>Vector2</code>](#Vector2) \| [<code>Vector3</code>](#Vector3)
@@ -3125,19 +3251,20 @@ This object is a helper class to hold all the properties of a texture to render.
     * [.flipX](#Sprite+flipX)
     * [.flipY](#Sprite+flipY) ⇒ <code>Boolean</code>
     * [.flipY](#Sprite+flipY)
+    * [.setSourceFromSpritesheet(index, spritesCount, [margin], [setSize])](#Sprite+setSourceFromSpritesheet)
     * [.clone()](#Sprite+clone) ⇒ [<code>Sprite</code>](#Sprite)
     * [.updateStaticProperties()](#Sprite+updateStaticProperties)
 
 <a name="new_Sprite_new"></a>
 
-### new Sprite(texture, sourceRect)
+### new Sprite(texture, [sourceRect])
 Create the texture object.
 
 
 | Param | Type | Description |
 | --- | --- | --- |
 | texture | [<code>TextureAsset</code>](#TextureAsset) | Texture asset. |
-| sourceRect | [<code>Rectangle</code>](#Rectangle) | Optional source rect. |
+| [sourceRect] | [<code>Rectangle</code>](#Rectangle) | Optional source rect. |
 
 <a name="Sprite+texture"></a>
 
@@ -3251,6 +3378,22 @@ This is just a sugarcoat that set size.y to negative or positive value, without 
 | Param | Type | Description |
 | --- | --- | --- |
 | flip | <code>Boolean</code> | Should we flip the sprite around Y axis. If undefined, will take the negative of flipY current value, ie will toggle flipping. |
+
+<a name="Sprite+setSourceFromSpritesheet"></a>
+
+### sprite.setSourceFromSpritesheet(index, spritesCount, [margin], [setSize])
+Set the source Rectangle automatically from spritesheet.
+This method get sprite index in sheet and how many sprites there are in total, and calculate the desired
+offset and size in source Rectangle based on it + source image size.
+
+**Kind**: instance method of [<code>Sprite</code>](#Sprite)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| index | [<code>Vector2</code>](#Vector2) | Sprite index in spritesheet. |
+| spritesCount | [<code>Vector2</code>](#Vector2) | How many sprites there are in spritesheet in total. |
+| [margin] | <code>Number</code> | How many pixels to trim from the tile (default is 0). |
+| [setSize] | <code>Boolean</code> | If true will also set width and height based on source rectangle (default is true). |
 
 <a name="Sprite+clone"></a>
 
@@ -3590,7 +3733,9 @@ To access the Input manager use `Shaku.input`.
     * [.shiftDown](#Input+shiftDown) ⇒ <code>Boolean</code>
     * [.ctrlDown](#Input+ctrlDown) ⇒ <code>Boolean</code>
     * [.altDown](#Input+altDown) ⇒ <code>Boolean</code>
+    * [.anyKeyPressed](#Input+anyKeyPressed) ⇒ <code>Boolean</code>
     * [.anyKeyDown](#Input+anyKeyDown) ⇒ <code>Boolean</code>
+    * [.anyMouseButtonPressed](#Input+anyMouseButtonPressed) ⇒ <code>Boolean</code>
     * [.anyMouseButtonDown](#Input+anyMouseButtonDown) ⇒ <code>Boolean</code>
     * [.mouseWheelSign](#Input+mouseWheelSign) ⇒ <code>Number</code>
     * [.mouseWheel](#Input+mouseWheel) ⇒ <code>Number</code>
@@ -3661,6 +3806,13 @@ Get if any of the Alt keys are currently down.
 
 **Kind**: instance property of [<code>Input</code>](#Input)  
 **Returns**: <code>Boolean</code> - True if there's an Alt key pressed down.  
+<a name="Input+anyKeyPressed"></a>
+
+### input.anyKeyPressed ⇒ <code>Boolean</code>
+Get if any keyboard key was pressed this frame.
+
+**Kind**: instance property of [<code>Input</code>](#Input)  
+**Returns**: <code>Boolean</code> - True if any key was pressed down this frame.  
 <a name="Input+anyKeyDown"></a>
 
 ### input.anyKeyDown ⇒ <code>Boolean</code>
@@ -3668,6 +3820,13 @@ Get if any keyboard key is currently down.
 
 **Kind**: instance property of [<code>Input</code>](#Input)  
 **Returns**: <code>Boolean</code> - True if there's a key pressed down.  
+<a name="Input+anyMouseButtonPressed"></a>
+
+### input.anyMouseButtonPressed ⇒ <code>Boolean</code>
+Get if any mouse button was pressed this frame.
+
+**Kind**: instance property of [<code>Input</code>](#Input)  
+**Returns**: <code>Boolean</code> - True if any of the mouse buttons were pressed this frame.  
 <a name="Input+anyMouseButtonDown"></a>
 
 ### input.anyMouseButtonDown ⇒ <code>Boolean</code>
@@ -4470,7 +4629,7 @@ Method to select managers to use + initialize them.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| managers | [<code>Array.&lt;IManager&gt;</code>](#IManager) | Array with list of managers to use or null to use all. |
+| managers | [<code>Array.&lt;IManager&gt;</code>](#IManager) \| <code>null</code> | Array with list of managers to use or null to use all. |
 
 <a name="Shaku+destroy"></a>
 
@@ -4825,7 +4984,7 @@ All color components are expected to be in 0.0 - 1.0 range (and not 0-255).
 **Kind**: global class  
 
 * [Color](#Color)
-    * [new Color(r, g, b, a)](#new_Color_new)
+    * [new Color(r, g, b, [a])](#new_Color_new)
     * _instance_
         * [.r](#Color+r) ⇒ <code>Number</code>
         * [.g](#Color+g) ⇒ <code>Number</code>
@@ -4860,7 +5019,7 @@ All color components are expected to be in 0.0 - 1.0 range (and not 0-255).
 
 <a name="new_Color_new"></a>
 
-### new Color(r, g, b, a)
+### new Color(r, g, b, [a])
 Create the color.
 
 
@@ -4869,7 +5028,7 @@ Create the color.
 | r | <code>Number</code> | Color red component (value range: 0-1). |
 | g | <code>Number</code> | Color green component (value range: 0-1). |
 | b | <code>Number</code> | Color blue component (value range: 0-1). |
-| a | <code>Number</code> | Color alpha component (value range: 0-1). |
+| [a] | <code>Number</code> | Color alpha component (value range: 0-1). |
 
 <a name="Color+r"></a>
 
@@ -5073,7 +5232,7 @@ Create color from hex value.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| val | <code>Number</code> | Number value (hex), as 0xrrggbbaa. |
+| val | <code>String</code> | Number value (hex), as #rrggbbaa. |
 
 <a name="Color.fromDecimal"></a>
 
@@ -6344,20 +6503,24 @@ Can also perform transformations inheritance, where we combine local with parent
         * [.getPosition()](#Transformation+getPosition) ⇒ [<code>Vector2</code>](#Vector2)
         * [.getPositionMode()](#Transformation+getPositionMode) ⇒ <code>TransformModes</code>
         * [.setPosition(value)](#Transformation+setPosition) ⇒ [<code>Transformation</code>](#Transformation)
+        * [.setPositionX(value)](#Transformation+setPositionX) ⇒ [<code>Transformation</code>](#Transformation)
+        * [.setPositionY(value)](#Transformation+setPositionY) ⇒ [<code>Transformation</code>](#Transformation)
         * [.move(value)](#Transformation+move) ⇒ [<code>Transformation</code>](#Transformation)
         * [.setPositionMode(value)](#Transformation+setPositionMode) ⇒ [<code>Transformation</code>](#Transformation)
         * [.getScale()](#Transformation+getScale) ⇒ [<code>Vector2</code>](#Vector2)
         * [.getScaleMode()](#Transformation+getScaleMode) ⇒ <code>TransformModes</code>
         * [.setScale(value)](#Transformation+setScale) ⇒ [<code>Transformation</code>](#Transformation)
+        * [.setScaleX(value)](#Transformation+setScaleX) ⇒ [<code>Transformation</code>](#Transformation)
+        * [.setScaleY(value)](#Transformation+setScaleY) ⇒ [<code>Transformation</code>](#Transformation)
         * [.scale(value)](#Transformation+scale) ⇒ [<code>Transformation</code>](#Transformation)
         * [.setScaleMode(value)](#Transformation+setScaleMode) ⇒ [<code>Transformation</code>](#Transformation)
         * [.getRotation()](#Transformation+getRotation) ⇒ <code>Number</code>
         * [.getRotationDegrees()](#Transformation+getRotationDegrees) ⇒ <code>Number</code>
         * [.getRotationDegreesWrapped()](#Transformation+getRotationDegreesWrapped) ⇒ <code>Number</code>
         * [.getRotationMode()](#Transformation+getRotationMode) ⇒ <code>TransformModes</code>
-        * [.setRotation(value)](#Transformation+setRotation) ⇒ [<code>Transformation</code>](#Transformation)
-        * [.rotate(value)](#Transformation+rotate) ⇒ [<code>Transformation</code>](#Transformation)
-        * [.setRotationDegrees(value)](#Transformation+setRotationDegrees) ⇒ [<code>Transformation</code>](#Transformation)
+        * [.setRotation(value, wrap)](#Transformation+setRotation) ⇒ [<code>Transformation</code>](#Transformation)
+        * [.rotate(value, wrap)](#Transformation+rotate) ⇒ [<code>Transformation</code>](#Transformation)
+        * [.setRotationDegrees(value, wrap)](#Transformation+setRotationDegrees) ⇒ [<code>Transformation</code>](#Transformation)
         * [.rotateDegrees(value)](#Transformation+rotateDegrees) ⇒ [<code>Transformation</code>](#Transformation)
         * [.setRotationMode(value)](#Transformation+setRotationMode) ⇒ [<code>Transformation</code>](#Transformation)
         * [._markDirty(localTransform, transformationModes)](#Transformation+_markDirty)
@@ -6426,6 +6589,30 @@ Set position.
 | --- | --- | --- |
 | value | [<code>Vector2</code>](#Vector2) | New position. |
 
+<a name="Transformation+setPositionX"></a>
+
+### transformation.setPositionX(value) ⇒ [<code>Transformation</code>](#Transformation)
+Set position X value.
+
+**Kind**: instance method of [<code>Transformation</code>](#Transformation)  
+**Returns**: [<code>Transformation</code>](#Transformation) - this.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| value | <code>Number</code> | New position.x value. |
+
+<a name="Transformation+setPositionY"></a>
+
+### transformation.setPositionY(value) ⇒ [<code>Transformation</code>](#Transformation)
+Set position Y value.
+
+**Kind**: instance method of [<code>Transformation</code>](#Transformation)  
+**Returns**: [<code>Transformation</code>](#Transformation) - this.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| value | <code>Number</code> | New position.y value. |
+
 <a name="Transformation+move"></a>
 
 ### transformation.move(value) ⇒ [<code>Transformation</code>](#Transformation)
@@ -6475,6 +6662,30 @@ Set scale.
 | Param | Type | Description |
 | --- | --- | --- |
 | value | [<code>Vector2</code>](#Vector2) | New scale. |
+
+<a name="Transformation+setScaleX"></a>
+
+### transformation.setScaleX(value) ⇒ [<code>Transformation</code>](#Transformation)
+Set scale X value.
+
+**Kind**: instance method of [<code>Transformation</code>](#Transformation)  
+**Returns**: [<code>Transformation</code>](#Transformation) - this.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| value | <code>Number</code> | New scale.x value. |
+
+<a name="Transformation+setScaleY"></a>
+
+### transformation.setScaleY(value) ⇒ [<code>Transformation</code>](#Transformation)
+Set scale Y value.
+
+**Kind**: instance method of [<code>Transformation</code>](#Transformation)  
+**Returns**: [<code>Transformation</code>](#Transformation) - this.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| value | <code>Number</code> | New scale.y value. |
 
 <a name="Transformation+scale"></a>
 
@@ -6530,7 +6741,7 @@ Get rotation transformations mode.
 **Returns**: <code>TransformModes</code> - Rotation transformations mode.  
 <a name="Transformation+setRotation"></a>
 
-### transformation.setRotation(value) ⇒ [<code>Transformation</code>](#Transformation)
+### transformation.setRotation(value, wrap) ⇒ [<code>Transformation</code>](#Transformation)
 Set rotation.
 
 **Kind**: instance method of [<code>Transformation</code>](#Transformation)  
@@ -6539,10 +6750,11 @@ Set rotation.
 | Param | Type | Description |
 | --- | --- | --- |
 | value | <code>Number</code> | New rotation. |
+| wrap | <code>Boolean</code> | If true, will wrap value if out of possible range. |
 
 <a name="Transformation+rotate"></a>
 
-### transformation.rotate(value) ⇒ [<code>Transformation</code>](#Transformation)
+### transformation.rotate(value, wrap) ⇒ [<code>Transformation</code>](#Transformation)
 Rotate transformation by given radians.
 
 **Kind**: instance method of [<code>Transformation</code>](#Transformation)  
@@ -6551,10 +6763,11 @@ Rotate transformation by given radians.
 | Param | Type | Description |
 | --- | --- | --- |
 | value | <code>Number</code> | Rotate value in radians. |
+| wrap | <code>Boolean</code> | If true, will wrap value if out of possible range. |
 
 <a name="Transformation+setRotationDegrees"></a>
 
-### transformation.setRotationDegrees(value) ⇒ [<code>Transformation</code>](#Transformation)
+### transformation.setRotationDegrees(value, wrap) ⇒ [<code>Transformation</code>](#Transformation)
 Set rotation as degrees.
 
 **Kind**: instance method of [<code>Transformation</code>](#Transformation)  
@@ -6563,6 +6776,7 @@ Set rotation as degrees.
 | Param | Type | Description |
 | --- | --- | --- |
 | value | <code>Number</code> | New rotation. |
+| wrap | <code>Boolean</code> | If true, will wrap value if out of possible range. |
 
 <a name="Transformation+rotateDegrees"></a>
 

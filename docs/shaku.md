@@ -131,7 +131,7 @@ Method to select managers to use + initialize them.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| managers | <code>Array.&lt;IManager&gt;</code> | Array with list of managers to use or null to use all. |
+| managers | <code>Array.&lt;IManager&gt;</code> \| <code>null</code> | Array with list of managers to use or null to use all. |
 
 <a name="Shaku+destroy"></a>
 

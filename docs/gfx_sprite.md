@@ -13,7 +13,7 @@ This object is a helper class to hold all the properties of a texture to render.
 **Kind**: global class  
 
 * [Sprite](#Sprite)
-    * [new Sprite(texture, sourceRect)](#new_Sprite_new)
+    * [new Sprite(texture, [sourceRect])](#new_Sprite_new)
     * [.texture](#Sprite+texture) : <code>TextureAsset</code>
     * [.position](#Sprite+position) : <code>Vector2</code> \| <code>Vector3</code>
     * [.size](#Sprite+size) : <code>Vector2</code> \| <code>Vector3</code>
@@ -28,19 +28,20 @@ This object is a helper class to hold all the properties of a texture to render.
     * [.flipX](#Sprite+flipX)
     * [.flipY](#Sprite+flipY) ⇒ <code>Boolean</code>
     * [.flipY](#Sprite+flipY)
+    * [.setSourceFromSpritesheet(index, spritesCount, [margin], [setSize])](#Sprite+setSourceFromSpritesheet)
     * [.clone()](#Sprite+clone) ⇒ [<code>Sprite</code>](#Sprite)
     * [.updateStaticProperties()](#Sprite+updateStaticProperties)
 
 <a name="new_Sprite_new"></a>
 
-### new Sprite(texture, sourceRect)
+### new Sprite(texture, [sourceRect])
 Create the texture object.
 
 
 | Param | Type | Description |
 | --- | --- | --- |
 | texture | <code>TextureAsset</code> | Texture asset. |
-| sourceRect | <code>Rectangle</code> | Optional source rect. |
+| [sourceRect] | <code>Rectangle</code> | Optional source rect. |
 
 <a name="Sprite+texture"></a>
 
@@ -154,6 +155,22 @@ This is just a sugarcoat that set size.y to negative or positive value, without 
 | Param | Type | Description |
 | --- | --- | --- |
 | flip | <code>Boolean</code> | Should we flip the sprite around Y axis. If undefined, will take the negative of flipY current value, ie will toggle flipping. |
+
+<a name="Sprite+setSourceFromSpritesheet"></a>
+
+### sprite.setSourceFromSpritesheet(index, spritesCount, [margin], [setSize])
+Set the source Rectangle automatically from spritesheet.
+This method get sprite index in sheet and how many sprites there are in total, and calculate the desired
+offset and size in source Rectangle based on it + source image size.
+
+**Kind**: instance method of [<code>Sprite</code>](#Sprite)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| index | <code>Vector2</code> | Sprite index in spritesheet. |
+| spritesCount | <code>Vector2</code> | How many sprites there are in spritesheet in total. |
+| [margin] | <code>Number</code> | How many pixels to trim from the tile (default is 0). |
+| [setSize] | <code>Boolean</code> | If true will also set width and height based on source rectangle (default is true). |
 
 <a name="Sprite+clone"></a>
 
