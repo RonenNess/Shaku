@@ -5291,7 +5291,12 @@ class Gfx extends IManager
                 // create sprite and add to group
                 let sprite = new Sprite(fontTexture.texture, sourceRect);
                 sprite.size = size;
-                sprite.origin.set(0,0);
+                if (fontTexture instanceof MsdfFontTextureAsset) {
+                    sprite.origin.set(0, 0);
+                }
+                else {
+                    sprite.origin.set(0.5, 0.5);
+                }
                 sprite.position.copy(position).addSelf(fontTexture.getPositionOffset(character).mul(scale));
                 if (color instanceof Color) {
                     sprite.color.copy(color);
