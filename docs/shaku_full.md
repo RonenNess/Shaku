@@ -4136,7 +4136,7 @@ To access the Sfx manager use `Shaku.sfx`.
     * [.playingSoundsCount](#Sfx+playingSoundsCount) ⇒ <code>Number</code>
     * [.masterVolume](#Sfx+masterVolume) ⇒ <code>Number</code>
     * [.masterVolume](#Sfx+masterVolume)
-    * [.play(sound, volume, playbackRate, preservesPitch)](#Sfx+play)
+    * [.play(sound, volume, playbackRate, preservesPitch)](#Sfx+play) ⇒ <code>Promise</code>
     * [.stopAll()](#Sfx+stopAll)
     * [.createSound(sound)](#Sfx+createSound) ⇒ [<code>SoundInstance</code>](#SoundInstance)
 
@@ -4181,11 +4181,12 @@ This affect all sound effects volumes.
 
 <a name="Sfx+play"></a>
 
-### sfx.play(sound, volume, playbackRate, preservesPitch)
+### sfx.play(sound, volume, playbackRate, preservesPitch) ⇒ <code>Promise</code>
 Play a sound once without any special properties and without returning a sound instance.
 Its a more convinient method to play sounds, but less efficient than 'createSound()' if you want to play multiple times.
 
 **Kind**: instance method of [<code>Sfx</code>](#Sfx)  
+**Returns**: <code>Promise</code> - Promise to resolve when sound starts playing.  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -4252,10 +4253,10 @@ A sound effect instance you can play and stop.
     * [.finished](#SoundInstance+finished) ⇒ <code>Boolean</code>
     * [.disposeWhenDone()](#SoundInstance+disposeWhenDone)
     * [.dispose()](#SoundInstance+dispose)
-    * [.play()](#SoundInstance+play)
+    * [.play()](#SoundInstance+play) ⇒ <code>Promise</code>
     * [.pause()](#SoundInstance+pause)
-    * [.replay()](#SoundInstance+replay)
-    * [.stop()](#SoundInstance+stop)
+    * [.replay()](#SoundInstance+replay) ⇒ <code>Promise</code>
+    * [.stop()](#SoundInstance+stop) ⇒ <code>Boolean</code>
 
 <a name="new_SoundInstance_new"></a>
 
@@ -4403,10 +4404,11 @@ When playing lots of sounds its important to call dispose on sounds you no longe
 **Kind**: instance method of [<code>SoundInstance</code>](#SoundInstance)  
 <a name="SoundInstance+play"></a>
 
-### soundInstance.play()
+### soundInstance.play() ⇒ <code>Promise</code>
 Play sound.
 
 **Kind**: instance method of [<code>SoundInstance</code>](#SoundInstance)  
+**Returns**: <code>Promise</code> - Promise to return when sound start playing.  
 <a name="SoundInstance+pause"></a>
 
 ### soundInstance.pause()
@@ -4415,16 +4417,18 @@ Pause the sound.
 **Kind**: instance method of [<code>SoundInstance</code>](#SoundInstance)  
 <a name="SoundInstance+replay"></a>
 
-### soundInstance.replay()
+### soundInstance.replay() ⇒ <code>Promise</code>
 Replay sound from start.
 
 **Kind**: instance method of [<code>SoundInstance</code>](#SoundInstance)  
+**Returns**: <code>Promise</code> - Promise to return when sound start playing.  
 <a name="SoundInstance+stop"></a>
 
-### soundInstance.stop()
+### soundInstance.stop() ⇒ <code>Boolean</code>
 Stop the sound and go back to start.
 
 **Kind**: instance method of [<code>SoundInstance</code>](#SoundInstance)  
+**Returns**: <code>Boolean</code> - True if successfully stopped sound, false otherwise.  
 <a name="SoundMixer"></a>
 
 ## SoundMixer
