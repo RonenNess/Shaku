@@ -2007,6 +2007,17 @@ List of changes in released versions.
 - Added transformation utility class to help implement scene hierarchy and ECS frameworks using Shaku.
 - Added option to `await` on playing sounds.
 
+## 1.6.0
+
+Special thanks to [knexator](https://github.com/knexator) for this update!
+
+- Added support in MSDF fonts.
+- Improved docs.
+- Improved font asset generation and API.
+- Added some convinient methods to Input manager.
+- Added support in setting source rectangle from spritesheet.
+- Changed default size for sprites.
+
 # License
 
 *Shaku* is licensed under the permissive MIT license, so you can use it for any purpose (including commercially) and it should be compatible with most common licenses.
