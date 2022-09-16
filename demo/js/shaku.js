@@ -5199,7 +5199,7 @@ class Gfx extends IManager
      * @param {TextAlignment=} alignment Text alignment.
      * @param {Vector2=} offset Optional starting offset.
      * @param {Vector2=} marginFactor Optional factor for characters and line spacing. For example value of 2,1 will make double horizontal spacing. 
-     * @returns {SpritesGroup=} Sprites group containing the needed sprites to draw the given text with its properties.
+     * @returns {SpritesGroup} Sprites group containing the needed sprites to draw the given text with its properties.
      */
     buildText(fontTexture, text, fontSize, color, alignment, offset, marginFactor)
     {
