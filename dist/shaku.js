@@ -813,6 +813,7 @@ class FontTextureAsset extends Asset
      *                      - maxTextureWidth (default=1024): max texture width.
      *                      - charactersSet (default=FontTextureAsset.defaultCharactersSet): which characters to set in the texture.
      *                      - extraPadding (default=0,0): Optional extra padding to add around characters in texture.
+     *                      - sourceRectOffsetAdjustment (default=0,0): Optional extra offset in characters source rectangles. Use this for fonts that are too low / height and bleed into other characters source rectangles.
      * @returns {Promise} Promise to resolve when fully loaded.
      */
     load(params)
@@ -910,7 +911,8 @@ class FontTextureAsset extends Asset
                 }
 
                 // calc source rect
-                let sourceRect = new Rectangle(x, y, currCharWidth, fontHeight);
+                const offsetAdjustment = params.sourceRectOffsetAdjustment || {x: 0, y: 0};
+                let sourceRect = new Rectangle(x + offsetAdjustment.x, y + offsetAdjustment.y, currCharWidth, fontHeight);
                 this._sourceRects[currChar] = sourceRect;
 
                 // draw character
@@ -6848,7 +6850,7 @@ class Sprite
          * @type {Vector2|Vector3}
          */
         if (sourceRect) {
-            this.size = sourceRect.getSize();
+            this.size = new Vector2(sourceRect.width, sourceRect.height);
         } else if (texture && texture.valid) {
             this.size = texture.size.clone();
         }

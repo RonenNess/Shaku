@@ -2018,6 +2018,11 @@ Special thanks to [knexator](https://github.com/knexator) for this update!
 - Added support in setting source rectangle from spritesheet.
 - Changed default size for sprites.
 
+## 1.6.1 [WIP]
+
+- Tiny change to Sprite default size to not break if given a dictionary representing source rect instead of `Rectangle` instance.
+- Added `sourceRectOffsetAdjustment` param to font assets.
+
 # License
 
 *Shaku* is licensed under the permissive MIT license, so you can use it for any purpose (including commercially) and it should be compatible with most common licenses.
