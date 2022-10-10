@@ -57,7 +57,7 @@
             // draw label
             function drawLabel(text)
             {
-              let textGroup= Shaku.gfx.buildText(fontTexture, text, 24, Shaku.utils.Color.white, Shaku.gfx.TextAlignment.Center);
+              let textGroup= Shaku.gfx.buildText(fontTexture, text, 24, Shaku.utils.Color.white, Shaku.gfx.TextAlignments.Center);
               textGroup.position.copy(offset.add(0, 100));
               Shaku.gfx.drawGroup(textGroup);
             }

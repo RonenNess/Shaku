@@ -502,14 +502,14 @@ Lets draw text with all advanced options:
 ```js
 let fontSize = 16;
 let color = Shaku.utils.Color.blue;
-let alignment = Shaku.gfx.TextAlignment.Left;
+let alignment = Shaku.gfx.TextAlignments.Left;
 let marginFactor = Shaku.utils.Vector2.one;
 Shaku.gfx.buildText(fontTexture, "hello world.", fontSize, color, alignment, marginFactor)
 ```
 
 * `fontSize`: font size for text, or undefined to use the default font texture size.
 * `Color`: optional text color.
-* `alignment`: how to align text. Options are `Shaku.gfx.TextAlignment.Left`, `Shaku.gfx.TextAlignment.Right` and `Shaku.gfx.TextAlignment.Center`.
+* `alignment`: how to align text. Options are `Shaku.gfx.TextAlignments.Left`, `Shaku.gfx.TextAlignments.Right` and `Shaku.gfx.TextAlignments.Center`.
 * `marginFactor`: optional factor for characters spacing. For example value of 2,1 will make double horizontal spacing. 
 
 A demo page that draw texts can be found [here](https://ronenness.github.io/Shaku/demo/gfx_draw_text.html).

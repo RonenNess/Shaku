@@ -68,7 +68,7 @@ async function runGame()
     Shaku.gfx.draw(texture, position, size, null, null, null, rotation);
 
     // draw 'hello world'
-    let textGroup = Shaku.gfx.buildText(fontTexture, "Shaku is ready for battle!", 24, Shaku.utils.Color.white, Shaku.gfx.TextAlignment.Center);
+    let textGroup = Shaku.gfx.buildText(fontTexture, "Shaku is ready for battle!", 24, Shaku.utils.Color.white, Shaku.gfx.TextAlignments.Center);
     textGroup.position.set(position.x, position.y + 160);
     Shaku.gfx.drawGroup(textGroup);
 

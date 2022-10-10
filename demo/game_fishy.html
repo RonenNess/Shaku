@@ -585,7 +585,7 @@
 
       // draw score
       Shaku.gfx.draw(assets.skeletonIcon, new Shaku.utils.Vector2(32, 32), new Shaku.utils.Vector2(48, 48));
-      let scoreText = Shaku.gfx.buildText(assets.fontTexture, "x " + Math.ceil(game.score), 24, Shaku.utils.Color.black, Shaku.gfx.TextAlignment.Left);
+      let scoreText = Shaku.gfx.buildText(assets.fontTexture, "x " + Math.ceil(game.score), 24, Shaku.utils.Color.black, Shaku.gfx.TextAlignments.Left);
       scoreText.position.set(72, 32);
       Shaku.gfx.drawGroup(scoreText);
       scoreText.setColor(Shaku.utils.Color.white);
