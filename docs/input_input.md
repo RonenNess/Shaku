@@ -4,6 +4,23 @@
 
 # Input
 
+## Classes
+
+<dl>
+<dt><a href="#Input">Input</a></dt>
+<dd><p>Input manager. 
+Used to recieve input from keyboard and mouse.</p>
+<p>To access the Input manager use <code>Shaku.input</code>.</p>
+</dd>
+</dl>
+
+## Typedefs
+
+<dl>
+<dt><a href="#elementCallback">elementCallback</a> ⇒ <code>Element</code></dt>
+<dd></dd>
+</dl>
+
 <a name="Input"></a>
 
 ## Input
@@ -149,7 +166,7 @@ Must be called *before* initializing Shaku. This can also be a method to invoke 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| element | <code>Element</code> | Element to attach input to. |
+| element | <code>Element</code> \| [<code>elementCallback</code>](#elementCallback) | Element to attach input to. |
 
 **Example**  
 ```js
@@ -167,7 +184,7 @@ Get if mouse button was pressed this frame.
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
-| button | <code>MouseButtons</code> | <code>0</code> | Button code (defults to MouseButtons.left). |
+| button | <code>MouseButton</code> | <code>0</code> | Button code (defults to MouseButtons.left). |
 
 <a name="Input+mouseDown"></a>
 
@@ -179,7 +196,7 @@ Get if mouse button is currently pressed.
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
-| button | <code>MouseButtons</code> | <code>0</code> | Button code (defults to MouseButtons.left). |
+| button | <code>MouseButton</code> | <code>0</code> | Button code (defults to MouseButtons.left). |
 
 <a name="Input+mouseUp"></a>
 
@@ -191,7 +208,7 @@ Get if mouse button is currently not down.
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
-| button | <code>MouseButtons</code> | <code>0</code> | Button code (defults to MouseButtons.left). |
+| button | <code>MouseButton</code> | <code>0</code> | Button code (defults to MouseButtons.left). |
 
 <a name="Input+mouseReleased"></a>
 
@@ -203,7 +220,7 @@ Get if mouse button was released in current frame.
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
-| button | <code>MouseButtons</code> | <code>0</code> | Button code (defults to MouseButtons.left). |
+| button | <code>MouseButton</code> | <code>0</code> | Button code (defults to MouseButtons.left). |
 
 <a name="Input+keyDown"></a>
 
@@ -215,7 +232,7 @@ Get if keyboard key is currently pressed down.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| key | <code>KeyboardKeys</code> | Keyboard key code. |
+| key | <code>KeyboardKey</code> | Keyboard key code. |
 
 <a name="Input+keyUp"></a>
 
@@ -227,7 +244,7 @@ Get if keyboard key is currently not down.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| key | <code>KeyboardKeys</code> | Keyboard key code. |
+| key | <code>KeyboardKey</code> | Keyboard key code. |
 
 <a name="Input+keyReleased"></a>
 
@@ -239,7 +256,7 @@ Get if a keyboard button was released in current frame.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| button | <code>KeyboardKeys</code> | Keyboard key code. |
+| button | <code>KeyboardKey</code> | Keyboard key code. |
 
 <a name="Input+keyPressed"></a>
 
@@ -251,7 +268,7 @@ Get if keyboard key was pressed this frame.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| key | <code>KeyboardKeys</code> | Keyboard key code. |
+| key | <code>KeyboardKey</code> | Keyboard key code. |
 
 <a name="Input+down"></a>
 
@@ -289,3 +306,7 @@ Return if a mouse or keyboard button was pressed in this frame.
 | --- | --- | --- |
 | code | <code>string</code> \| <code>Array.&lt;String&gt;</code> | Keyboard or mouse code. Can be array of codes to test if any of them is pressed.                          For mouse buttons: mouse_left, mouse_right or mouse_middle.                          For keyboard buttons: use one of the keys of KeyboardKeys (for example 'a', 'alt', 'up_arrow', etc..)                          For numbers (0-9): you can use the number. |
 
+<a name="elementCallback"></a>
+
+## elementCallback ⇒ <code>Element</code>
+**Kind**: global typedef  

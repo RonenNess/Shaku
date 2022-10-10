@@ -18,7 +18,7 @@ This object is a helper class to hold all the properties of a texture to render.
     * [.position](#Sprite+position) : <code>Vector2</code> \| <code>Vector3</code>
     * [.size](#Sprite+size) : <code>Vector2</code> \| <code>Vector3</code>
     * [.sourceRect](#Sprite+sourceRect) : <code>Rectangle</code>
-    * [.blendMode](#Sprite+blendMode) : <code>BlendModes</code>
+    * [.blendMode](#Sprite+blendMode) : <code>BlendMode</code>
     * [.rotation](#Sprite+rotation) : <code>Number</code>
     * [.origin](#Sprite+origin) : <code>Vector2</code>
     * [.skew](#Sprite+skew) : <code>Vector2</code>
@@ -75,7 +75,7 @@ This property is locked when static=true.
 **Kind**: instance property of [<code>Sprite</code>](#Sprite)  
 <a name="Sprite+blendMode"></a>
 
-### sprite.blendMode : <code>BlendModes</code>
+### sprite.blendMode : <code>BlendMode</code>
 Sprite blend mode.
 
 **Kind**: instance property of [<code>Sprite</code>](#Sprite)  

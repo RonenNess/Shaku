@@ -26,7 +26,7 @@ To access the Assets manager you use `Shaku.assets`.
     * [.getCached(url)](#Assets+getCached) ⇒ <code>Asset</code>
     * [.loadSound(url)](#Assets+loadSound) ⇒ <code>Promise.&lt;SoundAsset&gt;</code>
     * [.loadTexture(url, [params])](#Assets+loadTexture) ⇒ <code>Promise.&lt;TextureAsset&gt;</code>
-    * [.createRenderTarget(name, width, height, channels)](#Assets+createRenderTarget) ⇒ <code>Promise.&lt;TextureAsset&gt;</code>
+    * [.createRenderTarget(name, width, height, [channels])](#Assets+createRenderTarget) ⇒ <code>Promise.&lt;TextureAsset&gt;</code>
     * [.loadFontTexture(url, params)](#Assets+loadFontTexture) ⇒ <code>Promise.&lt;FontTextureAsset&gt;</code>
     * [.loadMsdfFontTexture(url, [params])](#Assets+loadMsdfFontTexture) ⇒ <code>Promise.&lt;MsdfFontTextureAsset&gt;</code>
     * [.loadJson(url)](#Assets+loadJson) ⇒ <code>Promise.&lt;JsonAsset&gt;</code>
@@ -143,7 +143,7 @@ let texture = await Shaku.assets.loadTexture("assets/my_texture.png", {generateM
 ```
 <a name="Assets+createRenderTarget"></a>
 
-### assets.createRenderTarget(name, width, height, channels) ⇒ <code>Promise.&lt;TextureAsset&gt;</code>
+### assets.createRenderTarget(name, width, height, [channels]) ⇒ <code>Promise.&lt;TextureAsset&gt;</code>
 Create a render target texture asset. If already loaded, will use cache.
 
 **Kind**: instance method of [<code>Assets</code>](#Assets)  
@@ -151,10 +151,10 @@ Create a render target texture asset. If already loaded, will use cache.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| name | <code>String</code> | Asset name (matched to URLs when using cache). If null, will not add to cache. |
+| name | <code>String</code> \| <code>null</code> | Asset name (matched to URLs when using cache). If null, will not add to cache. |
 | width | <code>Number</code> | Texture width. |
 | height | <code>Number</code> | Texture height. |
-| channels | <code>Number</code> | Texture channels count. Defaults to 4 (RGBA). |
+| [channels] | <code>Number</code> | Texture channels count. Defaults to 4 (RGBA). |
 
 **Example**  
 ```js

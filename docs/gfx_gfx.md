@@ -24,7 +24,7 @@ To access the Graphics manager you use `Shaku.gfx`.
     * [.SpritesGroup](#Gfx+SpritesGroup)
     * [.Matrix](#Gfx+Matrix)
     * [.Vertex](#Gfx+Vertex)
-    * [.TextAlignment](#Gfx+TextAlignment)
+    * [.TextAlignments](#Gfx+TextAlignments)
     * [.BlendModes](#Gfx+BlendModes)
     * [.TextureWrapModes](#Gfx+TextureWrapModes)
     * [.TextureFilterModes](#Gfx+TextureFilterModes)
@@ -36,7 +36,7 @@ To access the Graphics manager you use `Shaku.gfx`.
     * [.setCameraOrthographic(offset)](#Gfx+setCameraOrthographic) ⇒ <code>Camera</code>
     * [.createEffect(type)](#Gfx+createEffect) ⇒ <code>Effect</code>
     * [.maximizeCanvasSize(limitToParent, allowOddNumbers)](#Gfx+maximizeCanvasSize)
-    * [.setRenderTarget(texture, keepCamera)](#Gfx+setRenderTarget)
+    * [.setRenderTarget(texture, [keepCamera])](#Gfx+setRenderTarget)
     * [.useEffect(effect)](#Gfx+useEffect)
     * [.setResolution(width, height, updateCanvasStyle)](#Gfx+setResolution)
     * [.resetCamera()](#Gfx+resetCamera)
@@ -47,24 +47,24 @@ To access the Graphics manager you use `Shaku.gfx`.
     * [.buildText(fontTexture, text, [fontSize], color, [alignment], [offset], [marginFactor])](#Gfx+buildText) ⇒ <code>SpritesGroup</code>
     * [.drawGroup(group, cullOutOfScreen)](#Gfx+drawGroup)
     * [.drawSprite(sprite)](#Gfx+drawSprite)
-    * [.cover(texture, destRect, sourceRect, color, blendMode)](#Gfx+cover)
-    * [.draw(texture, position, size, sourceRect, color, blendMode, rotation, origin, skew)](#Gfx+draw)
-    * [.drawQuadFromVertices(texture, vertices, blendMode)](#Gfx+drawQuadFromVertices)
-    * [.fillRect(destRect, color, blend, rotation)](#Gfx+fillRect)
-    * [.fillRects(destRects, colors, blend, rotation)](#Gfx+fillRects)
+    * [.cover(texture, destRect, [sourceRect], color, [blendMode])](#Gfx+cover)
+    * [.draw(texture, position, size, sourceRect, color, [blendMode], [rotation], [origin], [skew])](#Gfx+draw)
+    * [.drawQuadFromVertices(texture, vertices, [blendMode])](#Gfx+drawQuadFromVertices)
+    * [.fillRect(destRect, color, [blend], [rotation])](#Gfx+fillRect)
+    * [.fillRects(destRects, colors, [blend], [rotation])](#Gfx+fillRects)
     * [.outlineRect(destRect, color, [blend], [rotation])](#Gfx+outlineRect)
-    * [.outlineCircle(circle, color, blend, lineAmount)](#Gfx+outlineCircle)
-    * [.fillCircle(circle, color, blend, lineAmount)](#Gfx+fillCircle)
-    * [.fillCircles(circles, colors, blend, lineAmount)](#Gfx+fillCircles)
-    * [.drawLine(startPoint, endPoint, color, blendMode)](#Gfx+drawLine)
-    * [.drawLinesStrip(points, colors, blendMode, looped)](#Gfx+drawLinesStrip)
-    * [.drawLines(points, colors, blendMode)](#Gfx+drawLines)
-    * [.drawPoint(point, color, blendMode)](#Gfx+drawPoint)
-    * [.drawPoints(points, colors, blendMode)](#Gfx+drawPoints)
+    * [.outlineCircle(circle, color, [blend], [lineAmount])](#Gfx+outlineCircle)
+    * [.fillCircle(circle, color, [blend], [lineAmount])](#Gfx+fillCircle)
+    * [.fillCircles(circles, colors, [blend], [lineAmount])](#Gfx+fillCircles)
+    * [.drawLine(startPoint, endPoint, color, [blendMode])](#Gfx+drawLine)
+    * [.drawLinesStrip(points, colors, [blendMode], [looped])](#Gfx+drawLinesStrip)
+    * [.drawLines(points, colors, [blendMode])](#Gfx+drawLines)
+    * [.drawPoint(point, color, [blendMode])](#Gfx+drawPoint)
+    * [.drawPoints(points, colors, [blendMode])](#Gfx+drawPoints)
     * [.centerCanvas()](#Gfx+centerCanvas)
     * [.inScreen(shape)](#Gfx+inScreen) ⇒ <code>Boolean</code>
     * [.centerCamera(position, useCanvasSize)](#Gfx+centerCamera)
-    * [.clear(color)](#Gfx+clear)
+    * [.clear([color])](#Gfx+clear)
     * [.presentBufferedData()](#Gfx+presentBufferedData)
 
 <a name="new_Gfx_new"></a>
@@ -133,16 +133,16 @@ Get the vertex object.
 
 **Kind**: instance property of [<code>Gfx</code>](#Gfx)  
 **See**: Vertex  
-<a name="Gfx+TextAlignment"></a>
+<a name="Gfx+TextAlignments"></a>
 
-### gfx.TextAlignment
+### gfx.TextAlignments
 Get the text alignments options.
 * Left: align text to the left.
 * Right: align text to the right.
 * Center: align text to center.
 
 **Kind**: instance property of [<code>Gfx</code>](#Gfx)  
-**See**: TextAlignment  
+**See**: TextAlignments  
 <a name="Gfx+BlendModes"></a>
 
 ### gfx.BlendModes
@@ -294,15 +294,15 @@ If the canvas is directly under document body, it will take the max size of the 
 
 <a name="Gfx+setRenderTarget"></a>
 
-### gfx.setRenderTarget(texture, keepCamera)
+### gfx.setRenderTarget(texture, [keepCamera])
 Set a render target (texture) to render on.
 
 **Kind**: instance method of [<code>Gfx</code>](#Gfx)  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| texture | <code>TextureAsset</code> \| <code>Array.&lt;TextureAsset&gt;</code> | Render target texture to set as render target, or null to reset and render back on canvas. Can also be array for multiple targets, which will take layouts 0-15 by their order. |
-| keepCamera | <code>Boolean</code> | If true, will keep current camera settings. If false (default) will reset camera. |
+| texture | <code>TextureAsset</code> \| <code>Array.&lt;TextureAsset&gt;</code> \| <code>null</code> | Render target texture to set as render target, or null to reset and render back on canvas. Can also be array for multiple targets, which will take layouts 0-15 by their order. |
+| [keepCamera] | <code>Boolean</code> | If true, will keep current camera settings. If false (default) will reset camera. |
 
 **Example**  
 ```js
@@ -491,7 +491,7 @@ Shaku.gfx.drawSprite(sprite);
 ```
 <a name="Gfx+cover"></a>
 
-### gfx.cover(texture, destRect, sourceRect, color, blendMode)
+### gfx.cover(texture, destRect, [sourceRect], color, [blendMode])
 Draw a texture to cover a given destination rectangle.
 
 **Kind**: instance method of [<code>Gfx</code>](#Gfx)  
@@ -500,9 +500,9 @@ Draw a texture to cover a given destination rectangle.
 | --- | --- | --- |
 | texture | <code>TextureAsset</code> | Texture to draw. |
 | destRect | <code>Rectangle</code> \| <code>Vector2</code> | Destination rectangle to draw on. If vector is provided, will draw from 0,0 with vector as size. |
-| sourceRect | <code>Rectangle</code> | Source rectangle, or undefined to use the entire texture. |
-| color | <code>Color</code> \| <code>Array.&lt;Color&gt;</code> | Tint color, or undefined to not change color. If array is set, will assign each color to different vertex, starting from top-left. |
-| blendMode | <code>BlendModes</code> | Blend mode, or undefined to use alpha blend. |
+| [sourceRect] | <code>Rectangle</code> | Source rectangle, or undefined to use the entire texture. |
+| color | <code>Color</code> \| <code>Array.&lt;Color&gt;</code> \| <code>undefined</code> | Tint color, or undefined to not change color. If array is set, will assign each color to different vertex, starting from top-left. |
+| [blendMode] | <code>BlendMode</code> | Blend mode, or undefined to use alpha blend. |
 
 **Example**  
 ```js
@@ -522,7 +522,7 @@ Shaku.gfx.draw(texture, position, size, sourceRect, color, blendMode, rotation, 
 ```
 <a name="Gfx+draw"></a>
 
-### gfx.draw(texture, position, size, sourceRect, color, blendMode, rotation, origin, skew)
+### gfx.draw(texture, position, size, sourceRect, color, [blendMode], [rotation], [origin], [skew])
 Draw a texture.
 
 **Kind**: instance method of [<code>Gfx</code>](#Gfx)  
@@ -533,11 +533,11 @@ Draw a texture.
 | position | <code>Vector2</code> \| <code>Vector3</code> | Drawing position (at origin). If vector3 is provided, will pass z value to the shader code position attribute. |
 | size | <code>Vector2</code> \| <code>Vector3</code> \| <code>Number</code> | Drawing size. If vector3 is provided, will pass z value to the shader code position attribute for the bottom vertices, as position.z + size.z. |
 | sourceRect | <code>Rectangle</code> | Source rectangle, or undefined to use the entire texture. |
-| color | <code>Color</code> \| <code>Array.&lt;Color&gt;</code> | Tint color, or undefined to not change color. If array is set, will assign each color to different vertex, starting from top-left. |
-| blendMode | <code>BlendModes</code> | Blend mode, or undefined to use alpha blend. |
-| rotation | <code>Number</code> | Rotate sprite. |
-| origin | <code>Vector2</code> | Drawing origin. This will be the point at 'position' and rotation origin. |
-| skew | <code>Vector2</code> | Skew the drawing corners on X and Y axis, around the origin point. |
+| color | <code>Color</code> \| <code>Array.&lt;Color&gt;</code> \| <code>undefined</code> | Tint color, or undefined to not change color. If array is set, will assign each color to different vertex, starting from top-left. |
+| [blendMode] | <code>BlendMode</code> | Blend mode, or undefined to use alpha blend. |
+| [rotation] | <code>Number</code> | Rotate sprite. |
+| [origin] | <code>Vector2</code> | Drawing origin. This will be the point at 'position' and rotation origin. |
+| [skew] | <code>Vector2</code> | Skew the drawing corners on X and Y axis, around the origin point. |
 
 **Example**  
 ```js
@@ -559,7 +559,7 @@ Shaku.gfx.draw(texture, position, size, sourceRect, color, blendMode, rotation, 
 ```
 <a name="Gfx+drawQuadFromVertices"></a>
 
-### gfx.drawQuadFromVertices(texture, vertices, blendMode)
+### gfx.drawQuadFromVertices(texture, vertices, [blendMode])
 Draw a textured quad from vertices.
 
 **Kind**: instance method of [<code>Gfx</code>](#Gfx)  
@@ -568,11 +568,11 @@ Draw a textured quad from vertices.
 | --- | --- | --- |
 | texture | <code>TextureAsset</code> | Texture to draw. |
 | vertices | <code>Array.&lt;Vertex&gt;</code> | Quad vertices to draw (should be: top-left, top-right, bottom-left, bottom-right). |
-| blendMode | <code>BlendModes</code> | Blend mode to set. |
+| [blendMode] | <code>BlendMode</code> | Blend mode to set. |
 
 <a name="Gfx+fillRect"></a>
 
-### gfx.fillRect(destRect, color, blend, rotation)
+### gfx.fillRect(destRect, color, [blend], [rotation])
 Draw a filled colored rectangle.
 
 **Kind**: instance method of [<code>Gfx</code>](#Gfx)  
@@ -581,8 +581,8 @@ Draw a filled colored rectangle.
 | --- | --- | --- |
 | destRect | <code>Rectangle</code> | Rectangle to fill. |
 | color | <code>Color</code> \| <code>Array.&lt;Color&gt;</code> | Rectangle fill color. |
-| blend | <code>BlendModes</code> | Blend mode. |
-| rotation | <code>Number</code> | Rotate the rectangle around its center. |
+| [blend] | <code>BlendMode</code> | Blend mode. |
+| [rotation] | <code>Number</code> | Rotate the rectangle around its center. |
 
 **Example**  
 ```js
@@ -591,7 +591,7 @@ Shaku.gfx.fillRect(new Shaku.utils.Rectangle(100, 100, 50, 50), Shaku.utils.Colo
 ```
 <a name="Gfx+fillRects"></a>
 
-### gfx.fillRects(destRects, colors, blend, rotation)
+### gfx.fillRects(destRects, colors, [blend], [rotation])
 Draw a list of filled colored rectangles as a batch.
 
 **Kind**: instance method of [<code>Gfx</code>](#Gfx)  
@@ -600,8 +600,8 @@ Draw a list of filled colored rectangles as a batch.
 | --- | --- | --- |
 | destRects | <code>Array.&lt;Rectangle&gt;</code> | Rectangles to fill. |
 | colors | <code>Array.&lt;Color&gt;</code> \| <code>Color</code> | Rectangles fill color. If array is set, will assign each color to different vertex, starting from top-left. |
-| blend | <code>BlendModes</code> | Blend mode. |
-| rotation | <code>Array.&lt;Number&gt;</code> \| <code>Number</code> | Rotate the rectangles around its center. |
+| [blend] | <code>BlendMode</code> | Blend mode. |
+| [rotation] | <code>Array.&lt;Number&gt;</code> \| <code>Number</code> | Rotate the rectangles around its center. |
 
 **Example**  
 ```js
@@ -619,7 +619,7 @@ Draw an outline colored rectangle.
 | --- | --- | --- |
 | destRect | <code>Rectangle</code> | Rectangle to draw outline for. |
 | color | <code>Color</code> | Rectangle outline color. |
-| [blend] | <code>BlendModes</code> | Blend mode. |
+| [blend] | <code>BlendMode</code> | Blend mode. |
 | [rotation] | <code>Number</code> | Rotate the rectangle around its center. |
 
 **Example**  
@@ -629,7 +629,7 @@ Shaku.gfx.outlineRect(new Shaku.utils.Rectangle(100, 100, 50, 50), Shaku.utils.C
 ```
 <a name="Gfx+outlineCircle"></a>
 
-### gfx.outlineCircle(circle, color, blend, lineAmount)
+### gfx.outlineCircle(circle, color, [blend], [lineAmount])
 Draw an outline colored circle.
 
 **Kind**: instance method of [<code>Gfx</code>](#Gfx)  
@@ -638,8 +638,8 @@ Draw an outline colored circle.
 | --- | --- | --- |
 | circle | <code>Circle</code> | Circle to draw. |
 | color | <code>Color</code> | Circle outline color. |
-| blend | <code>BlendModes</code> | Blend mode. |
-| lineAmount | <code>Number</code> | How many lines to compose the circle from (bigger number = smoother circle). |
+| [blend] | <code>BlendMode</code> | Blend mode. |
+| [lineAmount] | <code>Number</code> | How many lines to compose the circle from (bigger number = smoother circle). |
 
 **Example**  
 ```js
@@ -648,7 +648,7 @@ Shaku.gfx.outlineCircle(new Shaku.utils.Circle(new Shaku.utils.Vector2(50, 50), 
 ```
 <a name="Gfx+fillCircle"></a>
 
-### gfx.fillCircle(circle, color, blend, lineAmount)
+### gfx.fillCircle(circle, color, [blend], [lineAmount])
 Draw a filled colored circle.
 
 **Kind**: instance method of [<code>Gfx</code>](#Gfx)  
@@ -657,8 +657,8 @@ Draw a filled colored circle.
 | --- | --- | --- |
 | circle | <code>Circle</code> | Circle to draw. |
 | color | <code>Color</code> | Circle fill color. |
-| blend | <code>BlendModes</code> | Blend mode. |
-| lineAmount | <code>Number</code> | How many lines to compose the circle from (bigger number = smoother circle). |
+| [blend] | <code>BlendMode</code> | Blend mode. |
+| [lineAmount] | <code>Number</code> | How many lines to compose the circle from (bigger number = smoother circle). |
 
 **Example**  
 ```js
@@ -667,7 +667,7 @@ Shaku.gfx.fillCircle(new Shaku.utils.Circle(new Shaku.utils.Vector2(50, 50), 85)
 ```
 <a name="Gfx+fillCircles"></a>
 
-### gfx.fillCircles(circles, colors, blend, lineAmount)
+### gfx.fillCircles(circles, colors, [blend], [lineAmount])
 Draw a list of filled colored circles using batches.
 
 **Kind**: instance method of [<code>Gfx</code>](#Gfx)  
@@ -676,8 +676,8 @@ Draw a list of filled colored circles using batches.
 | --- | --- | --- |
 | circles | <code>Array.&lt;Circle&gt;</code> | Circles list to draw. |
 | colors | <code>Color</code> \| <code>Array.&lt;Color&gt;</code> | Circles fill color or a single color for all circles. |
-| blend | <code>BlendModes</code> | Blend mode. |
-| lineAmount | <code>Number</code> | How many lines to compose the circle from (bigger number = smoother circle). |
+| [blend] | <code>BlendMode</code> | Blend mode. |
+| [lineAmount] | <code>Number</code> | How many lines to compose the circle from (bigger number = smoother circle). |
 
 **Example**  
 ```js
@@ -686,7 +686,7 @@ Shaku.gfx.fillCircles([new Shaku.utils.Circle(new Shaku.utils.Vector2(50, 50), 8
 ```
 <a name="Gfx+drawLine"></a>
 
-### gfx.drawLine(startPoint, endPoint, color, blendMode)
+### gfx.drawLine(startPoint, endPoint, color, [blendMode])
 Draw a single line between two points.
 
 **Kind**: instance method of [<code>Gfx</code>](#Gfx)  
@@ -696,7 +696,7 @@ Draw a single line between two points.
 | startPoint | <code>Vector2</code> | Line start point. |
 | endPoint | <code>Vector2</code> | Line end point. |
 | color | <code>Color</code> | Line color. |
-| blendMode | <code>BlendModes</code> | Blend mode to draw lines with (default to Opaque). |
+| [blendMode] | <code>BlendMode</code> | Blend mode to draw lines with (default to Opaque). |
 
 **Example**  
 ```js
@@ -704,7 +704,7 @@ Shaku.gfx.drawLine(new Shaku.utils.Vector2(50,50), new Shaku.utils.Vector2(150,5
 ```
 <a name="Gfx+drawLinesStrip"></a>
 
-### gfx.drawLinesStrip(points, colors, blendMode, looped)
+### gfx.drawLinesStrip(points, colors, [blendMode], [looped])
 Draw a strip of lines between an array of points.
 
 **Kind**: instance method of [<code>Gfx</code>](#Gfx)  
@@ -713,8 +713,8 @@ Draw a strip of lines between an array of points.
 | --- | --- | --- |
 | points | <code>Array.&lt;Vector2&gt;</code> | Points to draw line between. |
 | colors | <code>Color</code> \| <code>Array.&lt;Color&gt;</code> | Single lines color if you want one color for all lines, or an array of colors per segment. |
-| blendMode | <code>BlendModes</code> | Blend mode to draw lines with (default to Opaque). |
-| looped | <code>Boolean</code> | If true, will also draw a line from last point back to first point. |
+| [blendMode] | <code>BlendMode</code> | Blend mode to draw lines with (default to Opaque). |
+| [looped] | <code>Boolean</code> | If true, will also draw a line from last point back to first point. |
 
 **Example**  
 ```js
@@ -724,7 +724,7 @@ Shaku.gfx.drawLinesStrip(lines, colors);
 ```
 <a name="Gfx+drawLines"></a>
 
-### gfx.drawLines(points, colors, blendMode)
+### gfx.drawLines(points, colors, [blendMode])
 Draw a list of lines from an array of points.
 
 **Kind**: instance method of [<code>Gfx</code>](#Gfx)  
@@ -733,7 +733,7 @@ Draw a list of lines from an array of points.
 | --- | --- | --- |
 | points | <code>Array.&lt;Vector2&gt;</code> | Points to draw line between. |
 | colors | <code>Color</code> \| <code>Array.&lt;Color&gt;</code> | Single lines color if you want one color for all lines, or an array of colors per segment. |
-| blendMode | <code>BlendModes</code> | Blend mode to draw lines with (default to Opaque). |
+| [blendMode] | <code>BlendMode</code> | Blend mode to draw lines with (default to Opaque). |
 
 **Example**  
 ```js
@@ -743,7 +743,7 @@ Shaku.gfx.drawLines(lines, colors);
 ```
 <a name="Gfx+drawPoint"></a>
 
-### gfx.drawPoint(point, color, blendMode)
+### gfx.drawPoint(point, color, [blendMode])
 Draw a single point from vector.
 
 **Kind**: instance method of [<code>Gfx</code>](#Gfx)  
@@ -752,7 +752,7 @@ Draw a single point from vector.
 | --- | --- | --- |
 | point | <code>Vector2</code> | Point to draw. |
 | color | <code>Color</code> | Point color. |
-| blendMode | <code>BlendModes</code> | Blend mode to draw point with (default to Opaque). |
+| [blendMode] | <code>BlendMode</code> | Blend mode to draw point with (default to Opaque). |
 
 **Example**  
 ```js
@@ -760,7 +760,7 @@ Shaku.gfx.drawPoint(new Shaku.utils.Vector2(50,50), Shaku.utils.Color.random());
 ```
 <a name="Gfx+drawPoints"></a>
 
-### gfx.drawPoints(points, colors, blendMode)
+### gfx.drawPoints(points, colors, [blendMode])
 Draw a list of points from an array of vectors.
 
 **Kind**: instance method of [<code>Gfx</code>](#Gfx)  
@@ -769,7 +769,7 @@ Draw a list of points from an array of vectors.
 | --- | --- | --- |
 | points | <code>Array.&lt;Vector2&gt;</code> | Points to draw. |
 | colors | <code>Color</code> \| <code>Array.&lt;Color&gt;</code> | Single color if you want one color for all points, or an array of colors per point. |
-| blendMode | <code>BlendModes</code> | Blend mode to draw points with (default to Opaque). |
+| [blendMode] | <code>BlendMode</code> | Blend mode to draw points with (default to Opaque). |
 
 **Example**  
 ```js
@@ -809,14 +809,14 @@ Make a given vector the center of the camera.
 
 <a name="Gfx+clear"></a>
 
-### gfx.clear(color)
+### gfx.clear([color])
 Clear screen to a given color.
 
 **Kind**: instance method of [<code>Gfx</code>](#Gfx)  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| color | <code>Color</code> | Color to clear screen to, or black if not set. |
+| [color] | <code>Color</code> | Color to clear screen to, or black if not set. |
 
 **Example**  
 ```js

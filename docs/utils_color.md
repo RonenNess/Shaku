@@ -247,7 +247,7 @@ Check if equal to another color.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| other | <code>PintarJS.Color</code> | Other color to compare to. |
+| other | [<code>Color</code>](#Color) | Other color to compare to. |
 
 <a name="Color.webColorNames"></a>
 

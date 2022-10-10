@@ -4,33 +4,29 @@
 
 # Text Alignment
 
-<a name="TextAlignment"></a>
+## Typedefs
 
-## TextAlignment
+<dl>
+<dt><a href="#TextAlignment">TextAlignment</a> : <code>String</code></dt>
+<dd></dd>
+</dl>
+
+<a name="TextAlignments"></a>
+
+## TextAlignments : <code>enum</code>
 Possible text alignments.
 
-**Kind**: global constant  
+**Kind**: global enum  
+**Read only**: true  
+**Properties**
 
-* [TextAlignment](#TextAlignment)
-    * [.Left](#TextAlignment.Left)
-    * [.Right](#TextAlignment.Right)
-    * [.Center](#TextAlignment.Center)
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| Left | [<code>TextAlignment</code>](#TextAlignment) | <code>left</code> | Align text left-to-right. |
+| Right | [<code>TextAlignment</code>](#TextAlignment) | <code>right</code> | Align text right-to-left. |
+| Center | [<code>TextAlignment</code>](#TextAlignment) | <code>center</code> | Align text to center. |
 
-<a name="TextAlignment.Left"></a>
+<a name="TextAlignment"></a>
 
-### TextAlignment.Left
-Align text left-to-right.
-
-**Kind**: static property of [<code>TextAlignment</code>](#TextAlignment)  
-<a name="TextAlignment.Right"></a>
-
-### TextAlignment.Right
-Align text right-to-left.
-
-**Kind**: static property of [<code>TextAlignment</code>](#TextAlignment)  
-<a name="TextAlignment.Center"></a>
-
-### TextAlignment.Center
-Align text to center.
-
-**Kind**: static property of [<code>TextAlignment</code>](#TextAlignment)  
+## TextAlignment : <code>String</code>
+**Kind**: global typedef  
