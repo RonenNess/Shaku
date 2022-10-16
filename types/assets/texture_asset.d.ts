@@ -15,76 +15,31 @@ declare class TextureAsset extends Asset {
     _width: number;
     _height: number;
     _texture: any;
-    _filter: {
-        TextureFilterModes: {
-            Nearest: string;
-            Linear: string;
-            NearestMipmapNearest: string;
-            LinearMipmapNearest: string;
-            NearestMipmapLinear: string;
-            LinearMipmapLinear: string;
-        };
-    };
-    _wrapMode: {
-        TextureWrapModes: {
-            Clamp: string;
-            Repeat: string;
-            RepeatMirrored: string;
-        };
-    };
+    _filter: string;
+    _wrapMode: string;
     _ctxForPixelData: CanvasRenderingContext2D;
     /**
      * Set texture magnifying filter.
      * @see Shaku.gfx.TextureFilterModes
-     * @param {TextureFilterModes} value Filter mode to use or null to use default.
+     * @param {TextureFilterMode} value Filter mode to use or null to use default.
      */
-    set filter(arg: {
-        TextureFilterModes: {
-            Nearest: string;
-            Linear: string;
-            NearestMipmapNearest: string;
-            LinearMipmapNearest: string;
-            NearestMipmapLinear: string;
-            LinearMipmapLinear: string;
-        };
-    });
+    set filter(arg: string);
     /**
      * Get texture magnifying filter, or null to use default.
      * @see Shaku.gfx.TextureFilterModes
      */
-    get filter(): {
-        TextureFilterModes: {
-            Nearest: string;
-            Linear: string;
-            NearestMipmapNearest: string;
-            LinearMipmapNearest: string;
-            NearestMipmapLinear: string;
-            LinearMipmapLinear: string;
-        };
-    };
+    get filter(): string;
     /**
      * Set texture wrapping mode.
      * @see Shaku.gfx.TextureWrapModes
-     * @param {TextureWrapModes} value Wrapping mode to use or null to use default.
+     * @param {TextureWrapMode} value Wrapping mode to use or null to use default.
      */
-    set wrapMode(arg: {
-        TextureWrapModes: {
-            Clamp: string;
-            Repeat: string;
-            RepeatMirrored: string;
-        };
-    });
+    set wrapMode(arg: string);
     /**
      * Get texture wrapping mode, or null to use default.
      * @see Shaku.gfx.TextureWrapModes
      */
-    get wrapMode(): {
-        TextureWrapModes: {
-            Clamp: string;
-            Repeat: string;
-            RepeatMirrored: string;
-        };
-    };
+    get wrapMode(): string;
     /**
      * Create this texture as an empty render target.
      * @param {Number} width Texture width.
