@@ -5470,8 +5470,6 @@ class Gfx extends IManager
     {
         if (!texture || !texture.valid) { return; }
         this.__startDrawingSprites(this._activeEffect, null);
-        console.log("in problematic line, blendMode is: ", blendMode);
-        console.log("in problematic line, BlendModes.AlphaBlend is: ", BlendModes.AlphaBlend);
         this._setBlendMode(blendMode || BlendModes.AlphaBlend);
         this.spritesBatch.setTexture(texture);
         this.spritesBatch.pushVertices(vertices);
@@ -7112,9 +7110,6 @@ class SpriteBatch
             this._gfx.useEffect(effect);
         }
         this._effect = this._gfx._activeEffect;
-        
-        console.log("BlendModes.AlphaBlend is: ", BlendModes.AlphaBlend);
-        console.log("BlendModes is: ", BlendModes);
 
         this._currBlend = BlendModes.AlphaBlend;
         this._currTexture = null;
