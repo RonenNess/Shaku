@@ -1432,8 +1432,8 @@ module.exports = SoundAsset;
  */
 'use strict';
 const Asset = require("./asset");
-const TextureFilterModes = require('../gfx/texture_filter_modes');
-const TextureWrapModes = require('../gfx/texture_wrap_modes');
+const {TextureFilterMode, TextureFilterModes} = require('../gfx/texture_filter_modes');
+const {TextureWrapMode, TextureWrapModes} = require('../gfx/texture_wrap_modes');
 const Color = require('../utils/color');
 const Vector2 = require("../utils/vector2");
 const _logger = require('../logger.js').getLogger('assets');
@@ -1482,7 +1482,7 @@ class TextureAsset extends Asset
     /**
      * Set texture magnifying filter.
      * @see Shaku.gfx.TextureFilterModes 
-     * @param {TextureFilterModes} value Filter mode to use or null to use default.
+     * @param {TextureFilterMode} value Filter mode to use or null to use default.
      */
     set filter(value)
     {
@@ -1501,7 +1501,7 @@ class TextureAsset extends Asset
     /**
      * Set texture wrapping mode.
      * @see Shaku.gfx.TextureWrapModes
-     * @param {TextureWrapModes} value Wrapping mode to use or null to use default.
+     * @param {TextureWrapMode} value Wrapping mode to use or null to use default.
      */
     set wrapMode(value)
     {
@@ -5470,8 +5470,6 @@ class Gfx extends IManager
     {
         if (!texture || !texture.valid) { return; }
         this.__startDrawingSprites(this._activeEffect, null);
-        console.log("in problematic line, blendMode is: ", blendMode);
-        console.log("in problematic line, BlendModes.AlphaBlend is: ", BlendModes.AlphaBlend);
         this._setBlendMode(blendMode || BlendModes.AlphaBlend);
         this.spritesBatch.setTexture(texture);
         this.spritesBatch.pushVertices(vertices);
@@ -7112,9 +7110,6 @@ class SpriteBatch
             this._gfx.useEffect(effect);
         }
         this._effect = this._gfx._activeEffect;
-        
-        console.log("BlendModes.AlphaBlend is: ", BlendModes.AlphaBlend);
-        console.log("BlendModes is: ", BlendModes);
 
         this._currBlend = BlendModes.AlphaBlend;
         this._currTexture = null;

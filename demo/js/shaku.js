@@ -1432,8 +1432,8 @@ module.exports = SoundAsset;
  */
 'use strict';
 const Asset = require("./asset");
-const TextureFilterModes = require('../gfx/texture_filter_modes');
-const TextureWrapModes = require('../gfx/texture_wrap_modes');
+const {TextureFilterMode, TextureFilterModes} = require('../gfx/texture_filter_modes');
+const {TextureWrapMode, TextureWrapModes} = require('../gfx/texture_wrap_modes');
 const Color = require('../utils/color');
 const Vector2 = require("../utils/vector2");
 const _logger = require('../logger.js').getLogger('assets');
@@ -1482,7 +1482,7 @@ class TextureAsset extends Asset
     /**
      * Set texture magnifying filter.
      * @see Shaku.gfx.TextureFilterModes 
-     * @param {TextureFilterModes} value Filter mode to use or null to use default.
+     * @param {TextureFilterMode} value Filter mode to use or null to use default.
      */
     set filter(value)
     {
@@ -1501,7 +1501,7 @@ class TextureAsset extends Asset
     /**
      * Set texture wrapping mode.
      * @see Shaku.gfx.TextureWrapModes
-     * @param {TextureWrapModes} value Wrapping mode to use or null to use default.
+     * @param {TextureWrapMode} value Wrapping mode to use or null to use default.
      */
     set wrapMode(value)
     {

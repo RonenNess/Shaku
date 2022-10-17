@@ -47,7 +47,7 @@ Set texture magnifying filter.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| value | <code>TextureFilterModes</code> | Filter mode to use or null to use default. |
+| value | <code>TextureFilterMode</code> | Filter mode to use or null to use default. |
 
 <a name="TextureAsset+wrapMode"></a>
 
@@ -66,7 +66,7 @@ Set texture wrapping mode.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| value | <code>TextureWrapModes</code> | Wrapping mode to use or null to use default. |
+| value | <code>TextureWrapMode</code> | Wrapping mode to use or null to use default. |
 
 <a name="TextureAsset+image"></a>
 
