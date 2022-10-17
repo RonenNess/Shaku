@@ -2020,8 +2020,12 @@ Special thanks to [knexator](https://github.com/knexator) for this update!
 
 ## 1.6.1 [WIP]
 
+Special thanks to [knexator](https://github.com/knexator) for adding TypeScript Declarations!
+
 - Tiny change to Sprite default size to not break if given a dictionary representing source rect instead of `Rectangle` instance.
 - Added `sourceRectOffsetAdjustment` param to font assets.
+- Added TypeScript Declarations [details here](https://github.com/RonenNess/Shaku/pull/3).
+- Renamed `TextAlignment` enum (old name still works with a deprecation warning).
 
 # License
 
