@@ -4620,7 +4620,7 @@ const SpritesGroup = require('./sprites_group.js');
 const Vector2 = require('../utils/vector2.js');
 const FontTextureAsset = require('../assets/font_texture_asset.js');
 const MsdfFontTextureAsset = require('../assets/msdf_font_texture_asset.js');
-const { TextAlignment, TextAlignments } = require('./text_alignment.js');
+const { TextAlignment, TextAlignments } = require('./text_alignments.js');
 const Mesh = require('./mesh.js');
 const Circle = require('../utils/circle.js');
 const SpriteBatch = require('./sprite_batch.js');
@@ -6254,7 +6254,7 @@ class Gfx extends IManager
 
 // export main object
 module.exports = new Gfx();
-},{"../assets/font_texture_asset.js":4,"../assets/msdf_font_texture_asset.js":7,"../assets/texture_asset.js":9,"../logger.js":44,"../manager.js":45,"../utils/circle.js":52,"../utils/color.js":53,"../utils/rectangle.js":60,"../utils/vector2.js":66,"../utils/vector3.js":67,"./blend_modes.js":22,"./camera.js":23,"./effects":26,"./matrix.js":30,"./mesh.js":31,"./mesh_generator.js":32,"./sprite.js":33,"./sprite_batch.js":34,"./sprites_group.js":35,"./text_alignment.js":36,"./texture_filter_modes.js":37,"./texture_wrap_modes.js":38,"./vertex":39}],29:[function(require,module,exports){
+},{"../assets/font_texture_asset.js":4,"../assets/msdf_font_texture_asset.js":7,"../assets/texture_asset.js":9,"../logger.js":44,"../manager.js":45,"../utils/circle.js":52,"../utils/color.js":53,"../utils/rectangle.js":60,"../utils/vector2.js":66,"../utils/vector3.js":67,"./blend_modes.js":22,"./camera.js":23,"./effects":26,"./matrix.js":30,"./mesh.js":31,"./mesh_generator.js":32,"./sprite.js":33,"./sprite_batch.js":34,"./sprites_group.js":35,"./text_alignments.js":36,"./texture_filter_modes.js":37,"./texture_wrap_modes.js":38,"./vertex":39}],29:[function(require,module,exports){
 /**
  * Just an alias to main manager so we can require() this folder as a package.
  * 
