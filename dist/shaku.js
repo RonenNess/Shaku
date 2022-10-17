@@ -4807,6 +4807,24 @@ class Gfx extends IManager
     }
 
     /**
+     * Get the text alignments options.
+     * This getter is deprecated, please use `TextAlignments` instead.
+     * * Left: align text to the left.
+     * * Right: align text to the right.
+     * * Center: align text to center.
+     * @deprecated
+     * @see TextAlignments
+     */
+    get TextAlignment()
+    {
+        if (!this._TextAlignment_dep) {
+            console.warn(`'gfx.TextAlignment' is deprecated and will be removed in future versions. Please use 'gfx.TextAlignments' instead.`);
+            this._TextAlignment_dep = true;
+        }
+        return TextAlignments;
+    }
+
+    /**
      * Create and return a new camera instance.
      * @param {Boolean} withViewport If true, will create camera with viewport value equal to canvas' size.
      * @returns {Camera} New camera object.

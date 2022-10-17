@@ -40,7 +40,7 @@ You can view the entire docs as a single file [here](shaku_full.md), or by topic
 * [Gfx: Sprite](gfx_sprite.md)
 * [Gfx: Sprite Batch](gfx_sprite_batch.md)
 * [Gfx: Sprites Group](gfx_sprites_group.md)
-* [Gfx: Text Alignment](gfx_text_alignment.md)
+* [Gfx: Text Alignments](gfx_text_alignments.md)
 * [Gfx: Texture Filter Modes](gfx_texture_filter_modes.md)
 * [Gfx: Texture Wrap Modes](gfx_texture_wrap_modes.md)
 * [Gfx: Vertex](gfx_vertex.md)

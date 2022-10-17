@@ -25,6 +25,7 @@ To access the Graphics manager you use `Shaku.gfx`.
     * [.Matrix](#Gfx+Matrix)
     * [.Vertex](#Gfx+Vertex)
     * [.TextAlignments](#Gfx+TextAlignments)
+    * ~~[.TextAlignment](#Gfx+TextAlignment)~~
     * [.BlendModes](#Gfx+BlendModes)
     * [.TextureWrapModes](#Gfx+TextureWrapModes)
     * [.TextureFilterModes](#Gfx+TextureFilterModes)
@@ -137,6 +138,19 @@ Get the vertex object.
 
 ### gfx.TextAlignments
 Get the text alignments options.
+* Left: align text to the left.
+* Right: align text to the right.
+* Center: align text to center.
+
+**Kind**: instance property of [<code>Gfx</code>](#Gfx)  
+**See**: TextAlignments  
+<a name="Gfx+TextAlignment"></a>
+
+### ~~gfx.TextAlignment~~
+***Deprecated***
+
+Get the text alignments options.
+This getter is deprecated, please use `TextAlignments` instead.
 * Left: align text to the left.
 * Right: align text to the right.
 * Center: align text to center.
