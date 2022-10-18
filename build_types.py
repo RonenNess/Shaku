@@ -92,3 +92,37 @@ with open("types/gfx/texture_filter_modes.d.ts", "w") as f:
     f.writelines(contents)
 
 ###########################
+
+# For some reason, adding "_values" with an Object.defineProperty breaks the declarations for UniformTypes
+# The generated declarations for UniformTypes do some funky stuff with object renaming so I'll hardcode the whole thing
+with open("types/gfx/effects/effect.d.ts", "r") as f:
+    contents = f.readlines()
+    insert_at_line = contents.index("declare namespace UniformTypes {\n") + 1
+
+for line in """
+    export const Texture: string;
+    const Matrix_1: string;
+    export { Matrix_1 as Matrix };
+    const Color_1: string;
+    export { Color_1 as Color };
+    export const Float: string;
+    export const FloatArray: string;
+    export const Int: string;
+    export const IntArray: string;
+    export const Float2: string;
+    export const Float2Array: string;
+    export const Int2: string;
+    export const Int2Array: string;
+    export const Float3: string;
+    export const Float3Array: string;
+    export const Int3: string;
+    export const Int3Array: string;
+    export const Float4: string;
+    export const Float4Array: string;
+    export const Int4: string;
+    export const Int4Array: string;""".split("\n")[1:]:
+    contents.insert(insert_at_line, line + "\n")
+    insert_at_line += 1
+
+with open("types/gfx/effects/effect.d.ts", "w") as f:
+    f.writelines(contents)
