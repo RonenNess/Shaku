@@ -127,35 +127,61 @@ declare class Effect {
     setColorsAttribute(buffer: WebGLBuffer): void;
 }
 declare namespace Effect {
-    export { UniformTypes };
-    export namespace UniformBinds {
-        export const MainTexture: string;
-        const Color_1: string;
-        export { Color_1 as Color };
-        export const Projection: string;
-        export const World: string;
-        export const UvOffset: string;
-        export const UvScale: string;
-    }
-    export namespace AttributeTypes {
-        const Byte: string;
-        const Short: string;
-        const UByte: string;
-        const UShort: string;
-        const Float: string;
-        const HalfFloat: string;
-    }
-    export namespace AttributeBinds {
-        const Position: string;
-        const TextureCoords: string;
-        const Colors: string;
-    }
+    export { UniformTypes, UniformBinds, AttributeTypes, AttributeBinds, UniformType };
 }
 import Matrix = require("../matrix.js");
 import TextureAsset = require("../../assets/texture_asset.js");
 import Color = require("../../utils/color.js");
 import Rectangle = require("../../utils/rectangle.js");
+/**
+ * Uniform types enum.
+ */
+type UniformTypes = UniformType;
 declare namespace UniformTypes {
+    export const Texture: string;
+    const Matrix_1: string;
+    export { Matrix_1 as Matrix };
+    const Color_1: string;
+    export { Color_1 as Color };
+    export const Float: string;
+    export const FloatArray: string;
+    export const Int: string;
+    export const IntArray: string;
+    export const Float2: string;
+    export const Float2Array: string;
+    export const Int2: string;
+    export const Int2Array: string;
+    export const Float3: string;
+    export const Float3Array: string;
+    export const Int3: string;
+    export const Int3Array: string;
+    export const Float4: string;
+    export const Float4Array: string;
+    export const Int4: string;
+    export const Int4Array: string;
     const _values: any;
 }
+declare namespace UniformBinds {
+    export const MainTexture: string;
+    const Color_1: string;
+    export { Color_1 as Color };
+    export const Projection: string;
+    export const World: string;
+    export const UvOffset: string;
+    export const UvScale: string;
+}
+declare namespace AttributeTypes {
+    const Byte: string;
+    const Short: string;
+    const UByte: string;
+    const UShort: string;
+    const Float: string;
+    const HalfFloat: string;
+}
+declare namespace AttributeBinds {
+    const Position: string;
+    const TextureCoords: string;
+    const Colors: string;
+}
+type UniformType = string;
 //# sourceMappingURL=effect.d.ts.map

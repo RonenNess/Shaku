@@ -133,6 +133,21 @@ declare class Gfx extends IManager {
         Center: string;
     };
     /**
+     * Get the text alignments options.
+     * This getter is deprecated, please use `TextAlignments` instead.
+     * * Left: align text to the left.
+     * * Right: align text to the right.
+     * * Center: align text to center.
+     * @deprecated
+     * @see TextAlignments
+     */
+    get TextAlignment(): {
+        Left: string;
+        Right: string;
+        Center: string;
+    };
+    _TextAlignment_dep: boolean;
+    /**
      * Create and return a new camera instance.
      * @param {Boolean} withViewport If true, will create camera with viewport value equal to canvas' size.
      * @returns {Camera} New camera object.
@@ -628,7 +643,7 @@ import Vertex = require("./vertex");
 import Vector2 = require("../utils/vector2.js");
 import FontTextureAsset = require("../assets/font_texture_asset.js");
 import Color = require("../utils/color.js");
-import { TextAlignment } from "./text_alignment.js";
+import { TextAlignment } from "./text_alignments.js";
 import { BlendMode } from "./blend_modes.js";
 import Vector3 = require("../utils/vector3.js");
 import Circle = require("../utils/circle.js");

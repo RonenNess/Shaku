@@ -51,6 +51,12 @@ declare const _exports: {
         Right: string;
         Center: string;
     };
+    readonly TextAlignment: {
+        Left: string;
+        Right: string;
+        Center: string;
+    };
+    _TextAlignment_dep: boolean;
     createCamera(withViewport: boolean): import("./camera");
     setCameraOrthographic(offset: import("../utils/vector2")): import("./camera");
     createEffect(type: Class): typeof import("./effects/effect");

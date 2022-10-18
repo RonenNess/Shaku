@@ -4364,9 +4364,12 @@ function compileShader(gl, code, type)
     return shader;
 }
 
+/** @typedef {String} UniformType */
 
 /**
  * Uniform types enum.
+ * @readonly
+ * @enum {UniformType}
  */
 const UniformTypes = 
 {

@@ -123,6 +123,12 @@ declare class Shaku {
             Right: string;
             Center: string;
         };
+        readonly TextAlignment: {
+            Left: string;
+            Right: string;
+            Center: string;
+        };
+        _TextAlignment_dep: boolean;
         createCamera(withViewport: boolean): import("./gfx/camera");
         setCameraOrthographic(offset: import("./utils/vector2")): import("./gfx/camera");
         createEffect(type: Class): typeof import("./gfx/effects/effect");

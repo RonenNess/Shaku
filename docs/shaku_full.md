@@ -216,6 +216,8 @@ Can also perform transformations inheritance, where we combine local with parent
 <dl>
 <dt><a href="#BlendMode">BlendMode</a> : <code>String</code></dt>
 <dd></dd>
+<dt><a href="#UniformType">UniformType</a> : <code>String</code></dt>
+<dd></dd>
 <dt><a href="#TextAlignment">TextAlignment</a> : <code>String</code></dt>
 <dd></dd>
 <dt><a href="#TextureFilterMode">TextureFilterMode</a> : <code>String</code></dt>
@@ -8018,6 +8020,10 @@ Create vector from a dictionary.
 <a name="BlendMode"></a>
 
 ## BlendMode : <code>String</code>
+**Kind**: global typedef  
+<a name="UniformType"></a>
+
+## UniformType : <code>String</code>
 **Kind**: global typedef  
 <a name="TextAlignment"></a>
 
