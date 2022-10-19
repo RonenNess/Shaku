@@ -2026,6 +2026,7 @@ Special thanks to [knexator](https://github.com/knexator) for adding TypeScript 
 - Added `sourceRectOffsetAdjustment` param to font assets.
 - Added TypeScript Declarations [details here](https://github.com/RonenNess/Shaku/pull/3).
 - Renamed `TextAlignment` enum (old name still works with a deprecation warning).
+- Added Shaku + Three.js demo.
 
 # License
 
