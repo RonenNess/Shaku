@@ -26,7 +26,7 @@ This object wraps the entire lib namespace, and this is what you use to access a
     * [.isPaused](#Shaku+isPaused)
     * [.gameTime](#Shaku+gameTime) ⇒ <code>GameTime</code>
     * [.version](#Shaku+version) ⇒ <code>String</code>
-    * [.init(managers)](#Shaku+init) ⇒ <code>Promise</code>
+    * [.init([managers])](#Shaku+init) ⇒ <code>Promise</code>
     * [.destroy()](#Shaku+destroy)
     * [.startFrame()](#Shaku+startFrame)
     * [.endFrame()](#Shaku+endFrame)
@@ -123,7 +123,7 @@ Get Shaku's version.
 **Returns**: <code>String</code> - Shaku's version.  
 <a name="Shaku+init"></a>
 
-### shaku.init(managers) ⇒ <code>Promise</code>
+### shaku.init([managers]) ⇒ <code>Promise</code>
 Method to select managers to use + initialize them.
 
 **Kind**: instance method of [<code>Shaku</code>](#Shaku)  
@@ -131,7 +131,7 @@ Method to select managers to use + initialize them.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| managers | <code>Array.&lt;IManager&gt;</code> \| <code>null</code> | Array with list of managers to use or null to use all. |
+| [managers] | <code>Array.&lt;IManager&gt;</code> | Array with list of managers to use or null to use all. |
 
 <a name="Shaku+destroy"></a>
 

@@ -55,7 +55,7 @@
 
   // did we get game over?
   let gameOver = false;
-  let gameOverTextGroup = Shaku.gfx.buildText(fontTexture, "Game Over!\nPress 'Space' to restart.", 64, Shaku.utils.Color.white, Shaku.gfx.TextAlignment.Center);
+  let gameOverTextGroup = Shaku.gfx.buildText(fontTexture, "Game Over!\nPress 'Space' to restart.", 64, Shaku.utils.Color.white, Shaku.gfx.TextAlignments.Center);
   gameOverTextGroup.position.set(screenX / 2, screenY / 2 - 32);
 
   // generate food position
@@ -161,7 +161,7 @@
     }
 
     // draw score
-    let scoreTextGroup = Shaku.gfx.buildText(fontTexture, "Score: " + snake.length, 20, Shaku.utils.Color.white, Shaku.gfx.TextAlignment.Left);
+    let scoreTextGroup = Shaku.gfx.buildText(fontTexture, "Score: " + snake.length, 20, Shaku.utils.Color.white, Shaku.gfx.TextAlignments.Left);
     scoreTextGroup.position.set(5, 18);
     Shaku.gfx.drawGroup(scoreTextGroup);
 

@@ -48,25 +48,25 @@
           let text1 = Shaku.gfx.buildText(fontTexture, "Hello World!");
           text1.position.set(40, 40);
 
-          let text2 = Shaku.gfx.buildText(fontTexture, "Rotating", 32, Shaku.utils.Color.red, Shaku.gfx.TextAlignment.Center);
+          let text2 = Shaku.gfx.buildText(fontTexture, "Rotating", 32, Shaku.utils.Color.red, Shaku.gfx.TextAlignments.Center);
           text2.position.set(130, 170);
 
-          let text3 = Shaku.gfx.buildText(fontTexture, "Flipping", 32, Shaku.utils.Color.red, Shaku.gfx.TextAlignment.Center);
+          let text3 = Shaku.gfx.buildText(fontTexture, "Flipping", 32, Shaku.utils.Color.red, Shaku.gfx.TextAlignments.Center);
           text3.position.set(330, 170);
 
-          let text4 = Shaku.gfx.buildText(fontTexture, "Wavy & Funky!", 32, Shaku.utils.Color.white, Shaku.gfx.TextAlignment.Center);
+          let text4 = Shaku.gfx.buildText(fontTexture, "Wavy & Funky!", 32, Shaku.utils.Color.white, Shaku.gfx.TextAlignments.Center);
           text4.position.set(600, 170);
 
-          let text5 = Shaku.gfx.buildText(fontTexture, "This is a multiline text..\nAligned left.", 24, Shaku.utils.Color.white, Shaku.gfx.TextAlignment.Left);
+          let text5 = Shaku.gfx.buildText(fontTexture, "This is a multiline text..\nAligned left.", 24, Shaku.utils.Color.white, Shaku.gfx.TextAlignments.Left);
           text5.position.set(screenX / 2, 250);
 
-          let text6 = Shaku.gfx.buildText(fontTexture, "This is a multiline text..\nAligned right.", 24, Shaku.utils.Color.white, Shaku.gfx.TextAlignment.Right);
+          let text6 = Shaku.gfx.buildText(fontTexture, "This is a multiline text..\nAligned right.", 24, Shaku.utils.Color.white, Shaku.gfx.TextAlignments.Right);
           text6.position.set(screenX / 2, 350);
 
-          let text7 = Shaku.gfx.buildText(fontTexture, "This is a multiline text..\nAligned center.", 24, Shaku.utils.Color.white, Shaku.gfx.TextAlignment.Center);
+          let text7 = Shaku.gfx.buildText(fontTexture, "This is a multiline text..\nAligned center.", 24, Shaku.utils.Color.white, Shaku.gfx.TextAlignments.Center);
           text7.position.set(screenX / 2, 450);
 
-          let text8 = Shaku.gfx.buildText(fontTexture, "Larger spacing", 24, Shaku.utils.Color.brown, Shaku.gfx.TextAlignment.Center, null, new Shaku.utils.Vector2(2.5, 1));
+          let text8 = Shaku.gfx.buildText(fontTexture, "Larger spacing", 24, Shaku.utils.Color.brown, Shaku.gfx.TextAlignments.Center, null, new Shaku.utils.Vector2(2.5, 1));
           text8.position.set(screenX / 2, 550);
 
           // do a main loop step.
@@ -122,7 +122,7 @@
 let fontTexture = await Shaku.assets.loadMsdfFontTexture('assets/DejaVuSansMono.ttf', {jsonUrl: 'assets/DejaVuSansMono.json', textureUrl: 'assets/DejaVuSansMono.png'});
 
 // generate text
-let textGroup = Shaku.gfx.buildText(fontTexture, "This is a multiline text..\nAligned left.", 24, Shaku.utils.Color.white, Shaku.gfx.TextAlignment.Left);
+let textGroup = Shaku.gfx.buildText(fontTexture, "This is a multiline text..\nAligned left.", 24, Shaku.utils.Color.white, Shaku.gfx.TextAlignments.Left);
 textGroup.position.set(100, 100);
 
 // part below goes between startFrame() and endFrame()

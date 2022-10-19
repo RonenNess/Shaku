@@ -13,20 +13,19 @@ An effect = vertex shader + fragment shader + uniforms &amp; attributes + setup 
 </dd>
 </dl>
 
-## Constants
-
-<dl>
-<dt><a href="#UniformTypes">UniformTypes</a></dt>
-<dd><p>Uniform types enum.</p>
-</dd>
-</dl>
-
 ## Functions
 
 <dl>
 <dt><a href="#compileShader">compileShader()</a></dt>
 <dd><p>Build a shader.</p>
 </dd>
+</dl>
+
+## Typedefs
+
+<dl>
+<dt><a href="#UniformType">UniformType</a> : <code>String</code></dt>
+<dd></dd>
 </dl>
 
 <a name="Effect"></a>
@@ -238,13 +237,42 @@ Only works if there's an attribute type bound to 'Colors'.
 
 <a name="UniformTypes"></a>
 
-## UniformTypes
+## UniformTypes : <code>enum</code>
 Uniform types enum.
 
-**Kind**: global constant  
+**Kind**: global enum  
+**Read only**: true  
+**Properties**
+
+| Name | Type | Default |
+| --- | --- | --- |
+| Texture | [<code>UniformType</code>](#UniformType) | <code>texture</code> | 
+| Matrix | [<code>UniformType</code>](#UniformType) | <code>uniformMatrix4fv</code> | 
+| Color | [<code>UniformType</code>](#UniformType) | <code>uniform4fv</code> | 
+| Float | [<code>UniformType</code>](#UniformType) | <code>uniform1f</code> | 
+| FloatArray | [<code>UniformType</code>](#UniformType) | <code>uniform1fv</code> | 
+| Int | [<code>UniformType</code>](#UniformType) | <code>uniform1i</code> | 
+| IntArray | [<code>UniformType</code>](#UniformType) | <code>uniform1iv</code> | 
+| Float2 | [<code>UniformType</code>](#UniformType) | <code>uniform2f</code> | 
+| Float2Array | [<code>UniformType</code>](#UniformType) | <code>uniform2fv</code> | 
+| Int2 | [<code>UniformType</code>](#UniformType) | <code>uniform2i</code> | 
+| Int2Array | [<code>UniformType</code>](#UniformType) | <code>uniform2iv</code> | 
+| Float3 | [<code>UniformType</code>](#UniformType) | <code>uniform3f</code> | 
+| Float3Array | [<code>UniformType</code>](#UniformType) | <code>uniform3fv</code> | 
+| Int3 | [<code>UniformType</code>](#UniformType) | <code>uniform3i</code> | 
+| Int3Array | [<code>UniformType</code>](#UniformType) | <code>uniform3iv</code> | 
+| Float4 | [<code>UniformType</code>](#UniformType) | <code>uniform4f</code> | 
+| Float4Array | [<code>UniformType</code>](#UniformType) | <code>uniform4fv</code> | 
+| Int4 | [<code>UniformType</code>](#UniformType) | <code>uniform4i</code> | 
+| Int4Array | [<code>UniformType</code>](#UniformType) | <code>uniform4iv</code> | 
+
 <a name="compileShader"></a>
 
 ## compileShader()
 Build a shader.
 
 **Kind**: global function  
+<a name="UniformType"></a>
+
+## UniformType : <code>String</code>
+**Kind**: global typedef  

@@ -442,10 +442,10 @@ class Assets extends IManager
      * let width = 512;
      * let height = 512;
      * let renderTarget = await Shaku.assets.createRenderTarget("optional_render_target_asset_id", width, height);
-     * @param {String} name Asset name (matched to URLs when using cache). If null, will not add to cache.
+     * @param {String | null} name Asset name (matched to URLs when using cache). If null, will not add to cache.
      * @param {Number} width Texture width.
      * @param {Number} height Texture height.
-     * @param {Number} channels Texture channels count. Defaults to 4 (RGBA).
+     * @param {Number=} channels Texture channels count. Defaults to 4 (RGBA).
      * @returns {Promise<TextureAsset>} promise to resolve with asset instance, when loaded. You can access the loading asset with `.asset` on the promise.
      */
     createRenderTarget(name, width, height, channels)
@@ -1432,8 +1432,8 @@ module.exports = SoundAsset;
  */
 'use strict';
 const Asset = require("./asset");
-const TextureFilterModes = require('../gfx/texture_filter_modes');
-const TextureWrapModes = require('../gfx/texture_wrap_modes');
+const {TextureFilterMode, TextureFilterModes} = require('../gfx/texture_filter_modes');
+const {TextureWrapMode, TextureWrapModes} = require('../gfx/texture_wrap_modes');
 const Color = require('../utils/color');
 const Vector2 = require("../utils/vector2");
 const _logger = require('../logger.js').getLogger('assets');
@@ -1482,7 +1482,7 @@ class TextureAsset extends Asset
     /**
      * Set texture magnifying filter.
      * @see Shaku.gfx.TextureFilterModes 
-     * @param {TextureFilterModes} value Filter mode to use or null to use default.
+     * @param {TextureFilterMode} value Filter mode to use or null to use default.
      */
     set filter(value)
     {
@@ -1501,7 +1501,7 @@ class TextureAsset extends Asset
     /**
      * Set texture wrapping mode.
      * @see Shaku.gfx.TextureWrapModes
-     * @param {TextureWrapModes} value Wrapping mode to use or null to use default.
+     * @param {TextureWrapMode} value Wrapping mode to use or null to use default.
      */
     set wrapMode(value)
     {
@@ -3674,9 +3674,12 @@ module.exports = TilemapShape;
  */
 'use strict';
 
+/** @typedef {String} BlendMode */
 
 /**
  * Blend modes we can draw with, determine how we blend new draws with existing buffer.
+ * @readonly
+ * @enum {BlendMode}
  */
 const BlendModes = {
     AlphaBlend: "alpha",
@@ -3698,7 +3701,7 @@ Object.defineProperty(BlendModes, '_values', {
 });
 Object.freeze(BlendModes);
 
-module.exports = BlendModes;
+module.exports = {BlendModes: BlendModes};
 },{}],23:[function(require,module,exports){
 /**
  * Camera class.
@@ -3926,8 +3929,8 @@ module.exports = BasicEffect;
 const TextureAsset = require('../../assets/texture_asset.js');
 const Color = require('../../utils/color.js');
 const Rectangle = require('../../utils/rectangle.js');
-const TextureFilterModes = require('../texture_filter_modes');
-const TextureWrapModes = require('../texture_wrap_modes');
+const { TextureFilterMode, TextureFilterModes } = require('../texture_filter_modes');
+const { TextureWrapMode, TextureWrapModes } = require('../texture_wrap_modes');
 const Matrix = require('../matrix.js');
 const _logger = require('../../logger.js').getLogger('gfx-effect');
 
@@ -4361,9 +4364,12 @@ function compileShader(gl, code, type)
     return shader;
 }
 
+/** @typedef {String} UniformType */
 
 /**
  * Uniform types enum.
+ * @readonly
+ * @enum {UniformType}
  */
 const UniformTypes = 
 {
@@ -4451,14 +4457,14 @@ function _setTextureFilter(gl, filter)
 /**
  * Set texture wrap mode on X and Y axis.
  * @private
- * @param {WrapModes} wrapX Wrap mode on X axis.
- * @param {WrapModes} wrapY Wrap mode on Y axis.
+ * @param {TextureWrapMode} wrapX Wrap mode on X axis.
+ * @param {TextureWrapMode} wrapY Wrap mode on Y axis.
  */
  function _setTextureWrapMode(gl, wrapX, wrapY)
 {
     if (wrapY === undefined) { wrapY = wrapX; }
-    if (!TextureWrapModes._values.has(wrapX)) { throw new Error("Invalid texture wrap mode! Please pick a value from 'WrapModes'."); }
-    if (!TextureWrapModes._values.has(wrapY)) { throw new Error("Invalid texture wrap mode! Please pick a value from 'WrapModes'."); }
+    if (!TextureWrapModes._values.has(wrapX)) { throw new Error("Invalid texture wrap mode! Please pick a value from 'TextureWrapModes'."); }
+    if (!TextureWrapModes._values.has(wrapY)) { throw new Error("Invalid texture wrap mode! Please pick a value from 'TextureWrapModes'."); }
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl[wrapX]);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl[wrapY]);
 }
@@ -4603,12 +4609,12 @@ module.exports = MsdfFontEffect;
 'use strict';
 const IManager = require('../manager.js');
 const Color = require('../utils/color.js');
-const BlendModes = require('./blend_modes.js');
+const { BlendMode, BlendModes } = require('./blend_modes.js');
 const Rectangle = require('../utils/rectangle.js');
 const { Effect, BasicEffect, MsdfFontEffect } = require('./effects');
 const TextureAsset = require('../assets/texture_asset.js');
-const TextureFilterModes = require('./texture_filter_modes.js');
-const TextureWrapModes = require('./texture_wrap_modes.js');
+const { TextureFilterMode, TextureFilterModes } = require('./texture_filter_modes.js');
+const { TextureWrapMode, TextureWrapModes } = require('./texture_wrap_modes.js');
 const MeshGenerator = require('./mesh_generator.js');
 const Matrix = require('./matrix.js');
 const Camera = require('./camera.js');
@@ -4617,7 +4623,7 @@ const SpritesGroup = require('./sprites_group.js');
 const Vector2 = require('../utils/vector2.js');
 const FontTextureAsset = require('../assets/font_texture_asset.js');
 const MsdfFontTextureAsset = require('../assets/msdf_font_texture_asset.js');
-const TextAlignment = require('./text_alignment.js');
+const { TextAlignment, TextAlignments } = require('./text_alignments.js');
 const Mesh = require('./mesh.js');
 const Circle = require('../utils/circle.js');
 const SpriteBatch = require('./sprite_batch.js');
@@ -4796,11 +4802,29 @@ class Gfx extends IManager
      * * Left: align text to the left.
      * * Right: align text to the right.
      * * Center: align text to center.
-     * @see TextAlignment
+     * @see TextAlignments
+     */
+    get TextAlignments()
+    {
+        return TextAlignments;
+    }
+
+    /**
+     * Get the text alignments options.
+     * This getter is deprecated, please use `TextAlignments` instead.
+     * * Left: align text to the left.
+     * * Right: align text to the right.
+     * * Center: align text to center.
+     * @deprecated
+     * @see TextAlignments
      */
     get TextAlignment()
     {
-        return TextAlignment;
+        if (!this._TextAlignment_dep) {
+            console.warn(`'gfx.TextAlignment' is deprecated and will be removed in future versions. Please use 'gfx.TextAlignments' instead.`);
+            this._TextAlignment_dep = true;
+        }
+        return TextAlignments;
     }
 
     /**
@@ -4896,8 +4920,8 @@ class Gfx extends IManager
      * // note the negative height - render targets end up with flipped Y axis
      * Shaku.gfx.setRenderTarget(null);
      * Shaku.gfx.draw(renderTarget, new Shaku.utils.Vector2(screenX / 2, screenY / 2), new Shaku.utils.Vector2(screenX, -screenY));
-     * @param {TextureAsset|Array<TextureAsset>} texture Render target texture to set as render target, or null to reset and render back on canvas. Can also be array for multiple targets, which will take layouts 0-15 by their order.
-     * @param {Boolean} keepCamera If true, will keep current camera settings. If false (default) will reset camera.
+     * @param {TextureAsset|Array<TextureAsset>|null} texture Render target texture to set as render target, or null to reset and render back on canvas. Can also be array for multiple targets, which will take layouts 0-15 by their order.
+     * @param {Boolean=} keepCamera If true, will keep current camera settings. If false (default) will reset camera.
      */
     setRenderTarget(texture, keepCamera)
     {
@@ -5216,7 +5240,7 @@ class Gfx extends IManager
         }
 
         // default alignment
-        alignment = alignment || TextAlignment.Left;
+        alignment = alignment || TextAlignments.Left;
 
         // default color
         color = color || Color.black;
@@ -5244,11 +5268,11 @@ class Gfx extends IManager
             let offsetX = 0;
             switch (alignment) {
 
-                case TextAlignment.Right:
+                case TextAlignments.Right:
                     offsetX = -lineWidth;
                     break;
 
-                case TextAlignment.Center:
+                case TextAlignments.Center:
                     offsetX = -lineWidth / 2;
                     break;
 
@@ -5406,9 +5430,9 @@ class Gfx extends IManager
      * Shaku.gfx.draw(texture, position, size, sourceRect, color, blendMode, rotation, origin);
      * @param {TextureAsset} texture Texture to draw.
      * @param {Rectangle|Vector2} destRect Destination rectangle to draw on. If vector is provided, will draw from 0,0 with vector as size.
-     * @param {Rectangle} sourceRect Source rectangle, or undefined to use the entire texture.
-     * @param {Color|Array<Color>} color Tint color, or undefined to not change color. If array is set, will assign each color to different vertex, starting from top-left.
-     * @param {BlendModes} blendMode Blend mode, or undefined to use alpha blend.
+     * @param {Rectangle=} sourceRect Source rectangle, or undefined to use the entire texture.
+     * @param {Color|Array<Color>|undefined} color Tint color, or undefined to not change color. If array is set, will assign each color to different vertex, starting from top-left.
+     * @param {BlendMode=} blendMode Blend mode, or undefined to use alpha blend.
      */
     cover(texture, destRect, sourceRect, color, blendMode)
     {
@@ -5438,11 +5462,11 @@ class Gfx extends IManager
      * @param {Vector2|Vector3} position Drawing position (at origin). If vector3 is provided, will pass z value to the shader code position attribute.
      * @param {Vector2|Vector3|Number} size Drawing size. If vector3 is provided, will pass z value to the shader code position attribute for the bottom vertices, as position.z + size.z.
      * @param {Rectangle} sourceRect Source rectangle, or undefined to use the entire texture.
-     * @param {Color|Array<Color>} color Tint color, or undefined to not change color. If array is set, will assign each color to different vertex, starting from top-left.
-     * @param {BlendModes} blendMode Blend mode, or undefined to use alpha blend.
-     * @param {Number} rotation Rotate sprite.
-     * @param {Vector2} origin Drawing origin. This will be the point at 'position' and rotation origin.
-     * @param {Vector2} skew Skew the drawing corners on X and Y axis, around the origin point.
+     * @param {Color|Array<Color>|undefined} color Tint color, or undefined to not change color. If array is set, will assign each color to different vertex, starting from top-left.
+     * @param {BlendMode=} blendMode Blend mode, or undefined to use alpha blend.
+     * @param {Number=} rotation Rotate sprite.
+     * @param {Vector2=} origin Drawing origin. This will be the point at 'position' and rotation origin.
+     * @param {Vector2=} skew Skew the drawing corners on X and Y axis, around the origin point.
      */
     draw(texture, position, size, sourceRect, color, blendMode, rotation, origin, skew)
     {
@@ -5461,7 +5485,7 @@ class Gfx extends IManager
      * Draw a textured quad from vertices.
      * @param {TextureAsset} texture Texture to draw.
      * @param {Array<Vertex>} vertices Quad vertices to draw (should be: top-left, top-right, bottom-left, bottom-right).
-     * @param {BlendModes} blendMode Blend mode to set.
+     * @param {BlendMode=} blendMode Blend mode to set.
      */
     drawQuadFromVertices(texture, vertices, blendMode)
     {
@@ -5479,8 +5503,8 @@ class Gfx extends IManager
      * Shaku.gfx.fillRect(new Shaku.utils.Rectangle(100, 100, 50, 50), Shaku.utils.Color.red, null, Shaku.gameTime.elapsed);
      * @param {Rectangle} destRect Rectangle to fill.
      * @param {Color|Array<Color>} color Rectangle fill color.
-     * @param {BlendModes} blend Blend mode.
-     * @param {Number} rotation Rotate the rectangle around its center.
+     * @param {BlendMode=} blend Blend mode.
+     * @param {Number=} rotation Rotate the rectangle around its center.
      */
     fillRect(destRect, color, blend, rotation)
     {
@@ -5496,8 +5520,8 @@ class Gfx extends IManager
      * Shaku.gfx.fillRects([new Shaku.utils.Rectangle(100, 100, 50, 50), new Shaku.utils.Rectangle(150, 150, 25, 25)], Shaku.utils.Color.red, null, Shaku.gameTime.elapsed);
      * @param {Array<Rectangle>} destRects Rectangles to fill.
      * @param {Array<Color>|Color} colors Rectangles fill color. If array is set, will assign each color to different vertex, starting from top-left.
-     * @param {BlendModes} blend Blend mode.
-     * @param {Array<Number>|Number} rotation Rotate the rectangles around its center.
+     * @param {BlendMode=} blend Blend mode.
+     * @param {(Array<Number>|Number)=} rotation Rotate the rectangles around its center.
      */
     fillRects(destRects, colors, blend, rotation)
     {
@@ -5527,7 +5551,7 @@ class Gfx extends IManager
      * Shaku.gfx.outlineRect(new Shaku.utils.Rectangle(100, 100, 50, 50), Shaku.utils.Color.red, null, Shaku.gameTime.elapsed);
      * @param {Rectangle} destRect Rectangle to draw outline for.
      * @param {Color} color Rectangle outline color.
-     * @param {BlendModes=} blend Blend mode.
+     * @param {BlendMode=} blend Blend mode.
      * @param {Number=} rotation Rotate the rectangle around its center.
      */
     outlineRect(destRect, color, blend, rotation)
@@ -5580,8 +5604,8 @@ class Gfx extends IManager
      * Shaku.gfx.outlineCircle(new Shaku.utils.Circle(new Shaku.utils.Vector2(50, 50), 85), Shaku.utils.Color.red);
      * @param {Circle} circle Circle to draw.
      * @param {Color} color Circle outline color.
-     * @param {BlendModes} blend Blend mode.
-     * @param {Number} lineAmount How many lines to compose the circle from (bigger number = smoother circle).
+     * @param {BlendMode=} blend Blend mode.
+     * @param {Number=} lineAmount How many lines to compose the circle from (bigger number = smoother circle).
      */
     outlineCircle(circle, color, blend, lineAmount)
     {
@@ -5610,8 +5634,8 @@ class Gfx extends IManager
      * Shaku.gfx.fillCircle(new Shaku.utils.Circle(new Shaku.utils.Vector2(50, 50), 85), Shaku.utils.Color.red);
      * @param {Circle} circle Circle to draw.
      * @param {Color} color Circle fill color.
-     * @param {BlendModes} blend Blend mode.
-     * @param {Number} lineAmount How many lines to compose the circle from (bigger number = smoother circle).
+     * @param {BlendMode=} blend Blend mode.
+     * @param {Number=} lineAmount How many lines to compose the circle from (bigger number = smoother circle).
      */
     fillCircle(circle, color, blend, lineAmount)
     {
@@ -5644,8 +5668,8 @@ class Gfx extends IManager
      * Shaku.gfx.fillCircles([new Shaku.utils.Circle(new Shaku.utils.Vector2(50, 50), 85), new Shaku.utils.Circle(new Shaku.utils.Vector2(150, 125), 35)], Shaku.utils.Color.red);
      * @param {Array<Circle>} circles Circles list to draw.
      * @param {Color|Array<Color>} colors Circles fill color or a single color for all circles.
-     * @param {BlendModes} blend Blend mode.
-     * @param {Number} lineAmount How many lines to compose the circle from (bigger number = smoother circle).
+     * @param {BlendMode=} blend Blend mode.
+     * @param {Number=} lineAmount How many lines to compose the circle from (bigger number = smoother circle).
      */
     fillCircles(circles, colors, blend, lineAmount)
     {
@@ -5700,7 +5724,7 @@ class Gfx extends IManager
      * @param {Vector2} startPoint Line start point.
      * @param {Vector2} endPoint Line end point.
      * @param {Color} color Line color.
-     * @param {BlendModes} blendMode Blend mode to draw lines with (default to Opaque).
+     * @param {BlendMode=} blendMode Blend mode to draw lines with (default to Opaque).
      */
     drawLine(startPoint, endPoint, color, blendMode)
     {
@@ -5715,8 +5739,8 @@ class Gfx extends IManager
      * Shaku.gfx.drawLinesStrip(lines, colors);
      * @param {Array<Vector2>} points Points to draw line between.
      * @param {Color|Array<Color>} colors Single lines color if you want one color for all lines, or an array of colors per segment.
-     * @param {BlendModes} blendMode Blend mode to draw lines with (default to Opaque).
-     * @param {Boolean} looped If true, will also draw a line from last point back to first point.
+     * @param {BlendMode=} blendMode Blend mode to draw lines with (default to Opaque).
+     * @param {Boolean=} looped If true, will also draw a line from last point back to first point.
      */
     drawLinesStrip(points, colors, blendMode, looped)
     {
@@ -5748,7 +5772,7 @@ class Gfx extends IManager
      * Shaku.gfx.drawLines(lines, colors);
      * @param {Array<Vector2>} points Points to draw line between.
      * @param {Color|Array<Color>} colors Single lines color if you want one color for all lines, or an array of colors per segment.
-     * @param {BlendModes} blendMode Blend mode to draw lines with (default to Opaque).
+     * @param {BlendMode=} blendMode Blend mode to draw lines with (default to Opaque).
      */
     drawLines(points, colors, blendMode)
     {
@@ -5766,7 +5790,7 @@ class Gfx extends IManager
      * Shaku.gfx.drawPoint(new Shaku.utils.Vector2(50,50), Shaku.utils.Color.random());
      * @param {Vector2} point Point to draw.
      * @param {Color} color Point color.
-     * @param {BlendModes} blendMode Blend mode to draw point with (default to Opaque).
+     * @param {BlendMode=} blendMode Blend mode to draw point with (default to Opaque).
      */
     drawPoint(point, color, blendMode)
     {
@@ -5781,7 +5805,7 @@ class Gfx extends IManager
      * Shaku.gfx.drawPoints(points, colors);
      * @param {Array<Vector2>} points Points to draw.
      * @param {Color|Array<Color>} colors Single color if you want one color for all points, or an array of colors per point.
-     * @param {BlendModes} blendMode Blend mode to draw points with (default to Opaque).
+     * @param {BlendMode=} blendMode Blend mode to draw points with (default to Opaque).
      */
     drawPoints(points, colors, blendMode)
     {
@@ -6048,7 +6072,7 @@ class Gfx extends IManager
      * Clear screen to a given color.
      * @example
      * Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
-     * @param {Color} color Color to clear screen to, or black if not set.
+     * @param {Color=} color Color to clear screen to, or black if not set.
      */
     clear(color)
     {
@@ -6061,7 +6085,7 @@ class Gfx extends IManager
     /**
      * Set texture mag and min filters.
      * @private
-     * @param {TextureFilterModes} filter Texture filter to set.
+     * @param {TextureFilterMode} filter Texture filter to set.
      */
     _setTextureFilter(filter)
     {
@@ -6074,14 +6098,14 @@ class Gfx extends IManager
     /**
      * Set texture wrap mode on X and Y axis.
      * @private
-     * @param {WrapModes} wrapX Wrap mode on X axis.
-     * @param {WrapModes} wrapY Wrap mode on Y axis.
+     * @param {TextureWrapMode} wrapX Wrap mode on X axis.
+     * @param {TextureWrapMode} wrapY Wrap mode on Y axis.
      */
     _setTextureWrapMode(wrapX, wrapY)
     {
         if (wrapY === undefined) { wrapY = wrapX; }
-        if (!TextureWrapModes._values.has(wrapX)) { throw new Error("Invalid texture wrap mode! Please pick a value from 'WrapModes'."); }
-        if (!TextureWrapModes._values.has(wrapY)) { throw new Error("Invalid texture wrap mode! Please pick a value from 'WrapModes'."); }
+        if (!TextureWrapModes._values.has(wrapX)) { throw new Error("Invalid texture wrap mode! Please pick a value from 'TextureWrapModes'."); }
+        if (!TextureWrapModes._values.has(wrapY)) { throw new Error("Invalid texture wrap mode! Please pick a value from 'TextureWrapModes'."); }
         this._gl.texParameteri(this._gl.TEXTURE_2D, this._gl.TEXTURE_WRAP_S, this._gl[wrapX]);
         this._gl.texParameteri(this._gl.TEXTURE_2D, this._gl.TEXTURE_WRAP_T, this._gl[wrapY]);
     }
@@ -6089,7 +6113,7 @@ class Gfx extends IManager
     /**
      * Set blend mode before drawing.
      * @private
-     * @param {BlendModes} blendMode New blend mode to set.
+     * @param {BlendMode} blendMode New blend mode to set.
      */
     _setBlendMode(blendMode)
     {
@@ -6251,7 +6275,7 @@ class Gfx extends IManager
 
 // export main object
 module.exports = new Gfx();
-},{"../assets/font_texture_asset.js":4,"../assets/msdf_font_texture_asset.js":7,"../assets/texture_asset.js":9,"../logger.js":44,"../manager.js":45,"../utils/circle.js":52,"../utils/color.js":53,"../utils/rectangle.js":60,"../utils/vector2.js":66,"../utils/vector3.js":67,"./blend_modes.js":22,"./camera.js":23,"./effects":26,"./matrix.js":30,"./mesh.js":31,"./mesh_generator.js":32,"./sprite.js":33,"./sprite_batch.js":34,"./sprites_group.js":35,"./text_alignment.js":36,"./texture_filter_modes.js":37,"./texture_wrap_modes.js":38,"./vertex":39}],29:[function(require,module,exports){
+},{"../assets/font_texture_asset.js":4,"../assets/msdf_font_texture_asset.js":7,"../assets/texture_asset.js":9,"../logger.js":44,"../manager.js":45,"../utils/circle.js":52,"../utils/color.js":53,"../utils/rectangle.js":60,"../utils/vector2.js":66,"../utils/vector3.js":67,"./blend_modes.js":22,"./camera.js":23,"./effects":26,"./matrix.js":30,"./mesh.js":31,"./mesh_generator.js":32,"./sprite.js":33,"./sprite_batch.js":34,"./sprites_group.js":35,"./text_alignments.js":36,"./texture_filter_modes.js":37,"./texture_wrap_modes.js":38,"./vertex":39}],29:[function(require,module,exports){
 /**
  * Just an alias to main manager so we can require() this folder as a package.
  * 
@@ -6811,7 +6835,7 @@ const Color = require("../utils/color");
 const Rectangle = require("../utils/rectangle");
 const Vector2 = require("../utils/vector2");
 const Vector3 = require("../utils/vector3");
-const BlendModes = require("./blend_modes");
+const {BlendMode, BlendModes} = require("./blend_modes");
 
 /**
  * Sprite class.
@@ -6870,7 +6894,7 @@ class Sprite
         /**
          * Sprite blend mode.
          * @name Sprite#blendMode
-         * @type {BlendModes}
+         * @type {BlendMode}
          */
         this.blendMode = BlendModes.AlphaBlend;
         
@@ -7033,7 +7057,7 @@ module.exports = Sprite;
 const { Rectangle, Color } = require('../utils');
 const Vector2 = require('../utils/vector2');
 const Vertex = require('./vertex');
-const BlendModes = require('./blend_modes');
+const { BlendModes } = require('./blend_modes');
 const Matrix = require('./matrix');
 const Mesh = require('./mesh');
 const _logger = require('../logger.js').getLogger('gfx');
@@ -7107,7 +7131,7 @@ class SpriteBatch
             this._gfx.useEffect(effect);
         }
         this._effect = this._gfx._activeEffect;
-        
+
         this._currBlend = BlendModes.AlphaBlend;
         this._currTexture = null;
         this._currBatchCount = 0;
@@ -7656,10 +7680,14 @@ module.exports = SpritesGroup;
  */
 'use strict';
 
+/** @typedef {String} TextAlignment */
+
 /**
  * Possible text alignments.
+ * @readonly
+ * @enum {TextAlignment}
  */
-const TextAlignment = {
+const TextAlignments = {
 
     /**
      * Align text left-to-right.
@@ -7677,8 +7705,8 @@ const TextAlignment = {
     Center: "center",
 };
 
-Object.freeze(TextAlignment);
-module.exports = TextAlignment;
+Object.freeze(TextAlignments);
+module.exports = {TextAlignments: TextAlignments};
 },{}],37:[function(require,module,exports){
 /**
  * Define possible texture filter modes.
@@ -7694,8 +7722,12 @@ module.exports = TextAlignment;
  */
  'use strict'; 
 
+/** @typedef {String} TextureFilterMode */
+
 /**
  * Texture filter modes, determine how to scale textures.
+ * @readonly
+ * @enum {TextureFilterMode}
  */
 const TextureFilterModes = {
     Nearest: "NEAREST",
@@ -7712,7 +7744,7 @@ Object.defineProperty(TextureFilterModes, '_values', {
 });
 
 Object.freeze(TextureFilterModes);
-module.exports = TextureFilterModes;
+module.exports = {TextureFilterModes: TextureFilterModes};
 
 },{}],38:[function(require,module,exports){
 /**
@@ -7729,8 +7761,12 @@ module.exports = TextureFilterModes;
  */
 'use strict';
 
+/** @typedef {String} TextureWrapMode */
+
 /**
  * Texture wrap modes, determine what to do when texture coordinates are outside texture boundaries.
+ * @readonly
+ * @enum {TextureWrapMode}
  */
 const TextureWrapModes = {
     Clamp: "CLAMP_TO_EDGE",
@@ -7744,7 +7780,7 @@ Object.defineProperty(TextureWrapModes, '_values', {
 });
 
 Object.freeze(TextureWrapModes);
-module.exports = TextureWrapModes;
+module.exports = {TextureWrapModes: TextureWrapModes};
 },{}],39:[function(require,module,exports){
 /**
  * Implement the gfx vertex container.
@@ -7872,7 +7908,7 @@ module.exports = require('./shaku');
 'use strict';
 const IManager = require('../manager.js');
 const Vector2 = require('../utils/vector2.js');
-const { MouseButtons, KeyboardKeys } = require('./key_codes.js');
+const { MouseButton, MouseButtons, KeyboardKey, KeyboardKeys } = require('./key_codes.js');
 const _logger = require('../logger.js').getLogger('input');
 
 
@@ -8013,13 +8049,18 @@ class Input extends IManager
     }
 
     /**
+     * @callback elementCallback
+     * @returns  {Element}
+     */
+
+    /**
      * Set the target element to attach input to. If not called, will just use the entire document.
      * Must be called *before* initializing Shaku. This can also be a method to invoke while initializing.
      * @example
      * // the following will use whatever canvas the gfx manager uses as input element.
      * // this means mouse offset will also be relative to this element.
      * Shaku.input.setTargetElement(() => Shaku.gfx.canvas);
-     * @param {Element} element Element to attach input to.
+     * @param {Element | elementCallback} element Element to attach input to.
      */
     setTargetElement(element)
     {
@@ -8092,7 +8133,7 @@ class Input extends IManager
 
     /**
      * Get if mouse button was pressed this frame.
-     * @param {MouseButtons} button Button code (defults to MouseButtons.left).
+     * @param {MouseButton} button Button code (defults to MouseButtons.left).
      * @returns {Boolean} True if mouse button is currently down, but was up in previous frame.
      */
     mousePressed(button = 0)
@@ -8103,7 +8144,7 @@ class Input extends IManager
 
     /**
      * Get if mouse button is currently pressed.
-     * @param {MouseButtons} button Button code (defults to MouseButtons.left).  
+     * @param {MouseButton} button Button code (defults to MouseButtons.left).  
      * @returns {Boolean} true if mouse button is currently down, false otherwise.
      */
     mouseDown(button = 0)
@@ -8114,7 +8155,7 @@ class Input extends IManager
 
     /**
      * Get if mouse button is currently not down.
-     * @param {MouseButtons} button Button code (defults to MouseButtons.left).
+     * @param {MouseButton} button Button code (defults to MouseButtons.left).
      * @returns {Boolean} true if mouse button is currently up, false otherwise.
      */
     mouseUp(button = 0)
@@ -8125,7 +8166,7 @@ class Input extends IManager
     
     /**
      * Get if mouse button was released in current frame.
-     * @param {MouseButtons} button Button code (defults to MouseButtons.left).
+     * @param {MouseButton} button Button code (defults to MouseButtons.left).
      * @returns {Boolean} True if mouse was down last frame, but released in current frame.
      */
     mouseReleased(button = 0)
@@ -8136,7 +8177,7 @@ class Input extends IManager
 
     /**
      * Get if keyboard key is currently pressed down.
-     * @param {KeyboardKeys} key Keyboard key code.
+     * @param {KeyboardKey} key Keyboard key code.
      * @returns {boolean} True if keyboard key is currently down, false otherwise.
      */
     keyDown(key)
@@ -8147,7 +8188,7 @@ class Input extends IManager
 
     /**
      * Get if keyboard key is currently not down.
-     * @param {KeyboardKeys} key Keyboard key code.
+     * @param {KeyboardKey} key Keyboard key code.
      * @returns {Boolean} True if keyboard key is currently up, false otherwise.
      */
     keyUp(key)
@@ -8158,7 +8199,7 @@ class Input extends IManager
 
     /**
      * Get if a keyboard button was released in current frame.
-     * @param {KeyboardKeys} button Keyboard key code.
+     * @param {KeyboardKey} button Keyboard key code.
      * @returns {Boolean} True if key was down last frame, but released in current frame.
      */
     keyReleased(key)
@@ -8169,7 +8210,7 @@ class Input extends IManager
     
     /**
      * Get if keyboard key was pressed this frame.
-     * @param {KeyboardKeys} key Keyboard key code.
+     * @param {KeyboardKey} key Keyboard key code.
      * @returns {Boolean} True if key is currently down, but was up in previous frame.
      */
     keyPressed(key)
@@ -8597,8 +8638,12 @@ module.exports = new Input();
  */
 'use strict';
 
+/** @typedef {Number} MouseButton */
+
 /**
  * Define mouse button codes.
+ * @readonly
+ * @enum {MouseButton}
  */
 const MouseButtons = {
     left: 0,
@@ -8606,8 +8651,12 @@ const MouseButtons = {
     right: 2,
 };
 
+/** @typedef {Number} KeyboardKey */
+
 /**
  * Define all keyboard key codes.
+ * @readonly
+ * @enum {KeyboardKey}
  */
 const KeyboardKeys = {
     backspace: 8,
@@ -9562,7 +9611,7 @@ let _totalFrameTimes = 0;
 
 
 // current version
-const version = "1.6.0";
+const version = "1.6.1";
 
 
 /**
@@ -9632,7 +9681,7 @@ class Shaku
 
     /**
      * Method to select managers to use + initialize them.
-     * @param {Array<IManager> | null} managers Array with list of managers to use or null to use all.
+     * @param {Array<IManager>=} managers Array with list of managers to use or null to use all.
      * @returns {Promise} promise to resolve when finish initialization.
      */
     async init(managers)
@@ -10675,7 +10724,7 @@ class Color
 
     /**
      * Check if equal to another color.
-     * @param {PintarJS.Color} other Other color to compare to.
+     * @param {Color} other Other color to compare to.
      */
     equals(other)
     {

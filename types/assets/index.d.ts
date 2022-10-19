@@ -1,0 +1,34 @@
+declare const _exports: {
+    _loaded: {};
+    _waitingAssets: any;
+    _failedAssets: any;
+    _successfulLoadedAssetsCount: number;
+    root: string;
+    suffix: string;
+    _wrapUrl(url: string): string;
+    readonly pendingAssets: string[];
+    readonly failedAssets: string[];
+    waitForAll(): Promise<any>;
+    setup(): any;
+    startFrame(): void;
+    endFrame(): void;
+    _getFromCache(url: string, type: any): any;
+    _loadAndCacheAsset(newAsset: import("./asset"), params: any): Promise<any>;
+    getCached(url: string): import("./asset");
+    _loadAssetType(url: any, typeClass: any, params: any): any;
+    _createAsset(name: any, classType: any, initMethod: any): any;
+    loadSound(url: string): Promise<import("./sound_asset")>;
+    loadTexture(url: string, params?: any): Promise<import("./texture_asset")>;
+    createRenderTarget(name: string, width: number, height: number, channels?: number): Promise<import("./texture_asset")>;
+    loadFontTexture(url: string, params: any): Promise<import("./font_texture_asset")>;
+    loadMsdfFontTexture(url: string, params?: any): Promise<import("./msdf_font_texture_asset")>;
+    loadJson(url: string): Promise<import("./json_asset")>;
+    createJson(name: string, data: any): Promise<import("./json_asset")>;
+    loadBinary(url: string): Promise<import("./binary_asset")>;
+    createBinary(name: string, data: number[] | Uint8Array): Promise<import("./binary_asset")>;
+    free(url: string): void;
+    clearCache(): void;
+    destroy(): void;
+};
+export = _exports;
+//# sourceMappingURL=index.d.ts.map

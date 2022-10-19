@@ -211,6 +211,27 @@ Can also perform transformations inheritance, where we combine local with parent
 </dd>
 </dl>
 
+## Typedefs
+
+<dl>
+<dt><a href="#BlendMode">BlendMode</a> : <code>String</code></dt>
+<dd></dd>
+<dt><a href="#UniformType">UniformType</a> : <code>String</code></dt>
+<dd></dd>
+<dt><a href="#TextAlignment">TextAlignment</a> : <code>String</code></dt>
+<dd></dd>
+<dt><a href="#TextureFilterMode">TextureFilterMode</a> : <code>String</code></dt>
+<dd></dd>
+<dt><a href="#TextureWrapMode">TextureWrapMode</a> : <code>String</code></dt>
+<dd></dd>
+<dt><a href="#elementCallback">elementCallback</a> ⇒ <code>Element</code></dt>
+<dd></dd>
+<dt><a href="#MouseButton">MouseButton</a> : <code>Number</code></dt>
+<dd></dd>
+<dt><a href="#KeyboardKey">KeyboardKey</a> : <code>Number</code></dt>
+<dd></dd>
+</dl>
+
 <a name="Asset"></a>
 
 ## Asset
@@ -325,7 +346,7 @@ To access the Assets manager you use `Shaku.assets`.
     * [.getCached(url)](#Assets+getCached) ⇒ [<code>Asset</code>](#Asset)
     * [.loadSound(url)](#Assets+loadSound) ⇒ [<code>Promise.&lt;SoundAsset&gt;</code>](#SoundAsset)
     * [.loadTexture(url, [params])](#Assets+loadTexture) ⇒ [<code>Promise.&lt;TextureAsset&gt;</code>](#TextureAsset)
-    * [.createRenderTarget(name, width, height, channels)](#Assets+createRenderTarget) ⇒ [<code>Promise.&lt;TextureAsset&gt;</code>](#TextureAsset)
+    * [.createRenderTarget(name, width, height, [channels])](#Assets+createRenderTarget) ⇒ [<code>Promise.&lt;TextureAsset&gt;</code>](#TextureAsset)
     * [.loadFontTexture(url, params)](#Assets+loadFontTexture) ⇒ [<code>Promise.&lt;FontTextureAsset&gt;</code>](#FontTextureAsset)
     * [.loadMsdfFontTexture(url, [params])](#Assets+loadMsdfFontTexture) ⇒ [<code>Promise.&lt;MsdfFontTextureAsset&gt;</code>](#MsdfFontTextureAsset)
     * [.loadJson(url)](#Assets+loadJson) ⇒ [<code>Promise.&lt;JsonAsset&gt;</code>](#JsonAsset)
@@ -442,7 +463,7 @@ let texture = await Shaku.assets.loadTexture("assets/my_texture.png", {generateM
 ```
 <a name="Assets+createRenderTarget"></a>
 
-### assets.createRenderTarget(name, width, height, channels) ⇒ [<code>Promise.&lt;TextureAsset&gt;</code>](#TextureAsset)
+### assets.createRenderTarget(name, width, height, [channels]) ⇒ [<code>Promise.&lt;TextureAsset&gt;</code>](#TextureAsset)
 Create a render target texture asset. If already loaded, will use cache.
 
 **Kind**: instance method of [<code>Assets</code>](#Assets)  
@@ -450,10 +471,10 @@ Create a render target texture asset. If already loaded, will use cache.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| name | <code>String</code> | Asset name (matched to URLs when using cache). If null, will not add to cache. |
+| name | <code>String</code> \| <code>null</code> | Asset name (matched to URLs when using cache). If null, will not add to cache. |
 | width | <code>Number</code> | Texture width. |
 | height | <code>Number</code> | Texture height. |
-| channels | <code>Number</code> | Texture channels count. Defaults to 4 (RGBA). |
+| [channels] | <code>Number</code> | Texture channels count. Defaults to 4 (RGBA). |
 
 **Example**  
 ```js
@@ -712,7 +733,7 @@ Generate the font texture from a font found in given URL.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| params | <code>\*</code> | Additional params. Possible values are:                      - fontName: mandatory font name. on some browsers if the font name does not match the font you actually load via the URL, it will not be loaded properly.                      - missingCharPlaceholder (default='?'): character to use for missing characters.                      - smoothFont (default=true): if true, will set font to smooth mode.                      - fontSize (default=52): font size in texture. larget font size will take more memory, but allow for sharper text rendering in larger scales.                      - enforceTexturePowerOfTwo (default=true): if true, will force texture size to be power of two.                      - maxTextureWidth (default=1024): max texture width.                      - charactersSet (default=FontTextureAsset.defaultCharactersSet): which characters to set in the texture.                      - extraPadding (default=0,0): Optional extra padding to add around characters in texture. |
+| params | <code>\*</code> | Additional params. Possible values are:                      - fontName: mandatory font name. on some browsers if the font name does not match the font you actually load via the URL, it will not be loaded properly.                      - missingCharPlaceholder (default='?'): character to use for missing characters.                      - smoothFont (default=true): if true, will set font to smooth mode.                      - fontSize (default=52): font size in texture. larget font size will take more memory, but allow for sharper text rendering in larger scales.                      - enforceTexturePowerOfTwo (default=true): if true, will force texture size to be power of two.                      - maxTextureWidth (default=1024): max texture width.                      - charactersSet (default=FontTextureAsset.defaultCharactersSet): which characters to set in the texture.                      - extraPadding (default=0,0): Optional extra padding to add around characters in texture.                      - sourceRectOffsetAdjustment (default=0,0): Optional extra offset in characters source rectangles. Use this for fonts that are too low / height and bleed into other characters source rectangles. |
 
 <a name="FontTextureAsset+getSourceRect"></a>
 
@@ -914,7 +935,7 @@ Set texture magnifying filter.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| value | <code>TextureFilterModes</code> | Filter mode to use or null to use default. |
+| value | [<code>TextureFilterMode</code>](#TextureFilterMode) | Filter mode to use or null to use default. |
 
 <a name="TextureAsset+wrapMode"></a>
 
@@ -933,7 +954,7 @@ Set texture wrapping mode.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| value | <code>TextureWrapModes</code> | Wrapping mode to use or null to use default. |
+| value | [<code>TextureWrapMode</code>](#TextureWrapMode) | Wrapping mode to use or null to use default. |
 
 <a name="TextureAsset+image"></a>
 
@@ -2195,7 +2216,8 @@ To access the Graphics manager you use `Shaku.gfx`.
     * [.SpritesGroup](#Gfx+SpritesGroup)
     * [.Matrix](#Gfx+Matrix)
     * [.Vertex](#Gfx+Vertex)
-    * [.TextAlignment](#Gfx+TextAlignment)
+    * [.TextAlignments](#Gfx+TextAlignments)
+    * ~~[.TextAlignment](#Gfx+TextAlignment)~~
     * [.BlendModes](#Gfx+BlendModes)
     * [.TextureWrapModes](#Gfx+TextureWrapModes)
     * [.TextureFilterModes](#Gfx+TextureFilterModes)
@@ -2207,7 +2229,7 @@ To access the Graphics manager you use `Shaku.gfx`.
     * [.setCameraOrthographic(offset)](#Gfx+setCameraOrthographic) ⇒ [<code>Camera</code>](#Camera)
     * [.createEffect(type)](#Gfx+createEffect) ⇒ [<code>Effect</code>](#Effect)
     * [.maximizeCanvasSize(limitToParent, allowOddNumbers)](#Gfx+maximizeCanvasSize)
-    * [.setRenderTarget(texture, keepCamera)](#Gfx+setRenderTarget)
+    * [.setRenderTarget(texture, [keepCamera])](#Gfx+setRenderTarget)
     * [.useEffect(effect)](#Gfx+useEffect)
     * [.setResolution(width, height, updateCanvasStyle)](#Gfx+setResolution)
     * [.resetCamera()](#Gfx+resetCamera)
@@ -2218,24 +2240,24 @@ To access the Graphics manager you use `Shaku.gfx`.
     * [.buildText(fontTexture, text, [fontSize], color, [alignment], [offset], [marginFactor])](#Gfx+buildText) ⇒ [<code>SpritesGroup</code>](#SpritesGroup)
     * [.drawGroup(group, cullOutOfScreen)](#Gfx+drawGroup)
     * [.drawSprite(sprite)](#Gfx+drawSprite)
-    * [.cover(texture, destRect, sourceRect, color, blendMode)](#Gfx+cover)
-    * [.draw(texture, position, size, sourceRect, color, blendMode, rotation, origin, skew)](#Gfx+draw)
-    * [.drawQuadFromVertices(texture, vertices, blendMode)](#Gfx+drawQuadFromVertices)
-    * [.fillRect(destRect, color, blend, rotation)](#Gfx+fillRect)
-    * [.fillRects(destRects, colors, blend, rotation)](#Gfx+fillRects)
+    * [.cover(texture, destRect, [sourceRect], color, [blendMode])](#Gfx+cover)
+    * [.draw(texture, position, size, sourceRect, color, [blendMode], [rotation], [origin], [skew])](#Gfx+draw)
+    * [.drawQuadFromVertices(texture, vertices, [blendMode])](#Gfx+drawQuadFromVertices)
+    * [.fillRect(destRect, color, [blend], [rotation])](#Gfx+fillRect)
+    * [.fillRects(destRects, colors, [blend], [rotation])](#Gfx+fillRects)
     * [.outlineRect(destRect, color, [blend], [rotation])](#Gfx+outlineRect)
-    * [.outlineCircle(circle, color, blend, lineAmount)](#Gfx+outlineCircle)
-    * [.fillCircle(circle, color, blend, lineAmount)](#Gfx+fillCircle)
-    * [.fillCircles(circles, colors, blend, lineAmount)](#Gfx+fillCircles)
-    * [.drawLine(startPoint, endPoint, color, blendMode)](#Gfx+drawLine)
-    * [.drawLinesStrip(points, colors, blendMode, looped)](#Gfx+drawLinesStrip)
-    * [.drawLines(points, colors, blendMode)](#Gfx+drawLines)
-    * [.drawPoint(point, color, blendMode)](#Gfx+drawPoint)
-    * [.drawPoints(points, colors, blendMode)](#Gfx+drawPoints)
+    * [.outlineCircle(circle, color, [blend], [lineAmount])](#Gfx+outlineCircle)
+    * [.fillCircle(circle, color, [blend], [lineAmount])](#Gfx+fillCircle)
+    * [.fillCircles(circles, colors, [blend], [lineAmount])](#Gfx+fillCircles)
+    * [.drawLine(startPoint, endPoint, color, [blendMode])](#Gfx+drawLine)
+    * [.drawLinesStrip(points, colors, [blendMode], [looped])](#Gfx+drawLinesStrip)
+    * [.drawLines(points, colors, [blendMode])](#Gfx+drawLines)
+    * [.drawPoint(point, color, [blendMode])](#Gfx+drawPoint)
+    * [.drawPoints(points, colors, [blendMode])](#Gfx+drawPoints)
     * [.centerCanvas()](#Gfx+centerCanvas)
     * [.inScreen(shape)](#Gfx+inScreen) ⇒ <code>Boolean</code>
     * [.centerCamera(position, useCanvasSize)](#Gfx+centerCamera)
-    * [.clear(color)](#Gfx+clear)
+    * [.clear([color])](#Gfx+clear)
     * [.presentBufferedData()](#Gfx+presentBufferedData)
 
 <a name="new_Gfx_new"></a>
@@ -2304,16 +2326,29 @@ Get the vertex object.
 
 **Kind**: instance property of [<code>Gfx</code>](#Gfx)  
 **See**: Vertex  
-<a name="Gfx+TextAlignment"></a>
+<a name="Gfx+TextAlignments"></a>
 
-### gfx.TextAlignment
+### gfx.TextAlignments
 Get the text alignments options.
 * Left: align text to the left.
 * Right: align text to the right.
 * Center: align text to center.
 
 **Kind**: instance property of [<code>Gfx</code>](#Gfx)  
-**See**: TextAlignment  
+**See**: TextAlignments  
+<a name="Gfx+TextAlignment"></a>
+
+### ~~gfx.TextAlignment~~
+***Deprecated***
+
+Get the text alignments options.
+This getter is deprecated, please use `TextAlignments` instead.
+* Left: align text to the left.
+* Right: align text to the right.
+* Center: align text to center.
+
+**Kind**: instance property of [<code>Gfx</code>](#Gfx)  
+**See**: TextAlignments  
 <a name="Gfx+BlendModes"></a>
 
 ### gfx.BlendModes
@@ -2465,15 +2500,15 @@ If the canvas is directly under document body, it will take the max size of the 
 
 <a name="Gfx+setRenderTarget"></a>
 
-### gfx.setRenderTarget(texture, keepCamera)
+### gfx.setRenderTarget(texture, [keepCamera])
 Set a render target (texture) to render on.
 
 **Kind**: instance method of [<code>Gfx</code>](#Gfx)  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| texture | [<code>TextureAsset</code>](#TextureAsset) \| [<code>Array.&lt;TextureAsset&gt;</code>](#TextureAsset) | Render target texture to set as render target, or null to reset and render back on canvas. Can also be array for multiple targets, which will take layouts 0-15 by their order. |
-| keepCamera | <code>Boolean</code> | If true, will keep current camera settings. If false (default) will reset camera. |
+| texture | [<code>TextureAsset</code>](#TextureAsset) \| [<code>Array.&lt;TextureAsset&gt;</code>](#TextureAsset) \| <code>null</code> | Render target texture to set as render target, or null to reset and render back on canvas. Can also be array for multiple targets, which will take layouts 0-15 by their order. |
+| [keepCamera] | <code>Boolean</code> | If true, will keep current camera settings. If false (default) will reset camera. |
 
 **Example**  
 ```js
@@ -2585,7 +2620,7 @@ Note: its best to always draw texts with *batching* enabled.
 | text | <code>String</code> | Text to generate sprites for. |
 | [fontSize] | <code>Number</code> | Font size, or undefined to use font texture base size. |
 | color | [<code>Color</code>](#Color) \| [<code>Array.&lt;Color&gt;&#x3D;</code>](#Color) | Text sprites color. If array is set, will assign each color to different vertex, starting from top-left. |
-| [alignment] | <code>TextAlignment</code> | Text alignment. |
+| [alignment] | [<code>TextAlignment</code>](#TextAlignment) | Text alignment. |
 | [offset] | [<code>Vector2</code>](#Vector2) | Optional starting offset. |
 | [marginFactor] | [<code>Vector2</code>](#Vector2) | Optional factor for characters and line spacing. For example value of 2,1 will make double horizontal spacing. |
 
@@ -2662,7 +2697,7 @@ Shaku.gfx.drawSprite(sprite);
 ```
 <a name="Gfx+cover"></a>
 
-### gfx.cover(texture, destRect, sourceRect, color, blendMode)
+### gfx.cover(texture, destRect, [sourceRect], color, [blendMode])
 Draw a texture to cover a given destination rectangle.
 
 **Kind**: instance method of [<code>Gfx</code>](#Gfx)  
@@ -2671,9 +2706,9 @@ Draw a texture to cover a given destination rectangle.
 | --- | --- | --- |
 | texture | [<code>TextureAsset</code>](#TextureAsset) | Texture to draw. |
 | destRect | [<code>Rectangle</code>](#Rectangle) \| [<code>Vector2</code>](#Vector2) | Destination rectangle to draw on. If vector is provided, will draw from 0,0 with vector as size. |
-| sourceRect | [<code>Rectangle</code>](#Rectangle) | Source rectangle, or undefined to use the entire texture. |
-| color | [<code>Color</code>](#Color) \| [<code>Array.&lt;Color&gt;</code>](#Color) | Tint color, or undefined to not change color. If array is set, will assign each color to different vertex, starting from top-left. |
-| blendMode | <code>BlendModes</code> | Blend mode, or undefined to use alpha blend. |
+| [sourceRect] | [<code>Rectangle</code>](#Rectangle) | Source rectangle, or undefined to use the entire texture. |
+| color | [<code>Color</code>](#Color) \| [<code>Array.&lt;Color&gt;</code>](#Color) \| <code>undefined</code> | Tint color, or undefined to not change color. If array is set, will assign each color to different vertex, starting from top-left. |
+| [blendMode] | [<code>BlendMode</code>](#BlendMode) | Blend mode, or undefined to use alpha blend. |
 
 **Example**  
 ```js
@@ -2693,7 +2728,7 @@ Shaku.gfx.draw(texture, position, size, sourceRect, color, blendMode, rotation, 
 ```
 <a name="Gfx+draw"></a>
 
-### gfx.draw(texture, position, size, sourceRect, color, blendMode, rotation, origin, skew)
+### gfx.draw(texture, position, size, sourceRect, color, [blendMode], [rotation], [origin], [skew])
 Draw a texture.
 
 **Kind**: instance method of [<code>Gfx</code>](#Gfx)  
@@ -2704,11 +2739,11 @@ Draw a texture.
 | position | [<code>Vector2</code>](#Vector2) \| [<code>Vector3</code>](#Vector3) | Drawing position (at origin). If vector3 is provided, will pass z value to the shader code position attribute. |
 | size | [<code>Vector2</code>](#Vector2) \| [<code>Vector3</code>](#Vector3) \| <code>Number</code> | Drawing size. If vector3 is provided, will pass z value to the shader code position attribute for the bottom vertices, as position.z + size.z. |
 | sourceRect | [<code>Rectangle</code>](#Rectangle) | Source rectangle, or undefined to use the entire texture. |
-| color | [<code>Color</code>](#Color) \| [<code>Array.&lt;Color&gt;</code>](#Color) | Tint color, or undefined to not change color. If array is set, will assign each color to different vertex, starting from top-left. |
-| blendMode | <code>BlendModes</code> | Blend mode, or undefined to use alpha blend. |
-| rotation | <code>Number</code> | Rotate sprite. |
-| origin | [<code>Vector2</code>](#Vector2) | Drawing origin. This will be the point at 'position' and rotation origin. |
-| skew | [<code>Vector2</code>](#Vector2) | Skew the drawing corners on X and Y axis, around the origin point. |
+| color | [<code>Color</code>](#Color) \| [<code>Array.&lt;Color&gt;</code>](#Color) \| <code>undefined</code> | Tint color, or undefined to not change color. If array is set, will assign each color to different vertex, starting from top-left. |
+| [blendMode] | [<code>BlendMode</code>](#BlendMode) | Blend mode, or undefined to use alpha blend. |
+| [rotation] | <code>Number</code> | Rotate sprite. |
+| [origin] | [<code>Vector2</code>](#Vector2) | Drawing origin. This will be the point at 'position' and rotation origin. |
+| [skew] | [<code>Vector2</code>](#Vector2) | Skew the drawing corners on X and Y axis, around the origin point. |
 
 **Example**  
 ```js
@@ -2730,7 +2765,7 @@ Shaku.gfx.draw(texture, position, size, sourceRect, color, blendMode, rotation, 
 ```
 <a name="Gfx+drawQuadFromVertices"></a>
 
-### gfx.drawQuadFromVertices(texture, vertices, blendMode)
+### gfx.drawQuadFromVertices(texture, vertices, [blendMode])
 Draw a textured quad from vertices.
 
 **Kind**: instance method of [<code>Gfx</code>](#Gfx)  
@@ -2739,11 +2774,11 @@ Draw a textured quad from vertices.
 | --- | --- | --- |
 | texture | [<code>TextureAsset</code>](#TextureAsset) | Texture to draw. |
 | vertices | [<code>Array.&lt;Vertex&gt;</code>](#Vertex) | Quad vertices to draw (should be: top-left, top-right, bottom-left, bottom-right). |
-| blendMode | <code>BlendModes</code> | Blend mode to set. |
+| [blendMode] | [<code>BlendMode</code>](#BlendMode) | Blend mode to set. |
 
 <a name="Gfx+fillRect"></a>
 
-### gfx.fillRect(destRect, color, blend, rotation)
+### gfx.fillRect(destRect, color, [blend], [rotation])
 Draw a filled colored rectangle.
 
 **Kind**: instance method of [<code>Gfx</code>](#Gfx)  
@@ -2752,8 +2787,8 @@ Draw a filled colored rectangle.
 | --- | --- | --- |
 | destRect | [<code>Rectangle</code>](#Rectangle) | Rectangle to fill. |
 | color | [<code>Color</code>](#Color) \| [<code>Array.&lt;Color&gt;</code>](#Color) | Rectangle fill color. |
-| blend | <code>BlendModes</code> | Blend mode. |
-| rotation | <code>Number</code> | Rotate the rectangle around its center. |
+| [blend] | [<code>BlendMode</code>](#BlendMode) | Blend mode. |
+| [rotation] | <code>Number</code> | Rotate the rectangle around its center. |
 
 **Example**  
 ```js
@@ -2762,7 +2797,7 @@ Shaku.gfx.fillRect(new Shaku.utils.Rectangle(100, 100, 50, 50), Shaku.utils.Colo
 ```
 <a name="Gfx+fillRects"></a>
 
-### gfx.fillRects(destRects, colors, blend, rotation)
+### gfx.fillRects(destRects, colors, [blend], [rotation])
 Draw a list of filled colored rectangles as a batch.
 
 **Kind**: instance method of [<code>Gfx</code>](#Gfx)  
@@ -2771,8 +2806,8 @@ Draw a list of filled colored rectangles as a batch.
 | --- | --- | --- |
 | destRects | [<code>Array.&lt;Rectangle&gt;</code>](#Rectangle) | Rectangles to fill. |
 | colors | [<code>Array.&lt;Color&gt;</code>](#Color) \| [<code>Color</code>](#Color) | Rectangles fill color. If array is set, will assign each color to different vertex, starting from top-left. |
-| blend | <code>BlendModes</code> | Blend mode. |
-| rotation | <code>Array.&lt;Number&gt;</code> \| <code>Number</code> | Rotate the rectangles around its center. |
+| [blend] | [<code>BlendMode</code>](#BlendMode) | Blend mode. |
+| [rotation] | <code>Array.&lt;Number&gt;</code> \| <code>Number</code> | Rotate the rectangles around its center. |
 
 **Example**  
 ```js
@@ -2790,7 +2825,7 @@ Draw an outline colored rectangle.
 | --- | --- | --- |
 | destRect | [<code>Rectangle</code>](#Rectangle) | Rectangle to draw outline for. |
 | color | [<code>Color</code>](#Color) | Rectangle outline color. |
-| [blend] | <code>BlendModes</code> | Blend mode. |
+| [blend] | [<code>BlendMode</code>](#BlendMode) | Blend mode. |
 | [rotation] | <code>Number</code> | Rotate the rectangle around its center. |
 
 **Example**  
@@ -2800,7 +2835,7 @@ Shaku.gfx.outlineRect(new Shaku.utils.Rectangle(100, 100, 50, 50), Shaku.utils.C
 ```
 <a name="Gfx+outlineCircle"></a>
 
-### gfx.outlineCircle(circle, color, blend, lineAmount)
+### gfx.outlineCircle(circle, color, [blend], [lineAmount])
 Draw an outline colored circle.
 
 **Kind**: instance method of [<code>Gfx</code>](#Gfx)  
@@ -2809,8 +2844,8 @@ Draw an outline colored circle.
 | --- | --- | --- |
 | circle | [<code>Circle</code>](#Circle) | Circle to draw. |
 | color | [<code>Color</code>](#Color) | Circle outline color. |
-| blend | <code>BlendModes</code> | Blend mode. |
-| lineAmount | <code>Number</code> | How many lines to compose the circle from (bigger number = smoother circle). |
+| [blend] | [<code>BlendMode</code>](#BlendMode) | Blend mode. |
+| [lineAmount] | <code>Number</code> | How many lines to compose the circle from (bigger number = smoother circle). |
 
 **Example**  
 ```js
@@ -2819,7 +2854,7 @@ Shaku.gfx.outlineCircle(new Shaku.utils.Circle(new Shaku.utils.Vector2(50, 50), 
 ```
 <a name="Gfx+fillCircle"></a>
 
-### gfx.fillCircle(circle, color, blend, lineAmount)
+### gfx.fillCircle(circle, color, [blend], [lineAmount])
 Draw a filled colored circle.
 
 **Kind**: instance method of [<code>Gfx</code>](#Gfx)  
@@ -2828,8 +2863,8 @@ Draw a filled colored circle.
 | --- | --- | --- |
 | circle | [<code>Circle</code>](#Circle) | Circle to draw. |
 | color | [<code>Color</code>](#Color) | Circle fill color. |
-| blend | <code>BlendModes</code> | Blend mode. |
-| lineAmount | <code>Number</code> | How many lines to compose the circle from (bigger number = smoother circle). |
+| [blend] | [<code>BlendMode</code>](#BlendMode) | Blend mode. |
+| [lineAmount] | <code>Number</code> | How many lines to compose the circle from (bigger number = smoother circle). |
 
 **Example**  
 ```js
@@ -2838,7 +2873,7 @@ Shaku.gfx.fillCircle(new Shaku.utils.Circle(new Shaku.utils.Vector2(50, 50), 85)
 ```
 <a name="Gfx+fillCircles"></a>
 
-### gfx.fillCircles(circles, colors, blend, lineAmount)
+### gfx.fillCircles(circles, colors, [blend], [lineAmount])
 Draw a list of filled colored circles using batches.
 
 **Kind**: instance method of [<code>Gfx</code>](#Gfx)  
@@ -2847,8 +2882,8 @@ Draw a list of filled colored circles using batches.
 | --- | --- | --- |
 | circles | [<code>Array.&lt;Circle&gt;</code>](#Circle) | Circles list to draw. |
 | colors | [<code>Color</code>](#Color) \| [<code>Array.&lt;Color&gt;</code>](#Color) | Circles fill color or a single color for all circles. |
-| blend | <code>BlendModes</code> | Blend mode. |
-| lineAmount | <code>Number</code> | How many lines to compose the circle from (bigger number = smoother circle). |
+| [blend] | [<code>BlendMode</code>](#BlendMode) | Blend mode. |
+| [lineAmount] | <code>Number</code> | How many lines to compose the circle from (bigger number = smoother circle). |
 
 **Example**  
 ```js
@@ -2857,7 +2892,7 @@ Shaku.gfx.fillCircles([new Shaku.utils.Circle(new Shaku.utils.Vector2(50, 50), 8
 ```
 <a name="Gfx+drawLine"></a>
 
-### gfx.drawLine(startPoint, endPoint, color, blendMode)
+### gfx.drawLine(startPoint, endPoint, color, [blendMode])
 Draw a single line between two points.
 
 **Kind**: instance method of [<code>Gfx</code>](#Gfx)  
@@ -2867,7 +2902,7 @@ Draw a single line between two points.
 | startPoint | [<code>Vector2</code>](#Vector2) | Line start point. |
 | endPoint | [<code>Vector2</code>](#Vector2) | Line end point. |
 | color | [<code>Color</code>](#Color) | Line color. |
-| blendMode | <code>BlendModes</code> | Blend mode to draw lines with (default to Opaque). |
+| [blendMode] | [<code>BlendMode</code>](#BlendMode) | Blend mode to draw lines with (default to Opaque). |
 
 **Example**  
 ```js
@@ -2875,7 +2910,7 @@ Shaku.gfx.drawLine(new Shaku.utils.Vector2(50,50), new Shaku.utils.Vector2(150,5
 ```
 <a name="Gfx+drawLinesStrip"></a>
 
-### gfx.drawLinesStrip(points, colors, blendMode, looped)
+### gfx.drawLinesStrip(points, colors, [blendMode], [looped])
 Draw a strip of lines between an array of points.
 
 **Kind**: instance method of [<code>Gfx</code>](#Gfx)  
@@ -2884,8 +2919,8 @@ Draw a strip of lines between an array of points.
 | --- | --- | --- |
 | points | [<code>Array.&lt;Vector2&gt;</code>](#Vector2) | Points to draw line between. |
 | colors | [<code>Color</code>](#Color) \| [<code>Array.&lt;Color&gt;</code>](#Color) | Single lines color if you want one color for all lines, or an array of colors per segment. |
-| blendMode | <code>BlendModes</code> | Blend mode to draw lines with (default to Opaque). |
-| looped | <code>Boolean</code> | If true, will also draw a line from last point back to first point. |
+| [blendMode] | [<code>BlendMode</code>](#BlendMode) | Blend mode to draw lines with (default to Opaque). |
+| [looped] | <code>Boolean</code> | If true, will also draw a line from last point back to first point. |
 
 **Example**  
 ```js
@@ -2895,7 +2930,7 @@ Shaku.gfx.drawLinesStrip(lines, colors);
 ```
 <a name="Gfx+drawLines"></a>
 
-### gfx.drawLines(points, colors, blendMode)
+### gfx.drawLines(points, colors, [blendMode])
 Draw a list of lines from an array of points.
 
 **Kind**: instance method of [<code>Gfx</code>](#Gfx)  
@@ -2904,7 +2939,7 @@ Draw a list of lines from an array of points.
 | --- | --- | --- |
 | points | [<code>Array.&lt;Vector2&gt;</code>](#Vector2) | Points to draw line between. |
 | colors | [<code>Color</code>](#Color) \| [<code>Array.&lt;Color&gt;</code>](#Color) | Single lines color if you want one color for all lines, or an array of colors per segment. |
-| blendMode | <code>BlendModes</code> | Blend mode to draw lines with (default to Opaque). |
+| [blendMode] | [<code>BlendMode</code>](#BlendMode) | Blend mode to draw lines with (default to Opaque). |
 
 **Example**  
 ```js
@@ -2914,7 +2949,7 @@ Shaku.gfx.drawLines(lines, colors);
 ```
 <a name="Gfx+drawPoint"></a>
 
-### gfx.drawPoint(point, color, blendMode)
+### gfx.drawPoint(point, color, [blendMode])
 Draw a single point from vector.
 
 **Kind**: instance method of [<code>Gfx</code>](#Gfx)  
@@ -2923,7 +2958,7 @@ Draw a single point from vector.
 | --- | --- | --- |
 | point | [<code>Vector2</code>](#Vector2) | Point to draw. |
 | color | [<code>Color</code>](#Color) | Point color. |
-| blendMode | <code>BlendModes</code> | Blend mode to draw point with (default to Opaque). |
+| [blendMode] | [<code>BlendMode</code>](#BlendMode) | Blend mode to draw point with (default to Opaque). |
 
 **Example**  
 ```js
@@ -2931,7 +2966,7 @@ Shaku.gfx.drawPoint(new Shaku.utils.Vector2(50,50), Shaku.utils.Color.random());
 ```
 <a name="Gfx+drawPoints"></a>
 
-### gfx.drawPoints(points, colors, blendMode)
+### gfx.drawPoints(points, colors, [blendMode])
 Draw a list of points from an array of vectors.
 
 **Kind**: instance method of [<code>Gfx</code>](#Gfx)  
@@ -2940,7 +2975,7 @@ Draw a list of points from an array of vectors.
 | --- | --- | --- |
 | points | [<code>Array.&lt;Vector2&gt;</code>](#Vector2) | Points to draw. |
 | colors | [<code>Color</code>](#Color) \| [<code>Array.&lt;Color&gt;</code>](#Color) | Single color if you want one color for all points, or an array of colors per point. |
-| blendMode | <code>BlendModes</code> | Blend mode to draw points with (default to Opaque). |
+| [blendMode] | [<code>BlendMode</code>](#BlendMode) | Blend mode to draw points with (default to Opaque). |
 
 **Example**  
 ```js
@@ -2980,14 +3015,14 @@ Make a given vector the center of the camera.
 
 <a name="Gfx+clear"></a>
 
-### gfx.clear(color)
+### gfx.clear([color])
 Clear screen to a given color.
 
 **Kind**: instance method of [<code>Gfx</code>](#Gfx)  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| color | [<code>Color</code>](#Color) | Color to clear screen to, or black if not set. |
+| [color] | [<code>Color</code>](#Color) | Color to clear screen to, or black if not set. |
 
 **Example**  
 ```js
@@ -3241,7 +3276,7 @@ This object is a helper class to hold all the properties of a texture to render.
     * [.position](#Sprite+position) : [<code>Vector2</code>](#Vector2) \| [<code>Vector3</code>](#Vector3)
     * [.size](#Sprite+size) : [<code>Vector2</code>](#Vector2) \| [<code>Vector3</code>](#Vector3)
     * [.sourceRect](#Sprite+sourceRect) : [<code>Rectangle</code>](#Rectangle)
-    * [.blendMode](#Sprite+blendMode) : <code>BlendModes</code>
+    * [.blendMode](#Sprite+blendMode) : [<code>BlendMode</code>](#BlendMode)
     * [.rotation](#Sprite+rotation) : <code>Number</code>
     * [.origin](#Sprite+origin) : [<code>Vector2</code>](#Vector2)
     * [.skew](#Sprite+skew) : [<code>Vector2</code>](#Vector2)
@@ -3298,7 +3333,7 @@ This property is locked when static=true.
 **Kind**: instance property of [<code>Sprite</code>](#Sprite)  
 <a name="Sprite+blendMode"></a>
 
-### sprite.blendMode : <code>BlendModes</code>
+### sprite.blendMode : [<code>BlendMode</code>](#BlendMode)
 Sprite blend mode.
 
 **Kind**: instance property of [<code>Sprite</code>](#Sprite)  
@@ -3859,7 +3894,7 @@ Must be called *before* initializing Shaku. This can also be a method to invoke 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| element | <code>Element</code> | Element to attach input to. |
+| element | <code>Element</code> \| [<code>elementCallback</code>](#elementCallback) | Element to attach input to. |
 
 **Example**  
 ```js
@@ -3877,7 +3912,7 @@ Get if mouse button was pressed this frame.
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
-| button | <code>MouseButtons</code> | <code>0</code> | Button code (defults to MouseButtons.left). |
+| button | [<code>MouseButton</code>](#MouseButton) | <code>0</code> | Button code (defults to MouseButtons.left). |
 
 <a name="Input+mouseDown"></a>
 
@@ -3889,7 +3924,7 @@ Get if mouse button is currently pressed.
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
-| button | <code>MouseButtons</code> | <code>0</code> | Button code (defults to MouseButtons.left). |
+| button | [<code>MouseButton</code>](#MouseButton) | <code>0</code> | Button code (defults to MouseButtons.left). |
 
 <a name="Input+mouseUp"></a>
 
@@ -3901,7 +3936,7 @@ Get if mouse button is currently not down.
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
-| button | <code>MouseButtons</code> | <code>0</code> | Button code (defults to MouseButtons.left). |
+| button | [<code>MouseButton</code>](#MouseButton) | <code>0</code> | Button code (defults to MouseButtons.left). |
 
 <a name="Input+mouseReleased"></a>
 
@@ -3913,7 +3948,7 @@ Get if mouse button was released in current frame.
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
-| button | <code>MouseButtons</code> | <code>0</code> | Button code (defults to MouseButtons.left). |
+| button | [<code>MouseButton</code>](#MouseButton) | <code>0</code> | Button code (defults to MouseButtons.left). |
 
 <a name="Input+keyDown"></a>
 
@@ -3925,7 +3960,7 @@ Get if keyboard key is currently pressed down.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| key | <code>KeyboardKeys</code> | Keyboard key code. |
+| key | [<code>KeyboardKey</code>](#KeyboardKey) | Keyboard key code. |
 
 <a name="Input+keyUp"></a>
 
@@ -3937,7 +3972,7 @@ Get if keyboard key is currently not down.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| key | <code>KeyboardKeys</code> | Keyboard key code. |
+| key | [<code>KeyboardKey</code>](#KeyboardKey) | Keyboard key code. |
 
 <a name="Input+keyReleased"></a>
 
@@ -3949,7 +3984,7 @@ Get if a keyboard button was released in current frame.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| button | <code>KeyboardKeys</code> | Keyboard key code. |
+| button | [<code>KeyboardKey</code>](#KeyboardKey) | Keyboard key code. |
 
 <a name="Input+keyPressed"></a>
 
@@ -3961,7 +3996,7 @@ Get if keyboard key was pressed this frame.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| key | <code>KeyboardKeys</code> | Keyboard key code. |
+| key | [<code>KeyboardKey</code>](#KeyboardKey) | Keyboard key code. |
 
 <a name="Input+down"></a>
 
@@ -4528,7 +4563,7 @@ This object wraps the entire lib namespace, and this is what you use to access a
     * [.isPaused](#Shaku+isPaused)
     * [.gameTime](#Shaku+gameTime) ⇒ [<code>GameTime</code>](#GameTime)
     * [.version](#Shaku+version) ⇒ <code>String</code>
-    * [.init(managers)](#Shaku+init) ⇒ <code>Promise</code>
+    * [.init([managers])](#Shaku+init) ⇒ <code>Promise</code>
     * [.destroy()](#Shaku+destroy)
     * [.startFrame()](#Shaku+startFrame)
     * [.endFrame()](#Shaku+endFrame)
@@ -4625,7 +4660,7 @@ Get Shaku's version.
 **Returns**: <code>String</code> - Shaku's version.  
 <a name="Shaku+init"></a>
 
-### shaku.init(managers) ⇒ <code>Promise</code>
+### shaku.init([managers]) ⇒ <code>Promise</code>
 Method to select managers to use + initialize them.
 
 **Kind**: instance method of [<code>Shaku</code>](#Shaku)  
@@ -4633,7 +4668,7 @@ Method to select managers to use + initialize them.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| managers | [<code>Array.&lt;IManager&gt;</code>](#IManager) \| <code>null</code> | Array with list of managers to use or null to use all. |
+| [managers] | [<code>Array.&lt;IManager&gt;</code>](#IManager) | Array with list of managers to use or null to use all. |
 
 <a name="Shaku+destroy"></a>
 
@@ -5205,7 +5240,7 @@ Check if equal to another color.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| other | <code>PintarJS.Color</code> | Other color to compare to. |
+| other | [<code>Color</code>](#Color) | Other color to compare to. |
 
 <a name="Color.webColorNames"></a>
 
@@ -7982,3 +8017,35 @@ Create vector from a dictionary.
 | --- | --- | --- |
 | data | <code>\*</code> | Dictionary with {x,y,z}. |
 
+<a name="BlendMode"></a>
+
+## BlendMode : <code>String</code>
+**Kind**: global typedef  
+<a name="UniformType"></a>
+
+## UniformType : <code>String</code>
+**Kind**: global typedef  
+<a name="TextAlignment"></a>
+
+## TextAlignment : <code>String</code>
+**Kind**: global typedef  
+<a name="TextureFilterMode"></a>
+
+## TextureFilterMode : <code>String</code>
+**Kind**: global typedef  
+<a name="TextureWrapMode"></a>
+
+## TextureWrapMode : <code>String</code>
+**Kind**: global typedef  
+<a name="elementCallback"></a>
+
+## elementCallback ⇒ <code>Element</code>
+**Kind**: global typedef  
+<a name="MouseButton"></a>
+
+## MouseButton : <code>Number</code>
+**Kind**: global typedef  
+<a name="KeyboardKey"></a>
+
+## KeyboardKey : <code>Number</code>
+**Kind**: global typedef  
