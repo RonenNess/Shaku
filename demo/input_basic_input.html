@@ -68,7 +68,7 @@
 
               // show mouse state
               mouseWheel += Shaku.input.mouseWheelSign;
-              document.getElementById('mouse_state').innerHTML = "Mouse position: " + Shaku.input.mousePosition.string() + " / Mouse scroll: " + mouseWheel + " / Mouse move: " + Shaku.input.mouseMoving + " / Touching: " + Shaku.input.isTouching + " / Touch position: " + Shaku.input.touchPosition.string();
+              document.getElementById('mouse_state').innerHTML = "Mouse position: " + Shaku.input.mousePosition.string() + " / Mouse scroll: " + mouseWheel + " / Mouse move: " + Shaku.input.mouseMoving + " / Touching: " + Shaku.input.touching + " / Touch position: " + Shaku.input.touchPosition.string();
 
               // end frame and request next frame
               Shaku.endFrame();

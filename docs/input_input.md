@@ -33,6 +33,17 @@ To access the Input manager use `Shaku.input`.
 
 * [Input](#Input)
     * [new Input()](#new_Input_new)
+    * [.preventDefaults](#Input+preventDefaults) : <code>Boolean</code>
+    * [.enableMouseDeltaWhileMouseWheelDown](#Input+enableMouseDeltaWhileMouseWheelDown) : <code>Boolean</code>
+    * [.disableContextMenu](#Input+disableContextMenu) : <code>Boolean</code>
+    * [.delegateTouchInputToMouse](#Input+delegateTouchInputToMouse) : <code>Boolean</code>
+    * [.disableContextMenu](#Input+disableContextMenu) : <code>Boolean</code>
+    * [.MouseButtons](#Input+MouseButtons)
+    * [.KeyboardKeys](#Input+KeyboardKeys)
+    * [.touchPosition](#Input+touchPosition) ⇒ <code>Vector2</code>
+    * [.touching](#Input+touching) ⇒ <code>Boolean</code>
+    * [.touchStarted](#Input+touchStarted) ⇒ <code>Boolean</code>
+    * [.touchEnded](#Input+touchEnded) ⇒ <code>Boolean</code>
     * [.mousePosition](#Input+mousePosition) ⇒ <code>Vector2</code>
     * [.prevMousePosition](#Input+prevMousePosition) ⇒ <code>Vector2</code>
     * [.mouseDelta](#Input+mouseDelta) ⇒ <code>Vector2</code>
@@ -64,6 +75,80 @@ To access the Input manager use `Shaku.input`.
 ### new Input()
 Create the manager.
 
+<a name="Input+preventDefaults"></a>
+
+### input.preventDefaults : <code>Boolean</code>
+If true, will prevent default input events by calling preventDefault().
+
+**Kind**: instance property of [<code>Input</code>](#Input)  
+<a name="Input+enableMouseDeltaWhileMouseWheelDown"></a>
+
+### input.enableMouseDeltaWhileMouseWheelDown : <code>Boolean</code>
+By default, when holding wheel button down browsers will turn into special page scroll mode and will not emit mouse move events.
+if this property is set to true (default), the Input manager will prevent this behavior, so we could still get mouse delta while mouse wheel is held down.
+
+**Kind**: instance property of [<code>Input</code>](#Input)  
+<a name="Input+disableContextMenu"></a>
+
+### input.disableContextMenu : <code>Boolean</code>
+If true (default), will disable the context menu (what typically opens when you right click the page).
+
+**Kind**: instance property of [<code>Input</code>](#Input)  
+<a name="Input+delegateTouchInputToMouse"></a>
+
+### input.delegateTouchInputToMouse : <code>Boolean</code>
+If true (default), will treat touch events (touch start / touch end / touch move) as if the user clicked and moved a mouse.
+
+**Kind**: instance property of [<code>Input</code>](#Input)  
+<a name="Input+disableContextMenu"></a>
+
+### input.disableContextMenu : <code>Boolean</code>
+If true (default), will reset all states if the window loses focus.
+
+**Kind**: instance property of [<code>Input</code>](#Input)  
+<a name="Input+MouseButtons"></a>
+
+### input.MouseButtons
+Get the Mouse Buttons enum.
+
+**Kind**: instance property of [<code>Input</code>](#Input)  
+**See**: MouseButtons  
+<a name="Input+KeyboardKeys"></a>
+
+### input.KeyboardKeys
+Get the Keyboard Buttons enum.
+
+**Kind**: instance property of [<code>Input</code>](#Input)  
+**See**: KeyboardKeys  
+<a name="Input+touchPosition"></a>
+
+### input.touchPosition ⇒ <code>Vector2</code>
+Get touch screen touching position.
+Note: if not currently touching, will return last known position.
+
+**Kind**: instance property of [<code>Input</code>](#Input)  
+**Returns**: <code>Vector2</code> - Touch position.  
+<a name="Input+touching"></a>
+
+### input.touching ⇒ <code>Boolean</code>
+Get if currently touching a touch screen.
+
+**Kind**: instance property of [<code>Input</code>](#Input)  
+**Returns**: <code>Boolean</code> - True if currently touching the screen.  
+<a name="Input+touchStarted"></a>
+
+### input.touchStarted ⇒ <code>Boolean</code>
+Get if started touching a touch screen in current frame.
+
+**Kind**: instance property of [<code>Input</code>](#Input)  
+**Returns**: <code>Boolean</code> - True if started touching the screen now.  
+<a name="Input+touchEnded"></a>
+
+### input.touchEnded ⇒ <code>Boolean</code>
+Get if stopped touching a touch screen in current frame.
+
+**Kind**: instance property of [<code>Input</code>](#Input)  
+**Returns**: <code>Boolean</code> - True if stopped touching the screen now.  
 <a name="Input+mousePosition"></a>
 
 ### input.mousePosition ⇒ <code>Vector2</code>
@@ -280,8 +365,12 @@ Return if a mouse or keyboard button is currently down.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| code | <code>string</code> \| <code>Array.&lt;String&gt;</code> | Keyboard or mouse code. Can be array of codes to test if any of them is down.                          For mouse buttons: mouse_left, mouse_right or mouse_middle.                          For keyboard buttons: use one of the keys of KeyboardKeys (for example 'a', 'alt', 'up_arrow', etc..)                          For numbers (0-9): you can use the number. |
+| code | <code>string</code> \| <code>Array.&lt;String&gt;</code> | Keyboard, touch or mouse code. Can be array of codes to test if any of them is pressed.                          For mouse buttons: set code to 'mouse_left', 'mouse_right' or 'mouse_middle'.                          For keyboard buttons: use one of the keys of KeyboardKeys (for example 'a', 'alt', 'up_arrow', etc..).                          For touch screen: set code to 'touch'.                          For numbers (0-9): you can use the number itself. |
 
+**Example**  
+```js
+if (Shaku.input.down(['mouse_left', 'touch', 'space'])) { alert('mouse, touch screen or space are pressed!'); }
+```
 <a name="Input+released"></a>
 
 ### input.released(code) ⇒ <code>Boolean</code>
@@ -292,8 +381,12 @@ Return if a mouse or keyboard button was released in this frame.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| code | <code>string</code> \| <code>Array.&lt;String&gt;</code> | Keyboard or mouse code. Can be array of codes to test if any of them is released.                          For mouse buttons: mouse_left, mouse_right or mouse_middle.                          For keyboard buttons: use one of the keys of KeyboardKeys (for example 'a', 'alt', 'up_arrow', etc..)                          For numbers (0-9): you can use the number. |
+| code | <code>string</code> \| <code>Array.&lt;String&gt;</code> | Keyboard, touch or mouse code. Can be array of codes to test if any of them is pressed.                          For mouse buttons: set code to 'mouse_left', 'mouse_right' or 'mouse_middle'.                          For keyboard buttons: use one of the keys of KeyboardKeys (for example 'a', 'alt', 'up_arrow', etc..).                          For touch screen: set code to 'touch'.                          For numbers (0-9): you can use the number itself. |
 
+**Example**  
+```js
+if (Shaku.input.released(['mouse_left', 'touch', 'space'])) { alert('mouse, touch screen or space were released!'); }
+```
 <a name="Input+pressed"></a>
 
 ### input.pressed(code) ⇒ <code>Boolean</code>
@@ -304,8 +397,12 @@ Return if a mouse or keyboard button was pressed in this frame.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| code | <code>string</code> \| <code>Array.&lt;String&gt;</code> | Keyboard or mouse code. Can be array of codes to test if any of them is pressed.                          For mouse buttons: mouse_left, mouse_right or mouse_middle.                          For keyboard buttons: use one of the keys of KeyboardKeys (for example 'a', 'alt', 'up_arrow', etc..)                          For numbers (0-9): you can use the number. |
+| code | <code>string</code> \| <code>Array.&lt;String&gt;</code> | Keyboard, touch or mouse code. Can be array of codes to test if any of them is pressed.                          For mouse buttons: set code to 'mouse_left', 'mouse_right' or 'mouse_middle'.                          For keyboard buttons: use one of the keys of KeyboardKeys (for example 'a', 'alt', 'up_arrow', etc..).                          For touch screen: set code to 'touch'.                          For numbers (0-9): you can use the number itself. |
 
+**Example**  
+```js
+if (Shaku.input.pressed(['mouse_left', 'touch', 'space'])) { alert('mouse, touch screen or space were pressed!'); }
+```
 <a name="elementCallback"></a>
 
 ## elementCallback ⇒ <code>Element</code>

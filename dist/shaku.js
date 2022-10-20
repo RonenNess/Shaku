@@ -8148,7 +8148,7 @@ class Input extends IManager
      * Get if currently touching a touch screen.
      * @returns {Boolean} True if currently touching the screen.
      */
-    get isTouching()
+    get touching()
     {
         return this._isTouching;
     }
@@ -8377,17 +8377,24 @@ class Input extends IManager
     /**
      * Return if a mouse or keyboard state in a generic way, used internally.
      * @private
-     * @param {string} code Keyboard or mouse code. 
+     * @param {string} code Keyboard, mouse or touch code. 
      *                          For mouse buttons: mouse_left, mouse_right or mouse_middle.
-     *                          For keyboard buttons: use one of the keys of KeyboardKeys (for example 'a', 'alt', 'up_arrow', etc..)
+     *                          For keyboard buttons: use one of the keys of KeyboardKeys (for example 'a', 'alt', 'up_arrow', etc..).
+     *                          For touch: just use 'touch' as code.
      *                          For numbers (0-9): you can use the number.
      * @param {Function} mouseCheck Callback to use to return value if its a mouse button code.
      * @param {Function} keyboardCheck Callback to use to return value if its a keyboard key code.
+     * @param {Boolean} touchCheck Value to use to return value if its a touch code.
      */
-    _getValueWithCode(code, mouseCheck, keyboardCheck)
+    _getValueWithCode(code, mouseCheck, keyboardCheck, touchCheck)
     {
         // make sure code is string
         code = String(code);
+
+        // if its 'touch' its for touch events
+        if (code === 'touch') {
+            return touchCheck;
+        }
 
         // if starts with 'mouse' its for mouse button events
         if (code.indexOf('mouse_') === 0) {
@@ -8410,17 +8417,20 @@ class Input extends IManager
 
     /**
      * Return if a mouse or keyboard button is currently down.
-     * @param {string|Array<String>} code Keyboard or mouse code. Can be array of codes to test if any of them is down.
-     *                          For mouse buttons: mouse_left, mouse_right or mouse_middle.
-     *                          For keyboard buttons: use one of the keys of KeyboardKeys (for example 'a', 'alt', 'up_arrow', etc..)
-     *                          For numbers (0-9): you can use the number.
+     * @example
+     * if (Shaku.input.down(['mouse_left', 'touch', 'space'])) { alert('mouse, touch screen or space are pressed!'); }
+     * @param {string|Array<String>} code Keyboard, touch or mouse code. Can be array of codes to test if any of them is pressed.
+     *                          For mouse buttons: set code to 'mouse_left', 'mouse_right' or 'mouse_middle'.
+     *                          For keyboard buttons: use one of the keys of KeyboardKeys (for example 'a', 'alt', 'up_arrow', etc..).
+     *                          For touch screen: set code to 'touch'.
+     *                          For numbers (0-9): you can use the number itself.
      * @returns {Boolean} True if key or mouse button are down.
      */
     down(code)
     {
         if (!(code instanceof Array)) { code = [code]; }
         for (let c of code) {
-            if (Boolean(this._getValueWithCode(c, this.mouseDown, this.keyDown))) {
+            if (Boolean(this._getValueWithCode(c, this.mouseDown, this.keyDown, this.touching))) {
                 return true;
             }
         }
@@ -8429,17 +8439,20 @@ class Input extends IManager
 
     /**
      * Return if a mouse or keyboard button was released in this frame.
-     * @param {string|Array<String>} code Keyboard or mouse code. Can be array of codes to test if any of them is released.
-     *                          For mouse buttons: mouse_left, mouse_right or mouse_middle.
-     *                          For keyboard buttons: use one of the keys of KeyboardKeys (for example 'a', 'alt', 'up_arrow', etc..)
-     *                          For numbers (0-9): you can use the number.
+     * @example
+     * if (Shaku.input.released(['mouse_left', 'touch', 'space'])) { alert('mouse, touch screen or space were released!'); }
+     * @param {string|Array<String>} code Keyboard, touch or mouse code. Can be array of codes to test if any of them is pressed.
+     *                          For mouse buttons: set code to 'mouse_left', 'mouse_right' or 'mouse_middle'.
+     *                          For keyboard buttons: use one of the keys of KeyboardKeys (for example 'a', 'alt', 'up_arrow', etc..).
+     *                          For touch screen: set code to 'touch'.
+     *                          For numbers (0-9): you can use the number itself.
      * @returns {Boolean} True if key or mouse button were down in previous frame, and released this frame.
      */
     released(code)
     {
         if (!(code instanceof Array)) { code = [code]; }
         for (let c of code) {
-            if (Boolean(this._getValueWithCode(c, this.mouseReleased, this.keyReleased))) {
+            if (Boolean(this._getValueWithCode(c, this.mouseReleased, this.keyReleased, this.touchEnded))) {
                 return true;
             }
         }
@@ -8448,17 +8461,20 @@ class Input extends IManager
 
     /**
      * Return if a mouse or keyboard button was pressed in this frame.
-     * @param {string|Array<String>} code Keyboard or mouse code. Can be array of codes to test if any of them is pressed.
-     *                          For mouse buttons: mouse_left, mouse_right or mouse_middle.
-     *                          For keyboard buttons: use one of the keys of KeyboardKeys (for example 'a', 'alt', 'up_arrow', etc..)
-     *                          For numbers (0-9): you can use the number.
+     * @example
+     * if (Shaku.input.pressed(['mouse_left', 'touch', 'space'])) { alert('mouse, touch screen or space were pressed!'); }
+     * @param {string|Array<String>} code Keyboard, touch or mouse code. Can be array of codes to test if any of them is pressed.
+     *                          For mouse buttons: set code to 'mouse_left', 'mouse_right' or 'mouse_middle'.
+     *                          For keyboard buttons: use one of the keys of KeyboardKeys (for example 'a', 'alt', 'up_arrow', etc..).
+     *                          For touch screen: set code to 'touch'.
+     *                          For numbers (0-9): you can use the number itself.
      * @returns {Boolean} True if key or mouse button where up in previous frame, and pressed this frame.
      */
     pressed(code)
     {
         if (!(code instanceof Array)) { code = [code]; }
         for (let c of code) {
-            if (Boolean(this._getValueWithCode(c, this.mousePressed, this.keyPressed))) {
+            if (Boolean(this._getValueWithCode(c, this.mousePressed, this.keyPressed, this.touchStarted))) {
                 return true;
             }
         }
@@ -8629,7 +8645,7 @@ class Input extends IManager
         // clear touching flag
         this._isTouching = false;
         this._touchEnded = true;
-        
+
         // mark that touch ended
         if (this.delegateTouchInputToMouse) {
             this._mouseState[this.MouseButtons.left] = false;
