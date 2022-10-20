@@ -7931,27 +7931,64 @@ class Input extends IManager
         this._callbacks = null;
         this._targetElement = window;
 
-        // export mouse and keyboard keys
-        this.MouseButtons = MouseButtons;
-        this.KeyboardKeys = KeyboardKeys;
-
-        // if true, will prevent default events by calling preventDefault()
+        /**
+         * If true, will prevent default input events by calling preventDefault().
+         * @name Input#preventDefaults
+         * @type {Boolean}
+         */
         this.preventDefaults = false;
 
-        // by default, when holding wheel button down browsers will turn into special page scroll mode and will not emit mouse move events.
-        // if this property is set to true, StInput will prevent this behavior, so we could still get mouse delta while mouse wheel is held down.
+        /**
+         * By default, when holding wheel button down browsers will turn into special page scroll mode and will not emit mouse move events.
+         * if this property is set to true (default), the Input manager will prevent this behavior, so we could still get mouse delta while mouse wheel is held down.
+         * @name Input#enableMouseDeltaWhileMouseWheelDown
+         * @type {Boolean}
+         */
         this.enableMouseDeltaWhileMouseWheelDown = true;
 
-        // if true, will disable the context menu (right click)
+        /**
+         * If true (default), will disable the context menu (what typically opens when you right click the page).
+         * @name Input#disableContextMenu
+         * @type {Boolean}
+         */
         this.disableContextMenu = true;
 
-        // should we reset on focus lost?
+        /**
+         * If true (default), will treat touch events (touch start / touch end / touch move) as if the user clicked and moved a mouse.
+         * @name Input#delegateTouchInputToMouse
+         * @type {Boolean}
+         */
+        this.delegateTouchInputToMouse = true;
+
+        /**
+         * If true (default), will reset all states if the window loses focus.
+         * @name Input#disableContextMenu
+         * @type {Boolean}
+         */
         this.resetOnFocusLoss = true;
 
         // set base state members
         this._resetAll();
     }
 
+    /**
+     * Get the Mouse Buttons enum.
+     * @see MouseButtons
+     */
+    get MouseButtons()
+    {
+        return MouseButtons;
+    }
+ 
+    /**
+     * Get the Keyboard Buttons enum.
+     * @see KeyboardKeys
+     */
+    get KeyboardKeys()
+    {
+        return KeyboardKeys;
+    }
+    
     /**
      * @inheritdoc
      * @private
@@ -7990,9 +8027,9 @@ class Input extends IManager
                 'keydown': function(event) {_this._onKeyDown(event); if (this.preventDefaults) event.preventDefault(); },
                 'keyup': function(event) {_this._onKeyUp(event); if (this.preventDefaults) event.preventDefault(); },
                 'blur': function(event) {_this._onBlur(event); if (this.preventDefaults) event.preventDefault(); },
-                'wheel': function(event) {_this._onMouseWheel(event); },
+                'wheel': function(event) {_this._onMouseWheel(event); if (this.preventDefaults) event.preventDefault(); },
                 'touchstart': function(event) {_this._onTouchStart(event); if (this.preventDefaults) event.preventDefault(); },
-                'touchend': function(event) {_this._onMouseUp(event); if (this.preventDefaults) event.preventDefault(); },
+                'touchend': function(event) {_this._onTouchEnd(event); if (this.preventDefaults) event.preventDefault(); },
                 'touchmove': function(event) {_this._onTouchMove(event); if (this.preventDefaults) event.preventDefault(); },
                 'contextmenu': function(event) { if (_this.disableContextMenu) { event.preventDefault(); } },
             };
@@ -8078,17 +8115,62 @@ class Input extends IManager
         this._mousePos = new Vector2();
         this._mousePrevPos = new Vector2();
         this._mouseState = {};
-        this._mousePrevState = {};
         this._mouseWheel = 0;
+
+        // touching states
+        this._touchPosition = new Vector2();
+        this._isTouching = false;
+        this._touchStarted = false;
+        this._touchEnded = false;
 
         // keyboard keys
         this._keyboardState = {};
         this._keyboardPrevState = {};
 
-        // reset touch started state
-        this._touchStarted = false;
+        // reset pressed / release events
+        this._keyboardPressed = {};
+        this._keyboardReleased = {};
+        this._mousePressed = {};
+        this._mouseReleased = {};
+    }
+
+    /**
+     * Get touch screen touching position.
+     * Note: if not currently touching, will return last known position.
+     * @returns {Vector2} Touch position.
+     */
+    get touchPosition()
+    {
+        return this._touchPosition.clone();
+    }
+
+    /**
+     * Get if currently touching a touch screen.
+     * @returns {Boolean} True if currently touching the screen.
+     */
+    get isTouching()
+    {
+        return this._isTouching;
+    }
+
+    /**
+     * Get if started touching a touch screen in current frame.
+     * @returns {Boolean} True if started touching the screen now.
+     */
+    get touchStarted()
+    {
+        return this._touchStarted;
     }
     
+    /**
+     * Get if stopped touching a touch screen in current frame.
+     * @returns {Boolean} True if stopped touching the screen now.
+     */
+    get touchEnded()
+    {
+        return this._touchEnded;
+    }
+
     /**
      * Get mouse position.
      * @returns {Vector2} Mouse position.
@@ -8139,7 +8221,7 @@ class Input extends IManager
     mousePressed(button = 0)
     {
         if (button === undefined) throw new Error("Invalid button code!");
-        return Boolean(this._mouseState[button] && !this._mousePrevState[button]);
+        return Boolean(this._mousePressed[button]);
     }
 
     /**
@@ -8172,7 +8254,7 @@ class Input extends IManager
     mouseReleased(button = 0)
     {
         if (button === undefined) throw new Error("Invalid button code!");
-        return Boolean(!this._mouseState[button] && this._mousePrevState[button]);
+        return Boolean(this._mouseReleased[button]);
     }
 
     /**
@@ -8205,7 +8287,7 @@ class Input extends IManager
     keyReleased(key)
     {
         if (key === undefined) throw new Error("Invalid key code!");
-        return Boolean(!this._keyboardState[key] && this._keyboardPrevState[key]);
+        return Boolean(this._keyboardReleased[key]);
     }
     
     /**
@@ -8216,7 +8298,7 @@ class Input extends IManager
     keyPressed(key)
     {
         if (key === undefined) throw new Error("Invalid key code!");
-        return Boolean(this._keyboardState[key] && !this._keyboardPrevState[key]);
+        return Boolean(this._keyboardPressed[key]);
     }
 
     /**
@@ -8252,12 +8334,7 @@ class Input extends IManager
      */
     get anyKeyPressed()
     {
-        for (var key in this._keyboardState) {
-            if (this._keyboardState[key] && !this._keyboardPrevState[key]) {
-                return true;
-            }
-        }
-        return false;
+        return Object.keys(this._keyboardPressed).length !== 0;
     }
 
     /**
@@ -8280,12 +8357,7 @@ class Input extends IManager
      */
      get anyMouseButtonPressed()
      {
-         for (var key in this._mouseState) {
-             if (this._mouseState[key] && !this._mousePrevState[key]) {
-                 return true;
-             }
-         }
-         return false;
+        return Object.keys(this._mousePressed).length !== 0;
      }
 
     /**
@@ -8421,24 +8493,15 @@ class Input extends IManager
         // set mouse previous position and clear mouse move cache
         this._mousePrevPos = this._mousePos.clone();
 
-        // set previous keyboard state
-        this._keyboardPrevState = {};
-        for (var key in this._keyboardState) {
-            this._keyboardPrevState[key] = this._keyboardState[key];
-        }
+        // reset pressed / release events
+        this._keyboardPressed = {};
+        this._keyboardReleased = {};
+        this._mousePressed = {};
+        this._mouseReleased = {};
 
-        // set previous mouse state
-        this._mousePrevState = {};
-        for (var key in this._mouseState) {
-            this._mousePrevState[key] = this._mouseState[key];
-        }
-
-        // apply touch start event
-        if (this._touchStarted)
-        {
-            this._mouseState[this.MouseButtons.left] = true;
-            this._touchStarted = false;
-        }
+        // reset touch start / end states
+        this._touchStarted = false;
+        this._touchEnded = false;
 
         // reset mouse wheel
         this._mouseWheel = 0;
@@ -8484,6 +8547,7 @@ class Input extends IManager
     {
         var keycode = this._getKeyboardKeyCode(event);
         this._keyboardState[keycode] = true;
+        this._keyboardPressed[keycode] = true;
     }
 
     /**
@@ -8493,8 +8557,27 @@ class Input extends IManager
      */
     _onKeyUp(event)
     {
-        var keycode = this._getKeyboardKeyCode(event);
-        this._keyboardState[keycode || 0] = false;
+        var keycode = this._getKeyboardKeyCode(event) || 0;
+        this._keyboardState[keycode] = false;
+        this._keyboardReleased[keycode] = true;
+    }
+
+    /**
+     * Extract position from touch event.
+     * @private
+     * @param {*} event Event data from browser.
+     * @returns {Vector2} Position x,y or null if couldn't extract touch position.
+     */
+    _getTouchEventPosition(event)
+    {
+        var touches = event.changedTouches || event.touches;
+        if (touches && touches.length) {
+            var touch = touches[0];
+            var x = touch.pageX || touch.offsetX || touch.clientX;
+            var y = touch.pageY || touch.offsetY || touch.clientY;
+            return new Vector2(x, y);
+        }
+        return null;
     }
 
     /**
@@ -8504,25 +8587,78 @@ class Input extends IManager
      */
     _onTouchStart(event)
     {
-        // also update mouse position - this is important for touch events on mobile, where touch move only works while touching,
-        // so we want to update mouse position on the moment touch starts
-        var touches = event.changedTouches;
-        if (touches && touches.length)
-        {
-            var touch = touches[0];
-            var x = touch.pageX || touch.offsetX || touch.clientX;
-            var y = touch.pageY || touch.offsetY || touch.clientY;
-            if (x !== undefined && y !== undefined) {
-                this._mousePos.x = x;
-                this._mousePos.y = y;
-                this._normalizeMousePos()
+        // update position
+        let position = this._getTouchEventPosition(event);
+        if (position) {
+            if (this.delegateTouchInputToMouse) {
+                this._mousePos.x = position.x;
+                this._mousePos.y = position.y;
+                this._normalizeMousePos();
             }
         }
 
-        // mark that touch started - will update state next frame
+        // set touching flag
+        this._isTouching = true;
         this._touchStarted = true;
+
+        // mark that touch started
+        if (this.delegateTouchInputToMouse) {
+            this._mouseState[this.MouseButtons.left] = true;
+            this._mousePressed[this.MouseButtons.left] = true;
+        }
     }
 
+    /**
+     * Handle touch end event.
+     * @private
+     * @param {*} event Event data from browser.
+     */
+    _onTouchEnd(event)
+    {
+        // update position
+        let position = this._getTouchEventPosition(event);
+        if (position) {
+            this._touchPosition.copy(position);
+            if (this.delegateTouchInputToMouse) {
+                this._mousePos.x = position.x;
+                this._mousePos.y = position.y;
+                this._normalizeMousePos();
+            }
+        }
+
+        // clear touching flag
+        this._isTouching = false;
+        this._touchEnded = true;
+        
+        // mark that touch ended
+        if (this.delegateTouchInputToMouse) {
+            this._mouseState[this.MouseButtons.left] = false;
+            this._mouseReleased[this.MouseButtons.left] = true;
+        }
+    }
+    
+    /**
+     * Handle touch move event.
+     * @private
+     * @param {*} event Event data from browser.
+     */
+    _onTouchMove(event)
+    {
+        // update position
+        let position = this._getTouchEventPosition(event);
+        if (position) {
+            this._touchPosition.copy(position);
+            if (this.delegateTouchInputToMouse) {
+                this._mousePos.x = position.x;
+                this._mousePos.y = position.y;
+                this._normalizeMousePos();
+            }
+        }
+
+        // set touching flag
+        this._isTouching = true;
+    }
+    
     /**
      * Handle mouse down event.
      * @private
@@ -8536,7 +8672,8 @@ class Input extends IManager
         { 
             event.preventDefault(); 
         }
-        this._mouseState[event.button || 0] = true;
+        this._mouseState[event.button] = true;
+        this._mousePressed[event.button] = true;
     }
 
     /**
@@ -8547,20 +8684,8 @@ class Input extends IManager
     _onMouseUp(event)
     {
         event = this._getEvent(event);
-        this._mouseState[event.button || 0] = false;
-    }
-
-    /**
-     * Handle touch move event.
-     * @private
-     * @param {*} event Event data from browser.
-     */
-    _onTouchMove(event)
-    {
-        event = this._getEvent(event);
-        this._mousePos.x = event.touches[0].pageX;
-        this._mousePos.y = event.touches[0].pageY;
-        this._normalizeMousePos();
+        this._mouseState[event.button] = false;
+        this._mousePressed[event.button] = true;
     }
 
     /**
@@ -8607,6 +8732,7 @@ class Input extends IManager
             this._mousePos.x -= rect.left;
             this._mousePos.y -= rect.top;
         }
+        this._mousePos.roundSelf();
     }
 
     /**

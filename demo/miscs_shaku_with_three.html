@@ -12,7 +12,8 @@
     <button class="view-code-btn" onclick="showSampleCode();">View Code</button> 
     <h1 class="demo-title">Shaku: Combine With THREE</h1>
       <p>This demo show how to combine Shaku with THREE.JS.<br/>
-      THREE will be used for 3D rendering, while Shaku can be used for 2d, sounds, and input and utils.</p>
+      THREE will be used for 3D rendering, while Shaku can be used for 2d, sounds, input and utils. <br />
+      Note: Shaku and THREE can't share the same canvas as this cause unexpected behavior. Instead we use two canvases on top of each other.</p>
       
       <!-- include shaku -->
       <script src="js/demos.js"></script>
@@ -155,7 +156,7 @@
   <div class="modal__overlay jsOverlay"></div>
   <div class="modal__container">   
 
-<p class="noselect">The following shows a minimal code example on how to init Shaku and create a main loop.</i>
+<p class="noselect">The following shows a code example on how to combine Shaku with THREE.js.</i>
 </p>
 <pre><code class="language-js">async function runGame()
 {

@@ -2027,6 +2027,12 @@ Special thanks to [knexator](https://github.com/knexator) for adding TypeScript 
 - Added TypeScript Declarations [details here](https://github.com/RonenNess/Shaku/pull/3).
 - Renamed `TextAlignment` enum (old name still works with a deprecation warning).
 - Added Shaku + Three.js demo.
+- Added `prevent default` support on mouse wheel events.
+- Refactored the way Input Manager handles key pressed / released events, so no events could be lost.
+- Slightly optimized Input Manager.
+- Improved the way touch events are handled as mouse in Input Manager.
+- Added `delegateTouchInputToMouse` flag in Input Manager.
+- Added getters for touch screen state and position.
 
 # License
 
