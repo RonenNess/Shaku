@@ -8701,7 +8701,7 @@ class Input extends IManager
     {
         event = this._getEvent(event);
         this._mouseState[event.button] = false;
-        this._mousePressed[event.button] = true;
+        this._mouseReleased[event.button] = true;
     }
 
     /**
