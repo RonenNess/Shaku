@@ -2018,7 +2018,7 @@ Special thanks to [knexator](https://github.com/knexator) for this update!
 - Added support in setting source rectangle from spritesheet.
 - Changed default size for sprites.
 
-## 1.6.1 [WIP]
+## 1.6.1
 
 Special thanks to [knexator](https://github.com/knexator) for adding TypeScript Declarations!
 
