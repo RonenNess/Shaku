@@ -15,7 +15,8 @@
         Tilemaps create an even grid of collision rectangles that you can easily set or unset. Its an easy & efficient way to implement collision for tile-based levels.<br />
         You can combine other shapes with tilemap shapes in your collision world, and even have multiple tilemaps (note however that tilemaps can't collide with each other).<br />
         Move the shape with your mouse to test collision, press <b>1-4</b> to replace the shape you control.</p>
-      
+        
+      <p id="stats-show"></p>
       <p id="show-data" style="color: red;"></p>
 
       <!-- include shaku -->
@@ -67,6 +68,9 @@
           // do a single main loop step
           function step() 
           {  
+            // reset stats
+            world.resetStats();
+
             // start new frame and clear screen
             Shaku.startFrame();
             Shaku.gfx.clear(Shaku.utils.Color.aliceblue);
@@ -113,6 +117,9 @@
             if (Shaku.input.down('2')) { userShapeType = 1; }
             if (Shaku.input.down('3')) { userShapeType = 2; }
             if (Shaku.input.down('4')) { userShapeType = 3; }
+
+            // show stats
+            document.getElementById("stats-show").innerHTML = JSON.stringify(world.stats);
 
             // end frame and request next frame
             Shaku.endFrame();

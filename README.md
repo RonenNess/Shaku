@@ -2033,6 +2033,7 @@ Special thanks to [knexator](https://github.com/knexator) for adding TypeScript 
 - Improved the way touch events are handled as mouse in Input Manager.
 - Added `delegateTouchInputToMouse` flag in Input Manager.
 - Added getters for touch screen state and position.
+- Added `stats` to collision world.
 
 # License
 

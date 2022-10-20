@@ -1149,6 +1149,8 @@ You can use different collision worlds to represent different levels or differen
 * [CollisionWorld](#CollisionWorld)
     * [new CollisionWorld(resolver, gridCellSize)](#new_CollisionWorld_new)
     * [.resolver](#CollisionWorld+resolver)
+    * [.stats](#CollisionWorld+stats) ⇒ <code>\*</code>
+    * [.resetStats()](#CollisionWorld+resetStats)
     * [.iterateShapes(callback)](#CollisionWorld+iterateShapes)
     * [.addShape(shape)](#CollisionWorld+addShape)
     * [.removeShape(shape)](#CollisionWorld+removeShape)
@@ -1175,6 +1177,28 @@ Collision resolver used in this collision world.
 By default, will inherit the collision manager default resolver.
 
 **Kind**: instance property of [<code>CollisionWorld</code>](#CollisionWorld)  
+<a name="CollisionWorld+stats"></a>
+
+### collisionWorld.stats ⇒ <code>\*</code>
+Get current stats.
+
+**Kind**: instance property of [<code>CollisionWorld</code>](#CollisionWorld)  
+**Returns**: <code>\*</code> - Dictionary with the following stats:
+ updatedShapes: number of times we updated or added new shapes.
+ addedShapes: number of new shapes added.
+ deletedGridCells: grid cells that got deleted after they were empty.
+ createdGridCell: new grid cells created.
+ broadPhaseShapesChecksPrePredicate: how many shapes were tested in a broadphase check, before the predicate method was called.
+ broadPhaseShapesChecksPostPredicate: how many shapes were tested in a broadphase check, after the predicate method was called.
+ broadPhaseCalls: how many broadphase calls were made
+ collisionChecks: how many shape-vs-shape collision checks were actually made.
+ collisionMatches: how many collision checks were positive.  
+<a name="CollisionWorld+resetStats"></a>
+
+### collisionWorld.resetStats()
+Reset stats.
+
+**Kind**: instance method of [<code>CollisionWorld</code>](#CollisionWorld)  
 <a name="CollisionWorld+iterateShapes"></a>
 
 ### collisionWorld.iterateShapes(callback)

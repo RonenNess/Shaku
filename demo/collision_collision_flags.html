@@ -15,6 +15,8 @@
       Move the shape with your mouse to test collision, press <b>1-4</b> to replace the shape, and <b>+ / -</b> to set size. <br />
       Click on shapes to randomize their flags.</p>
       
+      <p id="stats-show"></p>
+
       <p id="show-data" style="color: red;"></p>
 
       <!-- include shaku -->
@@ -73,6 +75,9 @@
           // do a single main loop step
           function step() 
           {  
+            // reset stats
+            world.resetStats();
+
             // start new frame and clear screen
             Shaku.startFrame();
             Shaku.gfx.clear(Shaku.utils.Color.aliceblue);
@@ -156,6 +161,9 @@
             if (Shaku.input.down('4')) { userShapeType = 3; }
             if (Shaku.input.pressed('plus')) {sizeFactor += 0.25; }
             if (Shaku.input.pressed('minus') && sizeFactor > 0.5) {sizeFactor -= 0.25; }
+
+            // show stats
+            document.getElementById("stats-show").innerHTML = JSON.stringify(world.stats);
 
             // end frame and request next frame
             Shaku.endFrame();

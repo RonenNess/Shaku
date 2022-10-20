@@ -2007,6 +2007,45 @@ class CollisionWorld
         // shapes that need updates and grid chunks to delete
         this._shapesToUpdate = new Set();
         this._cellsToDelete = new Set();
+
+        // reset stats data
+        this.resetStats();
+    }
+
+    /**
+     * Reset stats.
+     */
+    resetStats()
+    {
+        this._stats = {
+            updatedShapes: 0,
+            addedShapes: 0,
+            deletedGridCells: 0,
+            createdGridCell: 0,
+            broadPhaseShapesChecksPrePredicate: 0,
+            broadPhaseShapesChecksPostPredicate: 0,
+            broadPhaseCalls: 0,
+            collisionChecks: 0,
+            collisionMatches: 0
+        }
+    }
+
+    /**
+     * Get current stats.
+     * @returns {*} Dictionary with the following stats:
+     *  updatedShapes: number of times we updated or added new shapes.
+     *  addedShapes: number of new shapes added.
+     *  deletedGridCells: grid cells that got deleted after they were empty.
+     *  createdGridCell: new grid cells created.
+     *  broadPhaseShapesChecksPrePredicate: how many shapes were tested in a broadphase check, before the predicate method was called.
+     *  broadPhaseShapesChecksPostPredicate: how many shapes were tested in a broadphase check, after the predicate method was called.
+     *  broadPhaseCalls: how many broadphase calls were made
+     *  collisionChecks: how many shape-vs-shape collision checks were actually made.
+     *  collisionMatches: how many collision checks were positive.
+     */
+    get stats()
+    {
+        return this._stats;
     }
 
     /**
@@ -2017,6 +2056,7 @@ class CollisionWorld
     {
         // delete empty grid cells
         if (this._cellsToDelete.size > 0) {
+            this._stats.deletedGridCells += this._cellsToDelete.size;
             for (let key of this._cellsToDelete) {
                 if (this._grid[key] && this._grid[key].size === 0) { 
                     delete this._grid[key];
@@ -2035,6 +2075,21 @@ class CollisionWorld
     }
 
     /**
+     * Get or create cell.
+     * @private
+     */
+    _getCell(i, j)
+    {
+        let key = i + ',' + j;
+        let ret = this._grid[key];
+        if (!ret) { 
+            this._stats.createdGridCells++;
+            this._grid[key] = ret = new Set(); 
+        }
+        return ret;
+    }
+
+    /**
      * Update a shape in collision world after it moved or changed.
      * @private
      */
@@ -2044,6 +2099,9 @@ class CollisionWorld
         if (shape._world !== this) {
             return;
         }
+
+        // update shapes
+        this._stats.updatedShapes++;
 
         // get new range
         let bb = shape._getBoundingBox();
@@ -2100,24 +2158,17 @@ class CollisionWorld
                     }
 
                     // add to new cell
-                    let key = i + ',' + j;
-                    let currSet = this._grid[key];
-                    if (!currSet) { 
-                        this._grid[key] = currSet = new Set(); 
-                    }
+                    let currSet = this._getCell(i, j);
                     currSet.add(shape);
                 }
             }
         }
         // first-time adding to grid
         else {
+            this._stats.addedShapes++;
             for (let i = minx; i < maxx; ++i) {
                 for (let j = miny; j < maxy; ++j) {
-                    let key = i + ',' + j;
-                    let currSet = this._grid[key];
-                    if (!currSet) { 
-                        this._grid[key] = currSet = new Set(); 
-                    }
+                    let currSet = this._getCell(i, j);
                     currSet.add(shape);
                 }
             }
@@ -2228,6 +2279,9 @@ class CollisionWorld
         let maxx = Math.ceil(bb.right / this._gridCellSize.x);
         let maxy = Math.ceil(bb.bottom / this._gridCellSize.y);
 
+        // update stats
+        this._stats.broadPhaseCalls++;
+
         // shapes we checked
         let checked = new Set();
 
@@ -2259,10 +2313,16 @@ class CollisionWorld
                             continue;
                         }
 
+                        // update stats
+                        this._stats.broadPhaseShapesChecksPrePredicate++;
+
                         // use predicate
                         if (predicate && !predicate(other)) {
                             continue;
                         }
+
+                        // update stats
+                        this._stats.broadPhaseShapesChecksPostPredicate++;
 
                         // invoke handler on shape
                         let proceedLoop = Boolean(handler(other));
@@ -2309,8 +2369,10 @@ class CollisionWorld
             // check collision sorted
             var handlers = this.resolver.getHandlers(sourceShape);
             for (let other of options) {
+                this._stats.collisionChecks++;
                 result = this.resolver.testWithHandler(sourceShape, other, handlers[other.shapeId]);
                 if (result) {
+                    this._stats.collisionMatches++;
                     break;
                 }
             }
@@ -2323,7 +2385,9 @@ class CollisionWorld
             this._iterateBroadPhase(sourceShape, (other) => {
 
                 // test collision and continue iterating if we don't have a result
+                this._stats.collisionChecks++;
                 result = this.resolver.testWithHandler(sourceShape, other, handlers[other.shapeId]);
+                if (result) { this._stats.collisionMatches++; }
                 return !result;
 
             }, mask, predicate);
@@ -2351,8 +2415,10 @@ class CollisionWorld
         var ret = [];
         var handlers = this.resolver.getHandlers(sourceShape);
         this._iterateBroadPhase(sourceShape, (other) => {
+            this._stats.collisionChecks++;
             let result = this.resolver.testWithHandler(sourceShape, other, handlers[other.shapeId]);
             if (result) {
+                this._stats.collisionMatches++;
                 ret.push(result);
                 if (intermediateProcessor && intermediateProcessor(result) === false) {
                     return false;
