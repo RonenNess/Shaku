@@ -2035,6 +2035,14 @@ Special thanks to [knexator](https://github.com/knexator) for adding TypeScript 
 - Added getters for touch screen state and position.
 - Added `stats` to collision world.
 
+# 1.6.2
+
+- Fixed key pressed input bug from last version.
+- Extended the input demo page to include more tests.
+- Added `lastReleaseTime` and `lastPressedTime` to Input manager.
+- Added `doublePressed` and `doubleReleased` to Input manager.
+- Fixed some input manager docs.
+
 # License
 
 *Shaku* is licensed under the permissive MIT license, so you can use it for any purpose (including commercially) and it should be compatible with most common licenses.

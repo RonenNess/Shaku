@@ -7737,7 +7737,7 @@ module.exports = SpritesGroup;
  * 
  * |-- copyright and license --|
  * @package    Shaku
- * @file       shaku\lib\gfx\text_alignment.js
+ * @file       shaku\lib\gfx\text_alignments.js
  * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
  * @copyright  (c) 2021 Ronen Ness
  * @license    MIT
@@ -7978,6 +7978,13 @@ const { MouseButton, MouseButtons, KeyboardKey, KeyboardKeys } = require('./key_
 const _logger = require('../logger.js').getLogger('input');
 
 
+// get timestamp
+function timestamp()
+{
+    return (new Date()).getTime();
+}
+
+
 /**
  * Input manager. 
  * Used to recieve input from keyboard and mouse.
@@ -8028,10 +8035,17 @@ class Input extends IManager
 
         /**
          * If true (default), will reset all states if the window loses focus.
-         * @name Input#disableContextMenu
+         * @name Input#resetOnFocusLoss
          * @type {Boolean}
          */
         this.resetOnFocusLoss = true;
+
+        /**
+         * Default time, in milliseconds, to consider two consecutive key presses as a double-press.
+         * @name Input#defaultDoublePressInterval
+         * @type {Number}
+         */
+        this.defaultDoublePressInterval = 250;
 
         // set base state members
         this._resetAll();
@@ -8124,7 +8138,6 @@ class Input extends IManager
      **/
     startFrame()
     {
-
     }
 
     /**
@@ -8150,11 +8163,6 @@ class Input extends IManager
             this._callbacks = null;
         }
     }
-
-    /**
-     * @callback elementCallback
-     * @returns  {Element}
-     */
 
     /**
      * Set the target element to attach input to. If not called, will just use the entire document.
@@ -8198,6 +8206,20 @@ class Input extends IManager
         this._keyboardReleased = {};
         this._mousePressed = {};
         this._mouseReleased = {};
+
+        // for last release time and to count double click / double pressed events
+        this._lastMouseReleasedTime = {};
+        this._lastKeyReleasedTime = {};
+        this._lastTouchReleasedTime = 0;
+        this._lastMousePressedTime = {};
+        this._lastKeyPressedTime = {};
+        this._lastTouchPressedTime = 0;
+        this._prevLastMouseReleasedTime = {};
+        this._prevLastKeyReleasedTime = {};
+        this._prevLastTouchReleasedTime = 0;
+        this._prevLastMousePressedTime = {};
+        this._prevLastKeyPressedTime = {};
+        this._prevLastTouchPressedTime = 0;
     }
 
     /**
@@ -8441,7 +8463,7 @@ class Input extends IManager
     }
 
     /**
-     * Return if a mouse or keyboard state in a generic way, used internally.
+     * Return if a mouse or keyboard state in a generic way. Used internally.
      * @private
      * @param {string} code Keyboard, mouse or touch code. 
      *                          For mouse buttons: mouse_left, mouse_right or mouse_middle.
@@ -8450,16 +8472,16 @@ class Input extends IManager
      *                          For numbers (0-9): you can use the number.
      * @param {Function} mouseCheck Callback to use to return value if its a mouse button code.
      * @param {Function} keyboardCheck Callback to use to return value if its a keyboard key code.
-     * @param {Boolean} touchCheck Value to use to return value if its a touch code.
+     * @param {*} touchValue Value to use to return value if its a touch code.
      */
-    _getValueWithCode(code, mouseCheck, keyboardCheck, touchCheck)
+    _getValueWithCode(code, mouseCheck, keyboardCheck, touchValue)
     {
         // make sure code is string
         code = String(code);
 
         // if its 'touch' its for touch events
         if (code === 'touch') {
-            return touchCheck;
+            return touchValue;
         }
 
         // if starts with 'mouse' its for mouse button events
@@ -8548,6 +8570,106 @@ class Input extends IManager
     }
 
     /**
+     * Return timestamp, in milliseconds, of the last time this key code was released.
+     * @example
+     * let lastReleaseTime = Shaku.input.lastReleaseTime('mouse_left');
+     * @param {string} code Keyboard, touch or mouse code.
+     *                          For mouse buttons: set code to 'mouse_left', 'mouse_right' or 'mouse_middle'.
+     *                          For keyboard buttons: use one of the keys of KeyboardKeys (for example 'a', 'alt', 'up_arrow', etc..).
+     *                          For touch screen: set code to 'touch'.
+     *                          For numbers (0-9): you can use the number itself.
+     * @returns {Number} Timestamp of last key release, or 0 if was never released.
+     */
+    lastReleaseTime(code)
+    {
+        if (code instanceof Array) { throw new Error("Array not supported in 'lastReleaseTime'!"); }
+        return this._getValueWithCode(code, (c) => this._lastMouseReleasedTime[c], (c) => this._lastKeyReleasedTime[c], this._lastTouchReleasedTime) || 0;
+    }
+
+    /**
+     * Return timestamp, in milliseconds, of the last time this key code was pressed.
+     * @example
+     * let lastPressTime = Shaku.input.lastPressTime('mouse_left');
+     * @param {string} code Keyboard, touch or mouse code.
+     *                          For mouse buttons: set code to 'mouse_left', 'mouse_right' or 'mouse_middle'.
+     *                          For keyboard buttons: use one of the keys of KeyboardKeys (for example 'a', 'alt', 'up_arrow', etc..).
+     *                          For touch screen: set code to 'touch'.
+     *                          For numbers (0-9): you can use the number itself.
+     * @returns {Number} Timestamp of last key press, or 0 if was never pressed.
+     */
+    lastPressTime(code)
+    {
+        if (code instanceof Array) { throw new Error("Array not supported in 'lastPressTime'!"); }
+        return this._getValueWithCode(code, (c) => this._lastMousePressedTime[c], (c) => this._lastKeyPressedTime[c], this._lastTouchPressedTime) || 0;
+    }
+    
+    /**
+     * Return if a key was double-pressed.
+     * @example
+     * let doublePressed = Shaku.input.doublePressed(['mouse_left', 'touch', 'space']);
+     * @param {string} code Keyboard, touch or mouse code. Can be array of codes to test if any of them is double-pressed.
+     *                          For mouse buttons: set code to 'mouse_left', 'mouse_right' or 'mouse_middle'.
+     *                          For keyboard buttons: use one of the keys of KeyboardKeys (for example 'a', 'alt', 'up_arrow', etc..).
+     *                          For touch screen: set code to 'touch'.
+     *                          For numbers (0-9): you can use the number itself.
+     * @param {Number} maxInterval Max interval time, in milliseconds, to consider it a double-press. Defaults to `defaultDoublePressInterval`.
+     * @returns {Boolean} True if one or more key codes double-pressed, false otherwise.
+     */ 
+    doublePressed(code, maxInterval)
+    {
+        // default interval
+        maxInterval = maxInterval || this.defaultDoublePressInterval;
+
+        // current timestamp
+        let currTime = timestamp();
+
+        // check all keys
+        if (!(code instanceof Array)) { code = [code]; }
+        for (let c of code) {
+            if (this.pressed(c)) {
+                let currKeyTime = this._getValueWithCode(c, (c) => this._prevLastMousePressedTime[c], (c) => this._prevLastKeyPressedTime[c], this._prevLastTouchPressedTime);
+                if (currTime - currKeyTime <= maxInterval) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Return if a key was double-released.
+     * @example
+     * let doubleReleased = Shaku.input.doubleReleased(['mouse_left', 'touch', 'space']);
+     * @param {string} code Keyboard, touch or mouse code. Can be array of codes to test if any of them is double-released.
+     *                          For mouse buttons: set code to 'mouse_left', 'mouse_right' or 'mouse_middle'.
+     *                          For keyboard buttons: use one of the keys of KeyboardKeys (for example 'a', 'alt', 'up_arrow', etc..).
+     *                          For touch screen: set code to 'touch'.
+     *                          For numbers (0-9): you can use the number itself.
+     * @param {Number} maxInterval Max interval time, in milliseconds, to consider it a double-release. Defaults to `defaultDoublePressInterval`.
+     * @returns {Boolean} True if one or more key codes double-released, false otherwise.
+     */ 
+    doubleReleased(code, maxInterval)
+    {
+        // default interval
+        maxInterval = maxInterval || this.defaultDoublePressInterval;
+
+        // current timestamp
+        let currTime = timestamp();
+
+        // check all keys
+        if (!(code instanceof Array)) { code = [code]; }
+        for (let c of code) {
+            if (this.released(c)) {
+                let currKeyTime = this._getValueWithCode(c, (c) => this._prevLastMousePressedTime[c], (c) => this._prevLastKeyPressedTime[c], this._prevLastTouchPressedTime);
+                if (currTime - currKeyTime <= maxInterval) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    
+    /**
      * Get mouse wheel sign.
      * @returns {Number} Mouse wheel sign (-1 or 1) for wheel scrolling that happened during this frame.
      * Will return 0 if mouse wheel is not currently being used.
@@ -8628,8 +8750,12 @@ class Input extends IManager
     _onKeyDown(event)
     {
         var keycode = this._getKeyboardKeyCode(event);
+        if (!this._keyboardState[keycode]) {
+            this._keyboardPressed[keycode] = true;
+            this._prevLastKeyPressedTime[keycode] = this._lastKeyPressedTime[keycode];
+            this._lastKeyPressedTime[keycode] = timestamp();
+        }
         this._keyboardState[keycode] = true;
-        this._keyboardPressed[keycode] = true;
     }
 
     /**
@@ -8642,6 +8768,8 @@ class Input extends IManager
         var keycode = this._getKeyboardKeyCode(event) || 0;
         this._keyboardState[keycode] = false;
         this._keyboardReleased[keycode] = true;
+        this._prevLastKeyReleasedTime[keycode] = this._lastKeyReleasedTime[keycode];
+        this._lastKeyReleasedTime[keycode] = timestamp();
     }
 
     /**
@@ -8683,10 +8811,13 @@ class Input extends IManager
         this._isTouching = true;
         this._touchStarted = true;
 
+        // update time
+        this._prevLastTouchPressedTime = this._lastTouchPressedTime;
+        this._lastTouchPressedTime = timestamp();
+
         // mark that touch started
         if (this.delegateTouchInputToMouse) {
-            this._mouseState[this.MouseButtons.left] = true;
-            this._mousePressed[this.MouseButtons.left] = true;
+            this._mouseButtonDown(this.MouseButtons.left);
         }
     }
 
@@ -8712,10 +8843,13 @@ class Input extends IManager
         this._isTouching = false;
         this._touchEnded = true;
 
+        // update touch end time
+        this._prevLastTouchReleasedTime = this._lastTouchReleasedTime;
+        this._lastTouchReleasedTime = timestamp();
+
         // mark that touch ended
         if (this.delegateTouchInputToMouse) {
-            this._mouseState[this.MouseButtons.left] = false;
-            this._mouseReleased[this.MouseButtons.left] = true;
+            this._mouseButtonUp(this.MouseButtons.left);
         }
     }
     
@@ -8748,14 +8882,12 @@ class Input extends IManager
      */
     _onMouseDown(event)
     {
-        // update mouse down state
         event = this._getEvent(event);
         if (this.enableMouseDeltaWhileMouseWheelDown && (event.button === this.MouseButtons.middle))
         { 
             event.preventDefault(); 
         }
-        this._mouseState[event.button] = true;
-        this._mousePressed[event.button] = true;
+        this._mouseButtonDown(event.button);
     }
 
     /**
@@ -8766,10 +8898,35 @@ class Input extends IManager
     _onMouseUp(event)
     {
         event = this._getEvent(event);
-        this._mouseState[event.button] = false;
-        this._mouseReleased[event.button] = true;
+        this._mouseButtonUp(event.button);
     }
 
+    /**
+     * Mouse button pressed logic.
+     * @private
+     * @param {*} button Button pressed.
+     */
+    _mouseButtonDown(button)
+    {
+        this._mouseState[button] = true;
+        this._mousePressed[button] = true;
+        this._prevLastMousePressedTime[button] = this._lastMousePressedTime[button];
+        this._lastMousePressedTime[button] = timestamp();
+    }
+
+    /**
+     * Mouse button released logic.
+     * @private
+     * @param {*} button Button released.
+     */
+    _mouseButtonUp(button)
+    {
+        this._mouseState[button] = false;
+        this._mouseReleased[button] = true;
+        this._prevLastMouseReleasedTime[button] = this._lastMouseReleasedTime[button];
+        this._lastMouseReleasedTime[button] = timestamp();
+    }
+    
     /**
      * Handle mouse move event.
      * @private
@@ -9819,7 +9976,7 @@ let _totalFrameTimes = 0;
 
 
 // current version
-const version = "1.6.1";
+const version = "1.6.2";
 
 
 /**

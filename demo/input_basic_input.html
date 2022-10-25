@@ -11,8 +11,27 @@
     <div class="noselect">
     <button class="view-code-btn" onclick="showSampleCode();">View Code</button> 
     <h1 class="demo-title">Shaku Input Demo: Basic Input</h1>
+
       <p>This demo demonstrate how to use basic keyboard and mouse input with Shaku.</p>
       <p id="mouse_state"></p>
+
+      <p>Keys currently down (marked in red):</p>
+      <div id="virtual-keyboard">
+      </div>
+
+      <p>Keys input counter:</p>
+      <table id="status-table" style="table-layout:fixed; width:1400px; text-align:left;">
+        <tr>
+          <th>Key Code</th>
+          <th>Pressed</th>
+          <th>Released</th>
+          <th>Double-Pressed</th>
+          <th>Double-Released</th>
+          <th>Last Release Time</th>
+          <th>Last Press Time</th>
+          <th>Is Down</th>
+        </tr>
+      </table>
 
       <!-- include shaku -->
       <script src="js/demos.js"></script>
@@ -23,25 +42,54 @@
 
         (function() {
 
+          // count press / release
+          let pressCount = {};
+          let releaseCount = {};
+          let doublePressCount = {};
+          let doubleReleaseCount = {};
+
           // create button element to show key state
           function createButtonElement(key) {
+
+            // create button
             let p = document.createElement("BUTTON");
             p.style.fontSize = '120%';
             p.innerHTML = key;
             p.id = key;
-            document.body.appendChild(p); 
+            document.getElementById("virtual-keyboard").appendChild(p); 
+
+            // create entry in status table
+            pressCount[key] = 0;
+            releaseCount[key] = 0;
+            doublePressCount[key] = 0;
+            doubleReleaseCount[key] = 0;
+
+            document.getElementById('status-table').innerHTML +=
+            `<tr>
+              <td>${key}</td>
+              <td id="${key}-pressed">0</td>
+              <td id="${key}-released">0</td>
+              <td id="${key}-dpressed">0</td>
+              <td id="${key}-dreleased">0</td>
+              <td id="${key}-releasetime">0</td>
+              <td id="${key}-presstime">0</td>
+              <td id="${key}-down">false</td>
+            </tr>`;
           }
 
           // create elements to show all keys state
           for (let key in Shaku.input.KeyboardKeys) {
             createButtonElement(key);
           }
+          createButtonElement('touch');
           createButtonElement('mouse_left');
           createButtonElement('mouse_middle');
           createButtonElement('mouse_right');
 
-          // to count mouse wheel
+          // to count mouse wheel, press and release
           let mouseWheel = 0;
+          let mousePressed = 0;
+          let mouseReleased = 0;
 
           // run demo 
           async function runDemo()
@@ -56,19 +104,50 @@
               Shaku.startFrame();
 
               // highlight pressed buttons
-              for (let key in Shaku.input.KeyboardKeys) {
+              const handleKeyEvents = (key, prefix) => 
+              {
+                // add prefix
+                key = prefix + key;
+
+                // mark in red down keys
                 let p = document.getElementById(key);
                 p.style.color = Shaku.input.down(key) ? 'red' : 'black';
+
+                // count pressed / release
+                if (Shaku.input.pressed(key)) pressCount[key]++
+                if (Shaku.input.released(key)) releaseCount[key]++;
+                if (Shaku.input.doublePressed(key)) doublePressCount[key]++
+                if (Shaku.input.doubleReleased(key)) doubleReleaseCount[key]++;
+
+                // update status table
+                document.getElementById(`${key}-pressed`).innerHTML = pressCount[key];
+                document.getElementById(`${key}-released`).innerHTML = releaseCount[key];
+                document.getElementById(`${key}-dpressed`).innerHTML = doublePressCount[key];
+                document.getElementById(`${key}-dreleased`).innerHTML = doubleReleaseCount[key];
+                document.getElementById(`${key}-releasetime`).innerHTML = Shaku.input.lastReleaseTime(key);
+                document.getElementById(`${key}-presstime`).innerHTML = Shaku.input.lastPressTime(key);
+                document.getElementById(`${key}-down`).innerHTML = Shaku.input.down(key);
               }
 
-              // highlight mouse buttons
-              document.getElementById("mouse_left").style.color = Shaku.input.down('mouse_left') ? 'red' : 'black';
-              document.getElementById("mouse_middle").style.color = Shaku.input.down('mouse_middle') ? 'red' : 'black';
-              document.getElementById("mouse_right").style.color = Shaku.input.down('mouse_right') ? 'red' : 'black';
+              // handle keyboard
+              for (let key in Shaku.input.KeyboardKeys) {
+                handleKeyEvents(key, "");
+              }
+              // handle mouse
+              for (let key in Shaku.input.MouseButtons) {
+                handleKeyEvents(key, "mouse_");
+              }
+              // handle touch
+              handleKeyEvents('touch', "");
+
+              // count mouse press / release
+              if (Shaku.input.pressed('mouse_left')) { mousePressed++; }
+              if (Shaku.input.released('mouse_left')) { mouseReleased++; }
 
               // show mouse state
               mouseWheel += Shaku.input.mouseWheelSign;
               document.getElementById('mouse_state').innerHTML = "Mouse position: " + Shaku.input.mousePosition.string() + " / Mouse scroll: " + mouseWheel + " / Mouse move: " + Shaku.input.mouseMoving + " / Touching: " + Shaku.input.touching + " / Touch position: " + Shaku.input.touchPosition.string();
+              document.getElementById('mouse_state').innerHTML += "<br />Mouse Pressed: " + mousePressed + " / Mouse released: " + mouseReleased;
 
               // end frame and request next frame
               Shaku.endFrame();

@@ -224,8 +224,6 @@ Can also perform transformations inheritance, where we combine local with parent
 <dd></dd>
 <dt><a href="#TextureWrapMode">TextureWrapMode</a> : <code>String</code></dt>
 <dd></dd>
-<dt><a href="#elementCallback">elementCallback</a> ⇒ <code>Element</code></dt>
-<dd></dd>
 <dt><a href="#MouseButton">MouseButton</a> : <code>Number</code></dt>
 <dd></dd>
 <dt><a href="#KeyboardKey">KeyboardKey</a> : <code>Number</code></dt>
@@ -3789,7 +3787,8 @@ To access the Input manager use `Shaku.input`.
     * [.enableMouseDeltaWhileMouseWheelDown](#Input+enableMouseDeltaWhileMouseWheelDown) : <code>Boolean</code>
     * [.disableContextMenu](#Input+disableContextMenu) : <code>Boolean</code>
     * [.delegateTouchInputToMouse](#Input+delegateTouchInputToMouse) : <code>Boolean</code>
-    * [.disableContextMenu](#Input+disableContextMenu) : <code>Boolean</code>
+    * [.resetOnFocusLoss](#Input+resetOnFocusLoss) : <code>Boolean</code>
+    * [.defaultDoublePressInterval](#Input+defaultDoublePressInterval) : <code>Number</code>
     * [.MouseButtons](#Input+MouseButtons)
     * [.KeyboardKeys](#Input+KeyboardKeys)
     * [.touchPosition](#Input+touchPosition) ⇒ [<code>Vector2</code>](#Vector2)
@@ -3821,6 +3820,10 @@ To access the Input manager use `Shaku.input`.
     * [.down(code)](#Input+down) ⇒ <code>Boolean</code>
     * [.released(code)](#Input+released) ⇒ <code>Boolean</code>
     * [.pressed(code)](#Input+pressed) ⇒ <code>Boolean</code>
+    * [.lastReleaseTime(code)](#Input+lastReleaseTime) ⇒ <code>Number</code>
+    * [.lastPressTime(code)](#Input+lastPressTime) ⇒ <code>Number</code>
+    * [.doublePressed(code, maxInterval)](#Input+doublePressed) ⇒ <code>Boolean</code>
+    * [.doubleReleased(code, maxInterval)](#Input+doubleReleased) ⇒ <code>Boolean</code>
 
 <a name="new_Input_new"></a>
 
@@ -3852,10 +3855,16 @@ If true (default), will disable the context menu (what typically opens when you 
 If true (default), will treat touch events (touch start / touch end / touch move) as if the user clicked and moved a mouse.
 
 **Kind**: instance property of [<code>Input</code>](#Input)  
-<a name="Input+disableContextMenu"></a>
+<a name="Input+resetOnFocusLoss"></a>
 
-### input.disableContextMenu : <code>Boolean</code>
+### input.resetOnFocusLoss : <code>Boolean</code>
 If true (default), will reset all states if the window loses focus.
+
+**Kind**: instance property of [<code>Input</code>](#Input)  
+<a name="Input+defaultDoublePressInterval"></a>
+
+### input.defaultDoublePressInterval : <code>Number</code>
+Default time, in milliseconds, to consider two consecutive key presses as a double-press.
 
 **Kind**: instance property of [<code>Input</code>](#Input)  
 <a name="Input+MouseButtons"></a>
@@ -4003,7 +4012,7 @@ Must be called *before* initializing Shaku. This can also be a method to invoke 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| element | <code>Element</code> \| [<code>elementCallback</code>](#elementCallback) | Element to attach input to. |
+| element | <code>Element</code> \| <code>elementCallback</code> | Element to attach input to. |
 
 **Example**  
 ```js
@@ -4154,6 +4163,72 @@ Return if a mouse or keyboard button was pressed in this frame.
 **Example**  
 ```js
 if (Shaku.input.pressed(['mouse_left', 'touch', 'space'])) { alert('mouse, touch screen or space were pressed!'); }
+```
+<a name="Input+lastReleaseTime"></a>
+
+### input.lastReleaseTime(code) ⇒ <code>Number</code>
+Return timestamp, in milliseconds, of the last time this key code was released.
+
+**Kind**: instance method of [<code>Input</code>](#Input)  
+**Returns**: <code>Number</code> - Timestamp of last key release, or 0 if was never released.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| code | <code>string</code> | Keyboard, touch or mouse code.                          For mouse buttons: set code to 'mouse_left', 'mouse_right' or 'mouse_middle'.                          For keyboard buttons: use one of the keys of KeyboardKeys (for example 'a', 'alt', 'up_arrow', etc..).                          For touch screen: set code to 'touch'.                          For numbers (0-9): you can use the number itself. |
+
+**Example**  
+```js
+let lastReleaseTime = Shaku.input.lastReleaseTime('mouse_left');
+```
+<a name="Input+lastPressTime"></a>
+
+### input.lastPressTime(code) ⇒ <code>Number</code>
+Return timestamp, in milliseconds, of the last time this key code was pressed.
+
+**Kind**: instance method of [<code>Input</code>](#Input)  
+**Returns**: <code>Number</code> - Timestamp of last key press, or 0 if was never pressed.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| code | <code>string</code> | Keyboard, touch or mouse code.                          For mouse buttons: set code to 'mouse_left', 'mouse_right' or 'mouse_middle'.                          For keyboard buttons: use one of the keys of KeyboardKeys (for example 'a', 'alt', 'up_arrow', etc..).                          For touch screen: set code to 'touch'.                          For numbers (0-9): you can use the number itself. |
+
+**Example**  
+```js
+let lastPressTime = Shaku.input.lastPressTime('mouse_left');
+```
+<a name="Input+doublePressed"></a>
+
+### input.doublePressed(code, maxInterval) ⇒ <code>Boolean</code>
+Return if a key was double-pressed.
+
+**Kind**: instance method of [<code>Input</code>](#Input)  
+**Returns**: <code>Boolean</code> - True if one or more key codes double-pressed, false otherwise.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| code | <code>string</code> | Keyboard, touch or mouse code. Can be array of codes to test if any of them is double-pressed.                          For mouse buttons: set code to 'mouse_left', 'mouse_right' or 'mouse_middle'.                          For keyboard buttons: use one of the keys of KeyboardKeys (for example 'a', 'alt', 'up_arrow', etc..).                          For touch screen: set code to 'touch'.                          For numbers (0-9): you can use the number itself. |
+| maxInterval | <code>Number</code> | Max interval time, in milliseconds, to consider it a double-press. Defaults to `defaultDoublePressInterval`. |
+
+**Example**  
+```js
+let doublePressed = Shaku.input.doublePressed(['mouse_left', 'touch', 'space']);
+```
+<a name="Input+doubleReleased"></a>
+
+### input.doubleReleased(code, maxInterval) ⇒ <code>Boolean</code>
+Return if a key was double-released.
+
+**Kind**: instance method of [<code>Input</code>](#Input)  
+**Returns**: <code>Boolean</code> - True if one or more key codes double-released, false otherwise.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| code | <code>string</code> | Keyboard, touch or mouse code. Can be array of codes to test if any of them is double-released.                          For mouse buttons: set code to 'mouse_left', 'mouse_right' or 'mouse_middle'.                          For keyboard buttons: use one of the keys of KeyboardKeys (for example 'a', 'alt', 'up_arrow', etc..).                          For touch screen: set code to 'touch'.                          For numbers (0-9): you can use the number itself. |
+| maxInterval | <code>Number</code> | Max interval time, in milliseconds, to consider it a double-release. Defaults to `defaultDoublePressInterval`. |
+
+**Example**  
+```js
+let doubleReleased = Shaku.input.doubleReleased(['mouse_left', 'touch', 'space']);
 ```
 <a name="Logger"></a>
 
@@ -8157,10 +8232,6 @@ Create vector from a dictionary.
 <a name="TextureWrapMode"></a>
 
 ## TextureWrapMode : <code>String</code>
-**Kind**: global typedef  
-<a name="elementCallback"></a>
-
-## elementCallback ⇒ <code>Element</code>
 **Kind**: global typedef  
 <a name="MouseButton"></a>
 
