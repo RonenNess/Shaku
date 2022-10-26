@@ -70,6 +70,7 @@ It's a lean and mean package with zero dependencies and only minimal necessary a
 
 *Shaku* values your freedom. It will not push any design pattern on your code and will integrate nicely into whatever it is you're making.
 
+*Shaku* also plays nicely with other libraries and can be integrated with other frameworks like Three.js.
 
 ## Features
 
@@ -83,7 +84,7 @@ It's a lean and mean package with zero dependencies and only minimal necessary a
 * Basic utilities such as Vectors, Matrices, 2D Shapes, GameTime and much more.
 * Animators framework to animate any object with numeric values.
 * Collision detection utility, path finder, perlin random generator, and much more!
-* *All packed in a tiny lib with no other dependencies*! A single minified 150Kb JS is all you need.*
+* *All packed in a tiny lib with no other dependencies*! A single minified 170Kb JS is all you need.*
 
 
 If you want to play with *Shaku* while reading the docs, you can check out the [Sandbox Demo](https://ronenness.github.io/Shaku/demo/sandbox.html). 
