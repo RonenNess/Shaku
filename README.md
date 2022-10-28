@@ -2147,7 +2147,7 @@ Special thanks to [knexator](https://github.com/knexator) for adding TypeScript 
 - Added `doublePressed` and `doubleReleased` to Input manager.
 - Fixed some input manager docs.
 
-# 1.6.3 [WIP]
+# 1.6.3
 
 - Added gamepad input.
 - Added demo for gamepad input.
