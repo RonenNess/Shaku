@@ -112,9 +112,13 @@
         <div class="modal__overlay jsOverlay"></div>
         <div class="modal__container">   
 
-      <p class="noselect">The following is few code examples on how to use the input manager. These are just the basics, for the full API please see the docs.</p>
+      <p class="noselect">The following code shows how to get Gamepad input.</p>
       <pre><code class="language-js">// everything below goes between startFrame() and endFrame()
-
+const gamepad = Shaku.input.gamepad(0);
+if (gamepad.leftButtons.top) player.moveUp();
+if (gamepad.leftButtons.down) player.moveDown();
+if (gamepad.leftButtons.left) player.moveLeft();
+if (gamepad.leftButtons.right) player.moveRight();
 </code></pre>
 
         <button class="modal__close" onclick="closeModal('sample-code-modal')">&#10005;</button>
