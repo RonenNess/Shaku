@@ -974,6 +974,109 @@ Note that we use a callback and not `Shaku.gfx.canvas` directly, as `Shaku.gfx.c
 
 A demo page with mouse and keyboard input can be found [here](https://ronenness.github.io/Shaku/demo/input_basic_input.html).
 
+### Touch Input
+
+By default, *Shaku* will delegate Touch input to Mouse input, so you can use a unified input code for desktop and mobile. This means that Touch start will generate a mouse click input (left button), and when the user drags touch input across the device, the Touch position will update the Mouse position.
+
+To disable this behavior, you can set `Shaku.input.delegateTouchInputToMouse` to `false`.
+
+If you choose not to treat Touch input as Mouse input, you can use the following methods/getter to get Touch input:
+
+- `Shaku.input.touchPosition`: Get touch last position.
+- `Shaku.input.touching`: True while the user is touching the device screen.
+- `Shaku.input.touchStarted`: True if touch input started during this update frame.
+- `Shaku.input.touchEnded`: True if touch input ended during this update frame.
+
+You can get `down`, `pressed`, and `released` state for touch input too, similar to how you'd use a keyboard key or mouse button, but with `touch` as key code:
+
+```js
+if (Shaku.input.down('touch')) { 
+  // user is touching the screen
+}
+
+if (Shaku.input.released('touch')) { 
+  // touch was just released
+}
+
+if (Shaku.input.pressed('touch')) { 
+  // touch was just pressed
+}
+```
+
+### Double Click / Press / Release
+
+*Shaku* can help you detect double clicks and double key press. There are two main methods to get double-xxx events: `doublePressed()` and `doubleReleased()`.
+
+- `doublePressed` is true when a key is *pressed* shortly after the same key was *released*.
+- `doubleReleased` is true when a key is *released* shortly after it was previously *released*.
+
+These methods work for touch, keyboard and mouse. They accept key codes and optional max time interval to consider it a double-press event. For example:
+
+```js
+if (Shaku.input.doubleReleased('mouse_left')) {
+  alert("Double Click!");
+}
+
+if (Shaku.input.doubleReleased('mouse_left', 1000)) {
+  alert("Double Click with 1 second interval!");
+}
+
+if (Shaku.input.doubleReleased('touch')) {
+  alert("User double-touched screen!");
+}
+
+if (Shaku.input.doubleReleased('space')) {
+  alert("Space was double pressed!");
+}
+```
+
+When no interval is provided, the value set at `Shaku.input.defaultDoublePressInterval` will be used.
+
+
+### Gamepad
+
+*Shaku* provides a way to get Gamepads input. Note that gamepads are only connected after a user press a button when the page is focused. Before that, *Shaku* cannot recognize them due to browsers limitation.
+
+First, to connected gamepad ids:
+
+```js
+// all ids:
+console.log("Gamepads: ", Shaku.input.gamepadIds());
+
+// by index:
+console.log("Gamepad 2 id: ", Shaku.input.gamepadId(2));
+
+// default gamepad (lowest connected index):
+console.log("Default gamepad id: ", Shaku.input.gamepadId());
+```
+
+Once you detect a valid gamepad, you can query its state like this:
+
+```js
+let gamepad = Shaku.input.gamepad(0); // <-- 0 is the index of the gamepad to get, or undefined for default
+```
+
+Every gamepad object will have the following properties:
+
+- `gamepad.axis1`: Vector2 with axis1 current value.
+- `gamepad.axis2`: Vector2 with axis2 current value.
+- `gamepad.buttonsCount`: How many buttons this gamepad has.
+- `gamepad.button(index)`: Get the state of a button (up / down).
+- `gamepad.id`: Gamepad id.
+- `gamepad.mapping`: Gamepad mapping type.
+
+If the gamepad has a standard mapping, `gamepad.isMapped` will be set to true, and the following properties will also appear:
+
+- `gamepad.leftStick`: Left stick state (same as axis1).
+- `gamepad.rightStick`: Left stick state (same as axis2).
+- `gamepad.leftStickPressed`: Is left stick pressed?
+- `gamepad.rightStickPressed`: Is right stick pressed?
+- `gamepad.leftButtons`: Left side buttons cluster (top, bottom, left, right).
+- `gamepad.rightButtons`: Right side buttons cluster (top, bottom, left, right).
+- `gamepad.centerButtons`: Center buttons cluster (left, right, center).
+- `gamepad.frontButtons`: Front buttons (topLeft, topRight, bottomLeft, bottomRight).
+
+
 ## Assets
 
 The *Assets* manager handle loading game resources and assets, and is accessed by `Shaku.assets`.
@@ -2042,6 +2145,12 @@ Special thanks to [knexator](https://github.com/knexator) for adding TypeScript 
 - Added `lastReleaseTime` and `lastPressedTime` to Input manager.
 - Added `doublePressed` and `doubleReleased` to Input manager.
 - Fixed some input manager docs.
+
+# 1.6.3 [WIP]
+
+- Added gamepad input.
+- Added demo for gamepad input.
+- Updated docs.
 
 # License
 

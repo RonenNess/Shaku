@@ -607,7 +607,7 @@ function generateRandomAssetName()
  
 // export assets manager
 module.exports = new Assets();
-},{"../assets/sound_asset.js":8,"../logger.js":44,"../manager.js":45,"./asset.js":1,"./binary_asset.js":3,"./font_texture_asset":4,"./json_asset.js":6,"./msdf_font_texture_asset.js":7,"./texture_asset.js":9}],3:[function(require,module,exports){
+},{"../assets/sound_asset.js":8,"../logger.js":45,"../manager.js":46,"./asset.js":1,"./binary_asset.js":3,"./font_texture_asset":4,"./json_asset.js":6,"./msdf_font_texture_asset.js":7,"./texture_asset.js":9}],3:[function(require,module,exports){
 /**
  * Implement binary data asset type.
  * 
@@ -1053,7 +1053,7 @@ function measureTextWidth(fontFamily, fontSize, char, extraWidth)
 
 // export the asset type.
 module.exports = FontTextureAsset;
-},{"../utils/rectangle":60,"../utils/vector2":66,"./asset":1,"./texture_asset":9}],5:[function(require,module,exports){
+},{"../utils/rectangle":61,"../utils/vector2":67,"./asset":1,"./texture_asset":9}],5:[function(require,module,exports){
 /**
  * Just an alias to main manager so we can require() this folder as a package.
  * 
@@ -1328,7 +1328,7 @@ class MsdfFontTextureAsset extends FontTextureAsset
 
 // export the asset type.
 module.exports = MsdfFontTextureAsset;
-},{"../gfx/texture_filter_modes":37,"../utils/rectangle":60,"../utils/vector2":66,"./font_texture_asset":4,"./json_asset":6,"./texture_asset":9}],8:[function(require,module,exports){
+},{"../gfx/texture_filter_modes":37,"../utils/rectangle":61,"../utils/vector2":67,"./font_texture_asset":4,"./json_asset":6,"./texture_asset":9}],8:[function(require,module,exports){
 /**
  * Implement sound asset type.
  * 
@@ -1790,7 +1790,7 @@ function isPowerOf2(value) {
 
 // export the asset type.
 module.exports = TextureAsset;
-},{"../gfx/texture_filter_modes":37,"../gfx/texture_wrap_modes":38,"../logger.js":44,"../utils/color":53,"../utils/vector2":66,"./asset":1}],10:[function(require,module,exports){
+},{"../gfx/texture_filter_modes":37,"../gfx/texture_wrap_modes":38,"../logger.js":45,"../utils/color":54,"../utils/vector2":67,"./asset":1}],10:[function(require,module,exports){
 /**
  * Implement the collision manager.
  * 
@@ -1949,7 +1949,7 @@ class Collision extends IManager
 
 // export main object
 module.exports = new Collision();
-},{"../logger.js":44,"../manager.js":45,"../utils/vector2.js":66,"./collision_world.js":11,"./resolver":13,"./resolvers_imp":14,"./shapes/circle.js":16,"./shapes/lines.js":17,"./shapes/point.js":18,"./shapes/rectangle.js":19,"./shapes/tilemap.js":21}],11:[function(require,module,exports){
+},{"../logger.js":45,"../manager.js":46,"../utils/vector2.js":67,"./collision_world.js":11,"./resolver":13,"./resolvers_imp":14,"./shapes/circle.js":16,"./shapes/lines.js":17,"./shapes/point.js":18,"./shapes/rectangle.js":19,"./shapes/tilemap.js":21}],11:[function(require,module,exports){
 /**
  * Implement the collision manager.
  * 
@@ -2547,7 +2547,7 @@ function sortByDistanceShapes(sourceShape, options)
 
 // export collision world
 module.exports = CollisionWorld;
-},{"../logger.js":44,"../utils/circle":52,"../utils/color":53,"../utils/rectangle":60,"../utils/vector2":66,"./../gfx":29,"./resolver":13,"./result":15,"./shapes/circle":16,"./shapes/point":18,"./shapes/shape":20}],12:[function(require,module,exports){
+},{"../logger.js":45,"../utils/circle":53,"../utils/color":54,"../utils/rectangle":61,"../utils/vector2":67,"./../gfx":29,"./resolver":13,"./result":15,"./shapes/circle":16,"./shapes/point":18,"./shapes/shape":20}],12:[function(require,module,exports){
 /**
  * Just an alias to main manager so we can require() this folder as a package.
  * 
@@ -2693,7 +2693,7 @@ class CollisionResolver
 
 // export the collision resolver
 module.exports = CollisionResolver;
-},{"../logger.js":44,"../utils/vector2.js":66,"./result.js":15,"./shapes/shape.js":20}],14:[function(require,module,exports){
+},{"../logger.js":45,"../utils/vector2.js":67,"./result.js":15,"./shapes/shape.js":20}],14:[function(require,module,exports){
 /**
  * All default collision detection implementations.
  * 
@@ -2913,7 +2913,7 @@ class CollisionTestResult
 
 // export collision shape class
 module.exports = CollisionTestResult;
-},{"../utils/vector2":66,"./shapes/shape":20}],16:[function(require,module,exports){
+},{"../utils/vector2":67,"./shapes/shape":20}],16:[function(require,module,exports){
 /**
  * Implement collision circle.
  * 
@@ -3011,7 +3011,7 @@ class CircleShape extends CollisionShape
 
 // export collision shape class
 module.exports = CircleShape;
-},{"../../utils/circle":52,"../../utils/rectangle":60,"./../../gfx":29,"./shape":20}],17:[function(require,module,exports){
+},{"../../utils/circle":53,"../../utils/rectangle":61,"./../../gfx":29,"./shape":20}],17:[function(require,module,exports){
 /**
  * Implement collision lines.
  * 
@@ -3139,7 +3139,7 @@ class LinesShape extends CollisionShape
 
 // export collision lines class
 module.exports = LinesShape;
-},{"../../utils/circle":52,"../../utils/line":56,"../../utils/rectangle":60,"./../../gfx":29,"./shape":20}],18:[function(require,module,exports){
+},{"../../utils/circle":53,"../../utils/line":57,"../../utils/rectangle":61,"./../../gfx":29,"./shape":20}],18:[function(require,module,exports){
 /**
  * Implement collision point.
  * 
@@ -3242,7 +3242,7 @@ class PointShape extends CollisionShape
 
 // export collision shape class
 module.exports = PointShape;
-},{"../../utils/circle":52,"../../utils/rectangle":60,"../../utils/vector2":66,"./../../gfx":29,"./shape":20}],19:[function(require,module,exports){
+},{"../../utils/circle":53,"../../utils/rectangle":61,"../../utils/vector2":67,"./../../gfx":29,"./shape":20}],19:[function(require,module,exports){
 /**
  * Implement collision rectangle.
  * 
@@ -3339,7 +3339,7 @@ class RectangleShape extends CollisionShape
 
 // export collision shape class
 module.exports = RectangleShape;
-},{"../../utils/rectangle":60,"./../../gfx":29,"./shape":20}],20:[function(require,module,exports){
+},{"../../utils/rectangle":61,"./../../gfx":29,"./shape":20}],20:[function(require,module,exports){
 /**
  * Implement collision shape base class.
  * 
@@ -3528,7 +3528,7 @@ const defaultDebugColors = [Color.red, Color.blue, Color.green, Color.yellow, Co
 
 // export collision shape class
 module.exports = CollisionShape;
-},{"../../utils/color":53,"../../utils/rectangle":60,"../../utils/vector2":66,"../collision_world":11}],21:[function(require,module,exports){
+},{"../../utils/color":54,"../../utils/rectangle":61,"../../utils/vector2":67,"../collision_world":11}],21:[function(require,module,exports){
 /**
  * Implement collision tilemap.
  * 
@@ -3725,7 +3725,7 @@ class TilemapShape extends CollisionShape
 
 // export collision shape class
 module.exports = TilemapShape;
-},{"../../utils/rectangle":60,"../../utils/vector2":66,"./../../gfx":29,"./rectangle":19,"./shape":20}],22:[function(require,module,exports){
+},{"../../utils/rectangle":61,"../../utils/vector2":67,"./../../gfx":29,"./rectangle":19,"./shape":20}],22:[function(require,module,exports){
 /**
  * Define supported blend modes.
  * 
@@ -3883,7 +3883,7 @@ class Camera
 
 // export the camera object
 module.exports = Camera;
-},{"../utils/rectangle":60,"../utils/vector2":66,"./matrix":30}],24:[function(require,module,exports){
+},{"../utils/rectangle":61,"../utils/vector2":67,"./matrix":30}],24:[function(require,module,exports){
 /**
  * Implement a basic effect to draw sprites.
  * 
@@ -4538,7 +4538,7 @@ function _setTextureFilter(gl, filter)
 
 // export the effect class.
 module.exports = Effect;
-},{"../../assets/texture_asset.js":9,"../../logger.js":44,"../../utils/color.js":53,"../../utils/rectangle.js":60,"../matrix.js":30,"../texture_filter_modes":37,"../texture_wrap_modes":38}],26:[function(require,module,exports){
+},{"../../assets/texture_asset.js":9,"../../logger.js":45,"../../utils/color.js":54,"../../utils/rectangle.js":61,"../matrix.js":30,"../texture_filter_modes":37,"../texture_wrap_modes":38}],26:[function(require,module,exports){
 /**
  * Include all built-in effects.
  * 
@@ -6341,7 +6341,7 @@ class Gfx extends IManager
 
 // export main object
 module.exports = new Gfx();
-},{"../assets/font_texture_asset.js":4,"../assets/msdf_font_texture_asset.js":7,"../assets/texture_asset.js":9,"../logger.js":44,"../manager.js":45,"../utils/circle.js":52,"../utils/color.js":53,"../utils/rectangle.js":60,"../utils/vector2.js":66,"../utils/vector3.js":67,"./blend_modes.js":22,"./camera.js":23,"./effects":26,"./matrix.js":30,"./mesh.js":31,"./mesh_generator.js":32,"./sprite.js":33,"./sprite_batch.js":34,"./sprites_group.js":35,"./text_alignments.js":36,"./texture_filter_modes.js":37,"./texture_wrap_modes.js":38,"./vertex":39}],29:[function(require,module,exports){
+},{"../assets/font_texture_asset.js":4,"../assets/msdf_font_texture_asset.js":7,"../assets/texture_asset.js":9,"../logger.js":45,"../manager.js":46,"../utils/circle.js":53,"../utils/color.js":54,"../utils/rectangle.js":61,"../utils/vector2.js":67,"../utils/vector3.js":68,"./blend_modes.js":22,"./camera.js":23,"./effects":26,"./matrix.js":30,"./mesh.js":31,"./mesh_generator.js":32,"./sprite.js":33,"./sprite_batch.js":34,"./sprites_group.js":35,"./text_alignments.js":36,"./texture_filter_modes.js":37,"./texture_wrap_modes.js":38,"./vertex":39}],29:[function(require,module,exports){
 /**
  * Just an alias to main manager so we can require() this folder as a package.
  * 
@@ -6733,7 +6733,7 @@ Object.freeze(Matrix.identity);
 
 // export the matrix object
 module.exports = Matrix;
-},{"../utils/vector2":66,"./vertex":39}],31:[function(require,module,exports){
+},{"../utils/vector2":67,"./vertex":39}],31:[function(require,module,exports){
 /**
  * Define a mesh object.
  * 
@@ -6798,7 +6798,7 @@ const { Color } = require("../utils");
  
  // export the mesh class.
  module.exports = Mesh;
-},{"../utils":55}],32:[function(require,module,exports){
+},{"../utils":56}],32:[function(require,module,exports){
 /**
  * Define utility to generate meshes.
  * 
@@ -7106,7 +7106,7 @@ class Sprite
 
 // export the sprite class.
 module.exports = Sprite;
-},{"../assets/texture_asset":9,"../utils/color":53,"../utils/rectangle":60,"../utils/vector2":66,"../utils/vector3":67,"./blend_modes":22}],34:[function(require,module,exports){
+},{"../assets/texture_asset":9,"../utils/color":54,"../utils/rectangle":61,"../utils/vector2":67,"../utils/vector3":68,"./blend_modes":22}],34:[function(require,module,exports){
 /**
  * Implement the gfx sprite batch renderer.
  * 
@@ -7576,7 +7576,7 @@ class SpriteBatch
 
 // export the sprite batch class
 module.exports = SpriteBatch;
-},{"../logger.js":44,"../utils":55,"../utils/vector2":66,"./blend_modes":22,"./matrix":30,"./mesh":31,"./vertex":39}],35:[function(require,module,exports){
+},{"../logger.js":45,"../utils":56,"../utils/vector2":67,"./blend_modes":22,"./matrix":30,"./mesh":31,"./vertex":39}],35:[function(require,module,exports){
 /**
  * Define a sprites group.
  * 
@@ -7731,7 +7731,7 @@ class SpritesGroup
 
 // export the sprites group class.
 module.exports = SpritesGroup;
-},{"../utils/color":53,"../utils/vector2":66,"./matrix":30,"./sprite":33}],36:[function(require,module,exports){
+},{"../utils/color":54,"../utils/vector2":67,"./matrix":30,"./sprite":33}],36:[function(require,module,exports){
 /**
  * Define possible text alignments.
  * 
@@ -7928,7 +7928,7 @@ class Vertex
 
 // export the vertex class
 module.exports = Vertex;
-},{"../utils":55,"./matrix":30}],40:[function(require,module,exports){
+},{"../utils":56,"./matrix":30}],40:[function(require,module,exports){
 /**
  * Entry point for the Shaku module.
  * 
@@ -7943,7 +7943,250 @@ module.exports = Vertex;
  */
 'use strict';
 module.exports = require('./shaku');
-},{"./shaku":50}],41:[function(require,module,exports){
+},{"./shaku":51}],41:[function(require,module,exports){
+/**
+ * Define a gamepad object.
+ * 
+ * |-- copyright and license --|
+ * @package    Shaku
+ * @file       shaku\lib\input\gamepad.js
+ * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
+ * @copyright  (c) 2021 Ronen Ness
+ * @license    MIT
+ * |-- end copyright and license --|
+ * 
+ */
+'use strict';
+const Vector2 = require("../utils/vector2");
+
+
+/**
+ * Gamepad data object.
+ * This object represents a snapshot of a gamepad state, it does not update automatically.
+ */
+class Gamepad
+{
+    /**
+     * Create gamepad state object.
+     * @param {*} gp Browser gamepad state object.
+     */
+    constructor(gp)
+    {
+        /**
+         * Gamepad Id.
+         * @name Gamepad#id
+         * @type {String}
+         */
+        this.id = gp.id;
+
+        // set buttons down state
+        this._buttonsDown = [];
+        for (let i = 0; i < gp.buttons.length; ++i) {
+            this._buttonsDown[i] = _gamepadButtonPressed(gp.buttons[i]);
+        }
+
+        /**
+         * Gamepad first axis value.
+         * @name Gamepad#axis1
+         * @type {Vector2}
+         */
+        this.axis1 = new Vector2(gp.axes[0], gp.axes[1]);
+
+        /**
+         * Gamepad second axis value.
+         * @name Gamepad#axis2
+         * @type {Vector2}
+         */
+        this.axis2 = new Vector2(gp.axes[2] || 0, gp.axes[3] || 0);
+
+        /**
+         * Mapping type.
+         * @name Gamepad#mapping
+         * @type {String}
+         */
+        this.mapping = gp.mapping;
+
+        /**
+         * True if the gamepad is of a known type and we have extra mapped attributes.
+         * False if unknown / not supported.
+         * @name Gamepad#isMapped
+         * @type {Boolean}
+         */
+        this.isMapped = false;
+
+        // standard mapping
+        if (this.mapping === "standard") {
+
+            /**
+             * Gamepad left stick.
+             * Only available with "standard" mapping.
+             * @name Gamepad#leftStick
+             * @type {Vector2}
+             */
+            this.leftStick = this.axis1;
+
+            /**
+             * Gamepad right stick.
+             * Only available with "standard" mapping.
+             * @name Gamepad#rightStick
+             * @type {Vector2}
+             */
+            this.rightStick = this.axis2;
+
+            /**
+             * Gamepad left stick is pressed.
+             * Only available with "standard" mapping.
+             * @name Gamepad#leftStickPressed
+             * @type {Boolean}
+             */
+            this.leftStickPressed = this._buttonsDown[10];
+
+            /**
+             * Gamepad right stick is pressed.
+             * Only available with "standard" mapping.
+             * @name Gamepad#leftStickPressed
+             * @type {Boolean}
+             */
+            this.rightStickPressed = this._buttonsDown[11];
+
+            /**
+             * Right cluster button states.
+             * @name Gamepad#rightButtons
+             * @type {FourButtonsCluster}
+             */
+            this.rightButtons = new FourButtonsCluster(this._buttonsDown[0], this._buttonsDown[1], this._buttonsDown[2], this._buttonsDown[3]);
+
+            /**
+             * Left cluster button states.
+             * @name Gamepad#leftButtons
+             * @type {FourButtonsCluster}
+             */
+            this.leftButtons = new FourButtonsCluster(this._buttonsDown[13], this._buttonsDown[15], this._buttonsDown[14], this._buttonsDown[12]);
+
+            /**
+             * Center cluster button states.
+             * @name Gamepad#leftButtons
+             * @type {FourButtonsCluster}
+             */
+            this.centerButtons = new ThreeButtonsCluster(this._buttonsDown[8], this._buttonsDown[9], this._buttonsDown[16]);
+
+            /**
+             * Front buttons states.
+             * @name Gamepad#frontButtons
+             * @type {FrontButtons}
+             */            
+            this.frontButtons = new FrontButtons(this._buttonsDown[4], this._buttonsDown[5], this._buttonsDown[6], this._buttonsDown[7]);
+
+            /**
+             * True if the gamepad is of a known type and we have extra mapped attributes.
+             * False if unknown.
+             * @name Gamepad#isMapped
+             * @type {Boolean}
+             */
+            this.isMapped = true;
+        }
+
+        // freeze self
+        Object.freeze(this);
+    }
+
+    /**
+     * Get button state (if pressed down) by index.
+     * @param {Number} index Button index to check.
+     * @returns {Boolean} True if pressed, false otherwise.
+     */
+    button(index)
+    {
+        return this._buttonsDown[index];
+    }
+
+    /**
+     * Get buttons count.
+     * @returns {Number} Buttons count.
+     */
+    get buttonsCount()
+    {
+        return this._buttonsDown.length;
+    }
+}
+
+
+/**
+ * Buttons cluster container - 4 buttons.
+ */
+class FourButtonsCluster
+{
+    /**
+     * Create the cluster states.
+     * @param {Boolean} bottom Bottom button state.
+     * @param {Boolean} right Right button state.
+     * @param {Boolean} left Left button state.
+     * @param {Boolean} top Top button state.
+     */
+    constructor(bottom, right, left, top)
+    {
+        this.bottom = Boolean(bottom);
+        this.right = Boolean(right);
+        this.left = Boolean(left);
+        this.top = Boolean(top);
+    }
+}
+
+
+/**
+ * Buttons cluster container - 3 buttons.
+ */
+class ThreeButtonsCluster
+{
+    /**
+     * Create the cluster states.
+     * @param {Boolean} left Left button state.
+     * @param {Boolean} right Right button state.
+     * @param {Boolean} center Center button state.
+     */
+    constructor(left, right, center)
+    {
+        this.left = Boolean(left);
+        this.right = Boolean(right);
+        this.center = Boolean(center);
+    }
+}
+
+
+/**
+ * Front buttons.
+ */
+class FrontButtons
+{
+    /**
+     * Create the cluster states.
+     */
+    constructor(topLeft, topRight, bottomLeft, bottomRight)
+    {
+        this.topLeft = Boolean(topLeft);
+        this.topRight = Boolean(topRight);
+        this.bottomLeft = Boolean(bottomLeft);
+        this.bottomRight = Boolean(bottomRight);
+    }
+}
+
+
+/**
+ * Get if a gamepad button is currently pressed.
+ * @prviate
+ */
+function _gamepadButtonPressed(b) 
+{
+    if (typeof b === "object") {
+    return b.pressed;
+    }
+    return b === 1.0;
+}
+
+
+// export the gamepad data
+module.exports = Gamepad;
+},{"../utils/vector2":67}],42:[function(require,module,exports){
 /**
  * Just an alias to main manager so we can require() this folder as a package.
  * 
@@ -7958,7 +8201,7 @@ module.exports = require('./shaku');
  */
  'use strict';
  module.exports = require('./input');
-},{"./input":42}],42:[function(require,module,exports){
+},{"./input":43}],43:[function(require,module,exports){
 /**
  * Implement the input manager.
  * 
@@ -7975,6 +8218,7 @@ module.exports = require('./shaku');
 const IManager = require('../manager.js');
 const Vector2 = require('../utils/vector2.js');
 const { MouseButton, MouseButtons, KeyboardKey, KeyboardKeys } = require('./key_codes.js');
+const Gamepad = require('./gamepad');
 const _logger = require('../logger.js').getLogger('input');
 
 
@@ -7983,6 +8227,9 @@ function timestamp()
 {
     return (new Date()).getTime();
 }
+
+// touch key code
+const _touchKeyCode = "touch";
 
 
 /**
@@ -8068,6 +8315,15 @@ class Input extends IManager
     {
         return KeyboardKeys;
     }
+
+    /**
+     * Return the string code to use in order to get touch events.
+     * @returns {String} Key code to use for touch events.
+     */
+    get TouchKeyCode()
+    {
+        return _touchKeyCode;
+    }
     
     /**
      * @inheritdoc
@@ -8128,6 +8384,7 @@ class Input extends IManager
                 window.addEventListener('touchend', this._callbacks['touchend'], false);
             }
 
+            // ready!
             resolve();
         });
     }
@@ -8138,6 +8395,24 @@ class Input extends IManager
      **/
     startFrame()
     {
+        // query gamepads
+        this._gamepadsData = navigator.getGamepads();
+
+        // get default gamepad
+        this._defaultGamepad = null;
+        var i = 0;
+        for (let gp of this._gamepadsData) 
+        {
+            if (gp) {
+                this._defaultGamepad = gp;
+                this._defaultGamepadIndex = i;
+                break;
+            }
+            i++;
+        }
+
+        // reset queried gamepad states
+        this._queriedGamepadStates = {};
     }
 
     /**
@@ -8220,6 +8495,61 @@ class Input extends IManager
         this._prevLastMousePressedTime = {};
         this._prevLastKeyPressedTime = {};
         this._prevLastTouchPressedTime = 0;
+
+        // currently connected gamepads data
+        this._defaultGamepad = null;
+        this._gamepadsData = [];
+        this._queriedGamepadStates = {};
+    }
+
+    /**
+     * Get Gamepad current states, or null if not connected.
+     * Note: this object does not update itself, you'll need to query it again every frame.
+     * @param {Number=} index Gamepad index or undefined for first connected device.
+     * @returns {Gamepad} Gamepad current state.
+     */
+    gamepad(index)
+    {
+        // default index
+        if (index === null || index === undefined) {
+            index = this._defaultGamepadIndex;
+        }
+
+        // try to get cached value
+        let cached = this._queriedGamepadStates[index];
+
+        // not found? create
+        if (!cached) {
+            const gp = this._gamepadsData[index];
+            if (!gp) { return null; }
+            this._queriedGamepadStates[index] = cached = new Gamepad(gp);
+        }
+
+        // return gamepad state
+        return cached;
+    }
+
+    /**
+     * Get gamepad id, or null if not connected to this slot.
+     * @param {Number=} index Gamepad index or undefined for first connected device.
+     * @returns Gamepad id or null.
+     */
+    gamepadId(index)
+    {
+        return this.gamepadIds[index || 0] || null;
+    }
+
+    /**
+     * Return a list with connected devices ids.
+     * @returns {Array<String>} List of connected devices ids.
+     */
+    gamepadIds()
+    {
+        let ret = [];
+        for (let gp of this._gamepadsData) {
+            if (gp) { ret.push(gp.id); }
+        }
+        return ret;
     }
 
     /**
@@ -8480,7 +8810,7 @@ class Input extends IManager
         code = String(code);
 
         // if its 'touch' its for touch events
-        if (code === 'touch') {
+        if (code === _touchKeyCode) {
             return touchValue;
         }
 
@@ -8988,7 +9318,7 @@ class Input extends IManager
 
 // export main object
 module.exports = new Input();
-},{"../logger.js":44,"../manager.js":45,"../utils/vector2.js":66,"./key_codes.js":43}],43:[function(require,module,exports){
+},{"../logger.js":45,"../manager.js":46,"../utils/vector2.js":67,"./gamepad":41,"./key_codes.js":44}],44:[function(require,module,exports){
 /**
  * Define keyboard and mouse key codes.
  * 
@@ -9129,7 +9459,7 @@ const KeyboardKeys = {
 
 // export keyboard keys and mouse buttons
 module.exports = { KeyboardKeys: KeyboardKeys, MouseButtons: MouseButtons };
-},{}],44:[function(require,module,exports){
+},{}],45:[function(require,module,exports){
 /**
  * Implement basic logger.
  * By default, uses console for logging, but it can be replaced with setDrivers().
@@ -9290,7 +9620,7 @@ module.exports = {
         return this;
     }
 };
-},{}],45:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 /**
  * Define the managers interface.
  * 
@@ -9348,7 +9678,7 @@ class IManager
 
 // export the manager interface.
 module.exports = IManager
-},{}],46:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 /**
  * Just an alias to main manager so we can require() this folder as a package.
  * 
@@ -9363,7 +9693,7 @@ module.exports = IManager
  */
  'use strict';
  module.exports = require('./sfx');
-},{"./sfx":47}],47:[function(require,module,exports){
+},{"./sfx":48}],48:[function(require,module,exports){
 /**
  * Implement the sfx manager.
  * 
@@ -9550,7 +9880,7 @@ class Sfx extends IManager
 
 // export main object
 module.exports = new Sfx();
-},{"../assets/sound_asset.js":8,"../logger.js":44,"../manager.js":45,"./sound_instance.js":48,"./sound_mixer.js":49}],48:[function(require,module,exports){
+},{"../assets/sound_asset.js":8,"../logger.js":45,"../manager.js":46,"./sound_instance.js":49,"./sound_mixer.js":50}],49:[function(require,module,exports){
 /**
  * Implement a sound effect instance.
  * 
@@ -9800,7 +10130,7 @@ SoundInstance._masterVolume = 1;
 
 // export main object
 module.exports = SoundInstance;
-},{"../logger.js":44}],49:[function(require,module,exports){
+},{"../logger.js":45}],50:[function(require,module,exports){
 /**
  * Implement a sound mixer class.
  * 
@@ -9934,7 +10264,7 @@ class SoundMixer
 
 // export the sound mixer
 module.exports = SoundMixer;
-},{"./sound_instance.js":48}],50:[function(require,module,exports){
+},{"./sound_instance.js":49}],51:[function(require,module,exports){
 /**
  * Shaku Main.
  * 
@@ -9976,7 +10306,7 @@ let _totalFrameTimes = 0;
 
 
 // current version
-const version = "1.6.2";
+const version = "1.6.3";
 
 
 /**
@@ -10294,7 +10624,7 @@ class Shaku
 
 // return the main Shaku object.
 module.exports = new Shaku();
-},{"./assets":5,"./collision":12,"./gfx":29,"./input":41,"./logger":44,"./manager":45,"./sfx":46,"./utils":55,"./utils/game_time":54}],51:[function(require,module,exports){
+},{"./assets":5,"./collision":12,"./gfx":29,"./input":42,"./logger":45,"./manager":46,"./sfx":47,"./utils":56,"./utils/game_time":55}],52:[function(require,module,exports){
 /**
  * Implement an animator helper class.
  * 
@@ -10643,7 +10973,7 @@ function lerp(start, end, amt) {
 
 // export the animator class.
 module.exports = Animator;
-},{}],52:[function(require,module,exports){
+},{}],53:[function(require,module,exports){
 /**
  * Implement a simple 2d circle.
  * 
@@ -10750,7 +11080,7 @@ class Circle
 
 // export the circle class
 module.exports = Circle;
-},{"./math_helper":57,"./vector2":66}],53:[function(require,module,exports){
+},{"./math_helper":58,"./vector2":67}],54:[function(require,module,exports){
 /**
  * Define a color object.
  * 
@@ -11203,7 +11533,7 @@ function hexToColor(hex)
 
 // export Color object
 module.exports = Color;
-},{"./math_helper":57}],54:[function(require,module,exports){
+},{"./math_helper":58}],55:[function(require,module,exports){
 /**
  * A utility to hold gametime.
  * 
@@ -11337,7 +11667,7 @@ var _currElapsed = 0;
 
 // export the GameTime class.
 module.exports = GameTime;
-},{}],55:[function(require,module,exports){
+},{}],56:[function(require,module,exports){
 /**
  * Include all util classes.
  * 
@@ -11370,7 +11700,7 @@ module.exports = GameTime;
     Transformation: require('./transformation'),
     TransformationModes: require('./transform_modes')
  };
-},{"./animator":51,"./circle":52,"./color":53,"./game_time":54,"./line":56,"./math_helper":57,"./path_finder":58,"./perlin":59,"./rectangle":60,"./seeded_random":61,"./storage":62,"./storage_adapter":63,"./transform_modes":64,"./transformation":65,"./vector2":66,"./vector3":67}],56:[function(require,module,exports){
+},{"./animator":52,"./circle":53,"./color":54,"./game_time":55,"./line":57,"./math_helper":58,"./path_finder":59,"./perlin":60,"./rectangle":61,"./seeded_random":62,"./storage":63,"./storage_adapter":64,"./transform_modes":65,"./transformation":66,"./vector2":67,"./vector3":68}],57:[function(require,module,exports){
 /**
  * Implement a simple 2d line.
  * 
@@ -11552,7 +11882,7 @@ class Line
 
 // export the line class
 module.exports = Line;
-},{"./vector2":66}],57:[function(require,module,exports){
+},{"./vector2":67}],58:[function(require,module,exports){
 /**
  * Implement a math utilities class.
  * 
@@ -11752,7 +12082,7 @@ MathHelper.PI2 = Math.PI * 2;
 
 // export the math helper
 module.exports = MathHelper;
-},{}],58:[function(require,module,exports){
+},{}],59:[function(require,module,exports){
 /**
  * Provide a pathfinding algorithm.
  * 
@@ -11986,7 +12316,7 @@ const PathFinder = {
     IGrid: IGrid
 };
 module.exports = PathFinder;
-},{"./vector2":66}],59:[function(require,module,exports){
+},{"./vector2":67}],60:[function(require,module,exports){
 /**
  * Implements 2d perlin noise generator.
  * Based on code from noisejs by Stefan Gustavson.
@@ -12162,7 +12492,7 @@ class Perlin
 
 // export the perlin generator
 module.exports = Perlin;
-},{"./math_helper":57}],60:[function(require,module,exports){
+},{"./math_helper":58}],61:[function(require,module,exports){
 /**
  * Implement a simple 2d rectangle.
  * 
@@ -12609,7 +12939,7 @@ function pointLineDistance(p1, l1, l2) {
 
 // export the rectangle class
 module.exports = Rectangle;
-},{"./circle":52,"./line":56,"./math_helper":57,"./vector2":66}],61:[function(require,module,exports){
+},{"./circle":53,"./line":57,"./math_helper":58,"./vector2":67}],62:[function(require,module,exports){
 /**
  * Implement a seeded random generator.
  * 
@@ -12676,7 +13006,7 @@ class SeededRandom
 
 // export the seeded random class.
 module.exports = SeededRandom;
-},{}],62:[function(require,module,exports){
+},{}],63:[function(require,module,exports){
 /**
  * Implement a storage wrapper.
  * 
@@ -12916,7 +13246,7 @@ Storage.defaultAdapters = [new StorageAdapter.localStorage(), new StorageAdapter
 
 // export the storage class
 module.exports = Storage;
-},{"./storage_adapter":63}],63:[function(require,module,exports){
+},{"./storage_adapter":64}],64:[function(require,module,exports){
 /**
  * Implement a storage adapter.
  * 
@@ -13233,7 +13563,7 @@ StorageAdapter.sessionStorage = StorageAdapterSessionStorage;
 
 // export the storage adapter class
 module.exports = StorageAdapter;
-},{}],64:[function(require,module,exports){
+},{}],65:[function(require,module,exports){
 /**
  * Transformation modes.
  * 
@@ -13275,7 +13605,7 @@ const TransformModes = {
 
 // export the transform modes.
 module.exports = TransformModes;
-},{}],65:[function(require,module,exports){
+},{}],66:[function(require,module,exports){
 /**
  * Transformations object to store position, rotation and scale, that also support transformations inheritance.
  * 
@@ -13894,7 +14224,7 @@ function combineVectorMul(childValue, parentValue, parent, mode)
 
 // export the transformation object
 module.exports = Transformation;
-},{"../gfx/matrix":30,"./math_helper":57,"./transform_modes":64,"./vector2":66}],66:[function(require,module,exports){
+},{"../gfx/matrix":30,"./math_helper":58,"./transform_modes":65,"./vector2":67}],67:[function(require,module,exports){
 /**
  * Implement a simple 2d vector.
  * 
@@ -14564,7 +14894,7 @@ class Vector2
 
 // export vector object
 module.exports = Vector2;
-},{"./math_helper":57}],67:[function(require,module,exports){
+},{"./math_helper":58}],68:[function(require,module,exports){
 /**
  * Implement a 3d vector.
  * 
@@ -15123,5 +15453,5 @@ class Vector3
 
 // export vector object
 module.exports = Vector3;
-},{"./math_helper":57}]},{},[40])(40)
+},{"./math_helper":58}]},{},[40])(40)
 });

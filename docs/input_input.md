@@ -24,6 +24,7 @@ To access the Input manager use `Shaku.input`.
     * [.defaultDoublePressInterval](#Input+defaultDoublePressInterval) : <code>Number</code>
     * [.MouseButtons](#Input+MouseButtons)
     * [.KeyboardKeys](#Input+KeyboardKeys)
+    * [.TouchKeyCode](#Input+TouchKeyCode) ⇒ <code>String</code>
     * [.touchPosition](#Input+touchPosition) ⇒ <code>Vector2</code>
     * [.touching](#Input+touching) ⇒ <code>Boolean</code>
     * [.touchStarted](#Input+touchStarted) ⇒ <code>Boolean</code>
@@ -42,6 +43,9 @@ To access the Input manager use `Shaku.input`.
     * [.mouseWheelSign](#Input+mouseWheelSign) ⇒ <code>Number</code>
     * [.mouseWheel](#Input+mouseWheel) ⇒ <code>Number</code>
     * [.setTargetElement(element)](#Input+setTargetElement)
+    * [.gamepad([index])](#Input+gamepad) ⇒ <code>Gamepad</code>
+    * [.gamepadId([index])](#Input+gamepadId) ⇒
+    * [.gamepadIds()](#Input+gamepadIds) ⇒ <code>Array.&lt;String&gt;</code>
     * [.mousePressed(button)](#Input+mousePressed) ⇒ <code>Boolean</code>
     * [.mouseDown(button)](#Input+mouseDown) ⇒ <code>Boolean</code>
     * [.mouseUp(button)](#Input+mouseUp) ⇒ <code>Boolean</code>
@@ -114,6 +118,13 @@ Get the Keyboard Buttons enum.
 
 **Kind**: instance property of [<code>Input</code>](#Input)  
 **See**: KeyboardKeys  
+<a name="Input+TouchKeyCode"></a>
+
+### input.TouchKeyCode ⇒ <code>String</code>
+Return the string code to use in order to get touch events.
+
+**Kind**: instance property of [<code>Input</code>](#Input)  
+**Returns**: <code>String</code> - Key code to use for touch events.  
 <a name="Input+touchPosition"></a>
 
 ### input.touchPosition ⇒ <code>Vector2</code>
@@ -253,6 +264,38 @@ Must be called *before* initializing Shaku. This can also be a method to invoke 
 // this means mouse offset will also be relative to this element.
 Shaku.input.setTargetElement(() => Shaku.gfx.canvas);
 ```
+<a name="Input+gamepad"></a>
+
+### input.gamepad([index]) ⇒ <code>Gamepad</code>
+Get Gamepad current states, or null if not connected.
+Note: this object does not update itself, you'll need to query it again every frame.
+
+**Kind**: instance method of [<code>Input</code>](#Input)  
+**Returns**: <code>Gamepad</code> - Gamepad current state.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| [index] | <code>Number</code> | Gamepad index or undefined for first connected device. |
+
+<a name="Input+gamepadId"></a>
+
+### input.gamepadId([index]) ⇒
+Get gamepad id, or null if not connected to this slot.
+
+**Kind**: instance method of [<code>Input</code>](#Input)  
+**Returns**: Gamepad id or null.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| [index] | <code>Number</code> | Gamepad index or undefined for first connected device. |
+
+<a name="Input+gamepadIds"></a>
+
+### input.gamepadIds() ⇒ <code>Array.&lt;String&gt;</code>
+Return a list with connected devices ids.
+
+**Kind**: instance method of [<code>Input</code>](#Input)  
+**Returns**: <code>Array.&lt;String&gt;</code> - List of connected devices ids.  
 <a name="Input+mousePressed"></a>
 
 ### input.mousePressed(button) ⇒ <code>Boolean</code>
