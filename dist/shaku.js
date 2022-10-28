@@ -8536,7 +8536,7 @@ class Input extends IManager
      */
     gamepadId(index)
     {
-        return this.gamepadIds[index || 0] || null;
+        return this.gamepadIds()[index || 0] || null;
     }
 
     /**
