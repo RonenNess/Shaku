@@ -8283,8 +8283,8 @@ class Input extends IManager
         /**
          * If true (default), will delegate events from mapped gamepads to custom keys. 
          * This will add the following codes to all basic query methods (down, pressed, released, doublePressed, doubleReleased):
-         * - gamepadX_up: state of arrow keys up key (left buttons).
-         * - gamepadX_down: state of arrow keys down key (left buttons).
+         * - gamepadX_top: state of arrow keys top key (left buttons).
+         * - gamepadX_bottom: state of arrow keys bottom key (left buttons).
          * - gamepadX_left: state of arrow keys left key (left buttons).
          * - gamepadX_right: state of arrow keys right key (left buttons).
          * - gamepadX_leftStickUp: true if left stick points directly up.
@@ -8412,6 +8412,9 @@ class Input extends IManager
                 window.addEventListener('mouseup', this._callbacks['mouseup'], false);
                 window.addEventListener('touchend', this._callbacks['touchend'], false);
             }
+            
+            // custom keys set
+            this._customKeys = new Set();
 
             // ready!
             resolve();
@@ -8452,8 +8455,8 @@ class Input extends IManager
 
                 // not set or not mapped? reset all values to false and continue
                 if (!gp || !gp.isMapped) { 
-                    this.setCustomState(`gamepad${i}_up`, false);
-                    this.setCustomState(`gamepad${i}_down`, false);
+                    this.setCustomState(`gamepad${i}_top`, false);
+                    this.setCustomState(`gamepad${i}_bottom`, false);
                     this.setCustomState(`gamepad${i}_left`, false);
                     this.setCustomState(`gamepad${i}_right`, false);
                     this.setCustomState(`gamepad${i}_y`, false);
@@ -8477,13 +8480,13 @@ class Input extends IManager
 
                 // set actual values
 
-                this.setCustomState(`gamepad${i}_up`, gp.leftButtons.up);
-                this.setCustomState(`gamepad${i}_down`, gp.leftButtons.down);
+                this.setCustomState(`gamepad${i}_top`, gp.leftButtons.top);
+                this.setCustomState(`gamepad${i}_bottom`, gp.leftButtons.bottom);
                 this.setCustomState(`gamepad${i}_left`, gp.leftButtons.left);
                 this.setCustomState(`gamepad${i}_right`, gp.leftButtons.right);
 
-                this.setCustomState(`gamepad${i}_y`, gp.rightButtons.up);
-                this.setCustomState(`gamepad${i}_a`, gp.rightButtons.down);
+                this.setCustomState(`gamepad${i}_y`, gp.rightButtons.top);
+                this.setCustomState(`gamepad${i}_a`, gp.rightButtons.bottom);
                 this.setCustomState(`gamepad${i}_x`, gp.rightButtons.left);
                 this.setCustomState(`gamepad${i}_b`, gp.rightButtons.right);
                 
@@ -8694,11 +8697,25 @@ class Input extends IManager
      * When your simulated keyboard space key is pressed, you can call `setCustomState('sim_space', true)`. When released, call `setCustomState('sim_space', false)`.
      * Now you can use `Shaku.input.down(['space', 'sim_space'])` to check if either a real space or simulated space is pressed down.
      * @param {String} code Code to set state for.
-     * @param {Boolean} value Current value to set.
+     * @param {Boolean|null} value Current value to set, or null to remove custom key.
      */
     setCustomState(code, value)
     {
+        // remove custom value
+        if (value === null) {
+            this._customKeys.delete(code);
+            delete this._customPressed[code];
+            delete this._customReleased[code];
+            delete this._customStates[code];
+            return;
+        }
+        // update custom codes
+        else {
+            this._customKeys.add(code);
+        }
+
         // set state
+        value = Boolean(value);
         const prev = Boolean(this._customStates[code]);
         this._customStates[code] = value;
 
@@ -8951,6 +8968,9 @@ class Input extends IManager
         if (customVal !== undefined) {
             return customVal;
         }
+        if (this._customKeys.has(code)) {
+            return false;
+        }
 
         // if its 'touch' its for touch events
         if (code === _touchKeyCode) {
@@ -8962,9 +8982,13 @@ class Input extends IManager
 
             // get mouse code name
             const codename = code.split('_')[1];
+            const mouseKey = this.MouseButtons[codename];
+            if (mouseKey === undefined) { 
+                throw new Error("Unknown mouse button: " + code);
+            }
 
             // return if mouse down
-            return mouseCheck.call(this, this.MouseButtons[codename]);
+            return mouseCheck.call(this, mouseKey);
         }
 
         // if its just a number, add the 'n' prefix
@@ -8973,6 +8997,10 @@ class Input extends IManager
         }
 
         // if not start with 'mouse', treat it as a keyboard key
+        const keyboardKey = this.KeyboardKeys[code];
+        if (keyboardKey === undefined) { 
+            throw new Error("Unknown keyboard key: " + code);
+        }
         return keyboardCheck.call(this, this.KeyboardKeys[code]);
     }
 

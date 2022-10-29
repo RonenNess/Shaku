@@ -1086,8 +1086,8 @@ This means that instead of using the `gamepad` object presented above, you can q
 
 The following properties are supported for every connected gamepad (X represent gamepad index):
 
-- gamepadX_up: state of arrow keys up key (left buttons).
-- gamepadX_down: state of arrow keys down key (left buttons).
+- gamepadX_top: state of arrow keys top key (left buttons).
+- gamepadX_bottom: state of arrow keys bottom key (left buttons).
 - gamepadX_left: state of arrow keys left key (left buttons).
 - gamepadX_right: state of arrow keys right key (left buttons).
 - gamepadX_leftStickUp: true if left stick points directly up.
@@ -2190,10 +2190,11 @@ Special thanks to [knexator](https://github.com/knexator) for adding TypeScript 
 - Added demo for gamepad input.
 - Updated docs.
 
-# 1.6.4
+# 1.6.4 [WIP]
 
 - Added support in custom codes in input manager.
 - Added option to delegate gamepad input into base key events.
+- Improved Input manager error logs.
 
 # License
 
