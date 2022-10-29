@@ -99,8 +99,8 @@ If true (default), will treat touch events (touch start / touch end / touch move
 ### input.delegateGamepadInputToKeys : <code>Boolean</code>
 If true (default), will delegate events from mapped gamepads to custom keys. 
 This will add the following codes to all basic query methods (down, pressed, released, doublePressed, doubleReleased):
-- gamepadX_up: state of arrow keys up key (left buttons).
-- gamepadX_down: state of arrow keys down key (left buttons).
+- gamepadX_top: state of arrow keys top key (left buttons).
+- gamepadX_bottom: state of arrow keys bottom key (left buttons).
 - gamepadX_left: state of arrow keys left key (left buttons).
 - gamepadX_right: state of arrow keys right key (left buttons).
 - gamepadX_leftStickUp: true if left stick points directly up.
@@ -339,7 +339,7 @@ Now you can use `Shaku.input.down(['space', 'sim_space'])` to check if either a 
 | Param | Type | Description |
 | --- | --- | --- |
 | code | <code>String</code> | Code to set state for. |
-| value | <code>Boolean</code> | Current value to set. |
+| value | <code>Boolean</code> \| <code>null</code> | Current value to set, or null to remove custom key. |
 
 <a name="Input+mousePressed"></a>
 
