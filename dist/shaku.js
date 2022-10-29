@@ -8281,6 +8281,35 @@ class Input extends IManager
         this.delegateTouchInputToMouse = true;
 
         /**
+         * If true (default), will delegate events from mapped gamepads to custom keys. 
+         * This will add the following codes to all basic query methods (down, pressed, released, doublePressed, doubleReleased):
+         * - gamepadX_up: state of arrow keys up key (left buttons).
+         * - gamepadX_down: state of arrow keys down key (left buttons).
+         * - gamepadX_left: state of arrow keys left key (left buttons).
+         * - gamepadX_right: state of arrow keys right key (left buttons).
+         * - gamepadX_leftStickUp: true if left stick points directly up.
+         * - gamepadX_leftStickDown: true if left stick points directly down.
+         * - gamepadX_leftStickLeft: true if left stick points directly left.
+         * - gamepadX_leftStickRight: true if left stick points directly right.
+         * - gamepadX_rightStickUp: true if right stick points directly up.
+         * - gamepadX_rightStickDown: true if right stick points directly down.
+         * - gamepadX_rightStickLeft: true if right stick points directly left.
+         * - gamepadX_rightStickRight: true if right stick points directly right.
+         * - gamepadX_a: state of A key (from right buttons).
+         * - gamepadX_b: state of B key (from right buttons).
+         * - gamepadX_x: state of X key (from right buttons).
+         * - gamepadX_y: state of Y key (from right buttons).
+         * - gamepadX_frontTopLeft: state of the front top-left button.
+         * - gamepadX_frontTopRight: state of the front top-right button.
+         * - gamepadX_frontBottomLeft: state of the front bottom-left button.
+         * - gamepadX_frontBottomRight: state of the front bottom-right button.
+         * Where X in `gamepad` is the gamepad index: gamepad0, gamepad1, gamepad2..
+         * @name Input#delegateGamepadInputToKeys
+         * @type {Boolean}
+         */
+        this.delegateGamepadInputToKeys = true;
+
+        /**
          * If true (default), will reset all states if the window loses focus.
          * @name Input#resetOnFocusLoss
          * @type {Boolean}
@@ -8413,6 +8442,40 @@ class Input extends IManager
 
         // reset queried gamepad states
         this._queriedGamepadStates = {};
+
+        // delegate gamepad keys
+        if (this.delegateGamepadInputToKeys) {
+            for (let i = 0; i < 4; ++i) {
+
+                const gp = this.gamepad(i);
+                if (!gp || !gp.isMapped) { continue; }
+
+                this.setCustomState(`gamepad${i}_up`, gp.leftButtons.up);
+                this.setCustomState(`gamepad${i}_down`, gp.leftButtons.down);
+                this.setCustomState(`gamepad${i}_left`, gp.leftButtons.left);
+                this.setCustomState(`gamepad${i}_right`, gp.leftButtons.right);
+
+                this.setCustomState(`gamepad${i}_y`, gp.rightButtons.up);
+                this.setCustomState(`gamepad${i}_a`, gp.rightButtons.down);
+                this.setCustomState(`gamepad${i}_x`, gp.rightButtons.left);
+                this.setCustomState(`gamepad${i}_b`, gp.rightButtons.right);
+                
+                this.setCustomState(`gamepad${i}_frontTopLeft`, gp.frontButtons.topLeft);
+                this.setCustomState(`gamepad${i}_frontTopRight`, gp.frontButtons.topRight);
+                this.setCustomState(`gamepad${i}_frontBottomLeft`, gp.frontButtons.bottomLeft);
+                this.setCustomState(`gamepad${i}_frontBottomRight`, gp.frontButtons.bottomRight);
+
+                this.setCustomState(`gamepad${i}_leftStickUp`, gp.leftStick.y < -0.8);
+                this.setCustomState(`gamepad${i}_leftStickDown`, gp.leftStick.y > 0.8);
+                this.setCustomState(`gamepad${i}_leftStickLeft`, gp.leftStick.x < -0.8);
+                this.setCustomState(`gamepad${i}_leftStickRight`, gp.leftStick.x > 0.8);
+
+                this.setCustomState(`gamepad${i}_rightStickUp`, gp.rightStick.y < -0.8);
+                this.setCustomState(`gamepad${i}_rightStickDown`, gp.rightStick.y > 0.8);
+                this.setCustomState(`gamepad${i}_rightStickright`, gp.rightStick.x < -0.8);
+                this.setCustomState(`gamepad${i}_rightStickRight`, gp.rightStick.x > 0.8);
+            }
+        }
     }
 
     /**
@@ -8481,6 +8544,15 @@ class Input extends IManager
         this._keyboardReleased = {};
         this._mousePressed = {};
         this._mouseReleased = {};
+
+        // for custom states
+        this._customStates = {};
+        this._customPressed = {};
+        this._customReleased = {};
+        this._lastCustomReleasedTime = {};
+        this._lastCustomPressedTime = {};
+        this._prevLastCustomReleasedTime = {};
+        this._prevLastCustomPressedTime = {};
 
         // for last release time and to count double click / double pressed events
         this._lastMouseReleasedTime = {};
@@ -8587,6 +8659,35 @@ class Input extends IManager
     get touchEnded()
     {
         return this._touchEnded;
+    }
+
+    /**
+     * Set a custom key code state you can later use with all the built in methods (down / pressed / released / doublePressed, etc.)
+     * For example, lets say you want to implement a simulated keyboard and use it alongside the real keyboard. 
+     * When your simulated keyboard space key is pressed, you can call `setCustomState('sim_space', true)`. When released, call `setCustomState('sim_space', false)`.
+     * Now you can use `Shaku.input.down(['space', 'sim_space'])` to check if either a real space or simulated space is pressed down.
+     * @param {String} code Code to set state for.
+     * @param {Boolean} value Current value to set.
+     */
+    setCustomState(code, value)
+    {
+        // set state
+        const prev = Boolean(this._customStates[code]);
+        this._customStates[code] = value;
+
+        // pressed now?
+        if (!prev && value) {
+            this._customPressed[code] = true;
+            this._prevLastCustomPressedTime[code] = this._lastCustomPressedTime[code];
+            this._lastCustomPressedTime[code] = timestamp();
+        }
+
+        // released now?
+        if (prev && !value) {
+            this._customReleased[code] = true;
+            this._prevLastCustomReleasedTime[code] = this._lastCustomReleasedTime[code];
+            this._lastCustomReleasedTime[code] = timestamp();
+        }
     }
 
     /**
@@ -8803,11 +8904,18 @@ class Input extends IManager
      * @param {Function} mouseCheck Callback to use to return value if its a mouse button code.
      * @param {Function} keyboardCheck Callback to use to return value if its a keyboard key code.
      * @param {*} touchValue Value to use to return value if its a touch code.
+     * @param {*} customValues Dictionary to check for custom values injected via setCustomState().
      */
-    _getValueWithCode(code, mouseCheck, keyboardCheck, touchValue)
+    _getValueWithCode(code, mouseCheck, keyboardCheck, touchValue, customValues)
     {
         // make sure code is string
         code = String(code);
+
+        // check for custom values
+        const customVal = customValues[code];
+        if (customVal !== undefined) {
+            return customVal;
+        }
 
         // if its 'touch' its for touch events
         if (code === _touchKeyCode) {
@@ -8818,7 +8926,7 @@ class Input extends IManager
         if (code.indexOf('mouse_') === 0) {
 
             // get mouse code name
-            var codename = code.split('_')[1];
+            const codename = code.split('_')[1];
 
             // return if mouse down
             return mouseCheck.call(this, this.MouseButtons[codename]);
@@ -8842,13 +8950,14 @@ class Input extends IManager
      *                          For keyboard buttons: use one of the keys of KeyboardKeys (for example 'a', 'alt', 'up_arrow', etc..).
      *                          For touch screen: set code to 'touch'.
      *                          For numbers (0-9): you can use the number itself.
+     *                          Note: if you inject any custom state via `setCustomState()`, you can use its code here too.
      * @returns {Boolean} True if key or mouse button are down.
      */
     down(code)
     {
         if (!(code instanceof Array)) { code = [code]; }
         for (let c of code) {
-            if (Boolean(this._getValueWithCode(c, this.mouseDown, this.keyDown, this.touching))) {
+            if (Boolean(this._getValueWithCode(c, this.mouseDown, this.keyDown, this.touching, this._customStates))) {
                 return true;
             }
         }
@@ -8864,13 +8973,14 @@ class Input extends IManager
      *                          For keyboard buttons: use one of the keys of KeyboardKeys (for example 'a', 'alt', 'up_arrow', etc..).
      *                          For touch screen: set code to 'touch'.
      *                          For numbers (0-9): you can use the number itself.
+     *                          Note: if you inject any custom state via `setCustomState()`, you can use its code here too.
      * @returns {Boolean} True if key or mouse button were down in previous frame, and released this frame.
      */
     released(code)
     {
         if (!(code instanceof Array)) { code = [code]; }
         for (let c of code) {
-            if (Boolean(this._getValueWithCode(c, this.mouseReleased, this.keyReleased, this.touchEnded))) {
+            if (Boolean(this._getValueWithCode(c, this.mouseReleased, this.keyReleased, this.touchEnded, this._customReleased))) {
                 return true;
             }
         }
@@ -8886,13 +8996,14 @@ class Input extends IManager
      *                          For keyboard buttons: use one of the keys of KeyboardKeys (for example 'a', 'alt', 'up_arrow', etc..).
      *                          For touch screen: set code to 'touch'.
      *                          For numbers (0-9): you can use the number itself.
+     *                          Note: if you inject any custom state via `setCustomState()`, you can use its code here too.
      * @returns {Boolean} True if key or mouse button where up in previous frame, and pressed this frame.
      */
     pressed(code)
     {
         if (!(code instanceof Array)) { code = [code]; }
         for (let c of code) {
-            if (Boolean(this._getValueWithCode(c, this.mousePressed, this.keyPressed, this.touchStarted))) {
+            if (Boolean(this._getValueWithCode(c, this.mousePressed, this.keyPressed, this.touchStarted, this._customPressed))) {
                 return true;
             }
         }
@@ -8908,12 +9019,13 @@ class Input extends IManager
      *                          For keyboard buttons: use one of the keys of KeyboardKeys (for example 'a', 'alt', 'up_arrow', etc..).
      *                          For touch screen: set code to 'touch'.
      *                          For numbers (0-9): you can use the number itself.
+     *                          Note: if you inject any custom state via `setCustomState()`, you can use its code here too.
      * @returns {Number} Timestamp of last key release, or 0 if was never released.
      */
     lastReleaseTime(code)
     {
         if (code instanceof Array) { throw new Error("Array not supported in 'lastReleaseTime'!"); }
-        return this._getValueWithCode(code, (c) => this._lastMouseReleasedTime[c], (c) => this._lastKeyReleasedTime[c], this._lastTouchReleasedTime) || 0;
+        return this._getValueWithCode(code, (c) => this._lastMouseReleasedTime[c], (c) => this._lastKeyReleasedTime[c], this._lastTouchReleasedTime, this._prevLastCustomReleasedTime) || 0;
     }
 
     /**
@@ -8925,12 +9037,13 @@ class Input extends IManager
      *                          For keyboard buttons: use one of the keys of KeyboardKeys (for example 'a', 'alt', 'up_arrow', etc..).
      *                          For touch screen: set code to 'touch'.
      *                          For numbers (0-9): you can use the number itself.
+     *                          Note: if you inject any custom state via `setCustomState()`, you can use its code here too.
      * @returns {Number} Timestamp of last key press, or 0 if was never pressed.
      */
     lastPressTime(code)
     {
         if (code instanceof Array) { throw new Error("Array not supported in 'lastPressTime'!"); }
-        return this._getValueWithCode(code, (c) => this._lastMousePressedTime[c], (c) => this._lastKeyPressedTime[c], this._lastTouchPressedTime) || 0;
+        return this._getValueWithCode(code, (c) => this._lastMousePressedTime[c], (c) => this._lastKeyPressedTime[c], this._lastTouchPressedTime, this._prevLastCustomPressedTime) || 0;
     }
     
     /**
@@ -8942,6 +9055,7 @@ class Input extends IManager
      *                          For keyboard buttons: use one of the keys of KeyboardKeys (for example 'a', 'alt', 'up_arrow', etc..).
      *                          For touch screen: set code to 'touch'.
      *                          For numbers (0-9): you can use the number itself.
+     *                          Note: if you inject any custom state via `setCustomState()`, you can use its code here too.
      * @param {Number} maxInterval Max interval time, in milliseconds, to consider it a double-press. Defaults to `defaultDoublePressInterval`.
      * @returns {Boolean} True if one or more key codes double-pressed, false otherwise.
      */ 
@@ -8957,7 +9071,7 @@ class Input extends IManager
         if (!(code instanceof Array)) { code = [code]; }
         for (let c of code) {
             if (this.pressed(c)) {
-                let currKeyTime = this._getValueWithCode(c, (c) => this._prevLastMousePressedTime[c], (c) => this._prevLastKeyPressedTime[c], this._prevLastTouchPressedTime);
+                let currKeyTime = this._getValueWithCode(c, (c) => this._prevLastMousePressedTime[c], (c) => this._prevLastKeyPressedTime[c], this._prevLastTouchPressedTime, this._prevLastCustomPressedTime);
                 if (currTime - currKeyTime <= maxInterval) {
                     return true;
                 }
@@ -8975,6 +9089,7 @@ class Input extends IManager
      *                          For keyboard buttons: use one of the keys of KeyboardKeys (for example 'a', 'alt', 'up_arrow', etc..).
      *                          For touch screen: set code to 'touch'.
      *                          For numbers (0-9): you can use the number itself.
+     *                          Note: if you inject any custom state via `setCustomState()`, you can use its code here too.
      * @param {Number} maxInterval Max interval time, in milliseconds, to consider it a double-release. Defaults to `defaultDoublePressInterval`.
      * @returns {Boolean} True if one or more key codes double-released, false otherwise.
      */ 
@@ -8990,7 +9105,7 @@ class Input extends IManager
         if (!(code instanceof Array)) { code = [code]; }
         for (let c of code) {
             if (this.released(c)) {
-                let currKeyTime = this._getValueWithCode(c, (c) => this._prevLastMousePressedTime[c], (c) => this._prevLastKeyPressedTime[c], this._prevLastTouchPressedTime);
+                let currKeyTime = this._getValueWithCode(c, (c) => this._prevLastMousePressedTime[c], (c) => this._prevLastKeyPressedTime[c], this._prevLastTouchPressedTime, this._prevLastCustomPressedTime);
                 if (currTime - currKeyTime <= maxInterval) {
                     return true;
                 }
@@ -9032,6 +9147,8 @@ class Input extends IManager
         this._keyboardReleased = {};
         this._mousePressed = {};
         this._mouseReleased = {};
+        this._customPressed = {};
+        this._customReleased = {};
 
         // reset touch start / end states
         this._touchStarted = false;
@@ -10306,7 +10423,7 @@ let _totalFrameTimes = 0;
 
 
 // current version
-const version = "1.6.3";
+const version = "1.6.4";
 
 
 /**

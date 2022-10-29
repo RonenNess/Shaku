@@ -20,6 +20,7 @@ To access the Input manager use `Shaku.input`.
     * [.enableMouseDeltaWhileMouseWheelDown](#Input+enableMouseDeltaWhileMouseWheelDown) : <code>Boolean</code>
     * [.disableContextMenu](#Input+disableContextMenu) : <code>Boolean</code>
     * [.delegateTouchInputToMouse](#Input+delegateTouchInputToMouse) : <code>Boolean</code>
+    * [.delegateGamepadInputToKeys](#Input+delegateGamepadInputToKeys) : <code>Boolean</code>
     * [.resetOnFocusLoss](#Input+resetOnFocusLoss) : <code>Boolean</code>
     * [.defaultDoublePressInterval](#Input+defaultDoublePressInterval) : <code>Number</code>
     * [.MouseButtons](#Input+MouseButtons)
@@ -46,6 +47,7 @@ To access the Input manager use `Shaku.input`.
     * [.gamepad([index])](#Input+gamepad) ⇒ <code>Gamepad</code>
     * [.gamepadId([index])](#Input+gamepadId) ⇒
     * [.gamepadIds()](#Input+gamepadIds) ⇒ <code>Array.&lt;String&gt;</code>
+    * [.setCustomState(code, value)](#Input+setCustomState)
     * [.mousePressed(button)](#Input+mousePressed) ⇒ <code>Boolean</code>
     * [.mouseDown(button)](#Input+mouseDown) ⇒ <code>Boolean</code>
     * [.mouseUp(button)](#Input+mouseUp) ⇒ <code>Boolean</code>
@@ -90,6 +92,34 @@ If true (default), will disable the context menu (what typically opens when you 
 
 ### input.delegateTouchInputToMouse : <code>Boolean</code>
 If true (default), will treat touch events (touch start / touch end / touch move) as if the user clicked and moved a mouse.
+
+**Kind**: instance property of [<code>Input</code>](#Input)  
+<a name="Input+delegateGamepadInputToKeys"></a>
+
+### input.delegateGamepadInputToKeys : <code>Boolean</code>
+If true (default), will delegate events from mapped gamepads to custom keys. 
+This will add the following codes to all basic query methods (down, pressed, released, doublePressed, doubleReleased):
+- gamepadX_up: state of arrow keys up key (left buttons).
+- gamepadX_down: state of arrow keys down key (left buttons).
+- gamepadX_left: state of arrow keys left key (left buttons).
+- gamepadX_right: state of arrow keys right key (left buttons).
+- gamepadX_leftStickUp: true if left stick points directly up.
+- gamepadX_leftStickDown: true if left stick points directly down.
+- gamepadX_leftStickLeft: true if left stick points directly left.
+- gamepadX_leftStickRight: true if left stick points directly right.
+- gamepadX_rightStickUp: true if right stick points directly up.
+- gamepadX_rightStickDown: true if right stick points directly down.
+- gamepadX_rightStickLeft: true if right stick points directly left.
+- gamepadX_rightStickRight: true if right stick points directly right.
+- gamepadX_a: state of A key (from right buttons).
+- gamepadX_b: state of B key (from right buttons).
+- gamepadX_x: state of X key (from right buttons).
+- gamepadX_y: state of Y key (from right buttons).
+- gamepadX_frontTopLeft: state of the front top-left button.
+- gamepadX_frontTopRight: state of the front top-right button.
+- gamepadX_frontBottomLeft: state of the front bottom-left button.
+- gamepadX_frontBottomRight: state of the front bottom-right button.
+Where X in `gamepad` is the gamepad index: gamepad0, gamepad1, gamepad2..
 
 **Kind**: instance property of [<code>Input</code>](#Input)  
 <a name="Input+resetOnFocusLoss"></a>
@@ -296,6 +326,21 @@ Return a list with connected devices ids.
 
 **Kind**: instance method of [<code>Input</code>](#Input)  
 **Returns**: <code>Array.&lt;String&gt;</code> - List of connected devices ids.  
+<a name="Input+setCustomState"></a>
+
+### input.setCustomState(code, value)
+Set a custom key code state you can later use with all the built in methods (down / pressed / released / doublePressed, etc.)
+For example, lets say you want to implement a simulated keyboard and use it alongside the real keyboard. 
+When your simulated keyboard space key is pressed, you can call `setCustomState('sim_space', true)`. When released, call `setCustomState('sim_space', false)`.
+Now you can use `Shaku.input.down(['space', 'sim_space'])` to check if either a real space or simulated space is pressed down.
+
+**Kind**: instance method of [<code>Input</code>](#Input)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| code | <code>String</code> | Code to set state for. |
+| value | <code>Boolean</code> | Current value to set. |
+
 <a name="Input+mousePressed"></a>
 
 ### input.mousePressed(button) ⇒ <code>Boolean</code>
@@ -402,7 +447,7 @@ Return if a mouse or keyboard button is currently down.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| code | <code>string</code> \| <code>Array.&lt;String&gt;</code> | Keyboard, touch or mouse code. Can be array of codes to test if any of them is pressed.                          For mouse buttons: set code to 'mouse_left', 'mouse_right' or 'mouse_middle'.                          For keyboard buttons: use one of the keys of KeyboardKeys (for example 'a', 'alt', 'up_arrow', etc..).                          For touch screen: set code to 'touch'.                          For numbers (0-9): you can use the number itself. |
+| code | <code>string</code> \| <code>Array.&lt;String&gt;</code> | Keyboard, touch or mouse code. Can be array of codes to test if any of them is pressed.                          For mouse buttons: set code to 'mouse_left', 'mouse_right' or 'mouse_middle'.                          For keyboard buttons: use one of the keys of KeyboardKeys (for example 'a', 'alt', 'up_arrow', etc..).                          For touch screen: set code to 'touch'.                          For numbers (0-9): you can use the number itself.                          Note: if you inject any custom state via `setCustomState()`, you can use its code here too. |
 
 **Example**  
 ```js
@@ -418,7 +463,7 @@ Return if a mouse or keyboard button was released in this frame.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| code | <code>string</code> \| <code>Array.&lt;String&gt;</code> | Keyboard, touch or mouse code. Can be array of codes to test if any of them is pressed.                          For mouse buttons: set code to 'mouse_left', 'mouse_right' or 'mouse_middle'.                          For keyboard buttons: use one of the keys of KeyboardKeys (for example 'a', 'alt', 'up_arrow', etc..).                          For touch screen: set code to 'touch'.                          For numbers (0-9): you can use the number itself. |
+| code | <code>string</code> \| <code>Array.&lt;String&gt;</code> | Keyboard, touch or mouse code. Can be array of codes to test if any of them is pressed.                          For mouse buttons: set code to 'mouse_left', 'mouse_right' or 'mouse_middle'.                          For keyboard buttons: use one of the keys of KeyboardKeys (for example 'a', 'alt', 'up_arrow', etc..).                          For touch screen: set code to 'touch'.                          For numbers (0-9): you can use the number itself.                          Note: if you inject any custom state via `setCustomState()`, you can use its code here too. |
 
 **Example**  
 ```js
@@ -434,7 +479,7 @@ Return if a mouse or keyboard button was pressed in this frame.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| code | <code>string</code> \| <code>Array.&lt;String&gt;</code> | Keyboard, touch or mouse code. Can be array of codes to test if any of them is pressed.                          For mouse buttons: set code to 'mouse_left', 'mouse_right' or 'mouse_middle'.                          For keyboard buttons: use one of the keys of KeyboardKeys (for example 'a', 'alt', 'up_arrow', etc..).                          For touch screen: set code to 'touch'.                          For numbers (0-9): you can use the number itself. |
+| code | <code>string</code> \| <code>Array.&lt;String&gt;</code> | Keyboard, touch or mouse code. Can be array of codes to test if any of them is pressed.                          For mouse buttons: set code to 'mouse_left', 'mouse_right' or 'mouse_middle'.                          For keyboard buttons: use one of the keys of KeyboardKeys (for example 'a', 'alt', 'up_arrow', etc..).                          For touch screen: set code to 'touch'.                          For numbers (0-9): you can use the number itself.                          Note: if you inject any custom state via `setCustomState()`, you can use its code here too. |
 
 **Example**  
 ```js
@@ -450,7 +495,7 @@ Return timestamp, in milliseconds, of the last time this key code was released.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| code | <code>string</code> | Keyboard, touch or mouse code.                          For mouse buttons: set code to 'mouse_left', 'mouse_right' or 'mouse_middle'.                          For keyboard buttons: use one of the keys of KeyboardKeys (for example 'a', 'alt', 'up_arrow', etc..).                          For touch screen: set code to 'touch'.                          For numbers (0-9): you can use the number itself. |
+| code | <code>string</code> | Keyboard, touch or mouse code.                          For mouse buttons: set code to 'mouse_left', 'mouse_right' or 'mouse_middle'.                          For keyboard buttons: use one of the keys of KeyboardKeys (for example 'a', 'alt', 'up_arrow', etc..).                          For touch screen: set code to 'touch'.                          For numbers (0-9): you can use the number itself.                          Note: if you inject any custom state via `setCustomState()`, you can use its code here too. |
 
 **Example**  
 ```js
@@ -466,7 +511,7 @@ Return timestamp, in milliseconds, of the last time this key code was pressed.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| code | <code>string</code> | Keyboard, touch or mouse code.                          For mouse buttons: set code to 'mouse_left', 'mouse_right' or 'mouse_middle'.                          For keyboard buttons: use one of the keys of KeyboardKeys (for example 'a', 'alt', 'up_arrow', etc..).                          For touch screen: set code to 'touch'.                          For numbers (0-9): you can use the number itself. |
+| code | <code>string</code> | Keyboard, touch or mouse code.                          For mouse buttons: set code to 'mouse_left', 'mouse_right' or 'mouse_middle'.                          For keyboard buttons: use one of the keys of KeyboardKeys (for example 'a', 'alt', 'up_arrow', etc..).                          For touch screen: set code to 'touch'.                          For numbers (0-9): you can use the number itself.                          Note: if you inject any custom state via `setCustomState()`, you can use its code here too. |
 
 **Example**  
 ```js
@@ -482,7 +527,7 @@ Return if a key was double-pressed.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| code | <code>string</code> | Keyboard, touch or mouse code. Can be array of codes to test if any of them is double-pressed.                          For mouse buttons: set code to 'mouse_left', 'mouse_right' or 'mouse_middle'.                          For keyboard buttons: use one of the keys of KeyboardKeys (for example 'a', 'alt', 'up_arrow', etc..).                          For touch screen: set code to 'touch'.                          For numbers (0-9): you can use the number itself. |
+| code | <code>string</code> | Keyboard, touch or mouse code. Can be array of codes to test if any of them is double-pressed.                          For mouse buttons: set code to 'mouse_left', 'mouse_right' or 'mouse_middle'.                          For keyboard buttons: use one of the keys of KeyboardKeys (for example 'a', 'alt', 'up_arrow', etc..).                          For touch screen: set code to 'touch'.                          For numbers (0-9): you can use the number itself.                          Note: if you inject any custom state via `setCustomState()`, you can use its code here too. |
 | maxInterval | <code>Number</code> | Max interval time, in milliseconds, to consider it a double-press. Defaults to `defaultDoublePressInterval`. |
 
 **Example**  
@@ -499,7 +544,7 @@ Return if a key was double-released.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| code | <code>string</code> | Keyboard, touch or mouse code. Can be array of codes to test if any of them is double-released.                          For mouse buttons: set code to 'mouse_left', 'mouse_right' or 'mouse_middle'.                          For keyboard buttons: use one of the keys of KeyboardKeys (for example 'a', 'alt', 'up_arrow', etc..).                          For touch screen: set code to 'touch'.                          For numbers (0-9): you can use the number itself. |
+| code | <code>string</code> | Keyboard, touch or mouse code. Can be array of codes to test if any of them is double-released.                          For mouse buttons: set code to 'mouse_left', 'mouse_right' or 'mouse_middle'.                          For keyboard buttons: use one of the keys of KeyboardKeys (for example 'a', 'alt', 'up_arrow', etc..).                          For touch screen: set code to 'touch'.                          For numbers (0-9): you can use the number itself.                          Note: if you inject any custom state via `setCustomState()`, you can use its code here too. |
 | maxInterval | <code>Number</code> | Max interval time, in milliseconds, to consider it a double-release. Defaults to `defaultDoublePressInterval`. |
 
 **Example**  

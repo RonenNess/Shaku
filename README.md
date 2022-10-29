@@ -1078,6 +1078,43 @@ If the gamepad has a standard mapping, `gamepad.isMapped` will be set to true, a
 - `gamepad.frontButtons`: Front buttons (topLeft, topRight, bottomLeft, bottomRight).
 
 
+#### Gamepad Key Codes
+
+If `Shaku.input.delegateGamepadInputToKeys` is true (default), the Input manager will generate key-like states for all connected gamepads that have mappings.
+
+This means that instead of using the `gamepad` object presented above, you can query it directly with `down()`, `pressed()`, `released()`, `doublePressed()` and `doubleReleased()`.
+
+The following properties are supported for every connected gamepad (X represent gamepad index):
+
+- gamepadX_up: state of arrow keys up key (left buttons).
+- gamepadX_down: state of arrow keys down key (left buttons).
+- gamepadX_left: state of arrow keys left key (left buttons).
+- gamepadX_right: state of arrow keys right key (left buttons).
+- gamepadX_leftStickUp: true if left stick points directly up.
+- gamepadX_leftStickDown: true if left stick points directly down.
+- gamepadX_leftStickLeft: true if left stick points directly left.
+- gamepadX_leftStickRight: true if left stick points directly right.
+- gamepadX_rightStickUp: true if right stick points directly up.
+- gamepadX_rightStickDown: true if right stick points directly down.
+- gamepadX_rightStickLeft: true if right stick points directly left.
+- gamepadX_rightStickRight: true if right stick points directly right.
+- gamepadX_a: state of A key (from right buttons).
+- gamepadX_b: state of B key (from right buttons).
+- gamepadX_x: state of X key (from right buttons).
+- gamepadX_y: state of Y key (from right buttons).
+- gamepadX_frontTopLeft: state of the front top-left button.
+- gamepadX_frontTopRight: state of the front top-right button.
+- gamepadX_frontBottomLeft: state of the front bottom-left button.
+- gamepadX_frontBottomRight: state of the front bottom-right button.
+
+For example, the following will trigger when the player either press the arrow up key on the gamepad, or move the left stick all the way up (will be called once when hitting threshold to consider as "up"):
+
+```js
+if (Shaku.input.pressed(['gamepad0_up', 'gamepad0_leftStickUp'])) {
+  alert("Move Up!");
+}
+```
+
 ## Assets
 
 The *Assets* manager handle loading game resources and assets, and is accessed by `Shaku.assets`.
@@ -2152,6 +2189,11 @@ Special thanks to [knexator](https://github.com/knexator) for adding TypeScript 
 - Added gamepad input.
 - Added demo for gamepad input.
 - Updated docs.
+
+# 1.6.4
+
+- Added support in custom codes in input manager.
+- Added option to delegate gamepad input into base key events.
 
 # License
 
