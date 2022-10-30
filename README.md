@@ -2190,7 +2190,7 @@ Special thanks to [knexator](https://github.com/knexator) for adding TypeScript 
 - Added demo for gamepad input.
 - Updated docs.
 
-# 1.6.4 [WIP]
+# 1.6.4
 
 - Added support in custom codes in input manager.
 - Added option to delegate gamepad input into base key events.
