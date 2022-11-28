@@ -2196,6 +2196,11 @@ Special thanks to [knexator](https://github.com/knexator) for adding TypeScript 
 - Added option to delegate gamepad input into base key events.
 - Improved Input manager error logs.
 
+# 1.6.5
+
+- Optimized gfx by caching rendering region internally.
+- Added log warning if couldn't get WebGL2 and fallback to WebGL1.
+
 # License
 
 *Shaku* is licensed under the permissive MIT license, so you can use it for any purpose (including commercially) and it should be compatible with most common licenses.

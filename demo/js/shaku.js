@@ -2489,7 +2489,7 @@ class CollisionWorld
         let renderedShapes = new Set();
 
         // get visible grid cells
-        let bb = camera ? camera.getRegion() : gfx.getRenderingRegion(false);
+        let bb = camera ? camera.getRegion() : gfx.__getRenderingRegionInternal(false);
         let minx = Math.floor(bb.left / this._gridCellSize.x);
         let miny = Math.floor(bb.top / this._gridCellSize.y);
         let maxx = minx + Math.ceil(bb.width / this._gridCellSize.x);
@@ -3861,7 +3861,7 @@ class Camera
     orthographic(region, near, far) 
     {
         if (region === undefined) {
-            region = this._gfx.getRenderingRegion();
+            region = this._gfx.__getRenderingRegionInternal();
         }
         this._region = region;
         this.projection = Matrix.orthographic(region.left, region.right, region.bottom, region.top, near || -1, far || 400);
@@ -4733,6 +4733,7 @@ class Gfx extends IManager
         this._drawCallsCount = 0;
         this._drawQuadsCount = 0;
         this.spritesBatch = null;
+        this._cachedRenderingRegion = {};
     }
 
     /**
@@ -5120,12 +5121,74 @@ class Gfx extends IManager
      */
     applyCamera(camera)
     {
+        // render what we got in back buffer
         this.presentBufferedData();
+
+        // set viewport and projection
         this._viewport = camera.viewport;
-        let viewport = this.getRenderingRegion(true);
+        let viewport = this.__getRenderingRegionInternal(true);
         this._gl.viewport(viewport.x, viewport.y, viewport.width, viewport.height);
         this._projection = camera.projection.clone();
-        if (this._activeEffect) { this._activeEffect.setProjectionMatrix(this._projection); }
+
+        // update effect
+        if (this._activeEffect) { 
+            this._activeEffect.setProjectionMatrix(this._projection); 
+        }
+
+        // reset cached rendering region
+        this.__resetCachedRenderingRegion();
+    }
+
+    /**
+     * Get current rendering region.
+     * @private
+     * @param {Boolean} includeOffset If true (default) will include viewport offset, if exists.
+     * @returns {Rectangle} Rectangle with rendering region.
+     */
+    __getRenderingRegionInternal(includeOffset)
+    {
+        // cached with offset
+        if (includeOffset && this._cachedRenderingRegion.withOffset) {
+            return this._cachedRenderingRegion.withOffset;
+        }
+
+        // cached without offset
+        if (!includeOffset && this._cachedRenderingRegion.withoutOffset) {
+            return this._cachedRenderingRegion.withoutOffset;
+        }
+
+        // if we got viewport..
+        if (this._viewport) {
+
+            // get region from viewport
+            let ret = this._viewport.clone();
+
+            // if without offset, remove it
+            if (includeOffset === false) {
+                ret.x = ret.y = 0;
+                this._cachedRenderingRegion.withoutOffset = ret;
+                return ret;
+            }
+            // else, include offset
+            else {
+                this._cachedRenderingRegion.withOffset = ret;
+                return ret;
+            }
+        }
+
+        // if we don't have viewport..
+        let ret = new Rectangle(0, 0, (this._renderTarget || this._canvas).width, (this._renderTarget || this._canvas).height);
+        this._cachedRenderingRegion.withoutOffset = this._cachedRenderingRegion.withOffset = ret;
+        return ret;
+    }
+
+    /**
+     * Reset cached rendering region values.
+     * @private
+     */
+    __resetCachedRenderingRegion()
+    {
+        this._cachedRenderingRegion.withoutOffset = this._cachedRenderingRegion.withOffset = null;
     }
 
     /**
@@ -5135,14 +5198,7 @@ class Gfx extends IManager
      */
     getRenderingRegion(includeOffset)
     {
-        if (this._viewport) {
-            let ret = this._viewport.clone();
-            if (includeOffset === false) {
-                ret.x = ret.y = 0;
-            }
-            return ret;
-        }
-        return new Rectangle(0, 0, (this._renderTarget || this._canvas).width, (this._renderTarget || this._canvas).height);
+        return this.__getRenderingRegionInternal(includeOffset).clone();
     }
 
     /**
@@ -5152,7 +5208,7 @@ class Gfx extends IManager
      */
     getRenderingSize()
     {
-        let region = this.getRenderingRegion();
+        let region = this.__getRenderingRegionInternal();
         return region.getSize();
     }
     
@@ -5180,8 +5236,16 @@ class Gfx extends IManager
                 this._canvas = document.createElement('canvas');
             }
 
-            // get gl context
-            this._gl = this._canvas.getContext('webgl2', this._initSettings) || this._canvas.getContext('webgl', this._initSettings);
+            // get webgl context
+            this._gl = this._canvas.getContext('webgl2', this._initSettings); 
+            
+            // no webgl2? try webgl1
+            if (!this._gl) {
+                _logger.warn("Failed to init WebGL2, attempt fallback to WebGL1.");
+                this._gl = this._canvas.getContext('webgl', this._initSettings);
+            }
+
+            // no webgl at all??
             if (!this._gl) {
                 _logger.error("Can't get WebGL context!");
                 return reject("Failed to get WebGL context from canvas!");
@@ -5904,7 +5968,7 @@ class Gfx extends IManager
      */
     inScreen(shape)
     {
-        let region = this.getRenderingRegion();
+        let region = this.__getRenderingRegionInternal();
 
         if (shape instanceof Circle) {
             return region.collideCircle(shape);
@@ -6318,6 +6382,9 @@ class Gfx extends IManager
         this._lastBlendMode = null;
         this._drawCallsCount = 0;
         this._drawQuadsCount = 0;
+        
+        // reset cached rendering region
+        this.__resetCachedRenderingRegion();
     }
 
     /** 
@@ -7245,10 +7312,12 @@ class SpriteBatch
     draw(sprites, cullOutOfScreen)
     {
         // if single sprite, turn to array
-        if (sprites.length === undefined) { sprites = [sprites]; }
+        if (sprites.length === undefined) { 
+            sprites = [sprites]; 
+        }
 
         // get visible region
-        let region = cullOutOfScreen ? this._gfx.getRenderingRegion() : null;
+        let region = cullOutOfScreen ? this._gfx.__getRenderingRegionInternal() : null;
 
         // get buffers
         let positions = this._positions;
