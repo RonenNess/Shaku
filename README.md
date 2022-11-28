@@ -2196,7 +2196,7 @@ Special thanks to [knexator](https://github.com/knexator) for adding TypeScript 
 - Added option to delegate gamepad input into base key events.
 - Improved Input manager error logs.
 
-# 1.6.5
+# 1.6.5 [WIP]
 
 - Optimized gfx by caching rendering region internally.
 - Optimized gfx by caching some variables + simpler bounding rect calculation when there's no rotation or skew.
