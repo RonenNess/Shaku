@@ -2200,6 +2200,7 @@ Special thanks to [knexator](https://github.com/knexator) for adding TypeScript 
 
 - Optimized gfx by caching rendering region internally.
 - Optimized gfx by caching some variables + simpler bounding rect calculation when there's no rotation or skew.
+- Optimized gfx by reducing buffer bind calls when drawing batches.
 - Added log warning if couldn't get WebGL2 and fallback to WebGL1.
 
 # License

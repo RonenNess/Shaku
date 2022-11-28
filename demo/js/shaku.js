@@ -4369,12 +4369,13 @@ class Effect
      * Set the vertices position buffer.
      * Only works if there's an attribute type bound to 'Position'.
      * @param {WebGLBuffer} buffer Vertices position buffer.
+     * @param {Boolean} forceSetBuffer If true, will always set buffer even if buffer is currently set.
      */
-    setPositionsAttribute(buffer)
+    setPositionsAttribute(buffer, forceSetBuffer)
     {
         let attr = this._attributeBinds[Effect.AttributeBinds.Position];
         if (attr) {
-            if (buffer === this._cachedValues.positions) { return; }
+            if (!forceSetBuffer && buffer === this._cachedValues.positions) { return; }
             this._cachedValues.positions = buffer;
             this.attributes[attr](buffer);
         }
@@ -4384,12 +4385,13 @@ class Effect
      * Set the vertices texture coords buffer.
      * Only works if there's an attribute type bound to 'TextureCoords'.
      * @param {WebGLBuffer} buffer Vertices texture coords buffer.
+     * @param {Boolean} forceSetBuffer If true, will always set buffer even if buffer is currently set.
      */
-    setTextureCoordsAttribute(buffer)
+    setTextureCoordsAttribute(buffer, forceSetBuffer)
     {
         let attr = this._attributeBinds[Effect.AttributeBinds.TextureCoords];
         if (attr) {
-            if (buffer === this._cachedValues.coords) { return; }
+            if (!forceSetBuffer && buffer === this._cachedValues.coords) { return; }
             this._cachedValues.coords = buffer;
             this.attributes[attr](buffer);
         }
@@ -4399,12 +4401,13 @@ class Effect
      * Set the vertices colors buffer.
      * Only works if there's an attribute type bound to 'Colors'.
      * @param {WebGLBuffer} buffer Vertices colors buffer.
+     * @param {Boolean} forceSetBuffer If true, will always set buffer even if buffer is currently set.
      */
-     setColorsAttribute(buffer)
+     setColorsAttribute(buffer, forceSetBuffer)
      {
          let attr = this._attributeBinds[Effect.AttributeBinds.Colors];
          if (attr) {
-            if (buffer === this._cachedValues.colors) { return; }
+            if (!forceSetBuffer && buffer === this._cachedValues.colors) { return; }
             this._cachedValues.colors = buffer;
             this.attributes[attr](buffer);
          }
@@ -7608,29 +7611,28 @@ class SpriteBatch
 
         // set blend mode if needed
         this._gfx._setBlendMode(this._currBlend);
-
-        // prepare effect and texture
-        let mesh = new Mesh(positionBuffer, textureCoordBuffer, colorsBuffer, indexBuffer, this._currBatchCount * 6);
-        this._gfx._activeEffect.prepareToDrawBatch(mesh, transform || Matrix.identity);
-        this._gfx._setActiveTexture(this._currTexture);
-
+        
         // should we slice the arrays?
         let shouldSliceArrays = this._currBatchCount < this.batchSpritesCount / 2;
 
+        // set world matrix
+        this._gfx._activeEffect.setWorldMatrix(transform || Matrix.identity);
+
         // copy position buffer
-        gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+        this._gfx._activeEffect.setPositionsAttribute(positionBuffer, true);
         gl.bufferData(gl.ARRAY_BUFFER, 
             shouldSliceArrays ? positionArray.slice(0, this._currBatchCount * 4 * 3) : positionArray, 
             gl.DYNAMIC_DRAW);
 
         // copy texture buffer
-        gl.bindBuffer(gl.ARRAY_BUFFER, textureCoordBuffer);
+        
+        this._gfx._activeEffect.setTextureCoordsAttribute(textureCoordBuffer, true);
         gl.bufferData(gl.ARRAY_BUFFER, 
             shouldSliceArrays ? textureArray.slice(0, this._currBatchCount * 4 * 2) : textureArray, 
             gl.DYNAMIC_DRAW);
 
         // copy color buffer
-        gl.bindBuffer(gl.ARRAY_BUFFER, colorsBuffer);
+        this._gfx._activeEffect.setColorsAttribute(colorsBuffer, true);
         gl.bufferData(gl.ARRAY_BUFFER, 
             shouldSliceArrays ? colorsArray.slice(0, this._currBatchCount * 4 * 4) : colorsArray, 
             gl.DYNAMIC_DRAW);
@@ -7638,6 +7640,8 @@ class SpriteBatch
         // set indices
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
         this._currIndices = null;
+
+        this._gfx._setActiveTexture(this._currTexture);
 
         // draw elements
         gl.drawElements(gl.TRIANGLES, this._currBatchCount * 6, gl.UNSIGNED_SHORT, 0);
