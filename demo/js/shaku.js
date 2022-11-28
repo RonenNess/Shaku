@@ -4737,11 +4737,20 @@ class Gfx extends IManager
         this._drawQuadsCount = 0;
         this.spritesBatch = null;
         this._cachedRenderingRegion = {};
+        this._webglVersion = 0;
+    }
+
+    /**
+     * Get the init WebGL version.
+     * @returns {Number} WebGL version number.
+     */
+    get webglVersion()
+    {
+        return this._webglVersion;
     }
 
     /**
      * Get how many sprites we can draw in a single batch.
-     * @private
      * @returns {Number} batch max sprites count.
      */
     get batchSpritesCount()
@@ -4751,7 +4760,6 @@ class Gfx extends IManager
 
     /**
      * Maximum number of vertices we allow when drawing lines.
-     * @private
      * @returns {Number} max vertices per lines strip.
      */
     get maxLineSegments()
@@ -5241,15 +5249,18 @@ class Gfx extends IManager
 
             // get webgl context
             this._gl = this._canvas.getContext('webgl2', this._initSettings); 
+            this._webglVersion = 2;
             
             // no webgl2? try webgl1
             if (!this._gl) {
                 _logger.warn("Failed to init WebGL2, attempt fallback to WebGL1.");
                 this._gl = this._canvas.getContext('webgl', this._initSettings);
+                this._webglVersion = 1;
             }
 
             // no webgl at all??
             if (!this._gl) {
+                this._webglVersion = 0;
                 _logger.error("Can't get WebGL context!");
                 return reject("Failed to get WebGL context from canvas!");
             }
@@ -7611,13 +7622,9 @@ class SpriteBatch
 
         // set blend mode if needed
         this._gfx._setBlendMode(this._currBlend);
-        
-        // set active texture
-        delete this._gfx._activeEffect._cachedValues.texture;
-        this._gfx._setActiveTexture(this._currTexture);
 
         // should we slice the arrays?
-        let shouldSliceArrays = this._currBatchCount < this.batchSpritesCount / 2;
+        let shouldSliceArrays = (this._gfx.webglVersion < 2) && (this._currBatchCount < this.batchSpritesCount / 2);
 
         // set world matrix
         this._gfx._activeEffect.setWorldMatrix(transform || Matrix.identity);
@@ -7626,24 +7633,28 @@ class SpriteBatch
         this._gfx._activeEffect.setPositionsAttribute(positionBuffer, true);
         gl.bufferData(gl.ARRAY_BUFFER, 
             shouldSliceArrays ? positionArray.slice(0, this._currBatchCount * 4 * 3) : positionArray, 
-            gl.DYNAMIC_DRAW);
+            gl.DYNAMIC_DRAW, 0, this._currBatchCount * 4 * 3);
 
         // copy texture buffer
         
         this._gfx._activeEffect.setTextureCoordsAttribute(textureCoordBuffer, true);
         gl.bufferData(gl.ARRAY_BUFFER, 
             shouldSliceArrays ? textureArray.slice(0, this._currBatchCount * 4 * 2) : textureArray, 
-            gl.DYNAMIC_DRAW);
+            gl.DYNAMIC_DRAW, 0, this._currBatchCount * 4 * 2);
 
         // copy color buffer
         this._gfx._activeEffect.setColorsAttribute(colorsBuffer, true);
         gl.bufferData(gl.ARRAY_BUFFER, 
             shouldSliceArrays ? colorsArray.slice(0, this._currBatchCount * 4 * 4) : colorsArray, 
-            gl.DYNAMIC_DRAW);
+            gl.DYNAMIC_DRAW, 0, this._currBatchCount * 4 * 4);
 
         // set indices
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
         this._currIndices = null;
+        
+        // set active texture
+        this._gfx._activeEffect._cachedValues = {};
+        this._gfx._setActiveTexture(this._currTexture);
 
         // draw elements
         gl.drawElements(gl.TRIANGLES, this._currBatchCount * 6, gl.UNSIGNED_SHORT, 0);
