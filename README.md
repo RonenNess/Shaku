@@ -2199,6 +2199,7 @@ Special thanks to [knexator](https://github.com/knexator) for adding TypeScript 
 # 1.6.5
 
 - Optimized gfx by caching rendering region internally.
+- Optimized gfx by caching some variables + simpler bounding rect calculation when there's no rotation or skew.
 - Added log warning if couldn't get WebGL2 and fallback to WebGL1.
 
 # License
