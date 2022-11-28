@@ -7612,6 +7612,10 @@ class SpriteBatch
         // set blend mode if needed
         this._gfx._setBlendMode(this._currBlend);
         
+        // set active texture
+        delete this._gfx._activeEffect._cachedValues.texture;
+        this._gfx._setActiveTexture(this._currTexture);
+
         // should we slice the arrays?
         let shouldSliceArrays = this._currBatchCount < this.batchSpritesCount / 2;
 
@@ -7640,8 +7644,6 @@ class SpriteBatch
         // set indices
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
         this._currIndices = null;
-
-        this._gfx._setActiveTexture(this._currTexture);
 
         // draw elements
         gl.drawElements(gl.TRIANGLES, this._currBatchCount * 6, gl.UNSIGNED_SHORT, 0);
