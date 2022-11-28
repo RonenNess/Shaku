@@ -5006,6 +5006,9 @@ class Gfx extends IManager
         // present buffered data
         this.presentBufferedData();
 
+        // reset cached rendering size
+        this.__resetCachedRenderingRegion();
+
         // if texture is null, remove any render target
         if (texture === null) {
             this._renderTarget = null;
@@ -7620,6 +7623,9 @@ class SpriteBatch
             _logger.error("Effect changed while drawing batch!");
         }
 
+        // clear effect cache
+        this._gfx._activeEffect._cachedValues = {};
+
         // set blend mode if needed
         this._gfx._setBlendMode(this._currBlend);
 
@@ -7653,7 +7659,6 @@ class SpriteBatch
         this._currIndices = null;
         
         // set active texture
-        this._gfx._activeEffect._cachedValues = {};
         this._gfx._setActiveTexture(this._currTexture);
 
         // draw elements
