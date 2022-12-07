@@ -5,10 +5,16 @@
 **If you're looking for a package that implements rendering, sounds, assets and input, while keeping it low level and simple, this is the library for you!** 
 
 - [Online Demos](https://ronenness.github.io/Shaku/demo/index.html)
-- [Full Game Made With Shaku](https://ronenness.itch.io/hellescape)
+- [Full Game Made With Shaku](https://store.steampowered.com/app/2135030/HellEscape/)
 - [Game Demo Project](https://ronenness.github.io/Shaku-Demo/)
 - [Homepage](https://ronenness.github.io/Shaku/)
 - [Full API Docs](https://ronenness.github.io/Shaku/docs/index.html)
+
+Additional projects made with *Shaku*:
+
+- [Tres Undos](https://knexator.itch.io/tres-undos)
+- [GridBender](https://knexator.itch.io/gridbender)
+- [Another Clone](https://knexator.itch.io/another-clone)
 
 # Table Of Content
 
@@ -2196,7 +2202,7 @@ Special thanks to [knexator](https://github.com/knexator) for adding TypeScript 
 - Added option to delegate gamepad input into base key events.
 - Improved Input manager error logs.
 
-# 1.6.5 [WIP]
+# 1.6.5
 
 - Optimized gfx by caching rendering region internally.
 - Optimized gfx by caching some variables + simpler bounding rect calculation when there's no rotation or skew.

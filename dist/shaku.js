@@ -10590,7 +10590,7 @@ let _totalFrameTimes = 0;
 
 
 // current version
-const version = "1.6.4";
+const version = "1.6.5";
 
 
 /**
