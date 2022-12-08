@@ -12,7 +12,6 @@
 
 Additional projects made with *Shaku*:
 
-- [Tres Undos](https://knexator.itch.io/tres-undos)
 - [GridBender](https://knexator.itch.io/gridbender)
 - [Another Clone](https://knexator.itch.io/another-clone)
 
