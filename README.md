@@ -2210,6 +2210,11 @@ Special thanks to [knexator](https://github.com/knexator) for adding TypeScript 
 - Optimized gfx by not slicing arrays when we don't have to.
 - Added log warning if couldn't get WebGL2 and fallback to WebGL1.
 
+# 1.6.6 [WIP]
+
+- Extended Input demo.
+- Added useful logs about gamepad state changes.
+
 # License
 
 *Shaku* is licensed under the permissive MIT license, so you can use it for any purpose (including commercially) and it should be compatible with most common licenses.

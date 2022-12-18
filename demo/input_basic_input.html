@@ -22,7 +22,7 @@
       <p>Keys input counter:</p>
       <table id="status-table" style="table-layout:fixed; width:1400px; text-align:left;">
         <tr>
-          <th>Key Code</th>
+          <th style="width:280px">Key Code</th>
           <th>Pressed</th>
           <th>Released</th>
           <th>Double-Pressed</th>
@@ -47,6 +47,9 @@
           let releaseCount = {};
           let doublePressCount = {};
           let doubleReleaseCount = {};
+
+          // gamepad keys
+          const gamepadKeys = 'top,bottom,left,right,y,a,x,b,frontTopLeft,frontTopRight,frontBottomLeft,frontBottomRight,leftStickUp,leftStickDown,leftStickLeft,leftStickRight,rightStickUp,rightStickDown,rightStickLeft,rightStickRight'.split(',');
 
           // create button element to show key state
           function createButtonElement(key) {
@@ -85,6 +88,9 @@
           createButtonElement('mouse_left');
           createButtonElement('mouse_middle');
           createButtonElement('mouse_right');
+          for (let gkey of gamepadKeys) {
+            createButtonElement(`gamepad0_${gkey}`);
+          }
 
           // to count mouse wheel, press and release
           let mouseWheel = 0;
@@ -136,6 +142,10 @@
               // handle mouse
               for (let key in Shaku.input.MouseButtons) {
                 handleKeyEvents(key, "mouse_");
+              }
+              // handle gamepad
+              for (let key of gamepadKeys) {
+                handleKeyEvents(key, "gamepad0_");
               }
               // handle touch
               handleKeyEvents('touch', "");
