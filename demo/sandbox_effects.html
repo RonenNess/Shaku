@@ -52,7 +52,13 @@
             ___custom_effect_code___
   
             // create custom effect instance and set as active
-            let effect = Shaku.gfx.createEffect(CustomEffect);
+            let effect;
+            try {
+              effect = Shaku.gfx.createEffect(CustomEffect);
+            }
+            catch (e) {
+              document.body.innerHTML = e.toString() + "<br />See developer console for details.";
+            }
   
             // load textures
             let sprite = await Shaku.assets.loadTexture('assets/shaku.png');
