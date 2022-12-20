@@ -18,7 +18,12 @@
       <script>
         window.addEventListener('message', function(event) {
             if (typeof event.data == 'object' && event.data.call=='setCode') {
+              try {
                 eval(event.data.value);
+              }
+              catch (e) {
+                window.document.body.innerHTML = "ERROR<br />" + e;
+              }
             }
         }, false);
       </script>

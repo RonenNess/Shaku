@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Shaku Effects Sandbox</title>
+    <meta name="description" content="Shaku - a simple and easy-to-use javascript library for videogame programming.">
+    <meta name="author" content="Ronen Ness">
+    <link href="css/style.css" rel="stylesheet" type="text/css" media="all">
+  </head>
+  <body>
+    <style>
+      html {
+        min-height: 100%; /* make sure it is at least as tall as the viewport */
+        position: relative;
+      }
+      body {
+        height: 100%; /* force the BODY element to match the height of the HTML element */
+        overflow: hidden;
+      }
+      .max-height {
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          overflow: hidden;
+          z-index: -1; /* Remove this line if it's not going to be a background! */
+      }
+      #editor {
+          position: absolute;
+          width: 100%;
+          min-height: 100%;
+      }
+      #editor *{ font-family : monospace !important;font-size: 16px !important;direction:ltr !important;text-align:left !important;}
+    </style>
+
+      <div id="left-pane" class="max-height" style="left:0px; width:40%; display:block; overflow: scroll;">
+        <div style="padding:0.5em">
+          <h1 class="demo-title" style="margin-left: 0;">Shaku: Effects Sandbox</h1>
+          <p>This demo is a sandbox application to write effects and see them update in realtime on the right side.</p>
+          <button class="view-code-btn" onclick="updateSandbox();" style="position: absolute; z-index: 100; right:0px; margin-top:-0.75em">Apply Effect →</button>
+        </div>
+
+        <!-- Wrapper code -->
+        <div id="wrapper-code" style="display: none;">
+          async function runDemo()
+          {
+            // init shaku
+            await Shaku.init();
+            document.body.appendChild(Shaku.gfx.canvas);
+            
+            ___custom_effect_code___
+  
+            // create custom effect instance and set as active
+            let effect = Shaku.gfx.createEffect(CustomEffect);
+  
+            // load textures
+            let sprite = await Shaku.assets.loadTexture('assets/shaku.png');
+  
+            // do a main loop step.
+            function step()
+            {
+              // make fullscreen
+              Shaku.gfx.maximizeCanvasSize(false);
+
+              // start frame and clear screen
+              Shaku.startFrame();
+              Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
+
+              // use effect
+              Shaku.gfx.useEffect(effect);
+  
+              // custom updates code
+              CustomEffect.preRenderInit(effect, sprite);
+  
+              // draw with custom effect
+              const position = Shaku.gfx.getRenderingSize().mul(0.5, 0.5);
+              Shaku.gfx.draw(sprite, position, 400);
+
+              // clear effect
+              Shaku.gfx.useEffect(null);
+
+              // end frame and request next frame
+              Shaku.endFrame();
+              Shaku.requestAnimationFrame(step);
+            }
+  
+            // start main loop
+            step();
+          }
+  
+          // start demo
+          runDemo();
+  
+        </div>
+
+
+        <div id="editor">// define our custom effect
+// don't rename it from 'CustomEffect' or it won't work for this demo
+class CustomEffect extends Shaku.gfx.BasicEffect
+{
+  /**
+  * Override the vertex shader for our custom effect.
+  */
+  get vertexCode()
+  {
+    const vertexShader = `  
+      attribute vec3 position;
+      attribute vec2 coord;
+      attribute vec4 color;
+      
+      uniform mat4 projection;
+      uniform mat4 world;
+      
+      varying vec2 v_texCoord;
+      varying vec4 v_color;
+      
+      void main(void) {
+          gl_Position = projection * world * vec4(position, 1.0);
+          gl_PointSize = 1.0;
+          v_texCoord = coord;
+          v_color = color;
+      }
+      `; 
+      return vertexShader;
+  }
+
+  /**
+  * Override the fragment shader for our custom effect.
+  */
+  get fragmentCode()
+  {
+    const fragmentShader = `  
+      #ifdef GL_ES
+          precision highp float;
+      #endif
+
+      uniform sampler2D texture;
+      uniform float elapsedTime;
+
+      varying vec2 v_texCoord;
+      varying vec4 v_color;
+
+      void main(void) {
+          gl_FragColor = texture2D(texture, v_texCoord) * v_color;
+          gl_FragColor.r *= sin(v_texCoord.y * 10.0 + elapsedTime) + 0.1;
+          gl_FragColor.g *= sin(1.8 + v_texCoord.y * 10.0 + elapsedTime) + 0.1;
+          gl_FragColor.b *= sin(3.6 + v_texCoord.y * 10.0 + elapsedTime) + 0.1;
+          gl_FragColor.rgb *= gl_FragColor.a;
+      }
+      `; 
+      return fragmentShader;
+  }
+
+  /**
+  * Override the uniform types dictionary to add our custom uniform types.
+  */
+  get uniformTypes()
+  {
+    let ret = super.uniformTypes;
+    ret['elapsedTime'] = { type: Shaku.gfx.Effect.UniformTypes.Float };
+    return ret;
+  }
+
+  /**
+  * This method is called before we render with the effect, to do custom setups
+  * It's not part of Shaku, its something we add for this specific demo.
+  */
+  static preRenderInit(effectInstance, sprite)
+  {
+    // update effect custom uniform
+    effectInstance.uniforms.elapsedTime(Shaku.gameTime.elapsed);
+  }
+}</div>
+      </div>
+
+      <div id="right-pane" class="max-height" style="left:40%; width:60%; display:block;">
+        <iframe id="sandbox-iframe" src="sandbox_internal.html" style="left:0px; top:0px; width:100%; height:100%;"></iframe>
+      </div>
+
+      <!-- update sandbox code -->
+      <script>
+        function updateSandbox()
+        {
+          let code = window._codeEditor.getValue();
+          let iframe = document.getElementById('sandbox-iframe');
+          iframe.src = 'sandbox_internal.html';
+          iframe.onload = () => {
+            const codeWrapper = document.getElementById("wrapper-code").innerHTML;
+            iframe.contentWindow.postMessage({call:'setCode', value: codeWrapper.replace('___custom_effect_code___', code)}, '*');
+          }
+        }
+      </script>
+
+      <script src="ace/ace.js" type="text/javascript" charset="utf-8"></script>
+
+      <script>
+        (function() {
+          var editor = ace.edit("editor");
+          ace.config.loadModule("ace/keybinding/vscode");
+          editor.setOption('useWorker', false);
+          editor.setTheme("ace/theme/dracula");
+          editor.session.setMode("ace/mode/javascript");
+          window._codeEditor = editor;
+          updateSandbox();
+        })();
+      </script>
+
+  </body>
+</html>
