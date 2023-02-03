@@ -15,6 +15,7 @@ Additional projects made with *Shaku*:
 - [GridBender](https://knexator.itch.io/gridbender)
 - [Another Clone](https://knexator.itch.io/another-clone)
 - [Catalyst](https://knexator.itch.io/catalyst)
+- [King of Veggies](https://pinchazumos.itch.io/king-of-veggies)
 
 # Table Of Content
 
