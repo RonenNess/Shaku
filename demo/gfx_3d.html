@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Shaku</title>
+    <meta name="description" content="Shaku - a simple and easy-to-use javascript library for videogame programming.">
+    <meta name="author" content="Ronen Ness">
+    <link href="css/style.css" rel="stylesheet" type="text/css" media="all">
+  </head>
+  <body>
+    <div class="noselect">
+    <button class="view-code-btn" onclick="showSampleCode();">View Code</button> 
+    <h1 class="demo-title">Shaku Gfx Demo: 3D</h1>
+      <p>Shaku is designed for 2D, but it can also do some basic 3D rendering. This demo shows how.<br /><br />
+      Use <b>Arrows</b> or <b>WASD</b> to move the sprite.</p>
+      
+      <span class="credits">Knight image is from: https://opengameart.org/content/knight-sprite <br/>
+      Tree image is from: https://opengameart.org/content/gnarled-tree<br/>
+      Grass image is from: https://opengameart.org/content/10-seamless-grass-textures-that-are-2048-x-2048-grass-1png</span>
+
+
+      <!-- include shaku -->
+      <script src="js/demos.js"></script>
+      <script src="js/shaku.js"></script>
+
+      <!-- demo code -->
+      <script>
+
+        // create custom 3d effect
+        class CustomEffect extends Shaku.gfx.BasicEffect
+        {
+            get enableDepthTest() { return true; }
+
+            get enableFaceCulling() { return false; }
+
+            get vertexCode()
+            {
+                const vertexShader = `
+                  attribute vec3 position;
+                  attribute vec2 coord;
+                  attribute vec4 color;
+
+                  uniform mat4 projection;
+                  uniform mat4 view;
+                  uniform mat4 world;
+
+                  varying vec2 v_texCoord;
+                  varying vec4 v_color;
+
+                  void main(void) {
+                      gl_Position = projection * view * world * vec4(position, 1.0);
+                      gl_PointSize = 1.0;
+                      v_texCoord = coord;
+                      v_color = color;
+                  }
+                `;
+                return vertexShader;
+            }
+
+            get fragmentCode()
+            {
+                const fragmentShader = `  
+                  #ifdef GL_ES
+                      precision highp float;
+                  #endif
+
+                  uniform sampler2D texture;
+
+                  varying vec2 v_texCoord;
+                  varying vec4 v_color;
+
+                  void main(void) {
+                      gl_FragColor = texture2D(texture, v_texCoord) * v_color;
+                      if (gl_FragColor.a <= 0.0) { discard; }
+                      gl_FragColor.rgb *= gl_FragColor.a;
+                  }
+                `; 
+                return fragmentShader;
+            }
+
+            get uniformTypes()
+            {
+              let ret = super.uniformTypes;
+              return ret;
+            }
+        }
+
+
+        async function runDemo()
+        {
+          // init shaku
+          Shaku.gfx.setContextAttributes({depth:true});
+          await Shaku.init();
+
+          // create custom effect instance
+          let effect = Shaku.gfx.createEffect(CustomEffect);
+
+          // screen size
+          let screenX = 1000;
+          let screenY = 700;
+
+          // add canvas to document
+          document.body.appendChild(Shaku.gfx.canvas);
+          Shaku.gfx.setResolution(screenX, screenY, true);
+
+          // load textures and font
+          let spriteTexture = await Shaku.assets.loadTexture('assets/sprite.png');
+          let grassTexture = await Shaku.assets.loadTexture('assets/grass.png');
+          let treeTexture = await Shaku.assets.loadTexture('assets/baum.png');
+          let fontTexture = await Shaku.assets.loadFontTexture('assets/DejaVuSansMono.ttf', {fontName: 'DejaVuSansMono'});
+
+          // sprite size and position
+          const spriteSize = new Shaku.utils.Vector2(spriteTexture.width * 1.5, spriteTexture.height * 1.5);
+          const position = new Shaku.utils.Vector3(0, 0, 0);
+
+          // create random trees
+          const trees = [];
+          for (let i = 0; i < 25; ++i) {
+            
+            const maxPosOffset = 2600;
+            const treeSize = new Shaku.utils.Vector2(treeTexture.width * 3, treeTexture.height * 3);
+            const treePosition = new Shaku.utils.Vector2(Math.random() * maxPosOffset - maxPosOffset / 2, Math.random() * maxPosOffset - maxPosOffset / 2);
+            const treeOffsetY = -20;
+
+            const tv1 = (new Shaku.gfx.Vertex())
+                        .setPosition(new Shaku.utils.Vector3(-treeSize.x / 2 + treePosition.x, treeOffsetY, treePosition.y))
+                        .setTextureCoords(new Shaku.utils.Vector2(0, treeTexture.height));
+            const tv2 = (new Shaku.gfx.Vertex())
+                        .setPosition(new Shaku.utils.Vector3(treeSize.x / 2 + treePosition.x, treeOffsetY, treePosition.y))
+                        .setTextureCoords(new Shaku.utils.Vector2(treeTexture.width, treeTexture.height));
+            const tv3 = (new Shaku.gfx.Vertex())
+                        .setPosition(new Shaku.utils.Vector3(-treeSize.x / 2 + treePosition.x, treeSize.y + treeOffsetY, treePosition.y))
+                        .setTextureCoords(new Shaku.utils.Vector2(0, 0));
+            const tv4 = (new Shaku.gfx.Vertex())
+                        .setPosition(new Shaku.utils.Vector3(treeSize.x / 2 + treePosition.x, treeSize.y + treeOffsetY, treePosition.y))
+                        .setTextureCoords(new Shaku.utils.Vector2(treeTexture.width, 0));
+
+            trees.push([tv1, tv2, tv3, tv4]);
+          }
+
+          // create sprite vertices
+          const v1 = (new Shaku.gfx.Vertex())
+                      .setPosition(new Shaku.utils.Vector3(-spriteSize.x / 2, 0, 0))
+                      .setTextureCoords(new Shaku.utils.Vector2(0, spriteTexture.height));
+          const v2 = (new Shaku.gfx.Vertex())
+                      .setPosition(new Shaku.utils.Vector3(spriteSize.x / 2, 0, 0))
+                      .setTextureCoords(new Shaku.utils.Vector2(spriteTexture.width, spriteTexture.height));
+          const v3 = (new Shaku.gfx.Vertex())
+                      .setPosition(new Shaku.utils.Vector3(-spriteSize.x / 2, spriteSize.y, 0))
+                      .setTextureCoords(new Shaku.utils.Vector2(0, 0));
+          const v4 = (new Shaku.gfx.Vertex())
+                      .setPosition(new Shaku.utils.Vector3(spriteSize.x / 2, spriteSize.y, 0))
+                      .setTextureCoords(new Shaku.utils.Vector2(spriteTexture.width, 0));
+
+          // create a 3d camera
+          const camera = Shaku.gfx.createCamera();
+          {
+            const fieldOfView = (45 * Math.PI) / 180; // in radians
+            const aspectRatio = screenX / screenY;
+            const zNear = 0.1;
+            const zFar = 10000.0;
+            camera.perspective(fieldOfView, aspectRatio, zNear, zFar) 
+          }
+
+          // create floor vertices
+          const floorPosY = 0;
+          const floorWidth = grassTexture.width * 2.5;
+          const floorDepth = grassTexture.height * 2.5;
+          const vf1 = (new Shaku.gfx.Vertex())
+                      .setPosition(new Shaku.utils.Vector3(-floorWidth, floorPosY, -floorDepth))
+                      .setTextureCoords(new Shaku.utils.Vector2(0, grassTexture.height));
+          const vf2 = (new Shaku.gfx.Vertex())
+                      .setPosition(new Shaku.utils.Vector3(floorWidth, floorPosY, -floorDepth))
+                      .setTextureCoords(new Shaku.utils.Vector2(grassTexture.width, grassTexture.height));
+          const vf3 = (new Shaku.gfx.Vertex())
+                      .setPosition(new Shaku.utils.Vector3(-floorWidth, floorPosY, floorDepth))
+                      .setTextureCoords(new Shaku.utils.Vector2(0, 0));
+          const vf4 = (new Shaku.gfx.Vertex())
+                      .setPosition(new Shaku.utils.Vector3(floorWidth, floorPosY, floorDepth))
+                      .setTextureCoords(new Shaku.utils.Vector2(grassTexture.width, 0));
+
+          // do a main loop step.
+          function step() {
+            
+            Shaku.startFrame();
+            Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
+            Shaku.gfx.clearDepth();
+
+            // set the 3d camera
+            Shaku.gfx.applyCamera(camera);
+
+            // use our custom 3d effect
+            Shaku.gfx.useEffect(effect);
+
+            // set view matrix
+            const view = Shaku.gfx.Matrix.lookAt(new Shaku.utils.Vector3(position.x, 500, 600 + position.z), new Shaku.utils.Vector3(position.x, 0, position.z), Shaku.utils.Vector3.upReadonly);
+            effect.setViewMatrix(view);
+
+            // create transformation matrix
+            const matrix = Shaku.gfx.Matrix.translate(position.x, position.y, position.z);
+
+            // draw floor
+            Shaku.gfx.drawQuadFromVertices(grassTexture, [vf1, vf2, vf3, vf4]);
+
+            // draw sprite from vertices
+            const vertices = [Shaku.gfx.Matrix.transformVertex(matrix, v1), 
+                              Shaku.gfx.Matrix.transformVertex(matrix, v2), 
+                              Shaku.gfx.Matrix.transformVertex(matrix, v3), 
+                              Shaku.gfx.Matrix.transformVertex(matrix, v4)];
+            Shaku.gfx.drawQuadFromVertices(spriteTexture, vertices);
+
+            // draw trees
+            for (let tree of trees)
+            {
+              Shaku.gfx.drawQuadFromVertices(treeTexture, tree);
+            }
+
+            // update sprite position
+            if (Shaku.input.down('left') || Shaku.input.down('a')) { 
+              position.x -= Shaku.gameTime.delta * 175;
+            }
+            if (Shaku.input.down('right') || Shaku.input.down('d')) { 
+              position.x += Shaku.gameTime.delta * 175;
+            }
+            if (Shaku.input.down('up') || Shaku.input.down('w')) { 
+              position.z -= Shaku.gameTime.delta * 175;
+            }
+            if (Shaku.input.down('down') || Shaku.input.down('s')) { 
+              position.z += Shaku.gameTime.delta * 175;
+            }
+
+            Shaku.endFrame();
+            Shaku.requestAnimationFrame(step);
+          }
+          step();
+        }
+
+        // start demo
+        runDemo();
+
+      </script>
+
+</div>
+
+<!-- code example part -->
+<div id="sample-code-modal" class="modal">
+  <div class="modal__overlay jsOverlay"></div>
+  <div class="modal__container">   
+
+<p class="noselect">The following is a code example on how to draw 3D quads with vertices.</i>
+</p>
+<pre><code class="language-js">// first create a custom shader to support 3D rendering:
+class CustomEffect extends Shaku.gfx.BasicEffect
+{
+    get enableDepthTest() { return true; }
+
+    get enableFaceCulling() { return false; }
+
+    get vertexCode()
+    {
+        const vertexShader = `
+          attribute vec3 position;
+          attribute vec2 coord;
+          attribute vec4 color;
+
+          uniform mat4 projection;
+          uniform mat4 view;
+          uniform mat4 world;
+
+          varying vec2 v_texCoord;
+          varying vec4 v_color;
+
+          void main(void) {
+              gl_Position = projection * view * world * vec4(position, 1.0);
+              gl_PointSize = 1.0;
+              v_texCoord = coord;
+              v_color = color;
+          }
+        `;
+        return vertexShader;
+    }
+
+    get fragmentCode()
+    {
+        const fragmentShader = `  
+          #ifdef GL_ES
+              precision highp float;
+          #endif
+
+          uniform sampler2D texture;
+
+          varying vec2 v_texCoord;
+          varying vec4 v_color;
+
+          void main(void) {
+              gl_FragColor = texture2D(texture, v_texCoord) * v_color;
+              if (gl_FragColor.a <= 0.0) { discard; }
+              gl_FragColor.rgb *= gl_FragColor.a;
+          }
+        `; 
+        return fragmentShader;
+    }
+
+    get uniformTypes()
+    {
+      let ret = super.uniformTypes;
+      return ret;
+    }
+}
+
+// init shaku with depth enabled
+Shaku.gfx.setContextAttributes({depth:true});
+await Shaku.init();
+
+// load a test texture
+let texture = await Shaku.assets.loadTexture('assets/sprite.png');
+
+// create custom effect instance
+let effect = Shaku.gfx.createEffect(CustomEffect);
+
+// create a 3d perspective camera
+const camera = Shaku.gfx.createCamera();
+{
+  const fieldOfView = (45 * Math.PI) / 180; // in radians
+  const aspectRatio = Shaku.gfx.canvas.width / Shaku.gfx.canvas.height;
+  const zNear = 0.1;
+  const zFar = 10000.0;
+  camera.perspective(fieldOfView, aspectRatio, zNear, zFar) 
+}
+
+// do a main loop step.
+function step() {
+  
+  // start frame and clear buffers + depth
+  Shaku.startFrame();
+  Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
+  Shaku.gfx.clearDepth();
+
+  // set the 3d camera
+  Shaku.gfx.applyCamera(camera);
+
+  // use our custom 3d effect
+  Shaku.gfx.useEffect(effect);
+
+  // set view matrix
+  const view = Shaku.gfx.Matrix.lookAt(new Shaku.utils.Vector3(0, 100, 100), new Shaku.utils.Vector3(0, 0, 0), Shaku.utils.Vector3.upReadonly);
+  effect.setViewMatrix(view);
+
+  // draw a 3D quad (note: quad origin point is bottom-center, making it appear as if its standing)
+  const quadSize = new Shaku.utils.Vector2(texture.width * 2, texture.height * 2);
+  const v1 = (new Shaku.gfx.Vertex())
+              .setPosition(new Shaku.utils.Vector3(-quadSize.x / 2, 0, 0))
+              .setTextureCoords(new Shaku.utils.Vector2(0, texture.height));
+  const v2 = (new Shaku.gfx.Vertex())
+              .setPosition(new Shaku.utils.Vector3(quadSize.x / 2, 0, 0))
+              .setTextureCoords(new Shaku.utils.Vector2(texture.width, texture.height));
+  const v3 = (new Shaku.gfx.Vertex())
+              .setPosition(new Shaku.utils.Vector3(-quadSize.x / 2, quadSize.y, 0))
+              .setTextureCoords(new Shaku.utils.Vector2(0, 0));
+  const v4 = (new Shaku.gfx.Vertex())
+              .setPosition(new Shaku.utils.Vector3(quadSize.x / 2, quadSize.y, 0))
+              .setTextureCoords(new Shaku.utils.Vector2(texture.width, 0));
+  Shaku.gfx.drawQuadFromVertices(texture, [v1, v2, v3, v4]);
+
+  // end frame and ask for next one
+  Shaku.endFrame();
+  Shaku.requestAnimationFrame(step);
+}
+
+step();
+</code></pre>
+
+  <button class="modal__close" onclick="closeModal('sample-code-modal')">&#10005;</button>
+</div>
+</div>
+
+<link href="prism/prism.css" rel="stylesheet" />
+<script src="prism/prism.js"></script>
+
+  </body>
+</html>

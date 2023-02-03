@@ -16,6 +16,9 @@ To access the Graphics manager you use `Shaku.gfx`.
 
 * [Gfx](#Gfx)
     * [new Gfx()](#new_Gfx_new)
+    * [.webglVersion](#Gfx+webglVersion) ⇒ <code>Number</code>
+    * [.batchSpritesCount](#Gfx+batchSpritesCount) ⇒ <code>Number</code>
+    * [.maxLineSegments](#Gfx+maxLineSegments) ⇒ <code>Number</code>
     * [.canvas](#Gfx+canvas) ⇒ <code>HTMLCanvasElement</code>
     * [.Effect](#Gfx+Effect)
     * [.BasicEffect](#Gfx+BasicEffect)
@@ -66,6 +69,7 @@ To access the Graphics manager you use `Shaku.gfx`.
     * [.inScreen(shape)](#Gfx+inScreen) ⇒ <code>Boolean</code>
     * [.centerCamera(position, useCanvasSize)](#Gfx+centerCamera)
     * [.clear([color])](#Gfx+clear)
+    * [.clearDepth([value])](#Gfx+clearDepth)
     * [.presentBufferedData()](#Gfx+presentBufferedData)
 
 <a name="new_Gfx_new"></a>
@@ -73,6 +77,27 @@ To access the Graphics manager you use `Shaku.gfx`.
 ### new Gfx()
 Create the manager.
 
+<a name="Gfx+webglVersion"></a>
+
+### gfx.webglVersion ⇒ <code>Number</code>
+Get the init WebGL version.
+
+**Kind**: instance property of [<code>Gfx</code>](#Gfx)  
+**Returns**: <code>Number</code> - WebGL version number.  
+<a name="Gfx+batchSpritesCount"></a>
+
+### gfx.batchSpritesCount ⇒ <code>Number</code>
+Get how many sprites we can draw in a single batch.
+
+**Kind**: instance property of [<code>Gfx</code>](#Gfx)  
+**Returns**: <code>Number</code> - batch max sprites count.  
+<a name="Gfx+maxLineSegments"></a>
+
+### gfx.maxLineSegments ⇒ <code>Number</code>
+Maximum number of vertices we allow when drawing lines.
+
+**Kind**: instance property of [<code>Gfx</code>](#Gfx)  
+**Returns**: <code>Number</code> - max vertices per lines strip.  
 <a name="Gfx+canvas"></a>
 
 ### gfx.canvas ⇒ <code>HTMLCanvasElement</code>
@@ -836,6 +861,18 @@ Clear screen to a given color.
 ```js
 Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
 ```
+<a name="Gfx+clearDepth"></a>
+
+### gfx.clearDepth([value])
+Clear depth buffer.
+Only relevant when depth is used.
+
+**Kind**: instance method of [<code>Gfx</code>](#Gfx)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| [value] | <code>Number</code> | Value to clear depth buffer to. |
+
 <a name="Gfx+presentBufferedData"></a>
 
 ### gfx.presentBufferedData()

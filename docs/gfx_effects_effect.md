@@ -52,9 +52,10 @@ An effect = vertex shader + fragment shader + uniforms & attributes + setup code
     * [.setUvOffsetAndScale(sourceRect, texture)](#Effect+setUvOffsetAndScale)
     * [.setProjectionMatrix(matrix)](#Effect+setProjectionMatrix)
     * [.setWorldMatrix(matrix)](#Effect+setWorldMatrix)
-    * [.setPositionsAttribute(buffer)](#Effect+setPositionsAttribute)
-    * [.setTextureCoordsAttribute(buffer)](#Effect+setTextureCoordsAttribute)
-    * [.setColorsAttribute(buffer)](#Effect+setColorsAttribute)
+    * [.setViewMatrix(matrix)](#Effect+setViewMatrix)
+    * [.setPositionsAttribute(buffer, forceSetBuffer)](#Effect+setPositionsAttribute)
+    * [.setTextureCoordsAttribute(buffer, forceSetBuffer)](#Effect+setTextureCoordsAttribute)
+    * [.setColorsAttribute(buffer, forceSetBuffer)](#Effect+setColorsAttribute)
 
 <a name="Effect+uniformTypes"></a>
 
@@ -199,9 +200,20 @@ Set the world matrix uniform.
 | --- | --- | --- |
 | matrix | <code>Matrix</code> | Matrix to set. |
 
+<a name="Effect+setViewMatrix"></a>
+
+### effect.setViewMatrix(matrix)
+Set the view matrix uniform.
+
+**Kind**: instance method of [<code>Effect</code>](#Effect)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| matrix | <code>Matrix</code> | Matrix to set. |
+
 <a name="Effect+setPositionsAttribute"></a>
 
-### effect.setPositionsAttribute(buffer)
+### effect.setPositionsAttribute(buffer, forceSetBuffer)
 Set the vertices position buffer.
 Only works if there's an attribute type bound to 'Position'.
 
@@ -210,10 +222,11 @@ Only works if there's an attribute type bound to 'Position'.
 | Param | Type | Description |
 | --- | --- | --- |
 | buffer | <code>WebGLBuffer</code> | Vertices position buffer. |
+| forceSetBuffer | <code>Boolean</code> | If true, will always set buffer even if buffer is currently set. |
 
 <a name="Effect+setTextureCoordsAttribute"></a>
 
-### effect.setTextureCoordsAttribute(buffer)
+### effect.setTextureCoordsAttribute(buffer, forceSetBuffer)
 Set the vertices texture coords buffer.
 Only works if there's an attribute type bound to 'TextureCoords'.
 
@@ -222,10 +235,11 @@ Only works if there's an attribute type bound to 'TextureCoords'.
 | Param | Type | Description |
 | --- | --- | --- |
 | buffer | <code>WebGLBuffer</code> | Vertices texture coords buffer. |
+| forceSetBuffer | <code>Boolean</code> | If true, will always set buffer even if buffer is currently set. |
 
 <a name="Effect+setColorsAttribute"></a>
 
-### effect.setColorsAttribute(buffer)
+### effect.setColorsAttribute(buffer, forceSetBuffer)
 Set the vertices colors buffer.
 Only works if there's an attribute type bound to 'Colors'.
 
@@ -234,6 +248,7 @@ Only works if there's an attribute type bound to 'Colors'.
 | Param | Type | Description |
 | --- | --- | --- |
 | buffer | <code>WebGLBuffer</code> | Vertices colors buffer. |
+| forceSetBuffer | <code>Boolean</code> | If true, will always set buffer even if buffer is currently set. |
 
 <a name="UniformTypes"></a>
 

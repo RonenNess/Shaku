@@ -51,6 +51,15 @@ A Vector object for 3d positions.
         * [.down](#Vector3.down) ⇒ [<code>Vector3</code>](#Vector3)
         * [.front](#Vector3.front) ⇒ [<code>Vector3</code>](#Vector3)
         * [.back](#Vector3.back) ⇒ [<code>Vector3</code>](#Vector3)
+        * [.zeroReadonly](#Vector3.zeroReadonly)
+        * [.oneReadonly](#Vector3.oneReadonly)
+        * [.halfReadonly](#Vector3.halfReadonly)
+        * [.leftReadonly](#Vector3.leftReadonly)
+        * [.rightReadonly](#Vector3.rightReadonly)
+        * [.upReadonly](#Vector3.upReadonly)
+        * [.downReadonly](#Vector3.downReadonly)
+        * [.frontReadonly](#Vector3.frontReadonly)
+        * [.backReadonly](#Vector3.backReadonly)
         * [.lerp(p1, p2, a)](#Vector3.lerp) ⇒ [<code>Vector3</code>](#Vector3)
         * [.distance(p1, p2)](#Vector3.distance) ⇒ <code>Number</code>
         * [.crossVector(p1, p2)](#Vector3.crossVector) ⇒ [<code>Vector3</code>](#Vector3)
@@ -329,14 +338,14 @@ Convert to dictionary.
 <a name="Vector3.zero"></a>
 
 ### Vector3.zero ⇒ [<code>Vector3</code>](#Vector3)
-Get vector (0,0).
+Get vector with 0,0,0 values.
 
 **Kind**: static property of [<code>Vector3</code>](#Vector3)  
 **Returns**: [<code>Vector3</code>](#Vector3) - result vector.  
 <a name="Vector3.one"></a>
 
 ### Vector3.one ⇒ [<code>Vector3</code>](#Vector3)
-Get vector with 1,1 values.
+Get vector with 1,1,1 values.
 
 **Kind**: static property of [<code>Vector3</code>](#Vector3)  
 **Returns**: [<code>Vector3</code>](#Vector3) - result vector.  
@@ -350,28 +359,28 @@ Get vector with 0.5,0.5 values.
 <a name="Vector3.left"></a>
 
 ### Vector3.left ⇒ [<code>Vector3</code>](#Vector3)
-Get vector with -1,0 values.
+Get vector with -1,0,0 values.
 
 **Kind**: static property of [<code>Vector3</code>](#Vector3)  
 **Returns**: [<code>Vector3</code>](#Vector3) - result vector.  
 <a name="Vector3.right"></a>
 
 ### Vector3.right ⇒ [<code>Vector3</code>](#Vector3)
-Get vector with 1,0 values.
+Get vector with 1,0,0 values.
 
 **Kind**: static property of [<code>Vector3</code>](#Vector3)  
 **Returns**: [<code>Vector3</code>](#Vector3) - result vector.  
 <a name="Vector3.up"></a>
 
 ### Vector3.up ⇒ [<code>Vector3</code>](#Vector3)
-Get vector with 0,-1 values.
+Get vector with 0,1,0 values.
 
 **Kind**: static property of [<code>Vector3</code>](#Vector3)  
 **Returns**: [<code>Vector3</code>](#Vector3) - result vector.  
 <a name="Vector3.down"></a>
 
 ### Vector3.down ⇒ [<code>Vector3</code>](#Vector3)
-Get vector with 0,1 values.
+Get vector with 0,-1,0 values.
 
 **Kind**: static property of [<code>Vector3</code>](#Vector3)  
 **Returns**: [<code>Vector3</code>](#Vector3) - result vector.  
@@ -389,6 +398,69 @@ Get vector with 0,0,1 values.
 
 **Kind**: static property of [<code>Vector3</code>](#Vector3)  
 **Returns**: [<code>Vector3</code>](#Vector3) - result vector.  
+<a name="Vector3.zeroReadonly"></a>
+
+### Vector3.zeroReadonly
+Vector with 0,0,0 values as a frozen shared object.
+Be careful not to try and change it.
+
+**Kind**: static property of [<code>Vector3</code>](#Vector3)  
+<a name="Vector3.oneReadonly"></a>
+
+### Vector3.oneReadonly
+Vector with 1,1,1 values as a frozen shared object.
+Be careful not to try and change it.
+
+**Kind**: static property of [<code>Vector3</code>](#Vector3)  
+<a name="Vector3.halfReadonly"></a>
+
+### Vector3.halfReadonly
+Vector with 0.5,0.5,0.5 values as a frozen shared object.
+Be careful not to try and change it.
+
+**Kind**: static property of [<code>Vector3</code>](#Vector3)  
+<a name="Vector3.leftReadonly"></a>
+
+### Vector3.leftReadonly
+Vector with -1,0,0 values as a frozen shared object.
+Be careful not to try and change it.
+
+**Kind**: static property of [<code>Vector3</code>](#Vector3)  
+<a name="Vector3.rightReadonly"></a>
+
+### Vector3.rightReadonly
+Vector with 1,0,0 values as a frozen shared object.
+Be careful not to try and change it.
+
+**Kind**: static property of [<code>Vector3</code>](#Vector3)  
+<a name="Vector3.upReadonly"></a>
+
+### Vector3.upReadonly
+Vector with 0,1,0 values as a frozen shared object.
+Be careful not to try and change it.
+
+**Kind**: static property of [<code>Vector3</code>](#Vector3)  
+<a name="Vector3.downReadonly"></a>
+
+### Vector3.downReadonly
+Vector with 0,-1,0 values as a frozen shared object.
+Be careful not to try and change it.
+
+**Kind**: static property of [<code>Vector3</code>](#Vector3)  
+<a name="Vector3.frontReadonly"></a>
+
+### Vector3.frontReadonly
+Vector with 0,0,1 values as a frozen shared object.
+Be careful not to try and change it.
+
+**Kind**: static property of [<code>Vector3</code>](#Vector3)  
+<a name="Vector3.backReadonly"></a>
+
+### Vector3.backReadonly
+Vector with 0,0,-1 values as a frozen shared object.
+Be careful not to try and change it.
+
+**Kind**: static property of [<code>Vector3</code>](#Vector3)  
 <a name="Vector3.lerp"></a>
 
 ### Vector3.lerp(p1, p2, a) ⇒ [<code>Vector3</code>](#Vector3)

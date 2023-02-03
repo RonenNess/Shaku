@@ -2210,10 +2210,16 @@ Special thanks to [knexator](https://github.com/knexator) for adding TypeScript 
 - Optimized gfx by not slicing arrays when we don't have to.
 - Added log warning if couldn't get WebGL2 and fallback to WebGL1.
 
-# 1.6.6 [WIP]
+# 1.7.0
 
 - Extended Input demo.
 - Added useful logs about gamepad state changes.
+- Added xxxReadonly const Vector2 and Vector3 values. These are just faster to use.
+- Fixed some Vector3 const values.
+- Extended Camera to support 3D rendering.
+- Extended Matrix to support 3D rendering.
+- Added basic 3D example.
+- Changed `setContextAttributes()` to override flags instead of replacing them completely.
 
 # License
 

@@ -58,6 +58,13 @@ A simple Vector object for 2d positions.
         * [.up](#Vector2.up) ⇒ [<code>Vector2</code>](#Vector2)
         * [.down](#Vector2.down) ⇒ [<code>Vector2</code>](#Vector2)
         * [.random](#Vector2.random) ⇒ [<code>Vector2</code>](#Vector2)
+        * [.zeroReadonly](#Vector2.zeroReadonly)
+        * [.oneReadonly](#Vector2.oneReadonly)
+        * [.halfReadonly](#Vector2.halfReadonly)
+        * [.leftReadonly](#Vector2.leftReadonly)
+        * [.rightReadonly](#Vector2.rightReadonly)
+        * [.upReadonly](#Vector2.upReadonly)
+        * [.downReadonly](#Vector2.downReadonly)
         * [.fromDegree(degrees)](#Vector2.fromDegree) ⇒ [<code>Vector2</code>](#Vector2)
         * [.fromRadians(radians)](#Vector2.fromRadians) ⇒ [<code>Vector2</code>](#Vector2)
         * [.lerp(p1, p2, a)](#Vector2.lerp) ⇒ [<code>Vector2</code>](#Vector2)
@@ -482,6 +489,55 @@ Get a random vector with length of 1.
 
 **Kind**: static property of [<code>Vector2</code>](#Vector2)  
 **Returns**: [<code>Vector2</code>](#Vector2) - result vector.  
+<a name="Vector2.zeroReadonly"></a>
+
+### Vector2.zeroReadonly
+Vector with 0,0 values as a frozen shared object.
+Be careful not to try and change it.
+
+**Kind**: static property of [<code>Vector2</code>](#Vector2)  
+<a name="Vector2.oneReadonly"></a>
+
+### Vector2.oneReadonly
+Vector with 1,1 values as a frozen shared object.
+Be careful not to try and change it.
+
+**Kind**: static property of [<code>Vector2</code>](#Vector2)  
+<a name="Vector2.halfReadonly"></a>
+
+### Vector2.halfReadonly
+Vector with 0.5,0.5 values as a frozen shared object.
+Be careful not to try and change it.
+
+**Kind**: static property of [<code>Vector2</code>](#Vector2)  
+<a name="Vector2.leftReadonly"></a>
+
+### Vector2.leftReadonly
+Vector with -1,0 values as a frozen shared object.
+Be careful not to try and change it.
+
+**Kind**: static property of [<code>Vector2</code>](#Vector2)  
+<a name="Vector2.rightReadonly"></a>
+
+### Vector2.rightReadonly
+Vector with 1,0 values as a frozen shared object.
+Be careful not to try and change it.
+
+**Kind**: static property of [<code>Vector2</code>](#Vector2)  
+<a name="Vector2.upReadonly"></a>
+
+### Vector2.upReadonly
+Vector with 0,1 values as a frozen shared object.
+Be careful not to try and change it.
+
+**Kind**: static property of [<code>Vector2</code>](#Vector2)  
+<a name="Vector2.downReadonly"></a>
+
+### Vector2.downReadonly
+Vector with 0,-1 values as a frozen shared object.
+Be careful not to try and change it.
+
+**Kind**: static property of [<code>Vector2</code>](#Vector2)  
 <a name="Vector2.fromDegree"></a>
 
 ### Vector2.fromDegree(degrees) ⇒ [<code>Vector2</code>](#Vector2)

@@ -3869,15 +3869,14 @@ class Camera
 
     /**
      * Make this camera a perspective camera.
-     * @private
      * @param {*} fieldOfView Field of view angle in radians.
      * @param {*} aspectRatio Aspect ratio.
      * @param {*} near Near clipping plane.
      * @param {*} far Far clipping plane.
      */
-    _perspective(fieldOfView, aspectRatio, near, far) 
+    perspective(fieldOfView, aspectRatio, near, far) 
     {
-        this.projection = Matrix.perspective(fieldOfView || (Math.PI / 2), aspectRatio || 1, near || 0.1, far || 1000)
+        this.projection = Matrix.perspective(fieldOfView || (Math.PI / 2), aspectRatio || 1, near || 0.1, far || 1000);
     }
 }
 
@@ -3960,6 +3959,7 @@ class BasicEffect extends Effect
             "texture": { type: Effect.UniformTypes.Texture, bind: Effect.UniformBinds.MainTexture },
             "projection": { type: Effect.UniformTypes.Matrix, bind: Effect.UniformBinds.Projection },
             "world": { type: Effect.UniformTypes.Matrix, bind: Effect.UniformBinds.World },
+            "view": { type: Effect.UniformTypes.Matrix, bind: Effect.UniformBinds.View },
         };
     }
 
@@ -3995,7 +3995,7 @@ module.exports = BasicEffect;
 const TextureAsset = require('../../assets/texture_asset.js');
 const Color = require('../../utils/color.js');
 const Rectangle = require('../../utils/rectangle.js');
-const { TextureFilterMode, TextureFilterModes } = require('../texture_filter_modes');
+const { TextureFilterModes } = require('../texture_filter_modes');
 const { TextureWrapMode, TextureWrapModes } = require('../texture_wrap_modes');
 const Matrix = require('../matrix.js');
 const _logger = require('../../logger.js').getLogger('gfx-effect');
@@ -4195,7 +4195,8 @@ class Effect
         if (this.enableFaceCulling) { this._gl.enable(this._gl.CULL_FACE); } else { this._gl.disable(this._gl.CULL_FACE); }
         if (this.enableStencilTest) { this._gl.enable(this._gl.STENCIL_TEST); } else { this._gl.disable(this._gl.STENCIL_TEST); }
         if (this.enableDithering) { this._gl.enable(this._gl.DITHER); } else { this._gl.disable(this._gl.DITHER); }
-
+        this._gl.depthFunc(this._gl.LEQUAL);
+        
         // reset cached values
         this._cachedValues = {};
     }
@@ -4366,6 +4367,18 @@ class Effect
     }
      
     /**
+     * Set the view matrix uniform.
+     * @param {Matrix} matrix Matrix to set.
+     */
+    setViewMatrix(matrix)
+    {
+        let uniform = this._uniformBinds[Effect.UniformBinds.View];
+        if (uniform) {
+            this.uniforms[uniform](matrix.values);
+        }
+    }
+
+    /**
      * Set the vertices position buffer.
      * Only works if there's an attribute type bound to 'Position'.
      * @param {WebGLBuffer} buffer Vertices position buffer.
@@ -4485,6 +4498,7 @@ Effect.UniformBinds = {
     Color: 'color',             // bind uniform to be used as a main color.
     Projection: 'projection',   // bind uniform to be used as the projection matrix.
     World: 'world',             // bind uniform to be used as the world matrix.
+    View: 'view',               // bind uniform to be used as the view matrix.
     UvOffset: 'uvOffset',       // bind uniform to be used as UV offset.
     UvScale: 'uvScale',         // bind uniform to be used as UV scale.
 };
@@ -4784,7 +4798,9 @@ class Gfx extends IManager
     setContextAttributes(flags)
     {
         if (this._gl) { throw new Error("Can't call setContextAttributes() after gfx was initialized!"); }
-        this._initSettings = flags;
+        for (let key in flags) {
+            this._initSettings[key] = flags[key];
+        }
     }
 
     /**
@@ -6228,6 +6244,16 @@ class Gfx extends IManager
         this._gl.clearColor(color.r, color.g, color.b, color.a);
         this._gl.clear(this._gl.COLOR_BUFFER_BIT | this._gl.DEPTH_BUFFER_BIT);
     }
+
+    /**
+     * Clear depth buffer.
+     * Only relevant when depth is used.
+     * @param {Number=} value Value to clear depth buffer to.
+     */
+    clearDepth(value)
+    {
+        this._gl.clearDepth((value !== undefined) ? value : 1.0);
+    }
     
     /**
      * Set texture mag and min filters.
@@ -6456,7 +6482,10 @@ module.exports = new Gfx();
  */
 'use strict';
 const Vector2 = require("../utils/vector2");
+const Vector3 = require("../utils/vector3");
 const Vertex = require("./vertex");
+const EPSILON = Number.EPSILON;
+
 
 /**
  * Implements a matrix.
@@ -6473,6 +6502,7 @@ class Matrix
         // if no values are set, use identity
         if (!values) {
             values = Matrix.identity.values;
+            cloneValues = true;
         }
 
         // clone values
@@ -6550,10 +6580,10 @@ class Matrix
         var rangeInv = 1 / (near - far);
       
         return new Matrix([
-          f / aspectRatio, 0,                          0,   0,
-          0,               f,                          0,   0,
-          0,               0,    (near + far) * rangeInv,  -1,
-          0,               0,  near * far * rangeInv * 2,   0
+          f / aspectRatio, 0,                               0,      0,
+          0,               f,                               0,      0,
+          0,               0,       (near + far) * rangeInv  ,     -1,
+          0,               0,       near * far * rangeInv * 2,      0
         ], false);
     }
 
@@ -6661,6 +6691,81 @@ class Matrix
     }
 
     /**
+     * Creates a look-at matrix - a matrix rotated to look at a given position.
+     * @param {Vector3} eyePosition Eye position.
+     * @param {Vector3} targetPosition Position the matrix should look at.
+     * @param {Vector3=} upVector Optional vector representing 'up' direction.
+     * @returns {Matrix} a new matrix with result.
+     */
+    static lookAt(eyePosition, targetPosition, upVector)
+    {
+        const eye = eyePosition;
+        const center = targetPosition;
+        const up = upVector || Vector3.upReadonly;
+        let x0, x1, x2, y0, y1, y2, z0, z1, z2, len;
+        if (
+            Math.abs(eye.x - center.x) < EPSILON &&
+            Math.abs(eye.y - center.y) < EPSILON &&
+            Math.abs(eye.z - center.z) < EPSILON
+        ) {
+            return Matrix.identity.clone();
+        }
+        z0 = eye.x - center.x;
+        z1 = eye.y - center.y;
+        z2 = eye.z - center.z;
+        len = 1 / Math.hypot(z0, z1, z2);
+        z0 *= len;
+        z1 *= len;
+        z2 *= len;
+        x0 = up.y * z2 - up.z * z1;
+        x1 = up.z * z0 - up.x * z2;
+        x2 = up.x * z1 - up.y * z0;
+        len = Math.hypot(x0, x1, x2);
+        if (!len) {
+            x0 = 0;
+            x1 = 0;
+            x2 = 0;
+        } else {
+            len = 1 / len;
+            x0 *= len;
+            x1 *= len;
+            x2 *= len;
+        }
+        y0 = z1 * x2 - z2 * x1;
+        y1 = z2 * x0 - z0 * x2;
+        y2 = z0 * x1 - z1 * x0;
+        len = Math.hypot(y0, y1, y2);
+        if (!len) {
+            y0 = 0;
+            y1 = 0;
+            y2 = 0;
+        } else {
+            len = 1 / len;
+            y0 *= len;
+            y1 *= len;
+            y2 *= len;
+        }
+        const out = [];
+        out[0] = x0;
+        out[1] = y0;
+        out[2] = z0;
+        out[3] = 0;
+        out[4] = x1;
+        out[5] = y1;
+        out[6] = z1;
+        out[7] = 0;
+        out[8] = x2;
+        out[9] = y2;
+        out[10] = z2;
+        out[11] = 0;
+        out[12] = -(x0 * eye.x + x1 * eye.y + x2 * eye.z);
+        out[13] = -(y0 * eye.x + y1 * eye.y + y2 * eye.z);
+        out[14] = -(z0 * eye.x + z1 * eye.y + z2 * eye.z);
+        out[15] = 1;
+        return new Matrix(out, false);
+    }
+
+    /**
      * Multiply an array of matrices.
      * @param {Array<Matrix>} matrices Matrices to multiply.
      * @returns {Matrix} new matrix with multiply result.
@@ -6726,7 +6831,10 @@ class Matrix
      */
     static transformVertex(matrix, vertex)
     {
-        return new Vertex(Matrix.transformVector2(matrix, vertex.position), vertex.textureCoord, vertex.color);
+        return new Vertex(
+            (vertex.position instanceof Vector2) ? Matrix.transformVector2(matrix, vertex.position) : Matrix.transformVector3(matrix, vertex.position), 
+            vertex.textureCoord, 
+            vertex.color);
     }
 
     /**
@@ -6817,7 +6925,7 @@ Object.freeze(Matrix.identity);
 
 // export the matrix object
 module.exports = Matrix;
-},{"../utils/vector2":67,"./vertex":39}],31:[function(require,module,exports){
+},{"../utils/vector2":67,"../utils/vector3":68,"./vertex":39}],31:[function(require,module,exports){
 /**
  * Define a mesh object.
  * 
@@ -10607,7 +10715,7 @@ let _totalFrameTimes = 0;
 
 
 // current version
-const version = "1.6.5";
+const version = "1.7.0";
 
 
 /**
@@ -15193,6 +15301,57 @@ class Vector2
     }
 }
 
+
+/**
+ * Vector with 0,0 values as a frozen shared object.
+ * Be careful not to try and change it.
+ */
+Vector2.zeroReadonly = new Vector2(0, 0);
+Object.freeze(Vector2.zeroReadonly);
+
+/**
+ * Vector with 1,1 values as a frozen shared object.
+ * Be careful not to try and change it.
+ */
+Vector2.oneReadonly = new Vector2(1, 1);
+Object.freeze(Vector2.oneReadonly);
+
+/**
+ * Vector with 0.5,0.5 values as a frozen shared object.
+ * Be careful not to try and change it.
+ */
+Vector2.halfReadonly = new Vector2(0.5, 0.5);
+Object.freeze(Vector2.halfReadonly);
+
+/**
+ * Vector with -1,0 values as a frozen shared object.
+ * Be careful not to try and change it.
+ */
+Vector2.leftReadonly = new Vector2(-1, 0);
+Object.freeze(Vector2.leftReadonly);
+
+/**
+ * Vector with 1,0 values as a frozen shared object.
+ * Be careful not to try and change it.
+ */
+Vector2.rightReadonly = new Vector2(1, 0);
+Object.freeze(Vector2.rightReadonly);
+
+/**
+ * Vector with 0,1 values as a frozen shared object.
+ * Be careful not to try and change it.
+ */
+Vector2.upReadonly = new Vector2(0, -1);
+Object.freeze(Vector2.upReadonly);
+
+/**
+ * Vector with 0,-1 values as a frozen shared object.
+ * Be careful not to try and change it.
+ */
+Vector2.downReadonly = new Vector2(0, 1);
+Object.freeze(Vector2.downReadonly);
+
+
 // export vector object
 module.exports = Vector2;
 },{"./math_helper":58}],68:[function(require,module,exports){
@@ -15551,7 +15710,7 @@ class Vector3
     }
 
     /**
-     * Get vector (0,0).
+     * Get vector with 0,0,0 values.
      * @returns {Vector3} result vector.
      */
     static get zero()
@@ -15560,7 +15719,7 @@ class Vector3
     }
 
     /**
-     * Get vector with 1,1 values.
+     * Get vector with 1,1,1 values.
      * @returns {Vector3} result vector.
      */
     static get one()
@@ -15578,7 +15737,7 @@ class Vector3
     }
 
     /**
-     * Get vector with -1,0 values.
+     * Get vector with -1,0,0 values.
      * @returns {Vector3} result vector.
      */
     static get left()
@@ -15587,7 +15746,7 @@ class Vector3
     }
 
     /**
-     * Get vector with 1,0 values.
+     * Get vector with 1,0,0 values.
      * @returns {Vector3} result vector.
      */
     static get right()
@@ -15596,21 +15755,21 @@ class Vector3
     }
 
     /**
-     * Get vector with 0,-1 values.
+     * Get vector with 0,1,0 values.
      * @returns {Vector3} result vector.
      */
     static get up()
     {
-        return new Vector3(0, -1, 0);
+        return new Vector3(0, 1, 0);
     }
 
     /**
-     * Get vector with 0,1 values.
+     * Get vector with 0,-1,0 values.
      * @returns {Vector3} result vector.
      */
     static get down()
     {
-        return new Vector3(0, 1, 0);
+        return new Vector3(0, -1, 0);
     }
 
     /**
@@ -15751,6 +15910,69 @@ class Vector3
         return {x: this.x, y: this.y, z: this.z};
     }
 }
+
+/**
+ * Vector with 0,0,0 values as a frozen shared object.
+ * Be careful not to try and change it.
+ */
+Vector3.zeroReadonly = new Vector3(0, 0, 0);
+Object.freeze(Vector3.zeroReadonly);
+
+/**
+ * Vector with 1,1,1 values as a frozen shared object.
+ * Be careful not to try and change it.
+ */
+Vector3.oneReadonly = new Vector3(1, 1, 1);
+Object.freeze(Vector3.oneReadonly);
+
+/**
+ * Vector with 0.5,0.5,0.5 values as a frozen shared object.
+ * Be careful not to try and change it.
+ */
+Vector3.halfReadonly = new Vector3(0.5, 0.5, 0.5);
+Object.freeze(Vector3.halfReadonly);
+
+/**
+ * Vector with -1,0,0 values as a frozen shared object.
+ * Be careful not to try and change it.
+ */
+Vector3.leftReadonly = new Vector3(-1, 0, 0);
+Object.freeze(Vector3.leftReadonly);
+
+/**
+ * Vector with 1,0,0 values as a frozen shared object.
+ * Be careful not to try and change it.
+ */
+Vector3.rightReadonly = new Vector3(1, 0, 0);
+Object.freeze(Vector3.rightReadonly);
+
+/**
+ * Vector with 0,1,0 values as a frozen shared object.
+ * Be careful not to try and change it.
+ */
+Vector3.upReadonly = new Vector3(0, 1, 0);
+Object.freeze(Vector3.upReadonly);
+
+/**
+ * Vector with 0,-1,0 values as a frozen shared object.
+ * Be careful not to try and change it.
+ */
+Vector3.downReadonly = new Vector3(0, -1, 0);
+Object.freeze(Vector3.downReadonly);
+
+/**
+ * Vector with 0,0,1 values as a frozen shared object.
+ * Be careful not to try and change it.
+ */
+Vector3.frontReadonly = new Vector3(0, 0, 1);
+Object.freeze(Vector3.frontReadonly);
+
+/**
+ * Vector with 0,0,-1 values as a frozen shared object.
+ * Be careful not to try and change it.
+ */
+Vector3.backReadonly = new Vector3(0, 0, -1);
+Object.freeze(Vector3.backReadonly);
 
 // export vector object
 module.exports = Vector3;

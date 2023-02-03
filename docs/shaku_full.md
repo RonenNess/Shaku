@@ -1896,6 +1896,7 @@ Implements a Camera object.
     * [.getRegion()](#Camera+getRegion) ⇒ [<code>Rectangle</code>](#Rectangle)
     * [.orthographicOffset(offset, ignoreViewportSize, near, far)](#Camera+orthographicOffset)
     * [.orthographic(region, near, far)](#Camera+orthographic)
+    * [.perspective(fieldOfView, aspectRatio, near, far)](#Camera+perspective)
 
 <a name="new_Camera_new"></a>
 
@@ -1966,6 +1967,20 @@ Make this camera an orthographic camera.
 | near | <code>Number</code> | Near clipping plane. |
 | far | <code>Number</code> | Far clipping plane. |
 
+<a name="Camera+perspective"></a>
+
+### camera.perspective(fieldOfView, aspectRatio, near, far)
+Make this camera a perspective camera.
+
+**Kind**: instance method of [<code>Camera</code>](#Camera)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| fieldOfView | <code>\*</code> | Field of view angle in radians. |
+| aspectRatio | <code>\*</code> | Aspect ratio. |
+| near | <code>\*</code> | Near clipping plane. |
+| far | <code>\*</code> | Far clipping plane. |
+
 <a name="BasicEffect"></a>
 
 ## BasicEffect
@@ -2019,9 +2034,10 @@ An effect = vertex shader + fragment shader + uniforms & attributes + setup code
     * [.setUvOffsetAndScale(sourceRect, texture)](#Effect+setUvOffsetAndScale)
     * [.setProjectionMatrix(matrix)](#Effect+setProjectionMatrix)
     * [.setWorldMatrix(matrix)](#Effect+setWorldMatrix)
-    * [.setPositionsAttribute(buffer)](#Effect+setPositionsAttribute)
-    * [.setTextureCoordsAttribute(buffer)](#Effect+setTextureCoordsAttribute)
-    * [.setColorsAttribute(buffer)](#Effect+setColorsAttribute)
+    * [.setViewMatrix(matrix)](#Effect+setViewMatrix)
+    * [.setPositionsAttribute(buffer, forceSetBuffer)](#Effect+setPositionsAttribute)
+    * [.setTextureCoordsAttribute(buffer, forceSetBuffer)](#Effect+setTextureCoordsAttribute)
+    * [.setColorsAttribute(buffer, forceSetBuffer)](#Effect+setColorsAttribute)
 
 <a name="Effect+uniformTypes"></a>
 
@@ -2166,9 +2182,20 @@ Set the world matrix uniform.
 | --- | --- | --- |
 | matrix | [<code>Matrix</code>](#Matrix) | Matrix to set. |
 
+<a name="Effect+setViewMatrix"></a>
+
+### effect.setViewMatrix(matrix)
+Set the view matrix uniform.
+
+**Kind**: instance method of [<code>Effect</code>](#Effect)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| matrix | [<code>Matrix</code>](#Matrix) | Matrix to set. |
+
 <a name="Effect+setPositionsAttribute"></a>
 
-### effect.setPositionsAttribute(buffer)
+### effect.setPositionsAttribute(buffer, forceSetBuffer)
 Set the vertices position buffer.
 Only works if there's an attribute type bound to 'Position'.
 
@@ -2177,10 +2204,11 @@ Only works if there's an attribute type bound to 'Position'.
 | Param | Type | Description |
 | --- | --- | --- |
 | buffer | <code>WebGLBuffer</code> | Vertices position buffer. |
+| forceSetBuffer | <code>Boolean</code> | If true, will always set buffer even if buffer is currently set. |
 
 <a name="Effect+setTextureCoordsAttribute"></a>
 
-### effect.setTextureCoordsAttribute(buffer)
+### effect.setTextureCoordsAttribute(buffer, forceSetBuffer)
 Set the vertices texture coords buffer.
 Only works if there's an attribute type bound to 'TextureCoords'.
 
@@ -2189,10 +2217,11 @@ Only works if there's an attribute type bound to 'TextureCoords'.
 | Param | Type | Description |
 | --- | --- | --- |
 | buffer | <code>WebGLBuffer</code> | Vertices texture coords buffer. |
+| forceSetBuffer | <code>Boolean</code> | If true, will always set buffer even if buffer is currently set. |
 
 <a name="Effect+setColorsAttribute"></a>
 
-### effect.setColorsAttribute(buffer)
+### effect.setColorsAttribute(buffer, forceSetBuffer)
 Set the vertices colors buffer.
 Only works if there's an attribute type bound to 'Colors'.
 
@@ -2201,6 +2230,7 @@ Only works if there's an attribute type bound to 'Colors'.
 | Param | Type | Description |
 | --- | --- | --- |
 | buffer | <code>WebGLBuffer</code> | Vertices colors buffer. |
+| forceSetBuffer | <code>Boolean</code> | If true, will always set buffer even if buffer is currently set. |
 
 <a name="MsdfFontEffect"></a>
 
@@ -2243,6 +2273,9 @@ To access the Graphics manager you use `Shaku.gfx`.
 
 * [Gfx](#Gfx)
     * [new Gfx()](#new_Gfx_new)
+    * [.webglVersion](#Gfx+webglVersion) ⇒ <code>Number</code>
+    * [.batchSpritesCount](#Gfx+batchSpritesCount) ⇒ <code>Number</code>
+    * [.maxLineSegments](#Gfx+maxLineSegments) ⇒ <code>Number</code>
     * [.canvas](#Gfx+canvas) ⇒ <code>HTMLCanvasElement</code>
     * [.Effect](#Gfx+Effect)
     * [.BasicEffect](#Gfx+BasicEffect)
@@ -2293,6 +2326,7 @@ To access the Graphics manager you use `Shaku.gfx`.
     * [.inScreen(shape)](#Gfx+inScreen) ⇒ <code>Boolean</code>
     * [.centerCamera(position, useCanvasSize)](#Gfx+centerCamera)
     * [.clear([color])](#Gfx+clear)
+    * [.clearDepth([value])](#Gfx+clearDepth)
     * [.presentBufferedData()](#Gfx+presentBufferedData)
 
 <a name="new_Gfx_new"></a>
@@ -2300,6 +2334,27 @@ To access the Graphics manager you use `Shaku.gfx`.
 ### new Gfx()
 Create the manager.
 
+<a name="Gfx+webglVersion"></a>
+
+### gfx.webglVersion ⇒ <code>Number</code>
+Get the init WebGL version.
+
+**Kind**: instance property of [<code>Gfx</code>](#Gfx)  
+**Returns**: <code>Number</code> - WebGL version number.  
+<a name="Gfx+batchSpritesCount"></a>
+
+### gfx.batchSpritesCount ⇒ <code>Number</code>
+Get how many sprites we can draw in a single batch.
+
+**Kind**: instance property of [<code>Gfx</code>](#Gfx)  
+**Returns**: <code>Number</code> - batch max sprites count.  
+<a name="Gfx+maxLineSegments"></a>
+
+### gfx.maxLineSegments ⇒ <code>Number</code>
+Maximum number of vertices we allow when drawing lines.
+
+**Kind**: instance property of [<code>Gfx</code>](#Gfx)  
+**Returns**: <code>Number</code> - max vertices per lines strip.  
 <a name="Gfx+canvas"></a>
 
 ### gfx.canvas ⇒ <code>HTMLCanvasElement</code>
@@ -3063,6 +3118,18 @@ Clear screen to a given color.
 ```js
 Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
 ```
+<a name="Gfx+clearDepth"></a>
+
+### gfx.clearDepth([value])
+Clear depth buffer.
+Only relevant when depth is used.
+
+**Kind**: instance method of [<code>Gfx</code>](#Gfx)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| [value] | <code>Number</code> | Value to clear depth buffer to. |
+
 <a name="Gfx+presentBufferedData"></a>
 
 ### gfx.presentBufferedData()
@@ -3091,6 +3158,7 @@ Implements a matrix.
         * [.rotateY()](#Matrix.rotateY) ⇒ [<code>Matrix</code>](#Matrix)
         * [.rotateZ()](#Matrix.rotateZ) ⇒ [<code>Matrix</code>](#Matrix)
         * [.multiply()](#Matrix.multiply) ⇒ [<code>Matrix</code>](#Matrix)
+        * [.lookAt(eyePosition, targetPosition, [upVector])](#Matrix.lookAt) ⇒ [<code>Matrix</code>](#Matrix)
         * [.multiplyMany(matrices)](#Matrix.multiplyMany) ⇒ [<code>Matrix</code>](#Matrix)
         * [.multiplyIntoFirst()](#Matrix.multiplyIntoFirst) ⇒ [<code>Matrix</code>](#Matrix)
         * [.multiplyManyIntoFirst(matrices)](#Matrix.multiplyManyIntoFirst) ⇒ [<code>Matrix</code>](#Matrix)
@@ -3190,6 +3258,20 @@ Multiply two matrices.
 
 **Kind**: static method of [<code>Matrix</code>](#Matrix)  
 **Returns**: [<code>Matrix</code>](#Matrix) - a new matrix with result.  
+<a name="Matrix.lookAt"></a>
+
+### Matrix.lookAt(eyePosition, targetPosition, [upVector]) ⇒ [<code>Matrix</code>](#Matrix)
+Creates a look-at matrix - a matrix rotated to look at a given position.
+
+**Kind**: static method of [<code>Matrix</code>](#Matrix)  
+**Returns**: [<code>Matrix</code>](#Matrix) - a new matrix with result.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| eyePosition | [<code>Vector3</code>](#Vector3) | Eye position. |
+| targetPosition | [<code>Vector3</code>](#Vector3) | Position the matrix should look at. |
+| [upVector] | [<code>Vector3</code>](#Vector3) | Optional vector representing 'up' direction. |
+
 <a name="Matrix.multiplyMany"></a>
 
 ### Matrix.multiplyMany(matrices) ⇒ [<code>Matrix</code>](#Matrix)
@@ -8372,14 +8454,14 @@ Convert to dictionary.
 <a name="Vector3.zero"></a>
 
 ### Vector3.zero ⇒ [<code>Vector3</code>](#Vector3)
-Get vector (0,0).
+Get vector with 0,0,0 values.
 
 **Kind**: static property of [<code>Vector3</code>](#Vector3)  
 **Returns**: [<code>Vector3</code>](#Vector3) - result vector.  
 <a name="Vector3.one"></a>
 
 ### Vector3.one ⇒ [<code>Vector3</code>](#Vector3)
-Get vector with 1,1 values.
+Get vector with 1,1,1 values.
 
 **Kind**: static property of [<code>Vector3</code>](#Vector3)  
 **Returns**: [<code>Vector3</code>](#Vector3) - result vector.  
@@ -8393,28 +8475,28 @@ Get vector with 0.5,0.5 values.
 <a name="Vector3.left"></a>
 
 ### Vector3.left ⇒ [<code>Vector3</code>](#Vector3)
-Get vector with -1,0 values.
+Get vector with -1,0,0 values.
 
 **Kind**: static property of [<code>Vector3</code>](#Vector3)  
 **Returns**: [<code>Vector3</code>](#Vector3) - result vector.  
 <a name="Vector3.right"></a>
 
 ### Vector3.right ⇒ [<code>Vector3</code>](#Vector3)
-Get vector with 1,0 values.
+Get vector with 1,0,0 values.
 
 **Kind**: static property of [<code>Vector3</code>](#Vector3)  
 **Returns**: [<code>Vector3</code>](#Vector3) - result vector.  
 <a name="Vector3.up"></a>
 
 ### Vector3.up ⇒ [<code>Vector3</code>](#Vector3)
-Get vector with 0,-1 values.
+Get vector with 0,1,0 values.
 
 **Kind**: static property of [<code>Vector3</code>](#Vector3)  
 **Returns**: [<code>Vector3</code>](#Vector3) - result vector.  
 <a name="Vector3.down"></a>
 
 ### Vector3.down ⇒ [<code>Vector3</code>](#Vector3)
-Get vector with 0,1 values.
+Get vector with 0,-1,0 values.
 
 **Kind**: static property of [<code>Vector3</code>](#Vector3)  
 **Returns**: [<code>Vector3</code>](#Vector3) - result vector.  

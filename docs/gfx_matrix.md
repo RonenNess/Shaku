@@ -27,6 +27,7 @@ Implements a matrix.
         * [.rotateY()](#Matrix.rotateY) ⇒ [<code>Matrix</code>](#Matrix)
         * [.rotateZ()](#Matrix.rotateZ) ⇒ [<code>Matrix</code>](#Matrix)
         * [.multiply()](#Matrix.multiply) ⇒ [<code>Matrix</code>](#Matrix)
+        * [.lookAt(eyePosition, targetPosition, [upVector])](#Matrix.lookAt) ⇒ [<code>Matrix</code>](#Matrix)
         * [.multiplyMany(matrices)](#Matrix.multiplyMany) ⇒ [<code>Matrix</code>](#Matrix)
         * [.multiplyIntoFirst()](#Matrix.multiplyIntoFirst) ⇒ [<code>Matrix</code>](#Matrix)
         * [.multiplyManyIntoFirst(matrices)](#Matrix.multiplyManyIntoFirst) ⇒ [<code>Matrix</code>](#Matrix)
@@ -132,6 +133,20 @@ Multiply two matrices.
 
 **Kind**: static method of [<code>Matrix</code>](#Matrix)  
 **Returns**: [<code>Matrix</code>](#Matrix) - a new matrix with result.  
+<a name="Matrix.lookAt"></a>
+
+### Matrix.lookAt(eyePosition, targetPosition, [upVector]) ⇒ [<code>Matrix</code>](#Matrix)
+Creates a look-at matrix - a matrix rotated to look at a given position.
+
+**Kind**: static method of [<code>Matrix</code>](#Matrix)  
+**Returns**: [<code>Matrix</code>](#Matrix) - a new matrix with result.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| eyePosition | <code>Vector3</code> | Eye position. |
+| targetPosition | <code>Vector3</code> | Position the matrix should look at. |
+| [upVector] | <code>Vector3</code> | Optional vector representing 'up' direction. |
+
 <a name="Matrix.multiplyMany"></a>
 
 ### Matrix.multiplyMany(matrices) ⇒ [<code>Matrix</code>](#Matrix)
