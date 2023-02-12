@@ -142,26 +142,25 @@
   <div class="modal__overlay jsOverlay"></div>
   <div class="modal__container">   
 
-<p class="noselect">The following is a minimal code example to demonstrate different Blend Modes.</p>
+<p class="noselect">The following is a minimal code example to demonstrate different texture filters and clamp Modes.</p>
 <pre><code class="language-js">// load sprite's texture asset
 let texture = await Shaku.assets.loadTexture('assets/sprite.png');
 
-// part below goes between startFrame() and endFrame()
-// -------------------------------------------------------
+// set texture to linear filter (smooth)
+texture.filter = Shaku.gfx.TextureFilterModes.Linear;
 
-// draw with different blend modes
-let x = 1;
-let y = 1;
-let spriteSize = 100;
-Shaku.gfx.draw(texture, new Shaku.utils.Vector2(x++, y).mul(spriteSize), spriteSize, null, null, Shaku.gfx.BlendModes.AlphaBlend);
-Shaku.gfx.draw(texture, new Shaku.utils.Vector2(x++, y).mul(spriteSize), spriteSize, null, null, Shaku.gfx.BlendModes.Opaque);
-Shaku.gfx.draw(texture, new Shaku.utils.Vector2(x++, y).mul(spriteSize), spriteSize, null, null, Shaku.gfx.BlendModes.Additive);
-Shaku.gfx.draw(texture, new Shaku.utils.Vector2(x++, y).mul(spriteSize), spriteSize, null, null, Shaku.gfx.BlendModes.Multiply);
-Shaku.gfx.draw(texture, new Shaku.utils.Vector2(x++, y).mul(spriteSize), spriteSize, null, null, Shaku.gfx.BlendModes.Subtract);
-Shaku.gfx.draw(texture, new Shaku.utils.Vector2(x++, y).mul(spriteSize), spriteSize, null, null, Shaku.gfx.BlendModes.Screen);
-Shaku.gfx.draw(texture, new Shaku.utils.Vector2(x++, y).mul(spriteSize), spriteSize, null, null, Shaku.gfx.BlendModes.Overlay);
-Shaku.gfx.draw(texture, new Shaku.utils.Vector2(x++, y).mul(spriteSize), spriteSize, null, null, Shaku.gfx.BlendModes.DestIn);
-Shaku.gfx.draw(texture, new Shaku.utils.Vector2(x++, y).mul(spriteSize), spriteSize, null, null, Shaku.gfx.BlendModes.DestOut);</code></pre>
+// set texture to nearest neighbor (pixelated)
+texture.filter = Shaku.gfx.TextureFilterModes.Nearest;
+
+// make texture repeat itself if source rect is out of boundaries
+texture.wrapMode = Shaku.gfx.TextureWrapModes.Repeat;
+
+// make texture mirror itself if source rect is out of boundaries
+texture.wrapMode = Shaku.gfx.TextureWrapModes.RepeatMirrored;
+
+// make texture clamp if source rect is out of boundaries (default)
+texture.wrapMode = Shaku.gfx.TextureWrapModes.Clamp;
+</code></pre>
 
   <button class="modal__close" onclick="closeModal('sample-code-modal')">&#10005;</button>
 </div>
