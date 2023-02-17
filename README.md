@@ -2222,6 +2222,12 @@ Special thanks to [knexator](https://github.com/knexator) for adding TypeScript 
 - Added basic 3D example.
 - Changed `setContextAttributes()` to override flags instead of replacing them completely.
 
+# 1.7.1
+
+- Made sound dispose slightly safer.
+- Continue updating input manager only when paused.
+- Removed mouse position reset on focus lost.
+
 # License
 
 *Shaku* is licensed under the permissive MIT license, so you can use it for any purpose (including commercially) and it should be compatible with most common licenses.

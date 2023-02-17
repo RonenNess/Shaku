@@ -8778,18 +8778,23 @@ class Input extends IManager
 
     /**
      * Reset all internal data and states.
+     * @param {Boolean=} keepMousePosition If true, will not reset mouse position.
      * @private
      */
-    _resetAll()
+    _resetAll(keepMousePosition)
     {
         // mouse states
-        this._mousePos = new Vector2();
-        this._mousePrevPos = new Vector2();
+        if (!keepMousePosition) {
+            this._mousePos = new Vector2();
+            this._mousePrevPos = new Vector2();
+        }
         this._mouseState = {};
         this._mouseWheel = 0;
 
         // touching states
-        this._touchPosition = new Vector2();
+        if (!keepMousePosition) {
+            this._touchPosition = new Vector2();
+        }
         this._isTouching = false;
         this._touchStarted = false;
         this._touchEnded = false;
@@ -9467,7 +9472,7 @@ class Input extends IManager
     _onBlur(event)
     {
         if (this.resetOnFocusLoss) {
-            this._resetAll();
+            this._resetAll(true);
         }
     }
 
@@ -10345,9 +10350,11 @@ class SoundInstance
      */
     dispose()
     {
-        this._audio.src = "";
-        this._audio.srcObject = null;
-        this._audio.remove();
+        if (this._audio) {
+            this._audio.src = "";
+            this._audio.srcObject = null;
+            this._audio.remove();
+        }
         this._audio = null;
     }
 
@@ -10715,7 +10722,7 @@ let _totalFrameTimes = 0;
 
 
 // current version
-const version = "1.7.0";
+const version = "1.7.1";
 
 
 /**
@@ -10844,6 +10851,7 @@ class Shaku
     {
         // if paused, skip
         if (this.isPaused) { 
+            if (this.input) { this.input.startFrame(); }
             this._wasPaused = true;
             return; 
         }
@@ -10892,7 +10900,12 @@ class Shaku
         }
 
         // if paused, skip
-        if (this.isPaused) { return; }
+        if (this.isPaused) { 
+            if (this.input) { 
+                this.input.endFrame(); 
+            }
+            return; 
+        }
 
         // store previous gameTime object
         _prevUpdateTime = this._gameTime;
