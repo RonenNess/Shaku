@@ -1372,7 +1372,7 @@ class SoundAsset extends Asset
         return new Promise((resolve, reject) => {
 
             // create request to load audio file
-            let audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            //let audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             var request = new XMLHttpRequest();
             request.open('GET', this.url, true);
             request.responseType = 'arraybuffer';     
@@ -1380,15 +1380,19 @@ class SoundAsset extends Asset
             // on load, validate audio content
             request.onload = () => 
             {
-                var audioData = request.response;
                 this._valid = true; // <-- good enough for now, as decodeAudio won't work before user's input
                 this._notifyReady();
+                resolve();
+
+                // Note: the code below cause issues with some sound devices!!!
+                /*
+                var audioData = request.response;
                 audioCtx.decodeAudioData(audioData, function(buffer) {
                     resolve();
                 },
                 (e) => { 
                     reject(e.err); 
-                });
+                });*/
             }
 
             // on load error, reject
@@ -10722,7 +10726,7 @@ let _totalFrameTimes = 0;
 
 
 // current version
-const version = "1.7.1";
+const version = "1.7.2";
 
 
 /**
