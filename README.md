@@ -2232,6 +2232,10 @@ Special thanks to [knexator](https://github.com/knexator) for adding TypeScript 
 
 - Fixed sound effects loading issue on some sound devices.
 
+# 1.7.3 [WIP]
+
+- Improved sound assets disposal code.
+
 # License
 
 *Shaku* is licensed under the permissive MIT license, so you can use it for any purpose (including commercially) and it should be compatible with most common licenses.

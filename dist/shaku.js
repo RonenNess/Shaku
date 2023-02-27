@@ -10147,6 +10147,7 @@ class Sfx extends IManager
     {
         super();
         this._playingSounds = null;
+        this._soundsNotDisposed = null;
     }
 
     /** 
@@ -10157,20 +10158,22 @@ class Sfx extends IManager
     {        
         return new Promise((resolve, reject) => {    
             _logger.info("Setup sfx manager..");
+            if (this._soundsNotDisposed) { this.cleanup(); }
             this._playingSounds = new Set();
+            this._soundsNotDisposed = new Set();
             resolve();
         });
     }
 
     /** 
-     * @inheritdoc 
+     * @inheritdoc
      * @private
      **/
     startFrame()
     {
-        var playingSounds = Array.from(this._playingSounds);
-        for (var i = 0; i < playingSounds.length; ++i) {
-            var sound = playingSounds[i];
+        // remove any sound no longer playing
+        let playingSounds = Array.from(this._playingSounds);
+        for (let sound of playingSounds) {
             if (!sound.isPlaying) {
                 this._playingSounds.delete(sound);
             }
@@ -10183,13 +10186,6 @@ class Sfx extends IManager
      **/
     endFrame()
     {
-        var playingSounds = Array.from(this._playingSounds);
-        for (var i = 0; i < playingSounds.length; ++i) {
-            var sound = playingSounds[i];
-            if (!sound.isPlaying) {
-                this._playingSounds.delete(sound);
-            }
-        }
     }
 
     /** 
@@ -10199,7 +10195,7 @@ class Sfx extends IManager
     destroy()
     {
         this.stopAll();
-        this._playingSounds = new Set();
+        this.cleanup();
     }
 
     /**
@@ -10217,15 +10213,15 @@ class Sfx extends IManager
      * @example
      * let sound = await Shaku.assets.loadSound("assets/my_sound.ogg");
      * Shaku.sfx.play(sound, 0.75);
-     * @param {SoundAsset} sound Sound asset to play.
+     * @param {SoundAsset} soundAsset Sound asset to play.
      * @param {Number} volume Volume to play sound (default to max).
      * @param {Number} playbackRate Optional playback rate factor.
      * @param {Boolean} preservesPitch Optional preserve pitch when changing rate factor.
      * @returns {Promise} Promise to resolve when sound starts playing.
      */
-    play(sound, volume, playbackRate, preservesPitch)
+    play(soundAsset, volume, playbackRate, preservesPitch)
     {
-        var sound = this.createSound(sound);
+        let sound = this.createSound(soundAsset);
         sound.volume = volume !== undefined ? volume : 1;
         if (playbackRate !== undefined) { sound.playbackRate = playbackRate; }
         if (preservesPitch !== undefined) { sound.preservesPitch = preservesPitch; }
@@ -10241,12 +10237,26 @@ class Sfx extends IManager
      */
     stopAll()
     {
-        var playingSounds = Array.from(this._playingSounds);
-        for (var i = 0; i < playingSounds.length; ++i) {
-            var sound = playingSounds[i];
+        let playingSounds = Array.from(this._playingSounds);
+        for (let sound of playingSounds) {
             sound.stop();
         }
         this._playingSounds = new Set();
+    }
+
+    /**
+     * Dispose any sound instance that isn't playing at the moment.
+     * Note: if you hold the instance externally and try to use it, it may break.
+     */
+    cleanup()
+    {
+        let notDisposedSounds = Array.from(this._soundsNotDisposed);
+        for (let sound of notDisposedSounds) {
+            if (!sound.isPlaying) {
+                sound.dispose();
+            }
+        }
+        this._soundsNotDisposed = new Set();
     }
 
     /**
@@ -10334,6 +10344,7 @@ class SoundInstance
         this._sfx = sfxManager;
         this._audio = new Audio(url);
         this._volume = 1;
+        this._sfx._soundsNotDisposed.add(this);
     }
 
     /**
@@ -10355,9 +10366,11 @@ class SoundInstance
     dispose()
     {
         if (this._audio) {
+            this._audio.pause();
             this._audio.src = "";
             this._audio.srcObject = null;
             this._audio.remove();
+            this._sfx._soundsNotDisposed.delete(this);
         }
         this._audio = null;
     }
@@ -10726,7 +10739,7 @@ let _totalFrameTimes = 0;
 
 
 // current version
-const version = "1.7.2";
+const version = "1.7.3";
 
 
 /**
