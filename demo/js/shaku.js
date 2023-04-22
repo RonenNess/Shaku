@@ -7321,7 +7321,6 @@ const Vector2 = require('../utils/vector2');
 const Vertex = require('./vertex');
 const { BlendModes } = require('./blend_modes');
 const Matrix = require('./matrix');
-const Mesh = require('./mesh');
 const _logger = require('../logger.js').getLogger('gfx');
 
 
@@ -7792,7 +7791,7 @@ const bottomRight = new Vector2(0, 0);
 
 // export the sprite batch class
 module.exports = SpriteBatch;
-},{"../logger.js":45,"../utils":56,"../utils/vector2":67,"./blend_modes":22,"./matrix":30,"./mesh":31,"./vertex":39}],35:[function(require,module,exports){
+},{"../logger.js":45,"../utils":56,"../utils/vector2":67,"./blend_modes":22,"./matrix":30,"./vertex":39}],35:[function(require,module,exports){
 /**
  * Define a sprites group.
  * 
@@ -10366,11 +10365,16 @@ class SoundInstance
     dispose()
     {
         if (this._audio) {
-            this._audio.pause();
-            this._audio.src = "";
-            this._audio.srcObject = null;
-            this._audio.remove();
-            this._sfx._soundsNotDisposed.delete(this);
+            try
+            {
+                this._audio.pause();
+                this._audio.src = "";
+                this._audio.srcObject = null;
+                this._audio.remove();
+                this._sfx._soundsNotDisposed.delete(this);
+            }
+            catch (e) {
+            }
         }
         this._audio = null;
     }
