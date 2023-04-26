@@ -2112,7 +2112,7 @@ class TextureAtlasAsset extends Asset
     /**
      * Build the texture atlas.
      * @private
-     * @param {Array<string>|Array<Image>} sources Source URLs or images to load into texture.
+     * @param {Array<string>|Array<Image>} sources Source URLs or images to load into texture. If array of Images, should also contain an '__origin_url' property under them for asset key.
      * @param {Number=} maxWidth Optional texture atlas width limit.
      * @param {Number=} maxHeight Optional texture atlas height limit.
      * @param {Vector2=} extraMargins Extra pixels to add between textures.
@@ -2158,11 +2158,15 @@ class TextureAtlasAsset extends Asset
                 for (let imageData of arranged.rectangles) {
                     ctx.drawImage(imageData.source, imageData.x, imageData.y);
                     let url = imageData.source.src;
+                    let originUrl = imageData.source.__origin_url;
                     let relativeUrl = url.substr(location.origin.length);
                     let internalUrl = atlasTexture.url + '_' + (textureInAtlasIndex++).toString() + '_' + url.replaceAll('/', '_').replaceAll(':', '');
                     let sourceRectangle = new Rectangle(imageData.x, imageData.y, imageData.width, imageData.height);
                     let textureInAtlas = new TextureInAtlasAsset(internalUrl, atlasTexture, sourceRectangle, this);
                     this.__sources[url] = this.__sources[relativeUrl] = this.__sources[relativeUrl.substr(1)] = textureInAtlas;
+                    if (originUrl) {
+                        this.__sources[originUrl] = this.__sources[url];
+                    }
                 }
 
                 // convert to texture
@@ -2281,6 +2285,7 @@ function loadImage(path)
       const img = new Image()
       img.crossOrigin = 'Anonymous' // to avoid CORS if used with Canvas
       img.src = path
+      img.__origin_url = path;
       img.onload = () => {
         resolve(img)
       }
