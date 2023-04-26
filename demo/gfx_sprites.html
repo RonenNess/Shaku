@@ -42,8 +42,14 @@
           let levelOverlay = await Shaku.assets.loadTexture('assets/level_overlay.png');
           let blockMap = await Shaku.assets.loadTexture('assets/level_block.jpg');
 
+          // create sprites batch
+          let spritesBatch = new Shaku.gfx.SpriteBatch();
+
           // create player sprite
           let playerSprite = new Shaku.gfx.Sprite(knight);
+
+          // get the block map pixels data
+          let blockMapPixels = blockMap.getPixelsData();
 
           // for walking animation
           let walkingAnimation = 0;
@@ -61,13 +67,24 @@
 
             // out of range?
             if (xBlock < 0 || xBlock > blockMap.width || yBlock < 0 || yBlock > blockMap.height) {
+              if (xBlock < 0) playerSprite.position.x = 1;
+              if (yBlock < 0) playerSprite.position.y = 1;
+              if (xBlock > blockMap.width) playerSprite.position.x = screenX - 1;
+              if (yBlock > blockMap.height) playerSprite.position.y = screenY - 1;
               return;
             }
 
-            // if not blocking, update position
-            if (!blockMap.getPixel(xBlock, yBlock).isBlack) {
-              playerSprite.position.set(newX, newY);
+            // check if blocking
+            for (let i = -1; i <= 1; ++i) {
+              for (let j = -1; j <= 1; ++j) {
+                if (!blockMapPixels[xBlock+i] || !blockMapPixels[xBlock+i][yBlock+j] || blockMapPixels[xBlock+i][yBlock+j].isBlack) {
+                  return;
+                }
+              }
             }
+
+            // move player
+            playerSprite.position.set(newX, newY);
           }
 
           // do a main loop step.
@@ -76,10 +93,12 @@
             Shaku.startFrame();
             Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
 
-            // draw level background, knight and then level overlay
-            Shaku.gfx.cover(level, Shaku.gfx.getRenderingRegion());
-            Shaku.gfx.drawSprite(playerSprite);
-            Shaku.gfx.cover(levelOverlay, Shaku.gfx.getRenderingRegion());
+            // draw level, player and overlay (mountains that hide player)
+            spritesBatch.begin();
+            spritesBatch.drawRectangle(level, Shaku.gfx.getRenderingRegion());
+            spritesBatch.drawSprite(playerSprite);
+            spritesBatch.drawRectangle(levelOverlay, Shaku.gfx.getRenderingRegion());
+            spritesBatch.end();
 
             // walking speed and are we walking this frame?
             let walkSpeed = Shaku.gameTime.delta * 200;
@@ -132,24 +151,27 @@
   <div class="modal__overlay jsOverlay"></div>
   <div class="modal__container">   
 
-<p class="noselect">The following is a minimal code example on how to use sprites.</i>
+<p class="noselect">The following code example show how to use sprites.</i>
 </p>
 <pre><code class="language-js">// load sprite's texture asset
 let texture = await Shaku.assets.loadTexture('assets/sprite.png');
 
 // create a sprite
 let sprite = new Shaku.gfx.Sprite(texture);
-
-// set position, rotation and color
 sprite.position.set(100, 100)
 sprite.rotation = Math.PI; 
 sprite.color = Shaku.utils.Color.red;
+
+// create a sprites batch
+let spritesBatch = new Shaku.gfx.SpriteBatch();
 
 // part below goes between startFrame() and endFrame()
 // -------------------------------------------------------
 
 // draw the sprite
-Shaku.gfx.drawSprite(sprite);</code></pre>
+spritesBatch.begin();
+spritesBatch.drawSprite(sprite);
+spritesBatch.end();</code></pre>
 
   <button class="modal__close" onclick="closeModal('sample-code-modal')">&#10005;</button>
 </div>

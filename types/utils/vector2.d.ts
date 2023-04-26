@@ -7,48 +7,48 @@ declare class Vector2 {
      * Get vector (0,0).
      * @returns {Vector2} result vector.
      */
-    static get zero(): Vector2;
+    static zero(): Vector2;
     /**
      * Get vector with 1,1 values.
      * @returns {Vector2} result vector.
      */
-    static get one(): Vector2;
+    static one(): Vector2;
     /**
      * Get vector with 0.5,0.5 values.
      * @returns {Vector2} result vector.
      */
-    static get half(): Vector2;
+    static half(): Vector2;
     /**
      * Get vector with -1,0 values.
      * @returns {Vector2} result vector.
      */
-    static get left(): Vector2;
+    static left(): Vector2;
     /**
      * Get vector with 1,0 values.
      * @returns {Vector2} result vector.
      */
-    static get right(): Vector2;
+    static right(): Vector2;
     /**
      * Get vector with 0,-1 values.
      * @returns {Vector2} result vector.
      */
-    static get up(): Vector2;
+    static up(): Vector2;
     /**
      * Get vector with 0,1 values.
      * @returns {Vector2} result vector.
      */
-    static get down(): Vector2;
+    static down(): Vector2;
     /**
      * Get a random vector with length of 1.
      * @returns {Vector2} result vector.
      */
-    static get random(): Vector2;
+    static random(): Vector2;
     /**
      * Get vector from degrees.
      * @param {Number} degrees Angle to create vector from (0 = vector pointing right).
      * @returns {Vector2} result vector.
      */
-    static fromDegree(degrees: number): Vector2;
+    static fromDegrees(degrees: number): Vector2;
     /**
      * Get vector from radians.
      * @param {Number} radians Angle to create vector from (0 = vector pointing right).
@@ -86,7 +86,7 @@ declare class Vector2 {
      * @param {Vector2} p2 Second vector.
      * @returns {Number} Angle between vectors in degrees.
      */
-    static degreesBetweenFull(P1: any, P2: any): number;
+    static wrappedDegreesBetween(P1: any, P2: any): number;
     /**
      * Get radians between two vectors.
      * Return values between 0 to PI2.
@@ -94,7 +94,7 @@ declare class Vector2 {
      * @param {Vector2} p2 Second vector.
      * @returns {Number} Angle between vectors in radians.
      */
-    static radiansBetweenFull(P1: any, P2: any): number;
+    static wrappedRadiansBetween(P1: any, P2: any): number;
     /**
      * Calculate distance between two vectors.
      * @param {Vector2} p1 First vector.
@@ -161,25 +161,25 @@ declare class Vector2 {
     copy(other: any): Vector2;
     /**
      * Return a new vector of this + other.
-     * @param {Number|Vector2} Other Vector or number to add.
+     * @param {Number|Vector2} Other Vector3 or number to add to all components.
      * @returns {Vector2} result vector.
      */
     add(other: any, ...args: any[]): Vector2;
     /**
      * Return a new vector of this - other.
-     * @param {Number|Vector2} Other Vector or number to sub.
+     * @param {Number|Vector2} Other Vector3 or number to sub from all components.
      * @returns {Vector2} result vector.
      */
     sub(other: any, ...args: any[]): Vector2;
     /**
      * Return a new vector of this / other.
-     * @param {Number|Vector2} Other Vector or number to divide.
+     * @param {Number|Vector2} Other Vector3 or number to divide by all components.
      * @returns {Vector2} result vector.
      */
     div(other: any, ...args: any[]): Vector2;
     /**
      * Return a new vector of this * other.
-     * @param {Number|Vector2} Other Vector or number to multiply.
+     * @param {Number|Vector2} Other Vector2 or number to multiply with all components.
      * @returns {Vector2} result vector.
      */
     mul(other: any, ...args: any[]): Vector2;
@@ -208,13 +208,13 @@ declare class Vector2 {
      * @param {Number} radians Radians to rotate by.
      * @returns {Vector2} New vector with the length of this vector and direction rotated by given radians.
      */
-    rotatedRadians(radians: number): Vector2;
+    rotatedByRadians(radians: number): Vector2;
     /**
      * Get a copy of this vector rotated by degrees.
      * @param {Number} degrees Degrees to rotate by.
      * @returns {Vector2} New vector with the length of this vector and direction rotated by given degrees.
      */
-    rotatedDegrees(degrees: number): Vector2;
+    rotatedByDegrees(degrees: number): Vector2;
     /**
      * Add other vector values to self.
      * @param {Number|Vector2} Other Vector or number to add.
@@ -276,7 +276,7 @@ declare class Vector2 {
      * Return vector length (aka magnitude).
      * @returns {Number} Vector length.
      */
-    get length(): number;
+    length(): number;
     /**
      * Return a copy of this vector multiplied by a factor.
      * @returns {Vector2} result vector.
@@ -300,14 +300,14 @@ declare class Vector2 {
      * @param {Vector2} other Other vector.
      * @returns {Number} Angle between vectors in degrees.
      */
-    degreesToFull(other: Vector2): number;
+    wrappedDegreesTo(other: Vector2): number;
     /**
      * Get radians between this vector and another vector.
      * Return values between 0 to PI2.
      * @param {Vector2} other Other vector.
      * @returns {Number} Angle between vectors in radians.
      */
-    radiansToFull(other: Vector2): number;
+    wrappedRadiansTo(other: Vector2): number;
     /**
      * Calculate distance between this vector and another vectors.
      * @param {Vector2} other Other vector.
@@ -339,5 +339,14 @@ declare class Vector2 {
      * @returns {*} Dictionary with {x,y}
      */
     toDict(minimized: boolean): any;
+}
+declare namespace Vector2 {
+    const zeroReadonly: Vector2;
+    const oneReadonly: Vector2;
+    const halfReadonly: Vector2;
+    const leftReadonly: Vector2;
+    const rightReadonly: Vector2;
+    const upReadonly: Vector2;
+    const downReadonly: Vector2;
 }
 //# sourceMappingURL=vector2.d.ts.map

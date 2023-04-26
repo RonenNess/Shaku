@@ -21,6 +21,7 @@ Usage example:
     * [.then(callback)](#Animator+then) ⇒ [<code>Animator</code>](#Animator)
     * [.smoothDamp(enable)](#Animator+smoothDamp) ⇒ [<code>Animator</code>](#Animator)
     * [.repeats(enable, reverseAnimation)](#Animator+repeats) ⇒ [<code>Animator</code>](#Animator)
+    * [.reverseBackToStart()](#Animator+reverseBackToStart) ⇒ [<code>Animator</code>](#Animator)
     * [.from(values)](#Animator+from) ⇒ [<code>Animator</code>](#Animator)
     * [.to(values)](#Animator+to) ⇒ [<code>Animator</code>](#Animator)
     * [.flipFromAndTo()](#Animator+flipFromAndTo)
@@ -100,6 +101,14 @@ Set if the animator should repeat itself.
 | enable | <code>Boolean</code> \| <code>Number</code> | false to disable repeating, true for endless repeats, or a number for limited number of repeats. |
 | reverseAnimation | <code>Boolean</code> | if true, it will reverse animation to repeat it instead of just "jumping" back to starting state. |
 
+<a name="Animator+reverseBackToStart"></a>
+
+### animator.reverseBackToStart() ⇒ [<code>Animator</code>](#Animator)
+If true, will reverse animation back to start values after done.
+This is equivalent to calling `repeats(1, true)`.
+
+**Kind**: instance method of [<code>Animator</code>](#Animator)  
+**Returns**: [<code>Animator</code>](#Animator) - this.  
 <a name="Animator+from"></a>
 
 ### animator.from(values) ⇒ [<code>Animator</code>](#Animator)

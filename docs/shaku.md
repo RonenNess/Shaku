@@ -14,20 +14,20 @@ This object wraps the entire lib namespace, and this is what you use to access a
 
 * [Shaku](#Shaku)
     * [new Shaku()](#new_Shaku_new)
-    * [.utils](#Shaku+utils)
-    * [.sfx](#Shaku+sfx)
-    * [.gfx](#Shaku+gfx)
-    * [.input](#Shaku+input)
-    * [.assets](#Shaku+assets)
-    * [.collision](#Shaku+collision)
-    * [.pauseWhenNotFocused](#Shaku+pauseWhenNotFocused)
-    * [.paused](#Shaku+paused)
-    * [.pauseTime](#Shaku+pauseTime)
-    * [.isPaused](#Shaku+isPaused)
+    * [.utils](#Shaku+utils) : <code>Utils</code>
+    * [.sfx](#Shaku+sfx) : <code>Sfx</code>
+    * [.gfx](#Shaku+gfx) : <code>Gfx</code>
+    * [.input](#Shaku+input) : <code>Input</code>
+    * [.assets](#Shaku+assets) : <code>Assets</code>
+    * [.collision](#Shaku+collision) : <code>Collision</code>
+    * [.pauseWhenNotFocused](#Shaku+pauseWhenNotFocused) : <code>Boolean</code>
+    * [.pause](#Shaku+pause) : <code>Boolean</code>
+    * [.pauseGameTime](#Shaku+pauseGameTime) : <code>Boolean</code>
     * [.gameTime](#Shaku+gameTime) ⇒ <code>GameTime</code>
     * [.version](#Shaku+version) ⇒ <code>String</code>
     * [.init([managers])](#Shaku+init) ⇒ <code>Promise</code>
     * [.destroy()](#Shaku+destroy)
+    * [.isCurrentlyPaused()](#Shaku+isCurrentlyPaused) ⇒ <code>Boolean</code>
     * [.startFrame()](#Shaku+startFrame)
     * [.endFrame()](#Shaku+endFrame)
     * [.silent()](#Shaku+silent)
@@ -37,7 +37,7 @@ This object wraps the entire lib namespace, and this is what you use to access a
     * [.requestAnimationFrame(callback)](#Shaku+requestAnimationFrame) ⇒ <code>Number</code>
     * [.cancelAnimationFrame(id)](#Shaku+cancelAnimationFrame)
     * [.setLogger(loggerHandler)](#Shaku+setLogger)
-    * [.getLogger()](#Shaku+getLogger)
+    * [.getLogger()](#Shaku+getLogger) ⇒ <code>Logger</code>
 
 <a name="new_Shaku_new"></a>
 
@@ -46,64 +46,58 @@ Create the Shaku main object.
 
 <a name="Shaku+utils"></a>
 
-### shaku.utils
+### shaku.utils : <code>Utils</code>
 Different utilities and framework objects, like vectors, rectangles, colors, etc.
 
 **Kind**: instance property of [<code>Shaku</code>](#Shaku)  
 <a name="Shaku+sfx"></a>
 
-### shaku.sfx
+### shaku.sfx : <code>Sfx</code>
 Sound effects and music manager.
 
 **Kind**: instance property of [<code>Shaku</code>](#Shaku)  
 <a name="Shaku+gfx"></a>
 
-### shaku.gfx
+### shaku.gfx : <code>Gfx</code>
 Graphics manager.
 
 **Kind**: instance property of [<code>Shaku</code>](#Shaku)  
 <a name="Shaku+input"></a>
 
-### shaku.input
+### shaku.input : <code>Input</code>
 Input manager.
 
 **Kind**: instance property of [<code>Shaku</code>](#Shaku)  
 <a name="Shaku+assets"></a>
 
-### shaku.assets
+### shaku.assets : <code>Assets</code>
 Assets manager.
 
 **Kind**: instance property of [<code>Shaku</code>](#Shaku)  
 <a name="Shaku+collision"></a>
 
-### shaku.collision
+### shaku.collision : <code>Collision</code>
 Collision detection manager.
 
 **Kind**: instance property of [<code>Shaku</code>](#Shaku)  
 <a name="Shaku+pauseWhenNotFocused"></a>
 
-### shaku.pauseWhenNotFocused
+### shaku.pauseWhenNotFocused : <code>Boolean</code>
 If true, will pause the updates and drawing calls when window is not focused.
 Will also not update elapsed time.
 
 **Kind**: instance property of [<code>Shaku</code>](#Shaku)  
-<a name="Shaku+paused"></a>
+<a name="Shaku+pause"></a>
 
-### shaku.paused
+### shaku.pause : <code>Boolean</code>
 Set to true to completely pause Shaku (will skip updates, drawing, and time counting).
 
 **Kind**: instance property of [<code>Shaku</code>](#Shaku)  
-<a name="Shaku+pauseTime"></a>
+<a name="Shaku+pauseGameTime"></a>
 
-### shaku.pauseTime
+### shaku.pauseGameTime : <code>Boolean</code>
 Set to true to pause just the game time.
 This will not pause real-life time. If you need real-life time stop please use the Python package.
-
-**Kind**: instance property of [<code>Shaku</code>](#Shaku)  
-<a name="Shaku+isPaused"></a>
-
-### shaku.isPaused
-Get if the Shaku is currently paused.
 
 **Kind**: instance property of [<code>Shaku</code>](#Shaku)  
 <a name="Shaku+gameTime"></a>
@@ -139,6 +133,13 @@ Method to select managers to use + initialize them.
 Destroy all managers
 
 **Kind**: instance method of [<code>Shaku</code>](#Shaku)  
+<a name="Shaku+isCurrentlyPaused"></a>
+
+### shaku.isCurrentlyPaused() ⇒ <code>Boolean</code>
+Get if the Shaku is currently paused, either because the 'paused' property is set, or because the document is not focused.
+
+**Kind**: instance method of [<code>Shaku</code>](#Shaku)  
+**Returns**: <code>Boolean</code> - True if currently paused for any reason.  
 <a name="Shaku+startFrame"></a>
 
 ### shaku.startFrame()
@@ -221,7 +222,8 @@ Set the logger writer class (will replace the default console output).
 
 <a name="Shaku+getLogger"></a>
 
-### shaku.getLogger()
+### shaku.getLogger() ⇒ <code>Logger</code>
 Get / create a custom logger.
 
 **Kind**: instance method of [<code>Shaku</code>](#Shaku)  
+**Returns**: <code>Logger</code> - Logger instance.  

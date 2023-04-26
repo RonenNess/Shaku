@@ -32,6 +32,9 @@
           document.body.appendChild(Shaku.gfx.canvas);
           Shaku.gfx.setResolution(800, 600, true);
 
+          // shapes batch to draw vectors
+          let shapesBatch = new Shaku.gfx.ShapesBatch();
+
           // anchor point
           var anchor = new Shaku.utils.Vector2(400, 300);
 
@@ -42,15 +45,17 @@
             Shaku.startFrame();
             Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
 
+            shapesBatch.begin();
+
             // get target
             let target = Shaku.input.mousePosition;
 
             // draw line between anchor and mouse position
-            Shaku.gfx.drawLine(target, anchor, Shaku.utils.Color.red);
+            shapesBatch.drawLine(target, anchor, Shaku.utils.Color.red);
 
             // draw anchor and target
-            Shaku.gfx.fillCircle(new Shaku.utils.Circle(target, 10), Shaku.utils.Color.green);
-            Shaku.gfx.fillCircle(new Shaku.utils.Circle(anchor, 10), Shaku.utils.Color.red);
+            shapesBatch.drawCircle(new Shaku.utils.Circle(target, 10), Shaku.utils.Color.green);
+            shapesBatch.drawCircle(new Shaku.utils.Circle(anchor, 10), Shaku.utils.Color.red);
 
             // update anchor
             if (Shaku.input.down('mouse_left')) {
@@ -59,14 +64,17 @@
 
             results.value = `Distance: ${anchor.distanceTo(target)}
 Degrees / Radians (-180 - 180): ${anchor.degreesTo(target)} / ${anchor.radiansTo(target)}
-Degrees / Radians (0 - 360): ${anchor.degreesToFull(target)} / ${anchor.radiansToFull(target)}
-Direction Vector: ${Shaku.utils.Vector2.fromDegree(anchor.degreesToFull(target)).normalizeSelf().mul(100).floor().div(100).string()}
+Degrees / Radians (0 - 360): ${anchor.wrappedDegreesTo(target)} / ${anchor.wrappedRadiansTo(target)}
+Direction Vector: ${Shaku.utils.Vector2.fromDegrees(anchor.wrappedDegreesTo(target)).normalizeSelf().mul(100).floor().div(100).string()}
 Dot: ${Shaku.utils.Vector2.dot(anchor, target)}
 Cross: ${Shaku.utils.Vector2.cross(anchor, target)}`;
 
             // lerping vector
             let lerp = Shaku.utils.Vector2.lerp(target, anchor, Math.sin(Shaku.gameTime.elapsed) / 2 + 0.5);
-            Shaku.gfx.fillCircle(new Shaku.utils.Circle(lerp, 5), Shaku.utils.Color.blue);
+            shapesBatch.drawCircle(new Shaku.utils.Circle(lerp, 5), Shaku.utils.Color.blue);
+
+            // draw shapes
+            shapesBatch.end();
 
             // end frame and request next frame
             Shaku.endFrame();
@@ -87,11 +95,13 @@ Cross: ${Shaku.utils.Vector2.cross(anchor, target)}`;
   <div class="modal__overlay jsOverlay"></div>
   <div class="modal__container">   
 
-<p class="noselect">The following shows a basic vectors example.</i>
+<p class="noselect">The following shows a very basic vectors example.</i>
 </p>
 <pre><code class="language-js">let v1 = new Shaku.utils.Vector2(15, 52);
 let v2 = new Shaku.utils.Vector2(50, 102);
 let distance = v1.distanceTo(v2);
+
+// Vector2 class has a lot of methods! check out the full docs for more!
 </code></pre>
 
   <button class="modal__close" onclick="closeModal('sample-code-modal')">&#10005;</button>

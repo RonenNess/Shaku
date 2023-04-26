@@ -33,6 +33,21 @@ declare class FontTextureAsset extends Asset {
      */
     get texture(): TextureAsset;
     /**
+     * Get texture width.
+     * @returns {Number} Texture width.
+     */
+    get width(): number;
+    /**
+     * Get texture height.
+     * @returns {Number} Texture height.
+     */
+    get height(): number;
+    /**
+     * Get texture size as a vector.
+     * @returns {Vector2} Texture size.
+     */
+    getSize(): Vector2;
+    /**
      * Get the source rectangle for a given character in texture.
      * @param {Character} character Character to get source rect for.
      * @returns {Rectangle} Source rectangle for character.
@@ -56,6 +71,6 @@ declare namespace FontTextureAsset {
 }
 import Asset = require("./asset");
 import TextureAsset = require("./texture_asset");
-import Rectangle = require("../utils/rectangle");
 import Vector2 = require("../utils/vector2");
+import Rectangle = require("../utils/rectangle");
 //# sourceMappingURL=font_texture_asset.d.ts.map

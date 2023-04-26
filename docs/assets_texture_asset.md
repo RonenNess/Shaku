@@ -13,94 +13,34 @@ This asset type loads an image from URL or source, and turn it into a texture.
 **Kind**: global class  
 
 * [TextureAsset](#TextureAsset)
-    * [.filter](#TextureAsset+filter)
-    * [.filter](#TextureAsset+filter)
-    * [.wrapMode](#TextureAsset+wrapMode)
-    * [.wrapMode](#TextureAsset+wrapMode)
-    * [.image](#TextureAsset+image) ⇒ <code>Image</code>
-    * [.width](#TextureAsset+width) ⇒ <code>Number</code>
-    * [.height](#TextureAsset+height) ⇒ <code>Number</code>
-    * [.size](#TextureAsset+size) ⇒ <code>Vector2</code>
-    * [.texture](#TextureAsset+texture)
+    * [.image](#TextureAsset+image)
+    * [.width](#TextureAsset+width)
+    * [.height](#TextureAsset+height)
+    * [._glTexture](#TextureAsset+_glTexture)
     * [.valid](#TextureAsset+valid)
     * [.load(params)](#TextureAsset+load) ⇒ <code>Promise</code>
     * [.createRenderTarget(width, height, channels)](#TextureAsset+createRenderTarget)
     * [.fromImage(image, params)](#TextureAsset+fromImage)
     * [.create(source, params)](#TextureAsset+create) ⇒ <code>Promise</code>
     * [.getPixel(x, y)](#TextureAsset+getPixel) ⇒ <code>Color</code>
+    * [.getPixelsData([x], [y], [width], [height])](#TextureAsset+getPixelsData) ⇒ <code>Array.&lt;Array.&lt;Color&gt;&gt;</code>
     * [.destroy()](#TextureAsset+destroy)
-
-<a name="TextureAsset+filter"></a>
-
-### textureAsset.filter
-Get texture magnifying filter, or null to use default.
-
-**Kind**: instance property of [<code>TextureAsset</code>](#TextureAsset)  
-**See**: Shaku.gfx.TextureFilterModes  
-<a name="TextureAsset+filter"></a>
-
-### textureAsset.filter
-Set texture magnifying filter.
-
-**Kind**: instance property of [<code>TextureAsset</code>](#TextureAsset)  
-**See**: Shaku.gfx.TextureFilterModes  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| value | <code>TextureFilterMode</code> | Filter mode to use or null to use default. |
-
-<a name="TextureAsset+wrapMode"></a>
-
-### textureAsset.wrapMode
-Get texture wrapping mode, or null to use default.
-
-**Kind**: instance property of [<code>TextureAsset</code>](#TextureAsset)  
-**See**: Shaku.gfx.TextureWrapModes  
-<a name="TextureAsset+wrapMode"></a>
-
-### textureAsset.wrapMode
-Set texture wrapping mode.
-
-**Kind**: instance property of [<code>TextureAsset</code>](#TextureAsset)  
-**See**: Shaku.gfx.TextureWrapModes  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| value | <code>TextureWrapMode</code> | Wrapping mode to use or null to use default. |
 
 <a name="TextureAsset+image"></a>
 
-### textureAsset.image ⇒ <code>Image</code>
-Get raw image.
-
+### textureAsset.image
 **Kind**: instance property of [<code>TextureAsset</code>](#TextureAsset)  
-**Returns**: <code>Image</code> - Image instance.  
 <a name="TextureAsset+width"></a>
 
-### textureAsset.width ⇒ <code>Number</code>
-Get texture width.
-
+### textureAsset.width
 **Kind**: instance property of [<code>TextureAsset</code>](#TextureAsset)  
-**Returns**: <code>Number</code> - Texture width.  
 <a name="TextureAsset+height"></a>
 
-### textureAsset.height ⇒ <code>Number</code>
-Get texture height.
-
+### textureAsset.height
 **Kind**: instance property of [<code>TextureAsset</code>](#TextureAsset)  
-**Returns**: <code>Number</code> - Texture height.  
-<a name="TextureAsset+size"></a>
+<a name="TextureAsset+_glTexture"></a>
 
-### textureAsset.size ⇒ <code>Vector2</code>
-Get texture size as a vector.
-
-**Kind**: instance property of [<code>TextureAsset</code>](#TextureAsset)  
-**Returns**: <code>Vector2</code> - Texture size.  
-<a name="TextureAsset+texture"></a>
-
-### textureAsset.texture
-Get texture instance for WebGL.
-
+### textureAsset.\_glTexture
 **Kind**: instance property of [<code>TextureAsset</code>](#TextureAsset)  
 <a name="TextureAsset+valid"></a>
 
@@ -116,7 +56,7 @@ Load the texture from it's image URL.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| params | <code>\*</code> | Optional additional params. Possible values are:                      - generateMipMaps (default=false): should we generate mipmaps for this texture?                      - crossOrigin (default=undefined): if set, will set the crossOrigin property with this value. |
+| params | <code>\*</code> | Optional additional params. Possible values are:                      - generateMipMaps (default=false): if true, will generate mipmaps for this texture.                      - crossOrigin (default=undefined): if set, will set the crossOrigin property with this value.                      - flipY (default=false): if true, will flip texture on Y axis.                      - premultiplyAlpha (default=false): if true, will load texture with premultiply alpha flag set. |
 
 <a name="TextureAsset+createRenderTarget"></a>
 
@@ -162,6 +102,7 @@ Create the texture from an image.
 
 ### textureAsset.getPixel(x, y) ⇒ <code>Color</code>
 Get pixel color from image.
+Note: this method is quite slow, if you need to perform multiple queries consider using `getPixelsData()` once to get all pixels data instead.
 
 **Kind**: instance method of [<code>TextureAsset</code>](#TextureAsset)  
 **Returns**: <code>Color</code> - Pixel color.  
@@ -170,6 +111,21 @@ Get pixel color from image.
 | --- | --- | --- |
 | x | <code>Number</code> | Pixel X value. |
 | y | <code>Number</code> | Pixel Y value. |
+
+<a name="TextureAsset+getPixelsData"></a>
+
+### textureAsset.getPixelsData([x], [y], [width], [height]) ⇒ <code>Array.&lt;Array.&lt;Color&gt;&gt;</code>
+Get a 2D array with pixel colors.
+
+**Kind**: instance method of [<code>TextureAsset</code>](#TextureAsset)  
+**Returns**: <code>Array.&lt;Array.&lt;Color&gt;&gt;</code> - A 2D array with all texture pixel colors.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| [x] | <code>Number</code> | Offset X in texture to get. Defaults to 0. |
+| [y] | <code>Number</code> | Offset Y in texture to get. Defaults to 0. |
+| [width] | <code>Number</code> | How many pixels to get on X axis. Defaults to texture width - x. |
+| [height] | <code>Number</code> | How many pixels to get on Y axis. Defaults to texture height - y. |
 
 <a name="TextureAsset+destroy"></a>
 

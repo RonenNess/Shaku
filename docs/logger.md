@@ -4,6 +4,23 @@
 
 # Logger
 
+## Classes
+
+<dl>
+<dt><a href="#Logger">Logger</a></dt>
+<dd><p>A logger manager.
+By default writes logs to console.</p>
+</dd>
+</dl>
+
+## Constants
+
+<dl>
+<dt><a href="#LoggerModule">LoggerModule</a></dt>
+<dd><p>The Logger module is a small object to get loggers and control the underlying logger drivers.</p>
+</dd>
+</dl>
+
 <a name="Logger"></a>
 
 ## Logger
@@ -85,4 +102,52 @@ Set logger to throw an error every time a log message with severity higher than 
 | Param | Type | Description |
 | --- | --- | --- |
 | enable | <code>Boolean</code> | Set to true to throw error on warnings. |
+
+<a name="LoggerModule"></a>
+
+## LoggerModule
+The Logger module is a small object to get loggers and control the underlying logger drivers.
+
+**Kind**: global constant  
+
+* [LoggerModule](#LoggerModule)
+    * [.getLogger(name)](#LoggerModule.getLogger) ⇒ [<code>Logger</code>](#Logger)
+    * [.silent()](#LoggerModule.silent)
+    * [.setDrivers()](#LoggerModule.setDrivers)
+    * [.setApplicationName(name)](#LoggerModule.setApplicationName)
+
+<a name="LoggerModule.getLogger"></a>
+
+### LoggerModule.getLogger(name) ⇒ [<code>Logger</code>](#Logger)
+Get a logger object for a given logger name.
+
+**Kind**: static method of [<code>LoggerModule</code>](#LoggerModule)  
+**Returns**: [<code>Logger</code>](#Logger) - Logger to use.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| name | <code>String</code> | Logger name. |
+
+<a name="LoggerModule.silent"></a>
+
+### LoggerModule.silent()
+Silent the logger.
+
+**Kind**: static method of [<code>LoggerModule</code>](#LoggerModule)  
+<a name="LoggerModule.setDrivers"></a>
+
+### LoggerModule.setDrivers()
+Set log drivers that implement trace, debug, info, warn and error that all loggers will use.
+
+**Kind**: static method of [<code>LoggerModule</code>](#LoggerModule)  
+<a name="LoggerModule.setApplicationName"></a>
+
+### LoggerModule.setApplicationName(name)
+Set logger application name.
+
+**Kind**: static method of [<code>LoggerModule</code>](#LoggerModule)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| name | <code>String</code> | Set application name to replace the 'Shaku' in the headers. |
 

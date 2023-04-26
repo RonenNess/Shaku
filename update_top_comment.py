@@ -1,7 +1,7 @@
 import os
 
 shaku_template = """
- * @package    Shaku
+ * @module     Shaku
  * @file       __file__
  * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
  * @copyright  (c) 2021 Ronen Ness
@@ -45,7 +45,7 @@ def process_files(root, files, template):
 
 missing = []
 
-for root, subdirs, files in os.walk('lib'):
+for root, subdirs, files in os.walk('src'):
     process_files(root, files, shaku_template)
 
 print ("Files without license header: ")

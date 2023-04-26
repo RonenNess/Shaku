@@ -37,25 +37,39 @@ An effect = vertex shader + fragment shader + uniforms & attributes + setup code
 **Kind**: global class  
 
 * [Effect](#Effect)
-    * [.uniformTypes](#Effect+uniformTypes) ⇒ <code>\*</code>
-    * [.attributeTypes](#Effect+attributeTypes) ⇒ <code>\*</code>
-    * [.vertexCode](#Effect+vertexCode) ⇒ <code>String</code>
-    * [.fragmentCode](#Effect+fragmentCode) ⇒ <code>String</code>
-    * [.enableDepthTest](#Effect+enableDepthTest)
-    * [.enableFaceCulling](#Effect+enableFaceCulling)
-    * [.enableStencilTest](#Effect+enableStencilTest)
-    * [.enableDithering](#Effect+enableDithering)
-    * [.setAsActive()](#Effect+setAsActive)
-    * [.prepareToDrawBatch(mesh, world)](#Effect+prepareToDrawBatch)
-    * [.setTexture(texture)](#Effect+setTexture) ⇒ <code>Boolean</code>
-    * [.setColor(color)](#Effect+setColor)
-    * [.setUvOffsetAndScale(sourceRect, texture)](#Effect+setUvOffsetAndScale)
-    * [.setProjectionMatrix(matrix)](#Effect+setProjectionMatrix)
-    * [.setWorldMatrix(matrix)](#Effect+setWorldMatrix)
-    * [.setViewMatrix(matrix)](#Effect+setViewMatrix)
-    * [.setPositionsAttribute(buffer, forceSetBuffer)](#Effect+setPositionsAttribute)
-    * [.setTextureCoordsAttribute(buffer, forceSetBuffer)](#Effect+setTextureCoordsAttribute)
-    * [.setColorsAttribute(buffer, forceSetBuffer)](#Effect+setColorsAttribute)
+    * [new Effect()](#new_Effect_new)
+    * _instance_
+        * [.uniformTypes](#Effect+uniformTypes) ⇒ <code>\*</code>
+        * [.attributeTypes](#Effect+attributeTypes) ⇒ <code>\*</code>
+        * [.vertexCode](#Effect+vertexCode) ⇒ <code>String</code>
+        * [.fragmentCode](#Effect+fragmentCode) ⇒ <code>String</code>
+        * [.enableDepthTest](#Effect+enableDepthTest)
+        * [.enableFaceCulling](#Effect+enableFaceCulling)
+        * [.enableStencilTest](#Effect+enableStencilTest)
+        * [.enableDithering](#Effect+enableDithering)
+        * [.hasVertexColor](#Effect+hasVertexColor) ⇒ <code>Boolean</code>
+        * [.setAsActive(overrideFlags)](#Effect+setAsActive)
+        * [.prepareToDrawBatch(mesh, world)](#Effect+prepareToDrawBatch)
+        * [.getBoundUniform(bindKey)](#Effect+getBoundUniform) ⇒
+        * [.setTexture(texture)](#Effect+setTexture) ⇒ <code>Boolean</code>
+        * [.setColor(color)](#Effect+setColor)
+        * [.setProjectionMatrix(matrix)](#Effect+setProjectionMatrix)
+        * [.setWorldMatrix(matrix)](#Effect+setWorldMatrix)
+        * [.setViewMatrix(matrix)](#Effect+setViewMatrix)
+        * [.setOutline(weight, color)](#Effect+setOutline)
+        * [.setUvNormalizationFactor(factor)](#Effect+setUvNormalizationFactor)
+        * [.setPositionsAttribute(buffer, forceSetBuffer)](#Effect+setPositionsAttribute)
+        * [.setTextureCoordsAttribute(buffer, forceSetBuffer)](#Effect+setTextureCoordsAttribute)
+        * [.setColorsAttribute(buffer, forceSetBuffer)](#Effect+setColorsAttribute)
+    * _static_
+        * [.UniformBinds](#Effect.UniformBinds)
+        * [.AttributeTypes](#Effect.AttributeTypes)
+        * [.AttributeBinds](#Effect.AttributeBinds)
+
+<a name="new_Effect_new"></a>
+
+### new Effect()
+Create the effect.
 
 <a name="Effect+uniformTypes"></a>
 
@@ -123,12 +137,24 @@ Should this effect enable stencil test?
 Should this effect enable dithering?
 
 **Kind**: instance property of [<code>Effect</code>](#Effect)  
+<a name="Effect+hasVertexColor"></a>
+
+### effect.hasVertexColor ⇒ <code>Boolean</code>
+Return if this effect have colors attribute on vertices.
+
+**Kind**: instance property of [<code>Effect</code>](#Effect)  
+**Returns**: <code>Boolean</code> - True if got vertices color attribute.  
 <a name="Effect+setAsActive"></a>
 
-### effect.setAsActive()
+### effect.setAsActive(overrideFlags)
 Make this effect active.
 
 **Kind**: instance method of [<code>Effect</code>](#Effect)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| overrideFlags | <code>\*</code> | Optional flags to override in effect.  May include the following: enableDepthTest, enableFaceCulling, enableStencilTest, enableDithering. |
+
 <a name="Effect+prepareToDrawBatch"></a>
 
 ### effect.prepareToDrawBatch(mesh, world)
@@ -141,24 +167,36 @@ Prepare effect before drawing it with batching.
 | mesh | <code>Mesh</code> | Mesh we're about to draw. |
 | world | <code>Matrix</code> | World matrix. |
 
+<a name="Effect+getBoundUniform"></a>
+
+### effect.getBoundUniform(bindKey) ⇒
+Get a uniform method from a bind key.
+
+**Kind**: instance method of [<code>Effect</code>](#Effect)  
+**Returns**: Uniform set method, or null if not set.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| bindKey | <code>UniformBinds</code> | Uniform bind key. |
+
 <a name="Effect+setTexture"></a>
 
 ### effect.setTexture(texture) ⇒ <code>Boolean</code>
 Set the main texture.
-Only works if there's a uniform type bound to 'MainTexture'.
+Note: this will only work for effects that utilize the 'MainTexture' uniform.
 
 **Kind**: instance method of [<code>Effect</code>](#Effect)  
 **Returns**: <code>Boolean</code> - True if texture was changed, false if there was no need to change the texture.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| texture | <code>TextureAsset</code> | Texture to set. |
+| texture | <code>TextureAssetBase</code> | Texture to set. |
 
 <a name="Effect+setColor"></a>
 
 ### effect.setColor(color)
 Set the main tint color.
-Only works if there's a uniform type bound to 'Color'.
+Note: this will only work for effects that utilize the 'Color' uniform.
 
 **Kind**: instance method of [<code>Effect</code>](#Effect)  
 
@@ -166,22 +204,11 @@ Only works if there's a uniform type bound to 'Color'.
 | --- | --- | --- |
 | color | <code>Color</code> | Color to set. |
 
-<a name="Effect+setUvOffsetAndScale"></a>
-
-### effect.setUvOffsetAndScale(sourceRect, texture)
-Set uvOffset and uvScale params from source rectangle and texture.
-
-**Kind**: instance method of [<code>Effect</code>](#Effect)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| sourceRect | <code>Rectangle</code> | Source rectangle to set, or null to take entire texture. |
-| texture | <code>TextureAsset</code> | Texture asset to set source rect for. |
-
 <a name="Effect+setProjectionMatrix"></a>
 
 ### effect.setProjectionMatrix(matrix)
 Set the projection matrix uniform.
+Note: this will only work for effects that utilize the 'Projection' uniform.
 
 **Kind**: instance method of [<code>Effect</code>](#Effect)  
 
@@ -193,6 +220,7 @@ Set the projection matrix uniform.
 
 ### effect.setWorldMatrix(matrix)
 Set the world matrix uniform.
+Note: this will only work for effects that utilize the 'World' uniform.
 
 **Kind**: instance method of [<code>Effect</code>](#Effect)  
 
@@ -204,12 +232,38 @@ Set the world matrix uniform.
 
 ### effect.setViewMatrix(matrix)
 Set the view matrix uniform.
+Note: this will only work for effects that utilize the 'View' uniform.
 
 **Kind**: instance method of [<code>Effect</code>](#Effect)  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | matrix | <code>Matrix</code> | Matrix to set. |
+
+<a name="Effect+setOutline"></a>
+
+### effect.setOutline(weight, color)
+Set outline params.
+Note: this will only work for effects that utilize the 'OutlineWeight' and 'OutlineColor' uniforms.
+
+**Kind**: instance method of [<code>Effect</code>](#Effect)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| weight | <code>Number</code> | Outline weight, range from 0.0 to 1.0. |
+| color | <code>Color</code> | Outline color. |
+
+<a name="Effect+setUvNormalizationFactor"></a>
+
+### effect.setUvNormalizationFactor(factor)
+Set a factor to normalize UV values to be 0-1.
+Note: this will only work for effects that utilize the 'UvNormalizationFactor' uniform.
+
+**Kind**: instance method of [<code>Effect</code>](#Effect)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| factor | <code>Vector2</code> | Normalize UVs factor. |
 
 <a name="Effect+setPositionsAttribute"></a>
 
@@ -250,6 +304,33 @@ Only works if there's an attribute type bound to 'Colors'.
 | buffer | <code>WebGLBuffer</code> | Vertices colors buffer. |
 | forceSetBuffer | <code>Boolean</code> | If true, will always set buffer even if buffer is currently set. |
 
+<a name="Effect.UniformBinds"></a>
+
+### Effect.UniformBinds
+Default uniform binds.
+This is a set of commonly used uniforms and their names inside the shader code.
+
+Every bind here comes with a built-in method to set and is used internally by Shaku.
+For example, if you want to include outline properties in your effect, you can use the 'OutlineWeight' and 'OutlineColor' binds (with matching name in the shader code). 
+When you use the built-in binds, Shaku will know how to set them itself when relevant, for example in text rendering Shaku will use the outline binds if they exist.
+
+If you don't use the built-in binds you can just call your uniforms however you like, but you'll need to set them all manually. 
+Shaku will not know how to set them.
+
+**Kind**: static property of [<code>Effect</code>](#Effect)  
+<a name="Effect.AttributeTypes"></a>
+
+### Effect.AttributeTypes
+Define attribute types.
+
+**Kind**: static property of [<code>Effect</code>](#Effect)  
+<a name="Effect.AttributeBinds"></a>
+
+### Effect.AttributeBinds
+Define built-in attribute binds to connect attribute names for specific use cases like position, uvs, colors, etc.
+If an effect support one or more of these attributes, Shaku will know how to fill them automatically.
+
+**Kind**: static property of [<code>Effect</code>](#Effect)  
 <a name="UniformTypes"></a>
 
 ## UniformTypes : <code>enum</code>

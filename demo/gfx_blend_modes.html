@@ -12,7 +12,7 @@
     <button class="view-code-btn" onclick="showSampleCode();">View Code</button> 
     <h1 class="demo-title">Shaku Gfx Demo: Blend Modes</h1>
       <p>This demo demonstrate how to render with different blend modes.<br />
-      Press <b>Space</b> to toggle background, <b>Z</b> to rotate textures.</p>
+      Press <b>Space</b> to toggle background, <b>Z</b> to change textures.</p>
 
       <!-- include shaku -->
       <script src="js/demos.js"></script>
@@ -39,27 +39,24 @@
 
           // load font texture
           let fontTexture = await Shaku.assets.loadFontTexture('assets/DejaVuSansMono.ttf', {fontName: 'DejaVuSansMono'});
+
+          // create text and sprites batch
+          let spritesBatch = new Shaku.gfx.SpriteBatch();
+          let textSpriteBatch = new Shaku.gfx.TextSpriteBatch();
+
+          // set outline
+          textSpriteBatch.outlineWeight = 1;
+          textSpriteBatch.outlineColor = Shaku.utils.Color.black;
           
           // draw a texture with simple outline
           function drawTextWithOutline(text, position)
           {
-            // create text
             let textGroup = Shaku.gfx.buildText(fontTexture, text, 24, Shaku.utils.Color.black, Shaku.gfx.TextAlignments.Center);
-
-            // draw outline
-            textGroup.position.copy(position);
-            Shaku.gfx.drawGroup(textGroup);
-            textGroup.position.y += 4;
-            Shaku.gfx.drawGroup(textGroup);
-            textGroup.position.x += 4;
-            textGroup.position.y -= 4;
-            Shaku.gfx.drawGroup(textGroup);
-
-            // draw white front
             textGroup.setColor(Shaku.utils.Color.white);
-            textGroup.position.x -= 2;
-            textGroup.position.y += 2;
-            Shaku.gfx.drawGroup(textGroup);
+            textGroup.position.copy(position);
+            textSpriteBatch.begin();
+            textSpriteBatch.drawText(textGroup);
+            textSpriteBatch.end();
           }
 
           // load textures
@@ -81,7 +78,9 @@
 
             // draw background
             if (showBackground) {
-              Shaku.gfx.cover(background, Shaku.gfx.getRenderingRegion());
+              spritesBatch.begin();
+              spritesBatch.drawRectangle(background, Shaku.gfx.getRenderingRegion());
+              spritesBatch.end();
             }
 
             // input
@@ -100,7 +99,9 @@
             for (let blend in Shaku.gfx.BlendModes) {
 
               // draw sprite with blend mode
-              Shaku.gfx.draw(textures[textureIndex], new Shaku.utils.Vector2(x, y), spriteSize, null, null, Shaku.gfx.BlendModes[blend]);
+              spritesBatch.begin(Shaku.gfx.BlendModes[blend]);
+              spritesBatch.drawQuad(textures[textureIndex], new Shaku.utils.Vector2(x, y), spriteSize);
+              spritesBatch.end();
 
               // draw blend mode text
               drawTextWithOutline(blend, new Shaku.utils.Vector2(x, y - spriteSize / 2 + 18));
@@ -141,19 +142,32 @@ let texture = await Shaku.assets.loadTexture('assets/sprite.png');
 // part below goes between startFrame() and endFrame()
 // -------------------------------------------------------
 
-// draw with different blend modes
+// sprite offset and position
 let x = 1;
 let y = 1;
 let spriteSize = 100;
-Shaku.gfx.draw(texture, new Shaku.utils.Vector2(x++, y).mul(spriteSize), spriteSize, null, null, Shaku.gfx.BlendModes.AlphaBlend);
-Shaku.gfx.draw(texture, new Shaku.utils.Vector2(x++, y).mul(spriteSize), spriteSize, null, null, Shaku.gfx.BlendModes.Opaque);
-Shaku.gfx.draw(texture, new Shaku.utils.Vector2(x++, y).mul(spriteSize), spriteSize, null, null, Shaku.gfx.BlendModes.Additive);
-Shaku.gfx.draw(texture, new Shaku.utils.Vector2(x++, y).mul(spriteSize), spriteSize, null, null, Shaku.gfx.BlendModes.Multiply);
-Shaku.gfx.draw(texture, new Shaku.utils.Vector2(x++, y).mul(spriteSize), spriteSize, null, null, Shaku.gfx.BlendModes.Subtract);
-Shaku.gfx.draw(texture, new Shaku.utils.Vector2(x++, y).mul(spriteSize), spriteSize, null, null, Shaku.gfx.BlendModes.Screen);
-Shaku.gfx.draw(texture, new Shaku.utils.Vector2(x++, y).mul(spriteSize), spriteSize, null, null, Shaku.gfx.BlendModes.Overlay);
-Shaku.gfx.draw(texture, new Shaku.utils.Vector2(x++, y).mul(spriteSize), spriteSize, null, null, Shaku.gfx.BlendModes.DestIn);
-Shaku.gfx.draw(texture, new Shaku.utils.Vector2(x++, y).mul(spriteSize), spriteSize, null, null, Shaku.gfx.BlendModes.DestOut);</code></pre>
+
+// draw alpha blend (default) blend mode:
+spritesBatch.begin(Shaku.gfx.BlendModes.AlphaBlend);
+spritesBatch.drawQuad(texture, new Shaku.utils.Vector2(x++, y).mul(spriteSize), spriteSize);
+spritesBatch.end();
+
+// draw opaque (no transparency) blend mode:
+spritesBatch.begin(Shaku.gfx.BlendModes.Opaque);
+spritesBatch.drawQuad(texture, new Shaku.utils.Vector2(x++, y).mul(spriteSize), spriteSize);
+spritesBatch.end();
+
+// draw additive (add color to dest) blend mode:
+spritesBatch.begin(Shaku.gfx.BlendModes.Additive);
+spritesBatch.drawQuad(texture, new Shaku.utils.Vector2(x++, y).mul(spriteSize), spriteSize);
+spritesBatch.end();
+
+// draw multiply (multiply color with dest) blend mode:
+spritesBatch.begin(Shaku.gfx.BlendModes.Multiply);
+spritesBatch.drawQuad(texture, new Shaku.utils.Vector2(x++, y).mul(spriteSize), spriteSize);
+spritesBatch.end();
+
+// there are other blend modes Shaku support, check out Shaku.gfx.BlendModes for more options</code></pre>
 
   <button class="modal__close" onclick="closeModal('sample-code-modal')">&#10005;</button>
 </div>

@@ -11,8 +11,8 @@
     <div class="noselect" style="color:white">
     <button class="view-code-btn" onclick="showSampleCode();">View Code</button> 
     <h1 class="demo-title">Shaku Gfx Demo: Fullscreen</h1>
-      <p>This demo shows how to make your canvas and renderer fullscreen, by setting resolution to the entire size of the page.<br />
-      Combine this with JS `element.requestFullscreen()` to get true fullscreen (you can hit F11 on chrome to see how it looks like).</p>
+      <p>This demo shows how to make your canvas and renderer fullscreen, ie setting resolution to the entire size of the page.<br />
+      Combine this with JS `element.requestFullscreen()` to get a complete fullscreen experience (you can hit F11 on chrome to see how it looks like).</p>
 
       <canvas id="main-canvas" style="display:block; position:fixed; left:0px; top:0px; z-index: -100;"></canvas>
       
@@ -31,6 +31,9 @@
           // load sprite's texture asset
           let texture = await Shaku.assets.loadTexture('assets/shaku.png');
 
+          // create sprites batch
+          let spritesBatch = new Shaku.gfx.SpriteBatch();
+
           // do a single main loop step
           function step() 
           {  
@@ -39,10 +42,12 @@
             Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
 
             // draw the texture
-            Shaku.gfx.draw(texture, new Shaku.utils.Vector2(400, 300), 256);
+            spritesBatch.begin();
+            spritesBatch.drawQuad(texture, new Shaku.utils.Vector2(400, 300), 256);
+            spritesBatch.end();
 
             // make fullscreen
-            Shaku.gfx.maximizeCanvasSize(false);
+            Shaku.gfx.maximizeCanvasSize();
 
             // end frame and request next frame
             Shaku.endFrame();
@@ -65,7 +70,7 @@
 
 <p class="noselect">The following will make the renderer and cavas size cover the entire HTML doc.</p>
 <pre><code class="language-js">// note: its ok to call this every frame. it won't do anything if nothing changed.
-Shaku.gfx.maximizeCanvasSize(false);</code></pre>
+Shaku.gfx.maximizeCanvasSize();</code></pre>
 
   <button class="modal__close" onclick="closeModal('sample-code-modal')">&#10005;</button>
 </div>

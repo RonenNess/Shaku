@@ -54,6 +54,12 @@ async function runGame()
   let texture = await Shaku.assets.loadTexture('assets/shaku.png');
   let fontTexture = await Shaku.assets.loadFontTexture('assets/DejaVuSansMono.ttf', {fontName: 'DejaVuSansMono'});
 
+  // create a sprite batch
+  let spritesBatch = new Shaku.gfx.SpriteBatch();
+
+  // create a text sprite batch
+  let textSpriteBatch = new Shaku.gfx.TextSpriteBatch();
+
   // do a single main loop step
   function step() 
   {  
@@ -62,15 +68,19 @@ async function runGame()
     Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
 
     // draw test texture
+    spritesBatch.begin();
     let position = Shaku.gfx.getCanvasSize().div(2);
     let size = new Shaku.utils.Vector2(256, 256);
     let rotation = Shaku.gameTime.elapsed;
-    Shaku.gfx.draw(texture, position, size, null, null, null, rotation);
+    spritesBatch.drawQuad(texture, position, size, null, null, rotation);
+    spritesBatch.end();
 
-    // draw 'hello world'
+    // draw welcome text
+    textSpriteBatch.begin();
     let textGroup = Shaku.gfx.buildText(fontTexture, "Shaku is ready for battle!", 24, Shaku.utils.Color.white, Shaku.gfx.TextAlignments.Center);
     textGroup.position.set(position.x, position.y + 160);
-    Shaku.gfx.drawGroup(textGroup);
+    textSpriteBatch.drawText(textGroup);
+    textSpriteBatch.end();
 
     // PUT YOUR GAME LOGIC HERE
 

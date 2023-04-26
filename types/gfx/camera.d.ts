@@ -48,13 +48,12 @@ declare class Camera {
     orthographic(region: Rectangle, near: number, far: number): void;
     /**
      * Make this camera a perspective camera.
-     * @private
      * @param {*} fieldOfView Field of view angle in radians.
      * @param {*} aspectRatio Aspect ratio.
      * @param {*} near Near clipping plane.
      * @param {*} far Far clipping plane.
      */
-    private _perspective;
+    perspective(fieldOfView: any, aspectRatio: any, near: any, far: any): void;
 }
 import Matrix = require("./matrix");
 import Rectangle = require("../utils/rectangle");

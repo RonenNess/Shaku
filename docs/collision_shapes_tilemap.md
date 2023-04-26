@@ -23,7 +23,7 @@ Its the most efficient (both memory and CPU) way to implement grid based / tilem
     * [._getRadius()](#TilemapShape+_getRadius)
     * [._getBoundingBox()](#TilemapShape+_getBoundingBox)
     * [.getCenter()](#TilemapShape+getCenter)
-    * [.debugDraw(opacity)](#TilemapShape+debugDraw)
+    * [.debugDraw()](#TilemapShape+debugDraw)
 
 <a name="new_TilemapShape_new"></a>
 
@@ -105,12 +105,5 @@ Get all tiles in given region, represented by a rectangle.
 **Kind**: instance method of [<code>TilemapShape</code>](#TilemapShape)  
 <a name="TilemapShape+debugDraw"></a>
 
-### tilemapShape.debugDraw(opacity)
-Debug draw this shape.
-
+### tilemapShape.debugDraw()
 **Kind**: instance method of [<code>TilemapShape</code>](#TilemapShape)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| opacity | <code>Number</code> | Shape opacity factor. |
-

@@ -7,7 +7,7 @@ declare class CollisionShape {
     _worldRange: any;
     _debugColor: any;
     _forceDebugColor: Color;
-    _collisionFlags: any;
+    _collisionFlags: number;
     /**
      * Get the collision shape's unique identifier.
      * @returns {String} Shape's unique identifier
@@ -16,11 +16,17 @@ declare class CollisionShape {
     /**
      * Set collision flags (matched against collision mask when checking collision).
      */
-    set collisionFlags(arg: any);
+    set collisionFlags(arg: number);
     /**
      * Get collision flags (matched against collision mask when checking collision).
      */
-    get collisionFlags(): any;
+    get collisionFlags(): number;
+    /**
+     * Get Shapes beatch to draw this shape with, either given or default from world.
+     * If not provided and have no world, will throw exception.
+     * @private
+     */
+    private _getDebugDrawBatch;
     /**
      * Set the debug color to use to draw this shape.
      * @param {Color} color Color to set or null to use default.
@@ -29,8 +35,9 @@ declare class CollisionShape {
     /**
      * Debug draw this shape.
      * @param {Number} opacity Shape opacity factor.
+     * @param {ShapesBatch} shapesBatch Optional shapes batch to use to debug draw the shape. By default will use the collision world.
      */
-    debugDraw(opacity: number): void;
+    debugDraw(opacity: number, shapesBatch: ShapesBatch): void;
     /**
      * Get shape center position.
      * @returns {Vector2} Center position.
@@ -75,5 +82,6 @@ declare class CollisionShape {
     private _shapeChanged;
 }
 import Color = require("../../utils/color");
+import ShapesBatch = require("../../gfx/draw_batches/shapes_batch");
 import Vector2 = require("../../utils/vector2");
 //# sourceMappingURL=shape.d.ts.map

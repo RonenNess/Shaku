@@ -20,6 +20,11 @@ declare class PointShape extends CollisionShape {
      * @returns {Vector2} Point position.
      */
     getPosition(): Vector2;
+    /**
+     * Debug draw this shape.
+     * @param {Number} opacity Shape opacity factor.
+     */
+    debugDraw(opacity: number, shapesBatch: any): void;
 }
 import CollisionShape = require("./shape");
 import Vector2 = require("../../utils/vector2");

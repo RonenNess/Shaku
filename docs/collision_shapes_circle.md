@@ -18,7 +18,7 @@ Collision circle class.
     * [._getRadius()](#CircleShape+_getRadius)
     * [.getCenter()](#CircleShape+getCenter)
     * [._getBoundingBox()](#CircleShape+_getBoundingBox)
-    * [.debugDraw(opacity)](#CircleShape+debugDraw)
+    * [.debugDraw()](#CircleShape+debugDraw)
 
 <a name="new_CircleShape_new"></a>
 
@@ -59,12 +59,5 @@ Set this collision shape from circle.
 **Kind**: instance method of [<code>CircleShape</code>](#CircleShape)  
 <a name="CircleShape+debugDraw"></a>
 
-### circleShape.debugDraw(opacity)
-Debug draw this shape.
-
+### circleShape.debugDraw()
 **Kind**: instance method of [<code>CircleShape</code>](#CircleShape)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| opacity | <code>Number</code> | Shape opacity factor. |
-

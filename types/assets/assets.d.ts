@@ -9,8 +9,8 @@ export = _exports;
  */
 declare class Assets extends IManager {
     _loaded: {};
-    _waitingAssets: any;
-    _failedAssets: any;
+    _waitingAssets: Set<any>;
+    _failedAssets: Set<any>;
     _successfulLoadedAssetsCount: number;
     /**
      * Optional URL root to prepend to all loaded assets URLs.
@@ -22,12 +22,6 @@ declare class Assets extends IManager {
      * You can use this for anti-cache mechanism if you want to reload all assets. For example, you can set this value to "'?dt=' + Date.now()".
      */
     suffix: string;
-    /**
-     * Wrap a URL with 'root' and 'suffix'.
-     * @param {String} url Url to wrap.
-     * @returns {String} Wrapped URL.
-     */
-    _wrapUrl(url: string): string;
     /**
      * Get list of assets waiting to be loaded.
      * This list will be reset if you call clearCache().
@@ -50,41 +44,11 @@ declare class Assets extends IManager {
      */
     waitForAll(): Promise<any>;
     /**
-     * @inheritdoc
-     * @private
-     */
-    private setup;
-    /**
-     * Get already-loaded asset from cache.
-     * @private
-     * @param {String} url Asset URL.
-     * @param {type} type If provided will make sure asset is of this type. If asset found but have wrong type, will throw exception.
-     * @returns Loaded asset or null if not found.
-     */
-    private _getFromCache;
-    /**
-     * Load an asset of a given type and add to cache when done.
-     * @private
-     * @param {Asset} newAsset Asset instance to load.
-     * @param {*} params Optional loading params.
-     */
-    private _loadAndCacheAsset;
-    /**
      * Get asset directly from cache, synchronous and without a Promise.
      * @param {String} url Asset URL or name.
      * @returns {Asset} Asset or null if not loaded.
      */
     getCached(url: string): Asset;
-    /**
-     * Get / load asset of given type, and return a promise to be resolved when ready.
-     * @private
-     */
-    private _loadAssetType;
-    /**
-     * Create and init asset of given class type.
-     * @private
-     */
-    private _createAsset;
     /**
      * Load a sound asset. If already loaded, will use cache.
      * @example
@@ -115,6 +79,16 @@ declare class Assets extends IManager {
      * @returns {Promise<TextureAsset>} promise to resolve with asset instance, when loaded. You can access the loading asset with `.asset` on the promise.
      */
     createRenderTarget(name: string | null, width: number, height: number, channels?: number | undefined): Promise<TextureAsset>;
+    /**
+     * Create a texture atlas asset.
+     * @param {String | null} name Asset name (matched to URLs when using cache). If null, will not add to cache.
+     * @param {Array<String>} sources List of URLs to load textures from.
+     * @param {Number=} maxWidth Optional atlas textures max width.
+     * @param {Number=} maxHeight Optional atlas textures max height.
+     * @param {Vector2=} extraMargins Optional extra empty pixels to add between textures in atlas.
+     * @returns {Promise<TextureAtlas>} Promise to resolve with asset instance, when loaded. You can access the loading asset with `.asset` on the promise.
+     */
+    createTextureAtlas(name: string | null, sources: Array<string>, maxWidth?: number | undefined, maxHeight?: number | undefined, extraMargins?: Vector2 | undefined): Promise<TextureAtlas>;
     /**
      * Load a font texture asset. If already loaded, will use cache.
      * @example
@@ -184,11 +158,14 @@ declare class Assets extends IManager {
      * Shaku.assets.clearCache();
      */
     clearCache(): void;
+    #private;
 }
 import IManager = require("../manager.js");
 import Asset = require("./asset.js");
 import SoundAsset = require("../assets/sound_asset.js");
 import TextureAsset = require("./texture_asset.js");
+import Vector2 = require("../utils/vector2.js");
+import TextureAtlas = require("./texture_atlas_asset.js");
 import FontTextureAsset = require("./font_texture_asset");
 import MsdfFontTextureAsset = require("./msdf_font_texture_asset.js");
 import JsonAsset = require("./json_asset.js");

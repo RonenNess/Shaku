@@ -1,1 +1,1 @@
-{"version":3,"file":"msdf_font.d.ts","sourceRoot":"","sources":["../../../lib/gfx/effects/msdf_font.js"],"names":[],"mappings":";AA2DA;;GAEG;AACH;IAcI,kBAAkB;IAClB;;;;;;;;;;;;;MAOC;IAED,kBAAkB;IAClB;;;;;;;;;;;;;;;;;;;MAOC;CACJ"}
+{"version":3,"file":"msdf_font.d.ts","sourceRoot":"","sources":["../../../src/gfx/effects/msdf_font.js"],"names":[],"mappings":";AA2DA;;GAEG;AACH;IAcI,kBAAkB;IAClB;;;;;MAOC;IAED,kBAAkB;IAClB;;;;;;;MAOC;CACJ"}

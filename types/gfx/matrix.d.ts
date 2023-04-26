@@ -44,6 +44,14 @@ declare class Matrix {
      */
     static multiply(matrixA: any, matrixB: any): Matrix;
     /**
+     * Creates a look-at matrix - a matrix rotated to look at a given position.
+     * @param {Vector3} eyePosition Eye position.
+     * @param {Vector3} targetPosition Position the matrix should look at.
+     * @param {Vector3=} upVector Optional vector representing 'up' direction.
+     * @returns {Matrix} a new matrix with result.
+     */
+    static lookAt(eyePosition: Vector3, targetPosition: Vector3, upVector?: Vector3 | undefined): Matrix;
+    /**
      * Multiply an array of matrices.
      * @param {Array<Matrix>} matrices Matrices to multiply.
      * @returns {Matrix} new matrix with multiply result.
@@ -107,6 +115,7 @@ declare class Matrix {
 declare namespace Matrix {
     const identity: Matrix;
 }
+import Vector3 = require("../utils/vector3");
 import Vertex = require("./vertex");
 import Vector2 = require("../utils/vector2");
 //# sourceMappingURL=matrix.d.ts.map

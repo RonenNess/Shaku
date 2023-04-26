@@ -26,7 +26,7 @@
           await Shaku.init();
           
           // define our custom effect
-          class CustomEffect extends Shaku.gfx.BasicEffect
+          class CustomEffect extends Shaku.gfx.SpritesEffect
           {
             /**
              * Override the fragment shader for our custom effect.
@@ -67,9 +67,11 @@
             }
           }
 
-          // create custom effect instance and set as active
-          let effect = Shaku.gfx.createEffect(CustomEffect);
-          Shaku.gfx.useEffect(effect);
+          // create custom effect instance
+          let effect = new CustomEffect();
+
+          // create sprites batch
+          let spritesBatch = new Shaku.gfx.SpriteBatch();
 
           // screen size
           let screenX = 800;
@@ -80,27 +82,27 @@
           Shaku.gfx.setResolution(screenX, screenY, true);
 
           // load textures
-          let sprite = await Shaku.assets.loadTexture('assets/shaku.png');
-          let spriteOverlay = await Shaku.assets.loadTexture('assets/overlay.png');
-          spriteOverlay.wrapMode = Shaku.gfx.TextureWrapModes.Repeat;
+          let spriteTexture = await Shaku.assets.loadTexture('assets/shaku.png');
+          let spriteOverlayTexture = await Shaku.assets.loadTexture('assets/overlay.png');
+          spriteOverlayTexture.wrapMode = Shaku.gfx.TextureWrapModes.Repeat;
 
           // do a main loop step.
           function step()
           {
             // start frame and clear screen
             Shaku.startFrame();
-            Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
-            Shaku.gfx.useEffect(effect);
+            Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);;
 
             // update effect custom uniform
             effect.uniforms.elapsedTime(Shaku.gameTime.elapsed * 0.1);
-            effect.uniforms.overlayTexture(spriteOverlay, 1);
+            effect.uniforms.overlayTexture(spriteOverlayTexture, 1);
 
             // draw with custom effect
-            Shaku.gfx.draw(sprite, new Shaku.utils.Vector2(screenX / 2, screenY / 2), 400);
+            spritesBatch.begin(undefined, effect);
+            spritesBatch.drawQuad(spriteTexture, new Shaku.utils.Vector2(screenX / 2, screenY / 2), 400);
+            spritesBatch.end();
 
             // end frame and request next frame
-            Shaku.gfx.useEffect(null);
             Shaku.endFrame();
             Shaku.requestAnimationFrame(step);
           }
@@ -123,7 +125,7 @@
 
 <p class="noselect">The following is a minimal code example to show how to create and use a custom effects with multiple textures.</p>
 <pre><code class="language-js">// define our custom effect
-class CustomEffect extends Shaku.gfx.BasicEffect
+class CustomEffect extends Shaku.gfx.SpritesEffect
 {
   /**
     * Override the fragment shader for our custom effect.
@@ -135,7 +137,7 @@ class CustomEffect extends Shaku.gfx.BasicEffect
           precision highp float;
       #endif
 
-      uniform sampler2D texture;
+      uniform sampler2D mainTexture;
       uniform sampler2D overlayTexture;
       uniform float elapsedTime;
 
@@ -143,7 +145,7 @@ class CustomEffect extends Shaku.gfx.BasicEffect
       varying vec4 v_color;
 
       void main(void) {
-          gl_FragColor = texture2D(texture, v_texCoord) * v_color;
+          gl_FragColor = texture2D(mainTexture, v_texCoord) * v_color;
           vec4 overlay = texture2D(overlayTexture, v_texCoord + vec2(0.0, elapsedTime));
           gl_FragColor.g *= overlay.r * 2.0;
           gl_FragColor.rgb *= gl_FragColor.a;
@@ -152,14 +154,16 @@ class CustomEffect extends Shaku.gfx.BasicEffect
       return fragmentShader;
   }
 
-// create custom effect instance and set as active
-let effect = Shaku.gfx.createEffect(CustomEffect);
-Shaku.gfx.useEffect(effect);
+// create custom effect instance
+let effect = new CustomEffect();
 
 // load texture to render with effect
 let spriteTexture = await Shaku.assets.loadTexture('assets/sprite.png');
 let spriteOverlay = await Shaku.assets.loadTexture('assets/overlay.png');
 spriteOverlay.wrapMode = Shaku.gfx.TextureWrapModes.Repeat;
+
+// create sprites batch
+let spritesBatch = new Shaku.gfx.SpriteBatch();
 
 // part below goes between startFrame() and endFrame()
 // -------------------------------------------------------
@@ -169,7 +173,9 @@ effect.uniforms.elapsedTime(Shaku.gameTime.elapsed);
 effect.uniforms.overlayTexture(spriteOverlay, 1);
 
 // draw texture with the effect
-Shaku.gfx.draw(spriteTexture, new Shaku.utils.Vector2(200, 200), 400);</code></pre>
+spritesBatch.begin(undefined, effect);
+spritesBatch.drawQuad(spriteTexture, new Shaku.utils.Vector2(350, 350), 400);
+spritesBatch.end();</code></pre>
 
   <button class="modal__close" onclick="closeModal('sample-code-modal')">&#10005;</button>
 </div>

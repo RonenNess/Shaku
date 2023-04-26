@@ -11,12 +11,12 @@
     <div class="noselect">
     <button class="view-code-btn" onclick="showSampleCode();">View Code</button> 
     <h1 class="demo-title">Shaku Gfx Demo: Wrap and Filter modes</h1>
-      <p>This demo demonstrate texture's Wrap and Filter modes.<br/><br/>
+      <p>This demo demonstrate texture's Wrap and Filter mode properties.<br/><br/>
       Press <b>1-3</b> to switch textures.</p>
 
-      <span class="credits">Wall texture is from: https://opengameart.org/content/stone-wall-with-cracks</span>
-      <span class="credits">Lava texture is from: https://opengameart.org/content/2-seamless-lava-tiles</span>
-      <span class="credits">Knight image is from: https://opengameart.org/content/knight-sprite</span>
+      <span class="credits">Wall texture is from: https://opengameart.org/content/stone-wall-with-cracks<br />
+      Lava texture is from: https://opengameart.org/content/2-seamless-lava-tiles<br />
+      Knight image is from: https://opengameart.org/content/knight-sprite</span>
 
       <!-- include shaku -->
       <script src="js/demos.js"></script>
@@ -39,27 +39,24 @@
 
           // load font texture
           let fontTexture = await Shaku.assets.loadFontTexture('assets/DejaVuSansMono.ttf', {fontName: 'DejaVuSansMono'});
+
+          // create sprites and text batch
+          let spritesBatch = new Shaku.gfx.SpriteBatch();
+          let textSpriteBatch = new Shaku.gfx.TextSpriteBatch();
+          
+          // set outline
+          textSpriteBatch.outlineWeight = 1;
+          textSpriteBatch.outlineColor = Shaku.utils.Color.black;
           
           // draw a texture with simple outline
           function drawTextWithOutline(text, position)
           {
-            // create text
             let textGroup = Shaku.gfx.buildText(fontTexture, text, 24, Shaku.utils.Color.black, Shaku.gfx.TextAlignments.Center);
-
-            // draw outline
-            textGroup.position.copy(position);
-            Shaku.gfx.drawGroup(textGroup);
-            textGroup.position.y += 4;
-            Shaku.gfx.drawGroup(textGroup);
-            textGroup.position.x += 4;
-            textGroup.position.y -= 4;
-            Shaku.gfx.drawGroup(textGroup);
-
-            // draw white front
             textGroup.setColor(Shaku.utils.Color.white);
-            textGroup.position.x -= 2;
-            textGroup.position.y += 2;
-            Shaku.gfx.drawGroup(textGroup);
+            textGroup.position.copy(position);
+            textSpriteBatch.begin();
+            textSpriteBatch.drawText(textGroup);
+            textSpriteBatch.end();
           }
 
           // load textures
@@ -83,38 +80,51 @@
             let x = 10;
             let y = 10;
 
+            let size = new Shaku.utils.Vector2(300, 300);
+            let origin = Shaku.utils.Vector2.zero();
+
             // show filters: Linear
+            spritesBatch.begin();
             texture.filter = Shaku.gfx.TextureFilterModes.Linear;
-            Shaku.gfx.draw(texture, new Shaku.utils.Vector2(x, y), 300, null, null, null, 0, Shaku.utils.Vector2.zero);
+            spritesBatch.drawQuad(texture, new Shaku.utils.Vector2(x, y), size, null, null, 0, origin);
+            spritesBatch.end();
             drawTextWithOutline("Filter: Linear", new Shaku.utils.Vector2(x + 150, y + 35));
             
             x += 320;
 
             // show filters: Nearest
+            spritesBatch.begin();
             texture.filter = Shaku.gfx.TextureFilterModes.Nearest;
-            Shaku.gfx.draw(texture, new Shaku.utils.Vector2(x, y), 300, null, null, null, 0, Shaku.utils.Vector2.zero);
+            spritesBatch.drawQuad(texture, new Shaku.utils.Vector2(x, y), size, null, null, 0, origin);
+            spritesBatch.end();
             drawTextWithOutline("Filter: Nearest", new Shaku.utils.Vector2(x + 150, y + 35));
             
             x = 10;
             y += 320;
 
             // show wrap mode: Clamp
+            spritesBatch.begin();
             texture.wrapMode = Shaku.gfx.TextureWrapModes.Clamp;
-            Shaku.gfx.draw(texture, new Shaku.utils.Vector2(x, y), 300, new Shaku.utils.Rectangle(-16, -16, 64, 64), null, null, 0, Shaku.utils.Vector2.zero);
+            spritesBatch.drawQuad(texture, new Shaku.utils.Vector2(x, y), size, new Shaku.utils.Rectangle(-16, -16, 64, 64), null, 0, origin);
+            spritesBatch.end();
             drawTextWithOutline("Wrap: Clamp", new Shaku.utils.Vector2(x + 150, y + 35));
 
             x += 320
 
             // show wrap mode: Repeat
+            spritesBatch.begin();
             texture.wrapMode = Shaku.gfx.TextureWrapModes.Repeat;
-            Shaku.gfx.draw(texture, new Shaku.utils.Vector2(x, y), 300, new Shaku.utils.Rectangle(-16, -16, 64, 64), null, null, 0, Shaku.utils.Vector2.zero);
+            spritesBatch.drawQuad(texture, new Shaku.utils.Vector2(x, y), size, new Shaku.utils.Rectangle(-16, -16, 64, 64), null, 0, origin);
+            spritesBatch.end();
             drawTextWithOutline("Wrap: Repeat", new Shaku.utils.Vector2(x + 150, y + 35));
 
             x += 320
 
             // show wrap mode: Repeat Mirror
+            spritesBatch.begin();
             texture.wrapMode = Shaku.gfx.TextureWrapModes.RepeatMirrored;
-            Shaku.gfx.draw(texture, new Shaku.utils.Vector2(x, y), 300, new Shaku.utils.Rectangle(-16, -16, 64, 64), null, null, 0, Shaku.utils.Vector2.zero);
+            spritesBatch.drawQuad(texture, new Shaku.utils.Vector2(x, y), size, new Shaku.utils.Rectangle(-16, -16, 64, 64), null, 0, origin);
+            spritesBatch.end();
             drawTextWithOutline("Wrap: Mirrored", new Shaku.utils.Vector2(x + 150, y + 35));
 
             // reset states

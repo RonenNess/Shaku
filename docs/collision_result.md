@@ -13,9 +13,9 @@ Collision detection result.
 
 * [CollisionTestResult](#CollisionTestResult)
     * [new CollisionTestResult(position, first, second)](#new_CollisionTestResult_new)
-    * [.position](#CollisionTestResult+position)
-    * [.first](#CollisionTestResult+first)
-    * [.second](#CollisionTestResult+second)
+    * [.position](#CollisionTestResult+position) : <code>Vector2</code>
+    * [.first](#CollisionTestResult+first) : <code>CollisionShape</code>
+    * [.second](#CollisionTestResult+second) : <code>CollisionShape</code>
 
 <a name="new_CollisionTestResult_new"></a>
 
@@ -31,20 +31,20 @@ Create the collision result.
 
 <a name="CollisionTestResult+position"></a>
 
-### collisionTestResult.position
+### collisionTestResult.position : <code>Vector2</code>
 Collision position, only relevant when there's a single touching point.
 For shapes with multiple touching points, this will be null.
 
 **Kind**: instance property of [<code>CollisionTestResult</code>](#CollisionTestResult)  
 <a name="CollisionTestResult+first"></a>
 
-### collisionTestResult.first
+### collisionTestResult.first : <code>CollisionShape</code>
 First collided shape.
 
 **Kind**: instance property of [<code>CollisionTestResult</code>](#CollisionTestResult)  
 <a name="CollisionTestResult+second"></a>
 
-### collisionTestResult.second
+### collisionTestResult.second : <code>CollisionShape</code>
 Second collided shape.
 
 **Kind**: instance property of [<code>CollisionTestResult</code>](#CollisionTestResult)  

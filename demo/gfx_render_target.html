@@ -11,8 +11,8 @@
     <div class="noselect">
     <button class="view-code-btn" onclick="showSampleCode();">View Code</button> 
     <h1 class="demo-title">Shaku Gfx Demo: Render Targets</h1>
-      <p>This demo demonstrate how to use render targets, which are textures you can draw on.<br/>
-        The demo is similar to the sprites demo, but everything is drawn on a texture which is later drawn onto the screen with a tilt.<br /><br />
+      <p>This demo demonstrate how to use render targets, which are special textures you can draw on and later draw on screen.<br/>
+        The demo is very similar to the sprites demo, but here instead of drawing directly on screen we draw on a texture first and then draw that texture on screen with a tilt.<br /><br />
       Use <b>Arrows</b> or <b>WASD</b> to move the player. Collision detection is very basic so don't expect much from it.</p>
       
       <span class="credits">Knight image is from: https://opengameart.org/content/knight-sprite</span>
@@ -37,6 +37,9 @@
           document.body.appendChild(Shaku.gfx.canvas);
           Shaku.gfx.setResolution(screenX, screenY, true);
 
+          // create sprites batch
+          let spritesBatch = new Shaku.gfx.SpriteBatch();
+
           // create render target
           let renderTarget = await Shaku.assets.createRenderTarget('_my_render_target', 800, 600);
 
@@ -48,6 +51,9 @@
 
           // create player sprite
           let playerSprite = new Shaku.gfx.Sprite(knight);
+
+          // get the block map pixels data
+          let blockMapPixels = blockMap.getPixelsData();
 
           // for walking animation
           let walkingAnimation = 0;
@@ -65,13 +71,24 @@
 
             // out of range?
             if (xBlock < 0 || xBlock > blockMap.width || yBlock < 0 || yBlock > blockMap.height) {
+              if (xBlock < 0) playerSprite.position.x = 1;
+              if (yBlock < 0) playerSprite.position.y = 1;
+              if (xBlock > blockMap.width) playerSprite.position.x = screenX - 1;
+              if (yBlock > blockMap.height) playerSprite.position.y = screenY - 1;
               return;
             }
 
-            // if not blocking, update position
-            if (!blockMap.getPixel(xBlock, yBlock).isBlack) {
-              playerSprite.position.set(newX, newY);
+            // check if blocking
+            for (let i = -1; i <= 1; ++i) {
+              for (let j = -1; j <= 1; ++j) {
+                if (!blockMapPixels[xBlock+i] || !blockMapPixels[xBlock+i][yBlock+j] || blockMapPixels[xBlock+i][yBlock+j].isBlack) {
+                  return;
+                }
+              }
             }
+
+            // move player
+            playerSprite.position.set(newX, newY);
           }
 
           // do a main loop step.
@@ -84,18 +101,22 @@
             Shaku.gfx.setRenderTarget(renderTarget);
 
             // draw level background, knight and then level overlay
-            Shaku.gfx.cover(level, Shaku.gfx.getRenderingRegion());
-            Shaku.gfx.drawSprite(playerSprite);
-            Shaku.gfx.cover(levelOverlay, Shaku.gfx.getRenderingRegion());
+            spritesBatch.begin();
+              spritesBatch.drawRectangle(level, Shaku.gfx.getRenderingRegion());
+              spritesBatch.drawSprite(playerSprite);
+              spritesBatch.drawRectangle(levelOverlay, Shaku.gfx.getRenderingRegion());
+            spritesBatch.end();
 
             // clear render target
             Shaku.gfx.setRenderTarget(null);
-
+            
             // now draw entire render target on screen
-            Shaku.gfx.draw(renderTarget, 
-            new Shaku.utils.Vector2(screenX / 2, screenY / 2),
-            new Shaku.utils.Vector2(screenX, -screenY),
-            null, null, Shaku.gfx.BlendModes.Opaque, Math.PI / 4);
+            spritesBatch.begin();
+              spritesBatch.drawQuad(renderTarget,
+                new Shaku.utils.Vector2(screenX / 2, screenY / 2),
+                new Shaku.utils.Vector2(screenX, -screenY),
+                undefined, undefined, Math.sin(Shaku.gameTime.elapsed / 2) / 2);
+            spritesBatch.end();
 
             // walking speed and are we walking this frame?
             let walkSpeed = Shaku.gameTime.delta * 200;
@@ -164,9 +185,8 @@ Shaku.gfx.setRenderTarget(renderTarget);
 // reset render target
 Shaku.gfx.setRenderTarget(null);
 
-// you can now use 'renderTarget' just like you would with any texture, and it will contain everything you drawn on it
-// note that render targets flip drawing on Y axis (known limitation) which is why we set drawing height to -screenY (negative)
-Shaku.gfx.draw(renderTarget, new Shaku.utils.Vector2(screenX / 2, screenY / 2), new Shaku.utils.Vector2(screenX, -screenY));</code></pre>
+// you can now use 'renderTarget' just like you would with any texture, and it will contain everything you drawn on it.
+// note: due to WebGL limitation, render targets are flipped upside-down. to correct that, set height to a negative value.</code></pre>
 
   <button class="modal__close" onclick="closeModal('sample-code-modal')">&#10005;</button>
 </div>

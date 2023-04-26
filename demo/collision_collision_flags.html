@@ -83,7 +83,7 @@
             Shaku.gfx.clear(Shaku.utils.Color.aliceblue);
 
             // debug draw world
-            world.debugDraw(null, null, 1);
+            world.debugDraw(null, null, 0.75);
 
             // create current collision shape to test
             let mouse = Shaku.input.mousePosition;
@@ -117,7 +117,7 @@
             
             // draw shape the user drags
             shapeToTest.collisionFlags = 1;
-            shapeToTest.debugDraw();
+            shapeToTest.debugDraw(1, world.getOrCreateDebugDrawBatch());
 
             // reset all shapes colors
             world.iterateShapes((shape) => {
@@ -133,13 +133,16 @@
               return r.second.constructor.name;
             });
             showDataParagraph.innerHTML += collisionsTypes.join(',');
+                        
+            // start debug draw for extra stuff
+            world.getOrCreateDebugDrawBatch().begin();
 
             // test collision single sorted
             showDataParagraph.innerHTML += "<br />Nearest collided shape: ";
             let collisionSingle = world.testCollision(shapeToTest, true, 1);
             if (collisionSingle) {
               showDataParagraph.innerHTML += collisionSingle.second.constructor.name;
-              Shaku.gfx.drawLine(shapeToTest.getCenter(), collisionSingle.second.getCenter(), Shaku.utils.Color.red);
+              world.getOrCreateDebugDrawBatch().drawLine(shapeToTest.getCenter(), collisionSingle.second.getCenter(), Shaku.utils.Color.red, 4);
               showDataParagraph.style.color = 'red';
             }
             else {
@@ -164,6 +167,9 @@
 
             // show stats
             document.getElementById("stats-show").innerHTML = JSON.stringify(world.stats);
+
+            // finish open renderings
+            world.getOrCreateDebugDrawBatch().end();
 
             // end frame and request next frame
             Shaku.endFrame();

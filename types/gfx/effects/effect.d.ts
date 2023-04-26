@@ -4,17 +4,12 @@ export = Effect;
  * An effect = vertex shader + fragment shader + uniforms & attributes + setup code.
  */
 declare class Effect {
-    /**
-     * Build the effect.
-     * Called from gfx manager.
-     * @private
-     * @param {WebGl} gl WebGL context.
-     */
-    private _build;
     _gl: WebGl;
     _program: any;
     uniforms: {};
     _uniformBinds: {};
+    _pendingUniformValues: {};
+    _pendingAttributeValues: {};
     attributes: {};
     _attributeBinds: {};
     _cachedValues: {};
@@ -44,14 +39,22 @@ declare class Effect {
     get attributeTypes(): any;
     /**
      * Make this effect active.
+     * @param {*} overrideFlags Optional flags to override in effect.
+     * May include the following: enableDepthTest, enableFaceCulling, enableStencilTest, enableDithering.
      */
-    setAsActive(): void;
+    setAsActive(overrideFlags: any): void;
     /**
      * Prepare effect before drawing it with batching.
      * @param {Mesh} mesh Mesh we're about to draw.
      * @param {Matrix} world World matrix.
      */
     prepareToDrawBatch(mesh: Mesh, world: Matrix): void;
+    /**
+     * Get a uniform method from a bind key.
+     * @param {UniformBinds} bindKey Uniform bind key.
+     * @returns Uniform set method, or null if not set.
+     */
+    getBoundUniform(bindKey: UniformBinds): any;
     /**
      * Get this effect's vertex shader code, as string.
      * @returns {String} Vertex shader code.
@@ -80,59 +83,83 @@ declare class Effect {
     get enableDithering(): boolean;
     /**
      * Set the main texture.
-     * Only works if there's a uniform type bound to 'MainTexture'.
-     * @param {TextureAsset} texture Texture to set.
+     * Note: this will only work for effects that utilize the 'MainTexture' uniform.
+     * @param {TextureAssetBase} texture Texture to set.
      * @returns {Boolean} True if texture was changed, false if there was no need to change the texture.
      */
-    setTexture(texture: TextureAsset): boolean;
+    setTexture(texture: TextureAssetBase): boolean;
     /**
      * Set the main tint color.
-     * Only works if there's a uniform type bound to 'Color'.
+     * Note: this will only work for effects that utilize the 'Color' uniform.
      * @param {Color} color Color to set.
      */
     setColor(color: Color): void;
     /**
-     * Set uvOffset and uvScale params from source rectangle and texture.
-     * @param {Rectangle} sourceRect Source rectangle to set, or null to take entire texture.
-     * @param {TextureAsset} texture Texture asset to set source rect for.
-     */
-    setUvOffsetAndScale(sourceRect: Rectangle, texture: TextureAsset): void;
-    /**
      * Set the projection matrix uniform.
+     * Note: this will only work for effects that utilize the 'Projection' uniform.
      * @param {Matrix} matrix Matrix to set.
      */
     setProjectionMatrix(matrix: Matrix): void;
     /**
      * Set the world matrix uniform.
+     * Note: this will only work for effects that utilize the 'World' uniform.
      * @param {Matrix} matrix Matrix to set.
      */
     setWorldMatrix(matrix: Matrix): void;
     /**
+     * Set the view matrix uniform.
+     * Note: this will only work for effects that utilize the 'View' uniform.
+     * @param {Matrix} matrix Matrix to set.
+     */
+    setViewMatrix(matrix: Matrix): void;
+    /**
+     * Set outline params.
+     * Note: this will only work for effects that utilize the 'OutlineWeight' and 'OutlineColor' uniforms.
+     * @param {Number} weight Outline weight, range from 0.0 to 1.0.
+     * @param {Color} color Outline color.
+     */
+    setOutline(weight: number, color: Color): void;
+    /**
+     * Set a factor to normalize UV values to be 0-1.
+     * Note: this will only work for effects that utilize the 'UvNormalizationFactor' uniform.
+     * @param {Vector2} factor Normalize UVs factor.
+     */
+    setUvNormalizationFactor(factor: Vector2): void;
+    /**
      * Set the vertices position buffer.
      * Only works if there's an attribute type bound to 'Position'.
      * @param {WebGLBuffer} buffer Vertices position buffer.
+     * @param {Boolean} forceSetBuffer If true, will always set buffer even if buffer is currently set.
      */
-    setPositionsAttribute(buffer: WebGLBuffer): void;
+    setPositionsAttribute(buffer: WebGLBuffer, forceSetBuffer: boolean): void;
     /**
      * Set the vertices texture coords buffer.
      * Only works if there's an attribute type bound to 'TextureCoords'.
      * @param {WebGLBuffer} buffer Vertices texture coords buffer.
+     * @param {Boolean} forceSetBuffer If true, will always set buffer even if buffer is currently set.
      */
-    setTextureCoordsAttribute(buffer: WebGLBuffer): void;
+    setTextureCoordsAttribute(buffer: WebGLBuffer, forceSetBuffer: boolean): void;
+    /**
+     * Return if this effect have colors attribute on vertices.
+     * @returns {Boolean} True if got vertices color attribute.
+     */
+    get hasVertexColor(): boolean;
     /**
      * Set the vertices colors buffer.
      * Only works if there's an attribute type bound to 'Colors'.
      * @param {WebGLBuffer} buffer Vertices colors buffer.
+     * @param {Boolean} forceSetBuffer If true, will always set buffer even if buffer is currently set.
      */
-    setColorsAttribute(buffer: WebGLBuffer): void;
+    setColorsAttribute(buffer: WebGLBuffer, forceSetBuffer: boolean): void;
+    #private;
 }
 declare namespace Effect {
-    export { UniformTypes, UniformBinds, AttributeTypes, AttributeBinds, UniformType };
+    export { UniformTypes, UniformBinds, AttributeTypes, AttributeBinds, _gfx, UniformType };
 }
 import Matrix = require("../matrix.js");
-import TextureAsset = require("../../assets/texture_asset.js");
+import TextureAssetBase = require("../../assets/texture_asset_base.js");
 import Color = require("../../utils/color.js");
-import Rectangle = require("../../utils/rectangle.js");
+import Vector2 = require("../../utils/vector2.js");
 /**
  * Uniform types enum.
  */
@@ -159,7 +186,7 @@ declare namespace UniformTypes {
     export const Float4Array: string;
     export const Int4: string;
     export const Int4Array: string;
-    const _values: any;
+    const _values: Set<string>;
 }
 declare namespace UniformBinds {
     export const MainTexture: string;
@@ -167,8 +194,14 @@ declare namespace UniformBinds {
     export { Color_1 as Color };
     export const Projection: string;
     export const World: string;
+    export const View: string;
     export const UvOffset: string;
     export const UvScale: string;
+    export const OutlineWeight: string;
+    export const OutlineColor: string;
+    export const UvNormalizationFactor: string;
+    export const TextureWidth: string;
+    export const TextureHeight: string;
 }
 declare namespace AttributeTypes {
     const Byte: string;
@@ -183,5 +216,6 @@ declare namespace AttributeBinds {
     const TextureCoords: string;
     const Colors: string;
 }
+declare var _gfx: any;
 type UniformType = string;
 //# sourceMappingURL=effect.d.ts.map

@@ -1,61 +1,68 @@
 export = Sprite;
 /**
  * Sprite class.
- * This object is a helper class to hold all the properties of a texture to render.
  */
 declare class Sprite {
     /**
-     * Create the texture object.
-     * @param {TextureAsset} texture Texture asset.
-     * @param {Rectangle=} sourceRect Optional source rect.
+     * Build a sprite from params.
+     * @param {TextureAssetBase} texture Sprite texture.
+     * @param {Vector2|Vector3} position Drawing position (at origin). If vector3 is provided, will pass z value to the shader code position attribute.
+     * @param {Vector2|Vector3|Number} size Drawing size. If vector3 is provided, will pass z value to the shader code position attribute for the bottom vertices, as position.z + size.z.
+     * @param {Rectangle} sourceRectangle Source rectangle, or undefined to use the entire texture.
+     * @param {Color|Array<Color>|undefined} color Tint color, or undefined to not change color. If array is set, will assign each color to different vertex, starting from top-left.
+     * @param {Number=} rotation Rotate sprite.
+     * @param {Vector2=} origin Drawing origin. This will be the point at 'position' and rotation origin.
+     * @param {Vector2=} skew Skew the drawing corners on X and Y axis, around the origin point.
+     * @returns {Sprite} New sprite instance.
      */
-    constructor(texture: TextureAsset, sourceRect?: Rectangle | undefined);
+    static build(texture: TextureAssetBase, position: Vector2 | Vector3, size: Vector2 | Vector3 | number, sourceRectangle: Rectangle, color: Color | Array<Color> | undefined, rotation?: number | undefined, origin?: Vector2 | undefined, skew?: Vector2 | undefined): Sprite;
     /**
-     * Texture to use for this sprite.
-     * @name Sprite#texture
-     * @type {TextureAsset}
+     * Create the sprite object.
+     * @param {TextureAssetBase} texture Sprite texture.
+     * @param {Rectangle=} sourceRectangle Optional source rectangle.
      */
-    texture: TextureAsset;
+    constructor(texture: TextureAssetBase, sourceRectangle?: Rectangle | undefined);
+    /**
+     * Sprite's texture.
+     * @name Sprite#texture
+     * @type {TextureAssetBase}
+     */
+    texture: TextureAssetBase;
     /**
      * Sprite position.
      * If Vector3 is provided, the z value will be passed to vertices position in shader code.
-     * This property is locked when static=true.
      * @name Sprite#position
      * @type {Vector2|Vector3}
      */
     position: Vector2 | Vector3;
-    size: Vector2;
+    /**
+     * Sprite size.
+     * If Vector3 is provided, the z value will be passed to the bottom vertices position in shader code, as position.z + size.z.
+     * @name Sprite#size
+     * @type {Vector2|Vector3}
+     */
+    size: Vector2 | Vector3;
     /**
      * Sprite source rectangle in texture.
      * Null will take entire texture.
-     * This property is locked when static=true.
-     * @name Sprite#sourceRect
+     * @name Sprite#sourceRectangle
      * @type {Rectangle}
      */
-    sourceRect: Rectangle;
-    /**
-     * Sprite blend mode.
-     * @name Sprite#blendMode
-     * @type {BlendMode}
-     */
-    blendMode: BlendMode;
+    sourceRectangle: Rectangle;
     /**
      * Sprite rotation in radians.
-     * This property is locked when static=true.
      * @name Sprite#rotation
      * @type {Number}
      */
     rotation: number;
     /**
      * Sprite origin point.
-     * This property is locked when static=true.
      * @name Sprite#origin
      * @type {Vector2}
      */
     origin: Vector2;
     /**
      * Skew the sprite corners on X and Y axis, around the origin point.
-     * This property is locked when static=true.
      * @name Sprite#skew
      * @type {Vector2}
      */
@@ -68,34 +75,31 @@ declare class Sprite {
      */
     color: Color | Array<Color>;
     /**
-     * Is this a static sprite.
-     * Static sprites will only calculate vertices properties once, and reuse them in following render calls.
-     * This will improve performance, but also means that once the sprite is rendered once, changing things like position, size, rotation, etc.
-     * won't affect the output. To refresh the properties of a static sprite, you need to call updateStaticProperties() manually.
-     * @name Sprite#static
-     * @type {Boolean}
+     * Set size to source rectangle size.
+     * @returns {Sprite} this.
      */
-    static: boolean;
+    setToSourceRectangleSize(): Sprite;
+    /**
+     * Set size to texture size.
+     * @returns {Sprite} this.
+     */
+    setToTextureSize(): Sprite;
     /**
      * Set the source Rectangle automatically from spritesheet.
      * This method get sprite index in sheet and how many sprites there are in total, and calculate the desired
      * offset and size in source Rectangle based on it + source image size.
+     * @param {TextureAssetBase} texture Texture to set source rectangle from.
      * @param {Vector2} index Sprite index in spritesheet.
      * @param {Vector2} spritesCount How many sprites there are in spritesheet in total.
      * @param {Number=} margin How many pixels to trim from the tile (default is 0).
      * @param {Boolean=} setSize If true will also set width and height based on source rectangle (default is true).
      */
-    setSourceFromSpritesheet(index: Vector2, spritesCount: Vector2, margin?: number | undefined, setSize?: boolean | undefined): void;
+    setSourceFromSpritesheet(texture: TextureAssetBase, index: Vector2, spritesCount: Vector2, margin?: number | undefined, setSize?: boolean | undefined): void;
     /**
      * Clone this sprite.
      * @returns {Sprite} cloned sprite.
      */
     clone(): Sprite;
-    /**
-     * Manually update the static properties (position, size, rotation, origin, source rectangle, etc.) of a static sprite.
-     */
-    updateStaticProperties(): void;
-    _cachedVertices: any;
     /**
      * Flip sprite around X axis.
      * This is just a sugarcoat that set size.x to negative or positive value, without changing its scale.
@@ -121,10 +125,9 @@ declare class Sprite {
      */
     get flipY(): boolean;
 }
-import TextureAsset = require("../assets/texture_asset");
+import TextureAssetBase = require("../assets/texture_asset_base");
 import Vector2 = require("../utils/vector2");
 import Vector3 = require("../utils/vector3");
 import Rectangle = require("../utils/rectangle");
-import { BlendMode } from "./blend_modes";
 import Color = require("../utils/color");
 //# sourceMappingURL=sprite.d.ts.map

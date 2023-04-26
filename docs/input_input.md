@@ -17,7 +17,7 @@ To access the Input manager use `Shaku.input`.
 * [Input](#Input)
     * [new Input()](#new_Input_new)
     * [.preventDefaults](#Input+preventDefaults) : <code>Boolean</code>
-    * [.enableMouseDeltaWhileMouseWheelDown](#Input+enableMouseDeltaWhileMouseWheelDown) : <code>Boolean</code>
+    * [.disableMouseWheelAutomaticScrolling](#Input+disableMouseWheelAutomaticScrolling) : <code>Boolean</code>
     * [.disableContextMenu](#Input+disableContextMenu) : <code>Boolean</code>
     * [.delegateTouchInputToMouse](#Input+delegateTouchInputToMouse) : <code>Boolean</code>
     * [.delegateGamepadInputToKeys](#Input+delegateGamepadInputToKeys) : <code>Boolean</code>
@@ -75,9 +75,9 @@ Create the manager.
 If true, will prevent default input events by calling preventDefault().
 
 **Kind**: instance property of [<code>Input</code>](#Input)  
-<a name="Input+enableMouseDeltaWhileMouseWheelDown"></a>
+<a name="Input+disableMouseWheelAutomaticScrolling"></a>
 
-### input.enableMouseDeltaWhileMouseWheelDown : <code>Boolean</code>
+### input.disableMouseWheelAutomaticScrolling : <code>Boolean</code>
 By default, when holding wheel button down browsers will turn into special page scroll mode and will not emit mouse move events.
 if this property is set to true (default), the Input manager will prevent this behavior, so we could still get mouse delta while mouse wheel is held down.
 
@@ -447,7 +447,7 @@ Return if a mouse or keyboard button is currently down.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| code | <code>string</code> \| <code>Array.&lt;String&gt;</code> | Keyboard, touch or mouse code. Can be array of codes to test if any of them is pressed.                          For mouse buttons: set code to 'mouse_left', 'mouse_right' or 'mouse_middle'.                          For keyboard buttons: use one of the keys of KeyboardKeys (for example 'a', 'alt', 'up_arrow', etc..).                          For touch screen: set code to 'touch'.                          For numbers (0-9): you can use the number itself.                          Note: if you inject any custom state via `setCustomState()`, you can use its code here too. |
+| code | <code>string</code> \| <code>Array.&lt;String&gt;</code> | Keyboard, touch or mouse code. Can be array of codes to test any of them.                          For mouse buttons: set code to 'mouse_left', 'mouse_right' or 'mouse_middle'.                          For keyboard buttons: use one of the keys of KeyboardKeys (for example 'a', 'alt', 'up_arrow', etc..).                          For touch screen: set code to 'touch'.                          For numbers (0-9): you can use the number itself.                          Note: if you inject any custom state via `setCustomState()`, you can use its code here too. |
 
 **Example**  
 ```js
@@ -463,7 +463,7 @@ Return if a mouse or keyboard button was released in this frame.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| code | <code>string</code> \| <code>Array.&lt;String&gt;</code> | Keyboard, touch or mouse code. Can be array of codes to test if any of them is pressed.                          For mouse buttons: set code to 'mouse_left', 'mouse_right' or 'mouse_middle'.                          For keyboard buttons: use one of the keys of KeyboardKeys (for example 'a', 'alt', 'up_arrow', etc..).                          For touch screen: set code to 'touch'.                          For numbers (0-9): you can use the number itself.                          Note: if you inject any custom state via `setCustomState()`, you can use its code here too. |
+| code | <code>string</code> \| <code>Array.&lt;String&gt;</code> | Keyboard, touch, gamepad or mouse button code. Can be array of codes to test any of them.                          For mouse buttons: set code to 'mouse_left', 'mouse_right' or 'mouse_middle'.                          For keyboard buttons: use one of the keys of KeyboardKeys (for example 'a', 'alt', 'up_arrow', etc..).                          For touch screen: set code to 'touch'.                          For numbers (0-9): you can use the number itself.                          Note: if you inject any custom state via `setCustomState()`, you can use its code here too. |
 
 **Example**  
 ```js
@@ -479,7 +479,7 @@ Return if a mouse or keyboard button was pressed in this frame.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| code | <code>string</code> \| <code>Array.&lt;String&gt;</code> | Keyboard, touch or mouse code. Can be array of codes to test if any of them is pressed.                          For mouse buttons: set code to 'mouse_left', 'mouse_right' or 'mouse_middle'.                          For keyboard buttons: use one of the keys of KeyboardKeys (for example 'a', 'alt', 'up_arrow', etc..).                          For touch screen: set code to 'touch'.                          For numbers (0-9): you can use the number itself.                          Note: if you inject any custom state via `setCustomState()`, you can use its code here too. |
+| code | <code>string</code> \| <code>Array.&lt;String&gt;</code> | Keyboard, touch, gamepad or mouse button code. Can be array of codes to test any of them.                          For mouse buttons: set code to 'mouse_left', 'mouse_right' or 'mouse_middle'.                          For keyboard buttons: use one of the keys of KeyboardKeys (for example 'a', 'alt', 'up_arrow', etc..).                          For touch screen: set code to 'touch'.                          For numbers (0-9): you can use the number itself.                          Note: if you inject any custom state via `setCustomState()`, you can use its code here too. |
 
 **Example**  
 ```js
@@ -495,7 +495,7 @@ Return timestamp, in milliseconds, of the last time this key code was released.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| code | <code>string</code> | Keyboard, touch or mouse code.                          For mouse buttons: set code to 'mouse_left', 'mouse_right' or 'mouse_middle'.                          For keyboard buttons: use one of the keys of KeyboardKeys (for example 'a', 'alt', 'up_arrow', etc..).                          For touch screen: set code to 'touch'.                          For numbers (0-9): you can use the number itself.                          Note: if you inject any custom state via `setCustomState()`, you can use its code here too. |
+| code | <code>string</code> | Keyboard, touch, gamepad or mouse button code.                           For mouse buttons: set code to 'mouse_left', 'mouse_right' or 'mouse_middle'.                          For keyboard buttons: use one of the keys of KeyboardKeys (for example 'a', 'alt', 'up_arrow', etc..).                          For touch screen: set code to 'touch'.                          For numbers (0-9): you can use the number itself.                          Note: if you inject any custom state via `setCustomState()`, you can use its code here too. |
 
 **Example**  
 ```js
@@ -511,7 +511,7 @@ Return timestamp, in milliseconds, of the last time this key code was pressed.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| code | <code>string</code> | Keyboard, touch or mouse code.                          For mouse buttons: set code to 'mouse_left', 'mouse_right' or 'mouse_middle'.                          For keyboard buttons: use one of the keys of KeyboardKeys (for example 'a', 'alt', 'up_arrow', etc..).                          For touch screen: set code to 'touch'.                          For numbers (0-9): you can use the number itself.                          Note: if you inject any custom state via `setCustomState()`, you can use its code here too. |
+| code | <code>string</code> | Keyboard, touch, gamepad or mouse button code.                           For mouse buttons: set code to 'mouse_left', 'mouse_right' or 'mouse_middle'.                          For keyboard buttons: use one of the keys of KeyboardKeys (for example 'a', 'alt', 'up_arrow', etc..).                          For touch screen: set code to 'touch'.                          For numbers (0-9): you can use the number itself.                          Note: if you inject any custom state via `setCustomState()`, you can use its code here too. |
 
 **Example**  
 ```js
@@ -527,7 +527,7 @@ Return if a key was double-pressed.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| code | <code>string</code> | Keyboard, touch or mouse code. Can be array of codes to test if any of them is double-pressed.                          For mouse buttons: set code to 'mouse_left', 'mouse_right' or 'mouse_middle'.                          For keyboard buttons: use one of the keys of KeyboardKeys (for example 'a', 'alt', 'up_arrow', etc..).                          For touch screen: set code to 'touch'.                          For numbers (0-9): you can use the number itself.                          Note: if you inject any custom state via `setCustomState()`, you can use its code here too. |
+| code | <code>string</code> \| <code>Array.&lt;string&gt;</code> | Keyboard, touch, gamepad or mouse button code. Can be array of codes to test any of them.                          For mouse buttons: set code to 'mouse_left', 'mouse_right' or 'mouse_middle'.                          For keyboard buttons: use one of the keys of KeyboardKeys (for example 'a', 'alt', 'up_arrow', etc..).                          For touch screen: set code to 'touch'.                          For numbers (0-9): you can use the number itself.                          Note: if you inject any custom state via `setCustomState()`, you can use its code here too. |
 | maxInterval | <code>Number</code> | Max interval time, in milliseconds, to consider it a double-press. Defaults to `defaultDoublePressInterval`. |
 
 **Example**  
@@ -544,7 +544,7 @@ Return if a key was double-released.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| code | <code>string</code> | Keyboard, touch or mouse code. Can be array of codes to test if any of them is double-released.                          For mouse buttons: set code to 'mouse_left', 'mouse_right' or 'mouse_middle'.                          For keyboard buttons: use one of the keys of KeyboardKeys (for example 'a', 'alt', 'up_arrow', etc..).                          For touch screen: set code to 'touch'.                          For numbers (0-9): you can use the number itself.                          Note: if you inject any custom state via `setCustomState()`, you can use its code here too. |
+| code | <code>string</code> \| <code>Array.&lt;string&gt;</code> | Keyboard, touch, gamepad or mouse button code. Can be array of codes to test any of them.                          For mouse buttons: set code to 'mouse_left', 'mouse_right' or 'mouse_middle'.                          For keyboard buttons: use one of the keys of KeyboardKeys (for example 'a', 'alt', 'up_arrow', etc..).                          For touch screen: set code to 'touch'.                          For numbers (0-9): you can use the number itself.                          Note: if you inject any custom state via `setCustomState()`, you can use its code here too. |
 | maxInterval | <code>Number</code> | Max interval time, in milliseconds, to consider it a double-release. Defaults to `defaultDoublePressInterval`. |
 
 **Example**  

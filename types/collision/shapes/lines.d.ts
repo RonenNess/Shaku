@@ -22,6 +22,10 @@ declare class LinesShape extends CollisionShape {
      * @param {Array<Line>|Line} lines Line / lines to set.
      */
     setLines(lines: Array<Line> | Line): void;
+    /**
+     * @inheritdoc
+     */
+    debugDraw(opacity: any, shapesBatch: any): void;
 }
 import CollisionShape = require("./shape");
 import Line = require("../../utils/line");

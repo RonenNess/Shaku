@@ -20,7 +20,7 @@ This shape is made of one line or more.
     * [._getRadius()](#LinesShape+_getRadius)
     * [.getCenter()](#LinesShape+getCenter)
     * [._getBoundingBox()](#LinesShape+_getBoundingBox)
-    * [.debugDraw(opacity)](#LinesShape+debugDraw)
+    * [.debugDraw()](#LinesShape+debugDraw)
 
 <a name="new_LinesShape_new"></a>
 
@@ -72,12 +72,5 @@ Set this shape from line or lines array.
 **Kind**: instance method of [<code>LinesShape</code>](#LinesShape)  
 <a name="LinesShape+debugDraw"></a>
 
-### linesShape.debugDraw(opacity)
-Debug draw this shape.
-
+### linesShape.debugDraw()
 **Kind**: instance method of [<code>LinesShape</code>](#LinesShape)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| opacity | <code>Number</code> | Shape opacity factor. |
-

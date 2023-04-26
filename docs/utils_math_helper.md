@@ -15,6 +15,7 @@ Implement some math utilities functions.
     * [.PI2](#MathHelper.PI2)
     * [.lerp(start, end, amount)](#MathHelper.lerp) ⇒ <code>Number</code>
     * [.dot(x1, y1, x2, y2)](#MathHelper.dot) ⇒ <code>Number</code>
+    * [.roundToMultiple(numToRound, multiple)](#MathHelper.roundToMultiple) ⇒ <code>Number</code>
     * [.toRadians(degrees)](#MathHelper.toRadians) ⇒ <code>Number</code>
     * [.toDegrees(radians)](#MathHelper.toDegrees) ⇒ <code>Number</code>
     * [.radiansDistanceSigned(a1, a2)](#MathHelper.radiansDistanceSigned) ⇒ <code>Number</code>
@@ -60,6 +61,19 @@ Calculate 2d dot product.
 | y1 | <code>Number</code> | First vector y. |
 | x2 | <code>Number</code> | Second vector x. |
 | y2 | <code>Number</code> | Second vector y. |
+
+<a name="MathHelper.roundToMultiple"></a>
+
+### MathHelper.roundToMultiple(numToRound, multiple) ⇒ <code>Number</code>
+Make a number a multiply of another number by rounding it up.
+
+**Kind**: static method of [<code>MathHelper</code>](#MathHelper)  
+**Returns**: <code>Number</code> - Result number.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| numToRound | <code>Number</code> | Number to round up. |
+| multiple | <code>Number</code> | Number to make 'numToRound' a multiply of. |
 
 <a name="MathHelper.toRadians"></a>
 

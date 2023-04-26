@@ -23,7 +23,6 @@ You need SpritesGroup to use batched rendering.
     * [.remove(sprite)](#SpritesGroup+remove)
     * [.shift()](#SpritesGroup+shift) ⇒ <code>Sprite</code>
     * [.sort(compare)](#SpritesGroup+sort)
-    * [.sortForBatching()](#SpritesGroup+sortForBatching)
 
 <a name="new_SpritesGroup_new"></a>
 
@@ -107,10 +106,3 @@ Sort sprites.
 | --- | --- | --- |
 | compare | <code>function</code> | Comparer method. |
 
-<a name="SpritesGroup+sortForBatching"></a>
-
-### spritesGroup.sortForBatching()
-Sort by texture and blend mode for maximum efficiency in batching.
-This will change sprites order.
-
-**Kind**: instance method of [<code>SpritesGroup</code>](#SpritesGroup)  

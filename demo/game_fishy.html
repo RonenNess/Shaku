@@ -8,19 +8,20 @@
     <link href="css/style.css" rel="stylesheet" type="text/css" media="all">
   </head>
   <body>
-    <div class="noselect">
-    <button class="view-code-btn" onclick="showSampleCode();">View Code</button> 
-    <h1 class="demo-title">Shaku: Fishy</h1>
-      <p>Based on the Flash game classic <a target="_blank" href="https://newgrounds.fandom.com/wiki/!_Fishy_!">!Fishy!</a>: Eat smaller fish to grow, dodge bigger fish to survive.<br />
-        Use <b>Arrows</b> or <b>WASD</b> to move. Hit <b>R</b> to restart.</p>
-      
-      <!-- include shaku -->
-      <script src="js/demos.js"></script>
-      <script src="js/shaku.js"></script>
+    <div style="padding:0.5em" class="noselect">
+      <div id="top-info">
+        <h1 class="demo-title" style="margin-left: 0;">Shaku: Fishy</h1>
+        <p>Based on the Flash game classic <a target="_blank" href="https://newgrounds.fandom.com/wiki/!_Fishy_!">!Fishy!</a>: Eat smaller fish to grow, dodge bigger fish to survive.<br />
+          Use <b>Arrows</b> or <b>WASD</b> to move. Hit <b>R</b> to restart.</p>
+        
+        <!-- include shaku -->
+        <script src="js/demos.js"></script>
+        <script src="js/shaku.js"></script>
 
-      <button style="font-size: 200%;" onclick="runGame(); this.style.display='none'; document.getElementById('loading-msg').style.display='block';">Click To Start!</button>
+        <button style="font-size: 200%;" onclick="runGame(); this.style.display='none'; document.getElementById('loading-msg').style.display='block';">Click To Start!</button>
 
-      <h1 id="loading-msg" style="display: none;">Loading Assets...</h1>
+        <h1 id="loading-msg" style="display: none;">Loading Assets...</h1>
+      </div>
 
       <!-- demo code -->
       <script id="main-code">async function runGame()
@@ -35,6 +36,9 @@
   let bottomText = document.createElement('h3');
   document.body.appendChild(bottomText);
 
+  // hide top info
+  document.getElementById('top-info').style.display = 'none';
+
   // set canvas size
   let screenX = 1100;
   let screenY = 800;
@@ -47,16 +51,31 @@
     // load font texture
     Shaku.assets.loadFontTexture('assets/DejaVuSansMono.ttf', {fontName: 'DejaVuSansMono'}).then((asset) => assets.fontTexture = asset);
 
-    // load textures
-    Shaku.assets.loadTexture('assets/fishy/skeleton_icon.png').then((asset) => assets.skeletonIcon = asset);
-    Shaku.assets.loadTexture('assets/fishy/seaweed.png').then((asset) => assets.seaWeed = asset);
-    Shaku.assets.loadTexture('assets/fishy/intro.png').then((asset) => assets.intro = asset);
-    Shaku.assets.loadTexture('assets/fishy/fish_skeleton.png').then((asset) => assets.fishSkeleton = asset);
-    Shaku.assets.loadTexture('assets/fishy/fish.png').then((asset) => assets.fish = asset);
-    Shaku.assets.loadTexture('assets/fishy/eye.png').then((asset) => assets.eye = asset);
-    Shaku.assets.loadTexture('assets/fishy/bubble.png').then((asset) => assets.bubble = asset);
-    Shaku.assets.loadTexture('assets/fishy/bones.png').then((asset) => assets.bones = asset);
-    Shaku.assets.loadTexture('assets/fishy/background.png').then((asset) => assets.background = asset);
+    // load textures into a texture atlas
+    let textureSources = [
+      'assets/fishy/skeleton_icon.png',
+      'assets/fishy/fish_skeleton.png',
+      'assets/fishy/fish.png',
+      'assets/fishy/eye.png',
+      'assets/fishy/bubble.png',
+      'assets/fishy/bones.png',
+    ];
+    Shaku.assets.createTextureAtlas('texture_atlas', textureSources, undefined, undefined, new Shaku.utils.Vector2(12, 12)).then((asset) => {
+      let i = 0;
+      assets.textures = asset;
+      assets.skeletonIcon = asset.getTexture(textureSources[i++]);
+      assets.fishSkeleton = asset.getTexture(textureSources[i++]);
+      assets.fish = asset.getTexture(textureSources[i++]);
+      assets.eye = asset.getTexture(textureSources[i++]);
+      assets.bubble = asset.getTexture(textureSources[i++]);
+      assets.bones = asset.getTexture(textureSources[i++]);
+    });
+
+    // load background texture outside the atlas - due to wave effect
+    assets.background = await Shaku.assets.loadTexture('assets/fishy/background.png');
+
+    // load seaweed texture outside the atlas - due to wave effect
+    assets.seaWeed = await Shaku.assets.loadTexture('assets/fishy/seaweed.png');
 
     // load sounds
     assets.sfx = {};
@@ -74,7 +93,7 @@
   Shaku.gfx.defaultTextureFilter = Shaku.gfx.TextureFilterModes.Linear;
 
   // create a wavy water effect
-  class WavyWaterEffect extends Shaku.gfx.BasicEffect
+  class WavyWaterEffect extends Shaku.gfx.SpritesEffect
   {
     
     get fragmentCode()
@@ -109,8 +128,16 @@
     }
   }
 
+  // create sprites and text batch
+  let spritesBatch = new Shaku.gfx.SpriteBatch();
+  let textSpriteBatch = new Shaku.gfx.TextSpriteBatch();
+
+  // set outline
+  textSpriteBatch.outlineWeight = 1;
+  textSpriteBatch.outlineColor = Shaku.utils.Color.black;
+
   // create effect for moving water
-  let waterEffect = Shaku.gfx.createEffect(WavyWaterEffect);
+  let waterEffect = new WavyWaterEffect();
 
   // randomize a fish color
   let fishColors = [];
@@ -134,13 +161,14 @@
     {
       this._group = new Shaku.gfx.SpritesGroup();
 
-      this._body = new Shaku.gfx.Sprite(assets.fish, new Shaku.utils.Rectangle(0, 0, assets.fish.width, assets.fish.height / 2));
-      this._body.size.set(assets.fish.width, assets.fish.height / 2);
+      let fishSource = assets.fish.sourceRectangle;
+      this._body = new Shaku.gfx.Sprite(assets.fish, new Shaku.utils.Rectangle(0, 0, fishSource.width, fishSource.height / 2));
+      this._body.size.set(fishSource.width, fishSource.height / 2);
       this._body.color = randomizeFishColor();
       this._group.add(this._body);
       
       this._eye = new Shaku.gfx.Sprite(assets.eye); 
-      this._eye.size.copy(assets.eye.size);
+      this._eye.size.copy(assets.eye.sourceRectangle.getSize());
       this._eye.position.set(265, -40);
       this._group.add(this._eye);
 
@@ -179,7 +207,8 @@
 
     setSize(size)
     {
-      this._group.scale.set((size / 5) * (this.isFlipped ? -1 : 1), size / 5);
+      let factoredSize = Math.floor((size / 5) * 100) / 100;
+      this._group.scale.set(factoredSize * (this.isFlipped ? -1 : 1), factoredSize);
       this._size = size;
     }
 
@@ -190,17 +219,18 @@
 
     getCollisionRect()
     {
-      let width = Math.abs(this._group.scale.x * assets.fish.width * 0.655);
-      let height = this._group.scale.y * assets.fish.height * 0.5 * 0.645;
+      let width = Math.abs(this._group.scale.x * assets.fish.sourceRectangle.width * 0.655);
+      let height = this._group.scale.y * assets.fish.sourceRectangle.height * 0.5 * 0.645;
       return new Shaku.utils.Rectangle(this.position.x - width / 2, this.position.y - height / 2, width, height);
     }
 
     updateAndDraw()
     {
       // draw and animate
-      Shaku.gfx.drawGroup(this._group);
-      this._body.sourceRect.y = (Math.floor(Shaku.gameTime.elapsed * 10 * this.movingAnimationSpeed + this._animFactor * 10) % 2) * 512;
-      this._eye.rotation = Math.sin(Shaku.gameTime.elapsed * 50 + this._animFactor) / 25;
+      spritesBatch.drawSpriteGroup(this._group);
+      this._animFactor += 0.15 * this.movingAnimationSpeed;
+      this._body.sourceRectangle.y = (Math.floor(this._animFactor) % 2) * 512;
+      this._eye.rotation = Math.sin(Shaku.gameTime.elapsed * 50) / 15;
 
       // spawn bubbles
       if (this._size > 0.2) {
@@ -269,7 +299,7 @@
     
     get movingAnimationSpeed()
     {
-      return Math.abs(this.velocity.length / 12.5);
+      return Math.min(Math.abs(this.velocity.length() / 17.5), 1.25) * 10;
     }
 
     get shouldBeRemoved()
@@ -321,7 +351,7 @@
       }
 
       // damp velocity
-      this.velocity = Shaku.utils.Vector2.lerp(this.velocity, Shaku.utils.Vector2.zero, Shaku.gameTime.delta * 0.75);
+      this.velocity = Shaku.utils.Vector2.lerp(this.velocity, Shaku.utils.Vector2.zero(), Shaku.gameTime.delta * 0.75);
     }
   }
 
@@ -337,9 +367,10 @@
 
     updateAndDraw()
     {
-      Shaku.gfx.draw(assets.bubble, 
+      spritesBatch.drawQuad(assets.bubble.texture, 
         this.position.add({x: Math.cos(this.animFactor + Shaku.gameTime.elapsed * 5) * this.size * 0.2, y: 0}), 
-        this.size);
+        this.size,
+        assets.bubble.sourceRectangle);
       this.position.y -= this.size * 1.25 * Shaku.gameTime.delta;
     }
 
@@ -362,9 +393,9 @@
 
     updateAndDraw()
     {
-      Shaku.gfx.draw(assets.fishSkeleton, 
+      spritesBatch.drawQuad(assets.fishSkeleton.texture, 
         this.position.add({x: Math.cos(this.animFactor + Shaku.gameTime.elapsed * 5) * this.size * 0.2, y: 0}), 
-        new Shaku.utils.Vector2(this.size * (this.flipX ? -2 : 2), this.size));
+        new Shaku.utils.Vector2(this.size * (this.flipX ? -2 : 2), this.size), assets.fishSkeleton.sourceRectangle);
       this.position.y += this.size * 1.25 * Shaku.gameTime.delta;
     }
 
@@ -520,77 +551,89 @@
     updateAndDraw()
     {  
       // draw background with water effect
-      Shaku.gfx.useEffect(waterEffect);
+      spritesBatch.begin(undefined, waterEffect);
       waterEffect.uniforms.elapsedTime(Shaku.gameTime.elapsed);
       waterEffect.uniforms.waveFactor(1);
-      Shaku.gfx.cover(assets.background, Shaku.gfx.getRenderingRegion());
-      Shaku.gfx.useEffect(null);
+      spritesBatch.drawRectangle(assets.background, Shaku.gfx.getRenderingRegion());
+      spritesBatch.end();
 
-      // draw bones pile
-      Shaku.gfx.draw(assets.bones, new Shaku.utils.Vector2(screenX / 2, screenY), assets.bones.size, null, null, null, 0, new Shaku.utils.Vector2(0.5, this.messedUpFactor));
+      spritesBatch.begin();
 
-      // update and draw fish
-      for (let i = this.fish.length - 1; i >= 0; --i) {
+        // draw bones pile
+        spritesBatch.drawQuad(
+          assets.bones, 
+          new Shaku.utils.Vector2(screenX / 2, screenY), 
+          assets.bones.sourceRectangle.getSize(), 
+          undefined, null, 0, new Shaku.utils.Vector2(0.5, this.messedUpFactor * 0.95));
 
-        let fish = this.fish[i];
-        fish.updateAndDraw();
+        // update and draw fish
+        for (let i = this.fish.length - 1; i >= 0; --i) {
 
-        if (fish.shouldBeRemoved) {
-          this.fish.splice(i, 1);
+          let fish = this.fish[i];
+          fish.updateAndDraw();
+
+          if (fish.shouldBeRemoved) {
+            this.fish.splice(i, 1);
+          }
         }
-      }
 
-      // if not game over, do player-related stuff
-      if (!this._gameOver) {
-        this.doPlayerUpdates();
-      }
-
-      // update and draw bubbles and bones
-      for (let i = this.bubblesAndBones.length - 1; i >= 0; --i) {
-        this.bubblesAndBones[i].updateAndDraw();
-        if (this.bubblesAndBones[i].shouldBeRemoved) {
-          this.bubblesAndBones.splice(i, 1);
+        // if not game over, do player-related stuff
+        if (!this._gameOver) {
+          this.doPlayerUpdates();
         }
-      }
 
-      // generate random fish
-      this._timeToGenerateFish -= Shaku.gameTime.delta;
-      if (this._timeToGenerateFish <= 0 && this.score < 5000) {
+        // update and draw bubbles and bones
+        for (let i = this.bubblesAndBones.length - 1; i >= 0; --i) {
+          this.bubblesAndBones[i].updateAndDraw();
+          if (this.bubblesAndBones[i].shouldBeRemoved) {
+            this.bubblesAndBones.splice(i, 1);
+          }
+        }
 
-        // time for next fish
-        this._timeToGenerateFish = 1 + Math.random() * 2.5;
-        if (Math.random() < 0.35) { this._timeToGenerateFish += Math.random() * 3.25; }
+        // generate random fish
+        this._timeToGenerateFish -= Shaku.gameTime.delta;
+        if (this._timeToGenerateFish <= 0 && this.score < 5000) {
 
-        // create fish
-        let playerSize = this.player.getSize();
-        let size = 0.15 + Math.random() * (playerSize + 1.25);
-        if (Math.random() <= 0.2) { size = 0.1 + Math.random() * playerSize; }
-        else if (Math.random() <= 0.1) { size *= (1 + Math.random() * 1); }
-        size = Math.min(Math.max(size, playerSize / 2), 2.5);
-        let fish = new NpcFish(size);
-        this.fish.push(fish);
-      }
+          // time for next fish
+          this._timeToGenerateFish = 1 + Math.random() * 2.5;
+          if (Math.random() < 0.35) { this._timeToGenerateFish += Math.random() * 3.25; }
 
-      // draw foreground
-      Shaku.gfx.useEffect(waterEffect);
-      waterEffect.uniforms.elapsedTime(Shaku.gameTime.elapsed + 0.125);
-      waterEffect.uniforms.waveFactor(2);
-      Shaku.gfx.draw(assets.seaWeed, new Shaku.utils.Vector2(350, Shaku.gfx.getCanvasSize().y), assets.seaWeed.size.mul(0.775), null, null, null, 0, new Shaku.utils.Vector2(0.5, 1));
-      Shaku.gfx.draw(assets.seaWeed, new Shaku.utils.Vector2(650, Shaku.gfx.getCanvasSize().y), assets.seaWeed.size, null, null, null, 0, new Shaku.utils.Vector2(0.5, 1));
-      Shaku.gfx.draw(assets.seaWeed, new Shaku.utils.Vector2(950, Shaku.gfx.getCanvasSize().y), assets.seaWeed.size.mul(0.5), null, null, null, 0, new Shaku.utils.Vector2(0.5, 1));
-      Shaku.gfx.useEffect(null);
+          // create fish
+          let playerSize = this.player.getSize();
+          let size = 0.15 + Math.random() * (playerSize + 1.25);
+          if (Math.random() <= 0.2) { size = 0.1 + Math.random() * playerSize; }
+          else if (Math.random() <= 0.1) { size *= (1 + Math.random() * 1); }
+          size = Math.min(Math.max(size, playerSize / 2), 2.5);
+          let fish = new NpcFish(size);
+          this.fish.push(fish);
+        }
 
-      // blood effect
-      Shaku.gfx.fillRect(Shaku.gfx.getRenderingRegion(), new Shaku.utils.Color(1,0,0,this.messedUpFactor), Shaku.gfx.BlendModes.Multiply);
+      spritesBatch.end();
+
+      // draw foreground seaweed
+      spritesBatch.begin(undefined, waterEffect);
+        waterEffect.uniforms.elapsedTime(Shaku.gameTime.elapsed + 0.125);
+        waterEffect.uniforms.waveFactor(2);
+        let weedSize = assets.seaWeed.getSize();
+        spritesBatch.drawQuad(assets.seaWeed, new Shaku.utils.Vector2(350, Shaku.gfx.getCanvasSize().y), weedSize.mul(0.775), undefined, null, 0, new Shaku.utils.Vector2(0.5, 1));
+        spritesBatch.drawQuad(assets.seaWeed, new Shaku.utils.Vector2(650, Shaku.gfx.getCanvasSize().y), weedSize, undefined, null, 0, new Shaku.utils.Vector2(0.5, 1));
+        spritesBatch.drawQuad(assets.seaWeed, new Shaku.utils.Vector2(950, Shaku.gfx.getCanvasSize().y), weedSize.mul(0.5), undefined, null, 0, new Shaku.utils.Vector2(0.5, 1));
+      spritesBatch.end();
+
+      // blood effect overlay
+      spritesBatch.begin(Shaku.gfx.BlendModes.Multiply);
+        spritesBatch.drawRectangle(Shaku.gfx.whiteTexture, Shaku.gfx.getRenderingRegion(), undefined, new Shaku.utils.Color(1,0,0,this.messedUpFactor));
+      spritesBatch.end();
 
       // draw score
-      Shaku.gfx.draw(assets.skeletonIcon, new Shaku.utils.Vector2(32, 32), new Shaku.utils.Vector2(48, 48));
-      let scoreText = Shaku.gfx.buildText(assets.fontTexture, "x " + Math.ceil(game.score), 24, Shaku.utils.Color.black, Shaku.gfx.TextAlignments.Left);
-      scoreText.position.set(72, 32);
-      Shaku.gfx.drawGroup(scoreText);
-      scoreText.setColor(Shaku.utils.Color.white);
-      scoreText.position.set(73, 33);
-      Shaku.gfx.drawGroup(scoreText);
+      spritesBatch.begin();
+      textSpriteBatch.begin();
+        spritesBatch.drawQuad(assets.skeletonIcon, new Shaku.utils.Vector2(32, 32), new Shaku.utils.Vector2(48, 48));
+        let scoreText = Shaku.gfx.buildText(assets.fontTexture, "x " + Math.ceil(game.score), 24, Shaku.utils.Color.white, Shaku.gfx.TextAlignments.Left);
+        scoreText.position.set(73, 33);
+        textSpriteBatch.drawText(scoreText);
+      spritesBatch.end();
+      textSpriteBatch.end();
     }
 
     doPlayerUpdates()
@@ -663,26 +706,6 @@
 </script>
 
 </div>
-
-<!-- code example part -->
-<div id="sample-code-modal" class="modal">
-  <div class="modal__overlay jsOverlay"></div>
-  <div class="modal__container">   
-
-<p class="noselect">The following shows the full code for this Fishy game demo.</i>
-</p>
-<pre><code class="language-js" id="code-box"></code></pre>
-
-  <button class="modal__close" onclick="closeModal('sample-code-modal')">&#10005;</button>
-</div>
-</div>
-
-<script>
-  document.getElementById('code-box').innerHTML = document.getElementById('main-code').innerHTML;
-</script>
-
-<link href="prism/prism.css" rel="stylesheet" />
-<script src="prism/prism.js"></script>
 
   </body>
 </html>

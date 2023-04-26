@@ -42,8 +42,9 @@ export function silent(): void;
 export function setDrivers(drivers: any): void;
 export function setApplicationName(name: string): {
     /**
-     * Get a logger object.
+     * Get a logger object for a given logger name.
      * @param {String} name Logger name.
+     * @returns {Logger} Logger to use.
      */
     getLogger: (name: string) => Logger;
     /**

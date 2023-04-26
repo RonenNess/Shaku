@@ -5,34 +5,14 @@ export = MsdfFontEffect;
 declare class MsdfFontEffect extends Effect {
     /** @inheritdoc */
     get uniformTypes(): {
-        u_texture: {
-            type: string;
-            bind: string;
-        };
-        u_projection: {
-            type: string;
-            bind: string;
-        };
-        u_world: {
+        [x: string]: {
             type: string;
             bind: string;
         };
     };
     /** @inheritdoc */
     get attributeTypes(): {
-        a_position: {
-            size: number;
-            type: string;
-            normalize: boolean;
-            bind: string;
-        };
-        a_coord: {
-            size: number;
-            type: string;
-            normalize: boolean;
-            bind: string;
-        };
-        a_color: {
+        [x: string]: {
             size: number;
             type: string;
             normalize: boolean;

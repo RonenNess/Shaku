@@ -11,7 +11,7 @@
     <div class="noselect">
     <button class="view-code-btn" onclick="showSampleCode();">View Code</button> 
     <h1 class="demo-title">Shaku Gfx Demo: Draw</h1>
-      <p>This demo shows how to clear screen and use the gfx.Draw() and gfx.fillRect() methods to render basic stuff.</p>
+      <p>This demo shows how to draw basic stuff.</p>
       
       <!-- include shaku -->
       <script src="js/demos.js"></script>
@@ -25,11 +25,17 @@
           await Shaku.init();
 
           // add shaku's canvas to document and set resolution to 800x600
+          const screenX = 800;
+          const screenY = 600;
           document.body.appendChild(Shaku.gfx.canvas);
-          Shaku.gfx.setResolution(800, 600, true);
+          Shaku.gfx.setResolution(screenX, screenY, true);
 
           // load sprite's texture asset
           let texture = await Shaku.assets.loadTexture('assets/shaku.png');
+
+          // create sprites and shapes batch
+          let spritesBatch = new Shaku.gfx.SpriteBatch();
+          let shapesBatch = new Shaku.gfx.ShapesBatch();
 
           // do a single main loop step
           function step() 
@@ -38,28 +44,28 @@
             Shaku.startFrame();
             Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
 
+            // start batch drawings
+            shapesBatch.begin();
+            spritesBatch.begin();
+
             // draw background circle
-            Shaku.gfx.fillCircle(new Shaku.utils.Circle(Shaku.gfx.getCanvasSize().div(2), 285), Shaku.utils.Color.pink);
+            shapesBatch.drawCircle(new Shaku.utils.Circle(Shaku.gfx.getCanvasSize().div(2), 400), Shaku.utils.Color.pink, 32, Shaku.utils.Color.cornflowerblue);
 
-            // draw a texture
-            Shaku.gfx.draw(texture, Shaku.gfx.getCanvasSize().div(2), 256, null, null, null, Shaku.gameTime.elapsed * 0.5);
+            // draw rectangles
+            const rectSize = 50;
+            shapesBatch.drawRectangle(new Shaku.utils.Rectangle(0,                     0,                    rectSize, rectSize), Shaku.utils.Color.red, Shaku.gameTime.elapsed);
+            shapesBatch.drawRectangle(new Shaku.utils.Rectangle(screenX - rectSize,    0,                    rectSize, rectSize), Shaku.utils.Color.green, Shaku.gameTime.elapsed);
+            shapesBatch.drawRectangle(new Shaku.utils.Rectangle(0,                     screenY - rectSize,   rectSize, rectSize), Shaku.utils.Color.blue, Shaku.gameTime.elapsed);
+            shapesBatch.drawRectangle(new Shaku.utils.Rectangle(screenX - rectSize,    screenY - rectSize,   rectSize, rectSize), Shaku.utils.Color.yellow, Shaku.gameTime.elapsed);
 
-            // draw circle outline
-            Shaku.gfx.outlineCircle(new Shaku.utils.Circle(Shaku.gfx.getCanvasSize().div(2), 285), Shaku.utils.Color.black);
+            // draw a sprite
+            let rotation = Shaku.gameTime.elapsed * 0.5;
+            let center = Shaku.gfx.getCanvasSize().div(2);
+            spritesBatch.drawQuad(texture, center, 256, undefined, undefined, rotation);
 
-            // draw rectangles with outline
-
-            Shaku.gfx.fillRect(new Shaku.utils.Rectangle(0, 0, 50, 50), Shaku.utils.Color.red, null, Shaku.gameTime.elapsed);
-            Shaku.gfx.outlineRect(new Shaku.utils.Rectangle(0, 0, 50, 50), Shaku.utils.Color.black, null, Shaku.gameTime.elapsed);
-            
-            Shaku.gfx.fillRect(new Shaku.utils.Rectangle(800 - 50, 0, 50, 50), Shaku.utils.Color.green, null, Shaku.gameTime.elapsed);
-            Shaku.gfx.outlineRect(new Shaku.utils.Rectangle(800 - 50, 0, 50, 50), Shaku.utils.Color.black, null, Shaku.gameTime.elapsed);
-
-            Shaku.gfx.fillRect(new Shaku.utils.Rectangle(0, 600 - 50, 50, 50), Shaku.utils.Color.blue, null, Shaku.gameTime.elapsed);
-            Shaku.gfx.outlineRect(new Shaku.utils.Rectangle(0, 600 - 50, 50, 50), Shaku.utils.Color.black, null, Shaku.gameTime.elapsed);
-
-            Shaku.gfx.fillRect(new Shaku.utils.Rectangle(800 - 50, 600 - 50, 50, 50), Shaku.utils.Color.yellow, null, Shaku.gameTime.elapsed);
-            Shaku.gfx.outlineRect(new Shaku.utils.Rectangle(800 - 50, 600 - 50, 50, 50), Shaku.utils.Color.black, null, Shaku.gameTime.elapsed);
+            // render the shapes and sprites batches
+            shapesBatch.end();
+            spritesBatch.end();
 
             // end frame and request next frame
             Shaku.endFrame();
@@ -80,29 +86,41 @@
   <div class="modal__overlay jsOverlay"></div>
   <div class="modal__container">   
 
-<p class="noselect">The following shows a minimal code example on how to init Shaku and create a main loop.</p>
-<pre><code class="language-js">// load sprite's texture asset
+<p class="noselect">The following code shows how to draw basic stuff with sprites batch.</p>
+<pre><code class="language-js">// init shaku
+await Shaku.init();
+
+// add shaku's canvas to document and set resolution to 800x600
+document.body.appendChild(Shaku.gfx.canvas);
+Shaku.gfx.setResolution(800, 600, true);
+
+// load sprite's texture asset
 let texture = await Shaku.assets.loadTexture('assets/sprite.png');
 
-// part below goes between startFrame() and endFrame()
-// -------------------------------------------------------
+// create a SpriteBatch
+let spritesBatch = new Shaku.gfx.SpriteBatch();
 
-// draw the texture
-let position = new Shaku.utils.Vector2(400, 300);
-let size = new Shaku.utils.Vector2(100, 100);  // if width == height, you can use a number instead of a Vector
-Shaku.gfx.draw(texture, position, size);
+// main loop
+function step() 
+{  
+  // start new frame and clear screen
+  Shaku.startFrame();
+  Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
 
-// draw with advanced params
-let sourceRect = new Shaku.utils.Rectangle(0, 0, 100, 100);
-let color = Shaku.utils.Color.red;
-let blendMode = Shaku.gfx.BlendModes.Additive;
-let rotation = Math.PI / 2;
-let origin = new Shaku.utils.Vector2(0.5, 0.5);
-let transform = Shaku.gfx.Matrix.scale(2, 2, 2);
-Shaku.gfx.draw(texture, position, size, sourceRect, color, blendMode, rotation, origin, transform)
+  // draw a sprite using the spritebatch
+  spritesBatch.begin();
+  let position = new Shaku.utils.Vector2(400, 300);
+  let size = new Shaku.utils.Vector2(100, 100);
+  spritesBatch.drawQuad(texture, position, size);
+  spritesBatch.end();
 
-// draw a filled rectangle
-Shaku.gfx.fillRect(new Shaku.utils.Rectangle(0, 0, 50, 50), Shaku.utils.Color.red, Shaku.gfx.BlendModes.Opaque, rotation);</code></pre>
+  // end frame and request next frame
+  Shaku.endFrame();
+  Shaku.requestAnimationFrame(step);
+}
+
+// start main loop
+step();</code></pre>
 
   <button class="modal__close" onclick="closeModal('sample-code-modal')">&#10005;</button>
 </div>

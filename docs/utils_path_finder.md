@@ -15,6 +15,19 @@
 </dd>
 </dl>
 
+## Constants
+
+<dl>
+<dt><a href="#PathFinder">PathFinder</a></dt>
+<dd><p>Path finder utilitiy. 
+To use it:</p>
+<ol>
+<li>Implement a <code>IGrid</code> instance that returns if a grid node is blocking and what&#39;s the price to cross it.</li>
+<li>Call findPath() with your grid to find a path between start and end points.</li>
+</ol>
+</dd>
+</dl>
+
 ## Functions
 
 <dl>
@@ -70,6 +83,36 @@ Should return 1 for "normal" traveling price, > 1 for expensive tile, and < 1 fo
 A path node.
 
 **Kind**: global class  
+
+* [Node](#Node)
+    * [new Node(position)](#new_Node_new)
+    * [.fCost](#Node+fCost)
+
+<a name="new_Node_new"></a>
+
+### new Node(position)
+Create the node from a position.
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| position | <code>Vector2</code> \| <code>Vector3</code> | Node position. |
+
+<a name="Node+fCost"></a>
+
+### node.fCost
+Get the node fCost factor.
+
+**Kind**: instance property of [<code>Node</code>](#Node)  
+<a name="PathFinder"></a>
+
+## PathFinder
+Path finder utilitiy. 
+To use it:
+ 1. Implement a `IGrid` instance that returns if a grid node is blocking and what's the price to cross it.
+ 2. Call findPath() with your grid to find a path between start and end points.
+
+**Kind**: global constant  
 <a name="findPath"></a>
 
 ## findPath(grid, startPos, targetPos, options) ⇒ <code>Array.&lt;Vector2&gt;</code>

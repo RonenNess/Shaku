@@ -14,7 +14,6 @@ A Vector object for 3d positions.
 * [Vector3](#Vector3)
     * [new Vector3(x, y, z)](#new_Vector3_new)
     * _instance_
-        * [.length](#Vector3+length) ⇒ <code>Number</code>
         * [.clone()](#Vector3+clone) ⇒ [<code>Vector3</code>](#Vector3)
         * [.set(x, y, z)](#Vector3+set) ⇒ [<code>Vector3</code>](#Vector3)
         * [.copy()](#Vector3+copy) ⇒ [<code>Vector3</code>](#Vector3)
@@ -36,21 +35,13 @@ A Vector object for 3d positions.
         * [.normalizeSelf()](#Vector3+normalizeSelf) ⇒ [<code>Vector3</code>](#Vector3)
         * [.equals(other)](#Vector3+equals) ⇒ <code>Boolean</code>
         * [.approximate(other, threshold)](#Vector3+approximate) ⇒ <code>Boolean</code>
+        * [.length()](#Vector3+length) ⇒ <code>Number</code>
         * [.scaled()](#Vector3+scaled) ⇒ [<code>Vector3</code>](#Vector3)
         * [.distanceTo(other)](#Vector3+distanceTo) ⇒ <code>Number</code>
         * [.string()](#Vector3+string)
         * [.toArray()](#Vector3+toArray) ⇒ <code>Array.&lt;Number&gt;</code>
         * [.toDict(minimized)](#Vector3+toDict) ⇒ <code>\*</code>
     * _static_
-        * [.zero](#Vector3.zero) ⇒ [<code>Vector3</code>](#Vector3)
-        * [.one](#Vector3.one) ⇒ [<code>Vector3</code>](#Vector3)
-        * [.half](#Vector3.half) ⇒ [<code>Vector3</code>](#Vector3)
-        * [.left](#Vector3.left) ⇒ [<code>Vector3</code>](#Vector3)
-        * [.right](#Vector3.right) ⇒ [<code>Vector3</code>](#Vector3)
-        * [.up](#Vector3.up) ⇒ [<code>Vector3</code>](#Vector3)
-        * [.down](#Vector3.down) ⇒ [<code>Vector3</code>](#Vector3)
-        * [.front](#Vector3.front) ⇒ [<code>Vector3</code>](#Vector3)
-        * [.back](#Vector3.back) ⇒ [<code>Vector3</code>](#Vector3)
         * [.zeroReadonly](#Vector3.zeroReadonly)
         * [.oneReadonly](#Vector3.oneReadonly)
         * [.halfReadonly](#Vector3.halfReadonly)
@@ -60,6 +51,15 @@ A Vector object for 3d positions.
         * [.downReadonly](#Vector3.downReadonly)
         * [.frontReadonly](#Vector3.frontReadonly)
         * [.backReadonly](#Vector3.backReadonly)
+        * [.zero()](#Vector3.zero) ⇒ [<code>Vector3</code>](#Vector3)
+        * [.one()](#Vector3.one) ⇒ [<code>Vector3</code>](#Vector3)
+        * [.half()](#Vector3.half) ⇒ [<code>Vector3</code>](#Vector3)
+        * [.left()](#Vector3.left) ⇒ [<code>Vector3</code>](#Vector3)
+        * [.right()](#Vector3.right) ⇒ [<code>Vector3</code>](#Vector3)
+        * [.up()](#Vector3.up) ⇒ [<code>Vector3</code>](#Vector3)
+        * [.down()](#Vector3.down) ⇒ [<code>Vector3</code>](#Vector3)
+        * [.front()](#Vector3.front) ⇒ [<code>Vector3</code>](#Vector3)
+        * [.back()](#Vector3.back) ⇒ [<code>Vector3</code>](#Vector3)
         * [.lerp(p1, p2, a)](#Vector3.lerp) ⇒ [<code>Vector3</code>](#Vector3)
         * [.distance(p1, p2)](#Vector3.distance) ⇒ <code>Number</code>
         * [.crossVector(p1, p2)](#Vector3.crossVector) ⇒ [<code>Vector3</code>](#Vector3)
@@ -79,13 +79,6 @@ Create the Vector object.
 | y | <code>number</code> | <code>0</code> | Vector Y. |
 | z | <code>number</code> | <code>0</code> | Vector Z. |
 
-<a name="Vector3+length"></a>
-
-### vector3.length ⇒ <code>Number</code>
-Return vector length (aka magnitude).
-
-**Kind**: instance property of [<code>Vector3</code>](#Vector3)  
-**Returns**: <code>Number</code> - Vector length.  
 <a name="Vector3+clone"></a>
 
 ### vector3.clone() ⇒ [<code>Vector3</code>](#Vector3)
@@ -124,7 +117,7 @@ Return a new vector of this + other.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| Other | <code>Number</code> \| [<code>Vector3</code>](#Vector3) | Vector or number to add. |
+| Other | <code>Number</code> \| [<code>Vector3</code>](#Vector3) | Vector3 or number to add to all components. |
 
 <a name="Vector3+sub"></a>
 
@@ -136,7 +129,7 @@ Return a new vector of this - other.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| Other | <code>Number</code> \| [<code>Vector3</code>](#Vector3) | Vector or number to sub. |
+| Other | <code>Number</code> \| [<code>Vector3</code>](#Vector3) | Vector3 or number to sub from all components. |
 
 <a name="Vector3+div"></a>
 
@@ -148,7 +141,7 @@ Return a new vector of this / other.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| Other | <code>Number</code> \| [<code>Vector3</code>](#Vector3) | Vector or number to divide. |
+| Other | <code>Number</code> \| [<code>Vector3</code>](#Vector3) | Vector3 or number to divide by all components. |
 
 <a name="Vector3+mul"></a>
 
@@ -160,7 +153,7 @@ Return a new vector of this * other.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| Other | <code>Number</code> \| [<code>Vector3</code>](#Vector3) | Vector or number to multiply. |
+| Other | <code>Number</code> \| [<code>Vector3</code>](#Vector3) | Vector3 or number to multiply with all components. |
 
 <a name="Vector3+round"></a>
 
@@ -291,6 +284,13 @@ Return if vector approximately equals another vector.
 | other | [<code>Vector3</code>](#Vector3) | Other vector to compare to. |
 | threshold | <code>Number</code> | Distance threshold to consider as equal. Defaults to 1. |
 
+<a name="Vector3+length"></a>
+
+### vector3.length() ⇒ <code>Number</code>
+Return vector length (aka magnitude).
+
+**Kind**: instance method of [<code>Vector3</code>](#Vector3)  
+**Returns**: <code>Number</code> - Vector length.  
 <a name="Vector3+scaled"></a>
 
 ### vector3.scaled() ⇒ [<code>Vector3</code>](#Vector3)
@@ -335,69 +335,6 @@ Convert to dictionary.
 | --- | --- | --- |
 | minimized | <code>Boolean</code> | If true, will not include keys that their values are 0. You can use fromDict on minimized dicts. |
 
-<a name="Vector3.zero"></a>
-
-### Vector3.zero ⇒ [<code>Vector3</code>](#Vector3)
-Get vector with 0,0,0 values.
-
-**Kind**: static property of [<code>Vector3</code>](#Vector3)  
-**Returns**: [<code>Vector3</code>](#Vector3) - result vector.  
-<a name="Vector3.one"></a>
-
-### Vector3.one ⇒ [<code>Vector3</code>](#Vector3)
-Get vector with 1,1,1 values.
-
-**Kind**: static property of [<code>Vector3</code>](#Vector3)  
-**Returns**: [<code>Vector3</code>](#Vector3) - result vector.  
-<a name="Vector3.half"></a>
-
-### Vector3.half ⇒ [<code>Vector3</code>](#Vector3)
-Get vector with 0.5,0.5 values.
-
-**Kind**: static property of [<code>Vector3</code>](#Vector3)  
-**Returns**: [<code>Vector3</code>](#Vector3) - result vector.  
-<a name="Vector3.left"></a>
-
-### Vector3.left ⇒ [<code>Vector3</code>](#Vector3)
-Get vector with -1,0,0 values.
-
-**Kind**: static property of [<code>Vector3</code>](#Vector3)  
-**Returns**: [<code>Vector3</code>](#Vector3) - result vector.  
-<a name="Vector3.right"></a>
-
-### Vector3.right ⇒ [<code>Vector3</code>](#Vector3)
-Get vector with 1,0,0 values.
-
-**Kind**: static property of [<code>Vector3</code>](#Vector3)  
-**Returns**: [<code>Vector3</code>](#Vector3) - result vector.  
-<a name="Vector3.up"></a>
-
-### Vector3.up ⇒ [<code>Vector3</code>](#Vector3)
-Get vector with 0,1,0 values.
-
-**Kind**: static property of [<code>Vector3</code>](#Vector3)  
-**Returns**: [<code>Vector3</code>](#Vector3) - result vector.  
-<a name="Vector3.down"></a>
-
-### Vector3.down ⇒ [<code>Vector3</code>](#Vector3)
-Get vector with 0,-1,0 values.
-
-**Kind**: static property of [<code>Vector3</code>](#Vector3)  
-**Returns**: [<code>Vector3</code>](#Vector3) - result vector.  
-<a name="Vector3.front"></a>
-
-### Vector3.front ⇒ [<code>Vector3</code>](#Vector3)
-Get vector with 0,0,-1 values.
-
-**Kind**: static property of [<code>Vector3</code>](#Vector3)  
-**Returns**: [<code>Vector3</code>](#Vector3) - result vector.  
-<a name="Vector3.back"></a>
-
-### Vector3.back ⇒ [<code>Vector3</code>](#Vector3)
-Get vector with 0,0,1 values.
-
-**Kind**: static property of [<code>Vector3</code>](#Vector3)  
-**Returns**: [<code>Vector3</code>](#Vector3) - result vector.  
 <a name="Vector3.zeroReadonly"></a>
 
 ### Vector3.zeroReadonly
@@ -436,14 +373,14 @@ Be careful not to try and change it.
 <a name="Vector3.upReadonly"></a>
 
 ### Vector3.upReadonly
-Vector with 0,1,0 values as a frozen shared object.
+Vector with 0,-1,0 values as a frozen shared object.
 Be careful not to try and change it.
 
 **Kind**: static property of [<code>Vector3</code>](#Vector3)  
 <a name="Vector3.downReadonly"></a>
 
 ### Vector3.downReadonly
-Vector with 0,-1,0 values as a frozen shared object.
+Vector with 0,1,0 values as a frozen shared object.
 Be careful not to try and change it.
 
 **Kind**: static property of [<code>Vector3</code>](#Vector3)  
@@ -461,6 +398,69 @@ Vector with 0,0,-1 values as a frozen shared object.
 Be careful not to try and change it.
 
 **Kind**: static property of [<code>Vector3</code>](#Vector3)  
+<a name="Vector3.zero"></a>
+
+### Vector3.zero() ⇒ [<code>Vector3</code>](#Vector3)
+Get vector with 0,0,0 values.
+
+**Kind**: static method of [<code>Vector3</code>](#Vector3)  
+**Returns**: [<code>Vector3</code>](#Vector3) - result vector.  
+<a name="Vector3.one"></a>
+
+### Vector3.one() ⇒ [<code>Vector3</code>](#Vector3)
+Get vector with 1,1,1 values.
+
+**Kind**: static method of [<code>Vector3</code>](#Vector3)  
+**Returns**: [<code>Vector3</code>](#Vector3) - result vector.  
+<a name="Vector3.half"></a>
+
+### Vector3.half() ⇒ [<code>Vector3</code>](#Vector3)
+Get vector with 0.5,0.5 values.
+
+**Kind**: static method of [<code>Vector3</code>](#Vector3)  
+**Returns**: [<code>Vector3</code>](#Vector3) - result vector.  
+<a name="Vector3.left"></a>
+
+### Vector3.left() ⇒ [<code>Vector3</code>](#Vector3)
+Get vector with -1,0,0 values.
+
+**Kind**: static method of [<code>Vector3</code>](#Vector3)  
+**Returns**: [<code>Vector3</code>](#Vector3) - result vector.  
+<a name="Vector3.right"></a>
+
+### Vector3.right() ⇒ [<code>Vector3</code>](#Vector3)
+Get vector with 1,0,0 values.
+
+**Kind**: static method of [<code>Vector3</code>](#Vector3)  
+**Returns**: [<code>Vector3</code>](#Vector3) - result vector.  
+<a name="Vector3.up"></a>
+
+### Vector3.up() ⇒ [<code>Vector3</code>](#Vector3)
+Get vector with 0,-1,0 values.
+
+**Kind**: static method of [<code>Vector3</code>](#Vector3)  
+**Returns**: [<code>Vector3</code>](#Vector3) - result vector.  
+<a name="Vector3.down"></a>
+
+### Vector3.down() ⇒ [<code>Vector3</code>](#Vector3)
+Get vector with 0,1,0 values.
+
+**Kind**: static method of [<code>Vector3</code>](#Vector3)  
+**Returns**: [<code>Vector3</code>](#Vector3) - result vector.  
+<a name="Vector3.front"></a>
+
+### Vector3.front() ⇒ [<code>Vector3</code>](#Vector3)
+Get vector with 0,0,1 values.
+
+**Kind**: static method of [<code>Vector3</code>](#Vector3)  
+**Returns**: [<code>Vector3</code>](#Vector3) - result vector.  
+<a name="Vector3.back"></a>
+
+### Vector3.back() ⇒ [<code>Vector3</code>](#Vector3)
+Get vector with 0,0,-1 values.
+
+**Kind**: static method of [<code>Vector3</code>](#Vector3)  
+**Returns**: [<code>Vector3</code>](#Vector3) - result vector.  
 <a name="Vector3.lerp"></a>
 
 ### Vector3.lerp(p1, p2, a) ⇒ [<code>Vector3</code>](#Vector3)

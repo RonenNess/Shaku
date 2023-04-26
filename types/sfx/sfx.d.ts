@@ -7,12 +7,7 @@ export = _exports;
  * To access the Sfx manager use `Shaku.sfx`.
  */
 declare class Sfx extends IManager {
-    _playingSounds: any;
-    /**
-     * @inheritdoc
-     * @private
-     **/
-    private setup;
+    _playingSounds: Set<any>;
     /**
      * Get the SoundMixer class.
      * @see SoundMixer
@@ -24,13 +19,13 @@ declare class Sfx extends IManager {
      * @example
      * let sound = await Shaku.assets.loadSound("assets/my_sound.ogg");
      * Shaku.sfx.play(sound, 0.75);
-     * @param {SoundAsset} sound Sound asset to play.
+     * @param {SoundAsset} soundAsset Sound asset to play.
      * @param {Number} volume Volume to play sound (default to max).
      * @param {Number} playbackRate Optional playback rate factor.
      * @param {Boolean} preservesPitch Optional preserve pitch when changing rate factor.
      * @returns {Promise} Promise to resolve when sound starts playing.
      */
-    play(sound: SoundAsset, volume: number, playbackRate: number, preservesPitch: boolean): Promise<any>;
+    play(soundAsset: SoundAsset, volume: number, playbackRate: number, preservesPitch: boolean): Promise<any>;
     /**
      * Stop all playing sounds.
      * @example

@@ -20,7 +20,7 @@ To access the Sfx manager use `Shaku.sfx`.
     * [.playingSoundsCount](#Sfx+playingSoundsCount) ⇒ <code>Number</code>
     * [.masterVolume](#Sfx+masterVolume) ⇒ <code>Number</code>
     * [.masterVolume](#Sfx+masterVolume)
-    * [.play(sound, volume, playbackRate, preservesPitch)](#Sfx+play) ⇒ <code>Promise</code>
+    * [.play(soundAsset, volume, playbackRate, preservesPitch)](#Sfx+play) ⇒ <code>Promise</code>
     * [.stopAll()](#Sfx+stopAll)
     * [.createSound(sound)](#Sfx+createSound) ⇒ <code>SoundInstance</code>
 
@@ -65,7 +65,7 @@ This affect all sound effects volumes.
 
 <a name="Sfx+play"></a>
 
-### sfx.play(sound, volume, playbackRate, preservesPitch) ⇒ <code>Promise</code>
+### sfx.play(soundAsset, volume, playbackRate, preservesPitch) ⇒ <code>Promise</code>
 Play a sound once without any special properties and without returning a sound instance.
 Its a more convinient method to play sounds, but less efficient than 'createSound()' if you want to play multiple times.
 
@@ -74,7 +74,7 @@ Its a more convinient method to play sounds, but less efficient than 'createSoun
 
 | Param | Type | Description |
 | --- | --- | --- |
-| sound | <code>SoundAsset</code> | Sound asset to play. |
+| soundAsset | <code>SoundAsset</code> | Sound asset to play. |
 | volume | <code>Number</code> | Volume to play sound (default to max). |
 | playbackRate | <code>Number</code> | Optional playback rate factor. |
 | preservesPitch | <code>Boolean</code> | Optional preserve pitch when changing rate factor. |

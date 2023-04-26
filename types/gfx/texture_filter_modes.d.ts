@@ -10,6 +10,6 @@ export namespace TextureFilterModes {
 	const LinearMipmapNearest: TextureFilterMode;
 	const NearestMipmapLinear: TextureFilterMode;
 	const LinearMipmapLinear: TextureFilterMode;
-    const _values: any;
+    const _values: Set<string>;
 }
 //# sourceMappingURL=texture_filter_modes.d.ts.map

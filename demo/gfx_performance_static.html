@@ -9,15 +9,8 @@
   </head>
   <body>
     <div class="noselect">
-    <button class="view-code-btn" onclick="showSampleCode();">View Code</button> 
-    <h1 class="demo-title">Shaku Gfx Demo: Performance Test - Static Sprites</h1>
-      <p>This demo is a performance test to examine the efficiency of the static sprite optimization.<br /><br />
-      Press <b>Z</b> to add sprites, and <b>X</b> to remove sprites.</p>
-
-      <div>
-        <input type="checkbox" id="static-sprites" name="static-sprites" checked>
-        <label for="static-sprites">Use Static Sprites.</label>
-      </div>
+    <h1 class="demo-title" style="margin-left: 0;">Shaku Gfx Demo: Static Performance Test</h1>
+      <p>This demo is a performance test to check the limits of Shaku on your machine, with a static batch that only updates once and redrawn every frame.</p>
 
       <p id="fps-data"></p>
 
@@ -45,12 +38,9 @@
 
           // create sprites group
           let group = new Shaku.gfx.SpritesGroup();
-          
-          // to detect changes
-          var _lastStaticValue = true;
 
           // add a new sprite to group
-          function addSprite()
+          function drawSprite()
           {
             // create sprite
             let sprite = new Shaku.gfx.Sprite(texture);
@@ -58,6 +48,11 @@
             // random position and set size
             sprite.position.set(16 + Math.random() * (screenX - 32), 24 + Math.random() * (screenY - 48));
             sprite.size.set(32, 48);
+
+            // make some with source rect
+            if (Math.random() < 0.5) {
+              sprite.sourceRectangle = new Shaku.utils.Rectangle(0, 0, texture.width, texture.height);
+            }
 
             // random color
             if (Math.random() < 0.75) {
@@ -72,18 +67,25 @@
             // randomize velocity
             sprite.velocity = new Shaku.utils.Vector2(Math.random() * 2 - 1, Math.random() * 2 - 1);
 
-            // set as static
-            sprite.static = _lastStaticValue;
-
             // add to group
             group.add(sprite);
           }
 
           // create starting sprites
-          let spritesCount = 150000;
+          let spritesCount = 250000;
           for (let i = 0; i < spritesCount; ++i) {
-            addSprite();
+            drawSprite();
           }
+
+          // create a sprites batch
+          let batchSize = spritesCount + 1;
+          let spritesBatch = new Shaku.gfx.SpriteBatch(batchSize, true);
+
+          // add sprites
+          spritesBatch.begin();
+          spritesBatch.drawSpriteGroup(group);
+          spritesBatch.makeStatic();
+          spritesBatch.endWithoutDraw();
 
           // do a main loop step.
           function step() 
@@ -92,21 +94,10 @@
             Shaku.startFrame();
             Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
 
-            // draw sprites
-            Shaku.gfx.drawGroup(group);
-
-            // check if should use static sprites
-            const staticSprites = document.getElementById('static-sprites').checked;
-            if (_lastStaticValue !== staticSprites) {
-              group.forEach(sprite => {
-                sprite.static = staticSprites;
-              });
-              _lastStaticValue = staticSprites;
-            }
-
-            // add sprites
-            if (Shaku.input.down('z')) { for (let x = 0; x < 100; ++x) addSprite(); }
-            if (Shaku.input.down('x')) { for (let x = 0; x < 100 && group.count > 1; ++x) group.shift(); }
+            // draw sprites batch - we just begin and end since we already have all the vertices set statically (we set preserve buffers = true).
+            // here we can change effect, blend mode, transformations, etc.
+            spritesBatch.begin();
+            spritesBatch.end();
 
             // end frame and request next frame
             Shaku.endFrame();
@@ -127,42 +118,6 @@
 
 </div>
 
-<!-- code example part -->
-<div id="sample-code-modal" class="modal">
-  <div class="modal__overlay jsOverlay"></div>
-  <div class="modal__container">   
-
-<p class="noselect">The code below renders 100,000 sprites with batch rendering.</p>
-<pre><code class="language-js">// load texture for test
-let texture = await Shaku.assets.loadTexture('assets/skelly.png');
-
-// create sprites group
-let group = new Shaku.gfx.SpritesGroup();
-
-// create 100,000 sprites
-for (let i = 0; i < 100000; ++i) {
-  let sprite = new Shaku.gfx.Sprite(texture);
-  sprite.position.set(Math.random() * 800, Math.random() * 600);
-  sprite.size.set(32, 48);
-  sprite.color.set(Math.random(), Math.random(), Math.random(), 1);
-  group.add(sprite);
-}
-
-// part below goes between startFrame() and endFrame()
-// -------------------------------------------------------
-
-// draw sprites with batching
-Shaku.gfx.drawGroup(group);
-
-// show current FPS count in element #show-fps
-document.getElementById('show-fps').innerHTML = Shaku.getFpsCount();</code></pre>
-
-  <button class="modal__close" onclick="closeModal('sample-code-modal')">&#10005;</button>
-</div>
-</div>
-
-<link href="prism/prism.css" rel="stylesheet" />
-<script src="prism/prism.js"></script>
 
   </body>
 </html>

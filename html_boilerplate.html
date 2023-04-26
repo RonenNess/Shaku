@@ -5,7 +5,6 @@
     <script src="dist/shaku.js"></script>
   </head>
   <body>
-      <!-- demo code -->
       <script>
         (async function runGame()
         {
@@ -16,23 +15,23 @@
           document.body.appendChild(Shaku.gfx.canvas);
           Shaku.gfx.setResolution(800, 600, true);
 
-          // TODO: INIT STUFF AND LOAD ASSETS HERE
+          // TODO: LOAD ASSETS AND INIT GAME LOGIC HERE
 
-          // do a single main loop step and request the next step
+          // do a single main loop step and request next step inside
           function step() 
           {  
             // start a new frame and clear screen
             Shaku.startFrame();
             Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
 
-            // TODO: PUT YOUR GAME UPDATES / RENDERING HERE
+            // TODO: PUT YOUR GAME UPDATES AND RENDERING HERE
 
-            // end frame and request next step
+            // end frame and invoke the next step in 60 FPS rate (or more, depend on machine and browser)
             Shaku.endFrame();
             Shaku.requestAnimationFrame(step);
           }
 
-          // start main loop
+          // start the main loop
           step();
         })();
       </script>

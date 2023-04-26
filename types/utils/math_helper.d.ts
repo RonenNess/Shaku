@@ -21,6 +21,13 @@ declare class MathHelper {
      */
     static dot(x1: number, y1: number, x2: number, y2: number): number;
     /**
+     * Make a number a multiply of another number by rounding it up.
+     * @param {Number} numToRound Number to round up.
+     * @param {Number} multiple Number to make 'numToRound' a multiply of.
+     * @returns {Number} Result number.
+     */
+    static roundToMultiple(numToRound: number, multiple: number): number;
+    /**
      * Convert degrees to radians.
      * @param {Number} degrees Degrees value to convert to radians.
      * @returns {Number} Value as radians.

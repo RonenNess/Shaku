@@ -1,1 +1,1 @@
-{"version":3,"file":"key_codes.d.ts","sourceRoot":"","sources":["../../lib/input/key_codes.js"],"names":[],"mappings":";;;;;2BAgCU,WAAW;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;2BAbX,WAAW"}
+{"version":3,"file":"key_codes.d.ts","sourceRoot":"","sources":["../../src/input/key_codes.js"],"names":[],"mappings":";;;;;2BAgCU,WAAW;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;2BAbX,WAAW"}

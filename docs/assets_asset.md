@@ -14,6 +14,7 @@ All asset types inherit from this.
 
 * [Asset](#Asset)
     * [new Asset(url)](#new_Asset_new)
+    * [.ready](#Asset+ready) ⇒ <code>Boolean</code>
     * [.url](#Asset+url) ⇒ <code>String</code>
     * [.valid](#Asset+valid) ⇒ <code>Boolean</code>
     * [.onReady(callback)](#Asset+onReady)
@@ -32,6 +33,13 @@ Create the new asset.
 | --- | --- | --- |
 | url | <code>String</code> | Asset URL / identifier. |
 
+<a name="Asset+ready"></a>
+
+### asset.ready ⇒ <code>Boolean</code>
+Get if this asset is ready, ie loaded or created.
+
+**Kind**: instance property of [<code>Asset</code>](#Asset)  
+**Returns**: <code>Boolean</code> - True if asset finished loading / creating. This doesn't mean its necessarily valid, only that its done loading.  
 <a name="Asset+url"></a>
 
 ### asset.url ⇒ <code>String</code>

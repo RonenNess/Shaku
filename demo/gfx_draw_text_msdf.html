@@ -14,8 +14,7 @@
       <p>This demo demonstrate how to render text using MSDF with Shaku.<br/>
       To render text with higher resolution, Shaku can load a pre-generated MSDF atlas, which would look something like this (the below image was generated with <a href="https://github.com/soimy/msdf-bmfont-xml">msdf-bmfont-xml</a>):</p>
       <img id="font-texture" style="background: black;" />
-      <p>Once the font texture is loaded, the Gfx manager provides a method to generate a sprites groups from any given text.<br />
-        The examples below show text generated with this method. Note that we can apply any group transformations on a text group:</p>
+      <p>Once created, the Gfx manager can use it to convert any string into a collection of sprites that when rendered will draw the text with the given font.</p>
 
       <!-- include shaku -->
       <script src="js/demos.js"></script>
@@ -36,12 +35,13 @@
           document.body.appendChild(Shaku.gfx.canvas);
           Shaku.gfx.setResolution(screenX, screenY, true);
 
+          // create text sprite batch
+          let textSpriteBatch = new Shaku.gfx.TextSpriteBatch();
+          textSpriteBatch.msdfFont = true;
+
           // load font texture
           let fontTexture = await Shaku.assets.loadMsdfFontTexture('assets/DejaVuSansMono.ttf', {jsonUrl: 'assets/DejaVuSansMono.json', textureUrl: 'assets/DejaVuSansMono.png'});
           document.getElementById('font-texture').src = fontTexture.texture.image.src;
-
-          // use custom shader for rendering MSDF fonts
-          Shaku.gfx.useEffect(Shaku.gfx.builtinEffects.MsdfFont);
 
           // create some texts
 
@@ -77,15 +77,17 @@
             Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
 
             // draw texts
-            Shaku.gfx.drawGroup(text1);
-            Shaku.gfx.drawGroup(text2);
-            Shaku.gfx.drawGroup(text3);
-            Shaku.gfx.drawGroup(text4);
-            Shaku.gfx.drawGroup(text5);
-            Shaku.gfx.drawGroup(text6);
-            Shaku.gfx.drawGroup(text7);
-            Shaku.gfx.drawGroup(text8);
-
+            textSpriteBatch.begin();
+            textSpriteBatch.drawText(text1);
+            textSpriteBatch.drawText(text2);
+            textSpriteBatch.drawText(text3);
+            textSpriteBatch.drawText(text4);
+            textSpriteBatch.drawText(text5);
+            textSpriteBatch.drawText(text6);
+            textSpriteBatch.drawText(text7);
+            textSpriteBatch.drawText(text8);
+            textSpriteBatch.end();
+            
             // do some animations
             text2.rotation += Shaku.gameTime.delta;
             text3.scale.x = Math.sin(Shaku.gameTime.elapsed);
@@ -121,6 +123,10 @@
 <pre><code class="language-js">// load font texture asset
 let fontTexture = await Shaku.assets.loadMsdfFontTexture('assets/DejaVuSansMono.ttf', {jsonUrl: 'assets/DejaVuSansMono.json', textureUrl: 'assets/DejaVuSansMono.png'});
 
+// create text sprite batch
+let textSpriteBatch = new Shaku.gfx.TextSpriteBatch();
+textSpriteBatch.msdfFont = true;
+
 // generate text
 let textGroup = Shaku.gfx.buildText(fontTexture, "This is a multiline text..\nAligned left.", 24, Shaku.utils.Color.white, Shaku.gfx.TextAlignments.Left);
 textGroup.position.set(100, 100);
@@ -128,11 +134,10 @@ textGroup.position.set(100, 100);
 // part below goes between startFrame() and endFrame()
 // -------------------------------------------------------
 
-// use the shader for rendering MSDF fonts
-Shaku.gfx.useEffect(Shaku.gfx.builtinEffects.MsdfFont);
-
 // draw the text
-Shaku.gfx.drawGroup(textGroup);</code></pre>
+textSpriteBatch.begin();
+textSpriteBatch.drawText(textGroup);
+textSpriteBatch.end();</code></pre>
 
   <button class="modal__close" onclick="closeModal('sample-code-modal')">&#10005;</button>
 </div>

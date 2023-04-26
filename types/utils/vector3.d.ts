@@ -4,50 +4,50 @@ export = Vector3;
  */
 declare class Vector3 {
     /**
-     * Get vector (0,0).
+     * Get vector with 0,0,0 values.
      * @returns {Vector3} result vector.
      */
-    static get zero(): Vector3;
+    static zero(): Vector3;
     /**
-     * Get vector with 1,1 values.
+     * Get vector with 1,1,1 values.
      * @returns {Vector3} result vector.
      */
-    static get one(): Vector3;
+    static one(): Vector3;
     /**
      * Get vector with 0.5,0.5 values.
      * @returns {Vector3} result vector.
      */
-    static get half(): Vector3;
+    static half(): Vector3;
     /**
-     * Get vector with -1,0 values.
+     * Get vector with -1,0,0 values.
      * @returns {Vector3} result vector.
      */
-    static get left(): Vector3;
+    static left(): Vector3;
     /**
-     * Get vector with 1,0 values.
+     * Get vector with 1,0,0 values.
      * @returns {Vector3} result vector.
      */
-    static get right(): Vector3;
+    static right(): Vector3;
     /**
-     * Get vector with 0,-1 values.
+     * Get vector with 0,-1,0 values.
      * @returns {Vector3} result vector.
      */
-    static get up(): Vector3;
+    static up(): Vector3;
     /**
-     * Get vector with 0,1 values.
+     * Get vector with 0,1,0 values.
      * @returns {Vector3} result vector.
      */
-    static get down(): Vector3;
-    /**
-     * Get vector with 0,0,-1 values.
-     * @returns {Vector3} result vector.
-     */
-    static get front(): Vector3;
+    static down(): Vector3;
     /**
      * Get vector with 0,0,1 values.
      * @returns {Vector3} result vector.
      */
-    static get back(): Vector3;
+    static front(): Vector3;
+    /**
+     * Get vector with 0,0,-1 values.
+     * @returns {Vector3} result vector.
+     */
+    static back(): Vector3;
     /**
      * Lerp between two vectors.
      * @param {Vector3} p1 First vector.
@@ -110,7 +110,7 @@ declare class Vector3 {
      * @param {Number} z Z component.
      * @returns {Vector3} this.
      */
-    set(x: number, y: number): Vector3;
+    set(x: number, y: number, z: number): Vector3;
     /**
      * Copy values from other vector into self.
      * @returns {Vector3} this.
@@ -118,25 +118,25 @@ declare class Vector3 {
     copy(other: any): Vector3;
     /**
      * Return a new vector of this + other.
-     * @param {Number|Vector3} Other Vector or number to add.
+     * @param {Number|Vector3} Other Vector3 or number to add to all components.
      * @returns {Vector3} result vector.
      */
     add(other: any, ...args: any[]): Vector3;
     /**
      * Return a new vector of this - other.
-     * @param {Number|Vector3} Other Vector or number to sub.
+     * @param {Number|Vector3} Other Vector3 or number to sub from all components.
      * @returns {Vector3} result vector.
      */
     sub(other: any, ...args: any[]): Vector3;
     /**
      * Return a new vector of this / other.
-     * @param {Number|Vector3} Other Vector or number to divide.
+     * @param {Number|Vector3} Other Vector3 or number to divide by all components.
      * @returns {Vector3} result vector.
      */
     div(other: any, ...args: any[]): Vector3;
     /**
      * Return a new vector of this * other.
-     * @param {Number|Vector3} Other Vector or number to multiply.
+     * @param {Number|Vector3} Other Vector3 or number to multiply with all components.
      * @returns {Vector3} result vector.
      */
     mul(other: any, ...args: any[]): Vector3;
@@ -221,7 +221,7 @@ declare class Vector3 {
      * Return vector length (aka magnitude).
      * @returns {Number} Vector length.
      */
-    get length(): number;
+    length(): number;
     /**
      * Return a copy of this vector multiplied by a factor.
      * @returns {Vector3} result vector.
@@ -248,5 +248,16 @@ declare class Vector3 {
      * @returns {*} Dictionary with {x,y,z}
      */
     toDict(minimized: boolean): any;
+}
+declare namespace Vector3 {
+    const zeroReadonly: Vector3;
+    const oneReadonly: Vector3;
+    const halfReadonly: Vector3;
+    const leftReadonly: Vector3;
+    const rightReadonly: Vector3;
+    const upReadonly: Vector3;
+    const downReadonly: Vector3;
+    const frontReadonly: Vector3;
+    const backReadonly: Vector3;
 }
 //# sourceMappingURL=vector3.d.ts.map

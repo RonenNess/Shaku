@@ -1,21 +1,27 @@
 ![Shaku JS](resources/logo-sm.png)
 
-### A simple yet effective web game development framework *that knows its place*!
+### A simple and effective JavaScript game development framework *that knows its place*!
 
 **If you're looking for a package that implements rendering, sounds, assets and input, while keeping it low level and simple, this is the library for you!** 
 
+(if you're looking for a game engine with editor like Unity, this library is not what you're looking for)
+
+Demos & docs:
+
 - [Online Demos](https://ronenness.github.io/Shaku/demo/index.html)
-- [Full Game Made With Shaku](https://store.steampowered.com/app/2135030/HellEscape/)
-- [Game Demo Project](https://ronenness.github.io/Shaku-Demo/)
 - [Homepage](https://ronenness.github.io/Shaku/)
 - [Full API Docs](https://ronenness.github.io/Shaku/docs/index.html)
 
-Additional projects made with *Shaku*:
+Projects made with *Shaku*:
 
+- [HellEscape](https://store.steampowered.com/app/2135030/HellEscape/)
+- [Game Demo Project](https://ronenness.github.io/Shaku-Demo/)
 - [GridBender](https://knexator.itch.io/gridbender)
 - [Another Clone](https://knexator.itch.io/another-clone)
 - [Catalyst](https://knexator.itch.io/catalyst)
 - [King of Veggies](https://pinchazumos.itch.io/king-of-veggies)
+
+(Want your game listed above? Contact me at ronenness@gmail.com)
 
 # Table Of Content
 
@@ -33,7 +39,6 @@ Additional projects made with *Shaku*:
   - [Utils](#utils)
   - [Miscellaneous](#miscellaneous)
 - [Advanced Topics](#advanced-topics)
-  - [Batching](#batching)
   - [Shaku on NodeJS](#shaku-on-nodejs)
 - [Build Shaku](#build-shaku)
 - [Changes](#changes)
@@ -41,20 +46,29 @@ Additional projects made with *Shaku*:
 
 # About
 
-*Shaku* is a pure JavaScript framework for web games development that emphasize **simplicity**, **flexibility** and **freedom**.
+*Shaku* is a JavaScript framework for web games development that emphasize **simplicity**, **flexibility** and **freedom**.
 
-Let's take a sneak peek on gamedev with *Shaku*!
+It's pretty low level and designed to be used as the foundations for a higher-level game engine, or used directly for game development. Kind of like MonoGame, RayLib or libGDX.
+
+Let's take a quick look at how we make a game main loop with *Shaku*:
 
 ```js
-// main loop (do update step + request next step)
+// Init code goes here, we'll review it later..
+
+// main loop (do updates, render and request next step)
 function step() 
 {  
     // start a new frame and clear screen
     Shaku.startFrame();
     Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
 
-    // draw a texture at 256,256 with size 100,150
-    Shaku.gfx.draw(texture, new Shaku.utils.Vector2(256, 256), new Shaku.utils.Vector2(100, 150));
+    // draw a sprite using the spritebatch
+    spritesBatch.begin();
+    let position = new Shaku.utils.Vector2(400, 300);
+    let size = new Shaku.utils.Vector2(100, 100);
+    spritesBatch.drawQuad(texture, position, size);
+    spritesBatch.end();
+
 
     // end frame and request next step
     Shaku.endFrame();
@@ -62,58 +76,43 @@ function step()
 }
 ```
 
-So, what does *simplicity*, *flexability* and *freedom* in *Shaku* actually means?
-
-### Simplicity
-
-*Shaku* is mostly made of straightforward methods and barely have any setup code or configuration.
-It's a lean and mean package with zero dependencies and only minimal necessary abstraction.
-
-### Flexibility
-
-*Shaku* is easy to extend and tweak. The code is well documented and many of the framework components can be replaced or modified.
-
-### Freedom
-
-*Shaku* values your freedom. It will not push any design pattern on your code and will integrate nicely into whatever it is you're making.
-
-*Shaku* also plays nicely with other libraries and can be integrated with other frameworks like Three.js.
-
-## Features
+## Main Features
 
 *Shaku* provides the following key features:
 
-* Assets loader fetch textures, sound effects, JSON, and other resources.
 * Ultra-fast WebGL rendering engine.
-* Custom effects, render targets, batching and other graphics-essentials.
-* Input manager for simple touch, mouse and keyboard state-based input.
+* Assets loader to fetch textures, sounds, music, JSON, and other resources.
+* Texture Atlas builder to combine textures efficiently at runtime.
+* Collision detection.
+* Custom effects, text rendering, render targets, batching and other graphics-essentials.
+* Input manager for simple touch, mouse, gamepad and keyboard *state-based* input (instead of events).
 * Sound effects, music, tracks mixer, pitch and everything you need for sfx.
-* Basic utilities such as Vectors, Matrices, 2D Shapes, GameTime and much more.
-* Animators framework to animate any object with numeric values.
-* Collision detection utility, path finder, perlin random generator, and much more!
-* *All packed in a tiny lib with no other dependencies*! A single minified 170Kb JS is all you need.*
+* Basic utilities such as Vectors, Matrices, 2D Shapes, GameTime and more.
+* Advance utilities such as Animators, Path Finder, Perlin generator and other super useful stuff.
+* *All packed in a tiny lib with no external dependencies*! A single minified 150Kb JS is all you need to use Shaku.*
 
 
-If you want to play with *Shaku* while reading the docs, you can check out the [Sandbox Demo](https://ronenness.github.io/Shaku/demo/sandbox.html). 
-See the [demos assets](demo/assets) folder to see which assets you can use for the sandbox (or load from external sources).
+If you want to experiment with *Shaku* while reading the docs, you can check out this [Sandbox Demo](https://ronenness.github.io/Shaku/demo/sandbox.html). 
+See the [demos assets](demo/assets) folder to see which assets you can use for the sandbox (or load assets from external sources).
 
 ![Sandbox](resources/sandbox.jpg)
+
 
 ## Installation
 
 Using *Shaku* is super easy! 
 
-1. Get either `shaku.js` or `shaku.min.js` from the dist folder and include it in your page.
-2. Init *Shaku* and append the canvas to your document (or init *Shaku* on an existing canvas instead).
-3. Write your game loop with `Shaku.startFrame()` and `Shaku.endFrame()`.
+1. Get `shaku.js` or `shaku.min.js` from the `dist/` folder and include it in your page (or use npm to get it).
+2. Init *Shaku* and append the canvas to your document (or init *Shaku* on an existing canvas).
+3. Write a game loop method starting with `Shaku.startFrame()` and ending with `Shaku.endFrame()` and `requestAnimationFrame()` to get next frame.
 
-Note that you can also get *Shaku* via NPM:
+To get *Shaku* via NPM:
 
 ```npm install shaku```
 
 ### HTML Boilerplate
 
-**The following is a boilerplate HTML with *Shaku*, running an empty main loop:**
+The following is a boilerplate HTML with *Shaku* running an empty game main loop:
 
 ```html
 <!DOCTYPE html>
@@ -123,7 +122,6 @@ Note that you can also get *Shaku* via NPM:
     <script src="dist/shaku.js"></script>
   </head>
   <body>
-      <!-- demo code -->
       <script>
         (async function runGame()
         {
@@ -134,23 +132,23 @@ Note that you can also get *Shaku* via NPM:
           document.body.appendChild(Shaku.gfx.canvas);
           Shaku.gfx.setResolution(800, 600, true);
 
-          // TODO: INIT STUFF AND LOAD ASSETS HERE
+          // TODO: LOAD ASSETS AND INIT GAME LOGIC HERE
 
-          // do a single main loop step and request the next step
+          // do a single main loop step and request next step inside
           function step() 
           {  
             // start a new frame and clear screen
             Shaku.startFrame();
             Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
 
-            // TODO: PUT YOUR GAME UPDATES / RENDERING HERE
+            // TODO: PUT YOUR GAME UPDATES AND RENDERING HERE
 
-            // end frame and request next step
+            // end frame and invoke the next step in 60 FPS rate (or more, depend on machine and browser)
             Shaku.endFrame();
             Shaku.requestAnimationFrame(step);
           }
 
-          // start main loop
+          // start the main loop
           step();
         })();
       </script>
@@ -158,12 +156,12 @@ Note that you can also get *Shaku* via NPM:
 </html>
 ```
 
-You can find the above boilerplate HTML [here](html_boilerplate.html).
+You can find the above HTML file [here](html_boilerplate.html).
 
 # Online Demo Projects
 
 Online demo projects can be found [here](https://ronenness.github.io/Shaku/demo/index.html). 
-The demos demonstrate basic features and components, and implement 3 basic "games": Snake, Tilemap Editor, and Fishy.
+They demonstrate basic to advanced *Shaku* features.
 
 ![Demo-2](resources/demo-2.png)
 
@@ -171,35 +169,39 @@ The demos demonstrate basic features and components, and implement 3 basic "game
 
 *Shaku*'s API mostly consist of five main managers, each solve a different domain of problems in gamedev: *graphics*, *sounds*, *assets*, *collision* and *input*.
 
-In this doc we'll explore these managers and cover the most common use cases.
-If you want to dive into the full API, you can check out the [API Docs](docs/index.md), or browse the code instead.
+In this doc we'll explore these managers and cover the most common use cases with them.
+If you want to dive deep into the API, you can check out the [API Docs](docs/index.md), or browse the code.
 
 
 ## Setup
 
-Everything in *Shaku* is wrapped under the `Shaku` object. 
+Everything in *Shaku* is located under the `Shaku` object. 
 
-Since the initialization process and asset loading is mostly asynchronous operations, its best to wrap everything with an `async` method so that we can use `await`. Then we can setup *Shaku* with something like this:
+Since the initialization process and asset loading is mostly asynchronous operations, its best to wrap the init code in an `async` method and utilize `await` calls to simplify the code. A common *Shaku* initialization code will look something like this:
 
 ```js
 (async function runGame()
 {
-    // init shaku
-    Shaku.gfx.setContextAttributes({antialias: false}); // <-- for pixel art best to add this.
+    // init shaku.
+    // for pixel art games its best to set antialias=false before init.
+    Shaku.gfx.setContextAttributes({antialias: false});
     await Shaku.init();
 
-    // add shaku's canvas to document and set resolution to 800x600
+    // add shaku's canvas to document and set resolution to 800x600.
+    // this will set the canvas and renderer size.
     document.body.appendChild(Shaku.gfx.canvas);
     Shaku.gfx.setResolution(800, 600, true);
 
-    // load assets...
+    // TODO: add code to load assets and init game logic here.
 
-    // start main loop
+    // game main loop
     function step() 
     {  
+        // start frame and clear the screen
         Shaku.startFrame();
+        Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
 
-        // TODO: PUT YOUR GAME LOGIC HERE
+        // TODO: add game logic code here
 
         Shaku.endFrame();
         Shaku.requestAnimationFrame(step);
@@ -210,226 +212,143 @@ Since the initialization process and asset loading is mostly asynchronous operat
 
 Let's go over the code above line by line:
 
-* `await Shaku.init()`: Initialize *Shaku*'s components. You must call this before doing anything with *Shaku*.
-* `document.body.appendChild(Shaku.gfx.canvas)`: Add the default canvas created by *Shaku* to the document body. You can also use an existing canvas instead, more on that later.
-* `Shaku.gfx.setResolution(800, 600, true)`: Set both canvas size and renderer size to 800x600 px.
-* `Shaku.startFrame()`: Must be called at the beginning of every game frame.
-* `Shaku.endFrame()`: Must be called at the end of every game frame.
-* `Shaku.requestAnimationFrame(step)`: Set the next update frame to be called when its time to redraw screen. Basically this is just a wrapper around window.requestAnimationFrame with few fallbacks.
+* `Shaku.gfx.setContextAttributes({antialias: false})` will disable smooth filtering, and keep everything crispy and pixelated.
+* `await Shaku.init()` will initialize all *Shaku*'s managers. 
+* `document.body.appendChild(Shaku.gfx.canvas)` add the canvas created by *Shaku* to the document body (you can also use an existing canvas instead).
+* `Shaku.gfx.setResolution(800, 600, true)` will set both canvas size and renderer size to 800x600 px.
+* `Shaku.startFrame()` must be called at the beginning of every game frame.
+* `Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue)` will clear the canvas to blue-ish color.
+* `Shaku.endFrame()` must be called at the end of every game frame.
+* `Shaku.requestAnimationFrame(step)` will request next frame when its time to render screen again, keeping updates() rate at about 60 FPS (or more if the browser and machine allows it).
 
-As you can see from the example above, our step() method represent a single iteration in our game main loop. It handles both rendering and updates.
+As you can see from the example above, our step() method represent a single iteration in our game main loop. 
+It handles both rendering and updates.
 
-That's pretty much it in terms of setup. Here's a random screenshot to break the wall of text:
+Now we can start using *Shaku*'s managers, mostly between the `startFrame()` and `endFrame()` calls.
 
-![Demo-1](resources/demo-1.png)
 
-## graphics
+## Graphics
 
 Let's start exploring the APIs from the graphics manager, accessed by `Shaku.gfx`.
 
-This doc don't cover the entirely of the API, only the main parts of it. To see the full API, check out the [API docs](docs/gfx_gfx.md).
+In *Shaku* we use batches to render everything. 
+These batches collect multiple draw calls and batch them together into a single GPU call.
+This way of rendering is essential for performance, but it has some limitations. For example, you can only only batch rendering with the same texture, blend mode, and shaders.
 
-### Draw
+This doc don't cover the entirely of the API, only the main parts of it. 
+To see the full API, check out the [API docs](docs/gfx_gfx.md).
 
-To draw a texture on screen:
+### Drawing Textures
+
+To draw textures (also known as 2d sprites) we use a `SpriteBatch` renderer.
+This renderer batch together 2d quads and other shapes with textures on them. 
+
+Let's see a minimal code example to render a texture on screen:
 
 ```js
-// load texture (only need to call this once outside the main loop)
-let texture = await Shaku.assets.loadTexture('assets/my_texture.png');
+// this part comes after we init shaku, but still outside the main loop:
 
-// draw texture
-let position = new Shaku.utils.Vector2(100, 125);
-let size = new Shaku.utils.Vector2(32, 64);
-Shaku.gfx.draw(texture, position, size);
+// during the init phase, we create a spritebatch and load a texture to draw
+const texture = await Shaku.assets.loadTexture('<your texture path here..>');
+const spriteBatch = new Shaku.gfx.SpriteBatch();
+
+// this part comes between the Shaku.startFrame() and the Shaku.endFrame() calls:
+
+// draw the texture with the batch
+spritesBatch.begin();
+let position = new Shaku.utils.Vector2(400, 300);
+let size = new Shaku.utils.Vector2(100, 100);
+spritesBatch.drawQuad(texture, position, size);
+spritesBatch.end();
 ```
 
+Pretty simple, eh?
 Now let's draw with some more parameters:
 
 ```js
-let texture = await Shaku.assets.loadTexture('assets/my_texture.png');
+spritesBatch.begin();
 let position = new Shaku.utils.Vector2(100, 125);
 let size = new Shaku.utils.Vector2(32, 64);
 let sourceRect = new Shaku.utils.Rectangle(32, 0, 32, 64);
 let color = Shaku.utils.Color.red;
-let blendMode = Shaku.gfx.BlendModes.Additive;
 let rotation = Math.PI / 2;
 let origin = new Shaku.utils.Vector2(0.5, 1);
-let transform = Shaku.gfx.Matrix.translate(10, 10, 50);
-Shaku.gfx.draw(texture, position, size, sourceRect, color, blendMode, rotation, origin, transform);
+let skew = new Shaku.utils.Vector2(32, 0);
+Shaku.gfx.drawQuad(texture, position, size, sourceRect, color, rotation, origin, skew);
+spritesBatch.end();
 ```
 
-* `sourceRect` is the region we want to draw from source texture.
-* `color` is an overlay color to apply on the texture. note that if you exceed the 0-1 range, you can amplify existing colors.
-* `blendMode` is how to blend the texture with the already existing buffer. More on that later.
-* `rotation` will rotate the drawing (in radians).
-* `origin` is the point relative to texture size from which the texture will be painted. this affects both positioning and rotation. 0,0 = top left, 1,1 = bottom right.
-* `transform` optional transformation matrix. Used internally (for example with groups drawing) but you can also use it by providing a transformation matrix. More on matrices later.
-
-A demo page that draw textures can be found [here](https://ronenness.github.io/Shaku/demo/gfx_draw.html).
-
-#### Z Values
-
-Despite *Shaku* being a 2D library, and despite `position` and `size` being 2D vectors, drawing does support Z values to certain extent.
-
-If you add a `z` value to a position, this value will be passed into the vertex shader as the `z` value of the position. If you add a `z` value to the size param, it will be added to the position's `z` for the bottom-left and bottom-right vertices.
-
-The default effect don't do anything with z-values, but you can implement your own custom effect that use the z values. For example, to pass z values to the effect:
+When beginning a batch, you can set different blend modes and effects. For example:
 
 ```js
-let texture = await Shaku.assets.loadTexture('assets/my_texture.png');
-let position = new Shaku.utils.Vector2(100, 125);
-position.z = 100; // <-- pass z position to effect
-let size = new Shaku.utils.Vector2(32, 64);
-size.x = 50; // <-- bottom-left and bottom-right positions will have z value of 100 + 50 = 150
-let sourceRect = new Shaku.utils.Rectangle(32, 0, 32, 64);
-let color = Shaku.utils.Color.red;
-let blendMode = Shaku.gfx.BlendModes.Additive;
-let rotation = Math.PI / 2;
-let origin = new Shaku.utils.Vector2(0.5, 1);
-let transform = Shaku.gfx.Matrix.translate(10, 10, 50);
-Shaku.gfx.draw(texture, position, size, sourceRect, color, blendMode, rotation, origin, transform);
+spritesBatch.begin(Shaku.gfx.BlendModes.Additive, myCustomEffect);
 ```
 
-### Batching
+We'll learn more about effects later, don't worry about it for now.
 
-When you draw something it won't always appear on screen immediately, due to batching. Sometimes it will only appear at the end of the frame, which is unnoticable to the user, but may be an issue if you're trying to debug and draw step-by-step.
+A simple rendering demo can be found [here](https://ronenness.github.io/Shaku/demo/gfx_draw.html).
 
-To flush everything to screen immediately, you can call:
+#### When does a GPU draw call is made?
 
-```js
-Shaku.gfx.presentBufferedData();
-```
+The `SpriteBatch` will call the GPU to draw everything on three different occasions:
 
-### Cover
+1. When `spritesBatch.end()` is called.
+2. When you change the texture.
+3. If the batch overflows and can't contain any more drawings.
 
-`cover` draws a texture using a destination rectangle, instead of position, origin and size. 
-For example, the following will cover the entire canvas with a texture:
+As you can see number #2 is something we need to watch out for. Texture Atlases are great way to reduce draw calls, and when possible, you should sort your rendering order by textures. We'll learn more about Texture Atlases later.
 
-```js
-Shaku.gfx.cover(texture, Shaku.gfx.getRenderingRegion());
-```
+To learn more about Sprite Batches and see what else you can do with them, its recommended to check out the docs. For example you can control pixel aligning, buffers size, how to handle overflow, etc.
 
-### Draw Rectangles
 
-`fillRect` will draw filled colored rectangles. 
-For example the following will draw a red rectangle at position 100,100  and size 50,50.
+#### Sprites
 
-```js
-Shaku.gfx.fillRect(new Shaku.utils.Rectangle(100, 100, 50, 50), Shaku.utils.Color.red);
-```
+`Sprites` are entities that store all rendering parameters required to make a draw call. 
+It's just a more object-based approach to draw stuff. 
 
-You can also draw a rectangle outlines with outlineRect:
+Lets create a sprite and set some of its fields:
 
 ```js
-Shaku.gfx.outlineRect(new Shaku.utils.Rectangle(100, 100, 50, 50), Shaku.utils.Color.red);
-```
+// this part comes after we init shaku, but still outside the main loop:
 
-`Shaku` will use whatever effect is currently set to draw the rectangle, with a single white pixel as the texture. 
-If you change the default effect, it may affect how rectangles draw as well. More on effects later.
-
-A demo page that draw rectangles can be found [here](https://ronenness.github.io/Shaku/demo/gfx_draw.html).
-
-
-### Draw Circle
-
-`fillCircle` will draw filled colored circles. 
-
-```js
-Shaku.gfx.fillCircle(new Shaku.utils.Circle(new Shaku.utils.Vector2(100, 100), 285), Shaku.utils.Color.red);
-```
-
-You can also draw a circle outlines with outlineCircle:
-
-```js
-Shaku.gfx.outlineCircle(new Shaku.utils.Circle(new Shaku.utils.Vector2(100, 100), 285), Shaku.utils.Color.red);
-```
-
-`Shaku` will use whatever effect is currently set to draw the circle, with a single white pixel as the texture. 
-If you change the default effect, it may affect how circles draw as well. More on effects later.
-
-A demo page that draw a circle can be found [here](https://ronenness.github.io/Shaku/demo/gfx_draw.html).
-
-
-### Draw Lines
-
-`drawLinesStrip` will draw a strip of colored lines. 
-For example the following will draw lines from 50,50 to 150,50 and then 150,150 with random colors:
-
-```js
-let lines = [new Shaku.utils.Vector2(50,50), new Shaku.utils.Vector2(150,50), new Shaku.utils.Vector2(150,150)];
-let colors = [Shaku.utils.Color.random(), Shaku.utils.Color.random(), Shaku.utils.Color.random()];
-Shaku.gfx.drawLinesStrip(lines, colors);
-```
-
-And `drawLines` will draw a set of lines, not connected as a strip:
-
-```js
-let lines = [new Shaku.utils.Vector2(50,50), new Shaku.utils.Vector2(150,50), new Shaku.utils.Vector2(150,150), new Shaku.utils.Vector2(300,150)];
-let colors = [Shaku.utils.Color.red, Shaku.utils.Color.red, Shaku.utils.Color.blue, Shaku.utils.Color.blue];
-Shaku.gfx.drawLines(lines, colors);
-```
-
-Or, if you need just a single line, you can use `drawLine` instead:
-
-```js
-Shaku.gfx.drawLine(new Shaku.utils.Vector2(50,50), new Shaku.utils.Vector2(150,50), Shaku.utils.Color.red);
-```
-
-`Shaku` will use whatever effect is currently set to draw the lines, with a single white pixel as the texture. 
-If you change the default effect, it may affect how lines draw as well. More on effects later.
-
-A demo page that draw lines can be found [here](https://ronenness.github.io/Shaku/demo/gfx_draw_lines.html).
-
-### Blend Modes
-
-Blend Modes are different methods to blend new rendering with the existing buffer / texture we draw on.
-
-The following screenshot demonstrate the different blend modes *Shaku* supports, and how it would look like when using them:
-
-![BlendModes](docs/resources/blend-modes.png)
-
-Or, you can watch the live demo [here](https://ronenness.github.io/Shaku/demo/gfx_blend_modes.html).
-
-### Sprites
-
-`Sprites` are entities that store all the parameters required to make a draw call. 
-
-Lets create a sprite and set all its members:
-
-```js
 // load texture and create sprite
 let texture = await Shaku.assets.loadTexture('assets/my_texture.png');
 let sprite = new Shaku.gfx.Sprite(texture);
 
-// set sprite members
-sprite.position = new Shaku.utils.Vector2(100, 125);
-sprite.size = new Shaku.utils.Vector2(32, 64);
-sprite.sourceRect = new Shaku.utils.Rectangle(32, 0, 32, 64);
+// set some fields
+sprite.position.set(100, 125);
+sprite.size.set(32, 64);
+sprite.sourceRectangle = new Shaku.utils.Rectangle(32, 0, 32, 64);
 sprite.color = Shaku.utils.Color.red;
-sprite.blendMode = Shaku.gfx.BlendModes.Additive;
 sprite.rotation = Math.PI / 2;
-sprite.origin = new Shaku.utils.Vector2(0.5, 1);
+sprite.origin.set(0.5, 1);
 
-// draw sprite
+// this part comes between the Shaku.startFrame() and the Shaku.endFrame() calls:
+
+// draw the sprite in a sprite batch
+spritesBatch.begin();
 Shaku.gfx.drawSprite(sprite);
+spritesBatch.end();
 ```
 
-`Sprite` may seem like just a sugarcoat for `draw()` at this point, but next we'll learn about `SpritesGroup` and how we use it for batch rendering.
+#### Sprites Group
 
-### Sprites Group
-
-As the name implies, a sprites group is a collection of sprites. Let's see how we use it:
+As the name implies, a sprites group is a collection of sprites.
+Let's see how we use it:
 
 ```js
-// create group
+// this part comes after we init shaku, but still outside the main loop:
+
+// create a group
 let group = new Shaku.gfx.SpritesGroup();
 
 // set group position, scale and rotation
+// these transformations will affect all sprites in group
 group.position.set(100, 100);
 group.rotation = Math.PI / 2;
 group.scale.set(2, 2);
 
-// add sprites to group
+// add some sprites to the group
 let texture = await Shaku.assets.loadTexture('assets/my_texture.png');
 for (let i = 0; i < 3; ++i) {
   let sprite = new Shaku.gfx.Sprite(texture);
@@ -439,100 +358,156 @@ for (let i = 0; i < 3; ++i) {
   group.add(sprite);
 }
 
+// this part comes between the Shaku.startFrame() and the Shaku.endFrame() calls:
+
 // draw group
-Shaku.gfx.drawGroup(group);
+spritesBatch.begin();
+Shaku.gfx.drawSpriteGroup(group);
+spritesBatch.end();
 ```
 
-The advantage of groups is that you can apply matrix-based transformations on all sprites in the group, as if they were a single draw call.
+The advantage of groups is that you can apply common transformations on all the sprites in the group around the same origin point. Its also slightly more efficient in some cases.
 
 A demo page that draw with sprites group can be found [here](https://ronenness.github.io/Shaku/demo/gfx_sprites_group.html).
 
 
-### gfx.spriteBatch
+### Drawing 3D Sprites
 
-This object is used internally to draw batches of sprites. You can access it directly at your own risk:
+*Shaku* provides a simple 3D Sprite Batch renderer. 
+This is useful for simple 3D stuff like this:
+
+![3D Sprites](resources/demo-3.png)
+
+Let's take a look at a basic 3D sprites example:
 
 ```js
-// `effect` and `transform` are optional.
-Shaku.gfx.spriteBatch.begin(effect, transform);
-Shaku.gfx.spriteBatch.draw(sprite);
-Shaku.gfx.spriteBatch.end();
+// this part comes after we init shaku, but still outside the main loop:
+
+// create a 3d sprite and set a default perspective camera.
+// check out setPerspectiveCamera() arguments to see more options.
+let spritesBatch3d = new Shaku.gfx.SpriteBatch3D();
+spritesBatch3d.setPerspectiveCamera();
+
+// this part comes between the Shaku.startFrame() and the Shaku.endFrame() calls:
+
+// begin drawing 3d sprites
+spritesBatch3d.begin();
+
+// set view matrix (camera position and where we look at)
+spritesBatch3d.setViewLookat(
+  new Shaku.utils.Vector3(0, 500, 600), 
+  new Shaku.utils.Vector3(0, 0, 0)
+);
+
+// draw 3d quad from 4 vertices
+const v1 = (new Shaku.gfx.Vertex())
+          .setPosition(new Shaku.utils.Vector3(-spriteSize.x / 2, 0, 0))
+          .setTextureCoords(new Shaku.utils.Vector2(0, 1));
+const v2 = (new Shaku.gfx.Vertex())
+          .setPosition(new Shaku.utils.Vector3(spriteSize.x / 2, 0, 0))
+          .setTextureCoords(new Shaku.utils.Vector2(1, 1));
+const v3 = (new Shaku.gfx.Vertex())
+          .setPosition(new Shaku.utils.Vector3(-spriteSize.x / 2, spriteSize.y, 0))
+          .setTextureCoords(new Shaku.utils.Vector2(0, 0));
+const v4 = (new Shaku.gfx.Vertex())
+          .setPosition(new Shaku.utils.Vector3(spriteSize.x / 2, spriteSize.y, 0))
+          .setTextureCoords(new Shaku.utils.Vector2(1, 0));
+spritesBatch3d.drawVertices(texture, [v1, v2, v3, v4]);
+
+// end rendering
+spritesBatch3d.end();
 ```
 
-Note that since Shaku batch sprites internally, the `spriteBatch` may already be in use when you try to access it. To be safe, its best to call this every time you're about to access the `spriteBatch` directly:
+### Drawing Shapes
+
+*Shaku* also provides a way to draw some basic 2D shapes:
 
 ```js
-Shaku.gfx.presentBufferedData();
+// this part comes after we init shaku, but still outside the main loop:
+
+// create shapes batch to render 2d shapes
+let shapesBatch = new Shaku.gfx.ShapesBatch();
+
+// this part comes between the Shaku.startFrame() and the Shaku.endFrame() calls:
+
+// start drawing shapes
+shapesBatch.begin();
+
+// draw a circle in the center of screen with radius of 400. its center is red, its outter parts are blue, and it has 32 segments.
+shapesBatch.drawCircle(new Shaku.utils.Circle(Shaku.gfx.getCanvasSize().div(2), 400), Shaku.utils.Color.red, 32, Shaku.utils.Color.blue);
+
+// draw a rectangle at offset 100,100 and size 256,256, with red color, that rotates over time
+let rotation = Shaku.gameTime.elapsed;
+shapesBatch.drawRectangle(new Shaku.utils.Rectangle(100, 100, 256, 256), Shaku.utils.Color.red, rotation);
+
+// draw everything on screen
+shapesBatch.end();
 ```
 
-This will make sure everything that was in it is flushed to the screen.
+Similar to `ShapesBatch`, there's also a `LinesBatch` renderer to draw just the outline of shapes (or a string of lines from vertices).
 
 
-### Disable Antialias
+### Drawing Text
 
-If your game have pixel art its best to disable antialias, especially when using *texture atlas*. To do so, call the following **before** initializing *Shaku*:
+*Shaku* support rendering text from *Font Texture* (also known as Bitmap Fonts). 
+These fonts store the glyphs as pixels data, and render the text as sprites.
 
-```js
-Shaku.gfx.setContextAttributes({antialias: false});
-```
+You don't need to prepare the Font Textures upfront; *Shaku* generates them at runtime from regular TTF fonts.
+For example, *Shaku* generated the following font texture for one of the [online demos](https://ronenness.github.io/Shaku/demo/gfx_draw_text.html):
 
-### Draw Text
+![font texture](resources/font-texture.png)
 
-To draw a text with *Shaku* we need to perform 3 steps:
-
-1. Load a `Font Texture` asset, which is essentially a texture atlas with all the font characters, generated in runtime from a loaded font.
-2. Generate a group of sprites to represent the string with the given `Font Texture`.
-3. Draw the group.
-
-Sounds like a lot of work, but its actually very simple. Lets take a look:
+Let's take a look at how we generate a Sprite Font and render some text with it:
 
 ```js
+// this part comes after we init shaku, but still outside the main loop:
+
 // load font texture
+// note: the fontName argument MUST match the font name defined in the ttf file.
 let fontTexture = await Shaku.assets.loadFontTexture('assets/DejaVuSansMono.ttf', {fontName: 'DejaVuSansMono'});
-     
-// generate 'hello world!' text (note: you don't have to call this every frame, only when you want to change text)
-let text1 = Shaku.gfx.buildText(fontTexture, "Hello World!");
 
-// set text group position and draw it
-text1.position.set(40, 40);
-Shaku.gfx.drawGroup(text1);
+// create text sprite batch
+let textSpriteBatch = new Shaku.gfx.TextSpriteBatch();
+
+// generate a text group to render in white, aligned to the left, and positioned at 100,100.
+let textGroup = Shaku.gfx.buildText(fontTexture, "Hello World!\nThis is second line.", 24, Shaku.utils.Color.white, Shaku.gfx.TextAlignments.Left);
+textGroup.position.set(100, 100);
+
+// this part comes between the Shaku.startFrame() and the Shaku.endFrame() calls:
+
+// draw the text
+textSpriteBatch.begin();
+textSpriteBatch.drawText(textGroup);
+textSpriteBatch.end();
+
+// you can also draw the text with outlines:
+textSpriteBatch.outlineWeight = 0.75;
+textSpriteBatch.outlineColor = Shaku.utils.Color.black;
+textSpriteBatch.begin();
+textSpriteBatch.drawText(textGroup);
+textSpriteBatch.end();
 ```
 
 When loading the `FontTexture` you can provide additional parameters, to learn more about them check out the [API Docs](docs/assets_font_texture_asset.md).
 
-To demonstrate the concept of `Font Textures` better, here's a saved font texture that was generated via `assets.loadFontTexture()` in the [drawing texts demo](https://ronenness.github.io/Shaku/demo/gfx_draw_text.html):
-
-![font texture](resources/font-texture.png)
-
-Note that `buildText` accepts some additional params that were not covered in the example above. 
-Lets draw text with all advanced options:
-
-```js
-let fontSize = 16;
-let color = Shaku.utils.Color.blue;
-let alignment = Shaku.gfx.TextAlignments.Left;
-let marginFactor = Shaku.utils.Vector2.one;
-Shaku.gfx.buildText(fontTexture, "hello world.", fontSize, color, alignment, marginFactor)
-```
-
-* `fontSize`: font size for text, or undefined to use the default font texture size.
-* `Color`: optional text color.
-* `alignment`: how to align text. Options are `Shaku.gfx.TextAlignments.Left`, `Shaku.gfx.TextAlignments.Right` and `Shaku.gfx.TextAlignments.Center`.
-* `marginFactor`: optional factor for characters spacing. For example value of 2,1 will make double horizontal spacing. 
-
-A demo page that draw texts can be found [here](https://ronenness.github.io/Shaku/demo/gfx_draw_text.html).
+Note that *Shaku* also support hi-res MSDF Font Textures, but it can't generate them at runtime.
+To see how to use MSDF font textures, check out [this demo](https://ronenness.github.io/Shaku/demo/gfx_draw_text_msdf.html).
 
 ### Render Targets
 
-Render Targets provide a way to draw on textures instead of directly on screen. This technique is super useful for post processing effects, or to implement virtual resolution by drawing on a constat sized texture and then stretch it on screen.
+Render Targets provide a way to draw *on textures* instead of directly on screen, and then draw these textures on screen. This technique is useful for post processing effects, or to implement virtual resolution (by drawing on a constant-sized texture and then present it on screen).
 
-A render target is basically a texture asset, just created in a different way:
+For example [the following game](https://store.steampowered.com/app/2135030/HellEscape/) is built with *Shaku*, and uses Render Targets to implement the 2D lightings you see here:
+
+![HellEscape](resources/hellescape.png)
+
+A render target in essence is just a texture asset you can draw on, created like this:
 
 ```js
 let renderTarget = await Shaku.assets.createRenderTarget('_my_render_target', width, height);
 ```
 
-And now to use it:
+Then you can start drawing on it by setting it as the active render target:
 
 ```js
 // set render target
@@ -545,271 +520,345 @@ Shaku.gfx.setRenderTarget(renderTarget);
 Shaku.gfx.setRenderTarget(null);
 ```
 
-And now we can use the render target just like we would use any texture:
+And finally we can use the render target just like we would use any other texture:
 
 ```js
-Shaku.gfx.draw(renderTarget, position, size);
+spritesBatch.begin();
+let position = new Shaku.utils.Vector2(400, 300);
+let size = new Shaku.utils.Vector2(100, 100);
+spritesBatch.drawQuad(renderTarget, position, size);
+spritesBatch.end();
 ```
 
-A demo page that uses render targets can be found [here](https://ronenness.github.io/Shaku/demo/gfx_render_target.html).
+A demo that uses render targets can be found [here](https://ronenness.github.io/Shaku/demo/gfx_render_target.html).
 
 ### Cameras
 
-A camera object defines two key properties: 
+The camera object define two key properties: 
 
 - Viewport: the region of the canvas we render on. 
-- Projection matrix: offset and scale of everything we draw.
+- Projection: offset and scale of everything we draw on the canvas.
 
-By default, *Shaku* will use a camera with no offset, scale of 1,1, and viewport that covers the entire canvas.
+By default, *Shaku* will use a camera with no offset and scale of x1, and a viewport that covers the entire canvas. In other words, an identity camera that won't affect anything.
 
-Easiest way to set camera's offset is with `setCameraOrthographic()`:
-
-```js
-let cameraOffset = Shaku.utils.Vector2.zero;
-Shaku.gfx.setCameraOrthographic(cameraOffset);
-```
-
-But you can also create a camera object and set it manually. Lets first create a camera:
+To change the default camera:
 
 ```js
+// create camera object
 let camera = Shaku.gfx.createCamera();
-```
 
-And now set it and apply to make it the active camera:
-
-```js
-// set offset
-let cameraOffset = Shaku.utils.Vector2.zero;
+// set offset and use the camera (call this before rendering)
 camera.orthographicOffset(cameraOffset);
-
-// use this camera
 Shaku.gfx.applyCamera(camera);
 ```
 
-And if you want to reset camera back to default, you can call the following method:
+And if later you want to reset camera back to default, you can call the following method:
 
 ```js
 Shaku.gfx.resetCamera();
 ```
 
-
-
-For more details, check out the [Camera object API](docs/gfx_camera.md) docs.
+For more details, check out the [Camera object API](docs/gfx_camera.md) in the docs.
 
 A demo page that uses cameras can be found [here](https://ronenness.github.io/Shaku/demo/miscs_tilemap.html).
 
-### Custom Effects
+### Texture Atlas
 
-Custom Effects provide a way to change the shaders *Shaku* uses to draw textures and shapes.
+Every time you change the texture, a draw call is made to the GPU. This means that if you render 100 different textures in a row you will suffer 100 GPU draw calls (and 100 textures switching), which is very ineffective in terms of performance.
 
-When implementing an effect, you need to do 4 things:
+To solve this issue video games often use a *Texture Atlas*, which is a single large texture containing multiple smaller textures. That way, we can reduce texture switching and draw calls.
 
-1. Write your *vertex shader code*.
-2. Write your *fragment shader code*.
+Creating a Texture Atlas manually is a tedious work, and as you add more and more textures sometimes you end up with inconvenient 'holes' that makes the atlas less space-efficient. For that reason, *Shaku* has a built-in Atlas builder that helps you generate an efficient Texture Atlas at runtime:
+
+```js
+// all source textures URLs
+const sourceUrls = [
+    'assets/stone_wall.png',
+    'assets/grass.png',
+    'assets/tree.png',
+    ...
+];
+
+// create a texture atlas named 'my-texture-atlas'.
+// you can also limit its dimensions if needed to.
+let textureAtlas = await Shaku.assets.createTextureAtlas('my-texture-atlas', sourceUrls);
+
+// then you can use the texture atlas like this:
+
+// extract one of the textures
+// textureInAtlas is an object with `texture` and `sourceRectangle`.
+let textureInAtlas = textureAtlas.getTexture('assets/stone_wall.png');
+
+// draw the texture at 100,100
+let size = textureInAtlas.sourceRectangle.getSize();
+spritesBatch.begin();
+spritesBatch.drawQuad(textureInAtlas, new Shaku.utils.Vector2(100, 100), size);
+spritesBatch.end();
+```
+
+Note that a texture atlas is not necessarily a single texture; Since there's a GPU limit for max textures size, the atlas may generate more than one texture. That's why when you call `getTexture()` the object don't return just source rectangle, but a texture asset as well.
+
+
+### Effects
+
+Effects provide a way to change the shaders *Shaku* uses to draw textures and shapes.
+
+When implementing an effect, you need to follow four steps:
+
+1. Write or use an existing *vertex shader code*.
+2. Write or use an existing *fragment shader code*.
 3. Define your shaders Uniforms.
 4. Define your shaders Attributes.
 
-Lets write a simple custom effect, and then we'll go over steps and explain them:
+And optionally, you can instruct *Shaku* to use custom attributes and uniforms internally, so you won't need to explicitly set them. More on that later.
+
+Lets write a simple custom effect and then review and explain the code:
 
 ```js
-// define our custom effect
-class CustomEffect extends Shaku.gfx.BasicEffect
+// define a custom effect
+class MyEffect extends Shaku.gfx.SpritesEffect
 {
-  /**
-   * Override the fragment shader for our custom effect.
-   */
-  get fragmentCode()
-  {
-    const fragmentShader = `  
-      #ifdef GL_ES
-          precision highp float;
-      #endif
+    /**
+     * Override the fragment shader for our custom effect.
+     */
+    get fragmentCode()
+    {
+      const fragmentShader = `  
+            #ifdef GL_ES
+                precision highp float;
+            #endif
 
-      uniform sampler2D texture;
-      uniform float elapsedTime;
+            uniform sampler2D mainTexture;
+            uniform float elapsedTime;
 
-      varying vec2 v_texCoord;
-      varying vec4 v_color;
+            varying vec2 v_texCoord;
+            varying vec4 v_color;
 
-      void main(void) {
-          gl_FragColor = texture2D(texture, v_texCoord) * v_color;
-          gl_FragColor.r *= sin(v_texCoord.y * 10.0 + elapsedTime) + 0.1;
-          gl_FragColor.g *= sin(1.8 + v_texCoord.y * 10.0 + elapsedTime) + 0.1;
-          gl_FragColor.b *= sin(3.6 + v_texCoord.y * 10.0 + elapsedTime) + 0.1;
-          gl_FragColor.rgb *= gl_FragColor.a;
-      }
-      `; 
-      return fragmentShader;
-  }
+            void main(void) {
+                gl_FragColor = texture2D(mainTexture, v_texCoord) * v_color;
+                gl_FragColor.r *= sin(v_texCoord.y * 10.0 + elapsedTime) + 0.1;
+                gl_FragColor.g *= sin(1.8 + v_texCoord.y * 10.0 + elapsedTime) + 0.1;
+                gl_FragColor.b *= sin(3.6 + v_texCoord.y * 10.0 + elapsedTime) + 0.1;
+                gl_FragColor.rgb *= gl_FragColor.a;
+            }
+        `; 
+        return fragmentShader;
+    }
 
-  /**
-   * Override the uniform types dictionary to add our custom uniform type.
-   */
-  get uniformTypes()
-  {
-    let ret = super.uniformTypes;
-    ret['elapsedTime'] = { type: Shaku.gfx.Effect.UniformTypes.Float };
-    return ret;
-  }
+    /**
+     * Override the uniform types dictionary to add our custom uniform type.
+     */
+    get uniformTypes()
+    {
+      let ret = super.uniformTypes;
+      ret['elapsedTime'] = { type: Shaku.gfx.Effect.UniformTypes.Float };
+      return ret;
+    }
 }
 ```
 
-Before reading on, can you guess what this effect does?
+Before reading on, can you guess what this effect do?
 
-This effect recieve elapsed time as a uniform (elapsedTime) and animate the texture colors based on the time. 
-Since every component gets a different offset from the start, it will create a rainbow-like effect.
+This effect recieve *elapsed time* as a uniform (called 'elapsedTime') with type `flot`, and animate the texture colors based on the current time value. Since every component gets a different offset from the start, it will create a rainbow-like colors effect.
 
 ![Custom Effects](resources/custom_effects.png)
 
 A demo page with the above effect can be found [here](https://ronenness.github.io/Shaku/demo/gfx_custom_effects.html).
 
+Now lets review the code.
 
-Now lets explain the code.
+1. First, notice we're extending the `Shaku.gfx.SpritesEffect` class. This is the default effect *Shaku* uses for sprites, and by inheriting from it we can skip implementing the vertex shader and just use the default one. It also covers the basic attributes binding for vertices data. If you want to create a brand new effect that doesn't use anything from the built-in sprites effect, extend `Shaku.gfx.Effect` instead.
+2. Next we have `get fragmentCode()`, that returns the fragment shader code to compile for this effect. There is also a `get fragmentCode()` getter for the vertex shader code, but as mentioned earlier we relay on the default sprites vertex shader so we don't need to implement it.
+4. And finally, `get uniformTypes()` returns a dictionary with uniforms we want to set in the effect. Note that we do `let ret = super.uniformTypes;` to extend the base class uniforms so we won't miss out on any functionality from the basic effect.
 
-1. First, notice we're extending the `Shaku.gfx.BasicEffect` class. This is the default effect *Shaku* uses, and by inheriting from it we can skip implementing the vertex shader and just use the default. It also covers basic attributes we need for it.
-2. If you want to create a brand new effect that doesn't use anything from the built-in default effect, extend `Shaku.gfx.Effect` instead.
-3. `get fragmentCode()` return the fragment shader code to compile for this effect. If you don't know how to write shaders, please learn that first (not covered in this doc).
-4. `get uniformTypes()` return a dictionary with uniforms we want to set in the shaders. Note that we use and extend the base class uniforms so we won't miss out on any functionality from the basic effect.
-
-Now lets see how we use this effect to render:
+Now we can start using this effect with our Sprites Batch:
 
 ```js
-// create a custom effect instance and set as active
-let effect = Shaku.gfx.createEffect(CustomEffect);
-Shaku.gfx.useEffect(effect);
+// create the custom effect
+let effect = new MyEffect();
 
-// update effect elapsed time
-// the setter `effect.uniforms.elapsedTime` exists because we defined this uniform in uniformTypes()
+// update effect elapsed time and render with it
+// the setter `effect.uniforms.elapsedTime` exists because we defined it in `get uniformTypes()`
 effect.uniforms.elapsedTime(Shaku.gameTime.elapsed);
-```
-
-To make *Shaku* revert to using the default built-in effect, you can later call `useEffect` with null:
-
-```js
-Shaku.gfx.useEffect(null);
+spritesBatch.begin(undefined, effect);
+spritesBatch.drawQuad(texture, new Shaku.utils.Vector2(100, 100), 400);
+spritesBatch.end();
 ```
 
 #### Default Effect
 
-To learn more about effects, lets view the default built-in effect *Shaku* normally uses:
+To learn more about effects, lets review the [default built-in effect](https://github.com/RonenNess/Shaku/blob/main/src/gfx/effects/sprites.js) *Shaku* normally uses for sprites with vertex color:
 
 ```js
-/**
- * Default basic effect to draw 2d sprites.
- */
-class BasicEffect extends Effect
-{
-    get vertexCode() 
-    { 
-        return `
+// vertex shader code
+const vertexShader = `
 attribute vec3 position;
-attribute vec2 coord;
+attribute vec2 uv;
 attribute vec4 color;
 
 uniform mat4 projection;
 uniform mat4 world;
-
-uniform vec2 uvOffset;
-uniform vec2 uvScale;
 
 varying vec2 v_texCoord;
 varying vec4 v_color;
 
 void main(void) {
     gl_Position = projection * world * vec4(position, 1.0);
-    v_texCoord = uvOffset + (coord * uvScale);
+    gl_PointSize = 1.0;
+    v_texCoord = uv;
     v_color = color;
 }
-`;
-    }
+    `;
 
-    get fragmentCode()
-    { 
-        return `  
+// fragment shader code
+const fragmentShader = `  
 #ifdef GL_ES
     precision highp float;
 #endif
 
-uniform sampler2D texture;
+uniform sampler2D mainTexture;
 
 varying vec2 v_texCoord;
 varying vec4 v_color;
 
 void main(void) {
-    gl_FragColor = texture2D(texture, v_texCoord) * v_color;
+    gl_FragColor = texture2D(mainTexture, v_texCoord) * v_color;
     gl_FragColor.rgb *= gl_FragColor.a;
 }
-`;
+    `;
+
+/**
+ * Default basic effect to draw 2d sprites.
+ */
+class SpritesEffect extends Effect
+{
+    /** @inheritdoc */
+    get vertexCode() 
+    { 
+        return vertexShader; 
     }
 
+    /** @inheritdoc */
+    get fragmentCode()
+    { 
+        return fragmentShader;
+    }
+
+    /** @inheritdoc */
     get uniformTypes()
     {
         return {
-            "texture": { type: Effect.UniformTypes.Texture, bind: Effect.UniformBinds.MainTexture },
-            "projection": { type: Effect.UniformTypes.Matrix, bind: Effect.UniformBinds.Projection },
-            "world": { type: Effect.UniformTypes.Matrix, bind: Effect.UniformBinds.World },
-            "uvOffset": { type: Effect.UniformTypes.Float2, bind: Effect.UniformBinds.UvOffset },
-            "uvScale": { type: Effect.UniformTypes.Float2, bind: Effect.UniformBinds.UvScale },
+            [Effect.UniformBinds.MainTexture]: { type: Effect.UniformTypes.Texture, bind: Effect.UniformBinds.MainTexture },
+            [Effect.UniformBinds.Projection]: { type: Effect.UniformTypes.Matrix, bind: Effect.UniformBinds.Projection },
+            [Effect.UniformBinds.World]: { type: Effect.UniformTypes.Matrix, bind: Effect.UniformBinds.World },
+            [Effect.UniformBinds.View]: { type: Effect.UniformTypes.Matrix, bind: Effect.UniformBinds.View }
         };
     }
 
+    /** @inheritdoc */
     get attributeTypes()
     {
         return {
-            "position": { size: 3, type: Effect.AttributeTypes.Float, normalize: false, bind: Effect.AttributeBinds.Position },
-            "coord": { size: 2, type: Effect.AttributeTypes.Float, normalize: false, bind: Effect.AttributeBinds.TextureCoords },
-            "color": { size: 4, type: Effect.AttributeTypes.Float, normalize: false, bind: Effect.AttributeBinds.Colors },
+            [Effect.AttributeBinds.Position]: { size: 3, type: Effect.AttributeTypes.Float, normalize: false, bind: Effect.AttributeBinds.Position },
+            [Effect.AttributeBinds.TextureCoords]: { size: 2, type: Effect.AttributeTypes.Float, normalize: false, bind: Effect.AttributeBinds.TextureCoords },
+            [Effect.AttributeBinds.Colors]: { size: 4, type: Effect.AttributeTypes.Float, normalize: false, bind: Effect.AttributeBinds.Colors },
         };
     }
 }
 ```
 
-As you can see we use attributes for vertices data, and uniforms for texture, projection, world matrix, and uv adjustment params.
-
-The UV scale and Offset are used when drawing individual sprites using a static texture coords buffer that has the values of {0,0|1,0|0,1|1,1}. When drawing batches, these uniforms will not be used because we generate the texture coords buffer dynamically.
-
+As you can see above we use *attributes* for vertices data (position, texture coords, and colors), and uniforms for texture and transformation matrices (projection, world, and view).
 
 **Binds**
 
-You may have noticed a new key when defining attributes and uniforms: `bind`.
+You may have noticed an additional parameter added to the attributes and uniforms: `bind`.
 
-Binding is a way for us to tell *Shaku* about special attributes and uniforms that we want to use for basic stuff, so that *Shaku* can set their values accordingly. 
+Binding is a way for us to tell *Shaku* how to handle attributes and uniforms we want to use for basic stuff, like vertices color or texture coords, so that *Shaku* can set these values internally when preparing the batch. 
 
-For example, we can tell *Shaku* which attribute is used for vertices position in our shader, and *Shaku* will link it to the vertices position buffer automatically.
+For example, when we added the bind `Effect.AttributeBinds.Position` to the attributes named `[Effect.AttributeBinds.Position]`, we instructed *Shaku* to send the vertices position data into this attribute from our vertex shader, which is called `position`. 
 
-**We can bind uniforms to the following purposes**:
+If you want to define an effect and call this attribute a different name, for example 'attr_vertexPos', you can just set it like this in your effect:
 
-* *MainTexture*: bind uniform to be used as the main texture.
-* *Color*: bind uniform to be used as a main color.
-* *Projection*: bind uniform to be used as the projection matrix.
-* *World*: bind uniform to be used as the world matrix.
-* *UvOffset*: bind uniform to be used as UV offset. You must implement this for individual sprite rendering.
-* *UvScale*: bind uniform to be used as UV scale. You must implement this for individual sprite rendering.
+`attr_vertexPos: { size: 3, type: Effect.AttributeTypes.Float, normalize: false, bind: Effect.AttributeBinds.Position },`
 
-**And we can bind attributes to the following purposes**:
+**The following binds are valid for uniform types**:
 
-* *Position*: bind attribute to be used for vertices position array.
-* *TextureCoords*: bind attribute to be used for texture coords array.
-* *Colors*: bind attribute to be used for vertices colors array.
+- *MainTexture*: bind uniform to be used as the main texture.
+- *Color*: bind uniform to be used as a main color.
+- *Projection*: bind uniform to be used as the projection matrix.
+- *World*: bind uniform to be used as the world matrix.
+- *View*: bind uniform to be used as the view matrix.
+- *UvOffset*: bind uniform to be used as UV offset.
+- *UvScale*: bind uniform to be used as UV scale.
+- *OutlineWeight*: bind uniform to be used as outline weight.
+- *OutlineColor*: bind uniform to be used as outline color.
+- *UvNormalizationFactor*: bind uniform to be used as factor to normalize uv values to be 0-1.
+- *TextureWidth*: bind uniform to be used as texture width in pixels.
+- *TextureHeight*: bind uniform to be used as texture height in pixels.
+
+**And the following binds are valid for attribute types**:
+
+- *Position*: bind attribute to be used for vertices position array.
+- *TextureCoords*: bind attribute to be used for texture coords array.
+- *Colors*: bind attribute to be used for vertices colors array.
+
+Anything else, you'll just need to set yourself.
+
 
 ### Matrices
 
-Matrices are used to transform sprites vertices while rendering. They are used internally to express rotation, scale, and positioning, but you can also use them yourself with the transformations param.
+Matrices are used to transform vertices. They can express rotation, scale, translation, and camera view and projection.
 
 You can access the Matrix class with `Shaku.gfx.Matrix`. 
+Let's take a look at a basic example of using a matrix to move the position of 3d vertices:
+
+```js
+// create vertices
+const spriteSize = new Shaku.utils.Vector2(spriteTexture.width * 1.5, spriteTexture.height * 1.5);
+const v1 = (new Shaku.gfx.Vertex())
+          .setPosition(new Shaku.utils.Vector3(-spriteSize.x / 2, 0, 0))
+          .setTextureCoords(new Shaku.utils.Vector2(0, 1));
+const v2 = (new Shaku.gfx.Vertex())
+          .setPosition(new Shaku.utils.Vector3(spriteSize.x / 2, 0, 0))
+          .setTextureCoords(new Shaku.utils.Vector2(1, 1));
+const v3 = (new Shaku.gfx.Vertex())
+          .setPosition(new Shaku.utils.Vector3(-spriteSize.x / 2, spriteSize.y, 0))
+          .setTextureCoords(new Shaku.utils.Vector2(0, 0));
+const v4 = (new Shaku.gfx.Vertex())
+          .setPosition(new Shaku.utils.Vector3(spriteSize.x / 2, spriteSize.y, 0))
+          .setTextureCoords(new Shaku.utils.Vector2(1, 0));
+
+// create a translation matrix
+const position = new Shaku.utils.Vector3(10, 100, 50);
+const matrix = Shaku.gfx.Matrix.translate(position.x, position.y, position.z);
+
+// transform the vertices with the matrix and draw them in a 3d batch
+const vertices = [Shaku.gfx.Matrix.transformVertex(matrix, v1), 
+                  Shaku.gfx.Matrix.transformVertex(matrix, v2), 
+                  Shaku.gfx.Matrix.transformVertex(matrix, v3), 
+                  Shaku.gfx.Matrix.transformVertex(matrix, v4)];
+spritesBatch3d.begin();
+spritesBatch3d.drawVertices(spriteTexture, vertices);
+spritesBatch3d.end();
+```
+
 To learn more about matrices, check out the [API docs](docs/gfx_matrix.md).
 
 
+### Conclusion
+
+In this chapter we learned about the `Gfx` manager and how to use it to create batches and render basic things. What we covered here is just the common use cases, to learn more about what you can draw with *Shaku* check out the [online demos](https://ronenness.github.io/Shaku/demo/index.html) or the [online docs](https://ronenness.github.io/Shaku/docs/index.html).
+
 ## Sounds
 
-We finally reached our second manager, the sound effects manager, which is accessed by `Shaku.sfx`.
+We finally reached our second manager, the sounds manager, which is accessed by `Shaku.sfx`.
 
 This doc don't cover the entirely of the API, only the main parts of it. To see the full API, check out the [API docs](docs/sfx_sfx.md).
 
 
 ### Play Sound
 
-To play an audio asset:
+To play an audio asset once:
 
 ```js
 // load the sound file
@@ -821,9 +870,13 @@ let pitch = 1;
 Shaku.sfx.play(sound, volume, pitch);
 ```
 
+Note that due to browsers security limitations, you won't be able to play any sound effect until the user interacted with the page with mouse, touch, gamepad, or keyboard. This is not something *Shaku* can solve, as this is by design and enforced by the browsers themselves.
+
+You can, however, preload your sound assets before that.
+
 ### Sound Instances
 
-A sound instance is a way to create a sound object once, and use it multiple times or change its parameters while it plays. Its also much more efficient to reuse instances than multiple `play()` calls (which actually creates a temporary sound instance inside).
+A sound instance is a way to create a sound object that lives on after it was played, and use it as many times as you like. Its more efficient to reuse instances than to call `play()` multiple times, but its usually an unnecessary optimization as this will rarely be your bottleneck in terms of performance.
 
 To create a sound instance:
 
@@ -832,7 +885,7 @@ To create a sound instance:
 let sound = await Shaku.assets.loadSound('assets/my_sound_file.ogg');
 let soundInstance = Shaku.sfx.createSound(sound);
 
-// start playing sound
+// play the sound
 soundInstance.play();
 ```
 
@@ -858,41 +911,38 @@ A demo page that play sounds can be found [here](https://ronenness.github.io/Sha
 Sound Mixer is a utility class to mix and fade sounds. 
 It's very useful for music transitioning.
 
-Given the following loaded music assets:
+For example, the following code will create a mixer that transition from music1 to music2, while allowing tracks to overlap (if overlap is false, the mixer will first fade-out music1 completely, and only then begin fading-in music2):
 
 ```js
+// load two music tracks
 let music1 = await Shaku.assets.loadSound('assets/music1.ogg');
 let music2 = await Shaku.assets.loadSound('assets/music2.ogg');
-```
 
-The following will create a mixer that transition from music1 to music2, while allowing tracks to overlap (if overlap is false, the mixer will first fade out music1 completely, and only then will begin fading in music2):
-
-```js
+// transition between the tracks
 let overlap = true;
 let mixer = new Shaku.sfx.SoundMixer(Shaku.sfx.createSound(music1), Shaku.sfx.createSound(music2), overlap);
 ```
 
-The following will create a mixer to fade music in:
+To run the mixer you then need to call the following inside every step of your game main loop:
+
+```js
+// Shaku.gameTime.delta is transition speed (delta = time between frames, in seconds)
+mixer.updateDelta(Shaku.gameTime.delta);
+```
+
+And the following code will create a mixer to fade music in without fading anything out:
 
 ```js
 let mixer = new Shaku.sfx.SoundMixer(null, Shaku.sfx.createSound(music2), true);
 ```
 
-And the following will create a mixer to fade music out:
+Or, we can just fade music out without fading anything in:
 
 ```js
 let mixer = new Shaku.sfx.SoundMixer(Shaku.sfx.createSound(music1), null, true);
 ```
 
-**Now to use the mixer**:
-
-To update the mixer call `updateDelta()` with delta time every frame:
-
-```js
-mixer.updateDelta(Shaku.gameTime.delta);
-```
-
-Or if you want to set the mixer to a specific point, use `update()`:
+If you want to set the mixer to a specific point in time, you can call `update()` with the desired progress from 0.0 to 1.0:
 
 ```js
 let mixProgress = 0.5; // valid range = 0-1
@@ -901,16 +951,42 @@ mixer.update(mixProgress);
 
 A demo page with sounds mixer can be found [here](https://ronenness.github.io/Shaku/demo/sfx_sound_mixer.html).
 
+
+### Conclusion
+
+In this chapter we learned about the `Sfx` manager and how to use it to play sound effects and music. What we covered here is just the common use cases, to learn more about sound effects with pitch, volume, playback speed and other effects *Shaku* support, check out the [online demos](https://ronenness.github.io/Shaku/demo/index.html) or the [online docs](https://ronenness.github.io/Shaku/docs/index.html).
+
+
 ## Input
 
-The input manager is responsible to get input from Keyboard, Mouse and basic touch (behaves like mouse).
+The input manager provides an API to query Keyboard, Mouse, Touch and Gamepad input.
 To access the Input manager we use `Shaku.input`.
 
 This doc don't cover the entirely of the API, only the main parts of it. To see the full API, check out the [API docs](docs/input_input.md).
 
-### Keyboard Input
+### States Queries
 
-To get a keyboard key state:
+The input manager have five main query method for key states, which can be mouse buttons, touch, keyboard keys, or gamepad buttons. These five methods are the ones you'll use the most:
+
+- **down**: return true if the button / key is currently held down.
+- **released**: return true if the button / key was released in this very update frame.
+- **pressed**: return true if the button / key was pressed down in this very update frame.
+- **doublePressed**: like pressed, but will only trigger after a second quick press.
+- **doubleReleased**: like released, but will only trigger after a second quick release.
+
+For example, a double-click with the mouse left button can be detected like this: `Shaku.input.doublePressed('mouse_left')` (or `doubleReleased` if you prefer to only consider double click if used released the key).
+
+In addition, all the methods above also accept an array instead of a single key code, to test if any of them match the condition. For example, the following will check if 'w' or arrow up is down: `Shaku.input.down(['w', 'up_arrow'])`.
+
+![Input Demo](resources/input-demo.png)
+
+A demo page to demonstrate the input manager can be found [here](https://ronenness.github.io/Shaku/demo/input_basic_input.html).
+
+### Keyboard
+
+All keyboard keys are listed under `Shaku.input.KeyboardKeys`.
+
+To query keyboard keys you can just use their names with any of the main state query methods. For example:
 
 ```js
 if (Shaku.input.down('left') || Shaku.input.down('a')) { 
@@ -918,33 +994,16 @@ if (Shaku.input.down('left') || Shaku.input.down('a')) {
 }
 ```
 
-Or you can check when a key was pressed / released:
+In addition there are some useful keyboard-specific getters you can use: `shiftDown`, `ctrlDown`, `altDown`, `anyKeyPressed`, `anyKeyDown`.
 
-```js
-if (Shaku.input.released('space')) { 
-  // space was just released
-}
 
-if (Shaku.input.pressed('space')) { 
-  // space was just pressed
-}
-```
+### Mouse
 
-### Mouse Input
-
-To get a mouse key state use:
+To get a mouse button state use the 'mouse_' prefix, followed by the button key (left, right, middle). For example to check if left mouse button is down:
 
 ```js
 if (Shaku.input.down('mouse_left')) { 
   // mouse left button is down
-}
-```
-
-And like with keyboard, you can detect pressed / released as well:
-
-```js
-if (Shaku.input.released('mouse_left')) { 
-  // mouse left button was released now, similar to click event
 }
 ```
 
@@ -953,24 +1012,26 @@ if (Shaku.input.released('mouse_left')) {
 To get mouse position use:
 
 ```js
+// returns a Vector2 instance
 let mousePos = Shaku.input.mousePosition;
 ```
 
-And to get mouse movement from last frame:
+And to get mouse position change from last frame:
 
 ```js
+// returns a Vector2 instance
 let mouseDelta = Shaku.input.mouseDelta;
 ```
 
-**Wait, mouse position is wrong!**
+**Wait, mouse position is wrong?**
 
-By default the input manager will attach events to the *entire document*, meaning that mouse position will be relative to the most top-left corner of your page.
+By default the input manager will attach events to the *entire document*, meaning that mouse position will be relative to the top-left corner of the web page.
 
-If your game canvas does not cover the entire screen, mouse offset will feel wrong because it won't be relative to your canvas top-left corner. You might expect to get 0,0 if you click your canvas most top-left point, but that would only happen if the canvas starts the the page top-left corner.
+If your game canvas does not cover the entire screen, mouse offset will feel wrong because it won't be relative to your canvas top-left corner. You might expect to get 0,0 if you click on the canvas top-left corner, but that would only happen if the canvas starts the the page top-left corner.
 
-To solve this, you can tell the input manager to attach events to the gfx canvas (or any other element) and make mouse position relative to it. This will also require the canvas to be focused to recieve input, which is useful when combining interactable HTML elements with your game.
+To solve this, you can instruct the input manager to attach events to the main canvas (or any other element for that matter). This will also make the input manager only work when the canvas is focused, which is useful when combining *Shaku* with HTML UI.
 
-To set the Input manager target to be the main canvas, run the following command *before initializing Shaku*:
+To set the Input manager target element, run the following command *before initializing Shaku*:
 
 ```js
 Shaku.input.setTargetElement(() => Shaku.gfx.canvas);
@@ -978,24 +1039,25 @@ Shaku.input.setTargetElement(() => Shaku.gfx.canvas);
 
 Note that we use a callback and not `Shaku.gfx.canvas` directly, as `Shaku.gfx.canvas` will be undefined until we call `Shaku.init`, which is when we must call `setTargetElement()`.
 
-![Input Demo](resources/input-demo.png)
 
-A demo page with mouse and keyboard input can be found [here](https://ronenness.github.io/Shaku/demo/input_basic_input.html).
+#### Mouse Wheel
 
-### Touch Input
+You can query mouse wheel delta with `Shaku.input.mouseWheel`, or get just the mouse wheel direction (if the user scrolls up or down) with `Shaku.input.mouseWheelSign` (will be 0 if wheel is not used this frame).
 
-By default, *Shaku* will delegate Touch input to Mouse input, so you can use a unified input code for desktop and mobile. This means that Touch start will generate a mouse click input (left button), and when the user drags touch input across the device, the Touch position will update the Mouse position.
+### Touch
+
+By default, *Shaku* will delegate Touch input to Mouse input, so you can use the same key codes for desktop and mobile. This means that Touch start will generate a mouse click input ('mouse_left' code), and when the user drags touch input across the device, the Touch position will update as the Mouse position.
 
 To disable this behavior, you can set `Shaku.input.delegateTouchInputToMouse` to `false`.
 
-If you choose not to treat Touch input as Mouse input, you can use the following methods/getter to get Touch input:
+If you choose not to delegate Touch input to Mouse, you can use the following methods to query Touch input:
 
 - `Shaku.input.touchPosition`: Get touch last position.
 - `Shaku.input.touching`: True while the user is touching the device screen.
 - `Shaku.input.touchStarted`: True if touch input started during this update frame.
 - `Shaku.input.touchEnded`: True if touch input ended during this update frame.
 
-You can get `down`, `pressed`, and `released` state for touch input too, similar to how you'd use a keyboard key or mouse button, but with `touch` as key code:
+You can get `down`, `pressed`, and `released` state for touch input too, similar to how you'd use a keyboard key or mouse button, but with `touch` as the key code:
 
 ```js
 if (Shaku.input.down('touch')) { 
@@ -1011,41 +1073,12 @@ if (Shaku.input.pressed('touch')) {
 }
 ```
 
-### Double Click / Press / Release
-
-*Shaku* can help you detect double clicks and double key press. There are two main methods to get double-xxx events: `doublePressed()` and `doubleReleased()`.
-
-- `doublePressed` is true when a key is *pressed* shortly after the same key was *released*.
-- `doubleReleased` is true when a key is *released* shortly after it was previously *released*.
-
-These methods work for touch, keyboard and mouse. They accept key codes and optional max time interval to consider it a double-press event. For example:
-
-```js
-if (Shaku.input.doubleReleased('mouse_left')) {
-  alert("Double Click!");
-}
-
-if (Shaku.input.doubleReleased('mouse_left', 1000)) {
-  alert("Double Click with 1 second interval!");
-}
-
-if (Shaku.input.doubleReleased('touch')) {
-  alert("User double-touched screen!");
-}
-
-if (Shaku.input.doubleReleased('space')) {
-  alert("Space was double pressed!");
-}
-```
-
-When no interval is provided, the value set at `Shaku.input.defaultDoublePressInterval` will be used.
-
 
 ### Gamepad
 
-*Shaku* provides a way to get Gamepads input. Note that gamepads are only connected after a user press a button when the page is focused. Before that, *Shaku* cannot recognize them due to browsers limitation.
+You can query Gamepad sticks and buttons with the input manager. Note that gamepads only work after the user press any gamepad button or move the stick. This is due to browsers security limitations.
 
-First, to connected gamepad ids:
+To query connected gamepad ids use:
 
 ```js
 // all ids:
@@ -1058,13 +1091,13 @@ console.log("Gamepad 2 id: ", Shaku.input.gamepadId(2));
 console.log("Default gamepad id: ", Shaku.input.gamepadId());
 ```
 
-Once you detect a valid gamepad, you can query its state like this:
+And to get a gamepad state object, use:
 
 ```js
-let gamepad = Shaku.input.gamepad(0); // <-- 0 is the index of the gamepad to get, or undefined for default
+let gamepad = Shaku.input.gamepad(0); // <-- 0 is the index of the gamepad to get, or leave out this param for default gamepad
 ```
 
-Every gamepad object will have the following properties:
+Every gamepad state object will have the following properties:
 
 - `gamepad.axis1`: Vector2 with axis1 current value.
 - `gamepad.axis2`: Vector2 with axis2 current value.
@@ -1087,34 +1120,34 @@ If the gamepad has a standard mapping, `gamepad.isMapped` will be set to true, a
 
 #### Gamepad Key Codes
 
-If `Shaku.input.delegateGamepadInputToKeys` is true (default), the Input manager will generate key-like states for all connected gamepads that have mappings.
+If `Shaku.input.delegateGamepadInputToKeys` is set to true (default), the Input manager will generate key-like states for all the connected gamepads that have standard mappings.
 
-This means that instead of using the `gamepad` object presented above, you can query it directly with `down()`, `pressed()`, `released()`, `doublePressed()` and `doubleReleased()`.
+This means that instead of using the gamepad state object like we demonstrated above, you can query it directly with the main `down()`, `pressed()`, `released()`, `doublePressed()` and `doubleReleased()` methods.
 
-The following properties are supported for every connected gamepad (X represent gamepad index):
+The following keys will work supported for every connected gamepad (where X represent the gamepad index starting from 0):
 
-- gamepadX_top: state of arrow keys top key (left buttons).
-- gamepadX_bottom: state of arrow keys bottom key (left buttons).
-- gamepadX_left: state of arrow keys left key (left buttons).
-- gamepadX_right: state of arrow keys right key (left buttons).
-- gamepadX_leftStickUp: true if left stick points directly up.
-- gamepadX_leftStickDown: true if left stick points directly down.
-- gamepadX_leftStickLeft: true if left stick points directly left.
-- gamepadX_leftStickRight: true if left stick points directly right.
-- gamepadX_rightStickUp: true if right stick points directly up.
-- gamepadX_rightStickDown: true if right stick points directly down.
-- gamepadX_rightStickLeft: true if right stick points directly left.
-- gamepadX_rightStickRight: true if right stick points directly right.
-- gamepadX_a: state of A key (from right buttons).
-- gamepadX_b: state of B key (from right buttons).
-- gamepadX_x: state of X key (from right buttons).
-- gamepadX_y: state of Y key (from right buttons).
-- gamepadX_frontTopLeft: state of the front top-left button.
-- gamepadX_frontTopRight: state of the front top-right button.
-- gamepadX_frontBottomLeft: state of the front bottom-left button.
-- gamepadX_frontBottomRight: state of the front bottom-right button.
+- `gamepadX_top`: state of arrow keys top key (left buttons).
+- `gamepadX_bottom`: state of arrow keys bottom key (left buttons).
+- `gamepadX_left`: state of arrow keys left key (left buttons).
+- `gamepadX_right`: state of arrow keys right key (left buttons).
+- `gamepadX_leftStickUp`: true if left stick points directly up.
+- `gamepadX_leftStickDown`: true if left stick points directly down.
+- `gamepadX_leftStickLeft`: true if left stick points directly left.
+- `gamepadX_leftStickRight`: true if left stick points directly right.
+- `gamepadX_rightStickUp`: true if right stick points directly up.
+- `gamepadX_rightStickDown`: true if right stick points directly down.
+- `gamepadX_rightStickLeft`: true if right stick points directly left.
+- `gamepadX_rightStickRight`: true if right stick points directly right.
+- `gamepadX_a`: state of A key (from right buttons).
+- `gamepadX_b`: state of B key (from right buttons).
+- `gamepadX_x`: state of X key (from right buttons).
+- `gamepadX_y`: state of Y key (from right buttons).
+- `gamepadX_frontTopLeft`: state of the front top-left button.
+- `gamepadX_frontTopRight`: state of the front top-right button.
+- `gamepadX_frontBottomLeft`: state of the front bottom-left button.
+- `gamepadX_frontBottomRight`: state of the front bottom-right button.
 
-For example, the following will trigger when the player either press the arrow up key on the gamepad, or move the left stick all the way up (will be called once when hitting threshold to consider as "up"):
+For example, the following will trigger when the player either press the arrow up key on the gamepad, or move the left stick all the way up:
 
 ```js
 if (Shaku.input.pressed(['gamepad0_up', 'gamepad0_leftStickUp'])) {
@@ -1122,54 +1155,72 @@ if (Shaku.input.pressed(['gamepad0_up', 'gamepad0_leftStickUp'])) {
 }
 ```
 
+### Additional Parameters
+
+The input manager support some additional parameters you can set:
+
+- **preventDefaults**: If true will prevent default input events by calling preventDefault().
+- **disableMouseWheelAutomaticScrolling**: If true will disable the special scroll mode that starts in chromium browsers when you click the wheel button not on a link.
+- **disableContextMenu**: If true will disable the context menu that opens on right mouse button click.
+- **delegateTouchInputToMouse**: If true will treat touch events (touch start / touch end / touch move) as if the user clicked and moved a mouse.
+- **delegateGamepadInputToKeys**: If true will generate gamepad key codes so you can query gamepad like you would query a keyboard key.
+- **resetOnFocusLoss**: If true, will reset input states when the page or target element loses focus.
+- **defaultDoublePressInterval**: The interval in milliseconds to consider two consecutive key presses as a double-press.
+
+### Conclusion
+
+In this chapter we learned about the `Input` manager and how to use it to get input from keyboard, mouse, touch and gamepad. What we covered here is just the common use cases, to learn more about input methods, check out the [online demos](https://ronenness.github.io/Shaku/demo/index.html) or the [online docs](https://ronenness.github.io/Shaku/docs/index.html).
+
+
 ## Assets
 
-The *Assets* manager handle loading game resources and assets, and is accessed by `Shaku.assets`.
-We already covered most of it while exploring the other managers, but in this section we will dive into more details about it.
+The *Assets* manager handle loading and runtime creation of game assets, and is accessed by `Shaku.assets`.
+We already covered most of it while exploring the other managers, but in this section we will focus on the input manager itself.
 
 This doc don't cover the entirely of the API, only the main parts of it. To see the full API, check out the [API docs](docs/assets_assets.md).
 
-### Keep In Mind
+### Assets Loading
 
 There are two things to keep in mind while dealing with the assets manager:
 
 #### Assets URL
 
 Every asset have a unique identifier field called `url`. This is how we identify the asset and store it in cache.
-If you try to load the same asset twice, in the second call it will return the previous copy from cache, provided the URL is *exactly* the same.
+If you try to load the same asset twice, in the second call will just return the copy from the cache, provided the URL is *exactly* the same.
 
-When creating assets from code, you can also provide a `url` if you want to add them to cache and make them accessible anywhere via the assets manager.
+When creating assets dynamically by code, you can also provide a unique `url`, if you want to add the asset to cache and make it accessible anywhere via the assets manager.
 
 #### Promises
 
-Every `load` and `create` method return a promise to resolve when asset is loaded. 
-Even if the asset was returned from cache, it will be returned via the promise.
+Every `load` and `create` method in the assets manager returns a `promise` that is resolved when the asset is loaded. 
+Even if the asset was returned from cache, it will be returned via a promise.
 
-If you want to get existing cached asset, don't use the create / load methods, use the `getCached()` method (shown later).
+Note that you can query the cache directly without loading a new asset, by calling the `getCached()` method.
 
 **Promise.asset**
 
 All returned promises from the assets manager have additional property: `asset`. 
-This property allow you to access the asset before its ready, at your own risk. For example, you can do this:
+This property provide access the asset itself before the promise is resolved, at your own risk (since the asset may be invalid). For example, you can fetch a texture *without waiting* like this:
 
 ```js
 // myTexture may not be loaded yet!
 let myTexture = Shaku.assets.loadTexture(url).asset;
 ```
 
-Instead of this:
+Instead of loading it with `await`:
 
 ```js
 let myTexture = await Shaku.assets.loadTexture(url);
 ```
 
-Or this:
+Or with `then`:
 
 ```js
 Shaku.assets.loadTexture(url).then((asset) => myTexture = asset);
 ```
 
-The idea behind the `Promise.asset` property is to make it easier to do parallel loading. For example consider the following usecase:
+The idea behind the `Promise.asset` property is to make it easier to perform parallel loading. 
+For example, the following code creates a dictionary of assets, and wait for all to load before proceeding:
 
 ```js
 let assets = {
@@ -1180,10 +1231,11 @@ let assets = {
 await Shaku.assets.waitForAll();
 ```
 
-Just keep in mind that using assets before they are ready may cause undefined behavior. You can test asset validity with `asset.valid`.
+Just keep in mind that using an asset before its ready may cause undefined behavior and exceptions. 
+To check if an asset is loaded and valid, you can use `asset.valid`.
 
 
-### Load Sound
+### Load a Sound
 
 To load a sound asset:
 
@@ -1193,7 +1245,7 @@ let sound = await Shaku.assets.loadSound(url);
 
 To learn more about sound assets, check out the [API docs](docs/assets_sound_asset.md).
 
-### Load Texture
+### Load a Texture
 
 To load a texture asset:
 
@@ -1203,13 +1255,13 @@ let sound = await Shaku.assets.loadTexture(url, params);
 
 Params is an *optional* dictionary that accepts the following keys:
 
-* *generateMipMaps (default=false)*: should we generate mipmaps for this texture?
+* **generateMipMaps**: (default=false) if true will generate mipmaps for this texture.
 
 To learn more about texture assets, check out the [API docs](docs/assets_texture_asset.md).
 
-### Create Render Target
+### Create a Render Target
 
-To create a render target (texture we can draw on via the graphics manager):
+To create a render target (a texture we can render on):
 
 ```js
 let rt = await Shaku.assets.createRenderTarget(name, width, height)
@@ -1219,9 +1271,9 @@ In the above example `name` will be used as `url`, ie to put the loaded render t
 
 A render target is just a texture asset created via code. To learn more about texture assets, check out the [API docs](docs/assets_texture_asset.md).
 
-### Load Font Texture
+### Load a Font Texture
 
-To load a font texture asset (texture atlas to draw text using a given font):
+To load a font texture asset:
 
 ```js
 let fontTexture = await Shaku.assets.loadFontTexture(url, params);
@@ -1239,7 +1291,7 @@ Params is a *mandatory* dictionary that accepts the following keys:
 
 To learn more about font texture assets, check out the [API docs](docs/assets_texture_asset.md).
 
-### Load Json
+### Load Json File
 
 To load a json file:
 
@@ -1250,15 +1302,15 @@ console.log(json.data);
 
 To learn more about json assets, check out the [API docs](docs/assets_json_asset.md).
 
-#### Create Json
+#### Create Json File
 
-You can also create a json asset dynamically, making it available for others to load:
+You can also create a json asset dynamically, and add it to assets cache:
 
 ```js
 let json = await Shaku.assets.createJson(url, data);
 ```
 
-### Load Binary
+### Load Binary File
 
 To load a binary file:
 
@@ -1271,33 +1323,44 @@ To learn more about binary assets, check out the [API docs](docs/assets_binary_a
 
 #### Create Binary
 
-You can also create a binary asset dynamically, making it available for others to load:
+You can also create a binary asset dynamically, and add it to assets cache:
 
 ```js
 let bin = await Shaku.assets.createBinary(url, data);
 ```
 
+### Create a Texture Atlas
+
+Texture Atlas was already covered when talking about the `Gfx` manager. To load multiple textures and generate an atlas from them, call `createTextureAtlas`:
+
+```js
+let textureAtlas = await createTextureAtlas(name, sources, maxWidth, maxHeight, extraMargins)
+```
+
+- **name** is just a unique identifier for the atlas asset.
+- **sources** is a list of URL to load the textures from.
+- **maxWidth** is an optional limit to the atlas textures width.
+- **maxHeight** is an optional limit to the atlas textures height.
+- **extraMargins** is an optional extra empty pixels to put between textures in the atlas.
+
 ### Get Cached Asset
 
-To get an already loaded asset, you can use:
+To get an already-loaded asset from cache, you can use:
 
 ```js
 let asset = Shaku.assets.getCached(url);
 ```
 
 This method is more convinient and just return the asset immediately, without a promise. 
-However, if the asset is not loaded yet, it will return null.
-
-So be sure to only call `getCached()` if you know the asset is loaded.
+If the asset is not loaded yet, it will return null.
 
 ### Waiting For Assets
 
-There are three main properties we can use to wait / monitor assets loading:
+There are three main properties we can use to wait and monitor assets loading progress:
 
 #### Shaku.assets.pendingAssets
 
 Return how many assets are currently waiting to be loaded.
-
 
 #### Shaku.assets.failedAssets
 
@@ -1305,14 +1368,7 @@ Return how many assets failed to load.
 
 #### Shaku.assets.waitForAll
 
-Return a promise that will be resolved when all assets are loaded, or rejected if one of them failed. For example, you can load multiple assets in parallel (without await) and then call:
-
-```js
-await Shaku.assets.waitForAll();
-```
-
-This will make sure all assets are loaded before we proceed.
-
+Return a promise that will be resolved when all assets are fully loaded, or rejected if one or more failed. You can use it to load multiple assets in parallel (without await) and then call `waitForAll` to wait for all of them to load.
 
 ### Freeing Assets
 
@@ -1322,9 +1378,9 @@ All loaded assets are stored in local cache. To free a specific asset you can ca
 Shaku.assets.free(url);
 ```
 
-Note that if you have a reference to this asset elsewhere and you try to use it after freeing it, it may not work.
+Note that if you have a reference to this asset from before freeing it and you try to use it, an exception will most likely be thrown.
 
-You can also free all loaded assets, by calling `clearCache`:
+You can also free all loaded assets at once, by calling `clearCache`:
 
 ```js
 Shaku.assets.clearCache();
@@ -1332,25 +1388,26 @@ Shaku.assets.clearCache();
 
 ## Collision
 
-The *Collision* manager provides basic collision detection functionality, and is accessed by `Shaku.collision`.
-The collision manager handles detection, but *not* physics.
+The *Collision* manager provides basic 2D collision detection, and is accessed by `Shaku.collision`.
+The collision manager handles only detection, its not a physics engine.
 
-This doc don't cover the entirely of the API, only the main parts of it. To see the full API, check out the [API docs](docs/collision_collision.md).
+This doc don't cover the entirely of the API, only the main parts of it. To see the full collision manager API, check out the [API docs](docs/collision_collision.md).
 
 ### Collision Shapes
 
-A collision shape is a 2d body you can collide with.
-There are currently 3 collision shapes:
+A collision shape is a 2d body we use to test collision.
+There are currently five collision shapes *Shaku* supports:
 
 * [Point](docs/collision_shapes_point.md).
 * [Rectangle](docs/collision_shapes_point.md).
 * [Circle](docs/collision_shapes_point.md).
 * [Lines](docs/collision_shapes_lines.md).
+* [Tilemap](docs/collision_shapes_tilemap.md).
 
 #### Collision Flags
 
 Every shape has a property called `collisionFlags`. 
-This property is a number used as a bitmap for collision filtering. For example, you can define the following:
+This property is a number used as a bitmap for collision filtering. For example, you can define the following flags:
 
 ```js
 const CollisionFlags = {
@@ -1361,21 +1418,21 @@ const CollisionFlags = {
 }
 ```
 
-Then define a shape with 'walls' collision flags:
+Then define a shape to represent a wall with the 'walls' collision flags:
 
 ```js
 shape.collisionFlags = CollisionFlags.Walls;
 ```
 
-And later if we want to only collide with walls or floor, we can query with the following mask:
+And later if we want to only collide with walls or laval, we can use the following collision mask:
 
 ```js
-const WallsAndFloorMask = CollisionFlags.Walls | CollisionFlags.Floor;
+const WallsAndLavaMask = CollisionFlags.Walls | CollisionFlags.Lava;
 ```
 
 ### Collision World
 
-`Collision World` is a group of collision shapes you can query, debug render, and more. It represent a level, or scene, where you need to perform collision detection.
+A `Collision World` is a group of collision shapes you can query, debug render, and more. It represent a scene where you need to perform collision detection.
 
 Every collision world have an internal grid used for the broad phase detection. Set the grid size proportionately to your collision shape sizes, so that every grid cell would only contain a handful of shapes.
 
@@ -1406,44 +1463,46 @@ world.addShape(circle);
 
 #### Picking
 
-To 'pick' shapes based on position, you can use the `pick()` method:
+To 'pick' shapes that touch a position, you can use the `pick()` method:
 
 ```js
 // shapes will be an array with all shapes the mouse was pointing on
-let shapes = pick(Shaku.input.mousePosition);
+let shapes = world.pick(Shaku.input.mousePosition);
 ```
 
-Or we can have additional parameters:
+Or with additional parameters:
 
 ```js
 let position = Shaku.input.mousePosition;
-let radius = 0;
+let radius = 10;
 let sortByDistance = false;
 let mask = 0xffffff;
 let predicate = (shape) => { return true; };
-let shapes = pick(position, radius, sortByDistance, mask, predicate)
+let shapes = world.pick(position, radius, sortByDistance, mask, predicate)
 ```
 
-* *radius:* is radius around position to pick shapes from.
-* *sortByDistance:* if true, will sort results by distance from position.
-* *mask:* optional collision mask, to match against the shapes collision flags.
-* *predicate:* optional filter method to run in broad phase. return false to skip shape, true to test it.
+- **radius** is radius around the position to pick shapes from.
+- **sortByDistance** if true, will sort results by distance from position.
+- **mask** optional collision mask, to match against the shapes collision flags.
+- **predicate** optional filter method to run in broad phase. Return false to skip a shape, or true to test it.
 
 #### Collision Tests
 
-If you want to test collision using a specific shape that isn't a point or circle, you can use either `testCollision(sourceShape, sortByDistance, mask, predicate)` to get a single result (faster), or `testCollisionMany(sourceShape, sortByDistance, mask, predicate)` for multiple results.
+If you want to test collision using a specific shape that isn't a point or circle, you can either use `testCollision(sourceShape, sortByDistance, mask, predicate)` to get a single result (faster), or `testCollisionMany(sourceShape, sortByDistance, mask, predicate)` for multiple results.
 
 ### Resolver
 
-The resolver is the class responsible to perform the actual collision detection math between pairs of shapes. If you want to create your own custom shapes, you need to register a handler method to handle your new shape against all existing shapes.
+The resolver is a class responsible to perform the math behind the collision detection of different shapes. If you want to create your own custom shapes, you need to register a handler method in the resolver to handle your new shape against all existing shapes.
 
-You can access the resolver with `Shaku.collision.resolver`. To learn more about it, check out the [API docs](docs/collision_resolver.md).
+You can access the resolver with `Shaku.collision.resolver`. 
+To learn more about it, check out the [API docs](docs/collision_resolver.md).
 
 ### Debug Draw
 
-Its often useful to draw the collision world in order to debug issues. To do so, you can use the `debugDraw()` method:
+Its often useful to draw the collision world when debugging. 
+To do so, you can use the `debugDraw()` method:
 
-```
+```js
 world.debugDraw(gridColor, gridHighlitColor, opacity, camera);
 ```
 
@@ -1452,16 +1511,30 @@ world.debugDraw(gridColor, gridHighlitColor, opacity, camera);
 * *opacity*: optional opacity for all shapes and grid.
 * *camera*: optional camera to draw the collision world with.
 
+Note that you can set debug color for individual shapes by calling:
+
+```js
+shape.setDebugColor(color);
+```
+
 ![physics-example](resources/physics.png)
 
 ## Utils
 
-Utils is not a manager, but a collection of built-in utility classes you use with *Shaku*. You access them with `Shaku.utils`.
+Utils is a collection of built-in utility classes and core objects we use with *Shaku*. 
+You access them with `Shaku.utils`.
+
+In this section we'll only mention the main objects and won't explain most of them. To learn more about them, check out the docs.
 
 ### Vector2
 
-Represent a 2d vector. 
+Represent a 2d vector.
 For more info check out the [API docs](docs/utils_vector2.md).
+
+### Vector3
+
+Represent a 3d vector.
+For more info check out the [API docs](docs/utils_vector3.md).
 
 ### Rectangle
 
@@ -1480,58 +1553,85 @@ For more info check out the [API docs](docs/utils_line.md).
 
 ### MathHelper
 
-Contains useful math-related utilities.
+Contains useful math-related functions that extend the basic JavaScript `Math` object.
 For more info check out the [API docs](docs/utils_math_helper.md).
 
 ### SeededRandom
 
 Generate semi-random numbers using a seed.
-This is useful if you want to generate the same random numbers on different browsers and runs.
+
+This is useful when you want to generate the same random numbers on different browsers and runs, based on a constant seed. For example you can use this to implement randomness in your game levels, but a *consistent randomness* that will generate the the same output no matter the browser or when you run it.
+
 For more info check out the [API docs](docs/utils_seeded_random.md).
 
 ### Color
 
-Represent a color. 
-Color objects store RGBA components as floats (0-1) and *not* bytes (0-255).
+Represent a color value. 
+The Color object store RGBA components as floats, ranging from 0.0 to 1.0.
 
-The Color class also have all the built-in CSS colors as static getters:
+For convenience, it also have all the built-in CSS colors as static getters, so you can easily get the following standard color values:
 
 ```aliceblue, antiquewhite, aqua, aquamarine, azure, beige, bisque, black, blanchedalmond, blue, blueviolet, brown, burlywood, cadetblue, chartreuse, chocolate, coral, cornflowerblue, cornsilk, crimson, cyan, darkblue, darkcyan, darkgoldenrod, darkgray, darkgreen, darkkhaki, darkmagenta, darkolivegreen, darkorange, darkorchid, darkred, darksalmon, darkseagreen, darkslateblue, darkslategray, darkturquoise, darkviolet, deeppink, deepskyblue, dimgray, dodgerblue, firebrick, floralwhite, forestgreen, fuchsia, gainsboro, ghostwhite, gold, goldenrod, gray, green, greenyellow, honeydew, hotpink, indianred , indigo, ivory, khaki, lavender, lavenderblush, lawngreen, lemonchiffon, lightblue, lightcoral, lightcyan, lightgoldenrodyellow, lightgrey, lightgreen, lightpink, lightsalmon, lightseagreen, lightskyblue, lightslategray, lightsteelblue, lightyellow, lime, limegreen, linen, magenta, maroon, mediumaquamarine, mediumblue, mediumorchid, mediumpurple, mediumseagreen, mediumslateblue, mediumspringgreen, mediumturquoise, mediumvioletred, midnightblue, mintcream, mistyrose, moccasin, navajowhite, navy, oldlace, olive, olivedrab, orange, orangered, orchid, palegoldenrod, palegreen, paleturquoise, palevioletred, papayawhip, peachpuff, peru, pink, plum, powderblue, purple, rebeccapurple, red, rosybrown, royalblue, saddlebrown, salmon, sandybrown, seagreen, seashell, sienna, silver, skyblue, slateblue, slategray, snow, springgreen, steelblue, tan, teal, thistle, tomato, turquoise, violet, wheat, white, whitesmoke, yellow, yellowgreen```
 
-So for example you can get css red with `Shaku.utils.Color.red`. 
-Note that these colors are pre-compiled and are not generated at runtime, so they will have the same values on all browsers and platforms, even if some of them decide to implement a different values for the css keyword.
+So for example you can get the css red color with `Shaku.utils.Color.red`. 
+Note that these colors are pre-compiled and are not generated at runtime, so they will have the same values on all browsers and platforms, even if some of them decide to implement different values for the css keyword.
 
 For more info check out the [API docs](docs/utils_color.md).
 
 ### Animators
 
-`Animator` is a helper class that you can attach to any object and animate any property over time. You can also make animators update automatically, so you don't need to update them and can just launch and forget about them.
+`Animator`s are objects you can attach to any JavaScript object and animate any property in it over time. Animators can also register themselves to update automatically, so you don't need to update them and can just launch and forget about them.
 
-Let's start with a simple animator to create a heartbeat-like pulse effect that runs once:
+Note that Animators are not exclusive to *Shaku* objects, they are generic and work on anything.
+
+Let's start with a simple animator to create a heartbeat-like pulse that runs once, then we'll explain the code:
 
 ```js
-// create an animator that will grow 'sprite' to x1.5 its size, then shrink back to original size over the course of 0.5 seconds per direction (grow / shrink).
-// smoothDamp means the animation won't be linear, it will be faster at the beginning and slower as we reach the end
-let heartbeat = (new Shaku.utils.Animator(sprite)).to({'size': sprite.size.mul(1.5)}).repeats(1, true).duration(0.5).smoothDamp(true);
+// create an animator that will grow 'sprite' to x1.5 of its size, then shrink it back to original size over the course of 0.5 seconds per direction (grow / shrink).
+// smoothDamp means the animation won't be linear, it will be faster at the beginning and slower as we reach the target size
+let heartbeat = (new Shaku.utils.Animator(sprite))
+				.to({'size': sprite.size.mul(1.5)})
+				.reverseBackToStart()
+				.duration(0.5)
+				.smoothDamp(true);
 
 // run the animation once
-heartbeat.reset().play();
+heartbeat.play();
 ```
 
-Or another example, animator to fade out a sound instance (you can also use mixers for that):
+Lets review the code above:
+
+1. First we create an animator that takes `sprite` as its target (assume its a Sprite object we created earlier).
+2. Next we set a target values with `to()`, instructing the animator to change the 'size' property to x1.5 its starting value (Animators know how to handle the Vector2 objects and can lerp their x and y components).
+3. Then we instruct the animator to animate back to the starting state with `reverseBackToStart()`, so it will grow and then shrink back to original size. The animator keeps the value of all the properties it animates when the animation begins, so it knows how to reverse back to start. Note that we don't even know the size of the sprite, nor does it matter.
+4. Next we set the animation duration in seconds - 0.5 seconds to grow, 0.5 seconds to shrink.
+5. And finally we set mode to `smoothDamp()`, meaning animation will not be linear but will start faster and slow down as we approach the target value.
+
+Now lets see another example, an animator to fade out a sound instance (you can also use mixers for that):
 
 ```js
 (new Shaku.utils.Animator(soundInstance)).to({volume: 0}).play();
 ```
 
-So how `Animator` work?
+That's it. *Shaku* will fade out the sound automatically until volume is 0. You can spice it up with disposing the sound instance if you no longer need it once its done:
 
-1. Animators have a set of setter methods that return itself, so you can chain the animator setup as seen above.
-2. You can define 'from' values to begin animation from. If not set, it will use whatever value is currently set in the target.
-3. You can define 'to' values, which is the values we animate to using lerp or lerp with smooth damp.
-4. Every key in 'from' and 'to' can use dot notation, so we can either animate an entire object, for example 'size', or animate just a property, for example 'size.x'.
-5. If the property is a number, we'll just lerp it. If an object, the Animator will attempt to use a static `lerp` method. `Vector2`, `Rectangle`, `Circle`, and `Color` all implement a static `lerp` and can be used with animators. If your object does not implement `lerp`, you cannot animate it.
-6. You can either update animators manually with `update()` every frame, or call `play()` and have *Shaku* update it automatically every time you call `startFrame()`.
+```js
+(new Shaku.utils.Animator(soundInstance)).to({volume: 0}).play()
+	.then((sound, animator) => {
+		sound.stop();
+		sound.dispose();
+	});
+```
+
+So how `Animator`s actually work?
+
+1. Animators have a set of setter methods that all return itself, so you can chain the animator setup as seen in the examples above.
+2. You can define 'from' values to begin the animation from. If not set, it will use whatever value are currently set in the target.
+3. You can then define 'to' values, which are the values we want to animate to, using lerp or smooth damp (depends on the mode we set).
+4. Every key in 'from' and 'to' support dot notation, so we can either animate an entire object, for example 'size', or animate just a property inside of it, for example 'size.x'.
+5. If the property is a number, the animator will just lerp it. If its an object, the Animator will attempt to use a static `lerp` method contained under the class of the object. *Shaku*'s `Vector2`, `Vector3`, `Rectangle`, `Circle`, and `Color` all implement a static `lerp`, and can be used with animators without any extra work. 
+6. If you want to animate your own objects, you must first implement a static `lerp` method under its class.
+7. To run the animation you can either update the animator manually with `update(delta)` every frame, or you can call `play()` and have *Shaku* update it automatically every time you call `startFrame()`.
 
 Lets review all the properties we can set in an `Animator` instance:
 
@@ -1563,13 +1663,17 @@ If for example `reverseAnimation` is true and you repeat an animation that grows
 
 If `reverseAnimation` is not set, every time animation repeats its state will just 'jump' back to the starting values.
 
+#### animator.reverseBackToStart()
+
+Will set `repeats(1 true)` so the animator will animate back the starting state once done.
+
 #### animator.smoothDamp(enabled)
 
 If true, animation will go faster at the beginning and slower as we reach the animation end.
 
 #### animator.then(callback)
 
-Method to run when animation ends.
+Method to run when animation ends. Get the target and animator as params.
 
 #### animator.duration(seconds)
 
@@ -1590,7 +1694,7 @@ This is what you need to call manually when not using `play()`.
 
 ### Perlin
 
-Utility to generate perlin noise.
+A utility to generate perlin noise.
 
 Usage example:
 
@@ -1609,28 +1713,31 @@ For more info check out the [API docs](docs/utils_perlin.md).
 
 `PathFinder` is a utility to find a valid walking path between two points on a 2d or 3d grid.
 
-To use it you must implement a *grid provider* class that will provide information about your grid to the algorithm, by implementing the `Shaku.utils.PathFinder.IGrid` interface.
+To use it you must implement a *grid provider* class that will provide information about the grid to the algorithm. The grid provider must implement the `Shaku.utils.PathFinder.IGrid` interface.
 
 This interface have two main methods:
 
-- **isBlocked(_from, _to)**: tell the algorithm if its possible to walk from grid index `_from` to grid index `_to`. `true` = blocked, can't walk this path, `false` = can walk the path.
-- **getPrice(index)**: tell the algorithm the price it takes to walk on a given tile. 1 = default price, 0-1 = cheaper, >1 = expensive.
+- **isBlocked(_from, _to)**: tell the algorithm if its possible to walk between neighbor grid tiles `_from` and `_to` (they will always have distance of 1 tile, could be diagonal). `true` = blocked, can't walk this path, `false` = can walk this path.
+- **getPrice(index)**: tell the algorithm the price it takes to walk on a given tile. 1 = default price, <1 = cheaper tiles (algorithm will prefer them), >1 = expensive tiles (algorithm will prefer to avoid them).
 
-If you know path finding algorithms you know they *typically* get a matrix of booleans (or numbers for costs) as input, and not a grid provider class. However, using the grid provider shtick gives some extra flexability in terms of what you can implement with it:
+Using the grid provider pattern (instead of just a matrix of booleans) gives some extra flexability in terms of what we can do with the path finder:
 
-- Support 3D grid if taking z into consideration.
-- Implement slopes and cliffs, or walls that cover just a side of a grid cells and doesn't fill the entire of the tile (for example think about the walls in the first Sims game).
+- Support 3D grid and height differences by taking z into consideration (_from, _to and index can be `Vector3`, depends on what you send the finder).
+- Implement thin walls or cliffs you can jump down but not up, which are basically blocks that don't cover the entire size of the tile but only block a specific movement direction.
 
-Lets see how to use the `PathFinder`. This module only have one method, `findPath(grid, startPos, targetPos, options)`, which is what we use to calculate a walking path:
+Once we define our grid provider, we can call `findPath(grid, startPos, targetPos, options)` to calculates the most efficient path from start to end, using the provided grid.
 
-- **grid**: Your `IGrid` instance.
-- **startPos**: Vector2 you want to travel *from*.
-- **targetPos**: Vector2 you want to travel *to*.
-- **options**: Optional dictionary with extra flags:
-- - maxIterations: limit the numbers of iterations we allow when searching the path (so your game won't get stuck if you accidentally scan a huge level).
-- - ignorePrices: if true, will ignore the pricing functionality completely. It may seem redundant as you can just always return `1` from the `IGrid.getPrice()` method, however with this flag you can easily turn prices on and off *per search* while keeping the grid class intact.
+`findPath()` accept the following arguments:
 
-Lets see an example on how to use the `PathFinder`:
+- **grid**: Your `IGrid` provider instance.
+- **startPos**: Vector2 or Vector3 you want to travel *from*.
+- **targetPos**: Vector2 or Vector3 you want to travel *to*.
+- **options**: Optional dictionary with the following flags:
+- - maxIterations: limit the numbers of iterations we allow when searching the path.
+- - ignorePrices: if true, will ignore the pricing functionality completely.
+- - allowDiagonal: if true, will allow diagonal movement..
+
+Lets see an example on using the `PathFinder`:
 
 ```js
 // a grid provider that simple use a 2d array of numbers to represent tile types.
@@ -1691,9 +1798,9 @@ For more info check out the [API docs](docs/utils_path_finder.md).
 
 ### Storage
 
-`Storage` is a small utility that wraps `localStorage` and provides a slightly more convinient interface with fallback to `sessionStorage` and if none available - in-memory storage.
+`Storage` is a small utility that wraps `localStorage` and provides a slightly more convinient interface with a fallback to `sessionStorage`, and if none of the above is available, in-memory storage.
 
-When storing data with this utility it will also store some metadata (like insert timestamp) and add prefix to keys, so that later we can clear only values related to your game while not touching the rest.
+When storing data with this utility it will also store some metadata (like insert timestamp) and add prefix to keys, so that later we can clear only values created with *Shaku* without touching other storage keys. 
 
 Usage example:
 
@@ -1721,7 +1828,7 @@ storage.setJson('json_item_key', {hello: 'world'});
 const value = storage.getJson('json_item_key');
 ```
 
-Keep in mind that `Storage` is more of a DB access layer rather than the DB itself. This means that two different storage instances with the same adapter can override and access each other's keys:
+Keep in mind that `Storage` is just an access layer and not a DB instance. This means that two different storage instances with the same adapter will override and access each other keys:
 
 ```js
 const storage = new Shaku.utils.Storage();
@@ -1736,21 +1843,21 @@ const value = otherStorage.getItem('item_key'); // value == 'some value to store
 
 When creating a new storage manager, we can provide a list of adapters to use, and the storage will pick the first adapter available.
 
-An adapter is a small class that wraps a native storage device by a unified interface. For example, an adapter for localStorage will wrap the localStorage object with an interface that the `Storage` utility is familiar with.
+A storage adapter is just a small wrapper around a storage type or DB with a unified interface. For example, an adapter for `localStorage` will wrap the built-in `localStorage` object with an interface that the `Storage` utility is familiar with.
 
 By default, if you don't provide an adapters list, `Storage` will try the following adapters in the following order:
 
 1. localStorage (persistent).
-2. sessionStorage (not persistent but lives through page changes).
-3. In-memory (not persistent, simple dictionary).
+2. sessionStorage (not persistent but survive page load).
+3. In-memory (not persistent, dies when URL changes. Just a simple dictionary fallback).
 
-Which means, it can either be persistent or not. If you want for example only persistent localStorage, you can limit the adapters list:
+If you want only persistent localStorage, you can limit the adapters list:
 
 ```js
 const persistentStorage = new Shaku.utils.Storage(new Shaku.utils.StorageAdapter.localStorage());
 ```
 
-But since we removed the always-working memory fallback, you better make sure it didn't fail:
+But since we removed the reliable memory fallback, you should make sure it didn't fail to load before using it:
 
 ```js
 if (!storage.isValid) {
@@ -1758,16 +1865,20 @@ if (!storage.isValid) {
 }
 ```
 
+Its true that today all browsers already have `localStorage`, but keep in mind this object may not appear in some conditions (for example iframe with incognito, or if its disabled via settings).
+
 #### Prefix
 
-You can add keys prefix to storage instances. Storages with different prefixes should not affect each other's values:
+You can add keys prefix to storage instances. Storages with different prefixes will not affect each other's values:
 
 ```js
 // create players storage (null is to use default adapters)
-const playersStorage = new Shaku.utils.Storage(null, 'players');
+let prefix = 'players';
+const playersStorage = new Shaku.utils.Storage(null, prefix);
 
 // create npcs storage (null is to use default adapters)
-const npcsStorage = new Shaku.utils.Storage(null, 'npcs');
+let otherPrefix = 'npcs';
+const npcsStorage = new Shaku.utils.Storage(null, otherPrefix);
 
 // we can now use the same keys in both storages, and they won't mix:
 playersStorage.setJson('knight', {health: 100});
@@ -1777,7 +1888,9 @@ const playerKnightHealth = playersStorage.getJson('knight').health; // playerKni
 
 #### Base64
 
-`Storage` manager can encode keys and data as base64. This will make your data slightly less readable in the developer console, but needless to say, it won't provide any actual layer of security. It will just make it slightly less easy to read. To encode keys and value with Base64:
+The `Storage` manager can encode keys and data as base64. This will make your data slightly less readable in the developers console, and make the date more suitable to transfer between devices and over network. But needless to say, it won't provide any actual layer of security. 
+
+To encode keys and value with Base64:
 
 ```js
 storage.valuesAsBase64 = true;
@@ -1785,11 +1898,11 @@ storage.keysAsBase64 = true;
 storage.setJson('some_key', {hello: "world"});  // <-- this data will have key and values as base64.
 ```
 
-With base64 encoding, an entry like this in localStorage:
+With base64 encoding, an entry like this:
 
 `shaku_storage__some_key` -> `{"data":{"hello":"world"},"timestamp":1658069288877,"src":"Shaku","sver":1}`
 
-Will turn into something like this:
+Will turn into something like this when viewed in developer console:
 
 `c2hha3Vfc3RvcmFnZV9fc29tZV9rZXk=` -> `eyJkYXRhIjp7ImhlbGxvIjoid29ybGQifSwidGltZXN0YW1wIjoxNjU4MDY5MjEwMDIzLCJzcmMiOiJTaGFrdSIsInN2ZXIiOjF9`
 
@@ -1797,14 +1910,14 @@ Note that you can't read Base64 values without the Base64 flag set to true and v
 
 ## Miscellaneous
 
-The following are some useful miscellaneous you should know about.
+The following are some useful miscellaneous you should also know about.
 
 ### Shaku.gameTime
 
-`Shaku.gameTime` contains the delta time from last frame and total elapsed time since initialization. 
-You can use it to factor movement and animations that you want to be constant regardless of FPS count. 
+`Shaku.gameTime` contains the delta time since last frame + the total elapsed time in seconds since *Shaku* initialization. 
+You can use delta time as factor to make your game animate at the same speed regardless of FPS, and use elapsed for animations progress, or to measure time that passed between two events by only storing the start time. 
 
-For example, say you want to move an object at the speed of 100 pixels per second, you can use `gameTime` like this:
+For example, if you want to move an object at the speed of 100 pixels per second, you can use `gameTime` like this:
 
 ```js
 function step() 
@@ -1820,12 +1933,29 @@ function step()
 }
 ```
 
+Or if you want to make something float up and down, you can use elapsed time:
+
+
+```js
+function step() 
+{  
+	Shaku.startFrame();
+
+	// gameTime.elapsed contains the time passed, in seconds, from the initialization.
+	// objectPositionY is your object base position that we animate floating animation up and down from
+	positionY = objectPositionY + Math.sin(Shaku.gameTime.elapsed) * 30;
+
+	Shaku.endFrame();
+	Shaku.requestAnimationFrame(step);
+}
+```
+
 More info can be found in the [API docs](docs/utils_game_time.md).
 
 ### Shaku.getFpsCount()
 
 Return the current FPS count. 
-Until at least one second have passed, this will always return 0.
+Until the first second have passed, this will return 0.
 
 ### Shaku.getAverageFrameTime()
 
@@ -1855,46 +1985,13 @@ Call this before initializing *Shaku* to silent all prints and logs.
 
 Return *Shaku*'s current version.
 
-
 # Advanced Topics
-
-Some extra stuff you should know.
-
-## Batching
-
-Shaku draw all sprites (and rectangle shapes) using sprite batches. But what is it exactly?
-
-One of the slowest things when using GPU for rendering is communication from CPU to GPU, aka 'draw calls'. This basically happens every time you ask the GPU to run the shaders program to draw something. Simply put, a single draw call with 1,000 vertices would be significantly faster than a 100 draw calls with 10 vertices each, despite the same amount of vertices and fragments to calculate.
-
-Sprite batching is an optimization that batch together a bunch of sprites and push them all in a single draw call. With batching we can draw tens of thousands of sprites without taking any FPS hits.
-
-However, batching have some limitations you should be aware about. We can't batch together sprites that use different effect or texture, so batching will have to initiate a draw every time that:
-
-1. The internal buffer gets full.
-2. Texture changes.
-3. Blend mode changes.
-4. Effect or camera changes.
-5. Render target changes.
-6. You draw a shape (line, circle, rectangle..).
-
-This part is crucial to understand, because it means that if you can sort your draws accordingly, you can optimize your draw calls. This is yet another reason why texture atlases are useful.
-
-### Why Not Instancing?
-
-If you're savvy in computer graphics, you probably heard about *Instancing*, which is a more modern and often faster approach than batching. 
-
-For Shaku I chose batching because it keeps the shaders simple and straightforward, and shaders code remain agnostic to the batching (not the case with instancing). In addition, since we only draw simple quads and not complex geometries, the advantage of instancing is less significant than it would have been had we drawn actual 3d models.
-
-Note that if you really need instances you can probably implement it with a custom effects.
-
-A demo project that demonstrate performance with batching can be found [here](https://ronenness.github.io/Shaku/demo/gfx_performance.html).
-
 
 ## Shaku on NodeJS
 
-*Shaku* is a client-side library, designed to run in browsers. However, it has many useful utilities that you might want to use on server side as well, especially if you want to share code between client and server (for example vectors, collision, math helper..).
+*Shaku* is a client-side library, designed to run in browsers. However, it has many useful utilities that you might want to use on server side as well, especially if you want to share code between client and server (vectors, collision, perlin, path find, math helper and more..).
 
-To use *Shaku* on *NodeJS* you can require it just like you would require any node module. It will work just the same, only without the `gfx`, `sfx` and `input` managers, that will return null instead.
+To use *Shaku* on *NodeJS* you can require it just like you would require any node module. It will work just the same, only without the `gfx`, `sfx` and `input` managers, that will return null instead since *Shaku* will detect we run on server side.
 
 ### Connecting to server logger
 
@@ -1935,12 +2032,11 @@ Alternatively, if you don't want logs from *Shaku* you can just silent it with `
 
 # Build Shaku
 
-To build shaku after making changes, run `build.bat` from its containing folder. This will generate `Shaku.js` and `Shaku.min.js` under `dist`.
-Note that you must have *browserify* and *uglifyjs* installed globally prior of calling build.
+To build shaku after making changes, run `build.bat` from the project folder. This will generate `Shaku.js` and `Shaku.min.js` under `dist`.
 
-To update the docs, call `build_api_docs.py` (requires Python3).
+To update the docs, call `build_api_docs.py` (requires Python3) and `build_types.py` to generate ts files.
 
-If you added a new file, please copy and update the header comment from one of the existing files. Then you can execute `update_top_comment.py` to make sure the header is written properly and have auto fields set.
+If you added a new file, please copy and update the header comment from one of the existing files. Then you can use `update_top_comment.py` to make sure the header is written properly and have some auto fields set.
 
 # Changes
 
@@ -2183,7 +2279,7 @@ Special thanks to [knexator](https://github.com/knexator) for adding TypeScript 
 - Added getters for touch screen state and position.
 - Added `stats` to collision world.
 
-# 1.6.2
+## 1.6.2
 
 - Fixed key pressed input bug from last version.
 - Extended the input demo page to include more tests.
@@ -2191,19 +2287,19 @@ Special thanks to [knexator](https://github.com/knexator) for adding TypeScript 
 - Added `doublePressed` and `doubleReleased` to Input manager.
 - Fixed some input manager docs.
 
-# 1.6.3
+## 1.6.3
 
 - Added gamepad input.
 - Added demo for gamepad input.
 - Updated docs.
 
-# 1.6.4
+## 1.6.4
 
 - Added support in custom codes in input manager.
 - Added option to delegate gamepad input into base key events.
 - Improved Input manager error logs.
 
-# 1.6.5
+## 1.6.5
 
 - Optimized gfx by caching rendering region internally.
 - Optimized gfx by caching some variables + simpler bounding rect calculation when there's no rotation or skew.
@@ -2211,7 +2307,7 @@ Special thanks to [knexator](https://github.com/knexator) for adding TypeScript 
 - Optimized gfx by not slicing arrays when we don't have to.
 - Added log warning if couldn't get WebGL2 and fallback to WebGL1.
 
-# 1.7.0
+## 1.7.0
 
 - Extended Input demo.
 - Added useful logs about gamepad state changes.
@@ -2222,19 +2318,101 @@ Special thanks to [knexator](https://github.com/knexator) for adding TypeScript 
 - Added basic 3D example.
 - Changed `setContextAttributes()` to override flags instead of replacing them completely.
 
-# 1.7.1
+## 1.7.1
 
 - Made sound dispose slightly safer.
 - Continue updating input manager only when paused.
 - Removed mouse position reset on focus lost.
 
-# 1.7.2
+## 2.0.0
 
-- Fixed sound effects loading issue on some sound devices.
+Shaku 2.0 is a heavily refactored Shaku version with some fundamental and breaking changes.
 
-# 1.7.3 [WIP]
+### Main Change
 
-- Improved sound assets disposal code.
+The need for `Shaku 2.0` comes from the mess in the rendering pipeline, specifically with how *Shaku* dealt with *batching*.
+
+Batching is an important optimization to reduce GPU draw calls by combining together quads that share the same texture, blend mode and effect.
+
+In previous versions I tried to hide the batch works behind the scenes and call draw internally when we needed to. This created a good looking API, but created performance traps and obscurity.
+
+I felt these issues hard while making my first big *Shaku* powered project, and if I made mistakes with it, surely others will too.
+
+The main thing I wanted to change with *Shaku* 2.0 was to make batching more visible to the users, and make the rendering API more similar to the legacy C# XNA (or MonoGame) framework, which has a pretty decent API.
+
+So, now instead of drawing things like this:
+
+```js
+Shaku.gfx.draw(...);
+```
+
+We'll need to create a batch and use it like this:
+
+```js
+// init
+let spritesBatch = new Shaku.gfx.SpriteBatch();
+
+// render
+spritesBatch.begin();
+spritesBatch.draw(...);
+spritesBatch.end();
+```
+
+Yes, it's slightly less user friendly. But its clearer, and forces the user to know when a draw call is made.
+This way also creates some new abilities, like the ability to redraw an entire batch more than once with different effects without rebuilding the batch (super fast!).
+
+And like everything with `Shaku`, if you want a more high-level abstract API, you can just wrap it with a simplified draw() call similar to what `Shaku` had in the past.
+
+Note that there are now multiple type of draw batches; for sprites, text, shapes, etc.
+
+### Other Changes
+
+Since I decided to do breaking changes in the `gfx` manager anyway, I took the opportunity to push other breaking changes as well:
+
+- Started using private methods with '#' to hide internal logic.
+- Removed deprecated stuff and renamed some methods that had problematic names.
+- Changed static getters that create instances, like `Vector2.one`, to be normal static methods. This communicates better that a new object is created rather than accessing a member.
+
+### All 2.0 Changes
+
+- Builds with `WebPack` instead of `Browserify`.
+- Huge refactor in gfx and rendering batches.
+- Improved APIs and private metods with #.
+- Improved docs.
+- Added textures atlas.
+- Removed some useless logs.
+- Renamed `Shaku.isPaused` to `Shaku.isCurrentlyPaused()`.
+- Renamed `Shaku.paused` to `Shaku.pause`.
+- Renamed `Shaku.pauseTime` to `Shaku.pauseGameTime`.
+- Will now share loggers with the same name and not recreate them.
+- Changed `Vector2.length` to `Vector2.length()` since its a calculation.
+- Changed `Vector3.length` to `Vector3.length()` since its a calculation.
+- Renamed `Vector2.fromDegree()` to `Vector2.fromDegrees()`.
+- Renamed `Vector2.degreesToFull()` to `Vector2.wrappedDegreesTo()`.
+- Renamed `Vector2.radiansToFull()` to `Vector2.wrappedRadiansTo()`.
+- Renamed `Vector2.rotatedRadians()` to `Vector2.rotatedByRadians()`.
+- Renamed `Vector2.rotatedDegrees()` to `Vector2.rotatedByDegrees()`.
+- Renamed `Vector2.degreesBetweenFull()` to `Vector2.wrappedDegreesBetween()`.
+- Renamed `Vector2.radiansBetweenFull()` to `Vector2.wrappedRadiansBetween()`.
+- Changed left,right,up,down,.. `Vector2` getters to regular methods, to indicate it generates a new returned object.
+- Changed left,right,up,down,.. `Vector3` getters to regular methods, to indicate it generates a new returned object.
+- Fixed bug in `Vector3.set()`.
+- Removed `createEffect()` method; can now just create effect instances normally.
+- Removed deprecated `setUvOffsetAndScale()` method.
+- Added the ability to set attributes and uniforms on inactive effects; will store values in effect instance and apply them as soon as you draw with the effect.
+- Replaced all `instanceof Array` checks with the more robust and faster `Array.isArray()`.
+- Removed `sprite.static` property, as its not properly implemented.
+- Added basic effect without vertex color.
+- Updated and renamed the basic built-in effects.
+- Fixes in Sfx manager.
+- Added `getPixelsData()` to textures.
+- Added better support in Color uniforms in effects.
+- Added a built-in effect for sprites with outline.
+- Removed deprecated.
+- Added 'flipY' flag when loading a texture.
+- Added 'premultiplyAlpha' flag when loading a texture.
+- Improved effects uniform binds and renamed some of them - this might break custom effects.
+
 
 # License
 

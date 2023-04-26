@@ -1,1 +1,1 @@
-{"version":3,"file":"point.d.ts","sourceRoot":"","sources":["../../../lib/collision/shapes/point.js"],"names":[],"mappings":";AAoBA;;GAEG;AACH;IAEI;;;OAGG;IACH,sBAFW,OAAO,EAMjB;IAUD;;;OAGG;IACH,sBAFW,OAAO,QAOjB;IAHG,mBAAiC;IACjC,wBAA+D;IAInE;;;OAGG;IACH,eAFa,OAAO,CAKnB;CAqCJ"}
+{"version":3,"file":"point.d.ts","sourceRoot":"","sources":["../../../src/collision/shapes/point.js"],"names":[],"mappings":";AAoBA;;GAEG;AACH;IAEI;;;OAGG;IACH,sBAFW,OAAO,EAMjB;IAUD;;;OAGG;IACH,sBAFW,OAAO,QAOjB;IAHG,mBAAiC;IACjC,wBAA+D;IAInE;;;OAGG;IACH,eAFa,OAAO,CAKnB;IA0BD;;;OAGG;IACH,mDAUC;CACJ"}

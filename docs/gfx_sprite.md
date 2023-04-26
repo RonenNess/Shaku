@@ -8,45 +8,46 @@
 
 ## Sprite
 Sprite class.
-This object is a helper class to hold all the properties of a texture to render.
 
 **Kind**: global class  
 
 * [Sprite](#Sprite)
-    * [new Sprite(texture, [sourceRect])](#new_Sprite_new)
-    * [.texture](#Sprite+texture) : <code>TextureAsset</code>
-    * [.position](#Sprite+position) : <code>Vector2</code> \| <code>Vector3</code>
-    * [.size](#Sprite+size) : <code>Vector2</code> \| <code>Vector3</code>
-    * [.sourceRect](#Sprite+sourceRect) : <code>Rectangle</code>
-    * [.blendMode](#Sprite+blendMode) : <code>BlendMode</code>
-    * [.rotation](#Sprite+rotation) : <code>Number</code>
-    * [.origin](#Sprite+origin) : <code>Vector2</code>
-    * [.skew](#Sprite+skew) : <code>Vector2</code>
-    * [.color](#Sprite+color) : <code>Color</code> \| <code>Array.&lt;Color&gt;</code>
-    * [.static](#Sprite+static) : <code>Boolean</code>
-    * [.flipX](#Sprite+flipX) ⇒ <code>Boolean</code>
-    * [.flipX](#Sprite+flipX)
-    * [.flipY](#Sprite+flipY) ⇒ <code>Boolean</code>
-    * [.flipY](#Sprite+flipY)
-    * [.setSourceFromSpritesheet(index, spritesCount, [margin], [setSize])](#Sprite+setSourceFromSpritesheet)
-    * [.clone()](#Sprite+clone) ⇒ [<code>Sprite</code>](#Sprite)
-    * [.updateStaticProperties()](#Sprite+updateStaticProperties)
+    * [new Sprite(texture, [sourceRectangle])](#new_Sprite_new)
+    * _instance_
+        * [.texture](#Sprite+texture) : <code>TextureAssetBase</code>
+        * [.position](#Sprite+position) : <code>Vector2</code> \| <code>Vector3</code>
+        * [.size](#Sprite+size) : <code>Vector2</code> \| <code>Vector3</code>
+        * [.sourceRectangle](#Sprite+sourceRectangle) : <code>Rectangle</code>
+        * [.rotation](#Sprite+rotation) : <code>Number</code>
+        * [.origin](#Sprite+origin) : <code>Vector2</code>
+        * [.skew](#Sprite+skew) : <code>Vector2</code>
+        * [.color](#Sprite+color) : <code>Color</code> \| <code>Array.&lt;Color&gt;</code>
+        * [.flipX](#Sprite+flipX) ⇒ <code>Boolean</code>
+        * [.flipX](#Sprite+flipX)
+        * [.flipY](#Sprite+flipY) ⇒ <code>Boolean</code>
+        * [.flipY](#Sprite+flipY)
+        * [.setToSourceRectangleSize()](#Sprite+setToSourceRectangleSize) ⇒ [<code>Sprite</code>](#Sprite)
+        * [.setToTextureSize()](#Sprite+setToTextureSize) ⇒ [<code>Sprite</code>](#Sprite)
+        * [.setSourceFromSpritesheet(texture, index, spritesCount, [margin], [setSize])](#Sprite+setSourceFromSpritesheet)
+        * [.clone()](#Sprite+clone) ⇒ [<code>Sprite</code>](#Sprite)
+    * _static_
+        * [.build(texture, position, size, sourceRectangle, color, [rotation], [origin], [skew])](#Sprite.build) ⇒ [<code>Sprite</code>](#Sprite)
 
 <a name="new_Sprite_new"></a>
 
-### new Sprite(texture, [sourceRect])
-Create the texture object.
+### new Sprite(texture, [sourceRectangle])
+Create the sprite object.
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| texture | <code>TextureAsset</code> | Texture asset. |
-| [sourceRect] | <code>Rectangle</code> | Optional source rect. |
+| texture | <code>TextureAssetBase</code> | Sprite texture. |
+| [sourceRectangle] | <code>Rectangle</code> | Optional source rectangle. |
 
 <a name="Sprite+texture"></a>
 
-### sprite.texture : <code>TextureAsset</code>
-Texture to use for this sprite.
+### sprite.texture : <code>TextureAssetBase</code>
+Sprite's texture.
 
 **Kind**: instance property of [<code>Sprite</code>](#Sprite)  
 <a name="Sprite+position"></a>
@@ -54,7 +55,6 @@ Texture to use for this sprite.
 ### sprite.position : <code>Vector2</code> \| <code>Vector3</code>
 Sprite position.
 If Vector3 is provided, the z value will be passed to vertices position in shader code.
-This property is locked when static=true.
 
 **Kind**: instance property of [<code>Sprite</code>](#Sprite)  
 <a name="Sprite+size"></a>
@@ -62,42 +62,31 @@ This property is locked when static=true.
 ### sprite.size : <code>Vector2</code> \| <code>Vector3</code>
 Sprite size.
 If Vector3 is provided, the z value will be passed to the bottom vertices position in shader code, as position.z + size.z.
-This property is locked when static=true.
 
 **Kind**: instance property of [<code>Sprite</code>](#Sprite)  
-<a name="Sprite+sourceRect"></a>
+<a name="Sprite+sourceRectangle"></a>
 
-### sprite.sourceRect : <code>Rectangle</code>
+### sprite.sourceRectangle : <code>Rectangle</code>
 Sprite source rectangle in texture.
 Null will take entire texture.
-This property is locked when static=true.
-
-**Kind**: instance property of [<code>Sprite</code>](#Sprite)  
-<a name="Sprite+blendMode"></a>
-
-### sprite.blendMode : <code>BlendMode</code>
-Sprite blend mode.
 
 **Kind**: instance property of [<code>Sprite</code>](#Sprite)  
 <a name="Sprite+rotation"></a>
 
 ### sprite.rotation : <code>Number</code>
 Sprite rotation in radians.
-This property is locked when static=true.
 
 **Kind**: instance property of [<code>Sprite</code>](#Sprite)  
 <a name="Sprite+origin"></a>
 
 ### sprite.origin : <code>Vector2</code>
 Sprite origin point.
-This property is locked when static=true.
 
 **Kind**: instance property of [<code>Sprite</code>](#Sprite)  
 <a name="Sprite+skew"></a>
 
 ### sprite.skew : <code>Vector2</code>
 Skew the sprite corners on X and Y axis, around the origin point.
-This property is locked when static=true.
 
 **Kind**: instance property of [<code>Sprite</code>](#Sprite)  
 <a name="Sprite+color"></a>
@@ -105,15 +94,6 @@ This property is locked when static=true.
 ### sprite.color : <code>Color</code> \| <code>Array.&lt;Color&gt;</code>
 Sprite color.
 If array is set, will assign each color to different vertex, starting from top-left.
-
-**Kind**: instance property of [<code>Sprite</code>](#Sprite)  
-<a name="Sprite+static"></a>
-
-### sprite.static : <code>Boolean</code>
-Is this a static sprite.
-Static sprites will only calculate vertices properties once, and reuse them in following render calls.
-This will improve performance, but also means that once the sprite is rendered once, changing things like position, size, rotation, etc.
-won't affect the output. To refresh the properties of a static sprite, you need to call updateStaticProperties() manually.
 
 **Kind**: instance property of [<code>Sprite</code>](#Sprite)  
 <a name="Sprite+flipX"></a>
@@ -156,9 +136,23 @@ This is just a sugarcoat that set size.y to negative or positive value, without 
 | --- | --- | --- |
 | flip | <code>Boolean</code> | Should we flip the sprite around Y axis. If undefined, will take the negative of flipY current value, ie will toggle flipping. |
 
+<a name="Sprite+setToSourceRectangleSize"></a>
+
+### sprite.setToSourceRectangleSize() ⇒ [<code>Sprite</code>](#Sprite)
+Set size to source rectangle size.
+
+**Kind**: instance method of [<code>Sprite</code>](#Sprite)  
+**Returns**: [<code>Sprite</code>](#Sprite) - this.  
+<a name="Sprite+setToTextureSize"></a>
+
+### sprite.setToTextureSize() ⇒ [<code>Sprite</code>](#Sprite)
+Set size to texture size.
+
+**Kind**: instance method of [<code>Sprite</code>](#Sprite)  
+**Returns**: [<code>Sprite</code>](#Sprite) - this.  
 <a name="Sprite+setSourceFromSpritesheet"></a>
 
-### sprite.setSourceFromSpritesheet(index, spritesCount, [margin], [setSize])
+### sprite.setSourceFromSpritesheet(texture, index, spritesCount, [margin], [setSize])
 Set the source Rectangle automatically from spritesheet.
 This method get sprite index in sheet and how many sprites there are in total, and calculate the desired
 offset and size in source Rectangle based on it + source image size.
@@ -167,6 +161,7 @@ offset and size in source Rectangle based on it + source image size.
 
 | Param | Type | Description |
 | --- | --- | --- |
+| texture | <code>TextureAssetBase</code> | Texture to set source rectangle from. |
 | index | <code>Vector2</code> | Sprite index in spritesheet. |
 | spritesCount | <code>Vector2</code> | How many sprites there are in spritesheet in total. |
 | [margin] | <code>Number</code> | How many pixels to trim from the tile (default is 0). |
@@ -179,9 +174,22 @@ Clone this sprite.
 
 **Kind**: instance method of [<code>Sprite</code>](#Sprite)  
 **Returns**: [<code>Sprite</code>](#Sprite) - cloned sprite.  
-<a name="Sprite+updateStaticProperties"></a>
+<a name="Sprite.build"></a>
 
-### sprite.updateStaticProperties()
-Manually update the static properties (position, size, rotation, origin, source rectangle, etc.) of a static sprite.
+### Sprite.build(texture, position, size, sourceRectangle, color, [rotation], [origin], [skew]) ⇒ [<code>Sprite</code>](#Sprite)
+Build a sprite from params.
 
-**Kind**: instance method of [<code>Sprite</code>](#Sprite)  
+**Kind**: static method of [<code>Sprite</code>](#Sprite)  
+**Returns**: [<code>Sprite</code>](#Sprite) - New sprite instance.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| texture | <code>TextureAssetBase</code> | Sprite texture. |
+| position | <code>Vector2</code> \| <code>Vector3</code> | Drawing position (at origin). If vector3 is provided, will pass z value to the shader code position attribute. |
+| size | <code>Vector2</code> \| <code>Vector3</code> \| <code>Number</code> | Drawing size. If vector3 is provided, will pass z value to the shader code position attribute for the bottom vertices, as position.z + size.z. |
+| sourceRectangle | <code>Rectangle</code> | Source rectangle, or undefined to use the entire texture. |
+| color | <code>Color</code> \| <code>Array.&lt;Color&gt;</code> \| <code>undefined</code> | Tint color, or undefined to not change color. If array is set, will assign each color to different vertex, starting from top-left. |
+| [rotation] | <code>Number</code> | Rotate sprite. |
+| [origin] | <code>Vector2</code> | Drawing origin. This will be the point at 'position' and rotation origin. |
+| [skew] | <code>Vector2</code> | Skew the drawing corners on X and Y axis, around the origin point. |
+

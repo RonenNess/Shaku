@@ -60,7 +60,7 @@ All color components are expected to be in 0.0 - 1.0 range (and not 0-255).
         * [.fromDecimal(val, includeAlpha)](#Color.fromDecimal) ⇒ [<code>Color</code>](#Color)
         * [.fromDict(data)](#Color.fromDict) ⇒ [<code>Color</code>](#Color)
         * [.random(includeAlpha)](#Color.random) ⇒ [<code>Color</code>](#Color)
-        * [.fromBytesArray(bytes)](#Color.fromBytesArray) ⇒ [<code>Color</code>](#Color)
+        * [.fromBytesArray(bytes, [offset])](#Color.fromBytesArray) ⇒ [<code>Color</code>](#Color)
         * [.lerp(p1, p2, a)](#Color.lerp) ⇒ [<code>Color</code>](#Color)
 
 <a name="new_Color_new"></a>
@@ -319,7 +319,7 @@ Return a random color.
 
 <a name="Color.fromBytesArray"></a>
 
-### Color.fromBytesArray(bytes) ⇒ [<code>Color</code>](#Color)
+### Color.fromBytesArray(bytes, [offset]) ⇒ [<code>Color</code>](#Color)
 Build and return new color from bytes array.
 
 **Kind**: static method of [<code>Color</code>](#Color)  
@@ -328,6 +328,7 @@ Build and return new color from bytes array.
 | Param | Type | Description |
 | --- | --- | --- |
 | bytes | <code>Array.&lt;Number&gt;</code> | Bytes array to build color from. |
+| [offset] | <code>Number</code> | Optional offset to read bytes from. |
 
 <a name="Color.lerp"></a>
 

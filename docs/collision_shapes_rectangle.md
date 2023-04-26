@@ -18,7 +18,7 @@ Collision rectangle class.
     * [._getRadius()](#RectangleShape+_getRadius)
     * [._getBoundingBox()](#RectangleShape+_getBoundingBox)
     * [.getCenter()](#RectangleShape+getCenter)
-    * [.debugDraw(opacity)](#RectangleShape+debugDraw)
+    * [.debugDraw()](#RectangleShape+debugDraw)
 
 <a name="new_RectangleShape_new"></a>
 
@@ -59,12 +59,5 @@ Set this collision shape from rectangle.
 **Kind**: instance method of [<code>RectangleShape</code>](#RectangleShape)  
 <a name="RectangleShape+debugDraw"></a>
 
-### rectangleShape.debugDraw(opacity)
-Debug draw this shape.
-
+### rectangleShape.debugDraw()
 **Kind**: instance method of [<code>RectangleShape</code>](#RectangleShape)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| opacity | <code>Number</code> | Shape opacity factor. |
-

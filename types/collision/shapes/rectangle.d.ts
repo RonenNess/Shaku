@@ -16,6 +16,10 @@ declare class RectangleShape extends CollisionShape {
     _rect: Rectangle;
     _center: import("../../utils/vector2");
     _radius: number;
+    /**
+     * @inheritdoc
+     */
+    debugDraw(opacity: any, shapesBatch: any): void;
 }
 import CollisionShape = require("./shape");
 import Rectangle = require("../../utils/rectangle");

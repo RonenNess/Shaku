@@ -55,6 +55,10 @@ declare class TilemapShape extends CollisionShape {
      * @returns {Array<RectangleShape>} Array with rectangle shapes or empty if none found.
      */
     getTilesAtRegion(region: Rectangle): Array<RectangleShape>;
+    /**
+     * @inheritdoc
+     */
+    debugDraw(opacity: any, shapesBatch: any): void;
 }
 import CollisionShape = require("./shape");
 import Vector2 = require("../../utils/vector2");

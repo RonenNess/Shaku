@@ -17,18 +17,37 @@ declare class CollisionWorld {
     resolver: CollisionResolver;
     _gridCellSize: Vector2;
     _grid: {};
-    _shapesToUpdate: any;
-    _cellsToDelete: any;
+    _shapesToUpdate: Set<any>;
+    _cellsToDelete: Set<any>;
     /**
-     * Do collision world updates, if we have any.
-     * @private
+     * Reset stats.
      */
-    private _performUpdates;
+    resetStats(): void;
+    _stats: {
+        updatedShapes: number;
+        addedShapes: number;
+        deletedGridCells: number;
+        createdGridCell: number;
+        broadPhaseShapesChecksPrePredicate: number;
+        broadPhaseShapesChecksPostPredicate: number;
+        broadPhaseCalls: number;
+        collisionChecks: number;
+        collisionMatches: number;
+    };
     /**
-     * Update a shape in collision world after it moved or changed.
-     * @private
+     * Get current stats.
+     * @returns {*} Dictionary with the following stats:
+     *  updatedShapes: number of times we updated or added new shapes.
+     *  addedShapes: number of new shapes added.
+     *  deletedGridCells: grid cells that got deleted after they were empty.
+     *  createdGridCell: new grid cells created.
+     *  broadPhaseShapesChecksPrePredicate: how many shapes were tested in a broadphase check, before the predicate method was called.
+     *  broadPhaseShapesChecksPostPredicate: how many shapes were tested in a broadphase check, after the predicate method was called.
+     *  broadPhaseCalls: how many broadphase calls were made
+     *  collisionChecks: how many shape-vs-shape collision checks were actually made.
+     *  collisionMatches: how many collision checks were positive.
      */
-    private _updateShape;
+    get stats(): any;
     /**
      * Request update for this shape on next updates call.
      * @private
@@ -49,15 +68,6 @@ declare class CollisionWorld {
      * @param {CollisionShape} shape Shape to remove.
      */
     removeShape(shape: CollisionShape): void;
-    /**
-     * Iterate shapes that match broad phase test.
-     * @private
-     * @param {CollisionShape} shape Shape to test.
-     * @param {Function} handler Method to run on all shapes in phase. Return true to continue iteration, false to break.
-     * @param {Number} mask Optional mask of bits to match against shapes collisionFlags. Will only return shapes that have at least one common bit.
-     * @param {Function} predicate Optional filter to run on any shape we're about to test collision with.
-     */
-    private _iterateBroadPhase;
     /**
      * Test collision with shapes in world, and return just the first result found.
      * @param {CollisionShape} sourceShape Source shape to check collision for. If shape is in world, it will not collide with itself.
@@ -90,6 +100,17 @@ declare class CollisionWorld {
      */
     pick(position: any, radius: any, sortByDistance: any, mask: any, predicate: any): Array<CollisionShape>;
     /**
+     * Set the shapes batch to use for debug-drawing this collision world.
+     * @param {ShapesBatch} batch Batch to use for debug draw.
+     */
+    setDebugDrawBatch(batch: ShapesBatch): void;
+    __debugDrawBatch: ShapesBatch;
+    /**
+     * Return the currently set debug draw batch, or create a new one if needed.
+     * @returns {ShapesBatch} Shapes batch instance used to debug-draw collision world.
+     */
+    getOrCreateDebugDrawBatch(): ShapesBatch;
+    /**
      * Debug-draw the current collision world.
      * @param {Color} gridColor Optional grid color (default to black).
      * @param {Color} gridHighlitColor Optional grid color for cells with shapes in them (default to red).
@@ -97,10 +118,12 @@ declare class CollisionWorld {
      * @param {Camera} camera Optional camera for offset and viewport.
      */
     debugDraw(gridColor: Color, gridHighlitColor: Color, opacity: number, camera: Camera): void;
+    #private;
 }
 import CollisionResolver = require("./resolver");
 import Vector2 = require("../utils/vector2");
 import CollisionShape = require("./shapes/shape");
 import CollisionTestResult = require("./result");
+import ShapesBatch = require("../gfx/draw_batches/shapes_batch");
 import Color = require("../utils/color");
 //# sourceMappingURL=collision_world.d.ts.map

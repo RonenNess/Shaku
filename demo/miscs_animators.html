@@ -29,6 +29,10 @@
           document.body.appendChild(Shaku.gfx.canvas);
           Shaku.gfx.setResolution(800, 600, true);
 
+          // create sprites batch
+          let spritesBatch = new Shaku.gfx.SpriteBatch();
+          let spriteTextBatch = new Shaku.gfx.TextSpriteBatch();
+
           // load font texture
           let fontTexture = await Shaku.assets.loadFontTexture('assets/DejaVuSansMono.ttf', {fontName: 'DejaVuSansMono', fontSize: 20});
 
@@ -66,22 +70,29 @@
             Shaku.startFrame();
             Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
 
+            spritesBatch.begin();
+            spriteTextBatch.begin();
+
             // draw sprite 1 animations
-            Shaku.gfx.drawGroup(text1, true);
-            Shaku.gfx.drawSprite(sprite1);
+            spriteTextBatch.drawText(text1, true);
+            spritesBatch.drawSprite(sprite1);
             
             // draw sprite 2 animations
-            Shaku.gfx.drawGroup(text2, true);
-            Shaku.gfx.drawSprite(sprite2);
+            spriteTextBatch.drawText(text2, true);
+            spritesBatch.drawSprite(sprite2);
 
             // draw sprite 3 animations
-            Shaku.gfx.drawGroup(text3, true);
-            Shaku.gfx.drawSprite(sprite3);
+            spriteTextBatch.drawText(text3, true);
+            spritesBatch.drawSprite(sprite3);
 
             // activate heartbeat animation
             if (Shaku.input.pressed('a')) {
               heartbeat.reset().play();
             }
+
+            // present text and sprites
+            spriteTextBatch.end();
+            spritesBatch.end();
 
             // end frame and request next frame
             Shaku.endFrame();
@@ -104,18 +115,18 @@
 
 <p class="noselect">The following shows a minimal code example on how to init Shaku and create a main loop.</p>
 <pre><code class="language-js">// create repeating animation that move sprite from position x=0 to x=700 while turning it red, over 5 seconds:
-let sprite1 = new Shaku.gfx.Sprite(texture);
+let sprite1 = new Shaku.gfx.Sprite();
 sprite1.position.set(50, 150);
 (new Shaku.utils.Animator(sprite1)).repeats(true).to({'position.x': 700, 'color': Shaku.utils.Color.red}).duration(5).play();
 
 // create repeating animation that move and scale, but instead of "jumping" back to the starting state, it will lerp back to it
-let sprite2 = new Shaku.gfx.Sprite(texture);
+let sprite2 = new Shaku.gfx.Sprite();
 sprite2.position.set(50, 340);
 (new Shaku.utils.Animator(sprite2)).repeats(true, true).to({'position.x': 700, 'size': new Shaku.utils.Vector2(150, 150)}).duration(5).smoothDamp(true).play();
 
 
 // do "heartbeat" effect that pump once when we call the method "beat()"
-let sprite3 = new Shaku.gfx.Sprite(texture);
+let sprite3 = new Shaku.gfx.Sprite();
 sprite3.position.set(50, 540);
 let heartbeat = (new Shaku.utils.Animator(sprite3)).to({'size': new Shaku.utils.Vector2(170, 170)}).repeats(1, true).duration(0.5).smoothDamp(true);
 function beat() {

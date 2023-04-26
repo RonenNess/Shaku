@@ -14,11 +14,6 @@ declare class Collision extends IManager {
      */
     resolver: CollisionResolver;
     /**
-     * @inheritdoc
-     * @private
-     **/
-    private setup;
-    /**
      * Create a new collision world object.
      * @param {Number|Vector2} gridCellSize Collision world grid cell size.
      * @returns {CollisionWorld} Newly created collision world.

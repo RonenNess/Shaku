@@ -16,6 +16,10 @@ declare class CircleShape extends CollisionShape {
     _circle: Circle;
     _position: import("../../utils/vector2");
     _boundingBox: Rectangle;
+    /**
+     * @inheritdoc
+     */
+    debugDraw(opacity: any, shapesBatch: any): void;
 }
 import CollisionShape = require("./shape");
 import Circle = require("../../utils/circle");

@@ -29,4 +29,5 @@ export const TransformationModes: {
     AxisAligned: string;
     Absolute: string;
 };
+export const ItemsSorter: typeof import("./items_sorter");
 //# sourceMappingURL=index.d.ts.map

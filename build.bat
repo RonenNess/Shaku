@@ -1,1 +1,1 @@
-browserify lib/index.js --s Shaku --outfile dist/shaku.js & uglifyjs --keep-fnames -o dist/shaku.min.js dist/shaku.js & copy dist\shaku.js demo\js\shaku.js /Y
+npm run build & copy dist\shaku.js demo\js\shaku.js /Y

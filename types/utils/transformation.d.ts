@@ -89,21 +89,6 @@ declare class Transformation {
      */
     getPositionMode(): {
         Relative: string;
-        /**
-         * Transformations helper class to store 2d position, rotation and scale.
-         * Can also perform transformations inheritance, where we combine local with parent transformations.
-         *
-         * @example
-         * // create local and world transformations
-         * const transform = new Shaku.utils.Transformation();
-         * const worldTransform = new Shaku.utils.Transformation();
-         * // set offset to world transofm and rotation to local transform
-         * worldTransform.setPosition({x: 100, y:50});
-         * transform.setRotation(5);
-         * // combine transformations and convert to a matrix
-         * const combined = Shaku.utils.Transformation.combine(transform, worldTransform);
-         * const matrix = combined.asMatrix();
-         */
         AxisAligned: string;
         Absolute: string;
     };
@@ -138,21 +123,6 @@ declare class Transformation {
      */
     setPositionMode(value: {
         Relative: string;
-        /**
-         * Transformations helper class to store 2d position, rotation and scale.
-         * Can also perform transformations inheritance, where we combine local with parent transformations.
-         *
-         * @example
-         * // create local and world transformations
-         * const transform = new Shaku.utils.Transformation();
-         * const worldTransform = new Shaku.utils.Transformation();
-         * // set offset to world transofm and rotation to local transform
-         * worldTransform.setPosition({x: 100, y:50});
-         * transform.setRotation(5);
-         * // combine transformations and convert to a matrix
-         * const combined = Shaku.utils.Transformation.combine(transform, worldTransform);
-         * const matrix = combined.asMatrix();
-         */
         AxisAligned: string;
         Absolute: string;
     }): Transformation;
@@ -167,21 +137,6 @@ declare class Transformation {
      */
     getScaleMode(): {
         Relative: string;
-        /**
-         * Transformations helper class to store 2d position, rotation and scale.
-         * Can also perform transformations inheritance, where we combine local with parent transformations.
-         *
-         * @example
-         * // create local and world transformations
-         * const transform = new Shaku.utils.Transformation();
-         * const worldTransform = new Shaku.utils.Transformation();
-         * // set offset to world transofm and rotation to local transform
-         * worldTransform.setPosition({x: 100, y:50});
-         * transform.setRotation(5);
-         * // combine transformations and convert to a matrix
-         * const combined = Shaku.utils.Transformation.combine(transform, worldTransform);
-         * const matrix = combined.asMatrix();
-         */
         AxisAligned: string;
         Absolute: string;
     };
@@ -216,21 +171,6 @@ declare class Transformation {
      */
     setScaleMode(value: {
         Relative: string;
-        /**
-         * Transformations helper class to store 2d position, rotation and scale.
-         * Can also perform transformations inheritance, where we combine local with parent transformations.
-         *
-         * @example
-         * // create local and world transformations
-         * const transform = new Shaku.utils.Transformation();
-         * const worldTransform = new Shaku.utils.Transformation();
-         * // set offset to world transofm and rotation to local transform
-         * worldTransform.setPosition({x: 100, y:50});
-         * transform.setRotation(5);
-         * // combine transformations and convert to a matrix
-         * const combined = Shaku.utils.Transformation.combine(transform, worldTransform);
-         * const matrix = combined.asMatrix();
-         */
         AxisAligned: string;
         Absolute: string;
     }): Transformation;
@@ -255,21 +195,6 @@ declare class Transformation {
      */
     getRotationMode(): {
         Relative: string;
-        /**
-         * Transformations helper class to store 2d position, rotation and scale.
-         * Can also perform transformations inheritance, where we combine local with parent transformations.
-         *
-         * @example
-         * // create local and world transformations
-         * const transform = new Shaku.utils.Transformation();
-         * const worldTransform = new Shaku.utils.Transformation();
-         * // set offset to world transofm and rotation to local transform
-         * worldTransform.setPosition({x: 100, y:50});
-         * transform.setRotation(5);
-         * // combine transformations and convert to a matrix
-         * const combined = Shaku.utils.Transformation.combine(transform, worldTransform);
-         * const matrix = combined.asMatrix();
-         */
         AxisAligned: string;
         Absolute: string;
     };
@@ -307,30 +232,9 @@ declare class Transformation {
      */
     setRotationMode(value: {
         Relative: string;
-        /**
-         * Transformations helper class to store 2d position, rotation and scale.
-         * Can also perform transformations inheritance, where we combine local with parent transformations.
-         *
-         * @example
-         * // create local and world transformations
-         * const transform = new Shaku.utils.Transformation();
-         * const worldTransform = new Shaku.utils.Transformation();
-         * // set offset to world transofm and rotation to local transform
-         * worldTransform.setPosition({x: 100, y:50});
-         * transform.setRotation(5);
-         * // combine transformations and convert to a matrix
-         * const combined = Shaku.utils.Transformation.combine(transform, worldTransform);
-         * const matrix = combined.asMatrix();
-         */
         AxisAligned: string;
         Absolute: string;
     }): Transformation;
-    /**
-     * Notify about changes in values.
-     * @param {Boolean} localTransform Local transformations changed.
-     * @param {Boolean} transformationModes Transformation modes changed.
-     */
-    _markDirty(localTransform: boolean, transformationModes: boolean): void;
     _matrix: Matrix;
     /**
      * Check if this transformation equals another.
@@ -350,63 +254,18 @@ declare class Transformation {
         pos: Vector2;
         posm: {
             Relative: string;
-            /**
-             * Transformations helper class to store 2d position, rotation and scale.
-             * Can also perform transformations inheritance, where we combine local with parent transformations.
-             *
-             * @example
-             * // create local and world transformations
-             * const transform = new Shaku.utils.Transformation();
-             * const worldTransform = new Shaku.utils.Transformation();
-             * // set offset to world transofm and rotation to local transform
-             * worldTransform.setPosition({x: 100, y:50});
-             * transform.setRotation(5);
-             * // combine transformations and convert to a matrix
-             * const combined = Shaku.utils.Transformation.combine(transform, worldTransform);
-             * const matrix = combined.asMatrix();
-             */
             AxisAligned: string;
             Absolute: string;
         };
         scl: Vector2;
         sclm: {
             Relative: string;
-            /**
-             * Transformations helper class to store 2d position, rotation and scale.
-             * Can also perform transformations inheritance, where we combine local with parent transformations.
-             *
-             * @example
-             * // create local and world transformations
-             * const transform = new Shaku.utils.Transformation();
-             * const worldTransform = new Shaku.utils.Transformation();
-             * // set offset to world transofm and rotation to local transform
-             * worldTransform.setPosition({x: 100, y:50});
-             * transform.setRotation(5);
-             * // combine transformations and convert to a matrix
-             * const combined = Shaku.utils.Transformation.combine(transform, worldTransform);
-             * const matrix = combined.asMatrix();
-             */
             AxisAligned: string;
             Absolute: string;
         };
         rot: number;
         rotm: {
             Relative: string;
-            /**
-             * Transformations helper class to store 2d position, rotation and scale.
-             * Can also perform transformations inheritance, where we combine local with parent transformations.
-             *
-             * @example
-             * // create local and world transformations
-             * const transform = new Shaku.utils.Transformation();
-             * const worldTransform = new Shaku.utils.Transformation();
-             * // set offset to world transofm and rotation to local transform
-             * worldTransform.setPosition({x: 100, y:50});
-             * transform.setRotation(5);
-             * // combine transformations and convert to a matrix
-             * const combined = Shaku.utils.Transformation.combine(transform, worldTransform);
-             * const matrix = combined.asMatrix();
-             */
             AxisAligned: string;
             Absolute: string;
         };
@@ -421,6 +280,7 @@ declare class Transformation {
      * @returns {Matrix} New transformation matrix.
      */
     asMatrix(): Matrix;
+    #private;
 }
 import Vector2 = require("./vector2");
 import Matrix = require("../gfx/matrix");

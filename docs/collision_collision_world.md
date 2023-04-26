@@ -23,6 +23,8 @@ You can use different collision worlds to represent different levels or differen
     * [.testCollision(sourceShape, sortByDistance, mask, predicate)](#CollisionWorld+testCollision) ⇒ <code>CollisionTestResult</code>
     * [.testCollisionMany(sourceShape, sortByDistance, mask, predicate, intermediateProcessor)](#CollisionWorld+testCollisionMany) ⇒ <code>Array.&lt;CollisionTestResult&gt;</code>
     * [.pick(position, radius, sortByDistance, mask, predicate)](#CollisionWorld+pick) ⇒ <code>Array.&lt;CollisionShape&gt;</code>
+    * [.setDebugDrawBatch(batch)](#CollisionWorld+setDebugDrawBatch)
+    * [.getOrCreateDebugDrawBatch()](#CollisionWorld+getOrCreateDebugDrawBatch) ⇒ <code>ShapesBatch</code>
     * [.debugDraw(gridColor, gridHighlitColor, opacity, camera)](#CollisionWorld+debugDraw)
 
 <a name="new_CollisionWorld_new"></a>
@@ -149,6 +151,24 @@ Return array of shapes that touch a given position, with optional radius.
 ```js
 let shapes = world.pick(Shaku.input.mousePosition);
 ```
+<a name="CollisionWorld+setDebugDrawBatch"></a>
+
+### collisionWorld.setDebugDrawBatch(batch)
+Set the shapes batch to use for debug-drawing this collision world.
+
+**Kind**: instance method of [<code>CollisionWorld</code>](#CollisionWorld)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| batch | <code>ShapesBatch</code> | Batch to use for debug draw. |
+
+<a name="CollisionWorld+getOrCreateDebugDrawBatch"></a>
+
+### collisionWorld.getOrCreateDebugDrawBatch() ⇒ <code>ShapesBatch</code>
+Return the currently set debug draw batch, or create a new one if needed.
+
+**Kind**: instance method of [<code>CollisionWorld</code>](#CollisionWorld)  
+**Returns**: <code>ShapesBatch</code> - Shapes batch instance used to debug-draw collision world.  
 <a name="CollisionWorld+debugDraw"></a>
 
 ### collisionWorld.debugDraw(gridColor, gridHighlitColor, opacity, camera)

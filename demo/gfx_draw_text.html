@@ -11,11 +11,10 @@
     <div class="noselect">
     <button class="view-code-btn" onclick="showSampleCode();">View Code</button> 
     <h1 class="demo-title">Shaku Gfx Demo: Text</h1>
-      <p>This demo demonstrate how to render text with Shaku.<br/>
-      To render text, Shaku can dynamically load a font and built a texture atlas out of it, which would look something like this (the below image is an actual font texture generated at runtime):</p>
+      <p>This demo demonstrate how to render text with Shaku using Font Textures.<br/>
+        A Font Texture is basically a spritesheet that Shaku generates at runtime from a font (and size). It looks like this:</p>
       <img id="font-texture" style="background: black;" />
-      <p>Once the font texture is loaded, the Gfx manager provides a method to generate a sprites groups from any given text.<br />
-        The examples below show text generated with this method. Note that we can apply any group transformations on a text group:</p>
+      <p>Once created, the Gfx manager can use it to convert any string into a collection of sprites that when rendered will draw the text with the given font.</p>
 
       <!-- include shaku -->
       <script src="js/demos.js"></script>
@@ -36,6 +35,9 @@
           document.body.appendChild(Shaku.gfx.canvas);
           Shaku.gfx.setResolution(screenX, screenY, true);
 
+          // create text sprite batch
+          let textSpriteBatch = new Shaku.gfx.TextSpriteBatch();
+          
           // load font texture
           let fontTexture = await Shaku.assets.loadFontTexture('assets/DejaVuSansMono.ttf', {fontName: 'DejaVuSansMono'});
           document.getElementById('font-texture').src = fontTexture.texture.image.src;
@@ -66,6 +68,9 @@
           let text8 = Shaku.gfx.buildText(fontTexture, "Larger spacing", 24, Shaku.utils.Color.brown, Shaku.gfx.TextAlignments.Center, null, new Shaku.utils.Vector2(2.5, 1));
           text8.position.set(screenX / 2, 550);
 
+          let text9 = Shaku.gfx.buildText(fontTexture, "Outline Animation", 36, Shaku.utils.Color.white);
+          text9.position.set(400, 100);
+
           // do a main loop step.
           function step() 
           {
@@ -74,14 +79,24 @@
             Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
 
             // draw texts
-            Shaku.gfx.drawGroup(text1);
-            Shaku.gfx.drawGroup(text2);
-            Shaku.gfx.drawGroup(text3);
-            Shaku.gfx.drawGroup(text4);
-            Shaku.gfx.drawGroup(text5);
-            Shaku.gfx.drawGroup(text6);
-            Shaku.gfx.drawGroup(text7);
-            Shaku.gfx.drawGroup(text8);
+            textSpriteBatch.begin();
+            textSpriteBatch.drawText(text1);
+            textSpriteBatch.drawText(text2);
+            textSpriteBatch.drawText(text3);
+            textSpriteBatch.drawText(text4);
+            textSpriteBatch.drawText(text5);
+            textSpriteBatch.drawText(text6);
+            textSpriteBatch.drawText(text7);
+            textSpriteBatch.drawText(text8);
+            textSpriteBatch.end();
+
+            // draw text with outline effect
+            textSpriteBatch.outlineWeight = Math.abs(Math.sin(Shaku.gameTime.elapsed)) / 4;
+            textSpriteBatch.outlineColor = Shaku.utils.Color.black;
+            textSpriteBatch.begin();
+            textSpriteBatch.drawText(text9);
+            textSpriteBatch.end();
+            textSpriteBatch.outlineWeight = 0;
 
             // do some animations
             text2.rotation += Shaku.gameTime.delta;
@@ -118,6 +133,9 @@
 <pre><code class="language-js">// load font texture asset
 let fontTexture = await Shaku.assets.loadFontTexture('assets/DejaVuSansMono.ttf', {fontName: 'DejaVuSansMono'});
 
+// create text sprite batch
+let textSpriteBatch = new Shaku.gfx.TextSpriteBatch();
+
 // generate text
 let textGroup = Shaku.gfx.buildText(fontTexture, "This is a multiline text..\nAligned left.", 24, Shaku.utils.Color.white, Shaku.gfx.TextAlignments.Left);
 textGroup.position.set(100, 100);
@@ -126,7 +144,9 @@ textGroup.position.set(100, 100);
 // -------------------------------------------------------
 
 // draw the text
-Shaku.gfx.drawGroup(textGroup);</code></pre>
+textSpriteBatch.begin();
+textSpriteBatch.drawText(textGroup);
+textSpriteBatch.end();</code></pre>
 
   <button class="modal__close" onclick="closeModal('sample-code-modal')">&#10005;</button>
 </div>

@@ -10,7 +10,7 @@ declare class Animator {
      * @private
      * @param {Number} delta Delta time in seconds.
      */
-    private static updateAutos;
+    private static updatePlayingAnimations;
     /**
      * Create the animator.
      * @param {*} target Any object you want to animate.
@@ -38,23 +38,6 @@ declare class Animator {
      */
     update(delta: number): void;
     /**
-     * Get value from target object.
-     * @private
-     * @param {Array<String>} keyParts Key parts broken by dots.
-     */
-    private _getValueFromTarget;
-    /**
-     * Set value in target object.
-     * @private
-     * @param {Array<String>} keyParts Key parts broken by dots.
-     */
-    private _setValueToTarget;
-    /**
-     * Make sure a given value is legal for the animator.
-     * @private
-     */
-    private _validateValueType;
-    /**
      * Set a method to run when animation ends.
      * @param {Function} callback Callback to invoke when done.
      * @returns {Animator} this.
@@ -74,6 +57,12 @@ declare class Animator {
      * @returns {Animator} this.
      */
     repeats(enable: boolean | number, reverseAnimation: boolean): Animator;
+    /**
+     * If true, will reverse animation back to start values after done.
+     * This is equivalent to calling `repeats(1, true)`.
+     * @returns {Animator} this.
+     */
+    reverseBackToStart(): Animator;
     /**
      * Set 'from' values.
      * You don't have to provide 'from' values, when a value is not set the animator will just take whatever was set in target when first update is called.
@@ -115,5 +104,6 @@ declare class Animator {
      * @returns {Boolean} True if animator finished.
      */
     get ended(): boolean;
+    #private;
 }
 //# sourceMappingURL=animator.d.ts.map

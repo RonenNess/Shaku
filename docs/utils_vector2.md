@@ -14,7 +14,6 @@ A simple Vector object for 2d positions.
 * [Vector2](#Vector2)
     * [new Vector2(x, y)](#new_Vector2_new)
     * _instance_
-        * [.length](#Vector2+length) ⇒ <code>Number</code>
         * [.clone()](#Vector2+clone) ⇒ [<code>Vector2</code>](#Vector2)
         * [.set(x, y)](#Vector2+set) ⇒ [<code>Vector2</code>](#Vector2)
         * [.copy()](#Vector2+copy) ⇒ [<code>Vector2</code>](#Vector2)
@@ -26,8 +25,8 @@ A simple Vector object for 2d positions.
         * [.floor()](#Vector2+floor) ⇒ [<code>Vector2</code>](#Vector2)
         * [.ceil()](#Vector2+ceil) ⇒ [<code>Vector2</code>](#Vector2)
         * [.normalized()](#Vector2+normalized) ⇒ [<code>Vector2</code>](#Vector2)
-        * [.rotatedRadians(radians)](#Vector2+rotatedRadians) ⇒ [<code>Vector2</code>](#Vector2)
-        * [.rotatedDegrees(degrees)](#Vector2+rotatedDegrees) ⇒ [<code>Vector2</code>](#Vector2)
+        * [.rotatedByRadians(radians)](#Vector2+rotatedByRadians) ⇒ [<code>Vector2</code>](#Vector2)
+        * [.rotatedByDegrees(degrees)](#Vector2+rotatedByDegrees) ⇒ [<code>Vector2</code>](#Vector2)
         * [.addSelf(Other)](#Vector2+addSelf) ⇒ [<code>Vector2</code>](#Vector2)
         * [.subSelf(Other)](#Vector2+subSelf) ⇒ [<code>Vector2</code>](#Vector2)
         * [.divSelf(Other)](#Vector2+divSelf) ⇒ [<code>Vector2</code>](#Vector2)
@@ -38,11 +37,12 @@ A simple Vector object for 2d positions.
         * [.normalizeSelf()](#Vector2+normalizeSelf) ⇒ [<code>Vector2</code>](#Vector2)
         * [.equals(other)](#Vector2+equals) ⇒ <code>Boolean</code>
         * [.approximate(other, threshold)](#Vector2+approximate) ⇒ <code>Boolean</code>
+        * [.length()](#Vector2+length) ⇒ <code>Number</code>
         * [.scaled()](#Vector2+scaled) ⇒ [<code>Vector2</code>](#Vector2)
         * [.degreesTo(other)](#Vector2+degreesTo) ⇒ <code>Number</code>
         * [.radiansTo(other)](#Vector2+radiansTo) ⇒ <code>Number</code>
-        * [.degreesToFull(other)](#Vector2+degreesToFull) ⇒ <code>Number</code>
-        * [.radiansToFull(other)](#Vector2+radiansToFull) ⇒ <code>Number</code>
+        * [.wrappedDegreesTo(other)](#Vector2+wrappedDegreesTo) ⇒ <code>Number</code>
+        * [.wrappedRadiansTo(other)](#Vector2+wrappedRadiansTo) ⇒ <code>Number</code>
         * [.distanceTo(other)](#Vector2+distanceTo) ⇒ <code>Number</code>
         * [.getDegrees()](#Vector2+getDegrees) ⇒ <code>Number</code>
         * [.getRadians()](#Vector2+getRadians) ⇒ <code>Number</code>
@@ -50,14 +50,6 @@ A simple Vector object for 2d positions.
         * [.toArray()](#Vector2+toArray) ⇒ <code>Array.&lt;Number&gt;</code>
         * [.toDict(minimized)](#Vector2+toDict) ⇒ <code>\*</code>
     * _static_
-        * [.zero](#Vector2.zero) ⇒ [<code>Vector2</code>](#Vector2)
-        * [.one](#Vector2.one) ⇒ [<code>Vector2</code>](#Vector2)
-        * [.half](#Vector2.half) ⇒ [<code>Vector2</code>](#Vector2)
-        * [.left](#Vector2.left) ⇒ [<code>Vector2</code>](#Vector2)
-        * [.right](#Vector2.right) ⇒ [<code>Vector2</code>](#Vector2)
-        * [.up](#Vector2.up) ⇒ [<code>Vector2</code>](#Vector2)
-        * [.down](#Vector2.down) ⇒ [<code>Vector2</code>](#Vector2)
-        * [.random](#Vector2.random) ⇒ [<code>Vector2</code>](#Vector2)
         * [.zeroReadonly](#Vector2.zeroReadonly)
         * [.oneReadonly](#Vector2.oneReadonly)
         * [.halfReadonly](#Vector2.halfReadonly)
@@ -65,13 +57,21 @@ A simple Vector object for 2d positions.
         * [.rightReadonly](#Vector2.rightReadonly)
         * [.upReadonly](#Vector2.upReadonly)
         * [.downReadonly](#Vector2.downReadonly)
-        * [.fromDegree(degrees)](#Vector2.fromDegree) ⇒ [<code>Vector2</code>](#Vector2)
+        * [.zero()](#Vector2.zero) ⇒ [<code>Vector2</code>](#Vector2)
+        * [.one()](#Vector2.one) ⇒ [<code>Vector2</code>](#Vector2)
+        * [.half()](#Vector2.half) ⇒ [<code>Vector2</code>](#Vector2)
+        * [.left()](#Vector2.left) ⇒ [<code>Vector2</code>](#Vector2)
+        * [.right()](#Vector2.right) ⇒ [<code>Vector2</code>](#Vector2)
+        * [.up()](#Vector2.up) ⇒ [<code>Vector2</code>](#Vector2)
+        * [.down()](#Vector2.down) ⇒ [<code>Vector2</code>](#Vector2)
+        * [.random()](#Vector2.random) ⇒ [<code>Vector2</code>](#Vector2)
+        * [.fromDegrees(degrees)](#Vector2.fromDegrees) ⇒ [<code>Vector2</code>](#Vector2)
         * [.fromRadians(radians)](#Vector2.fromRadians) ⇒ [<code>Vector2</code>](#Vector2)
         * [.lerp(p1, p2, a)](#Vector2.lerp) ⇒ [<code>Vector2</code>](#Vector2)
         * [.degreesBetween(p1, p2)](#Vector2.degreesBetween) ⇒ <code>Number</code>
         * [.radiansBetween(p1, p2)](#Vector2.radiansBetween) ⇒ <code>Number</code>
-        * [.degreesBetweenFull(p1, p2)](#Vector2.degreesBetweenFull) ⇒ <code>Number</code>
-        * [.radiansBetweenFull(p1, p2)](#Vector2.radiansBetweenFull) ⇒ <code>Number</code>
+        * [.wrappedDegreesBetween(p1, p2)](#Vector2.wrappedDegreesBetween) ⇒ <code>Number</code>
+        * [.wrappedRadiansBetween(p1, p2)](#Vector2.wrappedRadiansBetween) ⇒ <code>Number</code>
         * [.distance(p1, p2)](#Vector2.distance) ⇒ <code>Number</code>
         * [.cross(p1, p2)](#Vector2.cross) ⇒ <code>Number</code>
         * [.dot(p1, p2)](#Vector2.dot) ⇒ <code>Number</code>
@@ -90,13 +90,6 @@ Create the Vector object.
 | x | <code>number</code> | <code>0</code> | Vector X. |
 | y | <code>number</code> | <code>0</code> | Vector Y. |
 
-<a name="Vector2+length"></a>
-
-### vector2.length ⇒ <code>Number</code>
-Return vector length (aka magnitude).
-
-**Kind**: instance property of [<code>Vector2</code>](#Vector2)  
-**Returns**: <code>Number</code> - Vector length.  
 <a name="Vector2+clone"></a>
 
 ### vector2.clone() ⇒ [<code>Vector2</code>](#Vector2)
@@ -134,7 +127,7 @@ Return a new vector of this + other.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| Other | <code>Number</code> \| [<code>Vector2</code>](#Vector2) | Vector or number to add. |
+| Other | <code>Number</code> \| [<code>Vector2</code>](#Vector2) | Vector3 or number to add to all components. |
 
 <a name="Vector2+sub"></a>
 
@@ -146,7 +139,7 @@ Return a new vector of this - other.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| Other | <code>Number</code> \| [<code>Vector2</code>](#Vector2) | Vector or number to sub. |
+| Other | <code>Number</code> \| [<code>Vector2</code>](#Vector2) | Vector3 or number to sub from all components. |
 
 <a name="Vector2+div"></a>
 
@@ -158,7 +151,7 @@ Return a new vector of this / other.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| Other | <code>Number</code> \| [<code>Vector2</code>](#Vector2) | Vector or number to divide. |
+| Other | <code>Number</code> \| [<code>Vector2</code>](#Vector2) | Vector3 or number to divide by all components. |
 
 <a name="Vector2+mul"></a>
 
@@ -170,7 +163,7 @@ Return a new vector of this * other.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| Other | <code>Number</code> \| [<code>Vector2</code>](#Vector2) | Vector or number to multiply. |
+| Other | <code>Number</code> \| [<code>Vector2</code>](#Vector2) | Vector2 or number to multiply with all components. |
 
 <a name="Vector2+round"></a>
 
@@ -200,9 +193,9 @@ Return a normalized copy of this vector.
 
 **Kind**: instance method of [<code>Vector2</code>](#Vector2)  
 **Returns**: [<code>Vector2</code>](#Vector2) - result vector.  
-<a name="Vector2+rotatedRadians"></a>
+<a name="Vector2+rotatedByRadians"></a>
 
-### vector2.rotatedRadians(radians) ⇒ [<code>Vector2</code>](#Vector2)
+### vector2.rotatedByRadians(radians) ⇒ [<code>Vector2</code>](#Vector2)
 Get a copy of this vector rotated by radians.
 
 **Kind**: instance method of [<code>Vector2</code>](#Vector2)  
@@ -212,9 +205,9 @@ Get a copy of this vector rotated by radians.
 | --- | --- | --- |
 | radians | <code>Number</code> | Radians to rotate by. |
 
-<a name="Vector2+rotatedDegrees"></a>
+<a name="Vector2+rotatedByDegrees"></a>
 
-### vector2.rotatedDegrees(degrees) ⇒ [<code>Vector2</code>](#Vector2)
+### vector2.rotatedByDegrees(degrees) ⇒ [<code>Vector2</code>](#Vector2)
 Get a copy of this vector rotated by degrees.
 
 **Kind**: instance method of [<code>Vector2</code>](#Vector2)  
@@ -325,6 +318,13 @@ Return if vector approximately equals another vector.
 | other | [<code>Vector2</code>](#Vector2) | Other vector to compare to. |
 | threshold | <code>Number</code> | Distance threshold to consider as equal. Defaults to 1. |
 
+<a name="Vector2+length"></a>
+
+### vector2.length() ⇒ <code>Number</code>
+Return vector length (aka magnitude).
+
+**Kind**: instance method of [<code>Vector2</code>](#Vector2)  
+**Returns**: <code>Number</code> - Vector length.  
 <a name="Vector2+scaled"></a>
 
 ### vector2.scaled() ⇒ [<code>Vector2</code>](#Vector2)
@@ -356,9 +356,9 @@ Get radians between this vector and another vector.
 | --- | --- | --- |
 | other | [<code>Vector2</code>](#Vector2) | Other vector. |
 
-<a name="Vector2+degreesToFull"></a>
+<a name="Vector2+wrappedDegreesTo"></a>
 
-### vector2.degreesToFull(other) ⇒ <code>Number</code>
+### vector2.wrappedDegreesTo(other) ⇒ <code>Number</code>
 Get degrees between this vector and another vector.
 Return values between 0 to 360.
 
@@ -369,9 +369,9 @@ Return values between 0 to 360.
 | --- | --- | --- |
 | other | [<code>Vector2</code>](#Vector2) | Other vector. |
 
-<a name="Vector2+radiansToFull"></a>
+<a name="Vector2+wrappedRadiansTo"></a>
 
-### vector2.radiansToFull(other) ⇒ <code>Number</code>
+### vector2.wrappedRadiansTo(other) ⇒ <code>Number</code>
 Get radians between this vector and another vector.
 Return values between 0 to PI2.
 
@@ -433,62 +433,6 @@ Convert to dictionary.
 | --- | --- | --- |
 | minimized | <code>Boolean</code> | If true, will not include keys that their values are 0. You can use fromDict on minimized dicts. |
 
-<a name="Vector2.zero"></a>
-
-### Vector2.zero ⇒ [<code>Vector2</code>](#Vector2)
-Get vector (0,0).
-
-**Kind**: static property of [<code>Vector2</code>](#Vector2)  
-**Returns**: [<code>Vector2</code>](#Vector2) - result vector.  
-<a name="Vector2.one"></a>
-
-### Vector2.one ⇒ [<code>Vector2</code>](#Vector2)
-Get vector with 1,1 values.
-
-**Kind**: static property of [<code>Vector2</code>](#Vector2)  
-**Returns**: [<code>Vector2</code>](#Vector2) - result vector.  
-<a name="Vector2.half"></a>
-
-### Vector2.half ⇒ [<code>Vector2</code>](#Vector2)
-Get vector with 0.5,0.5 values.
-
-**Kind**: static property of [<code>Vector2</code>](#Vector2)  
-**Returns**: [<code>Vector2</code>](#Vector2) - result vector.  
-<a name="Vector2.left"></a>
-
-### Vector2.left ⇒ [<code>Vector2</code>](#Vector2)
-Get vector with -1,0 values.
-
-**Kind**: static property of [<code>Vector2</code>](#Vector2)  
-**Returns**: [<code>Vector2</code>](#Vector2) - result vector.  
-<a name="Vector2.right"></a>
-
-### Vector2.right ⇒ [<code>Vector2</code>](#Vector2)
-Get vector with 1,0 values.
-
-**Kind**: static property of [<code>Vector2</code>](#Vector2)  
-**Returns**: [<code>Vector2</code>](#Vector2) - result vector.  
-<a name="Vector2.up"></a>
-
-### Vector2.up ⇒ [<code>Vector2</code>](#Vector2)
-Get vector with 0,-1 values.
-
-**Kind**: static property of [<code>Vector2</code>](#Vector2)  
-**Returns**: [<code>Vector2</code>](#Vector2) - result vector.  
-<a name="Vector2.down"></a>
-
-### Vector2.down ⇒ [<code>Vector2</code>](#Vector2)
-Get vector with 0,1 values.
-
-**Kind**: static property of [<code>Vector2</code>](#Vector2)  
-**Returns**: [<code>Vector2</code>](#Vector2) - result vector.  
-<a name="Vector2.random"></a>
-
-### Vector2.random ⇒ [<code>Vector2</code>](#Vector2)
-Get a random vector with length of 1.
-
-**Kind**: static property of [<code>Vector2</code>](#Vector2)  
-**Returns**: [<code>Vector2</code>](#Vector2) - result vector.  
 <a name="Vector2.zeroReadonly"></a>
 
 ### Vector2.zeroReadonly
@@ -538,9 +482,65 @@ Vector with 0,-1 values as a frozen shared object.
 Be careful not to try and change it.
 
 **Kind**: static property of [<code>Vector2</code>](#Vector2)  
-<a name="Vector2.fromDegree"></a>
+<a name="Vector2.zero"></a>
 
-### Vector2.fromDegree(degrees) ⇒ [<code>Vector2</code>](#Vector2)
+### Vector2.zero() ⇒ [<code>Vector2</code>](#Vector2)
+Get vector (0,0).
+
+**Kind**: static method of [<code>Vector2</code>](#Vector2)  
+**Returns**: [<code>Vector2</code>](#Vector2) - result vector.  
+<a name="Vector2.one"></a>
+
+### Vector2.one() ⇒ [<code>Vector2</code>](#Vector2)
+Get vector with 1,1 values.
+
+**Kind**: static method of [<code>Vector2</code>](#Vector2)  
+**Returns**: [<code>Vector2</code>](#Vector2) - result vector.  
+<a name="Vector2.half"></a>
+
+### Vector2.half() ⇒ [<code>Vector2</code>](#Vector2)
+Get vector with 0.5,0.5 values.
+
+**Kind**: static method of [<code>Vector2</code>](#Vector2)  
+**Returns**: [<code>Vector2</code>](#Vector2) - result vector.  
+<a name="Vector2.left"></a>
+
+### Vector2.left() ⇒ [<code>Vector2</code>](#Vector2)
+Get vector with -1,0 values.
+
+**Kind**: static method of [<code>Vector2</code>](#Vector2)  
+**Returns**: [<code>Vector2</code>](#Vector2) - result vector.  
+<a name="Vector2.right"></a>
+
+### Vector2.right() ⇒ [<code>Vector2</code>](#Vector2)
+Get vector with 1,0 values.
+
+**Kind**: static method of [<code>Vector2</code>](#Vector2)  
+**Returns**: [<code>Vector2</code>](#Vector2) - result vector.  
+<a name="Vector2.up"></a>
+
+### Vector2.up() ⇒ [<code>Vector2</code>](#Vector2)
+Get vector with 0,-1 values.
+
+**Kind**: static method of [<code>Vector2</code>](#Vector2)  
+**Returns**: [<code>Vector2</code>](#Vector2) - result vector.  
+<a name="Vector2.down"></a>
+
+### Vector2.down() ⇒ [<code>Vector2</code>](#Vector2)
+Get vector with 0,1 values.
+
+**Kind**: static method of [<code>Vector2</code>](#Vector2)  
+**Returns**: [<code>Vector2</code>](#Vector2) - result vector.  
+<a name="Vector2.random"></a>
+
+### Vector2.random() ⇒ [<code>Vector2</code>](#Vector2)
+Get a random vector with length of 1.
+
+**Kind**: static method of [<code>Vector2</code>](#Vector2)  
+**Returns**: [<code>Vector2</code>](#Vector2) - result vector.  
+<a name="Vector2.fromDegrees"></a>
+
+### Vector2.fromDegrees(degrees) ⇒ [<code>Vector2</code>](#Vector2)
 Get vector from degrees.
 
 **Kind**: static method of [<code>Vector2</code>](#Vector2)  
@@ -604,9 +604,9 @@ Return values between -PI to PI.
 | p1 | [<code>Vector2</code>](#Vector2) | First vector. |
 | p2 | [<code>Vector2</code>](#Vector2) | Second vector. |
 
-<a name="Vector2.degreesBetweenFull"></a>
+<a name="Vector2.wrappedDegreesBetween"></a>
 
-### Vector2.degreesBetweenFull(p1, p2) ⇒ <code>Number</code>
+### Vector2.wrappedDegreesBetween(p1, p2) ⇒ <code>Number</code>
 Get degrees between two vectors.
 Return values between 0 to 360.
 
@@ -618,9 +618,9 @@ Return values between 0 to 360.
 | p1 | [<code>Vector2</code>](#Vector2) | First vector. |
 | p2 | [<code>Vector2</code>](#Vector2) | Second vector. |
 
-<a name="Vector2.radiansBetweenFull"></a>
+<a name="Vector2.wrappedRadiansBetween"></a>
 
-### Vector2.radiansBetweenFull(p1, p2) ⇒ <code>Number</code>
+### Vector2.wrappedRadiansBetween(p1, p2) ⇒ <code>Number</code>
 Get radians between two vectors.
 Return values between 0 to PI2.
 

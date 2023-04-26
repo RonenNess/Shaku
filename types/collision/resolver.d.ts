@@ -36,14 +36,7 @@ declare class CollisionResolver {
      * Get handlers dictionary for a given shape.
      */
     getHandlers(shape: any): any;
-    /**
-     * Get the collision detection method for two given shapes.
-     * @private
-     * @param {CollisionShape} first First collision shape to test.
-     * @param {CollisionShape} second Second collision shape to test.
-     * @returns {Function} collision detection method or null if not found.
-     */
-    private _getCollisionMethod;
+    #private;
 }
 import CollisionShape = require("./shapes/shape.js");
 import CollisionTestResult = require("./result.js");

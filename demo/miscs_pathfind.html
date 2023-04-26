@@ -47,6 +47,9 @@
           document.body.appendChild(Shaku.gfx.canvas);
           Shaku.gfx.setResolution(900, 900, true);
 
+          // create shapes batch
+          let shapesBatch = new Shaku.gfx.ShapesBatch();
+
           // some consts
           const tilemapSize = 45;
           const tileSize = 900 / 45;
@@ -114,6 +117,8 @@
             Shaku.startFrame();
             Shaku.gfx.clear(Shaku.utils.Color.gray);
 
+            shapesBatch.begin("opaque");
+
             // check if need to calculate a new path
             if (!currPath) {
               const allowDiagonal = document.getElementById("allowDiagonal").checked;
@@ -121,29 +126,25 @@
             }
 
             // draw the map
-            let rects = [];
-            let colors = [];
             for (let i = 0; i < 45; ++i) {
               for (let j = 0; j < 45; ++j) {
                 let type = tiles[i][j];
-                rects.push(new Shaku.utils.Rectangle(i * tileSize + 1, j * tileSize + 1, tileSize - 2, tileSize - 2));
-                colors.push(tileColors[type]);
+                let rect = new Shaku.utils.Rectangle(i * tileSize + 1, j * tileSize + 1, tileSize - 2, tileSize - 2);
+                let color = tileColors[type];
+                shapesBatch.drawRectangle(rect, color);
               }
             }
-            Shaku.gfx.fillRects(rects, colors);
 
             // draw start and end position
-            Shaku.gfx.fillCircle(new Shaku.utils.Circle(new Shaku.utils.Vector2(tileSize * 4.5, tileSize * 4.5), tileSize / 2), Shaku.utils.Color.red);
-            Shaku.gfx.fillCircle(new Shaku.utils.Circle(new Shaku.utils.Vector2(tileSize * 40.5, tileSize * 40.5), tileSize / 2), Shaku.utils.Color.red);
+            shapesBatch.drawCircle(new Shaku.utils.Circle(new Shaku.utils.Vector2(tileSize * 4.5, tileSize * 4.5), tileSize / 2), Shaku.utils.Color.red);
+            shapesBatch.drawCircle(new Shaku.utils.Circle(new Shaku.utils.Vector2(tileSize * 40.5, tileSize * 40.5), tileSize / 2), Shaku.utils.Color.red);
 
             // draw path
             if (currPath) {
-              let pathCircles = [];
               for (let point of currPath) {
                 let currDot = new Shaku.utils.Circle(new Shaku.utils.Vector2(tileSize * (point.x + 0.5), tileSize * (point.y + 0.5)), tileSize / 3);
-                pathCircles.push(currDot);
+                shapesBatch.drawCircle(currDot, Shaku.utils.Color.red);
               }
-              Shaku.gfx.fillCircles(pathCircles, Shaku.utils.Color.red);
             }
 
             // change tiles
@@ -177,6 +178,9 @@
                   recalcPathTimeout = null;
               }, 100);
             }
+
+            // draw path
+            shapesBatch.end();
 
             // end frame and request next frame
             Shaku.endFrame();

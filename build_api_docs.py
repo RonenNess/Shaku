@@ -21,7 +21,7 @@ def process_files(root, files):
             continue
 
         file_path = os.path.join(root, filename)
-        doc_file_name = file_path[len('lib_'):].replace('//', '_').replace('\\', '_').replace(' ', '_')[:-3] + '.md'
+        doc_file_name = file_path[len('src_'):].replace('//', '_').replace('\\', '_').replace(' ', '_')[:-3] + '.md'
 
         all_links.append(doc_file_name)
 
@@ -38,7 +38,7 @@ os.system('jsdoc2md -f dist\\shaku.js > docs\\shaku_full.md')
 add_header('docs\\shaku_full.md', 'Shaku')
 
 
-for root, subdirs, files in os.walk('lib'):
+for root, subdirs, files in os.walk('src'):
     process_files(root, files)
 
 

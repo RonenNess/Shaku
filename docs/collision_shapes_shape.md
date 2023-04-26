@@ -17,7 +17,7 @@ Collision shape base class.
     * [.collisionFlags](#CollisionShape+collisionFlags)
     * [.collisionFlags](#CollisionShape+collisionFlags)
     * [.setDebugColor(color)](#CollisionShape+setDebugColor)
-    * [.debugDraw(opacity)](#CollisionShape+debugDraw)
+    * [.debugDraw(opacity, shapesBatch)](#CollisionShape+debugDraw)
     * [.getCenter()](#CollisionShape+getCenter) ⇒ <code>Vector2</code>
     * [.remove()](#CollisionShape+remove)
 
@@ -58,7 +58,7 @@ Set the debug color to use to draw this shape.
 
 <a name="CollisionShape+debugDraw"></a>
 
-### collisionShape.debugDraw(opacity)
+### collisionShape.debugDraw(opacity, shapesBatch)
 Debug draw this shape.
 
 **Kind**: instance method of [<code>CollisionShape</code>](#CollisionShape)  
@@ -66,6 +66,7 @@ Debug draw this shape.
 | Param | Type | Description |
 | --- | --- | --- |
 | opacity | <code>Number</code> | Shape opacity factor. |
+| shapesBatch | <code>ShapesBatch</code> | Optional shapes batch to use to debug draw the shape. By default will use the collision world. |
 
 <a name="CollisionShape+getCenter"></a>
 

@@ -12,6 +12,11 @@ declare class Asset {
     _url: string;
     _waitingCallbacks: any[];
     /**
+     * Get if this asset is ready, ie loaded or created.
+     * @returns {Boolean} True if asset finished loading / creating. This doesn't mean its necessarily valid, only that its done loading.
+     */
+    get ready(): boolean;
+    /**
      * Register a method to be called when asset is ready.
      * If asset is already in ready state, will invoke immediately.
      * @param {Function} callback Callback to invoke when asset is ready.

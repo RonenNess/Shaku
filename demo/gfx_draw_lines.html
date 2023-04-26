@@ -11,7 +11,7 @@
     <div class="noselect">
     <button class="view-code-btn" onclick="showSampleCode();">View Code</button> 
     <h1 class="demo-title">Shaku Gfx Demo: Draw Lines</h1>
-      <p>This demo shows how to draw lines. Click anywhere on the canvas to continue the line.</p>
+      <p>This demo shows how to draw lines. Click anywhere on the canvas to add line segments.</p>
       
       <div>
         <input type="checkbox" id="loop-lines" name="loop-lines">
@@ -36,9 +36,15 @@
           document.body.appendChild(Shaku.gfx.canvas);
           Shaku.gfx.setResolution(800, 600, true);
 
+          // create lines batch
+          let linesBatch = new Shaku.gfx.LinesBatch();
+          linesBatch.linesStrip = true;
+
           // lines to draw
-          let lines = [new Shaku.utils.Vector2(50,50), new Shaku.utils.Vector2(150,50)];
-          let colors = [Shaku.utils.Color.random(), Shaku.utils.Color.random()];
+          let lines = [
+            new Shaku.gfx.Vertex(new Shaku.utils.Vector2(50,50), null, Shaku.utils.Color.random()),
+            new Shaku.gfx.Vertex(new Shaku.utils.Vector2(150,150), null, Shaku.utils.Color.random())
+          ];
 
           // do a single main loop step
           function step() 
@@ -48,16 +54,19 @@
             Shaku.gfx.clear(Shaku.utils.Color.black);
 
             // draw lines
+            linesBatch.begin();
+            linesBatch.drawVertices(lines);
             const looped = document.getElementById('loop-lines').checked;
-            Shaku.gfx.drawLinesStrip(lines, colors, null, looped);
+            if (looped) {
+              linesBatch.drawVertices([lines[0]]);
+            }
+            linesBatch.end();
 
             // add line segments
             if (Shaku.input.down('mouse_left') && (Shaku.input.mouseMoving || Shaku.input.pressed('mouse_left'))) {
-              lines.push(Shaku.input.mousePosition);
-              colors.push(Shaku.utils.Color.random());
-              while (lines.length >= Shaku.gfx.maxLineSegments * 2) {
+              lines.push(new Shaku.gfx.Vertex(Shaku.input.mousePosition, null, Shaku.utils.Color.random()));
+              while (lines.length >= 500) {
                 lines.shift();
-                colors.shift();
               }
             }
 
@@ -80,14 +89,25 @@
   <div class="modal__overlay jsOverlay"></div>
   <div class="modal__container">   
 
-<p class="noselect">The following shows a minimal code example on how to draw lines segment.</p>
-<pre><code class="language-js">// draw lines strip
-let lines = [new Shaku.utils.Vector2(50,50), new Shaku.utils.Vector2(150,50), new Shaku.utils.Vector2(150,150)];
-let colors = [Shaku.utils.Color.random(), Shaku.utils.Color.random(), Shaku.utils.Color.random()];
-Shaku.gfx.drawLines(lines, colors);
+<p class="noselect">The following shows a minimal code example on how to draw line segments.</p>
+<pre><code class="language-js">// create lines batch
+let linesBatch = new Shaku.gfx.LinesBatch();
+linesBatch.linesStrip = true;
 
-// draw a single line between two points
-Shaku.gfx.drawLine(new Shaku.utils.Vector2(50,50), new Shaku.utils.Vector2(150,50), Shaku.utils.Color.red);
+// lines to draw
+let lines = [
+  new Shaku.gfx.Vertex(new Shaku.utils.Vector2(50,50), null, Shaku.utils.Color.random()),
+  new Shaku.gfx.Vertex(new Shaku.utils.Vector2(150,150), null, Shaku.utils.Color.random())
+];
+
+// part below goes between startFrame() and endFrame()
+// -------------------------------------------------------
+
+// draw the lines
+// note: you can also use drawRectangle(), drawCircle() and other useful methods, but then you should set linesStrip=false or they'll connect
+linesBatch.begin();
+linesBatch.drawVertices(lines);
+linesBatch.end();
 </code></pre>
 
   <button class="modal__close" onclick="closeModal('sample-code-modal')">&#10005;</button>

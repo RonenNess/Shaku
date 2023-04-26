@@ -62,7 +62,6 @@ Can also perform transformations inheritance, where we combine local with parent
         * [.setRotationDegrees(value, wrap)](#Transformation+setRotationDegrees) ⇒ [<code>Transformation</code>](#Transformation)
         * [.rotateDegrees(value)](#Transformation+rotateDegrees) ⇒ [<code>Transformation</code>](#Transformation)
         * [.setRotationMode(value)](#Transformation+setRotationMode) ⇒ [<code>Transformation</code>](#Transformation)
-        * [._markDirty(localTransform, transformationModes)](#Transformation+_markDirty)
         * [.equals(other)](#Transformation+equals) ⇒ <code>Boolean</code>
         * [.clone()](#Transformation+clone) ⇒ [<code>Transformation</code>](#Transformation)
         * [.serialize()](#Transformation+serialize)
@@ -340,18 +339,6 @@ Set rotation transformations mode.
 | Param | Type | Description |
 | --- | --- | --- |
 | value | <code>TransformModes</code> | Rotation transformation mode. |
-
-<a name="Transformation+_markDirty"></a>
-
-### transformation.\_markDirty(localTransform, transformationModes)
-Notify about changes in values.
-
-**Kind**: instance method of [<code>Transformation</code>](#Transformation)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| localTransform | <code>Boolean</code> | Local transformations changed. |
-| transformationModes | <code>Boolean</code> | Transformation modes changed. |
 
 <a name="Transformation+equals"></a>
 

@@ -7,53 +7,56 @@ export = _exports;
  * To access the Graphics manager you use `Shaku.gfx`.
  */
 declare class Gfx extends IManager {
-    _gl: RenderingContext;
-    _initSettings: {
-        antialias: boolean;
-        alpha: boolean;
-        depth: boolean;
-        premultipliedAlpha: boolean;
-        desynchronized: boolean;
-    };
-    _canvas: HTMLCanvasElement;
-    _lastBlendMode: any;
-    _activeEffect: any;
-    _camera: Camera;
-    _projection: Matrix;
-    _currIndices: any;
-    _dynamicBuffers: {
-        positionBuffer: any;
-        positionArray: Float32Array;
-        textureCoordBuffer: any;
-        textureArray: Float32Array;
-        colorsBuffer: any;
-        colorsArray: Float32Array;
-        indexBuffer: any;
-        linesIndexBuffer: any;
-    };
-    _fb: any;
-    builtinEffects: {};
-    meshes: {};
-    defaultTextureFilter: string;
-    defaultTextureWrapMode: string;
-    whiteTexture: TextureAsset;
-    _renderTarget: TextureAsset;
-    _viewport: Rectangle;
-    _drawCallsCount: number;
-    _drawQuadsCount: number;
-    spritesBatch: SpriteBatch;
     /**
-     * Get how many sprites we can draw in a single batch.
-     * @private
-     * @returns {Number} batch max sprites count.
+     * A dictionary containing all built-in effect instances.
+     * @type {Dictionary}
+     * @name Gfx#builtinEffects
      */
-    private get batchSpritesCount();
+    builtinEffects: Dictionary;
+    /**
+     * Default texture filter to use when no texture filter is set.
+     * @type {TextureFilterModes}
+     * @name Gfx#defaultTextureFilter
+     */
+    defaultTextureFilter: {
+        Nearest: string;
+        Linear: string;
+        NearestMipmapNearest: string;
+        LinearMipmapNearest: string;
+        NearestMipmapLinear: string;
+        LinearMipmapLinear: string;
+    };
+    /**
+     * Default wrap modes to use when no wrap mode is set.
+     * @type {TextureWrapModes}
+     * @name Gfx#TextureWrapModes
+     */
+    defaultTextureWrapMode: {
+        Clamp: string;
+        Repeat: string;
+        RepeatMirrored: string;
+    };
+    /**
+     * A 1x1 white texture.
+     * @type {TextureAsset}
+     * @name Gfx#whiteTexture
+     */
+    whiteTexture: TextureAsset;
+    /**
+     * Provide access to Gfx internal stuff.
+     * @private
+     */
+    private _internal;
+    /**
+     * Get the init WebGL version.
+     * @returns {Number} WebGL version number.
+     */
+    get webglVersion(): number;
     /**
      * Maximum number of vertices we allow when drawing lines.
-     * @private
      * @returns {Number} max vertices per lines strip.
      */
-    private get maxLineSegments();
+    get maxLineSegments(): number;
     /**
      * Set WebGL init flags (passed as additional params to the getContext() call).
      * You must call this *before* initializing *Shaku*.
@@ -86,15 +89,60 @@ declare class Gfx extends IManager {
      */
     get canvas(): HTMLCanvasElement;
     /**
+     * Get the draw batch base class.
+     * @see DrawBatch
+     */
+    get DrawBatch(): typeof DrawBatch;
+    /**
+     * Get the sprites batch class.
+     * @see SpriteBatch
+     */
+    get SpriteBatch(): typeof SpriteBatch;
+    /**
+     * Get the 3d sprites batch class.
+     * @see SpriteBatch3D
+     */
+    get SpriteBatch3D(): typeof SpriteBatch3D;
+    /**
+     * Get the text sprites batch class.
+     * @see TextSpriteBatch
+     */
+    get TextSpriteBatch(): typeof TextSpriteBatch;
+    /**
+     * Get the shapes batch class.
+     * @see ShapesBatch
+     */
+    get ShapesBatch(): typeof ShapesBatch;
+    /**
+     * Get the lines batch class.
+     * @see LinesBatch
+     */
+    get LinesBatch(): typeof LinesBatch;
+    /**
      * Get the Effect base class, which is required to implement custom effects.
      * @see Effect
      */
     get Effect(): typeof import("./effects/effect.js");
     /**
-     * Get the default Effect class, which is required to implement custom effects that inherit and reuse parts from the default effect.
-     * @see BasicEffect
+     * Get the default sprites effect class.
+     * @see SpritesEffect
      */
-    get BasicEffect(): typeof import("./effects/basic.js");
+    get SpritesEffect(): typeof import("./effects/sprites.js");
+    /**
+     * Get the default sprites effect class that is used when vertex colors is disabled.
+     * @see SpritesEffectNoVertexColor
+     */
+    get SpritesEffectNoVertexColor(): typeof import("./effects/sprites_no_vertex_color.js");
+    /**
+     * Get the default shapes effect class that is used to draw 2d shapes.
+     * @see ShapesEffect
+     */
+    get ShapesEffect(): typeof import("./effects/shapes.js");
+    /**
+     * Get the default 3d sprites effect class that is used to draw 3d textured quads.
+     * @see Sprites3dEffect
+     */
+    get Sprites3dEffect(): typeof Sprites3dEffect;
     /**
      * Get the Effect for rendering fonts with an MSDF texture.
      * @see MsdfFontEffect
@@ -133,21 +181,6 @@ declare class Gfx extends IManager {
         Center: string;
     };
     /**
-     * Get the text alignments options.
-     * This getter is deprecated, please use `TextAlignments` instead.
-     * * Left: align text to the left.
-     * * Right: align text to the right.
-     * * Center: align text to center.
-     * @deprecated
-     * @see TextAlignments
-     */
-    get TextAlignment(): {
-        Left: string;
-        Right: string;
-        Center: string;
-    };
-    _TextAlignment_dep: boolean;
-    /**
      * Create and return a new camera instance.
      * @param {Boolean} withViewport If true, will create camera with viewport value equal to canvas' size.
      * @returns {Camera} New camera object.
@@ -160,19 +193,12 @@ declare class Gfx extends IManager {
      */
     setCameraOrthographic(offset: Vector2): Camera;
     /**
-     * Create and return an effect instance.
-     * @see Effect
-     * @param {Class} type Effect class type. Must inherit from Effect base class.
-     * @returns {Effect} Effect instance.
-     */
-    createEffect(type: Class): typeof import("./effects/effect.js");
-    /**
      * Set resolution and canvas to the max size of its parent element or screen.
      * If the canvas is directly under document body, it will take the max size of the page.
-     * @param {Boolean} limitToParent if true, will use parent element size. If false, will stretch on entire document.
-     * @param {Boolean} allowOddNumbers if true, will permit odd numbers, which could lead to small artefacts when drawing pixel art. If false (default) will round to even numbers.
+     * @param {Boolean=} limitToParent if true, will use parent element size. If false, will stretch on entire document.
+     * @param {Boolean=} allowOddNumbers if true, will permit odd numbers, which could lead to small artefacts when drawing pixel art. If false (default) will round to even numbers.
      */
-    maximizeCanvasSize(limitToParent: boolean, allowOddNumbers: boolean): void;
+    maximizeCanvasSize(limitToParent?: boolean | undefined, allowOddNumbers?: boolean | undefined): void;
     /**
      * Set a render target (texture) to render on.
      * @example
@@ -191,14 +217,6 @@ declare class Gfx extends IManager {
      * @param {Boolean=} keepCamera If true, will keep current camera settings. If false (default) will reset camera.
      */
     setRenderTarget(texture: TextureAsset | Array<TextureAsset> | null, keepCamera?: boolean | undefined): void;
-    /**
-     * Set effect to use for future draw calls.
-     * @example
-     * let effect = Shaku.gfx.createEffect(MyEffectType);
-     * Shaku.gfx.useEffect(effect);
-     * @param {Effect | null} effect Effect to use or null to use the basic builtin effect.
-     */
-    useEffect(effect: typeof import("./effects/effect.js") | null): void;
     /**
      * Set resolution and canvas size.
      * @example
@@ -219,6 +237,7 @@ declare class Gfx extends IManager {
      * @param {Camera} camera Camera to apply.
      */
     applyCamera(camera: Camera): void;
+    _viewport: Rectangle;
     /**
      * Get current rendering region.
      * @param {Boolean} includeOffset If true (default) will include viewport offset, if exists.
@@ -236,11 +255,6 @@ declare class Gfx extends IManager {
      * @returns {Vector2} Canvas size.
      */
     getCanvasSize(): Vector2;
-    /**
-     * @inheritdoc
-     * @private
-     */
-    private setup;
     /**
      * Generate a sprites group to render a string using a font texture.
      * Take the result of this method and use with gfx.drawGroup() to render the text.
@@ -267,223 +281,6 @@ declare class Gfx extends IManager {
      */
     buildText(fontTexture: FontTextureAsset, text: string, fontSize?: number | undefined, color?: (Color | Array<Color>) | undefined, alignment?: TextAlignment | undefined, offset?: Vector2 | undefined, marginFactor?: Vector2 | undefined): SpritesGroup;
     /**
-     * Draw a SpritesGroup object.
-     * A SpritesGroup is a collection of sprites we can draw in bulks with transformations to apply on the entire group.
-     * @example
-     * // load texture
-     * let texture = await Shaku.assets.loadTexture('assets/sprite.png');
-     *
-     * // create group and set entire group's position and scale
-     * let group = new Shaku.gfx.SpritesGroup();
-     * group.position.set(125, 300);
-     * group.scale.set(2, 2);
-     *
-     * // create 5 sprites and add to group
-     * for (let i = 0; i < 5; ++i) {
-     *   let sprite = new Shaku.gfx.Sprite(texture);
-     *   sprite.position.set(100 * i, 150);
-     *   sprite.size.set(50, 50);
-     *   group.add(sprite)
-     * }
-     *
-     * // draw the group with automatic culling of invisible sprites
-     * Shaku.gfx.drawGroup(group, true);
-     * @param {SpritesGroup} group Sprites group to draw.
-     * @param {Boolean} cullOutOfScreen If true and in batching mode, will cull automatically any quad that is completely out of screen.
-     */
-    drawGroup(group: SpritesGroup, cullOutOfScreen: boolean): void;
-    /**
-     * Draw a single sprite object.
-     * Sprites are optional objects that store all the parameters for a `draw()` call. They are also used for batch rendering.
-     * @example
-     * // load texture and create sprite
-     * let texture = await Shaku.assets.loadTexture('assets/sprite.png');
-     * let sprite = new Shaku.gfx.Sprite(texture);
-     *
-     * // set position and size
-     * sprite.position.set(100, 150);
-     * sprite.size.set(50, 50);
-     *
-     * // draw sprite
-     * Shaku.gfx.drawSprite(sprite);
-     * @param {Sprite} sprite Sprite object to draw.
-     */
-    drawSprite(sprite: Sprite): void;
-    /**
-     * Draw a texture to cover a given destination rectangle.
-     * @example
-     * // cover the entire screen with an image
-     * let texture = await Shaku.assets.loadTexture('assets/sprite.png');
-     * Shaku.gfx.cover(texture, Shaku.gfx.getRenderingRegion());
-     * @example
-     * // draw with additional params
-     * let sourceRect = new Shaku.utils.Rectangle(0, 0, 64, 64);
-     * let color = Shaku.utils.Color.blue;
-     * let blendMode = Shaku.gfx.BlendModes.Multiply;
-     * let rotation = Math.PI / 4;
-     * let origin = new Shaku.utils.Vector2(0.5, 0.5);
-     * Shaku.gfx.draw(texture, position, size, sourceRect, color, blendMode, rotation, origin);
-     * @param {TextureAsset} texture Texture to draw.
-     * @param {Rectangle|Vector2} destRect Destination rectangle to draw on. If vector is provided, will draw from 0,0 with vector as size.
-     * @param {Rectangle=} sourceRect Source rectangle, or undefined to use the entire texture.
-     * @param {Color|Array<Color>|undefined} color Tint color, or undefined to not change color. If array is set, will assign each color to different vertex, starting from top-left.
-     * @param {BlendMode=} blendMode Blend mode, or undefined to use alpha blend.
-     */
-    cover(texture: TextureAsset, destRect: Rectangle | Vector2, sourceRect?: Rectangle | undefined, color: Color | Array<Color> | undefined, blendMode?: BlendMode | undefined): void;
-    /**
-     * Draw a texture.
-     * @example
-     * // a simple draw with position and size
-     * let texture = await Shaku.assets.loadTexture('assets/sprite.png');
-     * let position = new Shaku.utils.Vector2(100, 100);
-     * let size = new Shaku.utils.Vector2(75, 125); // if width == height, you can pass as a number instead of vector
-     * Shaku.gfx.draw(texture, position, size);
-     * @example
-     * // draw with additional params
-     * let sourceRect = new Shaku.utils.Rectangle(0, 0, 64, 64);
-     * let color = Shaku.utils.Color.blue;
-     * let blendMode = Shaku.gfx.BlendModes.Multiply;
-     * let rotation = Math.PI / 4;
-     * let origin = new Shaku.utils.Vector2(0.5, 0.5);
-     * Shaku.gfx.draw(texture, position, size, sourceRect, color, blendMode, rotation, origin);
-     * @param {TextureAsset} texture Texture to draw.
-     * @param {Vector2|Vector3} position Drawing position (at origin). If vector3 is provided, will pass z value to the shader code position attribute.
-     * @param {Vector2|Vector3|Number} size Drawing size. If vector3 is provided, will pass z value to the shader code position attribute for the bottom vertices, as position.z + size.z.
-     * @param {Rectangle} sourceRect Source rectangle, or undefined to use the entire texture.
-     * @param {Color|Array<Color>|undefined} color Tint color, or undefined to not change color. If array is set, will assign each color to different vertex, starting from top-left.
-     * @param {BlendMode=} blendMode Blend mode, or undefined to use alpha blend.
-     * @param {Number=} rotation Rotate sprite.
-     * @param {Vector2=} origin Drawing origin. This will be the point at 'position' and rotation origin.
-     * @param {Vector2=} skew Skew the drawing corners on X and Y axis, around the origin point.
-     */
-    draw(texture: TextureAsset, position: Vector2 | Vector3, size: Vector2 | Vector3 | number, sourceRect: Rectangle, color: Color | Array<Color> | undefined, blendMode?: BlendMode | undefined, rotation?: number | undefined, origin?: Vector2 | undefined, skew?: Vector2 | undefined): void;
-    /**
-     * Draw a textured quad from vertices.
-     * @param {TextureAsset} texture Texture to draw.
-     * @param {Array<Vertex>} vertices Quad vertices to draw (should be: top-left, top-right, bottom-left, bottom-right).
-     * @param {BlendMode=} blendMode Blend mode to set.
-     */
-    drawQuadFromVertices(texture: TextureAsset, vertices: Array<Vertex>, blendMode?: BlendMode | undefined): void;
-    /**
-     * Draw a filled colored rectangle.
-     * @example
-     * // draw a 50x50 red rectangle at position 100x100, that will rotate over time
-     * Shaku.gfx.fillRect(new Shaku.utils.Rectangle(100, 100, 50, 50), Shaku.utils.Color.red, null, Shaku.gameTime.elapsed);
-     * @param {Rectangle} destRect Rectangle to fill.
-     * @param {Color|Array<Color>} color Rectangle fill color.
-     * @param {BlendMode=} blend Blend mode.
-     * @param {Number=} rotation Rotate the rectangle around its center.
-     */
-    fillRect(destRect: Rectangle, color: Color | Array<Color>, blend?: BlendMode | undefined, rotation?: number | undefined): void;
-    /**
-     * Draw a list of filled colored rectangles as a batch.
-     * @example
-     * // draw a 50x50 red rectangle at position 100x100, that will rotate over time
-     * Shaku.gfx.fillRects([new Shaku.utils.Rectangle(100, 100, 50, 50), new Shaku.utils.Rectangle(150, 150, 25, 25)], Shaku.utils.Color.red, null, Shaku.gameTime.elapsed);
-     * @param {Array<Rectangle>} destRects Rectangles to fill.
-     * @param {Array<Color>|Color} colors Rectangles fill color. If array is set, will assign each color to different vertex, starting from top-left.
-     * @param {BlendMode=} blend Blend mode.
-     * @param {(Array<Number>|Number)=} rotation Rotate the rectangles around its center.
-     */
-    fillRects(destRects: Array<Rectangle>, colors: Array<Color> | Color, blend?: BlendMode | undefined, rotation?: (Array<number> | number) | undefined): void;
-    /**
-     * Draw an outline colored rectangle.
-     * @example
-     * // draw a 50x50 red rectangle at position 100x100, that will rotate over time
-     * Shaku.gfx.outlineRect(new Shaku.utils.Rectangle(100, 100, 50, 50), Shaku.utils.Color.red, null, Shaku.gameTime.elapsed);
-     * @param {Rectangle} destRect Rectangle to draw outline for.
-     * @param {Color} color Rectangle outline color.
-     * @param {BlendMode=} blend Blend mode.
-     * @param {Number=} rotation Rotate the rectangle around its center.
-     */
-    outlineRect(destRect: Rectangle, color: Color, blend?: BlendMode | undefined, rotation?: number | undefined): void;
-    /**
-     * Draw an outline colored circle.
-     * @example
-     * // draw a circle at 50x50 with radius of 85
-     * Shaku.gfx.outlineCircle(new Shaku.utils.Circle(new Shaku.utils.Vector2(50, 50), 85), Shaku.utils.Color.red);
-     * @param {Circle} circle Circle to draw.
-     * @param {Color} color Circle outline color.
-     * @param {BlendMode=} blend Blend mode.
-     * @param {Number=} lineAmount How many lines to compose the circle from (bigger number = smoother circle).
-     */
-    outlineCircle(circle: Circle, color: Color, blend?: BlendMode | undefined, lineAmount?: number | undefined): void;
-    /**
-     * Draw a filled colored circle.
-     * @example
-     * // draw a filled circle at 50x50 with radius of 85
-     * Shaku.gfx.fillCircle(new Shaku.utils.Circle(new Shaku.utils.Vector2(50, 50), 85), Shaku.utils.Color.red);
-     * @param {Circle} circle Circle to draw.
-     * @param {Color} color Circle fill color.
-     * @param {BlendMode=} blend Blend mode.
-     * @param {Number=} lineAmount How many lines to compose the circle from (bigger number = smoother circle).
-     */
-    fillCircle(circle: Circle, color: Color, blend?: BlendMode | undefined, lineAmount?: number | undefined): void;
-    /**
-     * Draw a list of filled colored circles using batches.
-     * @example
-     * // draw a filled circle at 50x50 with radius of 85
-     * Shaku.gfx.fillCircles([new Shaku.utils.Circle(new Shaku.utils.Vector2(50, 50), 85), new Shaku.utils.Circle(new Shaku.utils.Vector2(150, 125), 35)], Shaku.utils.Color.red);
-     * @param {Array<Circle>} circles Circles list to draw.
-     * @param {Color|Array<Color>} colors Circles fill color or a single color for all circles.
-     * @param {BlendMode=} blend Blend mode.
-     * @param {Number=} lineAmount How many lines to compose the circle from (bigger number = smoother circle).
-     */
-    fillCircles(circles: Array<Circle>, colors: Color | Array<Color>, blend?: BlendMode | undefined, lineAmount?: number | undefined): void;
-    /**
-     * Draw a single line between two points.
-     * @example
-     * Shaku.gfx.drawLine(new Shaku.utils.Vector2(50,50), new Shaku.utils.Vector2(150,50), Shaku.utils.Color.red);
-     * @param {Vector2} startPoint Line start point.
-     * @param {Vector2} endPoint Line end point.
-     * @param {Color} color Line color.
-     * @param {BlendMode=} blendMode Blend mode to draw lines with (default to Opaque).
-     */
-    drawLine(startPoint: Vector2, endPoint: Vector2, color: Color, blendMode?: BlendMode | undefined): void;
-    /**
-     * Draw a strip of lines between an array of points.
-     * @example
-     * let lines = [new Shaku.utils.Vector2(50,50), new Shaku.utils.Vector2(150,50), new Shaku.utils.Vector2(150,150)];
-     * let colors = [Shaku.utils.Color.random(), Shaku.utils.Color.random(), Shaku.utils.Color.random()];
-     * Shaku.gfx.drawLinesStrip(lines, colors);
-     * @param {Array<Vector2>} points Points to draw line between.
-     * @param {Color|Array<Color>} colors Single lines color if you want one color for all lines, or an array of colors per segment.
-     * @param {BlendMode=} blendMode Blend mode to draw lines with (default to Opaque).
-     * @param {Boolean=} looped If true, will also draw a line from last point back to first point.
-     */
-    drawLinesStrip(points: Array<Vector2>, colors: Color | Array<Color>, blendMode?: BlendMode | undefined, looped?: boolean | undefined): void;
-    /**
-     * Draw a list of lines from an array of points.
-     * @example
-     * let lines = [new Shaku.utils.Vector2(50,50), new Shaku.utils.Vector2(150,50), new Shaku.utils.Vector2(150,150)];
-     * let colors = [Shaku.utils.Color.random(), Shaku.utils.Color.random(), Shaku.utils.Color.random()];
-     * Shaku.gfx.drawLines(lines, colors);
-     * @param {Array<Vector2>} points Points to draw line between.
-     * @param {Color|Array<Color>} colors Single lines color if you want one color for all lines, or an array of colors per segment.
-     * @param {BlendMode=} blendMode Blend mode to draw lines with (default to Opaque).
-     */
-    drawLines(points: Array<Vector2>, colors: Color | Array<Color>, blendMode?: BlendMode | undefined): void;
-    /**
-     * Draw a single point from vector.
-     * @example
-     * Shaku.gfx.drawPoint(new Shaku.utils.Vector2(50,50), Shaku.utils.Color.random());
-     * @param {Vector2} point Point to draw.
-     * @param {Color} color Point color.
-     * @param {BlendMode=} blendMode Blend mode to draw point with (default to Opaque).
-     */
-    drawPoint(point: Vector2, color: Color, blendMode?: BlendMode | undefined): void;
-    /**
-     * Draw a list of points from an array of vectors.
-     * @example
-     * let points = [new Shaku.utils.Vector2(50,50), new Shaku.utils.Vector2(150,50), new Shaku.utils.Vector2(150,150)];
-     * let colors = [Shaku.utils.Color.random(), Shaku.utils.Color.random(), Shaku.utils.Color.random()];
-     * Shaku.gfx.drawPoints(points, colors);
-     * @param {Array<Vector2>} points Points to draw.
-     * @param {Color|Array<Color>} colors Single color if you want one color for all points, or an array of colors per point.
-     * @param {BlendMode=} blendMode Blend mode to draw points with (default to Opaque).
-     */
-    drawPoints(points: Array<Vector2>, colors: Color | Array<Color>, blendMode?: BlendMode | undefined): void;
-    /**
      * Make the renderer canvas centered.
      */
     centerCanvas(): void;
@@ -499,24 +296,6 @@ declare class Gfx extends IManager {
      * @param {Boolean} useCanvasSize If true, will always use cancas size when calculating center. If false and render target is set, will use render target's size.
      */
     centerCamera(position: Vector2, useCanvasSize: boolean): void;
-    /**
-     * Prepare buffers, effect and blend mode for shape rendering.
-     * @private
-     */
-    private _fillShapesBuffer;
-    /**
-     * Draw sprites group as a batch.
-     * @private
-     * @param {SpritesGroup} group Group to draw.
-     * @param {Boolean} cullOutOfScreen If true will cull quads that are out of screen.
-     */
-    private _drawBatch;
-    /**
-     * Set the currently active texture.
-     * @private
-     * @param {TextureAsset} texture Texture to set.
-     */
-    private _setActiveTexture;
     /**
      * Get the blend modes enum.
      * * AlphaBlend
@@ -587,9 +366,14 @@ declare class Gfx extends IManager {
     get drawCallsCount(): number;
     /**
      * Get number of textured / colored quads we drawn since the beginning of the frame.
-     * @returns {Number} Number of quads drawn in this frame..
+     * @returns {Number} Number of quads drawn in this frame.
      */
     get quadsDrawCount(): number;
+    /**
+     * Get number of shape polygons we drawn since the beginning of the frame.
+     * @returns {Number} Number of shape polygons drawn in this frame.
+     */
+    get shapePolygonsDrawCount(): number;
     /**
      * Clear screen to a given color.
      * @example
@@ -598,53 +382,31 @@ declare class Gfx extends IManager {
      */
     clear(color?: Color | undefined): void;
     /**
-     * Set texture mag and min filters.
-     * @private
-     * @param {TextureFilterMode} filter Texture filter to set.
+     * Clear depth buffer.
+     * Only relevant when depth is used.
+     * @param {Number=} value Value to clear depth buffer to.
      */
-    private _setTextureFilter;
-    /**
-     * Set texture wrap mode on X and Y axis.
-     * @private
-     * @param {TextureWrapMode} wrapX Wrap mode on X axis.
-     * @param {TextureWrapMode} wrapY Wrap mode on Y axis.
-     */
-    private _setTextureWrapMode;
-    /**
-     * Set blend mode before drawing.
-     * @private
-     * @param {BlendMode} blendMode New blend mode to set.
-     */
-    private _setBlendMode;
-    /**
-     * Present all currently buffered data.
-     */
-    presentBufferedData(): void;
-    /**
-     * Called internally before drawing a sprite to prepare some internal stuff.
-     * @private
-     */
-    private __startDrawingSprites;
-    /**
-     * Called internally to present sprites batch, if currently drawing sprites.
-     * @private
-     */
-    private __finishDrawingSprites;
+    clearDepth(value?: number | undefined): void;
+    #private;
 }
 import IManager = require("../manager.js");
-import Camera = require("./camera.js");
-import Matrix = require("./matrix.js");
 import TextureAsset = require("../assets/texture_asset.js");
-import Rectangle = require("../utils/rectangle.js");
-import SpriteBatch = require("./sprite_batch.js");
+import DrawBatch = require("./draw_batches/draw_batch.js");
+import SpriteBatch = require("./draw_batches/sprite_batch.js");
+import SpriteBatch3D = require("./draw_batches/sprite_batch_3d.js");
+import TextSpriteBatch = require("./draw_batches/text_batch");
+import ShapesBatch = require("./draw_batches/shapes_batch.js");
+import LinesBatch = require("./draw_batches/lines_batch.js");
+import Sprites3dEffect = require("./effects/sprites_3d.js");
 import Sprite = require("./sprite.js");
 import SpritesGroup = require("./sprites_group.js");
+import Matrix = require("./matrix.js");
 import Vertex = require("./vertex");
+import Camera = require("./camera.js");
 import Vector2 = require("../utils/vector2.js");
+import Rectangle = require("../utils/rectangle.js");
 import FontTextureAsset = require("../assets/font_texture_asset.js");
 import Color = require("../utils/color.js");
 import { TextAlignment } from "./text_alignments.js";
-import { BlendMode } from "./blend_modes.js";
-import Vector3 = require("../utils/vector3.js");
 import Circle = require("../utils/circle.js");
 //# sourceMappingURL=gfx.d.ts.map

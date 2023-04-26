@@ -8,9 +8,8 @@
     <link href="css/style.css" rel="stylesheet" type="text/css" media="all">
   </head>
   <body>
-    <div class="noselect">
-    <button class="view-code-btn" onclick="showSampleCode();">View Code</button> 
-    <h1 class="demo-title">Shaku: Snake</h1>
+    <div style="padding:0.5em" class="noselect">
+      <h1 class="demo-title" style="margin-left: 0;">Shaku: Snake</h1>
       <p>This demo shows a simple snake game made with Shaku.<br />Use <b>Arrows</b> or <b>WASD</b> to move.</p>
       
       <!-- include shaku -->
@@ -25,6 +24,13 @@
 
   // add shaku's canvas to document
   document.body.appendChild(Shaku.gfx.canvas);
+
+  // create shapes batch
+  let shapesBatch = new Shaku.gfx.ShapesBatch();
+
+  // create text sprite batch
+  let textSpriteBatch = new Shaku.gfx.TextSpriteBatch();
+  textSpriteBatch.outlineWeight = 0.75;
 
   // single tile size in the snake game
   let tileSize = 50;
@@ -67,7 +73,7 @@
   // draw a tile
   function drawTile(index, color)
   {
-    Shaku.gfx.fillRect(new Shaku.utils.Rectangle(index.x * tileSize, index.y * tileSize, tileSize, tileSize), color);
+    shapesBatch.drawRectangle(new Shaku.utils.Rectangle(index.x * tileSize, index.y * tileSize, tileSize, tileSize), color);
   }
 
   // convert directions to values to movement vectors
@@ -93,6 +99,8 @@
     Shaku.startFrame();
     Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
 
+    shapesBatch.begin();
+
     // draw snake
     for (let i = 1; i < snake.length; ++i) {
       drawTile(snake[i], Shaku.utils.Color.darkred);
@@ -109,7 +117,10 @@
       if (Shaku.input.released('space')) {
         resetGame();
       }
-      Shaku.gfx.drawGroup(gameOverTextGroup);
+      shapesBatch.end();
+      textSpriteBatch.begin();
+      textSpriteBatch.drawText(gameOverTextGroup);
+      textSpriteBatch.end();
       Shaku.endFrame();
       Shaku.requestAnimationFrame(step);
       return;
@@ -159,11 +170,16 @@
         }
       }
     }
+    
+    // draw shapes batch
+    shapesBatch.end();
 
     // draw score
-    let scoreTextGroup = Shaku.gfx.buildText(fontTexture, "Score: " + snake.length, 20, Shaku.utils.Color.white, Shaku.gfx.TextAlignments.Left);
+    let scoreTextGroup = Shaku.gfx.buildText(fontTexture, "Score: " + snake.length, 26, Shaku.utils.Color.white, Shaku.gfx.TextAlignments.Left);
     scoreTextGroup.position.set(5, 18);
-    Shaku.gfx.drawGroup(scoreTextGroup);
+    textSpriteBatch.begin();
+    textSpriteBatch.drawText(scoreTextGroup);
+    textSpriteBatch.end();
 
     // end frame and request next frame
     Shaku.endFrame();
@@ -177,26 +193,6 @@
 runGame();</script>
 
 </div>
-
-<!-- code example part -->
-<div id="sample-code-modal" class="modal">
-  <div class="modal__overlay jsOverlay"></div>
-  <div class="modal__container">   
-
-<p class="noselect">The following shows the full code for this snake game demo.</i>
-</p>
-<pre><code class="language-js" id="code-box"></code></pre>
-
-  <button class="modal__close" onclick="closeModal('sample-code-modal')">&#10005;</button>
-</div>
-</div>
-
-<script>
-  document.getElementById('code-box').innerHTML = document.getElementById('main-code').innerHTML;
-</script>
-
-<link href="prism/prism.css" rel="stylesheet" />
-<script src="prism/prism.js"></script>
 
   </body>
 </html>

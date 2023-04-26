@@ -40,16 +40,6 @@ declare class Storage {
     exists(key: string): boolean;
     /**
      * Set value.
-     * @private
-     */
-    private _set;
-    /**
-     * Get value.
-     * @private
-     */
-    private _get;
-    /**
-     * Set value.
      * @param {String} key Key to set.
      * @param {String} value Value to set.
      */
@@ -81,6 +71,7 @@ declare class Storage {
      * Clear all values from this storage instance, based on prefix + adapter type.
      */
     clear(): void;
+    #private;
 }
 declare namespace Storage {
     const defaultAdapters: ({
@@ -91,10 +82,13 @@ declare namespace Storage {
         setItem(key: any, value: any): void;
         getItem(key: any): any;
         deleteItem(key: any): void;
+        /**
+         * Set value.
+         * @private
+         */
         clear(prefix: any): void;
     } | {
-        readonly persistent: boolean;
-        /**
+        readonly persistent: boolean; /**
          * Get value.
          * @private
          */

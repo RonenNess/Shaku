@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Shaku</title>
+    <meta name="description" content="Shaku - a simple and easy-to-use javascript library for videogame programming.">
+    <meta name="author" content="Ronen Ness">
+    <link href="css/style.css" rel="stylesheet" type="text/css" media="all">
+  </head>
+  <body>
+    <div class="noselect">
+    <button class="view-code-btn" onclick="showSampleCode();">View Code</button> 
+    <h1 class="demo-title">Shaku Gfx Demo: Sprites Properties</h1>
+      <p>This demo demonstrate some sprites properties and special effects.</p>
+      
+      <!-- include shaku -->
+      <script src="js/demos.js"></script>
+      <script src="js/shaku.js"></script>
+
+      <!-- demo code -->
+      <script>
+        async function runDemo()
+        {
+          // init shaku
+          await Shaku.init();
+
+          // screen size
+          let screenX = 1000;
+          let screenY = 700;
+
+          // add canvas to document
+          document.body.appendChild(Shaku.gfx.canvas);
+          Shaku.gfx.setResolution(screenX, screenY, true);
+
+          // create batches
+          let spritesBatch = new Shaku.gfx.SpriteBatch();
+          let textSpriteBatch = new Shaku.gfx.TextSpriteBatch();
+
+          // load texture and font
+          let spriteTexture = await Shaku.assets.loadTexture('assets/sprite.png');
+          let fontTexture = await Shaku.assets.loadFontTexture('assets/DejaVuSansMono.ttf', {fontName: 'DejaVuSansMono'});
+
+          // do a main loop step.
+          function step() {
+            
+            Shaku.startFrame();
+            Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
+
+            // offset and size
+            const offset = new Shaku.utils.Vector2(100, 80);
+            const size = new Shaku.utils.Vector2(150, 150);
+            function nextOffset()
+            {
+              offset.x += 250;
+              if (offset.x > screenX - 100) {
+                offset.x = 100;
+                offset.y += 190;
+              }
+            }
+
+            // for labels
+            textSpriteBatch.begin();
+
+            // draw label
+            function drawLabel(text)
+            {
+              let textGroup= Shaku.gfx.buildText(fontTexture, text, 24, Shaku.utils.Color.white, Shaku.gfx.TextAlignments.Center);
+              textGroup.position.copy(offset.add(0, 100));
+              textSpriteBatch.drawText(textGroup);
+            }
+
+            // draw plain sprite
+            {
+              let sprite = new Shaku.gfx.Sprite(spriteTexture);
+              sprite.position.copy(offset);
+              sprite.size.copy(size);
+              spritesBatch.begin();
+              spritesBatch.drawSprite(sprite);
+              spritesBatch.end();
+              drawLabel("Plain Sprite");
+              nextOffset()
+            }
+
+            // draw rotating sprite
+            {
+              let sprite = new Shaku.gfx.Sprite(spriteTexture);
+              sprite.position.copy(offset);
+              sprite.size.copy(size);
+              sprite.rotation = Shaku.gameTime.elapsed;
+              spritesBatch.begin();
+              spritesBatch.drawSprite(sprite);
+              spritesBatch.end();
+              drawLabel("Rotating Sprite");
+              nextOffset()
+            }
+
+            // draw tinted sprite
+            {
+              let sprite = new Shaku.gfx.Sprite(spriteTexture);
+              sprite.position.copy(offset);
+              sprite.size.copy(size);
+              sprite.color = new Shaku.utils.Color( Math.abs(Math.sin(Shaku.gameTime.elapsed * 1.31)), Math.abs(Math.sin(Shaku.gameTime.elapsed * 2.57)), Math.abs(Math.sin(Shaku.gameTime.elapsed * 3.15)), 1);
+              spritesBatch.begin();
+              spritesBatch.drawSprite(sprite);
+              spritesBatch.end();
+              drawLabel("Colored Sprite");
+              nextOffset()
+            }
+
+            // draw fading sprite
+            {
+              let sprite = new Shaku.gfx.Sprite(spriteTexture);
+              sprite.position.copy(offset);
+              sprite.size.copy(size);
+              sprite.color.a = Math.abs(Math.sin(Shaku.gameTime.elapsed));
+              spritesBatch.begin();
+              spritesBatch.drawSprite(sprite);
+              spritesBatch.end();
+              drawLabel("Fading Sprite");
+              nextOffset()
+            }
+
+            // draw skewing x sprite
+            {
+              let sprite = new Shaku.gfx.Sprite(spriteTexture);
+              sprite.position.copy(offset);
+              sprite.size.copy(size);
+              sprite.skew = Shaku.utils.Vector2.zero();
+              sprite.skew.x = (Math.sin(Shaku.gameTime.elapsed)) * 100;
+              spritesBatch.begin();
+              spritesBatch.drawSprite(sprite);
+              spritesBatch.end();
+              drawLabel("Skew X");
+              nextOffset()
+            }
+
+            // draw skewing y sprite
+            {
+              let sprite = new Shaku.gfx.Sprite(spriteTexture);
+              sprite.position.copy(offset);
+              sprite.size.copy(size);
+              sprite.skew = Shaku.utils.Vector2.zero();
+              sprite.skew.y = (Math.sin(Shaku.gameTime.elapsed)) * 100;
+              spritesBatch.begin();
+              spritesBatch.drawSprite(sprite);
+              spritesBatch.end();
+              drawLabel("Skew Y");
+              nextOffset()
+            }
+
+            // draw skewing x + y sprite
+            {
+              let sprite = new Shaku.gfx.Sprite(spriteTexture);
+              sprite.position.copy(offset);
+              sprite.size.copy(size);
+              sprite.skew = Shaku.utils.Vector2.zero();
+              sprite.skew.y = (Math.sin(Shaku.gameTime.elapsed)) * 100;
+              sprite.skew.x = (Math.cos(Shaku.gameTime.elapsed)) * 100;
+              spritesBatch.begin();
+              spritesBatch.drawSprite(sprite);
+              spritesBatch.end();
+              drawLabel("Skew Both");
+              nextOffset()
+            }
+
+            // draw blend mode sprite
+            {
+              let sprite = new Shaku.gfx.Sprite(spriteTexture);
+              sprite.position.copy(offset);
+              sprite.size.copy(size);
+              let blendKeys = Object.keys(Shaku.gfx.BlendModes);
+              let blendIndex = Math.floor(Shaku.gameTime.elapsed) % blendKeys.length;
+              spritesBatch.begin(Shaku.gfx.BlendModes[blendKeys[blendIndex]]);
+              spritesBatch.drawSprite(sprite);
+              spritesBatch.end();
+              drawLabel("Blend: " + blendKeys[blendIndex]);
+              nextOffset()
+            }
+
+            // present labels
+            textSpriteBatch.end();
+
+            Shaku.endFrame();
+            Shaku.requestAnimationFrame(step);
+          }
+          step();
+        }
+
+        // start demo
+        runDemo();
+
+      </script>
+
+</div>
+
+<!-- code example part -->
+<div id="sample-code-modal" class="modal">
+  <div class="modal__overlay jsOverlay"></div>
+  <div class="modal__container">   
+
+<p class="noselect">The following code example show how to tweak sprite properties.</i>
+</p>
+<pre><code class="language-js">// load sprite's texture asset
+let texture = await Shaku.assets.loadTexture('assets/sprite.png');
+
+// create a sprite
+let sprite = new Shaku.gfx.Sprite(texture);
+sprite.position.set(100, 100)
+sprite.rotation = Math.PI; 
+sprite.skew = new Shaku.utils.Vector2(150, 0);
+sprite.color = Shaku.utils.Color.red;
+
+// create a sprites batch
+let spritesBatch = new Shaku.gfx.SpriteBatch();
+
+// part below goes between startFrame() and endFrame()
+// -------------------------------------------------------
+
+// draw the sprite
+spritesBatch.begin();
+spritesBatch.drawSprite(sprite);
+spritesBatch.end();</code></pre>
+
+  <button class="modal__close" onclick="closeModal('sample-code-modal')">&#10005;</button>
+</div>
+</div>
+
+<link href="prism/prism.css" rel="stylesheet" />
+<script src="prism/prism.js"></script>
+
+  </body>
+</html>

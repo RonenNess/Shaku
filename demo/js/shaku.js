@@ -1,17 +1,23 @@
-(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.Shaku = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
+/******/ (() => { // webpackBootstrap
+/******/ 	"use strict";
+/******/ 	var __webpack_modules__ = ({
+
+/***/ 3155:
+/***/ ((module) => {
+
 /**
  * Assets base class.
  * 
  * |-- copyright and license --|
- * @package    Shaku
- * @file       shaku\lib\assets\asset.js
+ * @module     Shaku
+ * @file       shaku\src\assets\asset.js
  * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
  * @copyright  (c) 2021 Ronen Ness
  * @license    MIT
  * |-- end copyright and license --|
  * 
  */
-'use strict';
+
 
 
 /**
@@ -31,16 +37,28 @@ class Asset
     }
 
     /**
+     * Get if this asset is ready, ie loaded or created.
+     * @returns {Boolean} True if asset finished loading / creating. This doesn't mean its necessarily valid, only that its done loading.
+     */
+    get ready()
+    {
+        return this._waitingCallbacks === null;
+    }
+
+    /**
      * Register a method to be called when asset is ready.
      * If asset is already in ready state, will invoke immediately.
      * @param {Function} callback Callback to invoke when asset is ready.
      */
     onReady(callback)
     {
-        if (this.valid || this._waitingCallbacks === null) {
+        // already ready
+        if (this.valid || this.ready) {
             callback(this);
             return;
         }
+
+        // add to callbacks list
         this._waitingCallbacks.push(callback);
     }
 
@@ -120,29 +138,37 @@ class Asset
 
 // export the asset base class.
 module.exports = Asset;
-},{}],2:[function(require,module,exports){
+
+/***/ }),
+
+/***/ 7148:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
 /**
  * Implement the assets manager.
  * 
  * |-- copyright and license --|
- * @package    Shaku
- * @file       shaku\lib\assets\assets.js
+ * @module     Shaku
+ * @file       shaku\src\assets\assets.js
  * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
  * @copyright  (c) 2021 Ronen Ness
  * @license    MIT
  * |-- end copyright and license --|
  * 
  */
-'use strict';
-const SoundAsset = require('../assets/sound_asset.js');
-const IManager = require('../manager.js');
-const BinaryAsset = require('./binary_asset.js');
-const JsonAsset = require('./json_asset.js');
-const TextureAsset = require('./texture_asset.js');
-const FontTextureAsset = require('./font_texture_asset');
-const MsdfFontTextureAsset = require('./msdf_font_texture_asset.js');
-const Asset = require('./asset.js');
-const _logger = require('../logger.js').getLogger('assets');
+
+const SoundAsset = __webpack_require__(499);
+const IManager = __webpack_require__(9563);
+const BinaryAsset = __webpack_require__(3603);
+const JsonAsset = __webpack_require__(7058);
+const TextureAsset = __webpack_require__(2262);
+const FontTextureAsset = __webpack_require__(167);
+const MsdfFontTextureAsset = __webpack_require__(1252);
+const Asset = __webpack_require__(3155);
+const TextureAtlas = __webpack_require__(2493);
+const TextureAtlasAsset = __webpack_require__(2493);
+const Vector2 = __webpack_require__(2544);
+const _logger = (__webpack_require__(5259).getLogger)('assets');
 
 
 /**
@@ -183,7 +209,7 @@ class Assets extends IManager
      * @param {String} url Url to wrap.
      * @returns {String} Wrapped URL.
      */
-    _wrapUrl(url)
+    #_wrapUrl(url)
     {
         if (!url) { return url; }
         return this.root + url + this.suffix;
@@ -282,7 +308,7 @@ class Assets extends IManager
      * @param {type} type If provided will make sure asset is of this type. If asset found but have wrong type, will throw exception.
      * @returns Loaded asset or null if not found.
      */
-    _getFromCache(url, type)
+    #_getFromCache(url, type)
     {
         let cached = this._loaded[url] || null;
         if (cached && type) {
@@ -299,7 +325,7 @@ class Assets extends IManager
      * @param {Asset} newAsset Asset instance to load.
      * @param {*} params Optional loading params.
      */
-    async _loadAndCacheAsset(newAsset, params)
+    async #_loadAndCacheAsset(newAsset, params)
     {
         // extract url and typename, and add to cache
         let url = newAsset.url;
@@ -346,7 +372,7 @@ class Assets extends IManager
      */
     getCached(url)
     {
-        url = this._wrapUrl(url);
+        url = this.#_wrapUrl(url);
         return this._loaded[url] || null;
     }
 
@@ -354,13 +380,13 @@ class Assets extends IManager
      * Get / load asset of given type, and return a promise to be resolved when ready.
      * @private
      */
-    _loadAssetType(url, typeClass, params)
+    #_loadAssetType(url, typeClass, params)
     {
         // normalize URL
-        url = this._wrapUrl(url);
+        url = this.#_wrapUrl(url);
 
         // try to get from cache
-        let _asset = this._getFromCache(url, typeClass);
+        let _asset = this.#_getFromCache(url, typeClass);
         
         // check if need to create new and load
         var needLoad = false;
@@ -372,7 +398,7 @@ class Assets extends IManager
         // create promise to load asset
         let promise = new Promise(async (resolve, reject) => {
             if (needLoad) {
-                await this._loadAndCacheAsset(_asset, params);
+                await this.#_loadAndCacheAsset(_asset, params);
             }
             _asset.onReady(() => {
                 resolve(_asset);
@@ -388,11 +414,16 @@ class Assets extends IManager
      * Create and init asset of given class type.
      * @private
      */
-    _createAsset(name, classType, initMethod)
+    #_createAsset(name, classType, initMethod, needWait)
     {
         // create asset
-        name = this._wrapUrl(name);
+        name = this.#_wrapUrl(name);
         var _asset = new classType(name || generateRandomAssetName());
+
+        // if this asset need waiting
+        if (needWait) {
+            this._waitingAssets.add(name);
+        }
 
         // generate render target in async
         let promise = new Promise(async (resolve, reject) => {
@@ -401,8 +432,10 @@ class Assets extends IManager
             if (name && this._loaded[name]) { return reject(`Asset of type '${classType.name}' to create with URL '${name}' already exist in cache!`); }
 
             // create and return
-            initMethod(_asset);
-            if (name) { this._loaded[name] = _asset; }
+            await initMethod(_asset);
+            if (name) { 
+                this._loaded[name] = _asset; 
+            }
             resolve(_asset);
         });
 
@@ -420,7 +453,7 @@ class Assets extends IManager
      */
     loadSound(url)
     {
-        return this._loadAssetType(url, SoundAsset, undefined);
+        return this.#_loadAssetType(url, SoundAsset, undefined);
     }
 
     /**
@@ -433,7 +466,7 @@ class Assets extends IManager
      */
     loadTexture(url, params)
     {
-        return this._loadAssetType(url, TextureAsset, params);
+        return this.#_loadAssetType(url, TextureAsset, params);
     }
 
     /**
@@ -456,11 +489,41 @@ class Assets extends IManager
         }
 
         // create asset and return promise
-        return this._createAsset(name, TextureAsset, (asset) => {
+        return this.#_createAsset(name, TextureAsset, (asset) => {
             asset.createRenderTarget(width, height, channels);
         });
     }
     
+    /**
+     * Create a texture atlas asset.
+     * @param {String | null} name Asset name (matched to URLs when using cache). If null, will not add to cache.
+     * @param {Array<String>} sources List of URLs to load textures from. 
+     * @param {Number=} maxWidth Optional atlas textures max width.
+     * @param {Number=} maxHeight Optional atlas textures max height.
+     * @param {Vector2=} extraMargins Optional extra empty pixels to add between textures in atlas.
+     * @returns {Promise<TextureAtlas>} Promise to resolve with asset instance, when loaded. You can access the loading asset with `.asset` on the promise.
+     */
+    createTextureAtlas(name, sources, maxWidth, maxHeight, extraMargins)
+    {
+        // make sure we have valid size
+        if (!sources || !sources.length) {
+            throw new Error("Missing or invalid sources!");
+        }
+
+        // create asset and return promise
+        return this.#_createAsset(name, TextureAtlasAsset, async (asset) => {
+            try {
+                await asset._build(sources, maxWidth, maxHeight, extraMargins);
+                this._waitingAssets.delete(name);
+                this._successfulLoadedAssetsCount++;
+            }
+            catch (e) {
+                _logger.warn(`Failed to create texture atlas: '${e}'.`);
+                this._failedAssets.add(url);
+            }
+        }, true);
+    }
+
     /**
      * Load a font texture asset. If already loaded, will use cache.
      * @example
@@ -471,7 +534,7 @@ class Assets extends IManager
      */
     loadFontTexture(url, params)
     {
-        return this._loadAssetType(url, FontTextureAsset, params);
+        return this.#_loadAssetType(url, FontTextureAsset, params);
     }
     
     /**
@@ -484,7 +547,7 @@ class Assets extends IManager
      */
     loadMsdfFontTexture(url, params)
     {
-        return this._loadAssetType(url, MsdfFontTextureAsset, params);
+        return this.#_loadAssetType(url, MsdfFontTextureAsset, params);
     }
     
     /**
@@ -497,7 +560,7 @@ class Assets extends IManager
      */
     loadJson(url)
     {
-        return this._loadAssetType(url, JsonAsset);
+        return this.#_loadAssetType(url, JsonAsset);
     }
  
     /**
@@ -517,7 +580,7 @@ class Assets extends IManager
         }
 
         // create asset and return promise
-        return this._createAsset(name, JsonAsset, (asset) => {
+        return this.#_createAsset(name, JsonAsset, (asset) => {
             asset.create(data);
         });
     }
@@ -532,7 +595,7 @@ class Assets extends IManager
      */
     loadBinary(url)
     {
-        return this._loadAssetType(url, BinaryAsset);
+        return this.#_loadAssetType(url, BinaryAsset);
     }
 
     /**
@@ -552,7 +615,7 @@ class Assets extends IManager
         }
 
         // create asset and return promise
-        return this._createAsset(name, BinaryAsset, (asset) => {
+        return this.#_createAsset(name, BinaryAsset, (asset) => {
             asset.create(data);
         });
     }
@@ -565,7 +628,7 @@ class Assets extends IManager
      */
     free(url)
     {
-        url = this._wrapUrl(url);
+        url = this.#_wrapUrl(url);
         let asset = this._loaded[url];
         if (asset) {
             asset.destroy();
@@ -607,21 +670,26 @@ function generateRandomAssetName()
  
 // export assets manager
 module.exports = new Assets();
-},{"../assets/sound_asset.js":8,"../logger.js":45,"../manager.js":46,"./asset.js":1,"./binary_asset.js":3,"./font_texture_asset":4,"./json_asset.js":6,"./msdf_font_texture_asset.js":7,"./texture_asset.js":9}],3:[function(require,module,exports){
+
+/***/ }),
+
+/***/ 3603:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
 /**
  * Implement binary data asset type.
  * 
  * |-- copyright and license --|
- * @package    Shaku
- * @file       shaku\lib\assets\binary_asset.js
+ * @module     Shaku
+ * @file       shaku\src\assets\binary_asset.js
  * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
  * @copyright  (c) 2021 Ronen Ness
  * @license    MIT
  * |-- end copyright and license --|
  * 
  */
-'use strict';
-const Asset = require("./asset");
+
+const Asset = __webpack_require__(3155);
 
 
 /**
@@ -682,7 +750,7 @@ class BinaryAsset extends Asset
     create(source)
     {
         return new Promise((resolve, reject) => {
-            if (source instanceof Array) { source = new Uint8Array(source); }
+            if (Array.isArray(source)) { source = new Uint8Array(source); }
             if (!(source instanceof Uint8Array)) { return reject("Binary asset source must be of type 'Uint8Array'!"); }
             this._data = source;
             this._notifyReady();
@@ -724,24 +792,29 @@ class BinaryAsset extends Asset
 
 // export the asset type.
 module.exports = BinaryAsset;
-},{"./asset":1}],4:[function(require,module,exports){
+
+/***/ }),
+
+/***/ 167:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
 /**
  * Implement a font texture asset type.
  * 
  * |-- copyright and license --|
- * @package    Shaku
- * @file       shaku\lib\assets\font_texture_asset.js
+ * @module     Shaku
+ * @file       shaku\src\assets\font_texture_asset.js
  * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
  * @copyright  (c) 2021 Ronen Ness
  * @license    MIT
  * |-- end copyright and license --|
  * 
  */
-'use strict';
-const Asset = require("./asset");
-const Vector2 = require("../utils/vector2");
-const Rectangle = require("../utils/rectangle");
-const TextureAsset = require("./texture_asset");
+
+const Asset = __webpack_require__(3155);
+const Vector2 = __webpack_require__(2544);
+const Rectangle = __webpack_require__(4731);
+const TextureAsset = __webpack_require__(2262);
 
 
 /**
@@ -952,6 +1025,33 @@ class FontTextureAsset extends Asset
         });
     }
 
+    /**
+     * Get texture width.
+     * @returns {Number} Texture width.
+     */
+    get width()
+    {
+        return this._texture._width;
+    }
+
+    /**
+     * Get texture height.
+     * @returns {Number} Texture height.
+     */
+    get height()
+    {
+        return this._texture._height;
+    }
+
+    /**
+     * Get texture size as a vector.
+     * @returns {Vector2} Texture size.
+     */
+    getSize()
+    {
+        return this._texture.getSize();
+    }
+
     /** @inheritdoc */
     get valid()
     {
@@ -974,7 +1074,7 @@ class FontTextureAsset extends Asset
      * @returns {Vector2} Offset to add to the cursor before drawing the character.
      */
     getPositionOffset (character) {
-        return Vector2.zero;
+        return Vector2.zero();
     }
 
     /**
@@ -1053,36 +1153,46 @@ function measureTextWidth(fontFamily, fontSize, char, extraWidth)
 
 // export the asset type.
 module.exports = FontTextureAsset;
-},{"../utils/rectangle":61,"../utils/vector2":67,"./asset":1,"./texture_asset":9}],5:[function(require,module,exports){
+
+/***/ }),
+
+/***/ 7817:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
 /**
  * Just an alias to main manager so we can require() this folder as a package.
  * 
  * |-- copyright and license --|
- * @package    Shaku
- * @file       shaku\lib\assets\index.js
+ * @module     Shaku
+ * @file       shaku\src\assets\index.js
  * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
  * @copyright  (c) 2021 Ronen Ness
  * @license    MIT
  * |-- end copyright and license --|
  * 
  */
- 'use strict';
- module.exports = require('./assets');
-},{"./assets":2}],6:[function(require,module,exports){
+ 
+ module.exports = __webpack_require__(7148);
+
+/***/ }),
+
+/***/ 7058:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
 /**
  * Implement json asset type.
  * 
  * |-- copyright and license --|
- * @package    Shaku
- * @file       shaku\lib\assets\json_asset.js
+ * @module     Shaku
+ * @file       shaku\src\assets\json_asset.js
  * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
  * @copyright  (c) 2021 Ronen Ness
  * @license    MIT
  * |-- end copyright and license --|
  * 
  */
-'use strict';
-const Asset = require("./asset");
+
+const Asset = __webpack_require__(3155);
 
 
 /**
@@ -1201,26 +1311,31 @@ class JsonAsset extends Asset
 
 // export the asset type.
 module.exports = JsonAsset;
-},{"./asset":1}],7:[function(require,module,exports){
+
+/***/ }),
+
+/***/ 1252:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
 /**
  * Implement a MSDF font texture asset type.
  * 
  * |-- copyright and license --|
- * @package    Shaku
- * @file       shaku\lib\assets\msdf_font_texture_asset.js
+ * @module     Shaku
+ * @file       shaku\src\assets\msdf_font_texture_asset.js
  * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
  * @copyright  (c) 2021 Ronen Ness
  * @license    MIT
  * |-- end copyright and license --|
  * 
  */
-'use strict';
-const Vector2 = require("../utils/vector2");
-const Rectangle = require("../utils/rectangle");
-const TextureAsset = require("./texture_asset");
-const FontTextureAsset = require('./font_texture_asset')
-const JsonAsset = require('./json_asset')
-const TextureFilterModes = require('../gfx/texture_filter_modes')
+
+const Vector2 = __webpack_require__(2544);
+const Rectangle = __webpack_require__(4731);
+const TextureAsset = __webpack_require__(2262);
+const FontTextureAsset = __webpack_require__(167)
+const JsonAsset = __webpack_require__(7058)
+const TextureFilterModes = __webpack_require__(5387)
 
 
 /**
@@ -1306,6 +1421,33 @@ class MsdfFontTextureAsset extends FontTextureAsset
         });
     }
 
+    /**
+     * Get texture width.
+     * @returns {Number} Texture width.
+     */
+    get width()
+    {
+        return this._texture._width;
+    }
+
+    /**
+     * Get texture height.
+     * @returns {Number} Texture height.
+     */
+    get height()
+    {
+        return this._texture._height;
+    }
+
+    /**
+     * Get texture size as a vector.
+     * @returns {Vector2} Texture size.
+     */
+    getSize()
+    {
+        return this._texture.getSize();
+    }
+    
     /** @inheritdoc */
     getPositionOffset (character) {
         return this._positionOffsets[character] || this._positionOffsets[this.placeholderCharacter];
@@ -1328,21 +1470,26 @@ class MsdfFontTextureAsset extends FontTextureAsset
 
 // export the asset type.
 module.exports = MsdfFontTextureAsset;
-},{"../gfx/texture_filter_modes":37,"../utils/rectangle":61,"../utils/vector2":67,"./font_texture_asset":4,"./json_asset":6,"./texture_asset":9}],8:[function(require,module,exports){
+
+/***/ }),
+
+/***/ 499:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
 /**
  * Implement sound asset type.
  * 
  * |-- copyright and license --|
- * @package    Shaku
- * @file       shaku\lib\assets\sound_asset.js
+ * @module     Shaku
+ * @file       shaku\src\assets\sound_asset.js
  * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
  * @copyright  (c) 2021 Ronen Ness
  * @license    MIT
  * |-- end copyright and license --|
  * 
  */
-'use strict';
-const Asset = require("./asset");
+
+const Asset = __webpack_require__(3155);
 
  
 /**
@@ -1372,7 +1519,6 @@ class SoundAsset extends Asset
         return new Promise((resolve, reject) => {
 
             // create request to load audio file
-            //let audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             var request = new XMLHttpRequest();
             request.open('GET', this.url, true);
             request.responseType = 'arraybuffer';     
@@ -1380,19 +1526,9 @@ class SoundAsset extends Asset
             // on load, validate audio content
             request.onload = () => 
             {
-                this._valid = true; // <-- good enough for now, as decodeAudio won't work before user's input
+                this._valid = true;
                 this._notifyReady();
                 resolve();
-
-                // Note: the code below cause issues with some sound devices!!!
-                /*
-                var audioData = request.response;
-                audioCtx.decodeAudioData(audioData, function(buffer) {
-                    resolve();
-                },
-                (e) => { 
-                    reject(e.err); 
-                });*/
             }
 
             // on load error, reject
@@ -1421,26 +1557,28 @@ class SoundAsset extends Asset
  
 // export the asset type.
 module.exports = SoundAsset;
-},{"./asset":1}],9:[function(require,module,exports){
+
+/***/ }),
+
+/***/ 2262:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
 /**
  * Implement texture asset type.
  * 
  * |-- copyright and license --|
- * @package    Shaku
- * @file       shaku\lib\assets\texture_asset.js
+ * @module     Shaku
+ * @file       shaku\src\assets\texture_asset.js
  * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
  * @copyright  (c) 2021 Ronen Ness
  * @license    MIT
  * |-- end copyright and license --|
  * 
  */
-'use strict';
-const Asset = require("./asset");
-const {TextureFilterMode, TextureFilterModes} = require('../gfx/texture_filter_modes');
-const {TextureWrapMode, TextureWrapModes} = require('../gfx/texture_wrap_modes');
-const Color = require('../utils/color');
-const Vector2 = require("../utils/vector2");
-const _logger = require('../logger.js').getLogger('assets');
+
+const Color = __webpack_require__(9327);
+const TextureAssetBase = __webpack_require__(4397);
+const _logger = (__webpack_require__(5259).getLogger)('assets');
 
 // the webgl context to use
 var gl = null;
@@ -1450,7 +1588,7 @@ var gl = null;
  * A loadable texture asset.
  * This asset type loads an image from URL or source, and turn it into a texture.
  */
-class TextureAsset extends Asset
+class TextureAsset extends TextureAssetBase
 {
     /** @inheritdoc */
     constructor(url)
@@ -1460,8 +1598,6 @@ class TextureAsset extends Asset
         this._width = 0;
         this._height = 0;
         this._texture = null;
-        this._filter = null;
-        this._wrapMode = null;
         this._ctxForPixelData = null;
     }
 
@@ -1473,50 +1609,14 @@ class TextureAsset extends Asset
     {
         gl = _gl;
     }
-
-    /**
-     * Get texture magnifying filter, or null to use default.
-     * @see Shaku.gfx.TextureFilterModes
-     */
-    get filter()
-    {
-        return this._filter;
-    }
-
-    /**
-     * Set texture magnifying filter.
-     * @see Shaku.gfx.TextureFilterModes 
-     * @param {TextureFilterMode} value Filter mode to use or null to use default.
-     */
-    set filter(value)
-    {
-        this._filter = value;
-    }
-
-    /**
-     * Get texture wrapping mode, or null to use default.
-     * @see Shaku.gfx.TextureWrapModes
-     */
-    get wrapMode()
-    {
-        return this._wrapMode;
-    }
-
-    /**
-     * Set texture wrapping mode.
-     * @see Shaku.gfx.TextureWrapModes
-     * @param {TextureWrapMode} value Wrapping mode to use or null to use default.
-     */
-    set wrapMode(value)
-    {
-        this._wrapMode = value;
-    }
     
     /**
      * Load the texture from it's image URL.
      * @param {*} params Optional additional params. Possible values are:
-     *                      - generateMipMaps (default=false): should we generate mipmaps for this texture?
+     *                      - generateMipMaps (default=false): if true, will generate mipmaps for this texture.
      *                      - crossOrigin (default=undefined): if set, will set the crossOrigin property with this value.
+     *                      - flipY (default=false): if true, will flip texture on Y axis.
+     *                      - premultiplyAlpha (default=false): if true, will load texture with premultiply alpha flag set.
      * @returns {Promise} Promise to resolve when fully loaded.
      */
     load(params)
@@ -1563,6 +1663,10 @@ class TextureAsset extends Asset
      */
     createRenderTarget(width, height, channels)
     {
+        // reset flags
+        gl.pixelStorei( gl.UNPACK_FLIP_Y_WEBGL, false );
+        gl.pixelStorei( gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false );
+
         // create to render to
         const targetTextureWidth = width;
         const targetTextureHeight = height;
@@ -1631,6 +1735,12 @@ class TextureAsset extends Asset
         // default params
         params = params || {};
 
+        // set flip Y argument
+        gl.pixelStorei( gl.UNPACK_FLIP_Y_WEBGL, Boolean(params.flipY) );
+
+        // set premultiply alpha params
+        gl.pixelStorei( gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, Boolean(params.premultiplyAlpha) );
+
         // store image
         this._image = image;
         this._width = image.width;
@@ -1698,52 +1808,33 @@ class TextureAsset extends Asset
         });
     }
 
-    /**
-     * Get raw image.
-     * @returns {Image} Image instance.
-     */
+    /** @inheritdoc */
     get image()
     {
         return this._image;
     }
 
-    /**
-     * Get texture width.
-     * @returns {Number} Texture width.
-     */
+    /** @inheritdoc */
     get width()
     {
         return this._width;
     }
 
-    /**
-     * Get texture height.
-     * @returns {Number} Texture height.
-     */
+    /** @inheritdoc */
     get height()
     {
         return this._height;
     }
 
-    /**
-     * Get texture size as a vector.
-     * @returns {Vector2} Texture size.
-     */
-    get size()
-    {
-        return new Vector2(this.width, this.height);
-    }
-
-    /**
-     * Get texture instance for WebGL.
-     */
-    get texture()
+    /** @inheritdoc */
+    get _glTexture()
     {
         return this._texture;
     }
 
     /**
      * Get pixel color from image.
+     * Note: this method is quite slow, if you need to perform multiple queries consider using `getPixelsData()` once to get all pixels data instead.
      * @param {Number} x Pixel X value.
      * @param {Number} y Pixel Y value.
      * @returns {Color} Pixel color.
@@ -1767,6 +1858,53 @@ class TextureAsset extends Asset
         ctx.drawImage(this._image, x, y, 1, 1, 0, 0, 1, 1);
         let pixelData = ctx.getImageData(0, 0, 1, 1).data;   
         return Color.fromBytesArray(pixelData);
+    }
+
+    /**
+     * Get a 2D array with pixel colors.
+     * @param {Number=} x Offset X in texture to get. Defaults to 0.
+     * @param {Number=} y Offset Y in texture to get. Defaults to 0.
+     * @param {Number=} width How many pixels to get on X axis. Defaults to texture width - x.
+     * @param {Number=} height How many pixels to get on Y axis. Defaults to texture height - y.
+     * @returns {Array<Array<Color>>} A 2D array with all texture pixel colors.
+     */
+    getPixelsData(x, y, width, height)
+    {
+        if (!this._image) { 
+            throw new Error("'getPixel()' only works on textures loaded from image!");
+        }
+
+        // default x, y
+        x = x || 0;
+        y = y || 0;
+        
+        // default width / height
+        width = width || (this.width - x);
+        height = height || (this.height - y);
+
+        // build internal canvas and context to get pixel data
+        if (!this._ctxForPixelData) {
+            let canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            this._ctxForPixelData = canvas.getContext('2d');
+        }
+
+        // get pixel data
+        let ctx = this._ctxForPixelData;
+        ctx.drawImage(this._image, x, y, width, height, 0, 0, width, height);
+        let pixelData = ctx.getImageData(x, y, width, height).data;
+
+        //  convert to colors
+        let ret = [];
+        for (let i = 0; i < width; ++i) {
+            let currRow = [];
+            ret.push(currRow);
+            for (let j = 0; j < height; ++j) {
+                currRow.push(Color.fromBytesArray(pixelData, i * 4 + (j * 4 * width)));
+            }
+        }
+        return ret;
     }
 
     /** @inheritdoc */
@@ -1794,31 +1932,569 @@ function isPowerOf2(value) {
 
 // export the asset type.
 module.exports = TextureAsset;
-},{"../gfx/texture_filter_modes":37,"../gfx/texture_wrap_modes":38,"../logger.js":45,"../utils/color":54,"../utils/vector2":67,"./asset":1}],10:[function(require,module,exports){
+
+/***/ }),
+
+/***/ 4397:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
 /**
- * Implement the collision manager.
+ * Implement texture asset base type.
  * 
  * |-- copyright and license --|
- * @package    Shaku
- * @file       shaku\lib\collision\collision.js
+ * @module     Shaku
+ * @file       shaku\src\assets\texture_asset_base.js
  * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
  * @copyright  (c) 2021 Ronen Ness
  * @license    MIT
  * |-- end copyright and license --|
  * 
  */
-'use strict';
-const IManager = require('../manager.js');
-const Vector2 = require('../utils/vector2.js');
-const CollisionWorld = require('./collision_world.js');
-const CollisionResolver = require('./resolver');
-const CircleShape = require('./shapes/circle.js');
-const PointShape = require('./shapes/point.js');
-const RectangleShape = require('./shapes/rectangle.js');
-const ResolverImp = require('./resolvers_imp');
-const LinesShape = require('./shapes/lines.js');
-const TilemapShape = require('./shapes/tilemap.js');
-const _logger = require('../logger.js').getLogger('collision');
+
+const Asset = __webpack_require__(3155);
+const {TextureFilterMode} = __webpack_require__(5387);
+const {TextureWrapMode} = __webpack_require__(2464);
+const Vector2 = __webpack_require__(2544);
+
+
+/**
+ * Base type for all texture asset types.
+ */
+class TextureAssetBase extends Asset
+{
+    /** @inheritdoc */
+    constructor(url)
+    {
+        super(url);
+        this._filter = null;
+        this._wrapMode = null;
+    }
+
+    /**
+     * Get texture magnifying filter, or null to use default.
+     * @see Shaku.gfx.TextureFilterModes
+     */
+    get filter()
+    {
+        return this._filter;
+    }
+
+    /**
+     * Set texture magnifying filter.
+     * @see Shaku.gfx.TextureFilterModes 
+     * @param {TextureFilterMode} value Filter mode to use or null to use default.
+     */
+    set filter(value)
+    {
+        this._filter = value;
+    }
+
+    /**
+     * Get texture wrapping mode, or null to use default.
+     * @see Shaku.gfx.TextureWrapModes
+     */
+    get wrapMode()
+    {
+        return this._wrapMode;
+    }
+
+    /**
+     * Set texture wrapping mode.
+     * @see Shaku.gfx.TextureWrapModes
+     * @param {TextureWrapMode} value Wrapping mode to use or null to use default.
+     */
+    set wrapMode(value)
+    {
+        this._wrapMode = value;
+    }
+    
+    /**
+     * Get raw image.
+     * @returns {Image} Image instance.
+     */
+    get image()
+    {
+        throw new Error("Not Implemented!");
+    }
+
+    /**
+     * Get texture width.
+     * @returns {Number} Texture width.
+     */
+    get width()
+    {
+        throw new Error("Not Implemented!");
+    }
+
+    /**
+     * Get texture height.
+     * @returns {Number} Texture height.
+     */
+    get height()
+    {
+        throw new Error("Not Implemented!");
+    }
+
+    /**
+     * Get texture size as a vector.
+     * @returns {Vector2} Texture size.
+     */
+    getSize()
+    {
+        return new Vector2(this.width, this.height);
+    }
+
+    /**
+     * Get texture instance for WebGL.
+     */
+    get _glTexture()
+    {
+        throw new Error("Not Implemented!");
+    }
+}
+
+
+// export the asset type.
+module.exports = TextureAssetBase;
+
+/***/ }),
+
+/***/ 2493:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+/**
+ * Implement texture atlas asset type.
+ * 
+ * |-- copyright and license --|
+ * @module     Shaku
+ * @file       shaku\src\assets\texture_atlas_asset.js
+ * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
+ * @copyright  (c) 2021 Ronen Ness
+ * @license    MIT
+ * |-- end copyright and license --|
+ * 
+ */
+
+const Utils = __webpack_require__(3624);
+const { Rectangle } = __webpack_require__(3624);
+const Vector2 = __webpack_require__(2544);
+const Asset = __webpack_require__(3155);
+const TextureAsset = __webpack_require__(2262);
+const TextureInAtlasAsset = __webpack_require__(8609);
+const _logger = (__webpack_require__(5259).getLogger)('assets');
+
+// the webgl context to use
+var gl = null;
+
+
+/**
+ * A texture atlas we can build at runtime to combine together multiple textures.
+ */
+class TextureAtlasAsset extends Asset
+{
+    /** @inheritdoc */
+    constructor(url)
+    {
+        super(url);
+        this.__textures = [];
+        this.__sources = {};
+    }
+    
+    /**
+     * Set the WebGL context.
+     * @private
+     */
+    static _setWebGl(_gl)
+    {
+        gl = _gl;
+    }
+
+    /**
+     * Build the texture atlas.
+     * @private
+     * @param {Array<string>|Array<Image>} sources Source URLs or images to load into texture.
+     * @param {Number=} maxWidth Optional texture atlas width limit.
+     * @param {Number=} maxHeight Optional texture atlas height limit.
+     * @param {Vector2=} extraMargins Extra pixels to add between textures.
+     * @returns {Promise} Promise to resolve when done.
+     */
+    async _build(sources, maxWidth, maxHeight, extraMargins)
+    {
+        // sanity
+        if (this.__textures.length) {
+            throw new Error("Texture Atlas already built!");
+        }
+
+        // default margins
+        extraMargins = extraMargins;
+
+        // build atlas
+        return new Promise(async (resolve, reject) => {
+
+            // make sure all sources are valid loaded images
+            sources = await loadAllSources(sources);            
+
+            // make sure maxWidth and maxHeight are valid
+            if (maxWidth > gl.MAX_TEXTURE_SIZE) { maxWidth = gl.MAX_TEXTURE_SIZE; }
+            if (maxHeight > gl.MAX_TEXTURE_SIZE) { maxHeight = gl.MAX_TEXTURE_SIZE; }
+
+            // build atlas textures while there are still sources
+            while (sources && sources.length) {
+
+                // arrange textures
+                let arranged = arrangeTextures(sources, maxWidth, maxHeight, extraMargins);
+
+                // build the texture atlas!
+                let atlasTexture = new TextureAsset(`_atlas_${this.url}_${this.__textures.length}`);
+
+                // first create a canvas and get its 2d context
+                let canvas = document.createElement("canvas");
+                canvas.width = arranged.width;
+                canvas.height = arranged.height;
+                let ctx = canvas.getContext("2d");
+                
+                // now draw the sources and fill the sources dictionary
+                let textureInAtlasIndex = 0;
+                for (let imageData of arranged.rectangles) {
+                    ctx.drawImage(imageData.source, imageData.x, imageData.y);
+                    let url = imageData.source.src;
+                    let relativeUrl = url.substr(location.origin.length);
+                    let internalUrl = atlasTexture.url + '_' + (textureInAtlasIndex++).toString() + '_' + url.replaceAll('/', '_').replaceAll(':', '');
+                    let sourceRectangle = new Rectangle(imageData.x, imageData.y, imageData.width, imageData.height);
+                    let textureInAtlas = new TextureInAtlasAsset(internalUrl, atlasTexture, sourceRectangle, this);
+                    this.__sources[url] = this.__sources[relativeUrl] = this.__sources[relativeUrl.substr(1)] = textureInAtlas;
+                }
+
+                // convert to texture
+                let atlasSrcUrl = canvas.toDataURL();
+                let atlasImage = await loadImage(atlasSrcUrl);
+                atlasTexture.fromImage(atlasImage);
+
+                // push to textures list
+                atlasTexture.utilized = arranged.utilized;
+                this.__textures.push(atlasTexture);
+
+                // get leftovers as next batch
+                sources = arranged.leftovers;
+            }
+
+            // done!
+            resolve();
+        });
+    }
+
+    /**
+     * Get a list with all textures in atlas.
+     * @returns {Array<TextureAsset>} Textures in atlas.
+     */
+    get textures()
+    {
+        return this.__textures.slice(0);
+    }
+
+    /**
+     * Get texture asset and source rectangle for a desired image URL.
+     * @param {String} url URL to fetch texture and source from. Can be full URL, relative URL, or absolute URL starting from /.
+     * @returns {TextureInAtlasAsset} Texture in atlas asset, or null if not found.
+     */
+    getTexture(url)
+    {
+        return this.__sources[url] || null;
+    }
+
+    /** @inheritdoc */
+    get valid()
+    {
+        return Boolean(this.__textures.length);
+    }
+
+    /** @inheritdoc */
+    destroy()
+    {
+        for (let texture of this.__textures) {
+            texture.destroy();
+        }
+        this.__textures = [];
+        this.__sources = {};
+    }
+}
+
+
+/**
+ * Efficiently arrange textures into minimal size area with maximum efficiency.
+ * @private
+ * @param {Array<Image>} sourceImages Array of images to pack.
+ * @param {Number=} maxAtlasWidth Max width for result area.
+ * @param {Number=} maxAtlasHeight Max height for result area.
+ * @param {Vector2=} extraMargins Extra pixels to add between textures.
+ */
+function arrangeTextures(sourceImages, maxAtlasWidth, maxAtlasHeight, extraMargins) 
+{
+    // default max width and height
+    maxAtlasWidth = maxAtlasWidth || gl.MAX_TEXTURE_SIZE;
+    maxAtlasHeight = maxAtlasHeight || gl.MAX_TEXTURE_SIZE;
+
+    // use the sorter algorithm
+    let result = Utils.ItemsSorter.arrangeRectangles(sourceImages, (width) => {
+
+        // make width a power of 2
+        let power = 1;
+        while(power < width) {
+            power *= 2;
+        }
+        width = power;
+
+        // return new width and make sure don't exceed max size
+        return Math.min(width, maxAtlasWidth);
+
+    }, extraMargins);
+
+    // exceed max limit?
+    if (result.height > maxAtlasHeight) {
+        
+        // adjust result height
+        result.height = maxAtlasHeight;
+
+        // remove all textures that are outside limits
+        result.leftovers = [];
+        for (let i = result.rectangles.length - 1; i >= 0; --i) {
+            let currRect = result.rectangles[i];
+            if (currRect.y + currRect.height > maxAtlasHeight) {
+                result.rectangles.splice(i, 1);
+                result.leftovers.push(currRect.source);
+            }
+        }
+    }
+
+    // return result
+    return result;
+}
+
+
+/**
+ * Load an image and return a promise.
+ * @private
+ */
+function loadImage(path)
+{
+    return new Promise((resolve, reject) => {
+      const img = new Image()
+      img.crossOrigin = 'Anonymous' // to avoid CORS if used with Canvas
+      img.src = path
+      img.onload = () => {
+        resolve(img)
+      }
+      img.onerror = e => {
+        reject(e)
+      }
+    });
+}
+
+
+/**
+ * Convert list of sources that are either Image instances or URL strings to fully loaded Image instances.
+ * Wait for image loading if needed.
+ */
+async function loadAllSources(sources)
+{
+    return new Promise(async (resolve, reject) => {
+
+        // make sure all sources are image instances
+        let waitFor = [];
+        let images = [];
+        for (let i = 0; i < sources.length; ++i) {
+
+            // get current image / source
+            let curr = sources[i];
+
+            // if its source url:
+            if (typeof curr === 'string') {
+                waitFor.push(loadImage(curr));
+            }
+            // if its an image instance:
+            else if (curr instanceof Image) {
+
+                // if ready, push as-is
+                if (curr.width) {
+                    images.push(curr);
+                }
+                // if not ready, push to wait list
+                else {
+                    waitFor.push(new Promise((resolve, reject) => {
+                        curr.onload = resolve(curr);
+                        curr.onerror = reject;
+                    }));
+                }
+            }
+            // unknown type
+            else {
+                reject(`Invalid source type: ${curr}. All sources must be either Image instances or URLs (string).`);
+            }
+        }
+
+        // wait for all images that are loading
+        for (let loadPromise of waitFor) {
+            images.push(await loadPromise);
+        }
+
+        // return result
+        resolve(images);
+    });
+}
+
+// export the asset type.
+module.exports = TextureAtlasAsset;
+
+/***/ }),
+
+/***/ 8609:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+/**
+ * Implement texture asset type.
+ * 
+ * |-- copyright and license --|
+ * @module     Shaku
+ * @file       shaku\src\assets\texture_in_atlas_asset.js
+ * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
+ * @copyright  (c) 2021 Ronen Ness
+ * @license    MIT
+ * |-- end copyright and license --|
+ * 
+ */
+
+const TextureAssetBase = __webpack_require__(4397);
+const Rectangle = __webpack_require__(4731);
+
+
+/**
+ * A texture that is part of a texture atlas.
+ * Stores a texture that was generated by the texture atlas + the source rectangle in texture for this segment.
+ */
+class TextureInAtlasAsset extends TextureAssetBase
+{
+    /** @inheritdoc */
+    constructor(url, texture, sourceRect, atlas)
+    {
+        super(url);
+        this._texture = texture;
+        this._sourceRect = sourceRect;
+        this._atlas = atlas;
+    }
+
+    /**
+     * Return the source rectangle in texture atlas.
+     * @returns {Rectangle} Source rectangle.
+     */
+    get sourceRectangle()
+    {
+        return this._sourceRect;
+    }
+
+    /**
+     * Return the source rectangle in texture atlas, in normalized 0.0-1.0 values.
+     * @returns {Rectangle} Source rectangle.
+     */
+    get sourceRectangleNormalized()
+    {
+        if (!this._sourceRectNormalized) {
+            this._sourceRectNormalized = new Rectangle(
+                this._sourceRect.x / this.width, 
+                this._sourceRect.y / this.height, 
+                this._sourceRect.width / this.width, 
+                this._sourceRect.height / this.height
+            );
+        }
+        return this._sourceRectNormalized;
+    }
+
+    /**
+     * Return the texture asset of this atlas texture.
+     * @returns {TextureAsset} Texture asset.
+     */
+    get texture()
+    {
+        return this._texture;
+    }
+
+    /**
+     * Return the texture atlas class.
+     * @returns {TextureAtlasAsset} Parent atlas.
+     */
+    get atlas()
+    {
+        return this._atlas;
+    }
+
+    /** @inheritdoc */
+    get image()
+    {
+        return this.texture.image;
+    }
+
+    /** @inheritdoc */
+    get width()
+    {
+        return this.texture.width;
+    }
+
+    /** @inheritdoc */
+    get height()
+    {
+        return this.texture.height;
+    }
+
+    /** @inheritdoc */
+    get _glTexture()
+    {
+        return this.texture._glTexture;
+    }
+
+    /** @inheritdoc */
+    get valid()
+    {
+        return Boolean(this.texture.valid);
+    }
+
+    /** @inheritdoc */
+    destroy()
+    {
+    }
+}
+
+
+// export the asset type.
+module.exports = TextureInAtlasAsset;
+
+/***/ }),
+
+/***/ 4843:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+/**
+ * Implement the collision manager.
+ * 
+ * |-- copyright and license --|
+ * @module     Shaku
+ * @file       shaku\src\collision\collision.js
+ * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
+ * @copyright  (c) 2021 Ronen Ness
+ * @license    MIT
+ * |-- end copyright and license --|
+ * 
+ */
+
+const IManager = __webpack_require__(9563);
+const Vector2 = __webpack_require__(2544);
+const CollisionWorld = __webpack_require__(2433);
+const CollisionResolver = __webpack_require__(5528);
+const CircleShape = __webpack_require__(9481);
+const PointShape = __webpack_require__(1282);
+const RectangleShape = __webpack_require__(4153);
+const ResolverImp = __webpack_require__(1596);
+const LinesShape = __webpack_require__(6527);
+const TilemapShape = __webpack_require__(6601);
+const _logger = (__webpack_require__(5259).getLogger)('collision');
 
 
 /**
@@ -1953,31 +2629,37 @@ class Collision extends IManager
 
 // export main object
 module.exports = new Collision();
-},{"../logger.js":45,"../manager.js":46,"../utils/vector2.js":67,"./collision_world.js":11,"./resolver":13,"./resolvers_imp":14,"./shapes/circle.js":16,"./shapes/lines.js":17,"./shapes/point.js":18,"./shapes/rectangle.js":19,"./shapes/tilemap.js":21}],11:[function(require,module,exports){
+
+/***/ }),
+
+/***/ 2433:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
 /**
  * Implement the collision manager.
  * 
  * |-- copyright and license --|
- * @package    Shaku
- * @file       shaku\lib\collision\collision_world.js
+ * @module     Shaku
+ * @file       shaku\src\collision\collision_world.js
  * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
  * @copyright  (c) 2021 Ronen Ness
  * @license    MIT
  * |-- end copyright and license --|
  * 
  */
-'use strict';
-const Color = require("../utils/color");
-const Vector2 = require("../utils/vector2");
-const Circle = require("../utils/circle");
-const CollisionTestResult = require("./result");
-const CollisionShape = require("./shapes/shape");
-const gfx = require('./../gfx');
-const Rectangle = require("../utils/rectangle");
-const CollisionResolver = require("./resolver");
-const PointShape = require("./shapes/point");
-const CircleShape = require("./shapes/circle");
-const _logger = require('../logger.js').getLogger('collision');
+
+const Color = __webpack_require__(9327);
+const Vector2 = __webpack_require__(2544);
+const Circle = __webpack_require__(9668);
+const CollisionTestResult = __webpack_require__(6323);
+const CollisionShape = __webpack_require__(9135);
+const gfx = __webpack_require__(7565);
+const Rectangle = __webpack_require__(4731);
+const CollisionResolver = __webpack_require__(5528);
+const PointShape = __webpack_require__(1282);
+const CircleShape = __webpack_require__(9481);
+const ShapesBatch = __webpack_require__(1772);
+const _logger = (__webpack_require__(5259).getLogger)('collision');
 
 
 /**
@@ -2056,7 +2738,7 @@ class CollisionWorld
      * Do collision world updates, if we have any.
      * @private
      */
-    _performUpdates()
+    #_performUpdates()
     {
         // delete empty grid cells
         if (this._cellsToDelete.size > 0) {
@@ -2072,7 +2754,7 @@ class CollisionWorld
         // update all shapes
         if (this._shapesToUpdate.size > 0) {
             for (let shape of this._shapesToUpdate) {
-                this._updateShape(shape);
+                this.#_updateShape(shape);
             }
             this._shapesToUpdate.clear();
         }
@@ -2082,7 +2764,7 @@ class CollisionWorld
      * Get or create cell.
      * @private
      */
-    _getCell(i, j)
+    #_getCell(i, j)
     {
         let key = i + ',' + j;
         let ret = this._grid[key];
@@ -2097,7 +2779,7 @@ class CollisionWorld
      * Update a shape in collision world after it moved or changed.
      * @private
      */
-    _updateShape(shape)
+    #_updateShape(shape)
     {
         // sanity - if no longer in this collision world, skip
         if (shape._world !== this) {
@@ -2162,7 +2844,7 @@ class CollisionWorld
                     }
 
                     // add to new cell
-                    let currSet = this._getCell(i, j);
+                    let currSet = this.#_getCell(i, j);
                     currSet.add(shape);
                 }
             }
@@ -2172,7 +2854,7 @@ class CollisionWorld
             this._stats.addedShapes++;
             for (let i = minx; i < maxx; ++i) {
                 for (let j = miny; j < maxy; ++j) {
-                    let currSet = this._getCell(i, j);
+                    let currSet = this.#_getCell(i, j);
                     currSet.add(shape);
                 }
             }
@@ -2220,10 +2902,10 @@ class CollisionWorld
         shape._setParent(this);
 
         // add shape to grid
-        this._updateShape(shape);
+        this.#_updateShape(shape);
 
         // do general updates
-        this._performUpdates();
+        this.#_performUpdates();
     }
 
     /**
@@ -2263,7 +2945,7 @@ class CollisionWorld
         shape._setParent(null);
 
         // do general updates
-        this._performUpdates();
+        this.#_performUpdates();
     }
 
     /**
@@ -2274,7 +2956,7 @@ class CollisionWorld
      * @param {Number} mask Optional mask of bits to match against shapes collisionFlags. Will only return shapes that have at least one common bit.
      * @param {Function} predicate Optional filter to run on any shape we're about to test collision with.
      */
-    _iterateBroadPhase(shape, handler, mask, predicate)
+    #_iterateBroadPhase(shape, handler, mask, predicate)
     {
         // get grid range
         let bb = shape._getBoundingBox();
@@ -2352,7 +3034,7 @@ class CollisionWorld
     testCollision(sourceShape, sortByDistance, mask, predicate)
     {
         // do updates before check
-        this._performUpdates();
+        this.#_performUpdates();
 
         // result to return
         var result = null;
@@ -2362,7 +3044,7 @@ class CollisionWorld
         {
             // build options array
             var options = [];
-            this._iterateBroadPhase(sourceShape, (other) => {
+            this.#_iterateBroadPhase(sourceShape, (other) => {
                 options.push(other);
                 return true;
             }, mask, predicate);
@@ -2386,7 +3068,7 @@ class CollisionWorld
         {
             // iterate possible shapes and test collision
             var handlers = this.resolver.getHandlers(sourceShape);
-            this._iterateBroadPhase(sourceShape, (other) => {
+            this.#_iterateBroadPhase(sourceShape, (other) => {
 
                 // test collision and continue iterating if we don't have a result
                 this._stats.collisionChecks++;
@@ -2413,12 +3095,12 @@ class CollisionWorld
     testCollisionMany(sourceShape, sortByDistance, mask, predicate, intermediateProcessor)
     {
         // do updates before check
-        this._performUpdates();
+        this.#_performUpdates();
 
         // get collisions
         var ret = [];
         var handlers = this.resolver.getHandlers(sourceShape);
-        this._iterateBroadPhase(sourceShape, (other) => {
+        this.#_iterateBroadPhase(sourceShape, (other) => {
             this._stats.collisionChecks++;
             let result = this.resolver.testWithHandler(sourceShape, other, handlers[other.shapeId]);
             if (result) {
@@ -2459,6 +3141,27 @@ class CollisionWorld
     }
 
     /**
+     * Set the shapes batch to use for debug-drawing this collision world.
+     * @param {ShapesBatch} batch Batch to use for debug draw.
+     */
+    setDebugDrawBatch(batch)
+    {
+        this.__debugDrawBatch = batch;
+    }
+
+    /**
+     * Return the currently set debug draw batch, or create a new one if needed.
+     * @returns {ShapesBatch} Shapes batch instance used to debug-draw collision world.
+     */
+    getOrCreateDebugDrawBatch()
+    {
+        if (!this.__debugDrawBatch) {
+            this.setDebugDrawBatch(new gfx.ShapesBatch());
+        }
+        return this.__debugDrawBatch;
+    }
+
+    /**
      * Debug-draw the current collision world.
      * @param {Color} gridColor Optional grid color (default to black).
      * @param {Color} gridHighlitColor Optional grid color for cells with shapes in them (default to red).
@@ -2467,8 +3170,14 @@ class CollisionWorld
      */
     debugDraw(gridColor, gridHighlitColor, opacity, camera)
     {
+        // if we don't have a debug-draw batch, create it
+        let shapesBatch = this.getOrCreateDebugDrawBatch();
+
+        // begin drawing
+        shapesBatch.begin();
+
         // do updates before check
-        this._performUpdates();
+        this.#_performUpdates();
         
         // default grid colors
         if (!gridColor) {
@@ -2486,14 +3195,14 @@ class CollisionWorld
         }
 
         // set grid color opacity
-        gridColor.a *= opacity;
-        gridHighlitColor.a *= opacity;
+        gridColor.a *= opacity * 0.75;
+        gridHighlitColor.a *= opacity * 0.75;
 
         // all shapes we rendered
         let renderedShapes = new Set();
 
         // get visible grid cells
-        let bb = camera ? camera.getRegion() : gfx.__getRenderingRegionInternal(false);
+        let bb = camera ? camera.getRegion() : gfx._internal.getRenderingRegionInternal(false);
         let minx = Math.floor(bb.left / this._gridCellSize.x);
         let miny = Math.floor(bb.top / this._gridCellSize.y);
         let maxx = minx + Math.ceil(bb.width / this._gridCellSize.x);
@@ -2506,8 +3215,10 @@ class CollisionWorld
 
                 // draw grid cell
                 let color = (cell && cell.size) ? gridHighlitColor : gridColor;
-                let cellRect = new Rectangle(i * this._gridCellSize.x, j * this._gridCellSize.y, this._gridCellSize.x-1, this._gridCellSize.y-1);
-                gfx.outlineRect(cellRect, color, gfx.BlendModes.AlphaBlend, 0);
+                let cellRect1 = new Rectangle(i * this._gridCellSize.x, j * this._gridCellSize.y, this._gridCellSize.x, 2);
+                let cellRect2 = new Rectangle(i * this._gridCellSize.x, j * this._gridCellSize.y, 2, this._gridCellSize.y);
+                shapesBatch.drawRectangle(cellRect1, color);
+                shapesBatch.drawRectangle(cellRect2, color);
 
                 // draw shapes in grid
                 if (cell) {
@@ -2517,11 +3228,14 @@ class CollisionWorld
                             continue;
                         }
                         renderedShapes.add(shape);
-                        shape.debugDraw(opacity);
+                        shape.debugDraw(opacity, shapesBatch);
                     }
                 }
             }
         }
+
+        // finish drawing
+        shapesBatch.end();
     }
 }
 
@@ -2551,39 +3265,49 @@ function sortByDistanceShapes(sourceShape, options)
 
 // export collision world
 module.exports = CollisionWorld;
-},{"../logger.js":45,"../utils/circle":53,"../utils/color":54,"../utils/rectangle":61,"../utils/vector2":67,"./../gfx":29,"./resolver":13,"./result":15,"./shapes/circle":16,"./shapes/point":18,"./shapes/shape":20}],12:[function(require,module,exports){
+
+/***/ }),
+
+/***/ 6740:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
 /**
  * Just an alias to main manager so we can require() this folder as a package.
  * 
  * |-- copyright and license --|
- * @package    Shaku
- * @file       shaku\lib\collision\index.js
+ * @module     Shaku
+ * @file       shaku\src\collision\index.js
  * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
  * @copyright  (c) 2021 Ronen Ness
  * @license    MIT
  * |-- end copyright and license --|
  * 
  */
- 'use strict';
- module.exports = require('./collision');
-},{"./collision":10}],13:[function(require,module,exports){
+ 
+ module.exports = __webpack_require__(4843);
+
+/***/ }),
+
+/***/ 5528:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
 /**
  * Implement the collision resolver class.
  * 
  * |-- copyright and license --|
- * @package    Shaku
- * @file       shaku\lib\collision\resolver.js
+ * @module     Shaku
+ * @file       shaku\src\collision\resolver.js
  * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
  * @copyright  (c) 2021 Ronen Ness
  * @license    MIT
  * |-- end copyright and license --|
  * 
  */
-'use strict';
-const Vector2 = require('../utils/vector2.js');
-const CollisionTestResult = require('./result.js');
-const CollisionShape = require('./shapes/shape.js');
-const _logger = require('../logger.js').getLogger('collision');
+
+const Vector2 = __webpack_require__(2544);
+const CollisionTestResult = __webpack_require__(6323);
+const CollisionShape = __webpack_require__(9135);
+const _logger = (__webpack_require__(5259).getLogger)('collision');
 
  
 /**
@@ -2617,8 +3341,6 @@ class CollisionResolver
      */
     setHandler(firstShapeId, secondShapeId, handler)
     {
-        _logger.debug(`Register handler for shapes '${firstShapeId}' and '${secondShapeId}'.`);
-
         // register handler
         if (!this._handlers[firstShapeId]) { this._handlers[firstShapeId] = {}; }
         this._handlers[firstShapeId][secondShapeId] = handler;
@@ -2638,7 +3360,7 @@ class CollisionResolver
      */
     test(first, second)
     {
-        let handler = this._getCollisionMethod(first, second);
+        let handler = this.#_getCollisionMethod(first, second);
         return this.testWithHandler(first, second, handler);
     }
 
@@ -2685,7 +3407,7 @@ class CollisionResolver
      * @param {CollisionShape} second Second collision shape to test.
      * @returns {Function} collision detection method or null if not found.
      */
-    _getCollisionMethod(first, second)
+    #_getCollisionMethod(first, second)
     {
         let handlersFrom = this._handlers[first.shapeId];
         if (handlersFrom) {
@@ -2697,20 +3419,25 @@ class CollisionResolver
 
 // export the collision resolver
 module.exports = CollisionResolver;
-},{"../logger.js":45,"../utils/vector2.js":67,"./result.js":15,"./shapes/shape.js":20}],14:[function(require,module,exports){
+
+/***/ }),
+
+/***/ 1596:
+/***/ ((module) => {
+
 /**
  * All default collision detection implementations.
  * 
  * |-- copyright and license --|
- * @package    Shaku
- * @file       shaku\lib\collision\resolvers_imp.js
+ * @module     Shaku
+ * @file       shaku\src\collision\resolvers_imp.js
  * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
  * @copyright  (c) 2021 Ronen Ness
  * @license    MIT
  * |-- end copyright and license --|
  * 
  */
-'use strict';
+
 
  
 // export the main methods
@@ -2866,22 +3593,27 @@ const CollisionsImp = {
 
 // export the collisions implementation
 module.exports = CollisionsImp;
-},{}],15:[function(require,module,exports){
+
+/***/ }),
+
+/***/ 6323:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
 /**
  * An object to store collision detection result.
  * 
  * |-- copyright and license --|
- * @package    Shaku
- * @file       shaku\lib\collision\result.js
+ * @module     Shaku
+ * @file       shaku\src\collision\result.js
  * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
  * @copyright  (c) 2021 Ronen Ness
  * @license    MIT
  * |-- end copyright and license --|
  * 
  */
-'use strict';
-const Vector2 = require("../utils/vector2");
-const CollisionShape = require("./shapes/shape");
+
+const Vector2 = __webpack_require__(2544);
+const CollisionShape = __webpack_require__(9135);
 
  
 /**
@@ -2900,16 +3632,22 @@ class CollisionTestResult
         /**
          * Collision position, only relevant when there's a single touching point.
          * For shapes with multiple touching points, this will be null.
+         * @name CollisionTestResult#position
+         * @type {Vector2}
          */
         this.position = position;
 
         /**
          * First collided shape.
+         * @name CollisionTestResult#first
+         * @type {CollisionShape}
          */
         this.first = first;
 
         /**
          * Second collided shape.
+         * @name CollisionTestResult#second
+         * @type {CollisionShape}
          */
         this.second = second;
     }
@@ -2917,24 +3655,29 @@ class CollisionTestResult
 
 // export collision shape class
 module.exports = CollisionTestResult;
-},{"../utils/vector2":67,"./shapes/shape":20}],16:[function(require,module,exports){
+
+/***/ }),
+
+/***/ 9481:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
 /**
  * Implement collision circle.
  * 
  * |-- copyright and license --|
- * @package    Shaku
- * @file       shaku\lib\collision\shapes\circle.js
+ * @module     Shaku
+ * @file       shaku\src\collision\shapes\circle.js
  * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
  * @copyright  (c) 2021 Ronen Ness
  * @license    MIT
  * |-- end copyright and license --|
  * 
  */
- 'use strict';
-const CollisionShape = require("./shape");
-const gfx = require('./../../gfx');
-const Circle = require("../../utils/circle");
-const Rectangle = require("../../utils/rectangle");
+ 
+const CollisionShape = __webpack_require__(9135);
+const gfx = __webpack_require__(7565);
+const Circle = __webpack_require__(9668);
+const Rectangle = __webpack_require__(4731);
 
 
 /**
@@ -2997,43 +3740,47 @@ class CircleShape extends CollisionShape
     }
 
     /**
-     * Debug draw this shape.
-     * @param {Number} opacity Shape opacity factor.
+     * @inheritdoc
      */
-    debugDraw(opacity)
+    debugDraw(opacity, shapesBatch)
     {
-        if (opacity === undefined) opacity = 1;
+        if (opacity === undefined) { opacity = 1; }
         let color = this._getDebugColor();
-
         color.a *= opacity;
-        gfx.outlineCircle(this._circle, color, gfx.BlendModes.AlphaBlend, 14);
-
-        color.a *= 0.25;
-        gfx.fillCircle(this._circle, color, gfx.BlendModes.AlphaBlend, 14);
+        shapesBatch = this._getDebugDrawBatch(shapesBatch);
+        let needToBegin = !shapesBatch.isDrawing;
+        if (needToBegin) { shapesBatch.begin(); }
+        shapesBatch.drawCircle(this._circle, color, 14);
+        if (needToBegin) { shapesBatch.end(); }
     }
 }
 
 // export collision shape class
 module.exports = CircleShape;
-},{"../../utils/circle":53,"../../utils/rectangle":61,"./../../gfx":29,"./shape":20}],17:[function(require,module,exports){
+
+/***/ }),
+
+/***/ 6527:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
 /**
  * Implement collision lines.
  * 
  * |-- copyright and license --|
- * @package    Shaku
- * @file       shaku\lib\collision\shapes\lines.js
+ * @module     Shaku
+ * @file       shaku\src\collision\shapes\lines.js
  * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
  * @copyright  (c) 2021 Ronen Ness
  * @license    MIT
  * |-- end copyright and license --|
  * 
  */
- 'use strict';
-const CollisionShape = require("./shape");
-const gfx = require('./../../gfx');
-const Line = require("../../utils/line");
-const Rectangle = require("../../utils/rectangle");
-const Circle = require("../../utils/circle");
+ 
+const CollisionShape = __webpack_require__(9135);
+const gfx = __webpack_require__(7565);
+const Line = __webpack_require__(1708);
+const Rectangle = __webpack_require__(4731);
+const Circle = __webpack_require__(9668);
 
 
 /**
@@ -3126,42 +3873,50 @@ class LinesShape extends CollisionShape
     }
 
     /**
-     * Debug draw this shape.
-     * @param {Number} opacity Shape opacity factor.
+     * @inheritdoc
      */
-    debugDraw(opacity)
+    debugDraw(opacity, shapesBatch)
     {
-        if (opacity === undefined) opacity = 1;
+        if (opacity === undefined) { opacity = 1; }
         let color = this._getDebugColor();
-
         color.a *= opacity;
+        
+        shapesBatch = this._getDebugDrawBatch(shapesBatch);
+        let needToBegin = !shapesBatch.isDrawing;
+        if (needToBegin) { shapesBatch.begin(); }    
         for (let i = 0; i < this._lines.length; ++i) {
-            gfx.drawLine(this._lines[i].from, this._lines[i].to, color, gfx.BlendModes.AlphaBlend);
+            shapesBatch.drawLine(this._lines[i].from, this._lines[i].to, color);
         }
+        if (needToBegin) { shapesBatch.end(); }
     }
 }
 
 // export collision lines class
 module.exports = LinesShape;
-},{"../../utils/circle":53,"../../utils/line":57,"../../utils/rectangle":61,"./../../gfx":29,"./shape":20}],18:[function(require,module,exports){
+
+/***/ }),
+
+/***/ 1282:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
 /**
  * Implement collision point.
  * 
  * |-- copyright and license --|
- * @package    Shaku
- * @file       shaku\lib\collision\shapes\point.js
+ * @module     Shaku
+ * @file       shaku\src\collision\shapes\point.js
  * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
  * @copyright  (c) 2021 Ronen Ness
  * @license    MIT
  * |-- end copyright and license --|
  * 
  */
- 'use strict';
-const CollisionShape = require("./shape");
-const gfx = require('./../../gfx');
-const Vector2 = require("../../utils/vector2");
-const Rectangle = require("../../utils/rectangle");
-const Circle = require("../../utils/circle");
+ 
+const CollisionShape = __webpack_require__(9135);
+const gfx = __webpack_require__(7565);
+const Vector2 = __webpack_require__(2544);
+const Rectangle = __webpack_require__(4731);
+const Circle = __webpack_require__(9668);
 
 
 /**
@@ -3235,34 +3990,43 @@ class PointShape extends CollisionShape
      * Debug draw this shape.
      * @param {Number} opacity Shape opacity factor.
      */
-    debugDraw(opacity)
+    debugDraw(opacity, shapesBatch)
     {
-        if (opacity === undefined) opacity = 1;
+        if (opacity === undefined) { opacity = 1; }
         let color = this._getDebugColor();
         color.a *= opacity;
-        gfx.outlineCircle(new Circle(this.getPosition(), 3), color, gfx.BlendModes.AlphaBlend, 4);
+        shapesBatch = this._getDebugDrawBatch(shapesBatch);
+        let needToBegin = !shapesBatch.isDrawing;
+        if (needToBegin) { shapesBatch.begin(); }
+        shapesBatch.drawCircle(new Circle(this.getPosition(), 3), color, 4);
+        if (needToBegin) { shapesBatch.end(); }
     }
 }
 
 // export collision shape class
 module.exports = PointShape;
-},{"../../utils/circle":53,"../../utils/rectangle":61,"../../utils/vector2":67,"./../../gfx":29,"./shape":20}],19:[function(require,module,exports){
+
+/***/ }),
+
+/***/ 4153:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
 /**
  * Implement collision rectangle.
  * 
  * |-- copyright and license --|
- * @package    Shaku
- * @file       shaku\lib\collision\shapes\rectangle.js
+ * @module     Shaku
+ * @file       shaku\src\collision\shapes\rectangle.js
  * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
  * @copyright  (c) 2021 Ronen Ness
  * @license    MIT
  * |-- end copyright and license --|
  * 
  */
- 'use strict';
-const Rectangle = require("../../utils/rectangle");
-const CollisionShape = require("./shape");
-const gfx = require('./../../gfx');
+ 
+const Rectangle = __webpack_require__(4731);
+const CollisionShape = __webpack_require__(9135);
+const gfx = __webpack_require__(7565);
 
 
 /**
@@ -3325,42 +4089,47 @@ class RectangleShape extends CollisionShape
     }
     
     /**
-     * Debug draw this shape.
-     * @param {Number} opacity Shape opacity factor.
+     * @inheritdoc
      */
-    debugDraw(opacity)
+    debugDraw(opacity, shapesBatch)
     {
-        if (opacity === undefined) opacity = 1;
+        if (opacity === undefined) { opacity = 1; }
         let color = this._getDebugColor();
-
         color.a *= opacity;
-        gfx.outlineRect(this._rect, color, gfx.BlendModes.AlphaBlend);
-                
-        color.a *= 0.25;
-        gfx.fillRect(this._rect, color, gfx.BlendModes.AlphaBlend);
+        shapesBatch = this._getDebugDrawBatch(shapesBatch);
+        let needToBegin = !shapesBatch.isDrawing;
+        if (needToBegin) { shapesBatch.begin(); }
+        shapesBatch.drawRectangle(this._rect, color);
+        if (needToBegin) { shapesBatch.end(); }
     }
 }
 
 // export collision shape class
 module.exports = RectangleShape;
-},{"../../utils/rectangle":61,"./../../gfx":29,"./shape":20}],20:[function(require,module,exports){
+
+/***/ }),
+
+/***/ 9135:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
 /**
  * Implement collision shape base class.
  * 
  * |-- copyright and license --|
- * @package    Shaku
- * @file       shaku\lib\collision\shapes\shape.js
+ * @module     Shaku
+ * @file       shaku\src\collision\shapes\shape.js
  * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
  * @copyright  (c) 2021 Ronen Ness
  * @license    MIT
  * |-- end copyright and license --|
  * 
  */
-'use strict';
-const Color = require("../../utils/color");
-const Rectangle = require("../../utils/rectangle");
-const Vector2 = require("../../utils/vector2");
-const CollisionWorld = require("../collision_world");
+
+const ShapesBatch = __webpack_require__(1772);
+const Color = __webpack_require__(9327);
+const Rectangle = __webpack_require__(4731);
+const Vector2 = __webpack_require__(2544);
+const CollisionWorld = __webpack_require__(2433);
 
  
 /**
@@ -3408,6 +4177,19 @@ class CollisionShape
     }
 
     /**
+     * Get Shapes beatch to draw this shape with, either given or default from world.
+     * If not provided and have no world, will throw exception.
+     * @private
+     */
+    _getDebugDrawBatch(shapesBatch)
+    {
+        if (!shapesBatch && !this._world) {
+            throw new Error("Can't debug-draw a collision shape that is not under any collision world without providing a shapes batch to use!");
+        }
+        return (shapesBatch || this._world.getOrCreateDebugDrawBatch())
+    }
+
+    /**
      * Set the debug color to use to draw this shape.
      * @param {Color} color Color to set or null to use default.
      */
@@ -3419,8 +4201,9 @@ class CollisionShape
     /**
      * Debug draw this shape.
      * @param {Number} opacity Shape opacity factor.
+     * @param {ShapesBatch} shapesBatch Optional shapes batch to use to debug draw the shape. By default will use the collision world.
      */
-    debugDraw(opacity)
+    debugDraw(opacity, shapesBatch)
     {
         throw new Error("Not Implemented!");
     }
@@ -3532,25 +4315,30 @@ const defaultDebugColors = [Color.red, Color.blue, Color.green, Color.yellow, Co
 
 // export collision shape class
 module.exports = CollisionShape;
-},{"../../utils/color":54,"../../utils/rectangle":61,"../../utils/vector2":67,"../collision_world":11}],21:[function(require,module,exports){
+
+/***/ }),
+
+/***/ 6601:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
 /**
  * Implement collision tilemap.
  * 
  * |-- copyright and license --|
- * @package    Shaku
- * @file       shaku\lib\collision\shapes\tilemap.js
+ * @module     Shaku
+ * @file       shaku\src\collision\shapes\tilemap.js
  * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
  * @copyright  (c) 2021 Ronen Ness
  * @license    MIT
  * |-- end copyright and license --|
  * 
  */
-'use strict';
-const CollisionShape = require("./shape");
-const Rectangle = require("../../utils/rectangle");
-const Vector2 = require("../../utils/vector2");
-const gfx = require('./../../gfx');
-const RectangleShape = require("./rectangle");
+
+const CollisionShape = __webpack_require__(9135);
+const Rectangle = __webpack_require__(4731);
+const Vector2 = __webpack_require__(2544);
+const gfx = __webpack_require__(7565);
+const RectangleShape = __webpack_require__(4153);
 
 
 /**
@@ -3703,46 +4491,40 @@ class TilemapShape extends CollisionShape
     }
     
     /**
-     * Debug draw this shape.
-     * @param {Number} opacity Shape opacity factor.
+     * @inheritdoc
      */
-    debugDraw(opacity)
+    debugDraw(opacity, shapesBatch)
     {
-        if (opacity === undefined) opacity = 1;
-        let color = this._getDebugColor();
-        color.a *= opacity;
-
-        // draw borders
-        if (this._haveBorders) {
-            gfx.outlineRect(this._intBoundingRect, color, gfx.BlendModes.AlphaBlend);
-            gfx.outlineRect(this._boundingRect, color, gfx.BlendModes.AlphaBlend);
-        }
-
-        // draw tiles
+        if (opacity === undefined) { opacity = 1; }
         for (let key in this._tiles) {
             let tile = this._tiles[key];
             tile.setDebugColor(this._forceDebugColor);
-            tile.debugDraw(opacity);
+            tile.debugDraw(opacity, shapesBatch);
         }
     }
 }
 
 // export collision shape class
 module.exports = TilemapShape;
-},{"../../utils/rectangle":61,"../../utils/vector2":67,"./../../gfx":29,"./rectangle":19,"./shape":20}],22:[function(require,module,exports){
+
+/***/ }),
+
+/***/ 3223:
+/***/ ((module) => {
+
 /**
  * Define supported blend modes.
  * 
  * |-- copyright and license --|
- * @package    Shaku
- * @file       shaku\lib\gfx\blend_modes.js
+ * @module     Shaku
+ * @file       shaku\src\gfx\blend_modes.js
  * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
  * @copyright  (c) 2021 Ronen Ness
  * @license    MIT
  * |-- end copyright and license --|
  * 
  */
-'use strict';
+
 
 /** @typedef {String} BlendMode */
 
@@ -3772,24 +4554,29 @@ Object.defineProperty(BlendModes, '_values', {
 Object.freeze(BlendModes);
 
 module.exports = {BlendModes: BlendModes};
-},{}],23:[function(require,module,exports){
+
+/***/ }),
+
+/***/ 2726:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
 /**
  * Camera class.
  * 
  * |-- copyright and license --|
- * @package    Shaku
- * @file       shaku\lib\gfx\camera.js
+ * @module     Shaku
+ * @file       shaku\src\gfx\camera.js
  * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
  * @copyright  (c) 2021 Ronen Ness
  * @license    MIT
  * |-- end copyright and license --|
  * 
  */
- 'use strict';
+ 
 
-const Rectangle = require("../utils/rectangle");
-const Vector2 = require("../utils/vector2");
-const Matrix = require("./matrix");
+const Rectangle = __webpack_require__(4731);
+const Vector2 = __webpack_require__(2544);
+const Matrix = __webpack_require__(5599);
 
  /**
   * Implements a Camera object.
@@ -3865,7 +4652,7 @@ class Camera
     orthographic(region, near, far) 
     {
         if (region === undefined) {
-            region = this._gfx.__getRenderingRegionInternal();
+            region = this._gfx._internal.getRenderingRegionInternal();
         }
         this._region = region;
         this.projection = Matrix.orthographic(region.left, region.right, region.bottom, region.top, near || -1, far || 400);
@@ -3886,123 +4673,2676 @@ class Camera
 
 // export the camera object
 module.exports = Camera;
-},{"../utils/rectangle":61,"../utils/vector2":67,"./matrix":30}],24:[function(require,module,exports){
+
+/***/ }),
+
+/***/ 8117:
+/***/ ((module) => {
+
 /**
- * Implement a basic effect to draw sprites.
+ * Define supported usage modes.
  * 
  * |-- copyright and license --|
- * @package    Shaku
- * @file       shaku\lib\gfx\effects\basic.js
+ * @module     Shaku
+ * @file       shaku\src\gfx\draw_batches\buffers_usage.js
  * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
  * @copyright  (c) 2021 Ronen Ness
  * @license    MIT
  * |-- end copyright and license --|
  * 
  */
-'use strict';
-const Effect = require("./effect");
 
-// vertex shader code
-const vertexShader = `
-attribute vec3 position;
-attribute vec2 coord;
-attribute vec4 color;
 
-uniform mat4 projection;
-uniform mat4 world;
-
-varying vec2 v_texCoord;
-varying vec4 v_color;
-
-void main(void) {
-    gl_Position = projection * world * vec4(position, 1.0);
-    gl_PointSize = 1.0;
-    v_texCoord = coord;
-    v_color = color;
-}
-    `;
-
-// fragment shader code
-const fragmentShader = `  
-#ifdef GL_ES
-    precision highp float;
-#endif
-
-uniform sampler2D texture;
-
-varying vec2 v_texCoord;
-varying vec4 v_color;
-
-void main(void) {
-    gl_FragColor = texture2D(texture, v_texCoord) * v_color;
-    gl_FragColor.rgb *= gl_FragColor.a;
-}
-    `;
+/** @typedef {String} BuffersUsage */
 
 /**
- * Default basic effect to draw 2d sprites.
+ * Buffers usage we can use for drawing batches.
+ * This determine how WebGL will treat the buffers we pass to the GPU.
+ * @readonly
+ * @enum {BuffersUsage}
  */
-class BasicEffect extends Effect
+const BuffersUsage = {
+    StaticDraw: 'static',
+    DynamicDraw: 'dynamic',
+    StreamDraw: 'stream',
+};
+
+Object.defineProperty(BuffersUsage, '_values', {
+    value: new Set(Object.values(BuffersUsage)),
+    writable: false,
+});
+Object.freeze(BuffersUsage);
+
+module.exports = {BuffersUsage: BuffersUsage};
+
+/***/ }),
+
+/***/ 2069:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+/**
+ * An interface for a batch renderer.
+ * 
+ * |-- copyright and license --|
+ * @module     Shaku
+ * @file       shaku\src\gfx\draw_batches\draw_batch.js
+ * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
+ * @copyright  (c) 2021 Ronen Ness
+ * @license    MIT
+ * |-- end copyright and license --|
+ * 
+ */
+
+const { BlendModes } = __webpack_require__(3223);
+const { BuffersUsage } = __webpack_require__(8117);
+const Matrix = __webpack_require__(5599);
+const _logger = (__webpack_require__(5259).getLogger)('gfx-draw-batch');
+
+/**
+ * Base class for a drawing batch, used to draw a collection of sprites or shapes.
+ */
+class DrawBatch
 {
-    /** @inheritdoc */
-    get vertexCode() 
-    { 
-        return vertexShader; 
-    }
-
-    /** @inheritdoc */
-    get fragmentCode()
-    { 
-        return fragmentShader;
-    }
-
-    /** @inheritdoc */
-    get uniformTypes()
+    /**
+     * Create the draw batch.
+     */
+    constructor()
     {
-        return {
-            "texture": { type: Effect.UniformTypes.Texture, bind: Effect.UniformBinds.MainTexture },
-            "projection": { type: Effect.UniformTypes.Matrix, bind: Effect.UniformBinds.Projection },
-            "world": { type: Effect.UniformTypes.Matrix, bind: Effect.UniformBinds.World },
-            "view": { type: Effect.UniformTypes.Matrix, bind: Effect.UniformBinds.View },
-        };
+        // set default usage mode
+        this.setBuffersUsage(BuffersUsage.StreamDraw);
+
+        // will have values after calling 'begin()'
+        this.__currDrawingParams = null;
+
+        // if true, it means the buffers have been frozen and can't be changed
+        this.__staticBuffers = false;
+
+        // are we currently between 'begin()' and 'end()' calls
+        this.__drawing = false;
     }
 
-    /** @inheritdoc */
-    get attributeTypes()
+    /**
+     * Make the batch buffers static.
+     * This means you won't be able to change the drawings in this batch once end() is called, but you'll be able to redraw
+     * the batch with different effects and transformations without copying any data, and much faster.
+     * This also free up some internal arrays, thus reducing the memory used for this batch.
+     * Note: must be called after 'begin()' and right before the 'end()' call.
+     */
+    makeStatic()
     {
-        return {
-            "position": { size: 3, type: Effect.AttributeTypes.Float, normalize: false, bind: Effect.AttributeBinds.Position },
-            "coord": { size: 2, type: Effect.AttributeTypes.Float, normalize: false, bind: Effect.AttributeBinds.TextureCoords },
-            "color": { size: 4, type: Effect.AttributeTypes.Float, normalize: false, bind: Effect.AttributeBinds.Colors },
+        this.__validateBatch();
+        if (!this.isDrawing) { throw new Error("Must call 'makeStatic()' between 'begin()' and 'end()'."); }
+        this.setBuffersUsage(this.BuffersUsage.StaticDraw);
+        this.__staticBuffers = true;
+    }
+
+    /**
+     * Get the default effect to use for this drawing batch type.
+     * @returns {Effect} Default effect to use for this drawing batch.
+     */
+    get defaultEffect()
+    {
+        return null;
+    }
+
+    /**
+     * Get the BuffersUsage enum.
+     * @see BuffersUsage
+     */
+    get BuffersUsage()
+    {
+        return BuffersUsage;
+    }    
+
+    /**
+     * Destroy the batch and free any resources assigned to it.
+     */
+    destroy()
+    {
+    }
+
+    /**
+     * Return if the batch was destroyed.
+     * @returns {Boolean} True if batch was destoryed.
+     */
+    get isDestroyed()
+    {
+        return false;
+    }
+
+    /**
+     * Throw exception if batch was destoryed.
+     * @private
+     */
+    __validateBatch()
+    {
+        if (this.isDestroyed) {
+            throw new Error("Can't perform this action after the batch was destroyed!");
+        }
+    }
+
+    /**
+     * Set the way we mark the buffers we pass to the GPU based on expected behavior.
+     * Use StreamDraw if you want to set buffers once, and use them in GPU few times.
+     * Use DynamicDraw if you want to set buffers many times, and use them in GPU many times.
+     * Use StaticDraw if you want to set buffers once, and use them in GPU many times.
+     * @param {BuffersUsage} usage Buffers usage.
+     */
+    setBuffersUsage(usage)
+    {
+        switch (usage)
+        {
+            case BuffersUsage.DynamicDraw:
+                this.__buffersUsage = DrawBatch._gfx._internal.gl.DYNAMIC_DRAW;
+                break;
+
+            case BuffersUsage.StreamDraw:
+                this.__buffersUsage = DrawBatch._gfx._internal.gl.STREAM_DRAW;
+                break;
+
+            case BuffersUsage.StaticDraw:
+                this.__buffersUsage = DrawBatch._gfx._internal.gl.STATIC_DRAW;
+                break;
+
+            default:
+                this.__buffersUsage = DrawBatch._gfx._internal.gl.DYNAMIC_DRAW;
+                _logger.warn("Illegal buffers usage value: " + usage);
+                break;
+        }
+        
+    }
+
+    /**
+     * Return if the batch is currently drawing.
+     * @returns {Boolean} If the batch began drawing.
+     */
+    get isDrawing()
+    {
+        return this.__drawing;
+    }
+
+    /**
+     * Throw exception if batch is not currently drawing.
+     * @private
+     */
+    __validateDrawing(validateNotStatic)
+    {
+        if (!this.isDrawing) {
+            throw new Error("Can't perform this action without calling 'begin()' first!");
+        }
+        if (validateNotStatic && this.__staticBuffers) {
+            throw new Error("Can't perform this action after batch has turned static!");
+        }
+    }
+
+    /**
+     * Start drawing this batch.
+     * You must call this before doing any draw calls.
+     * @param {BlendModes=} blendMode Blend mode to draw this batch in.
+     * @param {Effect=} effect Effect to use. If not defined will use this batch type default effect.
+     * @param {Matrix=} transform Optional transformations to apply on all sprites.
+     * @param {*=} overrideEffectFlags Optional flags to override effect's defaults. Possible keys: {enableDepthTest, enableFaceCulling, enableStencilTest, enableDithering}.
+     */
+    begin(blendMode, effect, transform, overrideEffectFlags)
+    {
+        // sanity - not already drawing
+        if (this.isDrawing) {
+            throw new Error("Can't call Drawing Batch 'begin' twice without calling 'end()' first!");
+        }
+
+        // sanity - batch is not destoryed
+        this.__validateBatch();
+
+        // we might still have values in this.__currDrawingParams if 'preserve buffers' is true.
+        // if so, we extract last texture from it
+        let lastTexture = this.__currDrawingParams ? (this.__currDrawingParams.texture || null) : null;
+
+        // set new drawing params
+        effect = effect || this.defaultEffect;
+        blendMode = blendMode || this.defaultBlendMode;
+        this.__currDrawingParams = {
+            blendMode: blendMode,
+            effect: effect,
+            transform: transform || Matrix.identity,
+            overrideEffectFlags: overrideEffectFlags,
+            hasVertexColor: effect.hasVertexColor,
+            texture: lastTexture
         };
+
+        // we are now drawing
+        this.__drawing = true;
+    }
+
+    /**
+     * Finish drawing without presenting on screen.
+     */
+    endWithoutDraw()
+    {
+        // sanity
+        this.__validateBatch();
+        this.__validateDrawing(false);
+
+        // clear buffers and drawing params
+        if (!this.__staticBuffers) {
+            this.clear();
+            this.__currDrawingParams = null;
+        }
+
+        // no longer drawing
+        this.__drawing = false;
+    }
+
+    /**
+     * End drawing and present whatever left in buffers on screen.
+     */
+    end()
+    {
+        // sanity
+        this.__validateBatch();
+        this.__validateDrawing(false);
+
+        // draw current batch data
+        this._drawBatch();
+
+        // clear buffers and drawing params
+        if (!this.__staticBuffers) {
+            this.clear();
+            this.__currDrawingParams = null;
+        }
+
+        // no longer drawing
+        this.__drawing = false;
+    }
+
+    /**
+     * Draw whatever is currently in buffers without ending the draw batch.
+     */
+    present()
+    {
+        this._drawBatch();
+    }
+
+    /**
+     * Clear this buffer from any drawings in it.
+     * Called internally if 'preserveBuffers' is not true.
+     */
+    clear()
+    {
+        if (this.__staticBuffers) {
+            throw new Error("Can't clear batch after it was turned static. You can only destroy it.");
+        }
+    }
+
+    /**
+     * Return if this batch was turned static.
+     * @returns {Boolean} True if its a static batch you can no longer change.
+     */
+    get isStatic()
+    {
+        return this.__staticBuffers;
+    }
+
+    /**
+     * Get the default blend mode to use for this drawing batch.
+     */
+    get defaultBlendMode()
+    {
+        return BlendModes.AlphaBlend;
+    }
+
+    /**
+     * Draw current batch with set drawing params.
+     * @private
+     */
+    _drawBatch()
+    {
+        // sanity
+        this.__validateBatch();
+        this.__validateDrawing(false);
+
+        // get default effect
+        let effect = this.__currDrawingParams.effect;
+
+        // get the gfx manager
+        let gfx = DrawBatch._gfx;
+
+        // set effect
+        gfx._internal.useEffect(effect, this.__currDrawingParams.overrideEffectFlags);
+
+        // set blend mode if needed
+        gfx._internal.setBlendMode(this.__currDrawingParams.blendMode);
+
+        // set world matrix
+        effect.setWorldMatrix(this.__currDrawingParams.transform);
+        
+        // set active texture
+        gfx._internal.setActiveTexture(this.__currDrawingParams.texture);
+
+        // trigger on set effect
+        this._onSetEffect(effect, this.__currDrawingParams.texture);
+    }
+
+    /**
+     * Called internally after we set the effect and texture and before we start rendering batch.
+     * @private
+     */
+    _onSetEffect(effect, texture)
+    {
+    }
+}
+
+// will be set by the Gfx manager during init
+DrawBatch._gfx = null;
+
+// export the draw batch class
+module.exports = DrawBatch;
+
+/***/ }),
+
+/***/ 8333:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+/**
+ * Implement the gfx lines batch renderer.
+ * 
+ * |-- copyright and license --|
+ * @module     Shaku
+ * @file       shaku\src\gfx\draw_batches\lines_batch.js
+ * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
+ * @copyright  (c) 2021 Ronen Ness
+ * @license    MIT
+ * |-- end copyright and license --|
+ * 
+ */
+
+const { Rectangle } = __webpack_require__(3624);
+const Vector2 = __webpack_require__(2544);
+const Vector3 = __webpack_require__(8329);
+const Matrix = __webpack_require__(5599);
+const Vertex = __webpack_require__(4288);
+const DrawBatch = __webpack_require__(2069);
+const _logger = (__webpack_require__(5259).getLogger)('gfx-sprite-batch');
+
+
+/**
+ * Colored lines renderer. 
+ * Responsible to drawing a batch of line segments or strips.
+ */
+class LinesBatch extends DrawBatch
+{
+    /**
+     * Create the sprites batch.
+     * @param {Number=} lineSegmentsCount Internal buffers size, in line segments count (line segment = 3 vertices). Bigger value = faster rendering but more RAM.
+     */
+    constructor(lineSegmentsCount)
+    {
+        // init draw batch
+        super();
+
+        // create buffers for drawing shapes
+        this.#_createBuffers(lineSegmentsCount || 500);
+
+        /**
+         * How many line segments this batch can hold.
+         * @private
+         */
+        this.__maxLinesCount = Math.floor((this._buffers.positionArray.length / 6));
+
+        /**
+         * How many line segments we currently have.
+         * @private
+         */
+        this.__linesCount = 0;
+
+        /**
+         * Indicate there were changes in buffers.
+         * @private
+         */
+        this.__dirty = false;
+        
+        /**
+         * Optional method to trigger when shapes batch overflows and can't contain any more polygons.
+         * @type {Function}
+         * @name ShapesBatch#onOverflow
+         */
+        this.onOverflow = null;
+        
+        /** 
+         * If true, will floor vertices positions before pushing them to batch.
+         * @type {Boolean}
+         * @name ShapesBatch#snapPixels
+         */
+        this.snapPixels = false;    
+
+        /**
+         * If true, will draw lines as a single lines strip.
+         * @type {Boolean}
+         * @name ShapesBatch#linesStrip
+         */
+        this.linesStrip = false;
+    }
+
+    /**
+     * Get the gfx manager.
+     * @private
+     */
+    get #_gfx()
+    {
+        return DrawBatch._gfx;
+    }
+
+    /**
+     * Get the web gl instance.
+     * @private
+     */
+    get #_gl()
+    {
+        return DrawBatch._gfx._internal.gl;
+    }
+
+    /**
+     * Build the dynamic buffers.
+     * @private
+     */
+    #_createBuffers(batchPolygonsCount)
+    {
+        let gl = this.#_gl;
+
+        // dynamic buffers, used for batch rendering
+        this._buffers = {
+            
+            positionBuffer: gl.createBuffer(),
+            positionArray: new Float32Array(3 * 2 * batchPolygonsCount),
+
+            colorsBuffer: gl.createBuffer(),
+            colorsArray: new Float32Array(4 * 2 * batchPolygonsCount),
+
+            indexBuffer: gl.createBuffer(),
+        }
+
+        // create the indices buffer
+        let maxIndex = (batchPolygonsCount * 3);
+        let indicesArrayType;
+        if (maxIndex <= 256) {
+            indicesArrayType = Uint8Array;
+            this.__indicesType = gl.UNSIGNED_BYTE;
+        }
+        if (maxIndex <= 65535) {
+            indicesArrayType = Uint16Array;
+            this.__indicesType = gl.UNSIGNED_SHORT;
+        }
+        else {
+            indicesArrayType = Uint32Array;
+            this.__indicesType = gl.UNSIGNED_INT;
+        }
+        let indices = new indicesArrayType(batchPolygonsCount * 3); // 3 = number of indices per sprite
+        for (let i = 0; i < indices.length; i++) {
+            
+            indices[i] = i;
+        }
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this._buffers.indexBuffer);
+        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STATIC_DRAW);
+
+        // extand buffers functionality
+        function extendBuffer(buff) {
+            if (buff) { buff._index = 0; }
+        }
+        extendBuffer(this._buffers.positionArray);
+        extendBuffer(this._buffers.colorsArray);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    clear()
+    {
+        super.clear();
+        this._buffers.positionArray._index = 0;
+        this._buffers.colorsArray._index = 0;
+        this.__linesCount = 0;
+        this.__dirty = false;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    destroy()
+    {
+        let gl = this.#_gl;
+        if (this._buffers) {
+            if (this._buffers.positionBuffer) gl.deleteBuffer(this._buffers.positionBuffer);
+            if (this._buffers.colorsBuffer) gl.deleteBuffer(this._buffers.colorsBuffer);
+        }
+        this._buffers = null;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    get isDestroyed()
+    {
+        return Boolean(this._buffers) === false;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    get defaultEffect()
+    {
+        return this.#_gfx.builtinEffects.Shapes;
+    }
+
+    /**
+     * Push vertices to drawing batch.
+     * @param {Array<Vertex>} vertices Vertices to push. Vertices count must be dividable by 3 to keep the batch consistent of polygons.
+     */
+    drawVertices(vertices)
+    {
+        // sanity
+        this.__validateDrawing(true);
+
+        // sanity check
+        if (!this.linesStrip && ((vertices.length % 2) !== 0)) {
+            _logger.warn("Tried to push vertices that are not multiplication of 2!");
+            return;
+        }
+
+        // push vertices
+        let i = 0;
+        let colors = this._buffers.colorsArray;
+        let positions = this._buffers.positionArray;
+        for (let vertex of vertices)
+        {
+            // push color
+            if (this.__currDrawingParams.hasVertexColor) {
+                colors[colors._index++] = (vertex.color.r || 0);
+                colors[colors._index++] = (vertex.color.g || 0);
+                colors[colors._index++] = (vertex.color.b || 0);
+                colors[colors._index++] = (vertex.color.a || 0);
+            }
+
+            // push position
+            positions[positions._index++] = (vertex.position.x || 0);
+            positions[positions._index++] = (vertex.position.y || 0);
+            positions[positions._index++] = (vertex.position.z || 0);
+
+            // every 2 vertices..
+            if ((i++ === 1) || this.linesStrip)
+            {
+                // update quads count
+                this.__linesCount++;
+
+                // check if full
+                if (this.__linesCount >= this.__maxLinesCount) {
+                    this._handleFullBuffer();
+                }
+
+                // reset count
+                i = 0;
+            }
+        }
+
+        // mark as dirty
+        this.__dirty = true;
+    }
+
+    /**
+     * Add a rectangle to draw.
+     * @param {Vector2|Vector3} position Drawing position (at origin). If vector3 is provided, will pass z value to the shader code position attribute.
+     * @param {Vector2|Vector3|Number} size Drawing size. If vector3 is provided, will pass z value to the shader code position attribute for the bottom vertices, as position.z + size.z.
+     * @param {Color|Array<Color>|undefined=} color Rectangle color, or undefined to not change color. If array is set, will assign each color to different vertex, starting from top-left.
+     * @param {Number=} rotation Rotate rectangle.
+     * @param {Vector2=} origin Drawing origin. This will be the point at 'position' and rotation origin.
+     * @param {Vector2=} skew Skew the drawing corners on X and Y axis, around the origin point.
+     */
+    drawQuad(position, size, color, rotation, origin, skew)
+    {
+        let sprite = this.#_gfx.Sprite.build(null, position, size, undefined, color, rotation, origin, skew);
+        this.#_addRect(sprite);
+    }
+
+    /**
+     * Add a rectangle that covers a given destination rectangle.
+     * @param {Rectangle|Vector2} destRect Destination rectangle to draw on. If vector is provided, will draw from 0,0 with vector as size.
+     * @param {Rectangle=} sourceRect Source rectangle, or undefined to use the entire texture.
+     * @param {Color|Array<Color>|undefined=} color Rectangle color, or undefined to not change color. If array is set, will assign each color to different vertex, starting from top-left.
+     * @param {Number=} rotation Rotate rectangle.
+     * @param {Vector2=} origin Drawing origin. This will be the point at 'position' and rotation origin.
+     */
+    drawRectangle(destRect, sourceRect, color, rotation, origin)
+    {
+        if ((destRect instanceof Vector2) || (destRect instanceof Vector3)) {
+            destRect = new Rectangle(0, 0, destRect.x, destRect.y);
+        }
+        this.drawQuad(destRect.getCenter(), destRect.getSize(), sourceRect, color, rotation, origin);
+    }
+
+    /**
+     * Draw a colored circle.
+     * @param {Circle} circle Circle to draw.
+     * @param {Color} color Circle fill color.
+     * @param {Number=} segmentsCount How many segments to build the circle from (more segments = smoother circle).
+     * @param {Number|Vector2=} ratio If procided, will scale the circle on X and Y axis to turn it into an oval. If a number is provided, will use this number to scale Y axis.
+     * @param {Number=} rotation If provided will rotate the oval / circle.
+     */
+    drawCircle(circle, color, segmentsCount, ratio, rotation)
+    {
+        // sanity
+        this.__validateDrawing(true);
+
+        // defaults segments count
+        if (segmentsCount === undefined) { 
+            segmentsCount = 24; 
+        }
+        else if (segmentsCount < 2) {
+            return;
+        }
+
+        // default ratio
+        if (!ratio) {
+            ratio = Vector2.oneReadonly;
+        }
+        else if (typeof ratio === 'number') {
+            ratio = new Vector2(1, ratio);
+        }
+
+        // for rotation
+        let rotateVec;
+        if (rotation) {
+            let cos = Math.cos(rotation);
+            let sin = Math.sin(rotation);
+            rotateVec = function(vector)
+            {
+                let x = (vector.x * cos - vector.y * sin);
+                let y = (vector.x * sin + vector.y * cos);
+                vector.x = x;
+                vector.y = y;
+                return vector;
+            }
+        }
+
+        // build first position that is not center
+        const segmentStep = (2 * Math.PI)  / segmentsCount;
+        let prevPoint = new Vector2(
+            (circle.radius * Math.cos(0)) * ratio.x, 
+            (circle.radius * Math.sin(0)) * ratio.y
+        );
+        if (rotateVec) { rotateVec(prevPoint); }
+
+        // generate list of vertices to draw the circle
+        for (let i = 1; i <= segmentsCount; i++) 
+        {
+            // calculate new point
+            let newPoint = new Vector2(
+                (circle.radius * Math.cos(i * segmentStep)) * ratio.x, 
+                (circle.radius * Math.sin(i * segmentStep)) * ratio.y
+            );
+            if (rotateVec) { rotateVec(newPoint); }
+
+            // add for line strip
+            if (this.linesStrip) {
+                if (i === 1) {
+                    this.drawVertices([
+                        new Vertex(prevPoint.add(circle.center), null, color)
+                    ]);
+                }
+                this.drawVertices([
+                    new Vertex(newPoint.add(circle.center), null, color)
+                ]);
+            }
+            // add for line segments
+            else {
+                this.drawVertices([
+                    new Vertex(prevPoint.add(circle.center), null, color),
+                    new Vertex(newPoint.add(circle.center), null, color),
+                ]);
+            }
+            prevPoint = newPoint;
+        }
+    }
+
+    /**
+     * Add a rectangle from sprite data.
+     * @private
+     */
+    #_addRect(sprite, transform)
+    {
+        // sanity
+        this.__validateDrawing(true);
+
+        // mark as dirty
+        this.__dirty = true;
+
+        // add rectangle from sprite data
+        {
+            // calculate vertices positions
+            let sizeX = sprite.size.x;
+            let sizeY = sprite.size.y;
+            let left = -sizeX * sprite.origin.x;
+            let top = -sizeY * sprite.origin.y;
+
+            // calculate corners
+            topLeft.x = left;               topLeft.y = top;
+            topRight.x = left + sizeX;      topRight.y = top;
+            bottomLeft.x = left;            bottomLeft.y = top + sizeY;
+            bottomRight.x = left + sizeX;   bottomRight.y = top + sizeY;
+
+            // are vertices axis aligned?
+            let axisAlined = true;
+
+            // apply skew
+            if (sprite.skew) 
+            {
+                // skew on x axis
+                if (sprite.skew.x) {
+                    topLeft.x += sprite.skew.x * sprite.origin.y;
+                    topRight.x += sprite.skew.x * sprite.origin.y;
+                    bottomLeft.x -= sprite.skew.x * (1 - sprite.origin.y);
+                    bottomRight.x -= sprite.skew.x * (1 - sprite.origin.y);
+                    axisAlined = false;
+                }
+                // skew on y axis
+                if (sprite.skew.y) {
+                    topLeft.y += sprite.skew.y * sprite.origin.x;
+                    bottomLeft.y += sprite.skew.y * sprite.origin.x;
+                    topRight.y -= sprite.skew.y * (1 - sprite.origin.x);
+                    bottomRight.y -= sprite.skew.y * (1 - sprite.origin.x);
+                    axisAlined = false;
+                }
+            }
+
+            // apply rotation
+            if (sprite.rotation) {
+                let cos = Math.cos(sprite.rotation);
+                let sin = Math.sin(sprite.rotation);
+                function rotateVec(vector)
+                {
+                    let x = (vector.x * cos - vector.y * sin);
+                    let y = (vector.x * sin + vector.y * cos);
+                    vector.x = x;
+                    vector.y = y;
+                }
+                rotateVec(topLeft);
+                rotateVec(topRight);
+                rotateVec(bottomLeft);
+                rotateVec(bottomRight);
+                axisAlined = false;
+            }
+
+            // add sprite position
+            topLeft.x += sprite.position.x;
+            topLeft.y += sprite.position.y;
+            topRight.x += sprite.position.x;
+            topRight.y += sprite.position.y;
+            bottomLeft.x += sprite.position.x;
+            bottomLeft.y += sprite.position.y;
+            bottomRight.x += sprite.position.x;
+            bottomRight.y += sprite.position.y;
+
+            // apply transform
+            if (transform && !transform.isIdentity) {
+                topLeft.copy((topLeft.z !== undefined) ?  Matrix.transformVector3(transform, topLeft) : Matrix.transformVector2(transform, topLeft));
+                topRight.copy((topRight.z !== undefined) ?  Matrix.transformVector3(transform, topRight) : Matrix.transformVector2(transform, topRight));
+                bottomLeft.copy((bottomLeft.z !== undefined) ?  Matrix.transformVector3(transform, bottomLeft) : Matrix.transformVector2(transform, bottomLeft));
+                bottomRight.copy((bottomRight.z !== undefined) ?  Matrix.transformVector3(transform, bottomRight) : Matrix.transformVector2(transform, bottomRight));
+            }
+
+            // snap pixels
+            if (this.snapPixels)
+            {
+                topLeft.floorSelf();
+                topRight.floorSelf();
+                bottomLeft.floorSelf();
+                bottomRight.floorSelf();
+            }
+
+            // add rectangle vertices
+            if (this.linesStrip) {
+                this.drawVertices([
+                    new Vertex(topLeft, null, sprite.color),
+                    new Vertex(topRight, null, sprite.color),
+                    new Vertex(bottomRight, null, sprite.color),
+                    new Vertex(bottomLeft, null, sprite.color),
+                    new Vertex(topLeft, null, sprite.color),
+                ]);
+            }
+            else {
+                this.drawVertices([
+                    new Vertex(topLeft, null, sprite.color),
+                    new Vertex(topRight, null, sprite.color),
+                    
+                    new Vertex(topRight, null, sprite.color),
+                    new Vertex(bottomRight, null, sprite.color),
+
+                    new Vertex(bottomRight, null, sprite.color),
+                    new Vertex(bottomLeft, null, sprite.color),
+
+                    new Vertex(bottomLeft, null, sprite.color),
+                    new Vertex(topLeft, null, sprite.color),
+                ]);
+            }
+        }
+    }
+
+    /**
+     * Get how many line segments are currently in batch.
+     * @returns {Number} Line segments in batch count.
+     */
+    get linesInBatch()
+    {
+        return this.__linesCount;
+    }
+
+    /**
+     * Get how many line segments this batch can contain.
+     * @returns {Number} Max line segments count.
+     */
+    get maxLinesCount()
+    {
+        return this.__maxLinesCount;
+    }
+
+    /**
+     * Check if this batch is full.
+     * @returns {Boolean} True if batch is full.
+     */
+    get isFull()
+    {
+        return this.__linesCount >= this.__maxLinesCount;
+    }
+
+    /**
+     * Called when the batch becomes full while drawing and there's no handler.
+     * @private
+     */
+    _handleFullBuffer()
+    {
+        // invoke on-overflow callback
+        if (this.onOverflow) {
+            this.onOverflow();
+        }
+        
+        // draw current batch and clear
+        this._drawBatch();
+        this.clear();
+    }
+
+    /**
+     * @inheritdoc
+     * @private
+     */
+    _drawBatch()
+    {
+        // get default effect
+        let effect = this.__currDrawingParams.effect;
+
+        // get some members
+        let gl = this.#_gl;
+        let gfx = this.#_gfx;
+        let positionArray = this._buffers.positionArray;
+        let colorsArray = this.__currDrawingParams.hasVertexColor ? this._buffers.colorsArray : null;
+        let positionBuffer = this._buffers.positionBuffer;
+        let colorsBuffer = this._buffers.colorsBuffer;
+        let indexBuffer = this._buffers.indexBuffer;
+
+        // should copy buffers
+        let needBuffersCopy = this.__dirty;
+
+        // nothing to draw? skip
+        if (positionArray._index <= 1) {
+            return;
+        }
+
+        // get default effect
+        effect = effect || this.defaultEffect;
+
+        // call base method to set effect and draw params
+        super._drawBatch();
+
+        // vertices count
+        const verticesCount = positionArray._index / 3;
+
+        // copy position buffer
+        effect.setPositionsAttribute(positionBuffer, true);
+        if (needBuffersCopy) {
+            gl.bufferData(gl.ARRAY_BUFFER, 
+                positionArray, 
+                this.__buffersUsage, 0, positionArray._index);
+        }
+
+        // copy color buffer
+        if (this.__currDrawingParams.hasVertexColor && colorsBuffer) {
+            effect.setColorsAttribute(colorsBuffer, true);
+            if (needBuffersCopy && colorsArray) {
+                gl.bufferData(gl.ARRAY_BUFFER, 
+                    colorsArray, 
+                    this.__buffersUsage, 0, colorsArray._index);
+            }
+        }
+
+        // set indices
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+
+        // draw elements
+        gl.drawElements((this.linesStrip ? gl.LINE_STRIP : gl.LINES), verticesCount, this.__indicesType, 0);
+        gfx._internal.drawCallsCount++;
+        gfx._internal.drawShapePolygonsCount += verticesCount / 2;
+
+        // mark as not dirty
+        this.__dirty = false;
+       
+        // if static, free arrays we no longer need them
+        if (this.__staticBuffers) {
+            this._buffers.positionArray = this._buffers.colorsArray = null;
+        }
+    }
+}
+
+// used for vertices calculations
+const topLeft = new Vector2(0, 0);
+const topRight = new Vector2(0, 0);
+const bottomLeft = new Vector2(0, 0);
+const bottomRight = new Vector2(0, 0);
+
+// export the shapes batch class
+module.exports = LinesBatch;
+
+/***/ }),
+
+/***/ 1772:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+/**
+ * Implement the gfx shapes batch renderer.
+ * 
+ * |-- copyright and license --|
+ * @module     Shaku
+ * @file       shaku\src\gfx\draw_batches\shapes_batch.js
+ * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
+ * @copyright  (c) 2021 Ronen Ness
+ * @license    MIT
+ * |-- end copyright and license --|
+ * 
+ */
+
+const { Rectangle } = __webpack_require__(3624);
+const Vector2 = __webpack_require__(2544);
+const Vector3 = __webpack_require__(8329);
+const Matrix = __webpack_require__(5599);
+const Vertex = __webpack_require__(4288);
+const DrawBatch = __webpack_require__(2069);
+const _logger = (__webpack_require__(5259).getLogger)('gfx-sprite-batch');
+
+
+/**
+ * Colored shapes renderer. 
+ * Responsible to drawing a batch of basic geometric shapes with as little draw calls as possible.
+ */
+class ShapesBatch extends DrawBatch
+{
+    /**
+     * Create the sprites batch.
+     * @param {Number=} batchPolygonsCount Internal buffers size, in polygons count (polygon = 3 vertices). Bigger value = faster rendering but more RAM.
+     */
+    constructor(batchPolygonsCount)
+    {
+        // init draw batch
+        super();
+
+        // create buffers for drawing shapes
+        this.#_createBuffers(batchPolygonsCount || 500);
+
+        /**
+         * How many polygons this batch can hold.
+         * @private
+         */
+        this.__maxPolyCount = Math.floor((this._buffers.positionArray.length / 9));
+
+        /**
+         * How many polygons we currently have.
+         * @private
+         */
+        this.__polyCount = 0;
+
+        /**
+         * Indicate there were changes in buffers.
+         * @private
+         */
+        this.__dirty = false;
+        
+        /**
+         * Optional method to trigger when shapes batch overflows and can't contain any more polygons.
+         * @type {Function}
+         * @name ShapesBatch#onOverflow
+         */
+        this.onOverflow = null;
+        
+        /** 
+         * If true, will floor vertices positions before pushing them to batch.
+         * @type {Boolean}
+         * @name ShapesBatch#snapPixels
+         */
+        this.snapPixels = false;
+    }
+
+    /**
+     * Get the gfx manager.
+     * @private
+     */
+    get #_gfx()
+    {
+        return DrawBatch._gfx;
+    }
+
+    /**
+     * Get the web gl instance.
+     * @private
+     */
+    get #_gl()
+    {
+        return DrawBatch._gfx._internal.gl;
+    }
+
+    /**
+     * Build the dynamic buffers.
+     * @private
+     */
+    #_createBuffers(batchPolygonsCount)
+    {
+        let gl = this.#_gl;
+
+        // dynamic buffers, used for batch rendering
+        this._buffers = {
+            
+            positionBuffer: gl.createBuffer(),
+            positionArray: new Float32Array(3 * 3 * batchPolygonsCount),
+
+            colorsBuffer: gl.createBuffer(),
+            colorsArray: new Float32Array(4 * 3 * batchPolygonsCount),
+
+            indexBuffer: gl.createBuffer(),
+        }
+
+        // create the indices buffer
+        let maxIndex = (batchPolygonsCount * 3);
+        let indicesArrayType;
+        if (maxIndex <= 256) {
+            indicesArrayType = Uint8Array;
+            this.__indicesType = gl.UNSIGNED_BYTE;
+        }
+        if (maxIndex <= 65535) {
+            indicesArrayType = Uint16Array;
+            this.__indicesType = gl.UNSIGNED_SHORT;
+        }
+        else {
+            indicesArrayType = Uint32Array;
+            this.__indicesType = gl.UNSIGNED_INT;
+        }
+        let indices = new indicesArrayType(batchPolygonsCount * 3); // 3 = number of indices per sprite
+        for (let i = 0; i < indices.length; i++) {
+            
+            indices[i] = i;
+        }
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this._buffers.indexBuffer);
+        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STATIC_DRAW);
+
+        // extand buffers functionality
+        function extendBuffer(buff) {
+            if (buff) { buff._index = 0; }
+        }
+        extendBuffer(this._buffers.positionArray);
+        extendBuffer(this._buffers.colorsArray);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    clear()
+    {
+        super.clear();
+        this._buffers.positionArray._index = 0;
+        this._buffers.colorsArray._index = 0;
+        this.__polyCount = 0;
+        this.__dirty = false;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    destroy()
+    {
+        let gl = this.#_gl;
+        if (this._buffers) {
+            if (this._buffers.positionBuffer) gl.deleteBuffer(this._buffers.positionBuffer);
+            if (this._buffers.colorsBuffer) gl.deleteBuffer(this._buffers.colorsBuffer);
+        }
+        this._buffers = null;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    get isDestroyed()
+    {
+        return Boolean(this._buffers) === false;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    get defaultEffect()
+    {
+        return this.#_gfx.builtinEffects.Shapes;
+    }
+
+    /**
+     * Draw a line between two points.
+     * This method actually uses a rectangle internally, which is less efficient than using a proper LinesBatch, but have the advantage of supporting width.
+     * @param {Vector2} fromPoint Starting position.
+     * @param {Vector2} toPoint Ending position.
+     * @param {Color} color Line color.
+     * @param {Number=} width Line width.
+     */
+    drawLine(fromPoint, toPoint, color, width)
+    {
+        width = width || 1;
+        length = fromPoint.distanceTo(toPoint);
+        let rotation = Vector2.radiansBetween(fromPoint, toPoint);
+        let position = (width > 1) ? (new Vector2(fromPoint.x, fromPoint.y - width / 2)) : fromPoint;
+        let size = new Vector2(length, width);
+        this.drawQuad(position, size, color, rotation, new Vector2(0, 0.5));
+    }
+
+    /**
+     * Push vertices to drawing batch.
+     * @param {Array<Vertex>} vertices Vertices to push. Vertices count must be dividable by 3 to keep the batch consistent of polygons.
+     */
+    drawVertices(vertices)
+    {
+        // sanity
+        this.__validateDrawing(true);
+
+        // sanity check
+        if ((vertices.length % 3) !== 0) {
+            _logger.warn("Tried to push vertices that are not multiplication of 3!");
+            return;
+        }
+
+        // push vertices
+        let i = 0;
+        let colors = this._buffers.colorsArray;
+        let positions = this._buffers.positionArray;
+        for (let vertex of vertices)
+        {
+            // push color
+            if (this.__currDrawingParams.hasVertexColor) {
+                colors[colors._index++] = (vertex.color.r || 0);
+                colors[colors._index++] = (vertex.color.g || 0);
+                colors[colors._index++] = (vertex.color.b || 0);
+                colors[colors._index++] = (vertex.color.a || 0);
+            }
+
+            // push position
+            positions[positions._index++] = (vertex.position.x || 0);
+            positions[positions._index++] = (vertex.position.y || 0);
+            positions[positions._index++] = (vertex.position.z || 0);
+
+            // every 3 vertices..
+            if (i++ === 2) 
+            {
+                // update quads count
+                this.__polyCount++;
+
+                // check if full
+                if (this.__polyCount >= this.__maxPolyCount) {
+                    this._handleFullBuffer();
+                }
+
+                // reset count
+                i = 0;
+            }
+        }
+
+        // mark as dirty
+        this.__dirty = true;
+    }
+
+    /**
+     * Add a rectangle to draw.
+     * @param {Vector2|Vector3} position Drawing position (at origin). If vector3 is provided, will pass z value to the shader code position attribute.
+     * @param {Vector2|Vector3|Number} size Drawing size. If vector3 is provided, will pass z value to the shader code position attribute for the bottom vertices, as position.z + size.z.
+     * @param {Color|Array<Color>|undefined=} color Rectangle color, or undefined to not change color. If array is set, will assign each color to different vertex, starting from top-left.
+     * @param {Number=} rotation Rotate rectangle.
+     * @param {Vector2=} origin Drawing origin. This will be the point at 'position' and rotation origin.
+     * @param {Vector2=} skew Skew the drawing corners on X and Y axis, around the origin point.
+     */
+    drawQuad(position, size, color, rotation, origin, skew)
+    {
+        let sprite = this.#_gfx.Sprite.build(null, position, size, undefined, color, rotation, origin, skew);
+        this.#_addRect(sprite);
+    }
+
+    /**
+     * Adds a 1x1 point.
+     * @param {Vector2|Vector3} position Point position.
+     * @param {Color} color Point color.
+     */
+    addPoint(position, color)
+    {
+        this.drawVertices([new Vertex(position, null, color), new Vertex(position.add(2,0), null, color), new Vertex(position.add(0,2), null, color)]);
+    }
+
+    /**
+     * Add a rectangle that covers a given destination rectangle.
+     * @param {Rectangle|Vector2} destRect Destination rectangle to draw on. If vector is provided, will draw from 0,0 with vector as size.
+     * @param {Color|Array<Color>|undefined=} color Rectangle color, or undefined to not change color. If array is set, will assign each color to different vertex, starting from top-left.
+     * @param {Number=} rotation Rotate rectangle.
+     * @param {Vector2=} origin Drawing origin. This will be the point at 'position' and rotation origin.
+     */
+    drawRectangle(destRect, color, rotation, origin)
+    {
+        if ((destRect instanceof Vector2) || (destRect instanceof Vector3)) {
+            destRect = new Rectangle(0, 0, destRect.x, destRect.y);
+        }
+        let position = origin ? destRect.getPosition().addSelf(size.mul(origin)) : destRect.getCenter();
+        origin = origin || Vector2.halfReadonly;
+        let size = destRect.getSize();
+        this.drawQuad(position, size, color, rotation, origin);
+    }
+
+    /**
+     * Draw a colored circle.
+     * @param {Circle} circle Circle to draw.
+     * @param {Color} color Circle fill color.
+     * @param {Number=} segmentsCount How many segments to build the circle from (more segments = smoother circle).
+     * @param {Color=} outsideColor If provided, will create a gradient-colored circle and this value will be the outter side color.
+     * @param {Number|Vector2=} ratio If procided, will scale the circle on X and Y axis to turn it into an oval. If a number is provided, will use this number to scale Y axis.
+     * @param {Number=} rotation If provided will rotate the oval / circle.
+     */
+    drawCircle(circle, color, segmentsCount, outsideColor, ratio, rotation)
+    {
+        // sanity
+        this.__validateDrawing(true);
+
+        // defaults segments count
+        if (segmentsCount === undefined) { 
+            segmentsCount = 24; 
+        }
+        else if (segmentsCount < 2) {
+            return;
+        }
+
+        // default outside color
+        if (!outsideColor) {
+            outsideColor = color;
+        }
+
+        // default ratio
+        if (!ratio) {
+            ratio = Vector2.oneReadonly;
+        }
+        else if (typeof ratio === 'number') {
+            ratio = new Vector2(1, ratio);
+        }
+
+        // for rotation
+        let rotateVec;
+        if (rotation) {
+            let cos = Math.cos(rotation);
+            let sin = Math.sin(rotation);
+            rotateVec = function(vector)
+            {
+                let x = (vector.x * cos - vector.y * sin);
+                let y = (vector.x * sin + vector.y * cos);
+                vector.x = x;
+                vector.y = y;
+                return vector;
+            }
+        }
+
+        // build first position that is not center
+        const segmentStep = (2 * Math.PI)  / segmentsCount;
+        let prevPoint = new Vector2(
+            (circle.radius * Math.cos(0)) * ratio.x, 
+            (circle.radius * Math.sin(0)) * ratio.y
+        );
+        if (rotateVec) { rotateVec(prevPoint); }
+
+        // generate list of vertices to draw the circle
+        for (let i = 1; i <= segmentsCount; i++) {
+            let newPoint = new Vector2(
+                (circle.radius * Math.cos(i * segmentStep)) * ratio.x, 
+                (circle.radius * Math.sin(i * segmentStep)) * ratio.y
+            );
+            if (rotateVec) { rotateVec(newPoint); }
+            this.drawVertices([
+                new Vertex(circle.center, null, color),
+                new Vertex(prevPoint.add(circle.center), null, outsideColor),
+                new Vertex(newPoint.add(circle.center), null, outsideColor),
+            ]);
+            prevPoint = newPoint;
+        }
+    }
+
+    /**
+     * Add a rectangle from sprite data.
+     * @private
+     */
+    #_addRect(sprite, transform)
+    {
+        // sanity
+        this.__validateDrawing(true);
+
+        // mark as dirty
+        this.__dirty = true;
+
+        // add rectangle from sprite data
+        {
+            // calculate vertices positions
+            let sizeX = sprite.size.x;
+            let sizeY = sprite.size.y;
+            let left = -sizeX * sprite.origin.x;
+            let top = -sizeY * sprite.origin.y;
+
+            // calculate corners
+            topLeft.x = left;               topLeft.y = top;
+            topRight.x = left + sizeX;      topRight.y = top;
+            bottomLeft.x = left;            bottomLeft.y = top + sizeY;
+            bottomRight.x = left + sizeX;   bottomRight.y = top + sizeY;
+
+            // are vertices axis aligned?
+            let axisAlined = true;
+
+            // apply skew
+            if (sprite.skew) 
+            {
+                // skew on x axis
+                if (sprite.skew.x) {
+                    topLeft.x += sprite.skew.x * sprite.origin.y;
+                    topRight.x += sprite.skew.x * sprite.origin.y;
+                    bottomLeft.x -= sprite.skew.x * (1 - sprite.origin.y);
+                    bottomRight.x -= sprite.skew.x * (1 - sprite.origin.y);
+                    axisAlined = false;
+                }
+                // skew on y axis
+                if (sprite.skew.y) {
+                    topLeft.y += sprite.skew.y * sprite.origin.x;
+                    bottomLeft.y += sprite.skew.y * sprite.origin.x;
+                    topRight.y -= sprite.skew.y * (1 - sprite.origin.x);
+                    bottomRight.y -= sprite.skew.y * (1 - sprite.origin.x);
+                    axisAlined = false;
+                }
+            }
+
+            // apply rotation
+            if (sprite.rotation) {
+                let cos = Math.cos(sprite.rotation);
+                let sin = Math.sin(sprite.rotation);
+                function rotateVec(vector)
+                {
+                    let x = (vector.x * cos - vector.y * sin);
+                    let y = (vector.x * sin + vector.y * cos);
+                    vector.x = x;
+                    vector.y = y;
+                }
+                rotateVec(topLeft);
+                rotateVec(topRight);
+                rotateVec(bottomLeft);
+                rotateVec(bottomRight);
+                axisAlined = false;
+            }
+
+            // add sprite position
+            topLeft.x += sprite.position.x;
+            topLeft.y += sprite.position.y;
+            topRight.x += sprite.position.x;
+            topRight.y += sprite.position.y;
+            bottomLeft.x += sprite.position.x;
+            bottomLeft.y += sprite.position.y;
+            bottomRight.x += sprite.position.x;
+            bottomRight.y += sprite.position.y;
+
+            // apply transform
+            if (transform && !transform.isIdentity) {
+                topLeft.copy((topLeft.z !== undefined) ?  Matrix.transformVector3(transform, topLeft) : Matrix.transformVector2(transform, topLeft));
+                topRight.copy((topRight.z !== undefined) ?  Matrix.transformVector3(transform, topRight) : Matrix.transformVector2(transform, topRight));
+                bottomLeft.copy((bottomLeft.z !== undefined) ?  Matrix.transformVector3(transform, bottomLeft) : Matrix.transformVector2(transform, bottomLeft));
+                bottomRight.copy((bottomRight.z !== undefined) ?  Matrix.transformVector3(transform, bottomRight) : Matrix.transformVector2(transform, bottomRight));
+            }
+
+            // snap pixels
+            if (this.snapPixels)
+            {
+                topLeft.floorSelf();
+                topRight.floorSelf();
+                bottomLeft.floorSelf();
+                bottomRight.floorSelf();
+            }
+
+            // add rectangle vertices
+            this.drawVertices([
+                new Vertex(topLeft, null, sprite.color),
+                new Vertex(topRight, null, sprite.color),
+                new Vertex(bottomLeft, null, sprite.color),
+
+                new Vertex(topRight, null, sprite.color),
+                new Vertex(bottomLeft, null, sprite.color),
+                new Vertex(bottomRight, null, sprite.color),
+            ]);
+        }
+    }
+
+    /**
+     * Get how many polygons are currently in batch.
+     * @returns {Number} Polygons in batch count.
+     */
+    get polygonsInBatch()
+    {
+        return this.__polyCount;
+    }
+
+    /**
+     * Get how many polygons this sprite batch can contain.
+     * @returns {Number} Max polygons count.
+     */
+    get maxPolygonsCount()
+    {
+        return this.__maxPolyCount;
+    }
+
+    /**
+     * Check if this batch is full.
+     * @returns {Boolean} True if batch is full.
+     */
+    get isFull()
+    {
+        return this.__polyCount >= this.__maxPolyCount;
+    }
+
+    /**
+     * Called when the batch becomes full while drawing and there's no handler.
+     * @private
+     */
+    _handleFullBuffer()
+    {
+        // invoke on-overflow callback
+        if (this.onOverflow) {
+            this.onOverflow();
+        }
+        
+        // draw current batch and clear
+        this._drawBatch();
+        this.clear();
+    }
+
+    /**
+     * @inheritdoc
+     * @private
+     */
+    _drawBatch()
+    {
+        // get default effect
+        let effect = this.__currDrawingParams.effect;
+
+        // get some members
+        let gl = this.#_gl;
+        let gfx = this.#_gfx;
+        let positionArray = this._buffers.positionArray;
+        let colorsArray = this.__currDrawingParams.hasVertexColor ? this._buffers.colorsArray : null;
+        let positionBuffer = this._buffers.positionBuffer;
+        let colorsBuffer = this._buffers.colorsBuffer;
+        let indexBuffer = this._buffers.indexBuffer;
+
+        // should copy buffers
+        let needBuffersCopy = this.__dirty;
+
+        // calculate current batch quads count
+        let _currPolyCount = this.polygonsInBatch;
+
+        // nothing to draw? skip
+        if (_currPolyCount === 0) {
+            return;
+        }
+
+        // call base method to set effect and draw params
+        super._drawBatch();
+
+        // copy position buffer
+        effect.setPositionsAttribute(positionBuffer, true);
+        if (needBuffersCopy) {
+            gl.bufferData(gl.ARRAY_BUFFER, 
+                positionArray, 
+                this.__buffersUsage, 0, _currPolyCount * 3 * 3);
+        }
+
+        // copy color buffer
+        if (this.__currDrawingParams.hasVertexColor && colorsBuffer) {
+            effect.setColorsAttribute(colorsBuffer, true);
+            if (needBuffersCopy && colorsArray) {
+                gl.bufferData(gl.ARRAY_BUFFER, 
+                    colorsArray, 
+                    this.__buffersUsage, 0, _currPolyCount * 3 * 4);
+            }
+        }
+
+        // set indices
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+
+        // draw elements
+        gl.drawElements(gl.TRIANGLES, _currPolyCount * 3, this.__indicesType, 0);
+        gfx._internal.drawCallsCount++;
+        gfx._internal.drawShapePolygonsCount += _currPolyCount;
+
+        // mark as not dirty
+        this.__dirty = false;
+
+        // if static, free arrays we no longer need them
+        if (this.__staticBuffers) {
+            this._buffers.positionArray = this._buffers.colorsArray = null;
+        }
+    }
+}
+
+// used for vertices calculations
+const topLeft = new Vector2(0, 0);
+const topRight = new Vector2(0, 0);
+const bottomLeft = new Vector2(0, 0);
+const bottomRight = new Vector2(0, 0);
+
+// export the shapes batch class
+module.exports = ShapesBatch;
+
+/***/ }),
+
+/***/ 962:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+/**
+ * Implement the gfx sprite batch renderer.
+ * 
+ * |-- copyright and license --|
+ * @module     Shaku
+ * @file       shaku\src\gfx\draw_batches\sprite_batch.js
+ * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
+ * @copyright  (c) 2021 Ronen Ness
+ * @license    MIT
+ * |-- end copyright and license --|
+ * 
+ */
+
+const TextureAsset = __webpack_require__(2262);
+const TextureAssetBase = __webpack_require__(4397);
+const { Rectangle } = __webpack_require__(3624);
+const Vector2 = __webpack_require__(2544);
+const Vector3 = __webpack_require__(8329);
+const DrawBatch = __webpack_require__(2069);
+const SpriteBatchBase = __webpack_require__(6195);
+const _logger = (__webpack_require__(5259).getLogger)('gfx-sprite-batch');
+
+
+/**
+ * Sprite batch renderer. 
+ * Responsible to drawing a batch of sprites with as little draw calls as possible.
+ */
+class SpriteBatch extends SpriteBatchBase
+{
+    /**
+     * Create the sprites batch.
+     * @param {Number=} batchSpritesCount Internal buffers size, in sprites count (sprite = 4 vertices). Bigger value = faster rendering but more RAM.
+     * @param {Boolean=} enableVertexColor If true (default) will support vertex color. 
+     */
+    constructor(batchSpritesCount, enableVertexColor)
+    {
+        // init draw batch
+        super(batchSpritesCount, enableVertexColor);
+    }
+
+    /**
+     * Get the gfx manager.
+     * @private
+     */
+    get #_gfx()
+    {
+        return DrawBatch._gfx;
+    }
+
+    /**
+     * Get the web gl instance.
+     * @private
+     */
+    get #_gl()
+    {
+        return DrawBatch._gfx._internal.gl;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    get defaultEffect()
+    {
+        return this.supportVertexColor ? this.#_gfx.builtinEffects.Sprites : this.#_gfx.builtinEffects.SpritesNoVertexColor;
+    }
+
+    /**
+     * Push vertices to drawing batch.
+     * @param {TextureAssetBase} texture Texture to draw.
+     * @param {Array<Vertex>} vertices Vertices to push. Vertices count must be dividable by 4 to keep the batch consistent of quads.
+     */
+    drawVertices(texture, vertices)
+    {
+        // sanity
+        this.__validateDrawing(true);
+
+        // update texture
+        this._updateTexture(texture);
+
+        // sanity check
+        if ((vertices.length % 4) !== 0) {
+            _logger.warn("Tried to push vertices that are not multiplication of 4!");
+            return;
+        }
+
+        // push vertices
+        let i = 0;
+        let colors = this._buffers.colorsArray;
+        let uvs = this._buffers.textureArray;
+        let positions = this._buffers.positionArray;
+        for (let vertex of vertices)
+        {
+            // push color
+            if (this.__currDrawingParams.hasVertexColor) {
+                colors[colors._index++] = (vertex.color.r || 0);
+                colors[colors._index++] = (vertex.color.g || 0);
+                colors[colors._index++] = (vertex.color.b || 0);
+                colors[colors._index++] = (vertex.color.a || 0);
+            }
+
+            // push texture coords
+            uvs[uvs._index++] = (vertex.textureCoord.x || 0);          
+            uvs[uvs._index++] = (vertex.textureCoord.y || 0);
+
+            // push position
+            positions[positions._index++] = (vertex.position.x || 0);
+            positions[positions._index++] = (vertex.position.y || 0);
+            positions[positions._index++] = (vertex.position.z || 0);
+
+            // every 4 vertices..
+            if (i++ === 3) 
+            {
+                // update quads count
+                this.__quadsCount++;
+
+                // check if full
+                if (this.__quadsCount >= this.__maxQuadsCount) {
+                    this._handleFullBuffer();
+                }
+
+                // reset count
+                i = 0;
+            }
+        }
+
+        // mark as dirty
+        this.__dirty = true;
+    }
+
+    /**
+     * Add a quad to draw.
+     * @param {TextureAssetBase} texture Texture to draw.
+     * @param {Vector2|Vector3} position Drawing position (at origin). If vector3 is provided, will pass z value to the shader code position attribute.
+     * @param {Vector2|Vector3|Number} size Drawing size. If vector3 is provided, will pass z value to the shader code position attribute for the bottom vertices, as position.z + size.z.
+     * @param {Rectangle} sourceRectangle Source rectangle, or undefined to use the entire texture.
+     * @param {Color|Array<Color>|undefined} color Tint color, or undefined to not change color. If array is set, will assign each color to different vertex, starting from top-left.
+     * @param {Number=} rotation Rotate sprite.
+     * @param {Vector2=} origin Drawing origin. This will be the point at 'position' and rotation origin.
+     * @param {Vector2=} skew Skew the drawing corners on X and Y axis, around the origin point.
+     */
+    drawQuad(texture, position, size, sourceRectangle, color, rotation, origin, skew)
+    {
+        let sprite = this.#_gfx.Sprite.build(texture, position, size, sourceRectangle, color, rotation, origin, skew);
+        this.drawSprite(sprite);
+    }
+
+    /**
+     * Add sprites group to this batch.
+     * @param {SpritesGroup} group Sprite group to draw.
+     * @param {Boolean=} cullOutOfScreen If true, will cull sprites that are not visible in currently set rendering region.
+     */
+    drawSpriteGroup(group, cullOutOfScreen)
+    {
+        let transform = group.getTransform();
+        this.drawSprite(group._sprites, transform, cullOutOfScreen);
+    }
+
+    /**
+     * Add a quad that covers a given destination rectangle.
+     * @param {TextureAssetBase} texture Texture to draw.
+     * @param {Rectangle|Vector2} destRect Destination rectangle to draw on. If vector is provided, will draw from 0,0 with vector as size.
+     * @param {Rectangle=} sourceRect Source rectangle, or undefined to use the entire texture.
+     * @param {Color|Array<Color>|undefined} color Tint color, or undefined to not change color. If array is set, will assign each color to different vertex, starting from top-left.
+     * @param {Vector2=} origin Drawing origin. This will be the point at 'position' and rotation origin.
+     */
+    drawRectangle(texture, destRect, sourceRect, color, origin)
+    {
+        if ((destRect instanceof Vector2) || (destRect instanceof Vector3)) {
+            destRect = new Rectangle(0, 0, destRect.x, destRect.y);
+        }
+        let position = origin ? destRect.getPosition().addSelf(size.mul(origin)) : destRect.getCenter();
+        origin = origin || Vector2.halfReadonly;
+        let size = destRect.getSize();
+        this.drawQuad(texture, position, size, sourceRect, color);
     }
 }
 
 
-// export the basic shader
-module.exports = BasicEffect;
-},{"./effect":25}],25:[function(require,module,exports){
+// export the sprite batch class
+module.exports = SpriteBatch;
+
+/***/ }),
+
+/***/ 7561:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+/**
+ * Implement the gfx sprite batch renderer.
+ * 
+ * |-- copyright and license --|
+ * @module     Shaku
+ * @file       shaku\src\gfx\draw_batches\sprite_batch_3d.js
+ * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
+ * @copyright  (c) 2021 Ronen Ness
+ * @license    MIT
+ * |-- end copyright and license --|
+ * 
+ */
+
+const Vector3 = __webpack_require__(8329);
+const Matrix = __webpack_require__(5599);
+const DrawBatch = __webpack_require__(2069);
+const SpriteBatch = __webpack_require__(962);
+const _logger = (__webpack_require__(5259).getLogger)('gfx-sprite-batch');
+
+
+/**
+ * 3D Sprites batch renderer. 
+ * Responsible to drawing 3D quads with textures on them.
+ */
+class SpriteBatch3D extends SpriteBatch
+{
+    /**
+     * Create the 3d sprites batch.
+     * @param {Number=} batchSpritesCount Internal buffers size, in sprites count (sprite = 4 vertices). Bigger value = faster rendering but more RAM.
+     * @param {Boolean=} normalizeUvs If true (default) will normalize UV values from 0 to 1.
+     */
+    constructor(batchSpritesCount, normalizeUvs)
+    {
+        super(batchSpritesCount, normalizeUvs, true);
+        this.setViewLookat();
+        this.setPerspectiveCamera();
+    }
+
+    /**
+     * Set to default view matrix.
+     * @param {Vector3=} eyePosition Camera source position.
+     * @param {Vector3=} lookAt Camera look-at target.
+     */
+    setViewLookat(eyePosition, lookAt)
+    {
+        this.__view = Matrix.lookAt(eyePosition || new Vector3(0, 0, -500), lookAt || new Vector3(0, 0, 0), Vector3.upReadonly);
+    }
+
+    /**
+     * Set perspective camera.
+     * @param {Number=} fieldOfView Camera field of view.
+     * @param {Number=} aspectRatio Camera aspect ratio
+     * @param {Number=} zNear Z near plane.
+     * @param {Number=} zFar Z far plane.
+     */
+    setPerspectiveCamera(fieldOfView, aspectRatio, zNear, zFar)
+    {
+        let camera = this.#_gfx.createCamera();
+        fieldOfView = fieldOfView || ((45 * Math.PI) / 180);
+        aspectRatio = aspectRatio || (this.#_gfx.getRenderingSize().x / this.#_gfx.getRenderingSize().y);
+        zNear = zNear || 0.1;
+        zFar = zFar || 10000.0;
+        camera.perspective(fieldOfView, aspectRatio, zNear, zFar);
+        this.__camera = camera;
+    }
+
+    /**
+     * Get the gfx manager.
+     * @private
+     */
+    get #_gfx()
+    {
+        return DrawBatch._gfx;
+    }
+
+    /**
+     * Get the web gl instance.
+     * @private
+     */
+    get #_gl()
+    {
+        return DrawBatch._gfx._internal.gl;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    get supportVertexColor()
+    {
+        return true;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    get defaultEffect()
+    {
+        return this.#_gfx.builtinEffects.Sprites3d;
+    }
+
+    /**
+     * Set the camera for this batch.
+     * @param {Matrix} camera Camera object to apply when drawing, or null if you want to set the camera manually.
+     */
+    setCamera(camera)
+    {
+        this.__camera = camera;
+    }
+
+    /**
+     * Set the view matrix for this batch.
+     * @param {Matrix} view View matrix, or null if you want to set the view matrix manually.
+     */
+    setView(view)
+    {
+        this.__view = view;
+    }
+
+    /**
+     * @inheritdoc
+     * @private
+     */
+    _onSetEffect(effect, texture)
+    {
+        if (this.__view) { effect.setViewMatrix(this.__view); }
+        if (this.__camera) { this.#_gfx.applyCamera(this.__camera); }
+    }
+}
+
+
+// export the sprite batch class
+module.exports = SpriteBatch3D;
+
+/***/ }),
+
+/***/ 6195:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+/**
+ * Implement the gfx sprite batch renderer base class.
+ * 
+ * |-- copyright and license --|
+ * @module     Shaku
+ * @file       shaku\src\gfx\draw_batches\sprite_batch_base.js
+ * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
+ * @copyright  (c) 2021 Ronen Ness
+ * @license    MIT
+ * |-- end copyright and license --|
+ * 
+ */
+
+const { Rectangle } = __webpack_require__(3624);
+const Vector2 = __webpack_require__(2544);
+const Matrix = __webpack_require__(5599);
+const DrawBatch = __webpack_require__(2069);
+const _logger = (__webpack_require__(5259).getLogger)('gfx-sprite-batch');
+
+
+/**
+ * Base class for sprite-based rendering, ie vertices with textures.
+ */
+class SpriteBatchBase extends DrawBatch
+{
+    /**
+     * Create the sprites batch.
+     * @param {Number=} batchSpritesCount Internal buffers size, in sprites count (sprite = 4 vertices). Bigger value = faster rendering but more RAM.
+     * @param {Boolean=} enableVertexColor If true (default) will support vertex color. 
+     */
+    constructor(batchSpritesCount, enableVertexColor)
+    {
+        // init draw batch
+        super();
+
+        // create buffers for drawing sprites
+        this.#_createBuffers(batchSpritesCount || 500, enableVertexColor);
+
+        /**
+         * How many quads this batch can hold.
+         * @private
+         */
+        this.__maxQuadsCount = Math.floor((this._buffers.positionArray.length / 12));
+
+        /**
+         * How many quads we currently have.
+         * @private
+         */
+        this.__quadsCount = 0;
+
+        /**
+         * Indicate there were changes in buffers.
+         * @private
+         */
+        this.__dirty = false;
+
+        /**
+         * Optional method to trigger when sprite batch overflows and can't contain any more quads.
+         * @type {Function}
+         * @name SpriteBatch#onOverflow
+         */
+        this.onOverflow = null;
+        
+        /** 
+         * If true, will floor vertices positions before pushing them to batch.
+         * @type {Boolean}
+         * @name SpriteBatch#snapPixels
+         */
+        this.snapPixels = false;
+
+        /** 
+         * If true, will cull quads that are not visible in screen when adding them by default.
+         * Note: will cull based on screen region during the time of adding sprite, not the time of actually rendering it.
+         * @type {Boolean}
+         * @name SpriteBatch#cullOutOfScreen
+         */
+        this.cullOutOfScreen = false;
+    }
+
+    /**
+     * Get the gfx manager.
+     * @private
+     */
+    get #_gfx()
+    {
+        return DrawBatch._gfx;
+    }
+
+    /**
+     * Get the web gl instance.
+     * @private
+     */
+    get #_gl()
+    {
+        return DrawBatch._gfx._internal.gl;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    destroy()
+    {
+        let gl = this.#_gl;
+        if (this._buffers) {
+            if (this._buffers.positionBuffer) gl.deleteBuffer(this._buffers.positionBuffer);
+            if (this._buffers.colorsBuffer) gl.deleteBuffer(this._buffers.colorsBuffer);
+            if (this._buffers.textureCoordBuffer) gl.deleteBuffer(this._buffers.textureCoordBuffer);
+        }
+        this._buffers = null;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    get isDestroyed()
+    {
+        return Boolean(this._buffers) === false;
+    }
+
+    /**
+     * Build the dynamic buffers.
+     * @private
+     */
+    #_createBuffers(batchSpritesCount, enableVertexColor)
+    {
+        let gl = this.#_gl;
+
+        if (enableVertexColor === undefined) { enableVertexColor = true; }
+        
+        // dynamic buffers, used for batch rendering
+        this._buffers = {
+            
+            positionBuffer: gl.createBuffer(),
+            positionArray: new Float32Array(3 * 4 * batchSpritesCount),
+
+            textureCoordBuffer: gl.createBuffer(),
+            textureArray: new Float32Array(2 * 4 * batchSpritesCount),
+
+            colorsBuffer: enableVertexColor ? gl.createBuffer() : null,
+            colorsArray: enableVertexColor ? (new Float32Array(4 * 4 * batchSpritesCount)) : null,
+
+            indexBuffer: gl.createBuffer(),
+        }
+
+        // create the indices buffer
+        let maxIndex = (batchSpritesCount * 4);
+        let indicesArrayType;
+        if (maxIndex <= 256) {
+            indicesArrayType = Uint8Array;
+            this.__indicesType = gl.UNSIGNED_BYTE;
+        }
+        if (maxIndex <= 65535) {
+            indicesArrayType = Uint16Array;
+            this.__indicesType = gl.UNSIGNED_SHORT;
+        }
+        else {
+            indicesArrayType = Uint32Array;
+            this.__indicesType = gl.UNSIGNED_INT;
+        }
+        let indices = new indicesArrayType(batchSpritesCount * 6); // 6 = number of indices per sprite
+        let inc = 0;
+        for (let i = 0; i < indices.length; i += 6) {
+            
+            indices[i] = inc;
+            indices[i+1] = inc + 1;
+            indices[i+2] = inc + 2;
+
+            indices[i+3] = inc + 1;
+            indices[i+4] = inc + 3;
+            indices[i+5] = inc + 2;
+
+            inc += 4;
+        }
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this._buffers.indexBuffer);
+        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STATIC_DRAW);
+
+        // extand buffers functionality
+        function extendBuffer(buff)
+        {
+            if (buff) { buff._index = 0; }
+        }
+        extendBuffer(this._buffers.positionArray);
+        extendBuffer(this._buffers.textureArray);
+        extendBuffer(this._buffers.colorsArray);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    clear()
+    {
+        super.clear();
+        if (this._buffers.positionArray) { this._buffers.positionArray._index = 0; }
+        if (this._buffers.textureArray) { this._buffers.textureArray._index = 0; }
+        if (this._buffers.colorsArray && this.supportVertexColor) { this._buffers.colorsArray._index = 0; }
+        this.__quadsCount = 0;
+        this.__dirty = false;
+    }
+
+    /**
+     * Set a new active texture and draw batch if needed.
+     * @private
+     */
+    _updateTexture(texture)
+    {
+        // if texture changed, draw current batch first
+        if (this.__currDrawingParams.texture && (this.__currDrawingParams.texture != texture)) {
+            this._drawBatch();
+            this.clear();
+            this.__dirty = true;
+        }
+
+        // set active texture
+        this.__currDrawingParams.texture = texture;
+    }
+
+    /**
+     * Get if this sprite batch support vertex color.
+     * @returns {Boolean} True if support vertex color.
+     */
+    get supportVertexColor()
+    {
+        return Boolean(this._buffers.colorsBuffer);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    get defaultEffect()
+    {
+        return this.supportVertexColor ? this.#_gfx.builtinEffects.Sprites : this.#_gfx.builtinEffects.SpritesNoVertexColor;
+    }
+
+    /**
+     * Add sprite or sprites to batch.
+     * @param {Sprite|Array<Sprite>} sprites Sprite or multiple sprites to draw.
+     * @param {Matrix=} transform Optional transformations to apply on sprite vertices. Won't apply on static sprites.
+     * @param {Boolean=} cullOutOfScreen If true, will cull sprites that are not visible in currently set rendering region.
+     */
+    drawSprite(sprites, transform, cullOutOfScreen)
+    {
+        // sanity
+        this.__validateDrawing(true);
+
+        // make sure array
+        if (!Array.isArray(sprites)) {
+            sprites = [sprites];
+        }
+
+        // mark as dirty
+        this.__dirty = true;
+
+        // get colors and uvs array
+        let colors = this._buffers.colorsArray;
+        let uvs = this._buffers.textureArray;
+
+        // get screen region for culling
+        const screenRegion = (cullOutOfScreen || (this.cullOutOfScreen && (cullOutOfScreen === undefined))) ? this.#_gfx._internal.getRenderingRegionInternal() : null;
+
+        // add all sprites
+        for (let sprite of sprites) {
+
+            // update texture
+            this._updateTexture(sprite.texture);
+
+            // update quads count
+            this.__quadsCount++;
+
+            // set colors
+            if (colors && this.__currDrawingParams.hasVertexColor) {
+
+                // array of colors
+                if (Array.isArray(sprite.color)) {
+                    let lastColor = sprite.color[0];
+                    for (let x = 0; x < 4; ++x) {
+                        let curr = (sprite.color[x] || lastColor);
+                        colors[colors._index++] = curr.r;
+                        colors[colors._index++] = curr.g;
+                        colors[colors._index++] = curr.b;
+                        colors[colors._index++] = curr.a;
+                        lastColor = curr;
+                    }
+                }
+                // single color
+                else {
+                    let curr = sprite.color;
+                    for (let x = 0; x < 4; ++x) {
+                        colors[colors._index++] = curr.r;
+                        colors[colors._index++] = curr.g;
+                        colors[colors._index++] = curr.b;
+                        colors[colors._index++] = curr.a;
+                    }
+                }
+            
+            }
+
+            // get source rectangle
+            let sourceRect = sprite.sourceRectangle;
+            let textureSourceRect = sprite.texture.sourceRectangle;
+
+            // if got source rectangle, set it
+            if (sourceRect) 
+            {
+                textureSourceRect = textureSourceRect || {x:0, y:0, width:0, height:0};
+                let twidth = sprite.texture.width;
+                let theight = sprite.texture.height;
+                let left = (sourceRect.left + textureSourceRect.x) / twidth;
+                let right = (sourceRect.right + textureSourceRect.x) / twidth;
+                let top = (sourceRect.top + textureSourceRect.y) / theight;
+                let bottom = (sourceRect.bottom + textureSourceRect.y) / theight;
+                uvs[uvs._index++] = (left);   uvs[uvs._index++] = (top);
+                uvs[uvs._index++] = (right);  uvs[uvs._index++] = (top);
+                uvs[uvs._index++] = (left);   uvs[uvs._index++] = (bottom);
+                uvs[uvs._index++] = (right);  uvs[uvs._index++] = (bottom);
+            }
+            // if got source rectangle from texture (texture atlas without source rect), set it
+            else if (textureSourceRect)
+            {
+                let normalized = sprite.texture.sourceRectangleNormalized;
+                let twidth = sprite.texture.width;
+                let theight = sprite.texture.height;
+                let left = normalized.left || (textureSourceRect.left) / twidth;
+                let right = normalized.right || (textureSourceRect.right) / twidth;
+                let top = normalized.top || (textureSourceRect.top) / theight;
+                let bottom = normalized.bottom || (textureSourceRect.bottom) / theight;
+                uvs[uvs._index++] = (left);   uvs[uvs._index++] = (top);
+                uvs[uvs._index++] = (right);  uvs[uvs._index++] = (top);
+                uvs[uvs._index++] = (left);   uvs[uvs._index++] = (bottom);
+                uvs[uvs._index++] = (right);  uvs[uvs._index++] = (bottom);
+            }
+            // if got no source rectangle, take entire texture
+            else 
+            {
+                uvs[uvs._index++] = 0;      uvs[uvs._index++] = 0;
+                uvs[uvs._index++] = 1;      uvs[uvs._index++] = 0;
+                uvs[uvs._index++] = 0;      uvs[uvs._index++] = 1;
+                uvs[uvs._index++] = 1;      uvs[uvs._index++] = 1;
+            }
+
+            // calculate vertices positions
+            let sizeX = sprite.size.x;
+            let sizeY = sprite.size.y;
+            let left = -sizeX * sprite.origin.x;
+            let top = -sizeY * sprite.origin.y;
+
+            // calculate corners
+            topLeft.x = left;               topLeft.y = top;
+            topRight.x = left + sizeX;      topRight.y = top;
+            bottomLeft.x = left;            bottomLeft.y = top + sizeY;
+            bottomRight.x = left + sizeX;   bottomRight.y = top + sizeY;
+
+            // are vertices axis aligned?
+            let axisAlined = true;
+
+            // apply skew
+            if (sprite.skew) 
+            {
+                // skew on x axis
+                if (sprite.skew.x) {
+                    topLeft.x += sprite.skew.x * sprite.origin.y;
+                    topRight.x += sprite.skew.x * sprite.origin.y;
+                    bottomLeft.x -= sprite.skew.x * (1 - sprite.origin.y);
+                    bottomRight.x -= sprite.skew.x * (1 - sprite.origin.y);
+                    axisAlined = false;
+                }
+                // skew on y axis
+                if (sprite.skew.y) {
+                    topLeft.y += sprite.skew.y * sprite.origin.x;
+                    bottomLeft.y += sprite.skew.y * sprite.origin.x;
+                    topRight.y -= sprite.skew.y * (1 - sprite.origin.x);
+                    bottomRight.y -= sprite.skew.y * (1 - sprite.origin.x);
+                    axisAlined = false;
+                }
+            }
+
+            // apply rotation
+            if (sprite.rotation) {
+                let cos = Math.cos(sprite.rotation);
+                let sin = Math.sin(sprite.rotation);
+                function rotateVec(vector)
+                {
+                    let x = (vector.x * cos - vector.y * sin);
+                    let y = (vector.x * sin + vector.y * cos);
+                    vector.x = x;
+                    vector.y = y;
+                }
+                rotateVec(topLeft);
+                rotateVec(topRight);
+                rotateVec(bottomLeft);
+                rotateVec(bottomRight);
+                axisAlined = false;
+            }
+
+            // add sprite position
+            topLeft.x += sprite.position.x;
+            topLeft.y += sprite.position.y;
+            topRight.x += sprite.position.x;
+            topRight.y += sprite.position.y;
+            bottomLeft.x += sprite.position.x;
+            bottomLeft.y += sprite.position.y;
+            bottomRight.x += sprite.position.x;
+            bottomRight.y += sprite.position.y;
+
+            // apply transform
+            if (transform && !transform.isIdentity) {
+                topLeft.copy((topLeft.z !== undefined) ?  Matrix.transformVector3(transform, topLeft) : Matrix.transformVector2(transform, topLeft));
+                topRight.copy((topRight.z !== undefined) ?  Matrix.transformVector3(transform, topRight) : Matrix.transformVector2(transform, topRight));
+                bottomLeft.copy((bottomLeft.z !== undefined) ?  Matrix.transformVector3(transform, bottomLeft) : Matrix.transformVector2(transform, bottomLeft));
+                bottomRight.copy((bottomRight.z !== undefined) ?  Matrix.transformVector3(transform, bottomRight) : Matrix.transformVector2(transform, bottomRight));
+            }
+
+            // cull out-of-screen sprites
+            if (screenRegion)
+            {
+                let destRect = axisAlined ? 
+                    new Rectangle(topLeft.x, topLeft.y, bottomRight.x - topLeft.x, bottomRight.y - topLeft.y) : 
+                    Rectangle.fromPoints([topLeft, topRight, bottomLeft, bottomRight]);
+
+                if (!screenRegion.collideRect(destRect)) {
+                    return;
+                }
+            }
+
+            // snap pixels
+            if (this.snapPixels)
+            {
+                topLeft.floorSelf();
+                topRight.floorSelf();
+                bottomLeft.floorSelf();
+                bottomRight.floorSelf();
+            }
+
+            // optional z position
+            let z = sprite.position.z || 0;
+            let zDepth = z + sprite.size.z || 0;
+
+            // update positions buffer
+            let positions = this._buffers.positionArray;
+            positions[positions._index++] = topLeft.x;             positions[positions._index++] = topLeft.y;             positions[positions._index++] = z;
+            positions[positions._index++] = topRight.x;            positions[positions._index++] = topRight.y;            positions[positions._index++] = z;
+            positions[positions._index++] = bottomLeft.x;          positions[positions._index++] = bottomLeft.y;          positions[positions._index++] = zDepth;
+            positions[positions._index++] = bottomRight.x;         positions[positions._index++] = bottomRight.y;         positions[positions._index++] = zDepth;
+
+            // check if full
+            if (this.__quadsCount >= this.__maxQuadsCount) {
+                this._handleFullBuffer();
+            }
+        }
+    }
+
+    /**
+     * Get how many quads are currently in batch.
+     * @returns {Number} Quads in batch count.
+     */
+    get quadsInBatch()
+    {
+        return this.__quadsCount;
+    }
+
+    /**
+     * Get how many quads this sprite batch can contain.
+     * @returns {Number} Max quads count.
+     */
+    get maxQuadsCount()
+    {
+        return this.__maxQuadsCount;
+    }
+
+    /**
+     * Check if this batch is full.
+     * @returns {Boolean} True if batch is full.
+     */
+    get isFull()
+    {
+        return this.__quadsCount >= this.__maxQuadsCount;
+    }
+
+    /**
+     * Called when the batch becomes full while drawing and there's no handler.
+     * @private
+     */
+    _handleFullBuffer()
+    {
+        // invoke on-overflow callback
+        if (this.onOverflow) {
+            this.onOverflow();
+        }
+        
+        // draw current batch and clear
+        this._drawBatch();
+        this.clear();
+    }
+
+    /**
+     * @inheritdoc
+     * @private
+     */
+    _drawBatch()
+    {
+        // get texture and effect
+        let texture = this.__currDrawingParams.texture;
+        let effect = this.__currDrawingParams.effect;
+
+        // texture not loaded yet? skip
+        if (!texture || !texture.valid) { 
+            return; 
+        }
+        
+        // should copy buffers
+        let needBuffersCopy = this.__dirty;
+
+        // calculate current batch quads count
+        let _currBatchCount = this.quadsInBatch;
+
+        // nothing to draw? skip
+        if (_currBatchCount === 0) {
+            return;
+        }
+
+        // get some fields we'll need
+        let gl = this.#_gl;
+        let gfx = this.#_gfx;
+        let positionArray = this._buffers.positionArray;
+        let textureArray = this._buffers.textureArray;
+        let colorsArray = this.__currDrawingParams.hasVertexColor ? this._buffers.colorsArray : null;
+        let positionBuffer = this._buffers.positionBuffer;
+        let textureCoordBuffer = this._buffers.textureCoordBuffer;
+        let colorsBuffer = this._buffers.colorsBuffer;
+        let indexBuffer = this._buffers.indexBuffer;
+
+        // call base method to set effect and draw params
+        super._drawBatch();
+
+        // copy position buffer
+        effect.setPositionsAttribute(positionBuffer, true);
+        if (needBuffersCopy) {
+            gl.bufferData(gl.ARRAY_BUFFER, 
+                positionArray, 
+                this.__buffersUsage, 0, _currBatchCount * 4 * 3);
+        }
+
+        // copy texture buffer
+        effect.setTextureCoordsAttribute(textureCoordBuffer, true);
+        if (needBuffersCopy) {
+            gl.bufferData(gl.ARRAY_BUFFER, 
+                textureArray, 
+                this.__buffersUsage, 0, _currBatchCount * 4 * 2);
+        }
+
+        // copy color buffer
+        if (this.__currDrawingParams.hasVertexColor && colorsBuffer) {
+            effect.setColorsAttribute(colorsBuffer, true);
+            if (needBuffersCopy && colorsArray) {
+                gl.bufferData(gl.ARRAY_BUFFER, 
+                    colorsArray, 
+                    this.__buffersUsage, 0, _currBatchCount * 4 * 4);
+            }
+        }
+
+        // set indices
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+
+        // draw elements
+        gl.drawElements(gl.TRIANGLES, _currBatchCount * 6, this.__indicesType, 0);
+        gfx._internal.drawCallsCount++;
+        gfx._internal.drawQuadsCount += _currBatchCount;
+
+        // mark as not dirty
+        this.__dirty = false;
+        
+        // if static, free arrays we no longer need them
+        if (this.__staticBuffers) {
+            this._buffers.positionArray = this._buffers.textureArray = this._buffers.colorsArray = null;
+        }
+    }
+}
+
+// used for vertices calculations
+const topLeft = new Vector2(0, 0);
+const topRight = new Vector2(0, 0);
+const bottomLeft = new Vector2(0, 0);
+const bottomRight = new Vector2(0, 0);
+
+// export the sprite batch base class
+module.exports = SpriteBatchBase;
+
+/***/ }),
+
+/***/ 985:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+/**
+ * Implement the gfx text sprite batch renderer.
+ * 
+ * |-- copyright and license --|
+ * @module     Shaku
+ * @file       shaku\src\gfx\draw_batches\text_batch.js
+ * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
+ * @copyright  (c) 2021 Ronen Ness
+ * @license    MIT
+ * |-- end copyright and license --|
+ * 
+ */
+
+const FontTextureAsset = __webpack_require__(167);
+const MsdfFontTextureAsset = __webpack_require__(1252);
+const { Color } = __webpack_require__(3624);
+const SpritesGroup = __webpack_require__(1036);
+const DrawBatch = __webpack_require__(2069);
+const SpriteBatch = __webpack_require__(962);
+const SpriteBatchBase = __webpack_require__(6195);
+const _logger = (__webpack_require__(5259).getLogger)('gfx-effect');
+
+
+/**
+ * Text sprite batch renderer.
+ * Responsible to drawing a batch of characters sprites.
+ */
+class TextSpriteBatch extends SpriteBatchBase
+{
+    /**
+     * Create the text sprites batch.
+     * @param {Number=} batchSpritesCount Internal buffers size, in sprites count (sprite = 4 vertices). Bigger value = faster rendering but more RAM.
+     */
+    constructor(batchSpritesCount)
+    {
+        super(batchSpritesCount, true);
+
+        /**
+         * If true, will render as Msdf Fonts.
+         * @type {Boolean}
+         * @name TextSpriteBatch#msdfFont
+         */
+        this.msdfFont = false;
+
+        /**
+         * If bigger than 0, will draw outline.
+         * Currently not supported with msdf fonts.
+         * Must be set before begin() is called.
+         * @type {Number}
+         * @name TextSpriteBatch#outlineWeight
+         */
+        this.outlineWeight = 0;
+
+        /**
+         * Outline color, when outlineWeight is set.
+         * Must be set before begin() is called.
+         * @type {Color}
+         * @name TextSpriteBatch#outlineColor
+         */
+        this.outlineColor = Color.black;
+    }
+
+    /**
+     * Get the gfx manager.
+     * @private
+     */
+    get #_gfx()
+    {
+        return DrawBatch._gfx;
+    }
+
+    /**
+     * Get the web gl instance.
+     * @private
+     */
+    get #_gl()
+    {
+        return DrawBatch._gfx._internal.gl;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    get defaultEffect()
+    {
+        return this.msdfFont ? 
+                this.#_gfx.builtinEffects.MsdfFont : 
+                (this.outlineWeight ? this.#_gfx.builtinEffects.SpritesWithOutline : this.#_gfx.builtinEffects.Sprites);
+    }
+
+    /**
+     * Add text sprites group to batch.
+     * @param {SpritesGroup} textGroup Text sprite group to draw.
+     * @param {Boolean} cullOutOfScreen If true, will cull out sprites that are not visible in screen.
+     */
+    drawText(textGroup, cullOutOfScreen)
+    {
+        let transform = textGroup.getTransform();
+        this.drawSprite(textGroup._sprites, transform, cullOutOfScreen);
+    }
+
+    /**
+     * @inheritdoc
+     * @private
+     */
+    _drawBatch()
+    {
+        // extract texture
+        let texture = this.__currDrawingParams.texture;
+
+        // sanity for msdf font
+        if (this.msdfFont && !(texture instanceof MsdfFontTextureAsset)) {
+            _logger.warn("Trying to render an MSDF font but using an asset that isn't an instance of 'MsdfFontTextureAsset'!");
+        }
+
+        // sanity for none msdf font
+        if (!this.msdfFont && !(texture instanceof FontTextureAsset)) {
+            _logger.warn("Trying to render text sprites but using an asset that isn't an instance of 'FontTextureAsset'!");
+        }
+
+        // set default effect and blend mode
+        let effect = this.__currDrawingParams.effect || this.defaultEffect;
+
+        // setup outline
+        if (this.outlineWeight) {
+            effect.setOutline(this.outlineWeight, this.outlineColor);
+        }
+
+        // extract font texture and set in sprite batch before calling internal draw
+        let prevFontTexture = this.__currDrawingParams.texture;
+        this.__currDrawingParams.texture = texture.texture;
+        super._drawBatch();
+        this.__currDrawingParams.texture = prevFontTexture;
+    }
+}
+
+
+// export the text sprite batch class
+module.exports = TextSpriteBatch;
+
+/***/ }),
+
+/***/ 8986:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
 /**
  * Effect base class.
  * 
  * |-- copyright and license --|
- * @package    Shaku
- * @file       shaku\lib\gfx\effects\effect.js
+ * @module     Shaku
+ * @file       shaku\src\gfx\effects\effect.js
  * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
  * @copyright  (c) 2021 Ronen Ness
  * @license    MIT
  * |-- end copyright and license --|
  * 
  */
-'use strict';
 
-const TextureAsset = require('../../assets/texture_asset.js');
-const Color = require('../../utils/color.js');
-const Rectangle = require('../../utils/rectangle.js');
-const { TextureFilterModes } = require('../texture_filter_modes');
-const { TextureWrapMode, TextureWrapModes } = require('../texture_wrap_modes');
-const Matrix = require('../matrix.js');
-const _logger = require('../../logger.js').getLogger('gfx-effect');
+
+const TextureAsset = __webpack_require__(2262);
+const Color = __webpack_require__(9327);
+const Rectangle = __webpack_require__(4731);
+const { TextureFilterModes } = __webpack_require__(5387);
+const { TextureWrapMode, TextureWrapModes } = __webpack_require__(2464);
+const Matrix = __webpack_require__(5599);
+const Vector2 = __webpack_require__(2544);
+const TextureAssetBase = __webpack_require__(4397);
+const _logger = (__webpack_require__(5259).getLogger)('gfx-effect');
+
+// currently applied effect
+let _currEffect = null;
 
 
 /**
@@ -4012,25 +7352,33 @@ const _logger = require('../../logger.js').getLogger('gfx-effect');
 class Effect
 {
     /**
+     * Create the effect.
+     */
+    constructor()
+    {
+        this.#_build(Effect._gfx._internal.gl);
+    }
+
+    /**
      * Build the effect.
      * Called from gfx manager.
      * @private
      * @param {WebGl} gl WebGL context.
      */
-    _build(gl)
+    #_build(gl)
     {
         // create program
         let program = gl.createProgram();
 
         // build vertex shader
         {
-            let shader = compileShader(gl, this.vertexCode, gl.VERTEX_SHADER);
+            let shader = compileShader(this.constructor, gl, this.vertexCode, gl.VERTEX_SHADER);
             gl.attachShader(program, shader);
         }
 
         // build fragment shader
         {
-            let shader = compileShader(gl, this.fragmentCode, gl.FRAGMENT_SHADER);
+            let shader = compileShader(this.constructor, gl, this.fragmentCode, gl.FRAGMENT_SHADER);
             gl.attachShader(program, shader);
         }
 
@@ -4054,6 +7402,10 @@ class Effect
         // dictionary to bind uniform to built-in roles, like main texture or color
         this._uniformBinds = {};
 
+        // values waiting to set as soon as the effect turns active
+        this._pendingUniformValues = {};
+        this._pendingAttributeValues = {};
+
         // initialize uniform setters
         for (let uniform in this.uniformTypes) {
 
@@ -4075,6 +7427,10 @@ class Effect
             if (uniformData.type === UniformTypes.Matrix) {
                 (function(_this, name, location, method) {
                     _this.uniforms[name] = (mat) => {
+                        if (_currEffect !== _this) {
+                            _this._pendingUniformValues[name] = [mat];
+                            return;
+                        }
                         _this._gl[method](location, false, mat);
                     }
                 })(this, uniform, uniformLocation, uniformData.type);
@@ -4083,8 +7439,12 @@ class Effect
             else if (uniformData.type === UniformTypes.Texture) {
                 (function(_this, name, location, method) {
                     _this.uniforms[name] = (texture, index) => {
+                        if (_currEffect !== _this) {
+                            _this._pendingUniformValues[name] = [texture, index];
+                            return;
+                        }
                         index = index || 0;
-                        const glTexture = texture.texture || texture;
+                        const glTexture = texture._glTexture || texture;
                         const textureCode = _this._gl['TEXTURE' + (index || 0)];
                         _this._gl.activeTexture(textureCode);
                         _this._gl.bindTexture(_this._gl.TEXTURE_2D, glTexture);
@@ -4094,10 +7454,31 @@ class Effect
                     }
                 })(this, uniform, uniformLocation, uniformData.type);
             }
+            // build setter method for colors
+            else if (uniformData.type === UniformTypes.Color) {
+                (function(_this, name, location, method) {
+                    _this.uniforms[name] = (v1, v2, v3, v4) => {
+                        if (_currEffect !== _this) {
+                            _this._pendingUniformValues[name] = [v1, v2, v3, v4];
+                            return;
+                        }
+                        if (v1 instanceof Color) {
+                            _this._gl[method](location, v1.floatArray);
+                        }
+                        else {
+                            _this._gl[method](location, v1, v2, v3, v4);
+                        }
+                    }
+                })(this, uniform, uniformLocation, uniformData.type);       
+            }
             // build setter method for other types
             else {
                 (function(_this, name, location, method) {
                     _this.uniforms[name] = (v1, v2, v3, v4) => {
+                        if (_currEffect !== _this) {
+                            _this._pendingUniformValues[name] = [v1, v2, v3, v4];
+                            return;
+                        }
                         _this._gl[method](location, v1, v2, v3, v4);
                     }
                 })(this, uniform, uniformLocation, uniformData.type);       
@@ -4132,6 +7513,12 @@ class Effect
             // build setter method
             (function(_this, name, location, data) {
                 _this.attributes[name] = (buffer) => {
+                    
+                    if (_currEffect !== _this) {
+                        _this._pendingAttributeValues[name] = [buffer];
+                        return;
+                    }
+
                     if (buffer) {
                         _this._gl.bindBuffer(_this._gl.ARRAY_BUFFER, buffer);
                         _this._gl.vertexAttribPointer(location, data.size, _this._gl[data.type] || _this._gl.FLOAT, data.normalize || false, data.stride || 0, data.offset || 0);
@@ -4188,19 +7575,37 @@ class Effect
 
     /**
      * Make this effect active.
+     * @param {*} overrideFlags Optional flags to override in effect. 
+     * May include the following: enableDepthTest, enableFaceCulling, enableStencilTest, enableDithering.
      */
-    setAsActive()
+    setAsActive(overrideFlags)
     {
         // use effect program
         this._gl.useProgram(this._program);
 
         // enable / disable some features
-        if (this.enableDepthTest) { this._gl.enable(this._gl.DEPTH_TEST); } else { this._gl.disable(this._gl.DEPTH_TEST); }
-        if (this.enableFaceCulling) { this._gl.enable(this._gl.CULL_FACE); } else { this._gl.disable(this._gl.CULL_FACE); }
-        if (this.enableStencilTest) { this._gl.enable(this._gl.STENCIL_TEST); } else { this._gl.disable(this._gl.STENCIL_TEST); }
-        if (this.enableDithering) { this._gl.enable(this._gl.DITHER); } else { this._gl.disable(this._gl.DITHER); }
+        overrideFlags = overrideFlags || {};
+        if ((overrideFlags.enableDepthTest !== undefined) ? overrideFlags.enableDepthTest : this.enableDepthTest) { this._gl.enable(this._gl.DEPTH_TEST); } else { this._gl.disable(this._gl.DEPTH_TEST); }
+        if ((overrideFlags.enableFaceCulling !== undefined) ? overrideFlags.enableFaceCulling : this.enableFaceCulling) { this._gl.enable(this._gl.CULL_FACE); } else { this._gl.disable(this._gl.CULL_FACE); }
+        if ((overrideFlags.enableStencilTest !== undefined) ? overrideFlags.enableStencilTest : this.enableStencilTest) { this._gl.enable(this._gl.STENCIL_TEST); } else { this._gl.disable(this._gl.STENCIL_TEST); }
+        if ((overrideFlags.enableDithering !== undefined) ? overrideFlags.enableDithering : this.enableDithering) { this._gl.enable(this._gl.DITHER); } else { this._gl.disable(this._gl.DITHER); }
         this._gl.depthFunc(this._gl.LEQUAL);
-        
+         
+        // set as active
+        _currEffect = this;
+
+        // set pending uniforms that were set while this effect was not active
+        for (let key in this._pendingUniformValues) {
+            this.uniforms[key](...this._pendingUniformValues[key])
+        }
+        this._pendingUniformValues = {};
+
+        // set pending attributes that were set while this effect was not active
+        for (let key in this._pendingAttributeValues) {
+            this.attributes[key](...this._pendingAttributeValues[key])
+        }
+        this._pendingAttributeValues = {};
+
         // reset cached values
         this._cachedValues = {};
     }
@@ -4217,6 +7622,20 @@ class Effect
         this.setTextureCoordsAttribute(mesh.textureCoords);
         this.setColorsAttribute(mesh.colors);
         this.setWorldMatrix(world);
+    }
+
+    /**
+     * Get a uniform method from a bind key.
+     * @param {UniformBinds} bindKey Uniform bind key.
+     * @returns Uniform set method, or null if not set.
+     */
+    getBoundUniform(bindKey)
+    {
+        let key = this._uniformBinds[bindKey];
+        if (key) {
+            return this.uniforms[key] || null;
+        }
+        return null;
     }
 
     /**
@@ -4271,8 +7690,8 @@ class Effect
 
     /**
      * Set the main texture.
-     * Only works if there's a uniform type bound to 'MainTexture'.
-     * @param {TextureAsset} texture Texture to set.
+     * Note: this will only work for effects that utilize the 'MainTexture' uniform.
+     * @param {TextureAssetBase} texture Texture to set.
      * @returns {Boolean} True if texture was changed, false if there was no need to change the texture.
      */
     setTexture(texture)
@@ -4283,102 +7702,113 @@ class Effect
         }
 
         // get texture uniform
-        let uniform = this._uniformBinds[Effect.UniformBinds.MainTexture];
+        let uniform = this.getBoundUniform(Effect.UniformBinds.MainTexture);
 
         // set texture
         if (uniform) {
+
+            // set texture value
             this._cachedValues.texture = texture;
-            let glTexture = texture.texture || texture;
+            let glTexture = texture._glTexture || texture;
             this._gl.activeTexture(this._gl.TEXTURE0);
             this._gl.bindTexture(this._gl.TEXTURE_2D, glTexture);
-            this.uniforms[uniform](texture, 0);
+            uniform(texture, 0);
+
+            // set texture size
+            let textWidth = this.getBoundUniform(Effect.UniformBinds.TextureWidth);
+            if (textWidth) { textWidth(texture.width); }
+            let textHeight = this.getBoundUniform(Effect.UniformBinds.TextureHeight);
+            if (textHeight) { textHeight(texture.height); }
+
+            // success
             return true;
         }
+
+        // didn't set..
         return false;
     }
 
     /**
      * Set the main tint color.
-     * Only works if there's a uniform type bound to 'Color'.
+     * Note: this will only work for effects that utilize the 'Color' uniform.
      * @param {Color} color Color to set.
      */
     setColor(color)
     {
-        let uniform = this._uniformBinds[Effect.UniformBinds.Color];
+        let uniform = this.getBoundUniform(Effect.UniformBinds.Color);
         if (uniform) {
             if (color.equals(this._cachedValues.color)) { return; }
             this._cachedValues.color = color.clone();
-            this.uniforms[uniform](color.floatArray);
-        }
-    }
-
-    /**
-     * Set uvOffset and uvScale params from source rectangle and texture.
-     * @param {Rectangle} sourceRect Source rectangle to set, or null to take entire texture.
-     * @param {TextureAsset} texture Texture asset to set source rect for.
-     */
-    setUvOffsetAndScale(sourceRect, texture)
-    {
-        // skip if the same
-        if (sourceRect) {
-            if (sourceRect.equals(this._cachedValues.sourceRect)) { return; }
-        }
-        else {
-            if (this._cachedValues.sourceRect === null) { return; }
-        }
-        this._cachedValues.sourceRect = sourceRect ? sourceRect.clone() : null;
-
-        // default source rect
-        if (!sourceRect) { sourceRect = new Rectangle(0, 0, texture.width, texture.height); }
-
-        // set uv offset
-        let uvOffset = this._uniformBinds[Effect.UniformBinds.UvOffset];
-        if (uvOffset) {
-            this.uniforms[uvOffset](sourceRect.x / texture.width, sourceRect.y / texture.height);
-        }
-        
-        // set uv scale
-        let uvScale = this._uniformBinds[Effect.UniformBinds.UvScale];
-        if (uvScale) {
-            this.uniforms[uvScale](sourceRect.width / texture.width, sourceRect.height / texture.height);
+            uniform(color.floatArray);
         }
     }
 
     /**
      * Set the projection matrix uniform.
+     * Note: this will only work for effects that utilize the 'Projection' uniform.
      * @param {Matrix} matrix Matrix to set.
      */
     setProjectionMatrix(matrix)
     {
-        let uniform = this._uniformBinds[Effect.UniformBinds.Projection];
+        let uniform = this.getBoundUniform(Effect.UniformBinds.Projection);
         if (uniform) {
             if (matrix.equals(this._cachedValues.projection)) { return; }
             this._cachedValues.projection = matrix.clone();
-            this.uniforms[uniform](matrix.values);
+            uniform(matrix.values);
         }
     }
 
     /**
      * Set the world matrix uniform.
+     * Note: this will only work for effects that utilize the 'World' uniform.
      * @param {Matrix} matrix Matrix to set.
      */
     setWorldMatrix(matrix)
     {
-        let uniform = this._uniformBinds[Effect.UniformBinds.World];
+        let uniform = this.getBoundUniform(Effect.UniformBinds.World);
         if (uniform) {
-            this.uniforms[uniform](matrix.values);
+            uniform(matrix.values);
         }
     }
      
     /**
      * Set the view matrix uniform.
+     * Note: this will only work for effects that utilize the 'View' uniform.
      * @param {Matrix} matrix Matrix to set.
      */
     setViewMatrix(matrix)
     {
-        let uniform = this._uniformBinds[Effect.UniformBinds.View];
+        let uniform = this.getBoundUniform(Effect.UniformBinds.View);
         if (uniform) {
-            this.uniforms[uniform](matrix.values);
+            uniform(matrix.values);
+        }
+    }
+
+    /**
+     * Set outline params.
+     * Note: this will only work for effects that utilize the 'OutlineWeight' and 'OutlineColor' uniforms.
+     * @param {Number} weight Outline weight, range from 0.0 to 1.0.
+     * @param {Color} color Outline color.
+     */
+    setOutline(weight, color)
+    {
+        let weightUniform = this.getBoundUniform(Effect.UniformBinds.OutlineWeight);
+        if (weightUniform) { weightUniform(weight); }
+
+        let colorUniform = this.getBoundUniform(Effect.UniformBinds.OutlineColor);
+        if (colorUniform) { colorUniform(color); }
+    }
+
+    /**
+     * Set a factor to normalize UV values to be 0-1.
+     * Note: this will only work for effects that utilize the 'UvNormalizationFactor' uniform.
+     * @param {Vector2} factor Normalize UVs factor.
+     */
+    setUvNormalizationFactor(factor)
+    {
+        uniform = this.getBoundUniform(Effect.UniformBinds.UvNormalizationFactor);
+        if (uniform) { 
+            uniform(factor.x, factor.y); 
         }
     }
 
@@ -4413,6 +7843,15 @@ class Effect
             this.attributes[attr](buffer);
         }
     }
+
+    /**
+     * Return if this effect have colors attribute on vertices.
+     * @returns {Boolean} True if got vertices color attribute.
+     */
+    get hasVertexColor()
+    {
+        return Boolean(this._attributeBinds[Effect.AttributeBinds.Colors]);
+    }
          
     /**
      * Set the vertices colors buffer.
@@ -4434,7 +7873,7 @@ class Effect
 /**
  * Build a shader.
  */
-function compileShader(gl, code, type) 
+function compileShader(effectClass, gl, code, type) 
 {
     let shader = gl.createShader(type);
 
@@ -4442,7 +7881,7 @@ function compileShader(gl, code, type)
     gl.compileShader(shader);
 
     if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-        _logger.error(`Error compiling ${type === gl.VERTEX_SHADER ? "vertex" : "fragment"} shader:`);
+        _logger.error(`Error compiling ${type === gl.VERTEX_SHADER ? "vertex" : "fragment"} shader for effect '${effectClass.name}':`);
         _logger.error(gl.getShaderInfoLog(shader));
         throw new Error("Failed to compile a shader.");
     }
@@ -4496,19 +7935,36 @@ Object.freeze(UniformTypes);
 // attach uniform types to effect
 Effect.UniformTypes = UniformTypes;
 
-// define uniform binds - connect uniform name to special usage, like key texture, etc.
+/**
+ * Default uniform binds.
+ * This is a set of commonly used uniforms and their names inside the shader code.
+ * 
+ * Every bind here comes with a built-in method to set and is used internally by Shaku.
+ * For example, if you want to include outline properties in your effect, you can use the 'OutlineWeight' and 'OutlineColor' binds (with matching name in the shader code). 
+ * When you use the built-in binds, Shaku will know how to set them itself when relevant, for example in text rendering Shaku will use the outline binds if they exist.
+ * 
+ * If you don't use the built-in binds you can just call your uniforms however you like, but you'll need to set them all manually. 
+ * Shaku will not know how to set them.
+ */
 Effect.UniformBinds = {
-    MainTexture: 'texture',     // bind uniform to be used as the main texture.
-    Color: 'color',             // bind uniform to be used as a main color.
-    Projection: 'projection',   // bind uniform to be used as the projection matrix.
-    World: 'world',             // bind uniform to be used as the world matrix.
-    View: 'view',               // bind uniform to be used as the view matrix.
-    UvOffset: 'uvOffset',       // bind uniform to be used as UV offset.
-    UvScale: 'uvScale',         // bind uniform to be used as UV scale.
+    MainTexture: 'mainTexture',                         // bind uniform to be used as the main texture.
+    Color: 'color',                                     // bind uniform to be used as a main color.
+    Projection: 'projection',                           // bind uniform to be used as the projection matrix.
+    World: 'world',                                     // bind uniform to be used as the world matrix.
+    View: 'view',                                       // bind uniform to be used as the view matrix.
+    UvOffset: 'uvOffset',                               // bind uniform to be used as UV offset.
+    UvScale: 'uvScale',                                 // bind uniform to be used as UV scale.
+    OutlineWeight: 'outlineWeight',                     // bind uniform to be used as outline weight.
+    OutlineColor: 'outlineColor',                       // bind uniform to be used as outline color.
+    UvNormalizationFactor: 'uvNormalizationFactor',     // bind uniform to be used as factor to normalize uv values to be 0-1.
+    TextureWidth: 'textureWidth',                       // bind uniform to be used as texture width in pixels.
+    TextureHeight: 'textureHeight'                      // bind uniform to be used as texture height in pixels.
 };
 Object.freeze(Effect.UniformBinds);
 
-// define attribute value types.
+/**
+ * Define attribute types.
+ */
 Effect.AttributeTypes = {
     Byte: 'BYTE',
     Short: 'SHORT',
@@ -4519,11 +7975,14 @@ Effect.AttributeTypes = {
 };
 Object.freeze(Effect.AttributeTypes);
 
-// define attribute binds - connect attribute name to special usage, like position, uvs, etc.
+/**
+ * Define built-in attribute binds to connect attribute names for specific use cases like position, uvs, colors, etc.
+ * If an effect support one or more of these attributes, Shaku will know how to fill them automatically.
+ */
 Effect.AttributeBinds = {
-    Position: 'position',   // bind attribute to be used for vertices position array.
-    TextureCoords: 'uvs',   // bind attribute to be used for texture coords array.
-    Colors: 'colors',       // bind attribute to be used for vertices colors array.
+    Position: 'position',  // bind attribute to be used for vertices position array.
+    TextureCoords: 'uv',   // bind attribute to be used for texture coords array.
+    Colors: 'color',       // bind attribute to be used for vertices colors array.
 }
 Object.freeze(Effect.AttributeBinds);
 
@@ -4547,7 +8006,7 @@ function _setTextureFilter(gl, filter)
  * @param {TextureWrapMode} wrapX Wrap mode on X axis.
  * @param {TextureWrapMode} wrapY Wrap mode on Y axis.
  */
- function _setTextureWrapMode(gl, wrapX, wrapY)
+function _setTextureWrapMode(gl, wrapX, wrapY)
 {
     if (wrapY === undefined) { wrapY = wrapX; }
     if (!TextureWrapModes._values.has(wrapX)) { throw new Error("Invalid texture wrap mode! Please pick a value from 'TextureWrapModes'."); }
@@ -4557,68 +8016,85 @@ function _setTextureFilter(gl, filter)
 }
 
 
+// will be set by the gfx manager
+Effect._gfx = null;
+
+
 // export the effect class.
 module.exports = Effect;
-},{"../../assets/texture_asset.js":9,"../../logger.js":45,"../../utils/color.js":54,"../../utils/rectangle.js":61,"../matrix.js":30,"../texture_filter_modes":37,"../texture_wrap_modes":38}],26:[function(require,module,exports){
+
+/***/ }),
+
+/***/ 3020:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
 /**
  * Include all built-in effects.
  * 
  * |-- copyright and license --|
- * @package    Shaku
- * @file       shaku\lib\gfx\effects\index.js
+ * @module     Shaku
+ * @file       shaku\src\gfx\effects\index.js
  * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
  * @copyright  (c) 2021 Ronen Ness
  * @license    MIT
  * |-- end copyright and license --|
  * 
  */
- 'use strict';
+ 
 
  module.exports = {
-    Effect: require('./effect'),
-    BasicEffect: require('./basic'),
-    MsdfFontEffect: require('./msdf_font'),
+    Effect: __webpack_require__(8986),
+    SpritesEffect: __webpack_require__(1414),
+    SpritesEffectNoVertexColor: __webpack_require__(4481),
+    SpritesWithOutlineEffect: __webpack_require__(1484),
+    ShapesEffect: __webpack_require__(1205),
+    MsdfFontEffect: __webpack_require__(9069),
  }
-},{"./basic":24,"./effect":25,"./msdf_font":27}],27:[function(require,module,exports){
+
+/***/ }),
+
+/***/ 9069:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
 /**
  * Implement an effect to draw MSDF font textures.
  * 
  * |-- copyright and license --|
- * @package    Shaku
- * @file       shaku\lib\gfx\effects\msdf_font.js
+ * @module     Shaku
+ * @file       shaku\src\gfx\effects\msdf_font.js
  * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
  * @copyright  (c) 2021 Ronen Ness
  * @license    MIT
  * |-- end copyright and license --|
  * 
  */
-'use strict';
-const Effect = require("./effect");
+
+const Effect = __webpack_require__(8986);
 
 // vertex shader code
 const vertexShader = `#version 300 es
-in vec3 a_position;
-in vec2 a_coord;
-in vec4 a_color;
+in vec3 position;
+in vec2 uv;
+in vec4 color;
 
-uniform mat4 u_projection;
-uniform mat4 u_world;
+uniform mat4 projection;
+uniform mat4 world;
 
 out vec2 v_texCoord;
 out vec4 v_color;
 
 void main(void) {
-    gl_Position = u_projection * u_world * vec4(a_position, 1.0);
+    gl_Position = projection * world * vec4(position, 1.0);
     gl_PointSize = 1.0;
-    v_texCoord = a_coord;
-    v_color = a_color;
+    v_texCoord = uv;
+    v_color = color;
 }`;
 
 // fragment shader code
 const fragmentShader = `#version 300 es
 precision highp float;
 
-uniform sampler2D u_texture;
+uniform sampler2D mainTexture;
 
 in vec2 v_texCoord;
 in vec4 v_color;
@@ -4630,7 +8106,7 @@ float median(float r, float g, float b) {
 }
 
 void main(void) {
-  vec3 _sample = texture(u_texture, v_texCoord).rgb;
+  vec3 _sample = texture(mainTexture, v_texCoord).rgb;
   float sigDist = median(_sample.r, _sample.g, _sample.b) - 0.5;
   float alpha = clamp(sigDist / fwidth(sigDist) + 0.5, 0.0, 1.0);
   // float alpha = clamp((sigDist / (fwidth(sigDist) * 1.5)) + 0.5, 0.0, 1.0);
@@ -4660,9 +8136,9 @@ class MsdfFontEffect extends Effect
     get uniformTypes()
     {
         return {
-            "u_texture": { type: Effect.UniformTypes.Texture, bind: Effect.UniformBinds.MainTexture },
-            "u_projection": { type: Effect.UniformTypes.Matrix, bind: Effect.UniformBinds.Projection },
-            "u_world": { type: Effect.UniformTypes.Matrix, bind: Effect.UniformBinds.World },
+            [Effect.UniformBinds.MainTexture]: { type: Effect.UniformTypes.Texture, bind: Effect.UniformBinds.MainTexture },
+            [Effect.UniformBinds.Projection]: { type: Effect.UniformTypes.Matrix, bind: Effect.UniformBinds.Projection },
+            [Effect.UniformBinds.World]: { type: Effect.UniformTypes.Matrix, bind: Effect.UniformBinds.World },
         };
     }
 
@@ -4670,9 +8146,9 @@ class MsdfFontEffect extends Effect
     get attributeTypes()
     {
         return {
-            "a_position": { size: 3, type: Effect.AttributeTypes.Float, normalize: false, bind: Effect.AttributeBinds.Position },
-            "a_coord": { size: 2, type: Effect.AttributeTypes.Float, normalize: false, bind: Effect.AttributeBinds.TextureCoords },
-            "a_color": { size: 4, type: Effect.AttributeTypes.Float, normalize: false, bind: Effect.AttributeBinds.Colors },
+            [Effect.AttributeBinds.Position]: { size: 3, type: Effect.AttributeTypes.Float, normalize: false, bind: Effect.AttributeBinds.Position },
+            [Effect.AttributeBinds.TextureCoords]: { size: 2, type: Effect.AttributeTypes.Float, normalize: false, bind: Effect.AttributeBinds.TextureCoords },
+            [Effect.AttributeBinds.Colors]: { size: 4, type: Effect.AttributeTypes.Float, normalize: false, bind: Effect.AttributeBinds.Colors },
         };
     }
 }
@@ -4680,44 +8156,572 @@ class MsdfFontEffect extends Effect
 
 // export the basic shader
 module.exports = MsdfFontEffect;
-},{"./effect":25}],28:[function(require,module,exports){
+
+/***/ }),
+
+/***/ 1205:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
 /**
- * Implement the gfx manager.
+ * Implement a basic effect to draw sprites.
  * 
  * |-- copyright and license --|
- * @package    Shaku
- * @file       shaku\lib\gfx\gfx.js
+ * @module     Shaku
+ * @file       shaku\src\gfx\effects\shapes.js
  * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
  * @copyright  (c) 2021 Ronen Ness
  * @license    MIT
  * |-- end copyright and license --|
  * 
  */
-'use strict';
-const IManager = require('../manager.js');
-const Color = require('../utils/color.js');
-const { BlendMode, BlendModes } = require('./blend_modes.js');
-const Rectangle = require('../utils/rectangle.js');
-const { Effect, BasicEffect, MsdfFontEffect } = require('./effects');
-const TextureAsset = require('../assets/texture_asset.js');
-const { TextureFilterMode, TextureFilterModes } = require('./texture_filter_modes.js');
-const { TextureWrapMode, TextureWrapModes } = require('./texture_wrap_modes.js');
-const MeshGenerator = require('./mesh_generator.js');
-const Matrix = require('./matrix.js');
-const Camera = require('./camera.js');
-const Sprite = require('./sprite.js');
-const SpritesGroup = require('./sprites_group.js');
-const Vector2 = require('../utils/vector2.js');
-const FontTextureAsset = require('../assets/font_texture_asset.js');
-const MsdfFontTextureAsset = require('../assets/msdf_font_texture_asset.js');
-const { TextAlignment, TextAlignments } = require('./text_alignments.js');
-const Mesh = require('./mesh.js');
-const Circle = require('../utils/circle.js');
-const SpriteBatch = require('./sprite_batch.js');
-const Vector3 = require('../utils/vector3.js');
-const Vertex = require('./vertex');
-const _whiteColor = Color.white;
-const _logger = require('../logger.js').getLogger('gfx');
+
+const Effect = __webpack_require__(8986);
+
+// vertex shader code
+const vertexShader = `
+attribute vec3 position;
+attribute vec4 color;
+
+uniform mat4 projection;
+uniform mat4 world;
+
+varying vec4 v_color;
+
+void main(void) {
+    gl_Position = projection * world * vec4(position, 1.0);
+    gl_PointSize = 1.0;
+    v_color = color;
+}
+    `;
+
+// fragment shader code
+const fragmentShader = `  
+#ifdef GL_ES
+    precision highp float;
+#endif
+
+varying vec4 v_color;
+
+void main(void) {
+    gl_FragColor = v_color;
+    gl_FragColor.rgb *= gl_FragColor.a;
+}
+    `;
+
+/**
+ * Default basic effect to draw 2d shapes.
+ */
+class ShapesEffect extends Effect
+{
+    /** @inheritdoc */
+    get vertexCode() 
+    { 
+        return vertexShader; 
+    }
+
+    /** @inheritdoc */
+    get fragmentCode()
+    { 
+        return fragmentShader;
+    }
+
+    /** @inheritdoc */
+    get uniformTypes()
+    {
+        return {
+            [Effect.UniformBinds.Projection]: { type: Effect.UniformTypes.Matrix, bind: Effect.UniformBinds.Projection },
+            [Effect.UniformBinds.World]: { type: Effect.UniformTypes.Matrix, bind: Effect.UniformBinds.World },
+            [Effect.UniformBinds.View]: { type: Effect.UniformTypes.Matrix, bind: Effect.UniformBinds.View },
+        };
+    }
+
+    /** @inheritdoc */
+    get attributeTypes()
+    {
+        return {
+            [Effect.AttributeBinds.Position]: { size: 3, type: Effect.AttributeTypes.Float, normalize: false, bind: Effect.AttributeBinds.Position },
+            [Effect.AttributeBinds.Colors]: { size: 4, type: Effect.AttributeTypes.Float, normalize: false, bind: Effect.AttributeBinds.Colors },
+        };
+    }
+}
+
+
+// export the basic shader
+module.exports = ShapesEffect;
+
+/***/ }),
+
+/***/ 1414:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+/**
+ * Implement a basic effect to draw sprites.
+ * 
+ * |-- copyright and license --|
+ * @module     Shaku
+ * @file       shaku\src\gfx\effects\sprites.js
+ * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
+ * @copyright  (c) 2021 Ronen Ness
+ * @license    MIT
+ * |-- end copyright and license --|
+ * 
+ */
+
+const Effect = __webpack_require__(8986);
+
+// vertex shader code
+const vertexShader = `
+attribute vec3 position;
+attribute vec2 uv;
+attribute vec4 color;
+
+uniform mat4 projection;
+uniform mat4 world;
+
+varying vec2 v_texCoord;
+varying vec4 v_color;
+
+void main(void) {
+    gl_Position = projection * world * vec4(position, 1.0);
+    gl_PointSize = 1.0;
+    v_texCoord = uv;
+    v_color = color;
+}
+    `;
+
+// fragment shader code
+const fragmentShader = `  
+#ifdef GL_ES
+    precision highp float;
+#endif
+
+uniform sampler2D mainTexture;
+
+varying vec2 v_texCoord;
+varying vec4 v_color;
+
+void main(void) {
+    gl_FragColor = texture2D(mainTexture, v_texCoord) * v_color;
+    gl_FragColor.rgb *= gl_FragColor.a;
+}
+    `;
+
+/**
+ * Default basic effect to draw 2d sprites.
+ */
+class SpritesEffect extends Effect
+{
+    /** @inheritdoc */
+    get vertexCode() 
+    { 
+        return vertexShader; 
+    }
+
+    /** @inheritdoc */
+    get fragmentCode()
+    { 
+        return fragmentShader;
+    }
+
+    /** @inheritdoc */
+    get uniformTypes()
+    {
+        return {
+            [Effect.UniformBinds.MainTexture]: { type: Effect.UniformTypes.Texture, bind: Effect.UniformBinds.MainTexture },
+            [Effect.UniformBinds.Projection]: { type: Effect.UniformTypes.Matrix, bind: Effect.UniformBinds.Projection },
+            [Effect.UniformBinds.World]: { type: Effect.UniformTypes.Matrix, bind: Effect.UniformBinds.World },
+            [Effect.UniformBinds.View]: { type: Effect.UniformTypes.Matrix, bind: Effect.UniformBinds.View }
+        };
+    }
+
+    /** @inheritdoc */
+    get attributeTypes()
+    {
+        return {
+            [Effect.AttributeBinds.Position]: { size: 3, type: Effect.AttributeTypes.Float, normalize: false, bind: Effect.AttributeBinds.Position },
+            [Effect.AttributeBinds.TextureCoords]: { size: 2, type: Effect.AttributeTypes.Float, normalize: false, bind: Effect.AttributeBinds.TextureCoords },
+            [Effect.AttributeBinds.Colors]: { size: 4, type: Effect.AttributeTypes.Float, normalize: false, bind: Effect.AttributeBinds.Colors },
+        };
+    }
+}
+
+
+// export the basic shader
+module.exports = SpritesEffect;
+
+/***/ }),
+
+/***/ 7090:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+/**
+ * Implement a basic effect to draw 3d sprites.
+ * 
+ * |-- copyright and license --|
+ * @module     Shaku
+ * @file       shaku\src\gfx\effects\sprites_3d.js
+ * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
+ * @copyright  (c) 2021 Ronen Ness
+ * @license    MIT
+ * |-- end copyright and license --|
+ * 
+ */
+
+const SpritesEffect = __webpack_require__(1414);
+
+
+/**
+ * Default basic effect to draw 2d sprites.
+ */
+class Sprites3dEffect extends SpritesEffect
+{
+    /**
+     * @inheritdoc
+     */
+    get enableDepthTest() { return true; }
+
+    /**
+     * @inheritdoc
+     */
+    get enableFaceCulling() { return false; }
+
+    /**
+     * @inheritdoc
+     */
+    get vertexCode()
+    {
+        const vertexShader = `
+          attribute vec3 position;
+          attribute vec2 uv;
+          attribute vec4 color;
+
+          uniform mat4 projection;
+          uniform mat4 view;
+          uniform mat4 world;
+
+          varying vec2 v_texCoord;
+          varying vec4 v_color;
+
+          void main(void) {
+              gl_Position = projection * view * world * vec4(position, 1.0);
+              gl_PointSize = 1.0;
+              v_texCoord = uv;
+              v_color = color;
+          }
+        `;
+        return vertexShader;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    get fragmentCode()
+    {
+        const fragmentShader = `  
+          #ifdef GL_ES
+              precision highp float;
+          #endif
+
+          uniform sampler2D mainTexture;
+
+          varying vec2 v_texCoord;
+          varying vec4 v_color;
+
+          void main(void) {
+              gl_FragColor = texture2D(mainTexture, v_texCoord) * v_color;
+              if (gl_FragColor.a <= 0.0) { discard; }
+              gl_FragColor.rgb *= gl_FragColor.a;
+          }
+        `; 
+        return fragmentShader;
+    }
+}
+
+
+// export the basic shader
+module.exports = Sprites3dEffect;
+
+/***/ }),
+
+/***/ 4481:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+/**
+ * Implement a basic effect to draw sprites without vertex color.
+ * 
+ * |-- copyright and license --|
+ * @module     Shaku
+ * @file       shaku\src\gfx\effects\sprites_no_vertex_color.js
+ * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
+ * @copyright  (c) 2021 Ronen Ness
+ * @license    MIT
+ * |-- end copyright and license --|
+ * 
+ */
+
+const Effect = __webpack_require__(8986);
+
+// vertex shader code
+const vertexShader = `
+attribute vec3 position;
+attribute vec2 uv;
+
+uniform mat4 projection;
+uniform mat4 world;
+
+varying vec2 v_texCoord;
+
+void main(void) {
+    gl_Position = projection * world * vec4(position, 1.0);
+    gl_PointSize = 1.0;
+    v_texCoord = uv;
+}
+    `;
+
+// fragment shader code
+const fragmentShader = `  
+#ifdef GL_ES
+    precision highp float;
+#endif
+
+uniform sampler2D mainTexture;
+varying vec2 v_texCoord;
+
+void main(void) {
+    gl_FragColor = texture2D(mainTexture, v_texCoord);
+    gl_FragColor.rgb *= gl_FragColor.a;
+}
+    `;
+
+/**
+ * Default basic effect to draw 2d sprites without vertex color.
+ */
+class SpritesEffectNoVertexColor extends Effect
+{
+    /** @inheritdoc */
+    get vertexCode() 
+    { 
+        return vertexShader; 
+    }
+
+    /** @inheritdoc */
+    get fragmentCode()
+    { 
+        return fragmentShader;
+    }
+
+    /** @inheritdoc */
+    get uniformTypes()
+    {
+        return {
+            [Effect.UniformBinds.MainTexture]: { type: Effect.UniformTypes.Texture, bind: Effect.UniformBinds.MainTexture },
+            [Effect.UniformBinds.Projection]: { type: Effect.UniformTypes.Matrix, bind: Effect.UniformBinds.Projection },
+            [Effect.UniformBinds.World]: { type: Effect.UniformTypes.Matrix, bind: Effect.UniformBinds.World },
+            [Effect.UniformBinds.View]: { type: Effect.UniformTypes.Matrix, bind: Effect.UniformBinds.View },
+        };
+    }
+
+    /** @inheritdoc */
+    get attributeTypes()
+    {
+        return {
+            [Effect.AttributeBinds.Position]: { size: 3, type: Effect.AttributeTypes.Float, normalize: false, bind: Effect.AttributeBinds.Position },
+            [Effect.AttributeBinds.TextureCoords]: { size: 2, type: Effect.AttributeTypes.Float, normalize: false, bind: Effect.AttributeBinds.TextureCoords },
+        };
+    }
+}
+
+
+// export the basic shader
+module.exports = SpritesEffectNoVertexColor;
+
+/***/ }),
+
+/***/ 1484:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+/**
+ * Implement a basic effect to draw sprites with outline.
+ * 
+ * |-- copyright and license --|
+ * @module     Shaku
+ * @file       shaku\src\gfx\effects\sprites_with_outline.js
+ * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
+ * @copyright  (c) 2021 Ronen Ness
+ * @license    MIT
+ * |-- end copyright and license --|
+ * 
+ */
+
+const Effect = __webpack_require__(8986);
+
+// vertex shader code
+const vertexShader = `
+attribute vec3 position;
+attribute vec2 uv;
+attribute vec4 color;
+
+uniform vec4 outlineColor;
+uniform mat4 projection;
+uniform mat4 world;
+
+varying vec2 v_texCoord;
+varying vec4 v_color;
+
+void main(void) {
+    gl_Position = projection * world * vec4(position, 1.0);
+    gl_PointSize = 1.0;
+    v_texCoord = uv;
+    v_color = color;
+}
+    `;
+
+// fragment shader code
+const fragmentShader = `  
+#ifdef GL_ES
+    precision highp float;
+#endif
+
+uniform sampler2D mainTexture;
+uniform float textureWidth;
+uniform float textureHeight;
+uniform vec4 outlineColor;
+uniform float outlineWeight;
+
+varying vec2 v_texCoord;
+varying vec4 v_color;
+
+void main(void) {
+    float total = 0.0;
+    float grabPixel;
+
+    float facX = (1.0 / textureWidth) * 2.0;
+    float facY = (1.0 / textureHeight) * 2.0;
+    total +=        texture2D(mainTexture, v_texCoord + vec2(-facX, -facY)).a;
+    total +=        texture2D(mainTexture, v_texCoord + vec2(facX, -facY)).a;
+    total +=        texture2D(mainTexture, v_texCoord + vec2(facX, facY)).a;
+    total +=        texture2D(mainTexture, v_texCoord + vec2(-facX, facY)).a;
+
+    total += texture2D(mainTexture, v_texCoord + vec2(0.0, -facY)).a * 2.0;
+    total += texture2D(mainTexture, v_texCoord + vec2(0.0, facY)).a * 2.0;
+    total += texture2D(mainTexture, v_texCoord + vec2(-facX, 0.0)).a * 2.0;
+    total += texture2D(mainTexture, v_texCoord + vec2(facX, 0.0)).a * 2.0;
+
+    total *= outlineWeight;
+    vec4 currColor = texture2D(mainTexture, v_texCoord);
+
+    gl_FragColor = (currColor.a >= 0.9) ? currColor : (outlineColor * vec4(1,1,1,total));
+    gl_FragColor.rgb *= gl_FragColor.a;
+}
+    `;
+
+/**
+ * Default basic effect to draw 2d sprites with outline.
+ */
+class SpritesWithOutlineEffect extends Effect
+{
+    /** @inheritdoc */
+    get vertexCode() 
+    { 
+        return vertexShader; 
+    }
+
+    /** @inheritdoc */
+    get fragmentCode()
+    { 
+        return fragmentShader;
+    }
+
+    /** @inheritdoc */
+    get uniformTypes()
+    {
+        return {
+            [Effect.UniformBinds.MainTexture]: { type: Effect.UniformTypes.Texture, bind: Effect.UniformBinds.MainTexture },
+            [Effect.UniformBinds.Projection]: { type: Effect.UniformTypes.Matrix, bind: Effect.UniformBinds.Projection },
+            [Effect.UniformBinds.World]: { type: Effect.UniformTypes.Matrix, bind: Effect.UniformBinds.World },
+            [Effect.UniformBinds.View]: { type: Effect.UniformTypes.Matrix, bind: Effect.UniformBinds.View },
+            [Effect.UniformBinds.OutlineColor]: { type: Effect.UniformTypes.Color, bind: Effect.UniformBinds.OutlineColor },
+            [Effect.UniformBinds.TextureWidth]: { type: Effect.UniformTypes.Float, bind: Effect.UniformBinds.TextureWidth },
+            [Effect.UniformBinds.TextureHeight]: { type: Effect.UniformTypes.Float, bind: Effect.UniformBinds.TextureHeight },
+            [Effect.UniformBinds.OutlineWeight]: { type: Effect.UniformTypes.Float, bind: Effect.UniformBinds.OutlineWeight },
+        };
+    }
+
+    /** @inheritdoc */
+    get attributeTypes()
+    {
+        return {
+            [Effect.AttributeBinds.Position]: { size: 3, type: Effect.AttributeTypes.Float, normalize: false, bind: Effect.AttributeBinds.Position },
+            [Effect.AttributeBinds.TextureCoords]: { size: 2, type: Effect.AttributeTypes.Float, normalize: false, bind: Effect.AttributeBinds.TextureCoords },
+            [Effect.AttributeBinds.Colors]: { size: 4, type: Effect.AttributeTypes.Float, normalize: false, bind: Effect.AttributeBinds.Colors },
+        };
+    }
+}
+
+
+// export the basic shader
+module.exports = SpritesWithOutlineEffect;
+
+/***/ }),
+
+/***/ 4672:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+/**
+ * Implement the gfx manager.
+ * 
+ * |-- copyright and license --|
+ * @module     Shaku
+ * @file       shaku\src\gfx\gfx.js
+ * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
+ * @copyright  (c) 2021 Ronen Ness
+ * @license    MIT
+ * |-- end copyright and license --|
+ * 
+ */
+
+const IManager = __webpack_require__(9563);
+const Color = __webpack_require__(9327);
+const { BlendModes } = __webpack_require__(3223);
+const Rectangle = __webpack_require__(4731);
+const { Effect, SpritesEffect, SpritesEffectNoVertexColor, MsdfFontEffect, ShapesEffect, SpritesWithOutlineEffect } = __webpack_require__(3020);
+const TextureAsset = __webpack_require__(2262);
+const { TextureFilterModes } = __webpack_require__(5387);
+const { TextureWrapModes } = __webpack_require__(2464);
+const Matrix = __webpack_require__(5599);
+const Camera = __webpack_require__(2726);
+const Sprite = __webpack_require__(6565);
+const SpritesGroup = __webpack_require__(1036);
+const Vector2 = __webpack_require__(2544);
+const FontTextureAsset = __webpack_require__(167);
+const MsdfFontTextureAsset = __webpack_require__(1252);
+const { TextAlignment, TextAlignments } = __webpack_require__(8684);
+const Circle = __webpack_require__(9668);
+const SpriteBatch = __webpack_require__(962);
+const TextSpriteBatch = __webpack_require__(985);
+const Vertex = __webpack_require__(4288);
+const DrawBatch = __webpack_require__(2069);
+const ShapesBatch = __webpack_require__(1772);
+const LinesBatch = __webpack_require__(8333);
+const Sprites3dEffect = __webpack_require__(7090);
+const SpriteBatch3D = __webpack_require__(7561);
+const TextureAtlasAsset = __webpack_require__(2493);
+const _logger = (__webpack_require__(5259).getLogger)('gfx');
+
+let _gl = null;
+let _initSettings = { antialias: true, alpha: true, depth: false, premultipliedAlpha: true, desynchronized: false };
+let _canvas = null;
+let _lastBlendMode = null;
+let _activeEffect = null;
+let _camera = null;
+let _projection = null;
+let _fb = null;
+let _renderTarget = null;
+let _drawCallsCount = 0;
+let _drawQuadsCount = 0;
+let _drawShapePolygonsCount = 0;
+let _cachedRenderingRegion = {};
+let _webglVersion = 0;
 
 
 /**
@@ -4734,28 +8738,44 @@ class Gfx extends IManager
     constructor()
     {
         super();
-        this._gl = null;
-        this._initSettings = { antialias: true, alpha: true, depth: false, premultipliedAlpha: true, desynchronized: false };
-        this._canvas = null;
-        this._lastBlendMode = null;
-        this._activeEffect = null;
-        this._camera = null;
-        this._projection = null;
-        this._currIndices = null;
-        this._dynamicBuffers = null;
-        this._fb = null;
+
+        /**
+         * A dictionary containing all built-in effect instances.
+         * @type {Dictionary}
+         * @name Gfx#builtinEffects
+         */
         this.builtinEffects = {};
-        this.meshes = {};
+        
+        /**
+         * Default texture filter to use when no texture filter is set.
+         * @type {TextureFilterModes}
+         * @name Gfx#defaultTextureFilter
+         */
         this.defaultTextureFilter = TextureFilterModes.Nearest;
+
+        /**
+         * Default wrap modes to use when no wrap mode is set.
+         * @type {TextureWrapModes}
+         * @name Gfx#TextureWrapModes
+         */
         this.defaultTextureWrapMode = TextureWrapModes.Clamp;
+        
+        /**
+         * A 1x1 white texture.
+         * @type {TextureAsset}
+         * @name Gfx#whiteTexture
+         */
         this.whiteTexture = null;
-        this._renderTarget = null;
-        this._viewport = null;
-        this._drawCallsCount = 0;
-        this._drawQuadsCount = 0;
-        this.spritesBatch = null;
-        this._cachedRenderingRegion = {};
-        this._webglVersion = 0;
+
+        /**
+         * Provide access to Gfx internal stuff.
+         * @private
+         */
+        this._internal = new GfxInternal(this);
+        
+        // set self for effect and draw batch
+        DrawBatch._gfx = this;
+        Effect._gfx = this;
     }
 
     /**
@@ -4764,16 +8784,7 @@ class Gfx extends IManager
      */
     get webglVersion()
     {
-        return this._webglVersion;
-    }
-
-    /**
-     * Get how many sprites we can draw in a single batch.
-     * @returns {Number} batch max sprites count.
-     */
-    get batchSpritesCount()
-    {
-        return 2048;
+        return _webglVersion;
     }
 
     /**
@@ -4801,9 +8812,9 @@ class Gfx extends IManager
      */
     setContextAttributes(flags)
     {
-        if (this._gl) { throw new Error("Can't call setContextAttributes() after gfx was initialized!"); }
+        if (_gl) { throw new Error("Can't call setContextAttributes() after gfx was initialized!"); }
         for (let key in flags) {
-            this._initSettings[key] = flags[key];
+            _initSettings[key] = flags[key];
         }
     }
 
@@ -4816,8 +8827,8 @@ class Gfx extends IManager
      */
     setCanvas(element)
     {
-        if (this._gl) { throw new Error("Can't call setCanvas() after gfx was initialized!"); }
-        this._canvas = element;
+        if (_gl) { throw new Error("Can't call setCanvas() after gfx was initialized!"); }
+        _canvas = element;
     }
 
     /**
@@ -4829,7 +8840,61 @@ class Gfx extends IManager
      */
     get canvas()
     {
-        return this._canvas;
+        return _canvas;
+    }
+
+    /**
+     * Get the draw batch base class.
+     * @see DrawBatch
+     */
+    get DrawBatch()
+    {
+        return DrawBatch;
+    }
+
+    /**
+     * Get the sprites batch class.
+     * @see SpriteBatch
+     */
+    get SpriteBatch()
+    {
+        return SpriteBatch;
+    }
+
+    /**
+     * Get the 3d sprites batch class.
+     * @see SpriteBatch3D
+     */
+    get SpriteBatch3D()
+    {
+        return SpriteBatch3D;
+    }
+
+    /**
+     * Get the text sprites batch class.
+     * @see TextSpriteBatch
+     */
+    get TextSpriteBatch()
+    {
+        return TextSpriteBatch;
+    }
+
+    /**
+     * Get the shapes batch class.
+     * @see ShapesBatch
+     */
+    get ShapesBatch()
+    {
+        return ShapesBatch;
+    }
+
+    /**
+     * Get the lines batch class.
+     * @see LinesBatch
+     */
+    get LinesBatch()
+    {
+        return LinesBatch;
     }
 
     /**
@@ -4842,14 +8907,41 @@ class Gfx extends IManager
     }
 
     /**
-     * Get the default Effect class, which is required to implement custom effects that inherit and reuse parts from the default effect.
-     * @see BasicEffect
+     * Get the default sprites effect class.
+     * @see SpritesEffect
      */
-    get BasicEffect()
+    get SpritesEffect()
     {
-        return BasicEffect;
+        return SpritesEffect;
     }
     
+    /**
+     * Get the default sprites effect class that is used when vertex colors is disabled.
+     * @see SpritesEffectNoVertexColor
+     */
+    get SpritesEffectNoVertexColor()
+    {
+        return SpritesEffectNoVertexColor;
+    }
+
+    /**
+     * Get the default shapes effect class that is used to draw 2d shapes.
+     * @see ShapesEffect
+     */
+    get ShapesEffect()
+    {
+        return ShapesEffect;
+    }
+
+    /**
+     * Get the default 3d sprites effect class that is used to draw 3d textured quads.
+     * @see Sprites3dEffect
+     */
+    get Sprites3dEffect()
+    {
+        return Sprites3dEffect
+    }
+
     /**
      * Get the Effect for rendering fonts with an MSDF texture.
      * @see MsdfFontEffect
@@ -4908,24 +9000,6 @@ class Gfx extends IManager
     }
 
     /**
-     * Get the text alignments options.
-     * This getter is deprecated, please use `TextAlignments` instead.
-     * * Left: align text to the left.
-     * * Right: align text to the right.
-     * * Center: align text to center.
-     * @deprecated
-     * @see TextAlignments
-     */
-    get TextAlignment()
-    {
-        if (!this._TextAlignment_dep) {
-            console.warn(`'gfx.TextAlignment' is deprecated and will be removed in future versions. Please use 'gfx.TextAlignments' instead.`);
-            this._TextAlignment_dep = true;
-        }
-        return TextAlignments;
-    }
-
-    /**
      * Create and return a new camera instance.
      * @param {Boolean} withViewport If true, will create camera with viewport value equal to canvas' size.
      * @returns {Camera} New camera object.
@@ -4951,26 +9025,12 @@ class Gfx extends IManager
         this.applyCamera(camera);
         return camera;
     }
-    
-    /**
-     * Create and return an effect instance.
-     * @see Effect
-     * @param {Class} type Effect class type. Must inherit from Effect base class.
-     * @returns {Effect} Effect instance.
-     */
-    createEffect(type)
-    {
-        if (!(type.prototype instanceof Effect)) { throw new Error("'type' must be a class type that inherits from 'Effect'."); }
-        let effect = new type();
-        effect._build(this._gl);
-        return effect;
-    }
 
     /**
      * Set resolution and canvas to the max size of its parent element or screen.
      * If the canvas is directly under document body, it will take the max size of the page.
-     * @param {Boolean} limitToParent if true, will use parent element size. If false, will stretch on entire document.
-     * @param {Boolean} allowOddNumbers if true, will permit odd numbers, which could lead to small artefacts when drawing pixel art. If false (default) will round to even numbers.
+     * @param {Boolean=} limitToParent if true, will use parent element size. If false, will stretch on entire document.
+     * @param {Boolean=} allowOddNumbers if true, will permit odd numbers, which could lead to small artefacts when drawing pixel art. If false (default) will round to even numbers.
      */
     maximizeCanvasSize(limitToParent, allowOddNumbers)
     {
@@ -4980,16 +9040,16 @@ class Gfx extends IManager
 
         // parent
         if (limitToParent) {
-            let parent = this._canvas.parentElement;
-            width = parent.clientWidth - this._canvas.offsetLeft;
-            height = parent.clientHeight - this._canvas.offsetTop;
+            let parent = _canvas.parentElement;
+            width = parent.clientWidth - _canvas.offsetLeft;
+            height = parent.clientHeight - _canvas.offsetTop;
         }
         // entire screen
         else {
             width = window.innerWidth;
             height = window.innerHeight;
-            this._canvas.style.left = '0px';
-            this._canvas.style.top = '0px';
+            _canvas.style.left = '0px';
+            _canvas.style.top = '0px';
         }
 
         // make sure even numbers
@@ -4999,7 +9059,7 @@ class Gfx extends IManager
         }
 
         // if changed, set resolution
-        if ((this._canvas.width !== width) || (this._canvas.height !== height)) {
+        if ((_canvas.width !== width) || (_canvas.height !== height)) {
             this.setResolution(width, height, true);
         }
     }
@@ -5023,18 +9083,13 @@ class Gfx extends IManager
      */
     setRenderTarget(texture, keepCamera)
     {
-        // present buffered data
-        this.presentBufferedData();
-
         // reset cached rendering size
-        this.__resetCachedRenderingRegion();
+        this.#_resetCachedRenderingRegion();
 
         // if texture is null, remove any render target
         if (texture === null) {
-            this._renderTarget = null;
-            //this._gl.drawBuffers([this._gl.BACK]);
-            this._gl.bindFramebuffer(this._gl.FRAMEBUFFER, null);
-            this._gl.pixelStorei(this._gl.UNPACK_FLIP_Y_WEBGL, false);
+            _renderTarget = null;
+            _gl.bindFramebuffer(_gl.FRAMEBUFFER, null);
             if (!keepCamera) {
                 this.resetCamera();
             }
@@ -5042,25 +9097,24 @@ class Gfx extends IManager
         }
 
         // convert texture to array
-        if (!(texture instanceof Array)) {
+        if (!Array.isArray(texture)) {
             texture = [texture];
         }
 
         // bind the framebuffer
-        this._gl.bindFramebuffer(this._gl.FRAMEBUFFER, this._fb);
-        this._gl.pixelStorei(this._gl.UNPACK_FLIP_Y_WEBGL, false);
+        _gl.bindFramebuffer(_gl.FRAMEBUFFER, _fb);
         
         // set render targets
         var drawBuffers = [];
         for (let index = 0; index < texture.length; ++index) {
             
             // attach the texture as the first color attachment
-            const attachmentPoint = this._gl['COLOR_ATTACHMENT' + index];
-            this._gl.framebufferTexture2D(this._gl.FRAMEBUFFER, attachmentPoint, this._gl.TEXTURE_2D, texture[index].texture, 0);
+            const attachmentPoint = _gl['COLOR_ATTACHMENT' + index];
+            _gl.framebufferTexture2D(_gl.FRAMEBUFFER, attachmentPoint, _gl.TEXTURE_2D, texture[index]._glTexture, 0);
 
             // index 0 is the "main" render target
             if (index === 0) {
-                this._renderTarget = texture[index];
+                _renderTarget = texture[index];
             }
 
             // to set drawBuffers in the end
@@ -5068,44 +9122,15 @@ class Gfx extends IManager
         }
 
         // set draw buffers
-        this._gl.drawBuffers(drawBuffers);
+        _gl.drawBuffers(drawBuffers);
 
         // unbind frame buffer
-        //this._gl.bindFramebuffer(this._gl.FRAMEBUFFER, null);
+        //_gl.bindFramebuffer(_gl.FRAMEBUFFER, null);
 
         // reset camera
         if (!keepCamera) {
             this.resetCamera();
         }
-    }
-
-    /**
-     * Set effect to use for future draw calls.
-     * @example
-     * let effect = Shaku.gfx.createEffect(MyEffectType);
-     * Shaku.gfx.useEffect(effect);
-     * @param {Effect | null} effect Effect to use or null to use the basic builtin effect.
-     */
-    useEffect(effect)
-    {
-        // present buffered data
-        this.presentBufferedData();
-
-        // if null, use default
-        if (effect === null) {
-            this.useEffect(this.builtinEffects.Basic);
-            return;
-        }
-
-        // same effect? skip
-        if (this._activeEffect === effect) {
-            return;
-        }
-
-        // set effect
-        effect.setAsActive();
-        this._activeEffect = effect;
-        if (this._projection) { this._activeEffect.setProjectionMatrix(this._projection); }
     }
 
     /**
@@ -5119,21 +9144,19 @@ class Gfx extends IManager
      */
     setResolution(width, height, updateCanvasStyle)
     {
-        this.presentBufferedData();
-
-        this._canvas.width = width;
-        this._canvas.height = height;
+        _canvas.width = width;
+        _canvas.height = height;
 
         if (width % 2 !== 0 || height % 2 !== 0) {
             _logger.warn("Resolution to set is not even numbers; This might cause minor artefacts when using texture atlases. Consider using even numbers instead.");
         }
         
         if (updateCanvasStyle) {
-            this._canvas.style.width = width + 'px';
-            this._canvas.style.height = height + 'px';
+            _canvas.style.width = width + 'px';
+            _canvas.style.height = height + 'px';
         }
 
-        this._gl.viewport(0, 0, width, height);
+        _gl.viewport(0, 0, width, height);
         this.resetCamera();
     }
 
@@ -5142,10 +9165,10 @@ class Gfx extends IManager
      */
     resetCamera()
     {
-        this._camera = this.createCamera();
+        _camera = this.createCamera();
         let size = this.getRenderingSize();
-        this._camera.orthographic(new Rectangle(0, 0, size.x, size.y));
-        this.applyCamera(this._camera);
+        _camera.orthographic(new Rectangle(0, 0, size.x, size.y));
+        this.applyCamera(_camera);
     }
 
     /**
@@ -5155,22 +9178,19 @@ class Gfx extends IManager
      */
     applyCamera(camera)
     {
-        // render what we got in back buffer
-        this.presentBufferedData();
-
         // set viewport and projection
         this._viewport = camera.viewport;
-        let viewport = this.__getRenderingRegionInternal(true);
-        this._gl.viewport(viewport.x, viewport.y, viewport.width, viewport.height);
-        this._projection = camera.projection.clone();
+        let viewport = this.#_getRenderingRegionInternal(true);
+        _gl.viewport(viewport.x, viewport.y, viewport.width, viewport.height);
+        _projection = camera.projection.clone();
 
         // update effect
-        if (this._activeEffect) { 
-            this._activeEffect.setProjectionMatrix(this._projection); 
+        if (_activeEffect) { 
+            _activeEffect.setProjectionMatrix(_projection); 
         }
 
         // reset cached rendering region
-        this.__resetCachedRenderingRegion();
+        this.#_resetCachedRenderingRegion();
     }
 
     /**
@@ -5179,50 +9199,18 @@ class Gfx extends IManager
      * @param {Boolean} includeOffset If true (default) will include viewport offset, if exists.
      * @returns {Rectangle} Rectangle with rendering region.
      */
-    __getRenderingRegionInternal(includeOffset)
+    #_getRenderingRegionInternal(includeOffset)
     {
-        // cached with offset
-        if (includeOffset && this._cachedRenderingRegion.withOffset) {
-            return this._cachedRenderingRegion.withOffset;
-        }
-
-        // cached without offset
-        if (!includeOffset && this._cachedRenderingRegion.withoutOffset) {
-            return this._cachedRenderingRegion.withoutOffset;
-        }
-
-        // if we got viewport..
-        if (this._viewport) {
-
-            // get region from viewport
-            let ret = this._viewport.clone();
-
-            // if without offset, remove it
-            if (includeOffset === false) {
-                ret.x = ret.y = 0;
-                this._cachedRenderingRegion.withoutOffset = ret;
-                return ret;
-            }
-            // else, include offset
-            else {
-                this._cachedRenderingRegion.withOffset = ret;
-                return ret;
-            }
-        }
-
-        // if we don't have viewport..
-        let ret = new Rectangle(0, 0, (this._renderTarget || this._canvas).width, (this._renderTarget || this._canvas).height);
-        this._cachedRenderingRegion.withoutOffset = this._cachedRenderingRegion.withOffset = ret;
-        return ret;
+        return this._internal.getRenderingRegionInternal(includeOffset)
     }
 
     /**
      * Reset cached rendering region values.
      * @private
      */
-    __resetCachedRenderingRegion()
+    #_resetCachedRenderingRegion()
     {
-        this._cachedRenderingRegion.withoutOffset = this._cachedRenderingRegion.withOffset = null;
+        _cachedRenderingRegion.withoutOffset = _cachedRenderingRegion.withOffset = null;
     }
 
     /**
@@ -5232,7 +9220,7 @@ class Gfx extends IManager
      */
     getRenderingRegion(includeOffset)
     {
-        return this.__getRenderingRegionInternal(includeOffset).clone();
+        return this.#_getRenderingRegionInternal(includeOffset).clone();
     }
 
     /**
@@ -5242,7 +9230,7 @@ class Gfx extends IManager
      */
     getRenderingSize()
     {
-        let region = this.__getRenderingRegionInternal();
+        let region = this.#_getRenderingRegionInternal();
         return region.getSize();
     }
     
@@ -5252,7 +9240,7 @@ class Gfx extends IManager
      */
     getCanvasSize()
     {
-        return new Vector2(this._canvas.width, this._canvas.height);
+        return new Vector2(_canvas.width, _canvas.height);
     }
 
     /** 
@@ -5266,44 +9254,42 @@ class Gfx extends IManager
             _logger.info("Setup gfx manager..");
 
             // if no canvas is set, create one
-            if (!this._canvas) {
-                this._canvas = document.createElement('canvas');
+            if (!_canvas) {
+                _canvas = document.createElement('canvas');
             }
 
             // get webgl context
-            this._gl = this._canvas.getContext('webgl2', this._initSettings); 
-            this._webglVersion = 2;
+            _gl = _canvas.getContext('webgl2', _initSettings); 
+            _webglVersion = 2;
             
             // no webgl2? try webgl1
-            if (!this._gl) {
+            if (!_gl) {
                 _logger.warn("Failed to init WebGL2, attempt fallback to WebGL1.");
-                this._gl = this._canvas.getContext('webgl', this._initSettings);
-                this._webglVersion = 1;
+                _gl = _canvas.getContext('webgl', _initSettings);
+                _webglVersion = 1;
             }
 
             // no webgl at all??
-            if (!this._gl) {
-                this._webglVersion = 0;
+            if (!_gl) {
+                _webglVersion = 0;
                 _logger.error("Can't get WebGL context!");
                 return reject("Failed to get WebGL context from canvas!");
             }
 
             // create default effects
-            this.builtinEffects.Basic = this.createEffect(BasicEffect);
-            this.builtinEffects.MsdfFont = this.createEffect(MsdfFontEffect);
+            this.builtinEffects.Sprites = new SpritesEffect();
+            this.builtinEffects.SpritesWithOutline = new SpritesWithOutlineEffect();
+            this.builtinEffects.SpritesNoVertexColor = new SpritesEffectNoVertexColor();
+            this.builtinEffects.MsdfFont = new MsdfFontEffect();
+            this.builtinEffects.Shapes = new ShapesEffect();
+            this.builtinEffects.Sprites3d = new Sprites3dEffect();
 
             // setup textures assets gl context
-            TextureAsset._setWebGl(this._gl);
+            TextureAsset._setWebGl(_gl);
+            TextureAtlasAsset._setWebGl(_gl);
 
             // create framebuffer (used for render targets)
-            this._fb = this._gl.createFramebuffer();
-
-            // create base meshes
-            let _meshGenerator = new MeshGenerator(this._gl);
-            this.meshes = {
-                quad: _meshGenerator.quad()
-            }
-            Object.freeze(this.meshes);
+            _fb = _gl.createFramebuffer();
 
             // create a useful single white pixel texture
             let whitePixelImage = new Image();
@@ -5312,58 +9298,9 @@ class Gfx extends IManager
             this.whiteTexture = new TextureAsset('__runtime_white_pixel__');
             this.whiteTexture.fromImage(whitePixelImage);
 
-            // dynamic buffers, used for batch rendering
-            this._dynamicBuffers = {
-                
-                positionBuffer: this._gl.createBuffer(),
-                positionArray: new Float32Array(3 * 4 * this.batchSpritesCount),
-
-                textureCoordBuffer: this._gl.createBuffer(),
-                textureArray: new Float32Array(2 * 4 * this.batchSpritesCount),
-
-                colorsBuffer: this._gl.createBuffer(),
-                colorsArray: new Float32Array(4 * 4 * this.batchSpritesCount),
-
-                indexBuffer: this._gl.createBuffer(),
-
-                linesIndexBuffer: this._gl.createBuffer(),
-            }
-
-            // create the indices buffer for batching
-            let indices = new Uint16Array(this.batchSpritesCount * 6); // 6 = number of indices per sprite
-            let inc = 0;
-            for(let i = 0; i < indices.length; i += 6) {
-                
-                indices[i] = inc;
-                indices[i+1] = inc + 1;
-                indices[i+2] = inc + 2;
-
-                indices[i+3] = inc + 1;
-                indices[i+4] = inc + 3;
-                indices[i+5] = inc + 2;
-
-                inc += 4;
-            }
-            this._gl.bindBuffer(this._gl.ELEMENT_ARRAY_BUFFER, this._dynamicBuffers.indexBuffer);
-            this._gl.bufferData(this._gl.ELEMENT_ARRAY_BUFFER, indices, this._gl.STATIC_DRAW);
-
-            // create the indices buffer for drawing lines
-            let lineIndices = new Uint16Array(this.maxLineSegments);
-            for (let i = 0; i < lineIndices.length; i += 6) {          
-                lineIndices[i] = i;
-            }
-            this._gl.bindBuffer(this._gl.ELEMENT_ARRAY_BUFFER, this._dynamicBuffers.linesIndexBuffer);
-            this._gl.bufferData(this._gl.ELEMENT_ARRAY_BUFFER, lineIndices, this._gl.STATIC_DRAW);
-            
-            // create sprites batch
-            this.spritesBatch = new SpriteBatch(this);
-
-            // use default effect
-            this.useEffect(null);
-
             // create default camera
-            this._camera = this.createCamera();
-            this.applyCamera(this._camera);
+            _camera = this.createCamera();
+            this.applyCamera(_camera);
 
             // success!
             resolve();
@@ -5416,7 +9353,7 @@ class Gfx extends IManager
         fontSize = fontSize || fontTexture.fontSize;
 
         // default margin factor
-        marginFactor = marginFactor || Vector2.one;
+        marginFactor = marginFactor || Vector2.one();
 
         // get character scale factor
         let scale = fontSize / fontTexture.fontSize;
@@ -5482,15 +9419,17 @@ class Gfx extends IManager
             if (character !== ' ') {
 
                 // create sprite and add to group
-                let sprite = new Sprite(fontTexture.texture, sourceRect);
+                let sprite = new Sprite(fontTexture);
+                sprite.sourceRectangle = sourceRect;
                 sprite.size = size;
+                let positionOffset = fontTexture.getPositionOffset(character);
                 if (fontTexture instanceof MsdfFontTextureAsset) {
-                    sprite.origin.set(0, 0);
+                    sprite.position.copy(position).addSelf(positionOffset.mul(scale * 0.5));
                 }
                 else {
-                    sprite.origin.set(0.5, 0.5);
+                    sprite.position.copy(position).addSelf(positionOffset.mul(scale));
                 }
-                sprite.position.copy(position).addSelf(fontTexture.getPositionOffset(character).mul(scale));
+                sprite.origin.set(0.5, 0.5);
                 if (color instanceof Color) {
                     sprite.color.copy(color);
                 }
@@ -5529,466 +9468,11 @@ class Gfx extends IManager
     }
 
     /**
-     * Draw a SpritesGroup object. 
-     * A SpritesGroup is a collection of sprites we can draw in bulks with transformations to apply on the entire group.
-     * @example
-     * // load texture
-     * let texture = await Shaku.assets.loadTexture('assets/sprite.png');
-     * 
-     * // create group and set entire group's position and scale
-     * let group = new Shaku.gfx.SpritesGroup();
-     * group.position.set(125, 300);
-     * group.scale.set(2, 2);
-     *
-     * // create 5 sprites and add to group
-     * for (let i = 0; i < 5; ++i) {
-     *   let sprite = new Shaku.gfx.Sprite(texture);
-     *   sprite.position.set(100 * i, 150);
-     *   sprite.size.set(50, 50);
-     *   group.add(sprite)
-     * }
-     * 
-     * // draw the group with automatic culling of invisible sprites
-     * Shaku.gfx.drawGroup(group, true);
-     * @param {SpritesGroup} group Sprites group to draw.
-     * @param {Boolean} cullOutOfScreen If true and in batching mode, will cull automatically any quad that is completely out of screen.
-     */
-    drawGroup(group, cullOutOfScreen)
-    {
-        this._drawBatch(group, Boolean(cullOutOfScreen));
-    }
-
-    /**
-     * Draw a single sprite object.
-     * Sprites are optional objects that store all the parameters for a `draw()` call. They are also used for batch rendering.
-     * @example
-     * // load texture and create sprite
-     * let texture = await Shaku.assets.loadTexture('assets/sprite.png');
-     * let sprite = new Shaku.gfx.Sprite(texture);
-     * 
-     * // set position and size
-     * sprite.position.set(100, 150);
-     * sprite.size.set(50, 50);
-     * 
-     * // draw sprite
-     * Shaku.gfx.drawSprite(sprite);
-     * @param {Sprite} sprite Sprite object to draw.
-     */
-    drawSprite(sprite)
-    {
-        if (!sprite.texture || !sprite.texture.valid) { return; }
-        this.__startDrawingSprites(this._activeEffect, null);
-        this.spritesBatch.draw(sprite);
-    }
-
-    /**
-     * Draw a texture to cover a given destination rectangle.
-     * @example
-     * // cover the entire screen with an image
-     * let texture = await Shaku.assets.loadTexture('assets/sprite.png');
-     * Shaku.gfx.cover(texture, Shaku.gfx.getRenderingRegion());
-     * @example
-     * // draw with additional params
-     * let sourceRect = new Shaku.utils.Rectangle(0, 0, 64, 64);
-     * let color = Shaku.utils.Color.blue;
-     * let blendMode = Shaku.gfx.BlendModes.Multiply;
-     * let rotation = Math.PI / 4;
-     * let origin = new Shaku.utils.Vector2(0.5, 0.5);
-     * Shaku.gfx.draw(texture, position, size, sourceRect, color, blendMode, rotation, origin);
-     * @param {TextureAsset} texture Texture to draw.
-     * @param {Rectangle|Vector2} destRect Destination rectangle to draw on. If vector is provided, will draw from 0,0 with vector as size.
-     * @param {Rectangle=} sourceRect Source rectangle, or undefined to use the entire texture.
-     * @param {Color|Array<Color>|undefined} color Tint color, or undefined to not change color. If array is set, will assign each color to different vertex, starting from top-left.
-     * @param {BlendMode=} blendMode Blend mode, or undefined to use alpha blend.
-     */
-    cover(texture, destRect, sourceRect, color, blendMode)
-    {
-        if ((destRect instanceof Vector2) || (destRect instanceof Vector3)) {
-            destRect = new Rectangle(0, 0, destRect.x, destRect.y);
-        }
-        return this.draw(texture, destRect.getCenter(), destRect.getSize(), sourceRect, color, blendMode);
-    }
-
-    /**
-     * Draw a texture.
-     * @example
-     * // a simple draw with position and size
-     * let texture = await Shaku.assets.loadTexture('assets/sprite.png');
-     * let position = new Shaku.utils.Vector2(100, 100);
-     * let size = new Shaku.utils.Vector2(75, 125); // if width == height, you can pass as a number instead of vector
-     * Shaku.gfx.draw(texture, position, size);
-     * @example
-     * // draw with additional params
-     * let sourceRect = new Shaku.utils.Rectangle(0, 0, 64, 64);
-     * let color = Shaku.utils.Color.blue;
-     * let blendMode = Shaku.gfx.BlendModes.Multiply;
-     * let rotation = Math.PI / 4;
-     * let origin = new Shaku.utils.Vector2(0.5, 0.5);
-     * Shaku.gfx.draw(texture, position, size, sourceRect, color, blendMode, rotation, origin);
-     * @param {TextureAsset} texture Texture to draw.
-     * @param {Vector2|Vector3} position Drawing position (at origin). If vector3 is provided, will pass z value to the shader code position attribute.
-     * @param {Vector2|Vector3|Number} size Drawing size. If vector3 is provided, will pass z value to the shader code position attribute for the bottom vertices, as position.z + size.z.
-     * @param {Rectangle} sourceRect Source rectangle, or undefined to use the entire texture.
-     * @param {Color|Array<Color>|undefined} color Tint color, or undefined to not change color. If array is set, will assign each color to different vertex, starting from top-left.
-     * @param {BlendMode=} blendMode Blend mode, or undefined to use alpha blend.
-     * @param {Number=} rotation Rotate sprite.
-     * @param {Vector2=} origin Drawing origin. This will be the point at 'position' and rotation origin.
-     * @param {Vector2=} skew Skew the drawing corners on X and Y axis, around the origin point.
-     */
-    draw(texture, position, size, sourceRect, color, blendMode, rotation, origin, skew)
-    {
-        let sprite = new Sprite(texture, sourceRect);
-        sprite.position = position;
-        sprite.size = (typeof size === 'number') ? new Vector2(size, size) : size;
-        if (color) { sprite.color = color; }
-        if (blendMode) { sprite.blendMode = blendMode; }
-        if (rotation !== undefined) { sprite.rotation = rotation; }
-        if (origin) { sprite.origin = origin; }
-        if (skew) { sprite.skew = skew; }
-        this.drawSprite(sprite);
-    }
-
-    /**
-     * Draw a textured quad from vertices.
-     * @param {TextureAsset} texture Texture to draw.
-     * @param {Array<Vertex>} vertices Quad vertices to draw (should be: top-left, top-right, bottom-left, bottom-right).
-     * @param {BlendMode=} blendMode Blend mode to set.
-     */
-    drawQuadFromVertices(texture, vertices, blendMode)
-    {
-        if (!texture || !texture.valid) { return; }
-        this.__startDrawingSprites(this._activeEffect, null);
-        this._setBlendMode(blendMode || BlendModes.AlphaBlend);
-        this.spritesBatch.setTexture(texture);
-        this.spritesBatch.pushVertices(vertices);
-    }
-
-    /**
-     * Draw a filled colored rectangle.
-     * @example
-     * // draw a 50x50 red rectangle at position 100x100, that will rotate over time
-     * Shaku.gfx.fillRect(new Shaku.utils.Rectangle(100, 100, 50, 50), Shaku.utils.Color.red, null, Shaku.gameTime.elapsed);
-     * @param {Rectangle} destRect Rectangle to fill.
-     * @param {Color|Array<Color>} color Rectangle fill color.
-     * @param {BlendMode=} blend Blend mode.
-     * @param {Number=} rotation Rotate the rectangle around its center.
-     */
-    fillRect(destRect, color, blend, rotation)
-    {
-        this.draw(this.whiteTexture, 
-            new Vector2(destRect.x + destRect.width / 2, destRect.y + destRect.height / 2),
-            new Vector2(destRect.width, destRect.height), null, color, blend || BlendModes.Opaque, rotation, null, null);
-    }
-
-    /**
-     * Draw a list of filled colored rectangles as a batch.
-     * @example
-     * // draw a 50x50 red rectangle at position 100x100, that will rotate over time
-     * Shaku.gfx.fillRects([new Shaku.utils.Rectangle(100, 100, 50, 50), new Shaku.utils.Rectangle(150, 150, 25, 25)], Shaku.utils.Color.red, null, Shaku.gameTime.elapsed);
-     * @param {Array<Rectangle>} destRects Rectangles to fill.
-     * @param {Array<Color>|Color} colors Rectangles fill color. If array is set, will assign each color to different vertex, starting from top-left.
-     * @param {BlendMode=} blend Blend mode.
-     * @param {(Array<Number>|Number)=} rotation Rotate the rectangles around its center.
-     */
-    fillRects(destRects, colors, blend, rotation)
-    {
-        // build group
-        if (rotation === undefined) { rotation = 0; }
-        let group = new SpritesGroup();
-        for (let i = 0; i < destRects.length; ++i) {
-            let sprite = new Sprite(this.whiteTexture);
-            sprite.color = colors[i] || colors;
-            sprite.rotation = rotation.length ? rotation[i] : rotation;
-            sprite.blendMode = blend || BlendModes.Opaque;
-            let destRect = destRects[i];
-            sprite.size.set(destRect.width, destRect.height);
-            sprite.position.set(destRect.x + destRect.width / 2, destRect.y + destRect.width / 2);
-            sprite.origin.set(0.5, 0.5);
-            group.add(sprite);
-        }
-
-        // draw group
-        this.drawGroup(group);
-    }
-
-    /**
-     * Draw an outline colored rectangle.
-     * @example
-     * // draw a 50x50 red rectangle at position 100x100, that will rotate over time
-     * Shaku.gfx.outlineRect(new Shaku.utils.Rectangle(100, 100, 50, 50), Shaku.utils.Color.red, null, Shaku.gameTime.elapsed);
-     * @param {Rectangle} destRect Rectangle to draw outline for.
-     * @param {Color} color Rectangle outline color.
-     * @param {BlendMode=} blend Blend mode.
-     * @param {Number=} rotation Rotate the rectangle around its center.
-     */
-    outlineRect(destRect, color, blend, rotation)
-    {
-        // get corners
-        let topLeft = destRect.getTopLeft();
-        let topRight = destRect.getTopRight();
-        let bottomRight = destRect.getBottomRight();
-        let bottomLeft = destRect.getBottomLeft();
-
-        // rotate vertices
-        if (rotation) {
-
-            // center rect
-            let center = destRect.getCenter();
-            topLeft.subSelf(center);
-            topRight.subSelf(center);
-            bottomLeft.subSelf(center);
-            bottomRight.subSelf(center);
-
-            // do rotation
-            let cos = Math.cos(rotation);
-            let sin = Math.sin(rotation);
-            function rotateVec(vector)
-            {
-                let x = (vector.x * cos - vector.y * sin);
-                let y = (vector.x * sin + vector.y * cos);
-                vector.set(x, y);
-            }
-            rotateVec(topLeft);
-            rotateVec(topRight);
-            rotateVec(bottomLeft);
-            rotateVec(bottomRight);
-
-            // return to original position
-            topLeft.addSelf(center);
-            topRight.addSelf(center);
-            bottomLeft.addSelf(center);
-            bottomRight.addSelf(center);
-        }
-        
-        // draw rectangle with lines strip
-        this.drawLinesStrip([topLeft, topRight, bottomRight, bottomLeft], color, blend, true);
-    }
-
-    /**
-     * Draw an outline colored circle.
-     * @example
-     * // draw a circle at 50x50 with radius of 85
-     * Shaku.gfx.outlineCircle(new Shaku.utils.Circle(new Shaku.utils.Vector2(50, 50), 85), Shaku.utils.Color.red);
-     * @param {Circle} circle Circle to draw.
-     * @param {Color} color Circle outline color.
-     * @param {BlendMode=} blend Blend mode.
-     * @param {Number=} lineAmount How many lines to compose the circle from (bigger number = smoother circle).
-     */
-    outlineCircle(circle, color, blend, lineAmount)
-    {
-        // defaults
-        if (lineAmount === undefined) { lineAmount = 32; }
-
-        // generate list of lines to draw circle
-        let lines = [];
-        const twicePi = 2 * Math.PI;
-        for (let i = 0; i <= lineAmount; i++) {
-            let point = new Vector2(
-                circle.center.x + (circle.radius * Math.cos(i * twicePi / lineAmount)), 
-                circle.center.y + (circle.radius * Math.sin(i * twicePi / lineAmount))
-            );
-            lines.push(point);
-        }
-
-        // draw lines
-        this.drawLinesStrip(lines, color, blend);
-    }
-
-    /**
-     * Draw a filled colored circle.
-     * @example
-     * // draw a filled circle at 50x50 with radius of 85
-     * Shaku.gfx.fillCircle(new Shaku.utils.Circle(new Shaku.utils.Vector2(50, 50), 85), Shaku.utils.Color.red);
-     * @param {Circle} circle Circle to draw.
-     * @param {Color} color Circle fill color.
-     * @param {BlendMode=} blend Blend mode.
-     * @param {Number=} lineAmount How many lines to compose the circle from (bigger number = smoother circle).
-     */
-    fillCircle(circle, color, blend, lineAmount)
-    {
-        // defaults
-        if (lineAmount === undefined) { lineAmount = 32; }
-
-        // generate list of lines to draw circle
-        let lines = [circle.center];
-        const twicePi = 2 * Math.PI;
-        for (let i = 0; i <= lineAmount; i++) {
-            let point = new Vector2(
-                circle.center.x + (circle.radius * Math.cos(i * twicePi / lineAmount)), 
-                circle.center.y + (circle.radius * Math.sin(i * twicePi / lineAmount))
-            );
-            lines.push(point);
-        }
-
-        // prepare effect and buffers
-        let gl = this._gl;
-        this._fillShapesBuffer(lines, color, blend, (verts) => {
-            gl.drawArrays(gl.TRIANGLE_FAN, 0, verts.length);
-            this._drawCallsCount++;
-        }, true, 1);
-    }
-
-    /**
-     * Draw a list of filled colored circles using batches.
-     * @example
-     * // draw a filled circle at 50x50 with radius of 85
-     * Shaku.gfx.fillCircles([new Shaku.utils.Circle(new Shaku.utils.Vector2(50, 50), 85), new Shaku.utils.Circle(new Shaku.utils.Vector2(150, 125), 35)], Shaku.utils.Color.red);
-     * @param {Array<Circle>} circles Circles list to draw.
-     * @param {Color|Array<Color>} colors Circles fill color or a single color for all circles.
-     * @param {BlendMode=} blend Blend mode.
-     * @param {Number=} lineAmount How many lines to compose the circle from (bigger number = smoother circle).
-     */
-    fillCircles(circles, colors, blend, lineAmount)
-    {
-        // defaults
-        if (lineAmount === undefined) { lineAmount = 32; }
-
-        // build vertices and colors arrays
-        let vertsArr = [];
-        let colorsArr = colors.length ? [] : null;
-
-        // generate vertices and colors
-        for (let i = 0; i < circles.length; ++i) {
-
-            let circle = circles[i];
-            let color = colors[i] || colors;
-
-            const twicePi = 2 * Math.PI;
-            for (let i = 0; i <= lineAmount; i++) {
-
-                // set vertices
-                vertsArr.push(new Vector2(
-                    circle.center.x + (circle.radius * Math.cos(i * twicePi / lineAmount)), 
-                    circle.center.y + (circle.radius * Math.sin(i * twicePi / lineAmount))
-                ));
-                vertsArr.push(new Vector2(
-                    circle.center.x + (circle.radius * Math.cos((i+1) * twicePi / lineAmount)), 
-                    circle.center.y + (circle.radius * Math.sin((i+1) * twicePi / lineAmount))
-                ));
-                vertsArr.push(circle.center);
-
-                // set colors
-                if (colorsArr) {
-                    colorsArr.push(color);
-                    colorsArr.push(color);
-                    colorsArr.push(color);
-                }
-            }
-        }
-
-        // prepare effect and buffers
-        let gl = this._gl;
-        this._fillShapesBuffer(vertsArr, colorsArr || colors, blend, (verts) => {
-            gl.drawArrays(gl.TRIANGLES, 0, verts.length);
-            this._drawCallsCount++;
-        }, false, 3);
-    }
-
-    /**
-     * Draw a single line between two points.
-     * @example
-     * Shaku.gfx.drawLine(new Shaku.utils.Vector2(50,50), new Shaku.utils.Vector2(150,50), Shaku.utils.Color.red);
-     * @param {Vector2} startPoint Line start point.
-     * @param {Vector2} endPoint Line end point.
-     * @param {Color} color Line color.
-     * @param {BlendMode=} blendMode Blend mode to draw lines with (default to Opaque).
-     */
-    drawLine(startPoint, endPoint, color, blendMode)
-    {
-        return this.drawLines([startPoint, endPoint], color, blendMode, false);
-    }
-
-    /**
-     * Draw a strip of lines between an array of points.
-     * @example
-     * let lines = [new Shaku.utils.Vector2(50,50), new Shaku.utils.Vector2(150,50), new Shaku.utils.Vector2(150,150)];
-     * let colors = [Shaku.utils.Color.random(), Shaku.utils.Color.random(), Shaku.utils.Color.random()];
-     * Shaku.gfx.drawLinesStrip(lines, colors);
-     * @param {Array<Vector2>} points Points to draw line between.
-     * @param {Color|Array<Color>} colors Single lines color if you want one color for all lines, or an array of colors per segment.
-     * @param {BlendMode=} blendMode Blend mode to draw lines with (default to Opaque).
-     * @param {Boolean=} looped If true, will also draw a line from last point back to first point.
-     */
-    drawLinesStrip(points, colors, blendMode, looped)
-    {
-        // prepare effect and buffers
-        let gl = this._gl;
-
-        // do loop - note: we can't use gl.LINE_LOOPED in case we need multiple buffers inside '_fillShapesBuffer' which will invoke more than one draw
-        if (looped) {
-            points = points.slice(0);
-            points.push(points[0]);
-            if (colors && colors.length) {
-                colors = colors.slice(0);
-                colors.push(colors[0]);
-            }
-        }
-
-        // draw lines
-        this._fillShapesBuffer(points, colors, blendMode, (verts) => {
-            gl.drawArrays(gl.LINE_STRIP, 0, verts.length);
-            this._drawCallsCount++;
-        }, true, 2);
-    }
-
-    /**
-     * Draw a list of lines from an array of points.
-     * @example
-     * let lines = [new Shaku.utils.Vector2(50,50), new Shaku.utils.Vector2(150,50), new Shaku.utils.Vector2(150,150)];
-     * let colors = [Shaku.utils.Color.random(), Shaku.utils.Color.random(), Shaku.utils.Color.random()];
-     * Shaku.gfx.drawLines(lines, colors);
-     * @param {Array<Vector2>} points Points to draw line between.
-     * @param {Color|Array<Color>} colors Single lines color if you want one color for all lines, or an array of colors per segment.
-     * @param {BlendMode=} blendMode Blend mode to draw lines with (default to Opaque).
-     */
-    drawLines(points, colors, blendMode)
-    {
-        // prepare effect and buffers
-        let gl = this._gl;
-        this._fillShapesBuffer(points, colors, blendMode, (verts) => {
-            gl.drawArrays(gl.LINES, 0, verts.length);
-            this._drawCallsCount++;
-        }, true, 2);
-    }
-
-    /**
-     * Draw a single point from vector.
-     * @example
-     * Shaku.gfx.drawPoint(new Shaku.utils.Vector2(50,50), Shaku.utils.Color.random());
-     * @param {Vector2} point Point to draw.
-     * @param {Color} color Point color.
-     * @param {BlendMode=} blendMode Blend mode to draw point with (default to Opaque).
-     */
-    drawPoint(point, color, blendMode)
-    {
-        return this.drawPoints([point], [color], blendMode);
-    }
-
-    /**
-     * Draw a list of points from an array of vectors.
-     * @example
-     * let points = [new Shaku.utils.Vector2(50,50), new Shaku.utils.Vector2(150,50), new Shaku.utils.Vector2(150,150)];
-     * let colors = [Shaku.utils.Color.random(), Shaku.utils.Color.random(), Shaku.utils.Color.random()];
-     * Shaku.gfx.drawPoints(points, colors);
-     * @param {Array<Vector2>} points Points to draw.
-     * @param {Color|Array<Color>} colors Single color if you want one color for all points, or an array of colors per point.
-     * @param {BlendMode=} blendMode Blend mode to draw points with (default to Opaque).
-     */
-    drawPoints(points, colors, blendMode)
-    {
-        let gl = this._gl;
-        this._fillShapesBuffer(points, colors, blendMode, (verts) => {
-            gl.drawArrays(gl.POINTS, 0, verts.length);
-            this._drawCallsCount++;
-        }, false, 1);
-    }
-
-    /**
      * Make the renderer canvas centered.
      */
     centerCanvas()
     {
-        let canvas = this._canvas;
+        let canvas = _canvas;
         let parent = canvas.parentElement;
         let pwidth = Math.min(parent.clientWidth, window.innerWidth);
         let pheight = Math.min(parent.clientHeight, window.innerHeight);
@@ -6005,7 +9489,7 @@ class Gfx extends IManager
      */
     inScreen(shape)
     {
-        let region = this.__getRenderingRegionInternal();
+        let region = this.#_getRenderingRegionInternal();
 
         if (shape instanceof Circle) {
             return region.collideCircle(shape);
@@ -6036,134 +9520,7 @@ class Gfx extends IManager
         let centeredPos = position.sub(halfScreenSize);
         this.setCameraOrthographic(centeredPos);
     }
-        
-    /**
-     * Prepare buffers, effect and blend mode for shape rendering.
-     * @private
-     */
-    _fillShapesBuffer(points, colors, blendMode, onReady, isStrip, groupsSize)
-    {
-        // finish whatever we were drawing before
-        this.presentBufferedData();
-
-        // some defaults
-        colors = colors || _whiteColor;
-        blendMode = blendMode || BlendModes.Opaque;
-
-        // sanity - make sure colors and vertices match
-        if (colors.length !== undefined && colors.length !== points.length) {
-            _logger.error("When drawing shapes with colors array, the colors array and points array must have the same length!");
-            return;
-        }
-
-        // calculate actual max buffer size
-        let maxWithMargin = isStrip ? (this.maxLineSegments-1) : this.maxLineSegments;
-        if (groupsSize != 1) {
-            while (maxWithMargin % groupsSize !== 0) { maxWithMargin--; }
-        }
-
-        // if we have too many vertices, break to multiple calls
-        if (points.length > maxWithMargin) {
-            let sliceI = 0;
-            while (true) {
-                let start = sliceI * maxWithMargin;
-                let end = start + maxWithMargin;
-                if (isStrip && sliceI > 0) { start--; }
-                let subpoints = points.slice(start, end);
-                if (subpoints.length === 0) { break; }
-                let subcolors = (colors && colors.length) ? colors.slice(start, end) : colors;
-                this._fillShapesBuffer(subpoints, subcolors, blendMode, onReady, isStrip, groupsSize);
-                sliceI++;
-            }
-            return;
-        }
-
-       // basic params
-       let gl = this._gl;
-       let positionsBuff = this._dynamicBuffers.positionArray;
-       let colorsBuff = this._dynamicBuffers.colorsArray;
-
-       for (let i = 0; i < points.length; ++i) {
-
-           // set positions
-           positionsBuff[i*3 + 0] = points[i].x;
-           positionsBuff[i*3 + 1] = points[i].y;
-           positionsBuff[i*3 + 2] = points[i].z || 0;
-           
-           // set colors
-           let color = colors[i] || colors;
-           colorsBuff[i*4 + 0] = color.r;
-           colorsBuff[i*4 + 1] = color.g;
-           colorsBuff[i*4 + 2] = color.b;
-           colorsBuff[i*4 + 3] = color.a;
-       }
-
-       // set blend mode if needed
-       this._setBlendMode(blendMode);
-
-       // prepare effect and texture
-       let mesh = new Mesh(this._dynamicBuffers.positionBuffer, null, this._dynamicBuffers.colorsBuffer, this._dynamicBuffers.indexBuffer, points.length);
-       this._activeEffect.prepareToDrawBatch(mesh, Matrix.identity);
-       this._setActiveTexture(this.whiteTexture);
-
-       // should we slice the arrays to more optimal size?
-       let shouldSliceArrays = points.length <= 8;
-
-       // copy position buffer
-       this._gl.bindBuffer(this._gl.ARRAY_BUFFER, this._dynamicBuffers.positionBuffer);
-       this._gl.bufferData(this._gl.ARRAY_BUFFER, 
-           shouldSliceArrays ? this._dynamicBuffers.positionArray.slice(0, points.length * 3) : this._dynamicBuffers.positionArray, 
-           this._gl.DYNAMIC_DRAW);
-
-       // copy color buffer
-       this._gl.bindBuffer(this._gl.ARRAY_BUFFER, this._dynamicBuffers.colorsBuffer);
-       this._gl.bufferData(this._gl.ARRAY_BUFFER, 
-           shouldSliceArrays ? this._dynamicBuffers.colorsArray.slice(0, points.length * 4) : this._dynamicBuffers.colorsArray, 
-           this._gl.DYNAMIC_DRAW);
-
-       // set indices
-       gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this._dynamicBuffers.linesIndexBuffer);
-       this._currIndices = null;
-
-       // invoke the on-ready callback
-       onReady(points);
-    }
-
-    /**
-     * Draw sprites group as a batch.
-     * @private
-     * @param {SpritesGroup} group Group to draw.
-     * @param {Boolean} cullOutOfScreen If true will cull quads that are out of screen.
-     */
-    _drawBatch(group, cullOutOfScreen)
-    {
-        // skip if empty
-        if (group._sprites.length === 0) { return; }
-
-        // finish previous drawings
-        this.presentBufferedData();
-
-        // get transform
-        let transform = group.getTransform();
-
-        // draw batch
-        this.spritesBatch.begin(this._activeEffect, transform);
-        this.spritesBatch.draw(group._sprites, cullOutOfScreen);
-        this.spritesBatch.end();
-    }
-
-    /**
-     * Set the currently active texture.
-     * @private
-     * @param {TextureAsset} texture Texture to set.
-     */
-    _setActiveTexture(texture)
-    {
-        if (this._activeEffect.setTexture(texture)) {
-            this._setTextureFilter(texture.filter || this.defaultTextureFilter);
-            this._setTextureWrapMode(texture.wrapMode || this.defaultTextureWrapMode);
-        }
-    }
+     
 
     /**
      * Get the blend modes enum.
@@ -6223,16 +9580,25 @@ class Gfx extends IManager
      */
     get drawCallsCount()
     {
-        return this._drawCallsCount;
+        return _drawCallsCount;
     }
 
     /**
      * Get number of textured / colored quads we drawn since the beginning of the frame.
-     * @returns {Number} Number of quads drawn in this frame..
+     * @returns {Number} Number of quads drawn in this frame.
      */
     get quadsDrawCount()
     {
-        return this._drawQuadsCount;
+        return _drawQuadsCount;
+    }
+
+    /**
+     * Get number of shape polygons we drawn since the beginning of the frame.
+     * @returns {Number} Number of shape polygons drawn in this frame.
+     */
+    get shapePolygonsDrawCount()
+    {
+        return _drawShapePolygonsCount;
     }
 
     /**
@@ -6243,10 +9609,9 @@ class Gfx extends IManager
      */
     clear(color)
     {
-        this.presentBufferedData();
         color = color || Color.black;
-        this._gl.clearColor(color.r, color.g, color.b, color.a);
-        this._gl.clear(this._gl.COLOR_BUFFER_BIT | this._gl.DEPTH_BUFFER_BIT);
+        _gl.clearColor(color.r, color.g, color.b, color.a);
+        _gl.clear(_gl.COLOR_BUFFER_BIT | _gl.DEPTH_BUFFER_BIT);
     }
 
     /**
@@ -6256,48 +9621,179 @@ class Gfx extends IManager
      */
     clearDepth(value)
     {
-        this._gl.clearDepth((value !== undefined) ? value : 1.0);
+        _gl.clearDepth((value !== undefined) ? value : 1.0);
     }
     
-    /**
-     * Set texture mag and min filters.
+    /** 
+     * @inheritdoc
      * @private
-     * @param {TextureFilterMode} filter Texture filter to set.
      */
-    _setTextureFilter(filter)
+    startFrame()
     {
-        if (!TextureFilterModes._values.has(filter)) { throw new Error("Invalid texture filter mode! Please pick a value from 'TextureFilterModes'."); }
-        let glMode = this._gl[filter];
-        this._gl.texParameteri(this._gl.TEXTURE_2D, this._gl.TEXTURE_MIN_FILTER, glMode);
-        this._gl.texParameteri(this._gl.TEXTURE_2D, this._gl.TEXTURE_MAG_FILTER, glMode);
+        // reset some states
+        _lastBlendMode = null;
+        _drawCallsCount = 0;
+        _drawQuadsCount = 0;
+        _drawShapePolygonsCount = 0;
+        
+        // reset cached rendering region
+        this.#_resetCachedRenderingRegion();
     }
 
-    /**
-     * Set texture wrap mode on X and Y axis.
+    /** 
+     * @inheritdoc
      * @private
-     * @param {TextureWrapMode} wrapX Wrap mode on X axis.
-     * @param {TextureWrapMode} wrapY Wrap mode on Y axis.
      */
-    _setTextureWrapMode(wrapX, wrapY)
+    endFrame()
+    {
+    }
+
+    /** 
+     * @inheritdoc
+     * @private
+     */
+    destroy()
+    {
+        _logger.warn("Cleaning up WebGL is not supported yet!");
+    }
+}
+
+/**
+ * Internal Gfx stuff that should not be used or exposed externally.
+ * @private
+ */
+class GfxInternal
+{
+    constructor(gfx)
+    {
+        this._gfx = gfx;
+    }
+
+    get gl()
+    {
+        return _gl;
+    }
+
+    get drawQuadsCount()
+    {
+        return _drawQuadsCount;
+    }
+
+    set drawQuadsCount(value)
+    {
+        _drawQuadsCount = value;
+    }
+
+    get drawCallsCount()
+    {
+        return _drawCallsCount;
+    }
+
+    set drawCallsCount(value)
+    {
+        _drawCallsCount = value;
+    }
+
+    get drawShapePolygonsCount()
+    {
+        return _drawShapePolygonsCount;
+    }
+
+    set drawShapePolygonsCount(value)
+    {
+        _drawShapePolygonsCount = value;
+    }
+
+    useEffect(effect, overrideFlags)
+    {
+        // if null, use default
+        if (effect === null) {
+            effect = this._gfx.builtinEffects.Sprites;
+        }
+
+        // same effect? skip
+        if (_activeEffect === effect) {
+            return;
+        }
+
+        // set effect
+        effect.setAsActive(overrideFlags);
+        _activeEffect = effect;
+
+        // set projection matrix
+        if (_projection) { 
+            _activeEffect.setProjectionMatrix(_projection); 
+        }
+    }
+
+    getRenderingRegionInternal(includeOffset)
+    {
+        // cached with offset
+        if (includeOffset && _cachedRenderingRegion.withOffset) {
+            return _cachedRenderingRegion.withOffset;
+        }
+
+        // cached without offset
+        if (!includeOffset && _cachedRenderingRegion.withoutOffset) {
+            return _cachedRenderingRegion.withoutOffset;
+        }
+
+        // if we got viewport..
+        if (this._gfx._viewport) {
+
+            // get region from viewport
+            let ret = this._gfx._viewport.clone();
+
+            // if without offset, remove it
+            if (includeOffset === false) {
+                ret.x = ret.y = 0;
+                _cachedRenderingRegion.withoutOffset = ret;
+                return ret;
+            }
+            // else, include offset
+            else {
+                _cachedRenderingRegion.withOffset = ret;
+                return ret;
+            }
+        }
+
+        // if we don't have viewport..
+        let ret = new Rectangle(0, 0, (_renderTarget || _canvas).width, (_renderTarget || _canvas).height);
+        _cachedRenderingRegion.withoutOffset = _cachedRenderingRegion.withOffset = ret;
+        return ret;
+    }
+
+    setTextureFilter(filter)
+    {
+        if (!TextureFilterModes._values.has(filter)) { throw new Error("Invalid texture filter mode! Please pick a value from 'TextureFilterModes'."); }
+        let glMode = _gl[filter];
+        _gl.texParameteri(_gl.TEXTURE_2D, _gl.TEXTURE_MIN_FILTER, glMode);
+        _gl.texParameteri(_gl.TEXTURE_2D, _gl.TEXTURE_MAG_FILTER, glMode);
+    }
+
+    setTextureWrapMode(wrapX, wrapY)
     {
         if (wrapY === undefined) { wrapY = wrapX; }
         if (!TextureWrapModes._values.has(wrapX)) { throw new Error("Invalid texture wrap mode! Please pick a value from 'TextureWrapModes'."); }
         if (!TextureWrapModes._values.has(wrapY)) { throw new Error("Invalid texture wrap mode! Please pick a value from 'TextureWrapModes'."); }
-        this._gl.texParameteri(this._gl.TEXTURE_2D, this._gl.TEXTURE_WRAP_S, this._gl[wrapX]);
-        this._gl.texParameteri(this._gl.TEXTURE_2D, this._gl.TEXTURE_WRAP_T, this._gl[wrapY]);
+        _gl.texParameteri(_gl.TEXTURE_2D, _gl.TEXTURE_WRAP_S, _gl[wrapX]);
+        _gl.texParameteri(_gl.TEXTURE_2D, _gl.TEXTURE_WRAP_T, _gl[wrapY]);
     }
 
-    /**
-     * Set blend mode before drawing.
-     * @private
-     * @param {BlendMode} blendMode New blend mode to set.
-     */
-    _setBlendMode(blendMode)
+    setActiveTexture(texture)
     {
-        if (this._lastBlendMode !== blendMode) {
+        if (_activeEffect.setTexture(texture)) {
+            this.setTextureFilter(texture.filter || this._gfx.defaultTextureFilter);
+            this.setTextureWrapMode(texture.wrapMode || this._gfx.defaultTextureWrapMode);
+        }
+    }
+    
+    setBlendMode(blendMode)
+    {
+        if (_lastBlendMode !== blendMode) {
 
             // get gl context and set defaults
-            var gl = this._gl;
+            var gl = _gl;
             switch (blendMode) 
             {
                 case BlendModes.AlphaBlend:
@@ -6377,117 +9873,56 @@ class Gfx extends IManager
             }
 
             // store last blend mode
-            this._lastBlendMode = blendMode;
+            _lastBlendMode = blendMode;
         }
-    }
-    
-    /**
-     * Present all currently buffered data.
-     */
-    presentBufferedData()
-    {
-        this.__finishDrawingSprites();
-    }
-
-    /**
-     * Called internally before drawing a sprite to prepare some internal stuff.
-     * @private
-     */
-    __startDrawingSprites(activeEffect, transform)
-    {
-        // check if should break due to effect or transform change
-        if (this.spritesBatch.drawing) {
-            if (this.spritesBatch._effect !== activeEffect || this.spritesBatch._transform !== transform) {
-                this.spritesBatch.end();
-            }
-        }
-
-        // start sprites batch
-        if (!this.spritesBatch.drawing) {
-            this.spritesBatch.begin(activeEffect, transform);
-        }
-    }
-    
-    /**
-     * Called internally to present sprites batch, if currently drawing sprites.
-     * @private
-     */
-    __finishDrawingSprites()
-    {
-        if (this.spritesBatch.drawing) {
-            this.spritesBatch.end();
-        }
-    }
-    
-    /** 
-     * @inheritdoc
-     * @private
-     */
-    startFrame()
-    {
-        // reset some states
-        this._lastBlendMode = null;
-        this._drawCallsCount = 0;
-        this._drawQuadsCount = 0;
-        
-        // reset cached rendering region
-        this.__resetCachedRenderingRegion();
-    }
-
-    /** 
-     * @inheritdoc
-     * @private
-     */
-    endFrame()
-    {
-        this.presentBufferedData();
-    }
-
-    /** 
-     * @inheritdoc
-     * @private
-     */
-    destroy()
-    {
-        _logger.warn("Cleaning up WebGL is not supported yet!");
     }
 }
 
 // export main object
 module.exports = new Gfx();
-},{"../assets/font_texture_asset.js":4,"../assets/msdf_font_texture_asset.js":7,"../assets/texture_asset.js":9,"../logger.js":45,"../manager.js":46,"../utils/circle.js":53,"../utils/color.js":54,"../utils/rectangle.js":61,"../utils/vector2.js":67,"../utils/vector3.js":68,"./blend_modes.js":22,"./camera.js":23,"./effects":26,"./matrix.js":30,"./mesh.js":31,"./mesh_generator.js":32,"./sprite.js":33,"./sprite_batch.js":34,"./sprites_group.js":35,"./text_alignments.js":36,"./texture_filter_modes.js":37,"./texture_wrap_modes.js":38,"./vertex":39}],29:[function(require,module,exports){
+
+/***/ }),
+
+/***/ 7565:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
 /**
  * Just an alias to main manager so we can require() this folder as a package.
  * 
  * |-- copyright and license --|
- * @package    Shaku
- * @file       shaku\lib\gfx\index.js
+ * @module     Shaku
+ * @file       shaku\src\gfx\index.js
  * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
  * @copyright  (c) 2021 Ronen Ness
  * @license    MIT
  * |-- end copyright and license --|
  * 
  */
- 'use strict';
- module.exports = require('./gfx');
-},{"./gfx":28}],30:[function(require,module,exports){
+ 
+ module.exports = __webpack_require__(4672);
+
+/***/ }),
+
+/***/ 5599:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
 /**
  * Matrix class.
  * Based on code from https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API/Matrix_math_for_the_web
  * 
  * |-- copyright and license --|
- * @package    Shaku
- * @file       shaku\lib\gfx\matrix.js
+ * @module     Shaku
+ * @file       shaku\src\gfx\matrix.js
  * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
  * @copyright  (c) 2021 Ronen Ness
  * @license    MIT
  * |-- end copyright and license --|
  * 
  */
-'use strict';
-const Vector2 = require("../utils/vector2");
-const Vector3 = require("../utils/vector3");
-const Vertex = require("./vertex");
+
+const Vector2 = __webpack_require__(2544);
+const Vector3 = __webpack_require__(8329);
+const Vertex = __webpack_require__(4288);
 const EPSILON = Number.EPSILON;
 
 
@@ -6925,244 +10360,83 @@ Matrix.identity = new Matrix([
     0, 0, 1, 0,
     0, 0, 0, 1
 ], false);
+Matrix.identity.isIdentity = true;
 Object.freeze(Matrix.identity);
 
 // export the matrix object
 module.exports = Matrix;
-},{"../utils/vector2":67,"../utils/vector3":68,"./vertex":39}],31:[function(require,module,exports){
+
+/***/ }),
+
+/***/ 6565:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
 /**
- * Define a mesh object.
+ * Define a sprite object we can draw using sprite batches.
  * 
  * |-- copyright and license --|
- * @package    Shaku
- * @file       shaku\lib\gfx\mesh.js
+ * @module     Shaku
+ * @file       shaku\src\gfx\sprite.js
  * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
  * @copyright  (c) 2021 Ronen Ness
  * @license    MIT
  * |-- end copyright and license --|
  * 
  */
- 'use strict';
 
-const { Color } = require("../utils");
+const TextureAsset = __webpack_require__(2262);
+const TextureAssetBase = __webpack_require__(4397);
+const Color = __webpack_require__(9327);
+const Rectangle = __webpack_require__(4731);
+const Vector2 = __webpack_require__(2544);
+const Vector3 = __webpack_require__(8329);
 
- /**
-  * Class to hold a mesh.
-  */
- class Mesh
- {
-    /**
-     * Create the mesh object.
-     * @param {WebGLBuffer} positions vertices positions buffer. 
-     * @param {WebGLBuffer} textureCoords vertices texture coords buffer.
-     * @param {WebGLBuffer} colorss vertices colors buffer.
-     * @param {WebGLBuffer} indices indices buffer.
-     * @param {Number} indicesCount how many indices we have.
-     */
-    constructor(positions, textureCoords, colorsBuffer, indices, indicesCount)
-    {
-        this.positions = positions;
-        this.textureCoords = textureCoords;
-        this.colors = colorsBuffer;
-        this.indices = indices;
-        this.indicesCount = indicesCount;
-        this.__color = new Color(-1, -1, -1, -1);
-        Object.freeze(this);
-    }
-
-    /**
-     * Override the colors buffer, if possible.
-     * @param {WebGl} gl WebGL context.
-     * @param {Color} color Color to set.
-     */
-    overrideColors(gl, color)
-    {
-        if (color.equals(this.__color)) { return; }
-        this.__color.copy(color);
-
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.colors);
-        const colors = [];
-        for (let i = 0; i < this.indicesCount; ++i) {
-            colors.push(color.r);
-            colors.push(color.g);
-            colors.push(color.b);
-            colors.push(color.a);
-        }
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.DYNAMIC_DRAW);
-    }
- }
- 
- // export the mesh class.
- module.exports = Mesh;
-},{"../utils":56}],32:[function(require,module,exports){
-/**
- * Define utility to generate meshes.
- * 
- * |-- copyright and license --|
- * @package    Shaku
- * @file       shaku\lib\gfx\mesh_generator.js
- * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
- * @copyright  (c) 2021 Ronen Ness
- * @license    MIT
- * |-- end copyright and license --|
- * 
- */
-'use strict';
-
-const Mesh = require("./mesh");
-
-/**
- * Utility class to generate meshes.
- * @private
- */
-class MeshGenerator
-{
-    /**
-     * Create the mesh generator.
-     */
-    constructor(gl)
-    {
-        this._gl = gl;
-    }
-
-    /**
-     * Generate and return a textured quad.
-     * @returns {Mesh} Quad mesh.
-     */
-    quad()
-    {
-        const gl = this._gl;
-
-        const positionBuffer = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-        let x = 0.5; // <- 0.5 so total size would be 1x1
-        const positions = [
-            -x, -x,  0,
-             x, -x,  0,
-            -x,  x,  0,
-            x,  x,  0,
-        ];
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
-    
-        const textureCoordBuffer = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, textureCoordBuffer);
-        const textureCoordinates = [
-            0.0,  0.0,
-            1.0,  0.0,
-            0.0,  1.0,
-            1.0,  1.0,
-        ];
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(textureCoordinates), gl.STATIC_DRAW);
-
-        const colorsBuffer = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, colorsBuffer);
-        const colors = [
-            1,1,1,1,
-            1,1,1,1,
-            1,1,1,1,
-            1,1,1,1,
-        ];
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.DYNAMIC_DRAW);
-    
-        const indexBuffer = gl.createBuffer();
-        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
-        const indices = [
-            0, 1, 3, 2
-        ];
-        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW);
-    
-        return new Mesh(positionBuffer, textureCoordBuffer, colorsBuffer, indexBuffer, indices.length);
-    }
-}
-
-// export the meshes generator.
-module.exports = MeshGenerator;
-},{"./mesh":31}],33:[function(require,module,exports){
-/**
- * Define a sprite object.
- * 
- * |-- copyright and license --|
- * @package    Shaku
- * @file       shaku\lib\gfx\sprite.js
- * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
- * @copyright  (c) 2021 Ronen Ness
- * @license    MIT
- * |-- end copyright and license --|
- * 
- */
-'use strict';
-
-const TextureAsset = require("../assets/texture_asset");
-const Color = require("../utils/color");
-const Rectangle = require("../utils/rectangle");
-const Vector2 = require("../utils/vector2");
-const Vector3 = require("../utils/vector3");
-const {BlendMode, BlendModes} = require("./blend_modes");
 
 /**
  * Sprite class.
- * This object is a helper class to hold all the properties of a texture to render.
  */
 class Sprite
 {
     /**
-     * Create the texture object.
-     * @param {TextureAsset} texture Texture asset.
-     * @param {Rectangle=} sourceRect Optional source rect.
+     * Create the sprite object.
+     * @param {TextureAssetBase} texture Sprite texture.
+     * @param {Rectangle=} sourceRectangle Optional source rectangle.
      */
-    constructor(texture, sourceRect)
+    constructor(texture, sourceRectangle)
     {
         /**
-         * Texture to use for this sprite.
+         * Sprite's texture.
          * @name Sprite#texture
-         * @type {TextureAsset}
+         * @type {TextureAssetBase}
          */
         this.texture = texture;
-        
+
         /**
          * Sprite position.
          * If Vector3 is provided, the z value will be passed to vertices position in shader code.
-         * This property is locked when static=true.
          * @name Sprite#position
          * @type {Vector2|Vector3}
          */
-        this.position = new Vector2(0, 0);
+        this.position = Vector2.zero();
 
         /**
          * Sprite size.
          * If Vector3 is provided, the z value will be passed to the bottom vertices position in shader code, as position.z + size.z.
-         * This property is locked when static=true.
          * @name Sprite#size
          * @type {Vector2|Vector3}
          */
-        if (sourceRect) {
-            this.size = new Vector2(sourceRect.width, sourceRect.height);
-        } else if (texture && texture.valid) {
-            this.size = texture.size.clone();
-        }
-        else {
-            this.size = new Vector2(100, 100);
-        }
+        this.size = new Vector2(100, 100);
 
         /**
          * Sprite source rectangle in texture.
          * Null will take entire texture.
-         * This property is locked when static=true.
-         * @name Sprite#sourceRect
+         * @name Sprite#sourceRectangle
          * @type {Rectangle}
          */
-        this.sourceRect = sourceRect || null;
-        
-        /**
-         * Sprite blend mode.
-         * @name Sprite#blendMode
-         * @type {BlendMode}
-         */
-        this.blendMode = BlendModes.AlphaBlend;
+        this.sourceRectangle = sourceRectangle || null;
         
         /**
          * Sprite rotation in radians.
-         * This property is locked when static=true.
          * @name Sprite#rotation
          * @type {Number}
          */
@@ -7170,7 +10444,6 @@ class Sprite
         
         /**
          * Sprite origin point.
-         * This property is locked when static=true.
          * @name Sprite#origin
          * @type {Vector2}
          */
@@ -7178,11 +10451,10 @@ class Sprite
         
         /**
          * Skew the sprite corners on X and Y axis, around the origin point.
-         * This property is locked when static=true.
          * @name Sprite#skew
          * @type {Vector2}
          */
-        this.skew = new Vector2(0, 0);
+        this.skew = null;
         
         /**
          * Sprite color.
@@ -7191,31 +10463,71 @@ class Sprite
          * @type {Color|Array<Color>}
          */
         this.color = Color.white;
+    }
 
-        /**
-         * Is this a static sprite.
-         * Static sprites will only calculate vertices properties once, and reuse them in following render calls.
-         * This will improve performance, but also means that once the sprite is rendered once, changing things like position, size, rotation, etc.
-         * won't affect the output. To refresh the properties of a static sprite, you need to call updateStaticProperties() manually.
-         * @name Sprite#static
-         * @type {Boolean}
-         */
-        this.static = false;
+    /**
+     * Set size to source rectangle size.
+     * @returns {Sprite} this.
+     */
+    setToSourceRectangleSize()
+    {
+        this.size.copy(this.sourceRectangle.getSize());
+        return this;
+    }
+
+    /**
+     * Set size to texture size.
+     * @returns {Sprite} this.
+     */
+    setToTextureSize()
+    {
+        this.size.copy(this.texture.getSize());
+        return this;
+    }
+
+    /**
+     * Build a sprite from params.
+     * @param {TextureAssetBase} texture Sprite texture.
+     * @param {Vector2|Vector3} position Drawing position (at origin). If vector3 is provided, will pass z value to the shader code position attribute.
+     * @param {Vector2|Vector3|Number} size Drawing size. If vector3 is provided, will pass z value to the shader code position attribute for the bottom vertices, as position.z + size.z.
+     * @param {Rectangle} sourceRectangle Source rectangle, or undefined to use the entire texture.
+     * @param {Color|Array<Color>|undefined} color Tint color, or undefined to not change color. If array is set, will assign each color to different vertex, starting from top-left.
+     * @param {Number=} rotation Rotate sprite.
+     * @param {Vector2=} origin Drawing origin. This will be the point at 'position' and rotation origin.
+     * @param {Vector2=} skew Skew the drawing corners on X and Y axis, around the origin point.
+     * @returns {Sprite} New sprite instance.
+     */
+    static build(texture, position, size, sourceRectangle, color, rotation, origin, skew)
+    {
+        let sprite = new Sprite(texture, sourceRectangle);
+        sprite.position = position;
+        sprite.size = (typeof size === 'number') ? new Vector2(size, size) : size;
+        if (color) { sprite.color = color; }
+        if (rotation) { sprite.rotation = rotation; }
+        if (origin) { sprite.origin = origin; }
+        if (skew) { sprite.skew = skew; }
+        return sprite;
     }
 
     /**
      * Set the source Rectangle automatically from spritesheet.
      * This method get sprite index in sheet and how many sprites there are in total, and calculate the desired
      * offset and size in source Rectangle based on it + source image size.
+     * @param {TextureAssetBase} texture Texture to set source rectangle from.
      * @param {Vector2} index Sprite index in spritesheet.
      * @param {Vector2} spritesCount How many sprites there are in spritesheet in total.
      * @param {Number=} margin How many pixels to trim from the tile (default is 0).
      * @param {Boolean=} setSize If true will also set width and height based on source rectangle (default is true).
      */
-    setSourceFromSpritesheet(index, spritesCount, margin, setSize) {
+    setSourceFromSpritesheet(texture, index, spritesCount, margin, setSize) 
+    {
+        if (texture.width === 0 || texture.height === 0) {
+            throw new Error("Texture has illegal size or is not fully loaded yet!");
+        }
+
         margin = margin || 0;
-        let w = this.texture.width / spritesCount.x;
-        let h = this.texture.height / spritesCount.y;
+        let w = texture.width / spritesCount.x;
+        let h = texture.height / spritesCount.y;
         let x = w * index.x + margin;
         let y = h * index.y + margin;
         w -= 2*margin;
@@ -7223,10 +10535,10 @@ class Sprite
         if (setSize || setSize === undefined) {
             this.size.set(w, h)
         }
-        if (this.sourceRect) {
-            this.sourceRect.set(x, y, w, h);
+        if (this.sourceRectangle) {
+            this.sourceRectangle.set(x, y, w, h);
         } else {
-            this.sourceRect = new Rectangle(x, y, w, h);
+            this.sourceRectangle = new Rectangle(x, y, w, h);
         }
     }
 
@@ -7236,23 +10548,15 @@ class Sprite
      */
     clone()
     {
-        let ret = new Sprite(this.texture, this.sourceRect);
+        let sourceRect = this.sourceRectangle ? this.sourceRectangle.clone() : undefined;
+        let ret = new Sprite(this.texture, sourceRect);
         ret.position = this.position.clone();
         ret.size = this.size.clone();
-        ret.blendMode = this.blendMode;
-        ret.rotation = this.rotation;
-        ret.origin = this.origin.clone();
-        ret.color = this.color.clone();
-        ret.static = this.static;
+        ret.rotation = this.rotation || 0;
+        ret.origin = this.origin ? this.origin.clone() : null;
+        ret.color = this.color ? this.color.clone() : null;
+        ret.skew = this.skew ? this.skew.clone() : null;
         return ret;
-    }
-
-    /**
-     * Manually update the static properties (position, size, rotation, origin, source rectangle, etc.) of a static sprite.
-     */
-    updateStaticProperties()
-    {
-        this._cachedVertices = null;
     }
 
     /**
@@ -7302,513 +10606,29 @@ class Sprite
 
 // export the sprite class.
 module.exports = Sprite;
-},{"../assets/texture_asset":9,"../utils/color":54,"../utils/rectangle":61,"../utils/vector2":67,"../utils/vector3":68,"./blend_modes":22}],34:[function(require,module,exports){
-/**
- * Implement the gfx sprite batch renderer.
- * 
- * |-- copyright and license --|
- * @package    Shaku
- * @file       shaku\lib\gfx\sprite_batch.js
- * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
- * @copyright  (c) 2021 Ronen Ness
- * @license    MIT
- * |-- end copyright and license --|
- * 
- */
-'use strict';
-const { Rectangle, Color } = require('../utils');
-const Vector2 = require('../utils/vector2');
-const Vertex = require('./vertex');
-const { BlendModes } = require('./blend_modes');
-const Matrix = require('./matrix');
-const _logger = require('../logger.js').getLogger('gfx');
 
+/***/ }),
 
-/**
- * Sprite batch renderer, responsible on drawing a batch of sprites with as little draw calls as possible.
- */
-class SpriteBatch
-{
-    /**
-     * Create the spritebatch.
-     * @param {Gfx} gfx Gfx manager.
-     */
-    constructor(gfx)
-    {
-        this._gfx = gfx;
-        this._gl = gfx._gl;
-        this._positions = gfx._dynamicBuffers.positionArray;
-        this._uvs = gfx._dynamicBuffers.textureArray;
-        this._colors = gfx._dynamicBuffers.colorsArray;
-        this._positionsBuff = gfx._dynamicBuffers.positionBuffer;
-        this._uvsBuff = gfx._dynamicBuffers.textureCoordBuffer;
-        this._colorsBuff = gfx._dynamicBuffers.colorsBuffer;
-        this._indexBuff = gfx._dynamicBuffers.indexBuffer;
+/***/ 1036:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-        /** 
-         * If true, will floor vertices positions before pushing them to batch.
-         */
-        this.snapPixels = true;
-
-        /**
-         * If true, will slightly offset texture uv when rotating sprites, to prevent bleeding while using texture atlas.
-         */
-        this.applyAntiBleeding = true;
-    }
-
-    /**
-     * Create and return a new vertex.
-     * @param {Vector2} position Vertex position.
-     * @param {Vector2} textureCoord Vertex texture coord.
-     * @param {Color} color Vertex color.
-     * @returns {Vertex} new vertex object.
-     */
-    vertex(position, textureCoord, color)
-    {
-        return new Vertex(position, textureCoord, color);
-    }
-
-    /**
-     * Get if batch is currently drawing.
-     * @returns {Boolean} True if batch is drawing.
-     */
-    get drawing()
-    {
-        return this._drawing;
-    }
-
-    /**
-     * Start drawing a batch.
-     * @param {Effect} effect Effect to use.
-     * @param {Matrix} transform Optional transformations to apply on all sprites.
-     */
-    begin(effect, transform)
-    {
-        if (this._drawing) {
-            _logger.error("Start drawing a batch while already drawing a batch!");
-        }
-
-        if (effect) {
-            this._gfx.useEffect(effect);
-        }
-        this._effect = this._gfx._activeEffect;
-
-        this._currBlend = BlendModes.AlphaBlend;
-        this._currTexture = null;
-        this._currBatchCount = 0;
-
-        this._transform = transform;
-
-        this._drawing = true;
-    }
-
-    /**
-     * Finish drawing batch (and render whatever left in buffers).
-     */
-    end()
-    {
-        if (!this._drawing) {
-            _logger.error("Stop drawing a batch without starting it first!");
-        }
-
-        if (this._currBatchCount) {
-            this._drawCurrentBatch();
-        }
-        this._drawing = false;
-    }
-
-    /**
-     * Set the currently active texture.
-     * @param {Texture} texture Texture to set.
-     */
-    setTexture(texture)
-    {
-        if (texture !== this._currTexture) {
-            if (this._currBatchCount) {
-                this._drawCurrentBatch();
-            }
-            this._currTexture = texture;
-        }
-    }
-
-    /**
-     * Add sprite to batch.
-     * Note: changing texture or blend mode may trigger a draw call.
-     * @param {Sprite|Array<Sprite>} sprites Sprite or multiple sprites to draw.
-     * @param {Boolean} cullOutOfScreen If true, will cull sprites that are not visible.
-     */
-    draw(sprites, cullOutOfScreen)
-    {
-        // if single sprite, turn to array
-        if (sprites.length === undefined) { 
-            sprites = [sprites]; 
-        }
-
-        // get visible region
-        let region = cullOutOfScreen ? this._gfx.__getRenderingRegionInternal() : null;
-
-        // get buffers
-        let positions = this._positions;
-        let uvs = this._uvs;
-        let colors = this._colors;
-        
-        for (let sprite of sprites) {
-
-            // if texture changed, blend mode changed, or we have too many indices - draw current batch
-            if (this._currBatchCount) {
-                if ((this._currBatchCount >= this.batchSpritesCount) || 
-                    (sprite.blendMode !== this._currBlend) || 
-                    (sprite.texture !== this._currTexture)) {
-                    this._drawCurrentBatch();
-                }
-            }
-
-            // set texture and blend (used internally when drawing batch)
-            this._currTexture = sprite.texture;
-            this._currBlend = sprite.blendMode;
-
-            // set colors batch
-            let ci = this._currBatchCount * 4 * 4;
-
-            // array of colors
-            if (sprite.color instanceof Array) {
-                let lastColor = sprite.color[0];
-                for (let x = 0; x < 4; ++x) {
-                    let curr = (sprite.color[x] || lastColor);
-                    colors[ci + x*4 + 0] = curr.r;
-                    colors[ci + x*4 + 1] = curr.g;
-                    colors[ci + x*4 + 2] = curr.b;
-                    colors[ci + x*4 + 3] = curr.a;
-                    lastColor = curr;
-                }
-            }
-            // single color
-            else {
-                for (let x = 0; x < 4; ++x) {
-                    colors[ci + x*4 + 0] = sprite.color.r;
-                    colors[ci + x*4 + 1] = sprite.color.g;
-                    colors[ci + x*4 + 2] = sprite.color.b;
-                    colors[ci + x*4 + 3] = sprite.color.a;
-                }
-            }
-
-            // check if its a static sprite with cached properties. if so, we'll use it.
-            if (sprite.static && sprite._cachedVertices) {
-
-                // get vertices from cache
-                let cTopLeft = sprite._cachedVertices[0];
-                let cTopRight = sprite._cachedVertices[1];
-                let cBottomLeft = sprite._cachedVertices[2];
-                let cBottomRight = sprite._cachedVertices[3];
-
-                // set positions
-                let pi = this._currBatchCount * 4 * 3;
-                positions[pi+0] = cTopLeft.position.x;             positions[pi+1] = cTopLeft.position.y;             positions[pi+2] = cTopLeft.position.z || 0;
-                positions[pi+3] = cTopRight.position.x;            positions[pi+4] = cTopRight.position.y;            positions[pi+5] = cTopRight.position.z || 0;
-                positions[pi+6] = cBottomLeft.position.x;          positions[pi+7] = cBottomLeft.position.y;          positions[pi+8] = cBottomLeft.position.z || 0;
-                positions[pi+9] = cBottomRight.position.x;         positions[pi+10] = cBottomRight.position.y;        positions[pi+11] = cBottomRight.position.z || 0;
-        
-                // set uvs
-                let uvi = this._currBatchCount * 4 * 2;
-                uvs[uvi+0] = cTopLeft.uv.x;          uvs[uvi+1] = cTopLeft.uv.y;
-                uvs[uvi+2] = cBottomRight.uv.x;      uvs[uvi+3] = cTopLeft.uv.y;
-                uvs[uvi+4] = cTopLeft.uv.x;          uvs[uvi+5] = cBottomRight.uv.y;
-                uvs[uvi+6] = cBottomRight.uv.x;      uvs[uvi+7] = cBottomRight.uv.y;
-
-                // increase sprites count and continue
-                this._currBatchCount++;
-                continue;
-            }
-
-            // calculate vertices positions
-            let sizeX = sprite.size.x;
-            let sizeY = sprite.size.y;
-            let left = -sizeX * sprite.origin.x;
-            let top = -sizeY * sprite.origin.y;
-
-            // calculate corners
-            topLeft.set(left, top);
-            topRight.set(left + sizeX, top);
-            bottomLeft.set(left, top + sizeY);
-            bottomRight.set(left + sizeX, top + sizeY);
-
-            // are vertices axis aligned?
-            let axisAlined = true;
-
-            // apply skew
-            if (sprite.skew) {
-                if (sprite.skew.x) {
-                    topLeft.x += sprite.skew.x * sprite.origin.y;
-                    topRight.x += sprite.skew.x * sprite.origin.y;
-                    bottomLeft.x -= sprite.skew.x * (1 - sprite.origin.y);
-                    bottomRight.x -= sprite.skew.x * (1 - sprite.origin.y);
-                    axisAlined = false;
-                }
-                if (sprite.skew.y) {
-                    topLeft.y += sprite.skew.y * sprite.origin.x;
-                    bottomLeft.y += sprite.skew.y * sprite.origin.x;
-                    topRight.y -= sprite.skew.y * (1 - sprite.origin.x);
-                    bottomRight.y -= sprite.skew.y * (1 - sprite.origin.x);
-                    axisAlined = false;
-                }
-            }
-
-            // apply rotation
-            if (sprite.rotation) {
-                let cos = Math.cos(sprite.rotation);
-                let sin = Math.sin(sprite.rotation);
-                function rotateVec(vector)
-                {
-                    let x = (vector.x * cos - vector.y * sin);
-                    let y = (vector.x * sin + vector.y * cos);
-                    vector.set(x, y);
-                }
-                rotateVec(topLeft);
-                rotateVec(topRight);
-                rotateVec(bottomLeft);
-                rotateVec(bottomRight);
-                axisAlined = false;
-            }
-
-            // add sprite position
-            topLeft.addSelf(sprite.position);
-            topRight.addSelf(sprite.position);
-            bottomLeft.addSelf(sprite.position);
-            bottomRight.addSelf(sprite.position);
-
-            // snap pixels
-            if (this.snapPixels)
-            {
-                topLeft.floorSelf();
-                topRight.floorSelf();
-                bottomLeft.floorSelf();
-                bottomRight.floorSelf();
-            }
-
-            // optional z position
-            let z = sprite.position.z || 0;
-            let zDepth = sprite.size.z || 0;
-
-            // cull out-of-screen sprites
-            if (cullOutOfScreen)
-            {
-                let destRect = axisAlined ? new Rectangle(topLeft.x, topLeft.y, bottomRight.x - topLeft.x, bottomRight.y - topLeft.y) : 
-                                            Rectangle.fromPoints([topLeft, topRight, bottomLeft, bottomRight]);
-                if (!region.collideRect(destRect)) {
-                    continue;
-                }
-            }
-
-            // update positions buffer
-            let pi = this._currBatchCount * 4 * 3;
-            positions[pi+0] = topLeft.x;             positions[pi+1] = topLeft.y;             positions[pi+2] = z;
-            positions[pi+3] = topRight.x;            positions[pi+4] = topRight.y;            positions[pi+5] = z;
-            positions[pi+6] = bottomLeft.x;          positions[pi+7] = bottomLeft.y;          positions[pi+8] = z + zDepth;
-            positions[pi+9] = bottomRight.x;         positions[pi+10] = bottomRight.y;        positions[pi+11] = z + zDepth;
-
-            // set uvs buffer
-            let uvi = this._currBatchCount * 4 * 2;
-            var uvTl;
-            var uvBr;
-
-            // got source rect, apply uvs
-            if (sprite.sourceRect) {
-                uvTl = {x: sprite.sourceRect.x / this._currTexture.width, y: sprite.sourceRect.y / this._currTexture.height};
-                uvBr = {x: uvTl.x + (sprite.sourceRect.width / this._currTexture.width), y: uvTl.y + (sprite.sourceRect.height / this._currTexture.height)};
-                if (sprite.rotation && this.applyAntiBleeding) {
-                    let marginX = 0.015 / this._currTexture.width;
-                    let marginY = 0.015 / this._currTexture.height;
-                    uvTl.x += marginX;
-                    uvBr.x -= marginX * 2;
-                    uvTl.y += marginY;
-                    uvBr.y -= marginY * 2;
-                }
-                uvs[uvi+0] = uvTl.x;  uvs[uvi+1] = uvTl.y;
-                uvs[uvi+2] = uvBr.x;  uvs[uvi+3] = uvTl.y;
-                uvs[uvi+4] = uvTl.x;  uvs[uvi+5] = uvBr.y;
-                uvs[uvi+6] = uvBr.x;  uvs[uvi+7] = uvBr.y;
-            }
-            // no source rect, take entire texture
-            else {
-                uvs[uvi+0] = 0;  uvs[uvi+1] = 0;
-                uvs[uvi+2] = 1;  uvs[uvi+3] = 0;
-                uvs[uvi+4] = 0;  uvs[uvi+5] = 1;
-                uvs[uvi+6] = 1;  uvs[uvi+7] = 1;
-            }
-
-            // set cached vertices
-            if (sprite.static) {
-                sprite._cachedVertices = [
-                    {position: topLeft.clone(), uv: uvTl || {x:0, y:0}},
-                    {position: topRight.clone()},
-                    {position: bottomLeft.clone()},
-                    {position: bottomRight.clone(), uv: uvBr || {x:1, y:1}},
-                ];
-            }
-                    
-            // increase sprites count
-            this._currBatchCount++;
-        }
-    }
-
-    /**
-     * Push vertices directly to batch.
-     * @param {Array<Vertex>} vertices Vertices to push.
-     */
-    pushVertices(vertices)
-    {
-        // sanity
-        if (!vertices || vertices.length !== 4) {
-            throw new Error("Vertices must be array of 4 values!");
-        }
-
-        // get buffers and offset
-        let positions = this._positions;
-        let uvs = this._uvs;
-        let colors = this._colors;
-
-        // push colors
-        for (let i = 0; i < vertices.length; ++i) 
-        {
-            let vertex = vertices[i];
-            let ci = (this._currBatchCount * (4 * 4)) + (i * 4);
-            colors[ci + 0] = vertex.color.r;
-            colors[ci + 1] = vertex.color.g;
-            colors[ci + 2] = vertex.color.b;
-            colors[ci + 3] = vertex.color.a;
-        }
-
-        // push positions
-        let topLeft = vertices[0].position;
-        let topRight = vertices[1].position;
-        let bottomLeft = vertices[2].position;
-        let bottomRight = vertices[3].position;
-        let pi = this._currBatchCount * 4 * 3;
-        positions[pi+0] = topLeft.x;             positions[pi+1] = topLeft.y;             positions[pi+2] = topLeft.z || 0;
-        positions[pi+3] = topRight.x;            positions[pi+4] = topRight.y;            positions[pi+5] = topRight.z || 0;
-        positions[pi+6] = bottomLeft.x;          positions[pi+7] = bottomLeft.y;          positions[pi+8] = bottomLeft.z || 0;
-        positions[pi+9] = bottomRight.x;         positions[pi+10] = bottomRight.y;        positions[pi+11] = bottomRight.z || 0;
-
-        // set texture coords
-        let uvi = (this._currBatchCount * (4 * 2));
-        uvs[uvi++] = vertices[0].textureCoord.x / this._currTexture.width; 
-        uvs[uvi++] = vertices[0].textureCoord.y / this._currTexture.height;
-        uvs[uvi++] = vertices[1].textureCoord.x / this._currTexture.width; 
-        uvs[uvi++] = vertices[1].textureCoord.y / this._currTexture.height;
-        uvs[uvi++] = vertices[2].textureCoord.x / this._currTexture.width; 
-        uvs[uvi++] = vertices[2].textureCoord.y / this._currTexture.height;
-        uvs[uvi++] = vertices[3].textureCoord.x / this._currTexture.width; 
-        uvs[uvi++] = vertices[3].textureCoord.y / this._currTexture.height;
-
-        // increase batch count
-        this._currBatchCount++;
-    }
-
-    /**
-     * How many sprites we can have in batch, in total.
-     */
-    get batchSpritesCount()
-    {
-        return this._gfx.batchSpritesCount;
-    }
-
-    /**
-     * Draw current batch.
-     * @private
-     */
-    _drawCurrentBatch()
-    {
-        // get some members
-        let gl = this._gl;
-        let transform = this._transform;
-        let positionArray = this._positions;
-        let textureArray = this._uvs;
-        let colorsArray = this._colors;
-        let positionBuffer = this._positionsBuff;
-        let textureCoordBuffer = this._uvsBuff;
-        let colorsBuffer = this._colorsBuff;
-        let indexBuffer = this._indexBuff;
-
-        // some sanity checks
-        if (this._effect !== this._gfx._activeEffect) {
-            _logger.error("Effect changed while drawing batch!");
-        }
-
-        // clear effect cache
-        this._gfx._activeEffect._cachedValues = {};
-
-        // set blend mode if needed
-        this._gfx._setBlendMode(this._currBlend);
-
-        // should we slice the arrays?
-        let shouldSliceArrays = (this._gfx.webglVersion < 2) && (this._currBatchCount < this.batchSpritesCount / 2);
-
-        // set world matrix
-        this._gfx._activeEffect.setWorldMatrix(transform || Matrix.identity);
-
-        // copy position buffer
-        this._gfx._activeEffect.setPositionsAttribute(positionBuffer, true);
-        gl.bufferData(gl.ARRAY_BUFFER, 
-            shouldSliceArrays ? positionArray.slice(0, this._currBatchCount * 4 * 3) : positionArray, 
-            gl.DYNAMIC_DRAW, 0, this._currBatchCount * 4 * 3);
-
-        // copy texture buffer
-        
-        this._gfx._activeEffect.setTextureCoordsAttribute(textureCoordBuffer, true);
-        gl.bufferData(gl.ARRAY_BUFFER, 
-            shouldSliceArrays ? textureArray.slice(0, this._currBatchCount * 4 * 2) : textureArray, 
-            gl.DYNAMIC_DRAW, 0, this._currBatchCount * 4 * 2);
-
-        // copy color buffer
-        this._gfx._activeEffect.setColorsAttribute(colorsBuffer, true);
-        gl.bufferData(gl.ARRAY_BUFFER, 
-            shouldSliceArrays ? colorsArray.slice(0, this._currBatchCount * 4 * 4) : colorsArray, 
-            gl.DYNAMIC_DRAW, 0, this._currBatchCount * 4 * 4);
-
-        // set indices
-        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
-        this._currIndices = null;
-        
-        // set active texture
-        this._gfx._setActiveTexture(this._currTexture);
-
-        // draw elements
-        gl.drawElements(gl.TRIANGLES, this._currBatchCount * 6, gl.UNSIGNED_SHORT, 0);
-        this._gfx._drawCallsCount++;
-        this._gfx._drawQuadsCount += this._currBatchCount;
-
-        // reset current counter
-        this._currBatchCount = 0;
-    }
-}
-
-// used for vertices calculations
-const topLeft = new Vector2(0, 0);
-const topRight = new Vector2(0, 0);
-const bottomLeft = new Vector2(0, 0);
-const bottomRight = new Vector2(0, 0);
-
-
-// export the sprite batch class
-module.exports = SpriteBatch;
-},{"../logger.js":45,"../utils":56,"../utils/vector2":67,"./blend_modes":22,"./matrix":30,"./vertex":39}],35:[function(require,module,exports){
 /**
  * Define a sprites group.
  * 
  * |-- copyright and license --|
- * @package    Shaku
- * @file       shaku\lib\gfx\sprites_group.js
+ * @module     Shaku
+ * @file       shaku\src\gfx\sprites_group.js
  * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
  * @copyright  (c) 2021 Ronen Ness
  * @license    MIT
  * |-- end copyright and license --|
  * 
  */
-'use strict';
-const Color = require("../utils/color");
-const Vector2 = require("../utils/vector2");
-const Matrix = require("./matrix");
-const Sprite = require("./sprite");
+
+const Color = __webpack_require__(9327);
+const Vector2 = __webpack_require__(2544);
+const Matrix = __webpack_require__(5599);
+const Sprite = __webpack_require__(6565);
 
 
 /**
@@ -7855,23 +10675,28 @@ class SpritesGroup
      */
     getTransform()
     {
+
         let matrices = [];
 
+        // add position
         if ((this.position.x !== 0) || (this.position.y !== 0)) 
         { 
             matrices.push(Matrix.translate(this.position.x, this.position.y, 0));
         }
         
+        // add rotation
         if (this.rotation) 
         { 
             matrices.push(Matrix.rotateZ(-this.rotation));
         }
         
+        // add scale
         if ((this.scale.x !== 1) || (this.scale.y !== 1)) 
         { 
             matrices.push(Matrix.scale(this.scale.x, this.scale.y));
         }
 
+        // calculate matrix (or null if there are no transformations)
         if (matrices.length === 0) { return null };
         if (matrices.length === 1) { return matrices[0]; }
         return Matrix.multiplyMany(matrices);
@@ -7921,19 +10746,6 @@ class SpritesGroup
     }
 
     /**
-     * Sort by texture and blend mode for maximum efficiency in batching.
-     * This will change sprites order.
-     */
-    sortForBatching()
-    {
-        this._sprites.sort((a,b) => {
-            let at = a.texture.url + a.blendMode;
-            let bt = b.texture.url + b.blendMode;
-            return (at > bt) ? 1 : ((bt > at) ? -1 : 0);
-        });
-    }
-
-    /**
      * Sprites count in group.
      * @returns {Number} Number of sprites in group.
      */
@@ -7946,20 +10758,25 @@ class SpritesGroup
 
 // export the sprites group class.
 module.exports = SpritesGroup;
-},{"../utils/color":54,"../utils/vector2":67,"./matrix":30,"./sprite":33}],36:[function(require,module,exports){
+
+/***/ }),
+
+/***/ 8684:
+/***/ ((module) => {
+
 /**
  * Define possible text alignments.
  * 
  * |-- copyright and license --|
- * @package    Shaku
- * @file       shaku\lib\gfx\text_alignments.js
+ * @module     Shaku
+ * @file       shaku\src\gfx\text_alignments.js
  * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
  * @copyright  (c) 2021 Ronen Ness
  * @license    MIT
  * |-- end copyright and license --|
  * 
  */
-'use strict';
+
 
 /** @typedef {String} TextAlignment */
 
@@ -7988,20 +10805,25 @@ const TextAlignments = {
 
 Object.freeze(TextAlignments);
 module.exports = {TextAlignments: TextAlignments};
-},{}],37:[function(require,module,exports){
+
+/***/ }),
+
+/***/ 5387:
+/***/ ((module) => {
+
 /**
  * Define possible texture filter modes.
  * 
  * |-- copyright and license --|
- * @package    Shaku
- * @file       shaku\lib\gfx\texture_filter_modes.js
+ * @module     Shaku
+ * @file       shaku\src\gfx\texture_filter_modes.js
  * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
  * @copyright  (c) 2021 Ronen Ness
  * @license    MIT
  * |-- end copyright and license --|
  * 
  */
- 'use strict'; 
+  
 
 /** @typedef {String} TextureFilterMode */
 
@@ -8027,20 +10849,25 @@ Object.defineProperty(TextureFilterModes, '_values', {
 Object.freeze(TextureFilterModes);
 module.exports = {TextureFilterModes: TextureFilterModes};
 
-},{}],38:[function(require,module,exports){
+
+/***/ }),
+
+/***/ 2464:
+/***/ ((module) => {
+
 /**
  * Define possible texture wrap modes.
  * 
  * |-- copyright and license --|
- * @package    Shaku
- * @file       shaku\lib\gfx\texture_wrap_modes.js
+ * @module     Shaku
+ * @file       shaku\src\gfx\texture_wrap_modes.js
  * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
  * @copyright  (c) 2021 Ronen Ness
  * @license    MIT
  * |-- end copyright and license --|
  * 
  */
-'use strict';
+
 
 /** @typedef {String} TextureWrapMode */
 
@@ -8062,22 +10889,27 @@ Object.defineProperty(TextureWrapModes, '_values', {
 
 Object.freeze(TextureWrapModes);
 module.exports = {TextureWrapModes: TextureWrapModes};
-},{}],39:[function(require,module,exports){
+
+/***/ }),
+
+/***/ 4288:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
 /**
  * Implement the gfx vertex container.
  * 
  * |-- copyright and license --|
- * @package    Shaku
- * @file       shaku\lib\gfx\vertex.js
+ * @module     Shaku
+ * @file       shaku\src\gfx\vertex.js
  * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
  * @copyright  (c) 2021 Ronen Ness
  * @license    MIT
  * |-- end copyright and license --|
  * 
  */
-'use strict';
-const { Vector2, Color } = require("../utils");
-const Matrix = require("./matrix");
+
+const { Vector2, Color } = __webpack_require__(3624);
+const Matrix = __webpack_require__(5599);
 
 /**
  * A vertex we can push to sprite batch.
@@ -8092,8 +10924,8 @@ class Vertex
      */
     constructor(position, textureCoord, color)
     {
-        this.position = position || Vector2.zero;
-        this.textureCoord = textureCoord || Vector2.zero;
+        this.position = position || Vector2.zero();
+        this.textureCoord = textureCoord || Vector2.zero();
         this.color = color || Color.white;
     }
 
@@ -8143,36 +10975,47 @@ class Vertex
 
 // export the vertex class
 module.exports = Vertex;
-},{"../utils":56,"./matrix":30}],40:[function(require,module,exports){
+
+/***/ }),
+
+/***/ 8138:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
 /**
  * Entry point for the Shaku module.
  * 
  * |-- copyright and license --|
- * @package    Shaku
- * @file       shaku\lib\index.js
+ * @module     Shaku
+ * @file       shaku\src\index.js
  * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
  * @copyright  (c) 2021 Ronen Ness
  * @license    MIT
  * |-- end copyright and license --|
  * 
  */
-'use strict';
-module.exports = require('./shaku');
-},{"./shaku":51}],41:[function(require,module,exports){
+
+__webpack_require__.g.Shaku = __webpack_require__(6954);
+module.exports = __webpack_require__.g.Shaku;
+
+/***/ }),
+
+/***/ 791:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
 /**
  * Define a gamepad object.
  * 
  * |-- copyright and license --|
- * @package    Shaku
- * @file       shaku\lib\input\gamepad.js
+ * @module     Shaku
+ * @file       shaku\src\input\gamepad.js
  * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
  * @copyright  (c) 2021 Ronen Ness
  * @license    MIT
  * |-- end copyright and license --|
  * 
  */
-'use strict';
-const Vector2 = require("../utils/vector2");
+
+const Vector2 = __webpack_require__(2544);
 
 
 /**
@@ -8401,40 +11244,50 @@ function _gamepadButtonPressed(b)
 
 // export the gamepad data
 module.exports = Gamepad;
-},{"../utils/vector2":67}],42:[function(require,module,exports){
+
+/***/ }),
+
+/***/ 8734:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
 /**
  * Just an alias to main manager so we can require() this folder as a package.
  * 
  * |-- copyright and license --|
- * @package    Shaku
- * @file       shaku\lib\input\index.js
+ * @module     Shaku
+ * @file       shaku\src\input\index.js
  * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
  * @copyright  (c) 2021 Ronen Ness
  * @license    MIT
  * |-- end copyright and license --|
  * 
  */
- 'use strict';
- module.exports = require('./input');
-},{"./input":43}],43:[function(require,module,exports){
+ 
+ module.exports = __webpack_require__(9896);
+
+/***/ }),
+
+/***/ 9896:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
 /**
  * Implement the input manager.
  * 
  * |-- copyright and license --|
- * @package    Shaku
- * @file       shaku\lib\input\input.js
+ * @module     Shaku
+ * @file       shaku\src\input\input.js
  * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
  * @copyright  (c) 2021 Ronen Ness
  * @license    MIT
  * |-- end copyright and license --|
  * 
  */
-'use strict';
-const IManager = require('../manager.js');
-const Vector2 = require('../utils/vector2.js');
-const { MouseButton, MouseButtons, KeyboardKey, KeyboardKeys } = require('./key_codes.js');
-const Gamepad = require('./gamepad');
-const _logger = require('../logger.js').getLogger('input');
+
+const IManager = __webpack_require__(9563);
+const Vector2 = __webpack_require__(2544);
+const { MouseButton, MouseButtons, KeyboardKey, KeyboardKeys } = __webpack_require__(4871);
+const Gamepad = __webpack_require__(791);
+const _logger = (__webpack_require__(5259).getLogger)('input');
 
 
 // get timestamp
@@ -8476,10 +11329,10 @@ class Input extends IManager
         /**
          * By default, when holding wheel button down browsers will turn into special page scroll mode and will not emit mouse move events.
          * if this property is set to true (default), the Input manager will prevent this behavior, so we could still get mouse delta while mouse wheel is held down.
-         * @name Input#enableMouseDeltaWhileMouseWheelDown
+         * @name Input#disableMouseWheelAutomaticScrolling
          * @type {Boolean}
          */
-        this.enableMouseDeltaWhileMouseWheelDown = true;
+        this.disableMouseWheelAutomaticScrolling = true;
 
         /**
          * If true (default), will disable the context menu (what typically opens when you right click the page).
@@ -8539,7 +11392,7 @@ class Input extends IManager
         this.defaultDoublePressInterval = 250;
 
         // set base state members
-        this._resetAll();
+        this.#_resetAll();
     }
 
     /**
@@ -8615,7 +11468,7 @@ class Input extends IManager
             };
 
             // reset all data to init initial state
-            this._resetAll();
+            this.#_resetAll();
                     
             // register all callbacks
             for (var event in this._callbacks) {
@@ -8784,7 +11637,7 @@ class Input extends IManager
      * @param {Boolean=} keepMousePosition If true, will not reset mouse position.
      * @private
      */
-    _resetAll(keepMousePosition)
+    #_resetAll(keepMousePosition)
     {
         // mouse states
         if (!keepMousePosition) {
@@ -9005,7 +11858,7 @@ class Input extends IManager
     {
         // no previous position? return 0,0.
         if (!this._mousePrevPos) {
-            return Vector2.zero;
+            return Vector2.zero();
         }
 
         // return mouse delta
@@ -9195,7 +12048,7 @@ class Input extends IManager
      * @param {*} touchValue Value to use to return value if its a touch code.
      * @param {*} customValues Dictionary to check for custom values injected via setCustomState().
      */
-    _getValueWithCode(code, mouseCheck, keyboardCheck, touchValue, customValues)
+    #_getValueWithCode(code, mouseCheck, keyboardCheck, touchValue, customValues)
     {
         // make sure code is string
         code = String(code);
@@ -9245,7 +12098,7 @@ class Input extends IManager
      * Return if a mouse or keyboard button is currently down.
      * @example
      * if (Shaku.input.down(['mouse_left', 'touch', 'space'])) { alert('mouse, touch screen or space are pressed!'); }
-     * @param {string|Array<String>} code Keyboard, touch or mouse code. Can be array of codes to test if any of them is pressed.
+     * @param {string|Array<String>} code Keyboard, touch or mouse code. Can be array of codes to test any of them.
      *                          For mouse buttons: set code to 'mouse_left', 'mouse_right' or 'mouse_middle'.
      *                          For keyboard buttons: use one of the keys of KeyboardKeys (for example 'a', 'alt', 'up_arrow', etc..).
      *                          For touch screen: set code to 'touch'.
@@ -9255,9 +12108,9 @@ class Input extends IManager
      */
     down(code)
     {
-        if (!(code instanceof Array)) { code = [code]; }
+        if (!Array.isArray(code)) { code = [code]; }
         for (let c of code) {
-            if (Boolean(this._getValueWithCode(c, this.mouseDown, this.keyDown, this.touching, this._customStates))) {
+            if (Boolean(this.#_getValueWithCode(c, this.mouseDown, this.keyDown, this.touching, this._customStates))) {
                 return true;
             }
         }
@@ -9268,7 +12121,7 @@ class Input extends IManager
      * Return if a mouse or keyboard button was released in this frame.
      * @example
      * if (Shaku.input.released(['mouse_left', 'touch', 'space'])) { alert('mouse, touch screen or space were released!'); }
-     * @param {string|Array<String>} code Keyboard, touch or mouse code. Can be array of codes to test if any of them is pressed.
+     * @param {string|Array<String>} code Keyboard, touch, gamepad or mouse button code. Can be array of codes to test any of them.
      *                          For mouse buttons: set code to 'mouse_left', 'mouse_right' or 'mouse_middle'.
      *                          For keyboard buttons: use one of the keys of KeyboardKeys (for example 'a', 'alt', 'up_arrow', etc..).
      *                          For touch screen: set code to 'touch'.
@@ -9278,9 +12131,9 @@ class Input extends IManager
      */
     released(code)
     {
-        if (!(code instanceof Array)) { code = [code]; }
+        if (!Array.isArray(code)) { code = [code]; }
         for (let c of code) {
-            if (Boolean(this._getValueWithCode(c, this.mouseReleased, this.keyReleased, this.touchEnded, this._customReleased))) {
+            if (Boolean(this.#_getValueWithCode(c, this.mouseReleased, this.keyReleased, this.touchEnded, this._customReleased))) {
                 return true;
             }
         }
@@ -9291,7 +12144,7 @@ class Input extends IManager
      * Return if a mouse or keyboard button was pressed in this frame.
      * @example
      * if (Shaku.input.pressed(['mouse_left', 'touch', 'space'])) { alert('mouse, touch screen or space were pressed!'); }
-     * @param {string|Array<String>} code Keyboard, touch or mouse code. Can be array of codes to test if any of them is pressed.
+     * @param {string|Array<String>} code Keyboard, touch, gamepad or mouse button code. Can be array of codes to test any of them.
      *                          For mouse buttons: set code to 'mouse_left', 'mouse_right' or 'mouse_middle'.
      *                          For keyboard buttons: use one of the keys of KeyboardKeys (for example 'a', 'alt', 'up_arrow', etc..).
      *                          For touch screen: set code to 'touch'.
@@ -9301,9 +12154,9 @@ class Input extends IManager
      */
     pressed(code)
     {
-        if (!(code instanceof Array)) { code = [code]; }
+        if (!Array.isArray(code)) { code = [code]; }
         for (let c of code) {
-            if (Boolean(this._getValueWithCode(c, this.mousePressed, this.keyPressed, this.touchStarted, this._customPressed))) {
+            if (Boolean(this.#_getValueWithCode(c, this.mousePressed, this.keyPressed, this.touchStarted, this._customPressed))) {
                 return true;
             }
         }
@@ -9314,7 +12167,7 @@ class Input extends IManager
      * Return timestamp, in milliseconds, of the last time this key code was released.
      * @example
      * let lastReleaseTime = Shaku.input.lastReleaseTime('mouse_left');
-     * @param {string} code Keyboard, touch or mouse code.
+     * @param {string} code Keyboard, touch, gamepad or mouse button code. 
      *                          For mouse buttons: set code to 'mouse_left', 'mouse_right' or 'mouse_middle'.
      *                          For keyboard buttons: use one of the keys of KeyboardKeys (for example 'a', 'alt', 'up_arrow', etc..).
      *                          For touch screen: set code to 'touch'.
@@ -9324,15 +12177,15 @@ class Input extends IManager
      */
     lastReleaseTime(code)
     {
-        if (code instanceof Array) { throw new Error("Array not supported in 'lastReleaseTime'!"); }
-        return this._getValueWithCode(code, (c) => this._lastMouseReleasedTime[c], (c) => this._lastKeyReleasedTime[c], this._lastTouchReleasedTime, this._prevLastCustomReleasedTime) || 0;
+        if (Array.isArray(code)) { throw new Error("Array not supported in 'lastReleaseTime'!"); }
+        return this.#_getValueWithCode(code, (c) => this._lastMouseReleasedTime[c], (c) => this._lastKeyReleasedTime[c], this._lastTouchReleasedTime, this._prevLastCustomReleasedTime) || 0;
     }
 
     /**
      * Return timestamp, in milliseconds, of the last time this key code was pressed.
      * @example
      * let lastPressTime = Shaku.input.lastPressTime('mouse_left');
-     * @param {string} code Keyboard, touch or mouse code.
+     * @param {string} code Keyboard, touch, gamepad or mouse button code. 
      *                          For mouse buttons: set code to 'mouse_left', 'mouse_right' or 'mouse_middle'.
      *                          For keyboard buttons: use one of the keys of KeyboardKeys (for example 'a', 'alt', 'up_arrow', etc..).
      *                          For touch screen: set code to 'touch'.
@@ -9342,15 +12195,15 @@ class Input extends IManager
      */
     lastPressTime(code)
     {
-        if (code instanceof Array) { throw new Error("Array not supported in 'lastPressTime'!"); }
-        return this._getValueWithCode(code, (c) => this._lastMousePressedTime[c], (c) => this._lastKeyPressedTime[c], this._lastTouchPressedTime, this._prevLastCustomPressedTime) || 0;
+        if (Array.isArray(code)) { throw new Error("Array not supported in 'lastPressTime'!"); }
+        return this.#_getValueWithCode(code, (c) => this._lastMousePressedTime[c], (c) => this._lastKeyPressedTime[c], this._lastTouchPressedTime, this._prevLastCustomPressedTime) || 0;
     }
     
     /**
      * Return if a key was double-pressed.
      * @example
      * let doublePressed = Shaku.input.doublePressed(['mouse_left', 'touch', 'space']);
-     * @param {string} code Keyboard, touch or mouse code. Can be array of codes to test if any of them is double-pressed.
+     * @param {string|Array<string>} code Keyboard, touch, gamepad or mouse button code. Can be array of codes to test any of them.
      *                          For mouse buttons: set code to 'mouse_left', 'mouse_right' or 'mouse_middle'.
      *                          For keyboard buttons: use one of the keys of KeyboardKeys (for example 'a', 'alt', 'up_arrow', etc..).
      *                          For touch screen: set code to 'touch'.
@@ -9368,10 +12221,10 @@ class Input extends IManager
         let currTime = timestamp();
 
         // check all keys
-        if (!(code instanceof Array)) { code = [code]; }
+        if (!Array.isArray(code)) { code = [code]; }
         for (let c of code) {
             if (this.pressed(c)) {
-                let currKeyTime = this._getValueWithCode(c, (c) => this._prevLastMousePressedTime[c], (c) => this._prevLastKeyPressedTime[c], this._prevLastTouchPressedTime, this._prevLastCustomPressedTime);
+                let currKeyTime = this.#_getValueWithCode(c, (c) => this._prevLastMousePressedTime[c], (c) => this._prevLastKeyPressedTime[c], this._prevLastTouchPressedTime, this._prevLastCustomPressedTime);
                 if (currTime - currKeyTime <= maxInterval) {
                     return true;
                 }
@@ -9384,7 +12237,7 @@ class Input extends IManager
      * Return if a key was double-released.
      * @example
      * let doubleReleased = Shaku.input.doubleReleased(['mouse_left', 'touch', 'space']);
-     * @param {string} code Keyboard, touch or mouse code. Can be array of codes to test if any of them is double-released.
+     * @param {string|Array<string>} code Keyboard, touch, gamepad or mouse button code. Can be array of codes to test any of them.
      *                          For mouse buttons: set code to 'mouse_left', 'mouse_right' or 'mouse_middle'.
      *                          For keyboard buttons: use one of the keys of KeyboardKeys (for example 'a', 'alt', 'up_arrow', etc..).
      *                          For touch screen: set code to 'touch'.
@@ -9402,10 +12255,10 @@ class Input extends IManager
         let currTime = timestamp();
 
         // check all keys
-        if (!(code instanceof Array)) { code = [code]; }
+        if (!Array.isArray(code)) { code = [code]; }
         for (let c of code) {
             if (this.released(c)) {
-                let currKeyTime = this._getValueWithCode(c, (c) => this._prevLastMousePressedTime[c], (c) => this._prevLastKeyPressedTime[c], this._prevLastTouchPressedTime, this._prevLastCustomPressedTime);
+                let currKeyTime = this.#_getValueWithCode(c, (c) => this._prevLastMousePressedTime[c], (c) => this._prevLastKeyPressedTime[c], this._prevLastTouchPressedTime, this._prevLastCustomPressedTime);
                 if (currTime - currKeyTime <= maxInterval) {
                     return true;
                 }
@@ -9462,7 +12315,7 @@ class Input extends IManager
      * Get keyboard key code from event.
      * @private
      */
-    _getKeyboardKeyCode(event)
+    #_getKeyboardKeyCode(event)
     {
         event = this._getEvent(event);
         return event.keyCode !== undefined ? event.keyCode : event.key.charCodeAt(0);
@@ -9475,7 +12328,7 @@ class Input extends IManager
     _onBlur(event)
     {
         if (this.resetOnFocusLoss) {
-            this._resetAll(true);
+            this.#_resetAll(true);
         }
     }
 
@@ -9496,7 +12349,7 @@ class Input extends IManager
      */
     _onKeyDown(event)
     {
-        var keycode = this._getKeyboardKeyCode(event);
+        var keycode = this.#_getKeyboardKeyCode(event);
         if (!this._keyboardState[keycode]) {
             this._keyboardPressed[keycode] = true;
             this._prevLastKeyPressedTime[keycode] = this._lastKeyPressedTime[keycode];
@@ -9512,7 +12365,7 @@ class Input extends IManager
      */
     _onKeyUp(event)
     {
-        var keycode = this._getKeyboardKeyCode(event) || 0;
+        var keycode = this.#_getKeyboardKeyCode(event) || 0;
         this._keyboardState[keycode] = false;
         this._keyboardReleased[keycode] = true;
         this._prevLastKeyReleasedTime[keycode] = this._lastKeyReleasedTime[keycode];
@@ -9630,7 +12483,7 @@ class Input extends IManager
     _onMouseDown(event)
     {
         event = this._getEvent(event);
-        if (this.enableMouseDeltaWhileMouseWheelDown && (event.button === this.MouseButtons.middle))
+        if (this.disableMouseWheelAutomaticScrolling && (event.button === this.MouseButtons.middle))
         { 
             event.preventDefault(); 
         }
@@ -9735,20 +12588,25 @@ class Input extends IManager
 
 // export main object
 module.exports = new Input();
-},{"../logger.js":45,"../manager.js":46,"../utils/vector2.js":67,"./gamepad":41,"./key_codes.js":44}],44:[function(require,module,exports){
+
+/***/ }),
+
+/***/ 4871:
+/***/ ((module) => {
+
 /**
  * Define keyboard and mouse key codes.
  * 
  * |-- copyright and license --|
- * @package    Shaku
- * @file       shaku\lib\input\key_codes.js
+ * @module     Shaku
+ * @file       shaku\src\input\key_codes.js
  * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
  * @copyright  (c) 2021 Ronen Ness
  * @license    MIT
  * |-- end copyright and license --|
  * 
  */
-'use strict';
+
 
 /** @typedef {Number} MouseButton */
 
@@ -9876,21 +12734,26 @@ const KeyboardKeys = {
 
 // export keyboard keys and mouse buttons
 module.exports = { KeyboardKeys: KeyboardKeys, MouseButtons: MouseButtons };
-},{}],45:[function(require,module,exports){
+
+/***/ }),
+
+/***/ 5259:
+/***/ ((module) => {
+
 /**
  * Implement basic logger.
  * By default, uses console for logging, but it can be replaced with setDrivers().
  * 
  * |-- copyright and license --|
- * @package    Shaku
- * @file       shaku\lib\logger.js
+ * @module     Shaku
+ * @file       shaku\src\logger.js
  * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
  * @copyright  (c) 2021 Ronen Ness
  * @license    MIT
  * |-- end copyright and license --|
  * 
  */
-'use strict';
+
 
 // default logger drivers.
 var _drivers = console;
@@ -9906,7 +12769,7 @@ class Logger
 {
     constructor(name)
     {
-        this._nameHeader = '[' + _application + '][' + name + ']';
+        this._nameHeader = ('[' + _application + '][' + name + ']').padEnd(25, ' ');
         this._throwErrors = false;
     }
 
@@ -10001,15 +12864,27 @@ class NullDrivers
     }
 }
 
-// export the seeded random class.
-module.exports = {
+
+// cached loggers
+const _cachedLoggers = {};
+
+
+/**
+ * The Logger module is a small object to get loggers and control the underlying logger drivers.
+ */
+const LoggerModule = {
 
     /**
-     * Get a logger object.
+     * Get a logger object for a given logger name.
      * @param {String} name Logger name.
+     * @returns {Logger} Logger to use.
      */
-    getLogger: function(name) {
-        return new Logger(name);
+    getLogger: function(name) 
+    {
+        if (!_cachedLoggers[name]) {
+            _cachedLoggers[name] = new Logger(name);
+        }
+        return _cachedLoggers[name];
     },
 
     /**
@@ -10037,20 +12912,28 @@ module.exports = {
         return this;
     }
 };
-},{}],46:[function(require,module,exports){
+
+// export the logger module object.
+module.exports = LoggerModule;
+
+/***/ }),
+
+/***/ 9563:
+/***/ ((module) => {
+
 /**
  * Define the managers interface.
  * 
  * |-- copyright and license --|
- * @package    Shaku
- * @file       shaku\lib\manager.js
+ * @module     Shaku
+ * @file       shaku\src\manager.js
  * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
  * @copyright  (c) 2021 Ronen Ness
  * @license    MIT
  * |-- end copyright and license --|
  * 
  */
-'use strict';
+
 
 
 /**
@@ -10095,40 +12978,50 @@ class IManager
 
 // export the manager interface.
 module.exports = IManager
-},{}],47:[function(require,module,exports){
+
+/***/ }),
+
+/***/ 6871:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
 /**
  * Just an alias to main manager so we can require() this folder as a package.
  * 
  * |-- copyright and license --|
- * @package    Shaku
- * @file       shaku\lib\sfx\index.js
+ * @module     Shaku
+ * @file       shaku\src\sfx\index.js
  * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
  * @copyright  (c) 2021 Ronen Ness
  * @license    MIT
  * |-- end copyright and license --|
  * 
  */
- 'use strict';
- module.exports = require('./sfx');
-},{"./sfx":48}],48:[function(require,module,exports){
+ 
+ module.exports = __webpack_require__(4939);
+
+/***/ }),
+
+/***/ 4939:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
 /**
  * Implement the sfx manager.
  * 
  * |-- copyright and license --|
- * @package    Shaku
- * @file       shaku\lib\sfx\sfx.js
+ * @module     Shaku
+ * @file       shaku\src\sfx\sfx.js
  * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
  * @copyright  (c) 2021 Ronen Ness
  * @license    MIT
  * |-- end copyright and license --|
  * 
  */
-'use strict';
-const SoundAsset = require('../assets/sound_asset.js');
-const IManager = require('../manager.js');
-const _logger = require('../logger.js').getLogger('sfx');
-const SoundInstance = require('./sound_instance.js');
-const SoundMixer = require('./sound_mixer.js');
+
+const SoundAsset = __webpack_require__(499);
+const IManager = __webpack_require__(9563);
+const _logger = (__webpack_require__(5259).getLogger)('sfx');
+const SoundInstance = __webpack_require__(7244);
+const SoundMixer = __webpack_require__(8383);
  
 
 /**
@@ -10146,7 +13039,6 @@ class Sfx extends IManager
     {
         super();
         this._playingSounds = null;
-        this._soundsNotDisposed = null;
     }
 
     /** 
@@ -10157,9 +13049,7 @@ class Sfx extends IManager
     {        
         return new Promise((resolve, reject) => {    
             _logger.info("Setup sfx manager..");
-            if (this._soundsNotDisposed) { this.cleanup(); }
             this._playingSounds = new Set();
-            this._soundsNotDisposed = new Set();
             resolve();
         });
     }
@@ -10244,21 +13134,6 @@ class Sfx extends IManager
     }
 
     /**
-     * Dispose any sound instance that isn't playing at the moment.
-     * Note: if you hold the instance externally and try to use it, it may break.
-     */
-    cleanup()
-    {
-        let notDisposedSounds = Array.from(this._soundsNotDisposed);
-        for (let sound of notDisposedSounds) {
-            if (!sound.isPlaying) {
-                sound.dispose();
-            }
-        }
-        this._soundsNotDisposed = new Set();
-    }
-
-    /**
      * Get currently playing sounds count.
      * @returns {Number} Number of sounds currently playing.
      */
@@ -10307,21 +13182,26 @@ class Sfx extends IManager
 
 // export main object
 module.exports = new Sfx();
-},{"../assets/sound_asset.js":8,"../logger.js":45,"../manager.js":46,"./sound_instance.js":49,"./sound_mixer.js":50}],49:[function(require,module,exports){
+
+/***/ }),
+
+/***/ 7244:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
 /**
  * Implement a sound effect instance.
  * 
  * |-- copyright and license --|
- * @package    Shaku
- * @file       shaku\lib\sfx\sound_instance.js
+ * @module     Shaku
+ * @file       shaku\src\sfx\sound_instance.js
  * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
  * @copyright  (c) 2021 Ronen Ness
  * @license    MIT
  * |-- end copyright and license --|
  * 
  */
-'use strict';
-const _logger = require('../logger.js').getLogger('sfx');
+
+const _logger = (__webpack_require__(5259).getLogger)('sfx');
 
 
 /**
@@ -10343,7 +13223,6 @@ class SoundInstance
         this._sfx = sfxManager;
         this._audio = new Audio(url);
         this._volume = 1;
-        this._sfx._soundsNotDisposed.add(this);
     }
 
     /**
@@ -10365,16 +13244,12 @@ class SoundInstance
     dispose()
     {
         if (this._audio) {
-            try
-            {
+            try {
                 this._audio.pause();
-                this._audio.src = "";
-                this._audio.srcObject = null;
                 this._audio.remove();
-                this._sfx._soundsNotDisposed.delete(this);
-            }
-            catch (e) {
-            }
+            } catch (e) { _logger.warn(`Error while disposing sound instance: ${e}.`); }
+            this._audio.src = "";
+            this._audio.srcObject = null;
         }
         this._audio = null;
     }
@@ -10385,6 +13260,7 @@ class SoundInstance
     */
     play()
     {
+        if (!this._audio) { throw new Error("Sound instance was already disposed!"); }
         if (this.playing) { return; }
         let promise = this._audio.play();
         this._sfx._playingSounds.add(this);
@@ -10397,6 +13273,7 @@ class SoundInstance
     */
     get playbackRate()
     {
+        if (!this._audio) { return 0; }
         return this._audio.playbackRate;
     }
 
@@ -10406,9 +13283,11 @@ class SoundInstance
     */
     set playbackRate(val)
     {
+        if (!this._audio) { return 0; }
         if (val < 0.1) { _logger.error("playbackRate value set is too low, value was capped to 0.1."); }
         if (val > 10) { _logger.error("playbackRate value set is too high, value was capped to 10."); }
         this._audio.playbackRate = val;
+        return val;
     }
     
     /**
@@ -10417,6 +13296,7 @@ class SoundInstance
     */
     get preservesPitch()
     {
+        if (!this._audio) { return false; }
         return Boolean(this._audio.preservesPitch || this._audio.mozPreservesPitch);
     }
 
@@ -10426,6 +13306,7 @@ class SoundInstance
     */
     set preservesPitch(val)
     {
+        if (!this._audio) { return false; }
         return this._audio.preservesPitch = this._audio.mozPreservesPitch = Boolean(val);
     }
 
@@ -10434,6 +13315,7 @@ class SoundInstance
     */
     pause()
     {
+        if (!this._audio) { throw new Error("Sound instance was already disposed!"); }
         this._audio.pause();
     }
 
@@ -10443,6 +13325,7 @@ class SoundInstance
     */
     replay()
     {
+        if (!this._audio) { throw new Error("Sound instance was already disposed!"); }
         this.stop();
         return this.play();
     }
@@ -10453,6 +13336,7 @@ class SoundInstance
     */
     stop()
     {
+        if (!this._audio) { throw new Error("Sound instance was already disposed!"); }
         try {
             this.pause();
             this.currentTime = 0;
@@ -10469,6 +13353,7 @@ class SoundInstance
     */
     get loop()
     {
+        if (!this._audio) { return false; }
         return this._audio.loop;
     }
 
@@ -10478,6 +13363,7 @@ class SoundInstance
     */
     set loop(value)
     {
+        if (!this._audio) { return false; }
         this._audio.loop = value;
         return this._audio.loop;
     }
@@ -10488,6 +13374,7 @@ class SoundInstance
     */
     get volume()
     {
+        if (!this._audio) { return 0; }
         return this._volume;
     }
 
@@ -10497,6 +13384,7 @@ class SoundInstance
     */
     set volume(value)
     {
+        if (!this._audio) { return 0; }
         this._volume = value;
         var volume = (value * SoundInstance._masterVolume);
         if (volume < 0) { volume = 0; }
@@ -10511,6 +13399,7 @@ class SoundInstance
     */
     get currentTime()
     {
+        if (!this._audio) { return 0; }
         return this._audio.currentTime;
     }
 
@@ -10520,6 +13409,7 @@ class SoundInstance
     */
     set currentTime(value)
     {
+        if (!this._audio) { return 0; }
         return this._audio.currentTime = value;
     }
 
@@ -10529,6 +13419,7 @@ class SoundInstance
     */
     get duration()
     {
+        if (!this._audio) { return 0; }
         return this._audio.duration;
     }
 
@@ -10538,6 +13429,7 @@ class SoundInstance
     */
     get paused()
     {
+        if (!this._audio) { return false; }
         return this._audio.paused;
     }
 
@@ -10547,6 +13439,7 @@ class SoundInstance
     */
     get playing()
     {
+        if (!this._audio) { return false; }
         return !this.paused && !this.finished;
     }
 
@@ -10556,6 +13449,7 @@ class SoundInstance
     */
     get finished()
     {
+        if (!this._audio) { return false; }
         return this._audio.ended;
     }
 }
@@ -10567,21 +13461,26 @@ SoundInstance._masterVolume = 1;
 
 // export main object
 module.exports = SoundInstance;
-},{"../logger.js":45}],50:[function(require,module,exports){
+
+/***/ }),
+
+/***/ 8383:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
 /**
  * Implement a sound mixer class.
  * 
  * |-- copyright and license --|
- * @package    Shaku
- * @file       shaku\lib\sfx\sound_mixer.js
+ * @module     Shaku
+ * @file       shaku\src\sfx\sound_mixer.js
  * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
  * @copyright  (c) 2021 Ronen Ness
  * @license    MIT
  * |-- end copyright and license --|
  * 
  */
-'use strict';
-const SoundInstance = require("./sound_instance.js");
+
+const SoundInstance = __webpack_require__(7244);
 
 
 /**
@@ -10701,35 +13600,46 @@ class SoundMixer
 
 // export the sound mixer
 module.exports = SoundMixer;
-},{"./sound_instance.js":49}],51:[function(require,module,exports){
+
+/***/ }),
+
+/***/ 6954:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
 /**
  * Shaku Main.
  * 
  * |-- copyright and license --|
- * @package    Shaku
- * @file       shaku\lib\shaku.js
+ * @module     Shaku
+ * @file       shaku\src\shaku.js
  * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
  * @copyright  (c) 2021 Ronen Ness
  * @license    MIT
  * |-- end copyright and license --|
  * 
  */
-'use strict';
+
 const isBrowser = typeof window !== 'undefined';
-const IManager = require("./manager");
-const logger = require('./logger');
-const sfx = isBrowser ? require('./sfx') : null;
-const gfx = isBrowser ? require('./gfx') : null;
-const input = isBrowser ? require('./input') : null;
-const assets = require('./assets');
-const collision = require('./collision');
-const utils = require('./utils');
-const GameTime = require("./utils/game_time");
+const IManager = __webpack_require__(9563);
+const logger = __webpack_require__(5259);
+const sfx = isBrowser ? __webpack_require__(6871) : null;
+const gfx = isBrowser ? __webpack_require__(7565) : null;
+const input = isBrowser ? __webpack_require__(8734) : null;
+const assets = __webpack_require__(7817);
+const collision = __webpack_require__(6740);
+const utils = __webpack_require__(3624);
+const GameTime = __webpack_require__(4742);
 const _logger = logger.getLogger('shaku');
+
+// is shaku in silent mode
+var _isSilent = false;
 
 // manager state and gametime
 let _usedManagers = null;
 let _prevUpdateTime = null;
+
+// current game time
+let _gameTime = null;
 
 // to measure fps
 let _currFpsCounter = 0;
@@ -10741,9 +13651,14 @@ let _startFrameTime = 0;
 let _frameTimeMeasuresCount = 0;
 let _totalFrameTimes = 0;
 
+// are managers currently in 'started' mode?
+let _managersStarted = false;
+
+// were we previously paused?
+let _wasPaused = false;
 
 // current version
-const version = "1.7.3";
+const version = "2.0.0";
 
 
 /**
@@ -10759,56 +13674,68 @@ class Shaku
     {
         /**
          * Different utilities and framework objects, like vectors, rectangles, colors, etc.
+         * @name Shaku#utils
+         * @type {Utils}
          */
         this.utils = utils;
 
         /**
          * Sound effects and music manager.
+         * @name Shaku#sfx
+         * @type {Sfx}
          */
         this.sfx = sfx;
 
         /**
          * Graphics manager.
+         * @name Shaku#gfx
+         * @type {Gfx}
          */
         this.gfx = gfx;
 
         /**
          * Input manager.
+         * @name Shaku#input
+         * @type {Input}
          */
         this.input = input;
 
         /**
          * Assets manager.
+         * @name Shaku#assets
+         * @type {Assets}
          */
         this.assets = assets;
 
         /**
          * Collision detection manager.
+         * @name Shaku#collision
+         * @type {Collision}
          */
         this.collision = collision;
 
         /**
          * If true, will pause the updates and drawing calls when window is not focused.
          * Will also not update elapsed time.
+         * @name Shaku#pauseWhenNotFocused
+         * @type {Boolean}
          */
         this.pauseWhenNotFocused = false;
 
         /**
          * Set to true to completely pause Shaku (will skip updates, drawing, and time counting).
+         * @name Shaku#pause
+         * @type {Boolean}
          */
-        this.paused = false;
+        this.pause = false;
 
         /**
          * Set to true to pause just the game time.
          * This will not pause real-life time. If you need real-life time stop please use the Python package.
+         * @name Shaku#pauseGameTime
+         * @type {Boolean}
          */
-        this.pauseTime = false;
-
-        // are managers currently in 'started' mode?
-        this._managersStarted = false;
-
-        // were we previously paused?
-        this._wasPaused = false;
+        this.pauseGameTime = false;
     }
 
     /**
@@ -10819,6 +13746,11 @@ class Shaku
     async init(managers)
     {
         return new Promise(async (resolve, reject) => {
+
+            // welcome message
+            if (!_isSilent) {
+                console.log(`%c\u{1F9D9} Shaku ${version}\n%c Game dev lib by Ronen Ness`, "color:orange; font-size: 18pt", "color:grey; font-size: 8pt");
+            }
 
             // sanity & log
             if (_usedManagers) { throw new Error("Already initialized!"); }
@@ -10839,6 +13771,8 @@ class Shaku
             _prevUpdateTime = new GameTime();
 
             // done!
+            _logger.info(`Shaku ${version} was initialized successfully!`);
+            _logger.info(`------------------------------------------------`);
             resolve();
         });
     }
@@ -10849,7 +13783,9 @@ class Shaku
     destroy()
     {
         // sanity
-        if (!_usedManagers) { throw new Error("Not initialized!"); }
+        if (!_usedManagers) { 
+            throw new Error("Not initialized!"); 
+        }
         
         // destroy all managers
         for (let i = 0; i < _usedManagers.length; ++i) {
@@ -10858,11 +13794,12 @@ class Shaku
     }
 
     /**
-     * Get if the Shaku is currently paused.
+     * Get if the Shaku is currently paused, either because the 'paused' property is set, or because the document is not focused.
+     * @returns {Boolean} True if currently paused for any reason.
      */
-    get isPaused()
+    isCurrentlyPaused()
     {
-        return this.paused || (this.pauseWhenNotFocused && !document.hasFocus());
+        return this.pause || (this.pauseWhenNotFocused && !document.hasFocus());
     }
 
     /**
@@ -10871,20 +13808,23 @@ class Shaku
     startFrame()
     {
         // if paused, skip
-        if (this.isPaused) { 
-            if (this.input) { this.input.startFrame(); }
-            this._wasPaused = true;
+        if (this.isCurrentlyPaused()) 
+        { 
+            if (this.input) { 
+                this.input.startFrame(); 
+            }
+            _wasPaused = true;
             return; 
         }
 
         // returning from pause
-        if (this._wasPaused) {
-            this._wasPaused = false;
+        if (_wasPaused) {
+            _wasPaused = false;
             GameTime.resetDelta();
         }
 
         // update times
-        if (this.pauseTime) {
+        if (this.pauseGameTime) {
             GameTime.resetDelta();
         }
         else {
@@ -10895,16 +13835,16 @@ class Shaku
         _startFrameTime = GameTime.rawTimestamp();
 
         // create new gameTime object
-        this._gameTime = new GameTime();
+        _gameTime = new GameTime();
 
         // update animators
-        utils.Animator.updateAutos(this._gameTime.delta);
+        utils.Animator.updatePlayingAnimations(_gameTime.delta);
 
         // update managers
         for (let i = 0; i < _usedManagers.length; ++i) {
             _usedManagers[i].startFrame();
         }
-        this._managersStarted = true;
+        _managersStarted = true;
     }
 
     /**
@@ -10913,15 +13853,15 @@ class Shaku
     endFrame()
     {
         // update managers
-        if (this._managersStarted) {
+        if (_managersStarted) {
             for (let i = 0; i < _usedManagers.length; ++i) {
                 _usedManagers[i].endFrame();
             }
-            this._managersStarted = false;
+            _managersStarted = false;
         }
 
         // if paused, skip
-        if (this.isPaused) { 
+        if (this.isCurrentlyPaused()) { 
             if (this.input) { 
                 this.input.endFrame(); 
             }
@@ -10929,11 +13869,11 @@ class Shaku
         }
 
         // store previous gameTime object
-        _prevUpdateTime = this._gameTime;
+        _prevUpdateTime = _gameTime;
 
         // count fps and time stats
-        if (this._gameTime) {
-            this._updateFpsAndTimeStats();
+        if (_gameTime) {
+            this.#_updateFpsAndTimeStats();
         }
     }
 
@@ -10941,11 +13881,11 @@ class Shaku
      * Measure FPS and averege update times.
      * @private
      */
-    _updateFpsAndTimeStats()
+    #_updateFpsAndTimeStats()
     {
         // update fps count and second counter
         _currFpsCounter++;
-        _countSecond += this._gameTime.delta;
+        _countSecond += _gameTime.delta;
 
         // a second passed:
         if (_countSecond >= 1) {
@@ -10972,6 +13912,7 @@ class Shaku
      */
     silent()
     {
+        _isSilent = true;
         logger.silent();
     }
 
@@ -10993,7 +13934,7 @@ class Shaku
      */
     get gameTime()
     {
-        return this._gameTime;
+        return _gameTime;
     }
 
     /**
@@ -11027,7 +13968,7 @@ class Shaku
      * @param {Function} callback Method to invoke in next animation frame.
      * @returns {Number} Handle for cancellation.
      */
-    requestAnimationFrame(callback) 
+    requestAnimationFrame(callback)
     { 
         if (window.requestAnimationFrame) return window.requestAnimationFrame(callback);
         else if (window.mozRequestAnimationFrame) return window.mozRequestAnimationFrame(callback);
@@ -11040,7 +13981,8 @@ class Shaku
      * Cancel animation frame with fallbacks.
      * @param {Number} id Request handle.
      */
-    cancelAnimationFrame(id) {
+    cancelAnimationFrame(id) 
+    {
         if (window.cancelAnimationFrame) return window.cancelAnimationFrame(id);
         else if (window.mozCancelAnimationFrame) return window.mozCancelAnimationFrame(id);
         else clearTimeout(id);
@@ -11057,6 +13999,7 @@ class Shaku
 
     /**
      * Get / create a custom logger.
+     * @returns {Logger} Logger instance.
      */
     getLogger(name)
     {
@@ -11067,20 +14010,25 @@ class Shaku
 
 // return the main Shaku object.
 module.exports = new Shaku();
-},{"./assets":5,"./collision":12,"./gfx":29,"./input":42,"./logger":45,"./manager":46,"./sfx":47,"./utils":56,"./utils/game_time":55}],52:[function(require,module,exports){
+
+/***/ }),
+
+/***/ 4882:
+/***/ ((module) => {
+
 /**
  * Implement an animator helper class.
  * 
  * |-- copyright and license --|
- * @package    Shaku
- * @file       shaku\lib\utils\animator.js
+ * @module     Shaku
+ * @file       shaku\src\utils\animator.js
  * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
  * @copyright  (c) 2021 Ronen Ness
  * @license    MIT
  * |-- end copyright and license --|
  * 
  */
-'use strict';
+
 const _autoAnimators = [];
 
 
@@ -11139,7 +14087,7 @@ class Animator
 
             // trigger finish method
             if (this._onFinish) {
-                this._onFinish();
+                this._onFinish(this._target, this);
             }
         }
 
@@ -11155,7 +14103,7 @@ class Animator
 
             // if from not set, get default
             if (fromValue === undefined) {
-                this._fromValues[key] = fromValue = this._getValueFromTarget(keyParts);
+                this._fromValues[key] = fromValue = this.#_getValueFromTarget(keyParts);
                 if (fromValue === undefined) {
                     throw new Error(`Animator issue: missing origin value for key '${key}' and property not found in target object.`);
                 }
@@ -11187,7 +14135,7 @@ class Animator
             }
 
             // set new value
-            this._setValueToTarget(keyParts, newValue);
+            this.#_setValueToTarget(keyParts, newValue);
         }
 
         // if repeating, reset progress
@@ -11205,7 +14153,7 @@ class Animator
      * @private
      * @param {Array<String>} keyParts Key parts broken by dots.
      */
-    _getValueFromTarget(keyParts)
+    #_getValueFromTarget(keyParts)
     {
         // easy case - get value when key parts is just one component
         if (keyParts.length === 1) {
@@ -11222,7 +14170,7 @@ class Animator
      * @private
      * @param {Array<String>} keyParts Key parts broken by dots.
      */
-     _setValueToTarget(keyParts, value)
+     #_setValueToTarget(keyParts, value)
      {
         // easy case - set value when key parts is just one component
         if (keyParts.length === 1) {
@@ -11240,7 +14188,7 @@ class Animator
      * Make sure a given value is legal for the animator.
      * @private
      */
-    _validateValueType(value)
+    #_validateValueType(value)
     {
         return (typeof value === 'number') || (typeof value === 'function') || (value && value.constructor && value.constructor.lerp);
     }
@@ -11282,6 +14230,16 @@ class Animator
     }
 
     /**
+     * If true, will reverse animation back to start values after done.
+     * This is equivalent to calling `repeats(1, true)`.
+     * @returns {Animator} this.
+     */
+    reverseBackToStart()
+    {
+        return this.repeats(1, true);
+    }
+
+    /**
      * Set 'from' values.
      * You don't have to provide 'from' values, when a value is not set the animator will just take whatever was set in target when first update is called.
      * @param {*} values Values to set as 'from' values. 
@@ -11291,7 +14249,7 @@ class Animator
     from(values)
     {
         for (let key in values) {
-            if (!this._validateValueType(values[key])) {
+            if (!this.#_validateValueType(values[key])) {
                 throw new Error("Illegal value type to use with Animator! All values must be either numbers, methods, or a class instance that has a static lerp() method.");
             }
             this._fromValues[key] = values[key];
@@ -11309,7 +14267,7 @@ class Animator
     to(values)
     {
         for (let key in values) {
-            if (!this._validateValueType(values[key])) {
+            if (!this.#_validateValueType(values[key])) {
                 throw new Error("Illegal value type to use with Animator! All values must be either numbers, methods, or a class instance that has a static lerp() method.");
             }
             this._toValues[key] = {keyParts: key.split('.'), value: values[key]};
@@ -11392,7 +14350,7 @@ class Animator
      * @private
      * @param {Number} delta Delta time in seconds.
      */
-    static updateAutos(delta)
+    static updatePlayingAnimations(delta)
     {
         for (let i = _autoAnimators.length - 1; i >= 0; --i) {
 
@@ -11416,22 +14374,27 @@ function lerp(start, end, amt) {
 
 // export the animator class.
 module.exports = Animator;
-},{}],53:[function(require,module,exports){
+
+/***/ }),
+
+/***/ 9668:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
 /**
  * Implement a simple 2d circle.
  * 
  * |-- copyright and license --|
- * @package    Shaku
- * @file       shaku\lib\utils\circle.js
+ * @module     Shaku
+ * @file       shaku\src\utils\circle.js
  * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
  * @copyright  (c) 2021 Ronen Ness
  * @license    MIT
  * |-- end copyright and license --|
  * 
  */
- 'use strict';
-const MathHelper = require('./math_helper');
-const Vector2 = require('./vector2');
+ 
+const MathHelper = __webpack_require__(9646);
+const Vector2 = __webpack_require__(2544);
 
 
 /**
@@ -11477,7 +14440,8 @@ class Circle
     equals(other)
     {
         return (other === this) || 
-                (other && (other.constructor === this.constructor) && this.center.equals(other.center) && this.radius == other.radius);
+                (other && (other.constructor === this.constructor) && 
+                this.center.equals(other.center) && (this.radius == other.radius));
     }
 
     /**
@@ -11523,22 +14487,27 @@ class Circle
 
 // export the circle class
 module.exports = Circle;
-},{"./math_helper":58,"./vector2":67}],54:[function(require,module,exports){
+
+/***/ }),
+
+/***/ 9327:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
 /**
  * Define a color object.
  * 
  * |-- copyright and license --|
- * @package    Shaku
- * @file       shaku\lib\utils\color.js
+ * @module     Shaku
+ * @file       shaku\src\utils\color.js
  * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
  * @copyright  (c) 2021 Ronen Ness
  * @license    MIT
  * |-- end copyright and license --|
  * 
  */
-'use strict';
 
-const MathHelper = require("./math_helper");
+
+const MathHelper = __webpack_require__(9646);
 
 
 /**
@@ -11836,11 +14805,13 @@ class Color
     /**
      * Build and return new color from bytes array.
      * @param {Array<Number>} bytes Bytes array to build color from.
+     * @param {Number=} offset Optional offset to read bytes from.
      * @returns {Color} Newly created color.
      */
-    static fromBytesArray(bytes)
+    static fromBytesArray(bytes, offset)
     {
-        return new Color(bytes[0] / 255, bytes[1] / 255, bytes[2] / 255, bytes[3] !== undefined ? (bytes[3] / 255) : 1);
+        offset = offset || 0;
+        return new Color(bytes[offset] / 255, bytes[offset+1] / 255, bytes[offset+2] / 255, (bytes[offset+3] !== undefined) ? (bytes[offset+3] / 255) : 1);
     }
 
     /**
@@ -11867,7 +14838,8 @@ class Color
     equals(other)
     {
         return (this === other) ||
-                (other && (other.constructor === this.constructor) && this._r == other._r && this._g == other._g && this._b == other._b && this._a == other._a);
+                (other && (other.constructor === this.constructor) && 
+                (this._r == other._r) && (this._g == other._g) && (this._b == other._b) && (this._a == other._a));
     }
 
     /**
@@ -11976,20 +14948,25 @@ function hexToColor(hex)
 
 // export Color object
 module.exports = Color;
-},{"./math_helper":58}],55:[function(require,module,exports){
+
+/***/ }),
+
+/***/ 4742:
+/***/ ((module) => {
+
 /**
  * A utility to hold gametime.
  * 
  * |-- copyright and license --|
- * @package    Shaku
- * @file       shaku\lib\utils\game_time.js
+ * @module     Shaku
+ * @file       shaku\src\utils\game_time.js
  * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
  * @copyright  (c) 2021 Ronen Ness
  * @license    MIT
  * |-- end copyright and license --|
  * 
  */
-'use strict';
+
 
  
 /**
@@ -12110,54 +15087,247 @@ var _currElapsed = 0;
 
 // export the GameTime class.
 module.exports = GameTime;
-},{}],56:[function(require,module,exports){
+
+/***/ }),
+
+/***/ 3624:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
 /**
  * Include all util classes.
  * 
  * |-- copyright and license --|
- * @package    Shaku
- * @file       shaku\lib\utils\index.js
+ * @module     Shaku
+ * @file       shaku\src\utils\index.js
  * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
  * @copyright  (c) 2021 Ronen Ness
  * @license    MIT
  * |-- end copyright and license --|
  * 
  */
- 'use strict';
 
- module.exports = {
-    Vector2: require('./vector2'),
-    Vector3: require('./vector3'),
-    Rectangle: require('./rectangle'),
-    Circle: require('./circle'),
-    Line: require('./line'),
-    Color: require('./color'),
-    Animator: require('./animator'),
-    GameTime: require('./game_time'),
-    MathHelper: require('./math_helper'),
-    SeededRandom: require('./seeded_random'),
-    Perlin: require('./perlin'),
-    Storage: require('./storage'),
-    StorageAdapter: require('./storage_adapter'),
-    PathFinder: require('./path_finder'),
-    Transformation: require('./transformation'),
-    TransformationModes: require('./transform_modes')
- };
-},{"./animator":52,"./circle":53,"./color":54,"./game_time":55,"./line":57,"./math_helper":58,"./path_finder":59,"./perlin":60,"./rectangle":61,"./seeded_random":62,"./storage":63,"./storage_adapter":64,"./transform_modes":65,"./transformation":66,"./vector2":67,"./vector3":68}],57:[function(require,module,exports){
+
+/**
+ * Shaku Utils module.
+ * Contains general stuff, utilities and core objects that Shaku uses.
+ */
+const Utils = {
+    Vector2: __webpack_require__(2544),
+    Vector3: __webpack_require__(8329),
+    Rectangle: __webpack_require__(4731),
+    Circle: __webpack_require__(9668),
+    Line: __webpack_require__(1708),
+    Color: __webpack_require__(9327),
+    Animator: __webpack_require__(4882),
+    GameTime: __webpack_require__(4742),
+    MathHelper: __webpack_require__(9646),
+    SeededRandom: __webpack_require__(7212),
+    Perlin: __webpack_require__(4476),
+    Storage: __webpack_require__(7274),
+    StorageAdapter: __webpack_require__(6553),
+    PathFinder: __webpack_require__(2791),
+    Transformation: __webpack_require__(1910),
+    TransformationModes: __webpack_require__(6347),
+    ItemsSorter: __webpack_require__(321)
+};
+
+// export the Utils module.
+module.exports = Utils;
+
+/***/ }),
+
+/***/ 321:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+/**
+ * Implements an algorithm to sort as many rectangles as possible in the smallest possible region.
+ * 
+ * |-- copyright and license --|
+ * @module     Shaku
+ * @file       shaku\src\utils\items_sorter.js
+ * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
+ * @copyright  (c) 2021 Ronen Ness
+ * @license    MIT
+ * |-- end copyright and license --|
+ * 
+ */
+
+const Rectangle = __webpack_require__(4731);
+const Vector2 = __webpack_require__(2544);
+
+
+/**
+ * Utility class to arrange rectangles in minimal region.
+ */
+class ItemsSorter
+{
+    /**
+     * Efficiently arrange rectangles into a minimal size area.
+     * Based on code from here:
+     * https://github.com/mapbox/potpack
+     * @example 
+     * // 'id' will be used to identify the items after the sort.
+     * let boxes = [{x: 100, y: 50, id: 1}, {x: 50, y: 70, id: 2}, {x: 125, y: 85, id: 3}, ... more boxes here ];
+     * let result = RectanglesSorter.arrangeRectangles(boxes);
+     * // show result
+     * console.log(`Output region size is: ${result.width},${result.height}, and it utilizes ${result.utilized} of the area.`);
+     * for (let res of result.rectangles) {
+     *   console.log(`Rectangle ${res.source.id} is at position: ${res.x},${res.y}.`);
+     * }
+     * @param {Array<Rectangle|Vector2|*>} rectangles Array of vectors or rectangles to sort. 
+     * If the object have 'width' and 'height' properties, these properties will be used to define the rectangle size.
+     * If not but the object have 'x' and 'y' properties, x and y will be taken instead.
+     * The source object will be included in the result objects.
+     * @param {Function=} processRegionWidthMethod If provided, will run this method when trying to decide on the result region width.
+     * Method receive desired width as argument, and return a new width to override the decision. You can use this method to limit max width or round it to multiplies of 2 for textures.
+     * Note: by default, the algorithm will try to create a square region.
+     * @param {Vector2=} extraMargins Optional extra empty pixels to add between textures in atlas.
+     * @returns {*} Result object with the following keys: {width, height, rectangles, utilized}.
+     *  width = required container width.
+     *  height = required container width.
+     *  rectangles = list of sorted rectangles. every entry has {x, y, width, height, source} where x and y are the offset in container and source is the source input object.
+     *  utilized = how much of the output space was utilized.
+     */
+    static arrangeRectangles(rectangles, processRegionWidthMethod, extraMargins)
+    {
+        // default margins
+        extraMargins = extraMargins || Vector2.zeroReadonly;
+
+        // normalize rectangles / vectors
+        let normalizedRects = [];
+        for (let rect of rectangles) {
+            normalizedRects.push({
+                width: ((rect.width !== undefined) ? rect.width : rect.x) + extraMargins.x, 
+                height: ((rect.height !== undefined) ? rect.height : rect.y) + extraMargins.y,
+                source: rect
+            });
+        }
+        rectangles = normalizedRects;
+
+        // calculate result area and maximum rectangle width
+        let area = 0;
+        let maxRectWidth = 0;
+        for (const rect of rectangles) {
+            area += rect.width * rect.height;
+            maxRectWidth = Math.max(maxRectWidth, rect.width);
+        }
+
+        // sort textures by height descending
+        rectangles.sort((a, b) => b.height - a.height);
+
+        // aim for a squarish resulting container
+        let startWidth = Math.max(Math.ceil(Math.sqrt(area / 0.95)), maxRectWidth);
+
+        // if we got a method to process width, apply it
+        if (processRegionWidthMethod) {
+            startWidth = processRegionWidthMethod(startWidth);
+        }
+
+        // start with a single empty space, unbounded at the bottom
+        const spaces = [{x: 0, y: 0, w: startWidth, h: Infinity}];
+
+        // arrange texture rects
+        let width = 0;
+        let height = 0;
+        for (const rect of rectangles) 
+        {
+            // look through spaces backwards so that we check smaller spaces first
+            for (let i = spaces.length - 1; i >= 0; i--) {
+                
+                // get current space
+                const space = spaces[i];
+
+                // look for empty spaces that can accommodate the current box
+                if (rect.width > space.w || rect.height > space.h) continue;
+
+                // found the space; add the box to its top-left corner
+                // |-------|-------|
+                // |  box  |       |
+                // |_______|       |
+                // |         space |
+                // |_______________|
+                rect.x = space.x;
+                rect.y = space.y;
+
+                height = Math.max(height, rect.y + rect.height);
+                width = Math.max(width, rect.x + rect.width);
+
+                if (rect.width === space.w && rect.height === space.h) {
+                    // space matches the box exactly; remove it
+                    const last = spaces.pop();
+                    if (i < spaces.length) spaces[i] = last;
+
+                } else if (rect.height === space.h) {
+                    // space matches the box height; update it accordingly
+                    // |-------|---------------|
+                    // |  box  | updated space |
+                    // |_______|_______________|
+                    space.x += rect.width;
+                    space.w -= rect.width;
+
+                } else if (rect.width === space.w) {
+                    // space matches the box width; update it accordingly
+                    // |---------------|
+                    // |      box      |
+                    // |_______________|
+                    // | updated space |
+                    // |_______________|
+                    space.y += rect.height;
+                    space.h -= rect.height;
+
+                } else {
+                    // otherwise the box splits the space into two spaces
+                    // |-------|-----------|
+                    // |  box  | new space |
+                    // |_______|___________|
+                    // | updated space     |
+                    // |___________________|
+                    spaces.push({
+                        x: space.x + rect.width,
+                        y: space.y,
+                        w: space.w - rect.width,
+                        h: rect.height
+                    });
+                    space.y += rect.height;
+                    space.h -= rect.height;
+                }
+                break;
+            }
+        }
+
+        // return result
+        return {
+            width: width,                               // container width.
+            height: height,                             // container height.
+            rectangles: rectangles,                     // rectangles and where to place them.
+            utilized: (area / (width * height)) || 0    // space utilization.
+        };
+    }
+}
+
+
+// export the main method
+module.exports = ItemsSorter;
+
+/***/ }),
+
+/***/ 1708:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
 /**
  * Implement a simple 2d line.
  * 
  * |-- copyright and license --|
- * @package    Shaku
- * @file       shaku\lib\utils\line.js
+ * @module     Shaku
+ * @file       shaku\src\utils\line.js
  * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
  * @copyright  (c) 2021 Ronen Ness
  * @license    MIT
  * |-- end copyright and license --|
  * 
  */
- 'use strict';
-const Vector2 = require('./vector2');
+ 
+const Vector2 = __webpack_require__(2544);
 
 
 /**
@@ -12325,20 +15495,25 @@ class Line
 
 // export the line class
 module.exports = Line;
-},{"./vector2":67}],58:[function(require,module,exports){
+
+/***/ }),
+
+/***/ 9646:
+/***/ ((module) => {
+
 /**
  * Implement a math utilities class.
  * 
  * |-- copyright and license --|
- * @package    Shaku
- * @file       shaku\lib\utils\math_helper.js
+ * @module     Shaku
+ * @file       shaku\src\utils\math_helper.js
  * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
  * @copyright  (c) 2021 Ronen Ness
  * @license    MIT
  * |-- end copyright and license --|
  * 
  */
-'use strict';
+
 
 // for radians / degrees conversion
 const _toRadsFactor = (Math.PI / 180);
@@ -12377,6 +15552,18 @@ class MathHelper
     static dot(x1, y1, x2, y2) 
     {
         return x1 * x2 + y1 * y2;
+    }
+
+    /**
+     * Make a number a multiply of another number by rounding it up.
+     * @param {Number} numToRound Number to round up.
+     * @param {Number} multiple Number to make 'numToRound' a multiply of.
+     * @returns {Number} Result number.
+     */
+    static roundToMultiple(numToRound, multiple)
+    {
+        let isPositive = (numToRound >= 0);
+        return ((numToRound + isPositive * (multiple - 1)) / multiple) * multiple;
     }
 
     /**
@@ -12525,21 +15712,26 @@ MathHelper.PI2 = Math.PI * 2;
 
 // export the math helper
 module.exports = MathHelper;
-},{}],59:[function(require,module,exports){
+
+/***/ }),
+
+/***/ 2791:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
 /**
  * Provide a pathfinding algorithm.
  * 
  * |-- copyright and license --|
- * @package    Shaku
- * @file       shaku\lib\utils\path_finder.js
+ * @module     Shaku
+ * @file       shaku\src\utils\path_finder.js
  * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
  * @copyright  (c) 2021 Ronen Ness
  * @license    MIT
  * |-- end copyright and license --|
  * 
 */
-'use strict';
-const Vector2 = require("./vector2");
+
+const Vector2 = __webpack_require__(2544);
 
 
 /**
@@ -12570,6 +15762,10 @@ class IGrid
  */
 class Node
 {
+    /**
+     * Create the node from a position.
+     * @param {Vector2|Vector3} position Node position.
+     */
     constructor(position)
     {
         this.position = position;
@@ -12579,6 +15775,9 @@ class Node
         this.price = 1;
     }
 
+    /**
+     * Get the node fCost factor.
+     */
     get fCost()
     {
         return this.gCost + this.hCost;
@@ -12753,31 +15952,43 @@ function getDistance(pa, pb)
 }
 
 
-// export main method and grid interface.
+/**
+ * Path finder utilitiy. 
+ * To use it:
+ *  1. Implement a `IGrid` instance that returns if a grid node is blocking and what's the price to cross it.
+ *  2. Call findPath() with your grid to find a path between start and end points.
+ */
 const PathFinder = {
     findPath: findPath,
     IGrid: IGrid
 };
+
+// export the path finder object
 module.exports = PathFinder;
-},{"./vector2":67}],60:[function(require,module,exports){
+
+/***/ }),
+
+/***/ 4476:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
 /**
  * Implements 2d perlin noise generator.
  * Based on code from noisejs by Stefan Gustavson.
  * https://github.com/josephg/noisejs/blob/master/perlin.js
  * 
  * |-- copyright and license --|
- * @package    Shaku
- * @file       shaku\lib\utils\perlin.js
+ * @module     Shaku
+ * @file       shaku\src\utils\perlin.js
  * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
  * @copyright  (c) 2021 Ronen Ness
  * @license    MIT
  * |-- end copyright and license --|
  * 
  */
-'use strict';
+
 
 // import some utilities
-const MathHelper = require("./math_helper");
+const MathHelper = __webpack_require__(9646);
 const lerp = MathHelper.lerp;
 
 // do fade
@@ -12935,25 +16146,30 @@ class Perlin
 
 // export the perlin generator
 module.exports = Perlin;
-},{"./math_helper":58}],61:[function(require,module,exports){
+
+/***/ }),
+
+/***/ 4731:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
 /**
  * Implement a simple 2d rectangle.
  * 
  * |-- copyright and license --|
- * @package    Shaku
- * @file       shaku\lib\utils\rectangle.js
+ * @module     Shaku
+ * @file       shaku\src\utils\rectangle.js
  * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
  * @copyright  (c) 2021 Ronen Ness
  * @license    MIT
  * |-- end copyright and license --|
  * 
  */
- 'use strict';
+ 
 
-const Circle = require('./circle');
-const Line = require('./line');
-const MathHelper = require('./math_helper');
-const Vector2 = require('./vector2');
+const Circle = __webpack_require__(9668);
+const Line = __webpack_require__(1708);
+const MathHelper = __webpack_require__(9646);
+const Vector2 = __webpack_require__(2544);
 
 
 /**
@@ -13130,7 +16346,7 @@ class Rectangle
      */
     containsVector(p) 
     {
-        return p.x >= this.x && p.x <= this.x + this.width && p.y >= this.y && p.y <= this.y + this.height;
+        return (p.x >= this.x) && (p.x <= this.x + this.width) && (p.y >= this.y) && (p.y <= this.y + this.height);
     }
 
     /**
@@ -13286,7 +16502,8 @@ class Rectangle
     equals(other)
     {
         return (this === other) || 
-                (other && (other.constructor === this.constructor) && this.x == other.x && this.y == other.y && this.width == other.width && this.height == other.height);
+                (other && (other.constructor === this.constructor) && 
+                (this.x == other.x) && (this.y == other.y) && (this.width == other.width) && (this.height == other.height));
     }
 
     /**
@@ -13335,11 +16552,13 @@ class Rectangle
     }
 }
 
+
 /**
  * Get distance between a point and a line.
  * @private
  */
-function pointLineDistance(p1, l1, l2) {
+function pointLineDistance(p1, l1, l2) 
+{
 
     let x = p1.x;
     let y = p1.y;
@@ -13377,25 +16596,30 @@ function pointLineDistance(p1, l1, l2) {
     var dx = x - xx;
     var dy = y - yy;
     return Math.sqrt(dx * dx + dy * dy);
-  }
+}
 
 
 // export the rectangle class
 module.exports = Rectangle;
-},{"./circle":53,"./line":57,"./math_helper":58,"./vector2":67}],62:[function(require,module,exports){
+
+/***/ }),
+
+/***/ 7212:
+/***/ ((module) => {
+
 /**
  * Implement a seeded random generator.
  * 
  * |-- copyright and license --|
- * @package    Shaku
- * @file       shaku\lib\utils\seeded_random.js
+ * @module     Shaku
+ * @file       shaku\src\utils\seeded_random.js
  * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
  * @copyright  (c) 2021 Ronen Ness
  * @license    MIT
  * |-- end copyright and license --|
  * 
  */
-'use strict';
+
 
 /**
  * Class to generate random numbers with seed.
@@ -13449,21 +16673,26 @@ class SeededRandom
 
 // export the seeded random class.
 module.exports = SeededRandom;
-},{}],63:[function(require,module,exports){
+
+/***/ }),
+
+/***/ 7274:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
 /**
  * Implement a storage wrapper.
  * 
  * |-- copyright and license --|
- * @package    Shaku
- * @file       shaku\lib\utils\storage.js
+ * @module     Shaku
+ * @file       shaku\src\utils\storage.js
  * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
  * @copyright  (c) 2021 Ronen Ness
  * @license    MIT
  * |-- end copyright and license --|
  * 
  */
-'use strict';
-const StorageAdapter = require("./storage_adapter");
+
+const StorageAdapter = __webpack_require__(6553);
 
 
 /**
@@ -13484,7 +16713,7 @@ class Storage
         adapters = adapters || Storage.defaultAdapters;
 
         // default to array
-        if (!(adapters instanceof Array)) {
+        if (!Array.isArray(adapters)) {
             adapters = [adapters];
         }
 
@@ -13554,7 +16783,7 @@ class Storage
      * Set value.
      * @private
      */
-    _set(key, value)
+    #_set(key, value)
     {
         // json stringify
         value = JSON.stringify({
@@ -13577,7 +16806,7 @@ class Storage
      * Get value.
      * @private
      */
-    _get(key)
+    #_get(key)
     {
         // get value
         var value = this._adapter.getItem(key);
@@ -13621,7 +16850,7 @@ class Storage
         key = this.normalizeKey(key);
 
         // write value with metadata
-        this._set(key, value);
+        this.#_set(key, value);
     }
 
     /**
@@ -13636,7 +16865,7 @@ class Storage
         key = this.normalizeKey(key);
 
         // read value from metadata
-        return this._get(key);
+        return this.#_get(key);
     }
 
     /**
@@ -13657,7 +16886,7 @@ class Storage
     setJson(key, value)
     {
         key = this.normalizeKey(key);
-        this._set(key, value);
+        this.#_set(key, value);
     }
 
     /**
@@ -13689,20 +16918,25 @@ Storage.defaultAdapters = [new StorageAdapter.localStorage(), new StorageAdapter
 
 // export the storage class
 module.exports = Storage;
-},{"./storage_adapter":64}],64:[function(require,module,exports){
+
+/***/ }),
+
+/***/ 6553:
+/***/ ((module) => {
+
 /**
  * Implement a storage adapter.
  * 
  * |-- copyright and license --|
- * @package    Shaku
- * @file       shaku\lib\utils\storage_adapter.js
+ * @module     Shaku
+ * @file       shaku\src\utils\storage_adapter.js
  * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
  * @copyright  (c) 2021 Ronen Ness
  * @license    MIT
  * |-- end copyright and license --|
  * 
  */
-'use strict';
+
 
 
 /**
@@ -14006,20 +17240,25 @@ StorageAdapter.sessionStorage = StorageAdapterSessionStorage;
 
 // export the storage adapter class
 module.exports = StorageAdapter;
-},{}],65:[function(require,module,exports){
+
+/***/ }),
+
+/***/ 6347:
+/***/ ((module) => {
+
 /**
  * Transformation modes.
  * 
  * |-- copyright and license --|
- * @package    Shaku
- * @file       shaku\lib\utils\transform_modes.js
+ * @module     Shaku
+ * @file       shaku\src\utils\transform_modes.js
  * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
  * @copyright  (c) 2021 Ronen Ness
  * @license    MIT
  * |-- end copyright and license --|
  * 
  */
-'use strict';
+
 
 /**
  * Different ways we can combine local transformations with parent transformations.
@@ -14048,30 +17287,35 @@ const TransformModes = {
 
 // export the transform modes.
 module.exports = TransformModes;
-},{}],66:[function(require,module,exports){
+
+/***/ }),
+
+/***/ 1910:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
 /**
  * Transformations object to store position, rotation and scale, that also support transformations inheritance.
  * 
  * |-- copyright and license --|
- * @package    Shaku
- * @file       shaku\lib\utils\transformation.js
+ * @module     Shaku
+ * @file       shaku\src\utils\transformation.js
  * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
  * @copyright  (c) 2021 Ronen Ness
  * @license    MIT
  * |-- end copyright and license --|
  * 
  */
-'use strict';
-const MathHelper = require("./math_helper");
-const TransformModes = require("./transform_modes");
-const Matrix = require("../gfx/matrix");
-const Vector2 = require("./vector2");
+
+const MathHelper = __webpack_require__(9646);
+const TransformModes = __webpack_require__(6347);
+const Matrix = __webpack_require__(5599);
+const Vector2 = __webpack_require__(2544);
 
 // some default values
 const _defaults = {};
-_defaults.position = Vector2.zero;
+_defaults.position = Vector2.zero();
 _defaults.positionMode = TransformModes.Relative;
-_defaults.scale = Vector2.one;
+_defaults.scale = Vector2.one();
 _defaults.scaleMode = TransformModes.AxisAligned;
 _defaults.rotation = 0;
 _defaults.rotationMode = TransformModes.Relative;
@@ -14186,7 +17430,7 @@ class Transformation
     {
         if (this._position.equals(value)) { return; }
         this._position.copy(value);
-        this._markDirty(true, false);
+        this.#_markDirty(true, false);
         return this;
     }
 
@@ -14199,7 +17443,7 @@ class Transformation
     {
         if (this._position.x === value) { return; }
         this._position.x = value;
-        this._markDirty(true, false);
+        this.#_markDirty(true, false);
         return this;
     }
 
@@ -14212,7 +17456,7 @@ class Transformation
     {
         if (this._position.y === value) { return; }
         this._position.y = value;
-        this._markDirty(true, false);
+        this.#_markDirty(true, false);
         return this;
     }
 
@@ -14224,7 +17468,7 @@ class Transformation
     move(value)
     {
         this._position.addSelf(value);
-        this._markDirty(true, false);
+        this.#_markDirty(true, false);
         return this;
     }
     
@@ -14237,7 +17481,7 @@ class Transformation
     {
         if (this._positionMode === value) { return; }
         this._positionMode = value;
-        this._markDirty(false, true);
+        this.#_markDirty(false, true);
         return this;
     }
 
@@ -14268,7 +17512,7 @@ class Transformation
     {
         if (this._scale.equals(value)) { return; }
         this._scale.copy(value);
-        this._markDirty(true, false);
+        this.#_markDirty(true, false);
         return this;
     }
 
@@ -14281,7 +17525,7 @@ class Transformation
     {
         if (this._scale.x === value) { return; }
         this._scale.x = value;
-        this._markDirty(true, false);
+        this.#_markDirty(true, false);
         return this;
     }
     
@@ -14294,7 +17538,7 @@ class Transformation
     {
         if (this._scale.y === value) { return; }
         this._scale.y = value;
-        this._markDirty(true, false);
+        this.#_markDirty(true, false);
         return this;
     }
 
@@ -14306,7 +17550,7 @@ class Transformation
     scale(value)
     {
         this._scale.mulSelf(value);
-        this._markDirty(true, false);
+        this.#_markDirty(true, false);
         return this;
     }
 
@@ -14319,7 +17563,7 @@ class Transformation
     {
         if (this._scaleMode === value) { return; }
         this._scaleMode = value;
-        this._markDirty(false, true);
+        this.#_markDirty(false, true);
         return this;
     }
 
@@ -14373,7 +17617,7 @@ class Transformation
         if (wrap && ((this._rotation < 0) || (this._rotation > (Math.PI * 2)))) {
             this._rotation = Math.atan2(Math.sin(this._rotation), Math.cos(this._rotation));
         }
-        this._markDirty(true, false);
+        this.#_markDirty(true, false);
         return this;
     }
 
@@ -14409,7 +17653,7 @@ class Transformation
     rotateDegrees(value)
     {
         this._rotation += MathHelper.toRadians(value);
-        this._markDirty(true, false);
+        this.#_markDirty(true, false);
         return this;
     }
         
@@ -14422,7 +17666,7 @@ class Transformation
     {
         if (this._rotationMode === value) { return; }
         this._rotationMode = value;
-        this._markDirty(false, true);
+        this.#_markDirty(false, true);
         return this;
     }
 
@@ -14431,7 +17675,7 @@ class Transformation
      * @param {Boolean} localTransform Local transformations changed. 
      * @param {Boolean} transformationModes Transformation modes changed.
      */
-    _markDirty(localTransform, transformationModes)
+    #_markDirty(localTransform, transformationModes)
     {
         this._matrix = null;
         if (this.onChange) {
@@ -14518,7 +17762,7 @@ class Transformation
         this._positionMode = data.posm || _defaults.positionMode;
         this._scaleMode = data.sclm || _defaults.scaleMode;
         this._rotationMode = data.rotm || _defaults.rotationMode;
-        this._markDirty(true, true);
+        this.#_markDirty(true, true);
     }
     
     /**
@@ -14630,7 +17874,7 @@ function combineVector(childValue, parentValue, parent, mode)
             return parentValue.add(childValue);
 
         case TransformModes.Relative:
-            return parentValue.add(childValue.rotatedRadians(parent._rotation));
+            return parentValue.add(childValue.rotatedByRadians(parent._rotation));
 
         default:
             throw new Error("Unknown transform mode!");
@@ -14657,7 +17901,7 @@ function combineVectorMul(childValue, parentValue, parent, mode)
             return parentValue.mul(childValue);
 
         case TransformModes.Relative:
-            return parentValue.mul(childValue.rotatedRadians(parent._rotation));
+            return parentValue.mul(childValue.rotatedByRadians(parent._rotation));
 
         default:
             throw new Error("Unknown transform mode!");
@@ -14667,22 +17911,27 @@ function combineVectorMul(childValue, parentValue, parent, mode)
 
 // export the transformation object
 module.exports = Transformation;
-},{"../gfx/matrix":30,"./math_helper":58,"./transform_modes":65,"./vector2":67}],67:[function(require,module,exports){
+
+/***/ }),
+
+/***/ 2544:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
 /**
  * Implement a simple 2d vector.
  * 
  * |-- copyright and license --|
- * @package    Shaku
- * @file       shaku\lib\utils\vector2.js
+ * @module     Shaku
+ * @file       shaku\src\utils\vector2.js
  * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
  * @copyright  (c) 2021 Ronen Ness
  * @license    MIT
  * |-- end copyright and license --|
  * 
  */
-'use strict';
 
-const MathHelper = require("./math_helper");
+
+const MathHelper = __webpack_require__(9646);
 
 /**
  * A simple Vector object for 2d positions.
@@ -14735,7 +17984,7 @@ class Vector2
     
     /**
      * Return a new vector of this + other.
-     * @param {Number|Vector2} Other Vector or number to add.
+     * @param {Number|Vector2} Other Vector3 or number to add to all components.
      * @returns {Vector2} result vector.
      */
     add(other) 
@@ -14748,7 +17997,7 @@ class Vector2
     
     /**
      * Return a new vector of this - other.
-     * @param {Number|Vector2} Other Vector or number to sub.
+     * @param {Number|Vector2} Other Vector3 or number to sub from all components.
      * @returns {Vector2} result vector.
      */
     sub(other) 
@@ -14761,7 +18010,7 @@ class Vector2
     
     /**
      * Return a new vector of this / other.
-     * @param {Number|Vector2} Other Vector or number to divide.
+     * @param {Number|Vector2} Other Vector3 or number to divide by all components.
      * @returns {Vector2} result vector.
      */
     div(other) 
@@ -14774,7 +18023,7 @@ class Vector2
     
     /**
      * Return a new vector of this * other.
-     * @param {Number|Vector2} Other Vector or number to multiply.
+     * @param {Number|Vector2} Other Vector2 or number to multiply with all components.
      * @returns {Vector2} result vector.
      */
     mul(other) 
@@ -14818,8 +18067,8 @@ class Vector2
      */
     normalized()
     {
-        if (this.x == 0 && this.y == 0) { return Vector2.zero; }
-        let mag = this.length;
+        if (this.x == 0 && this.y == 0) { return Vector2.zero(); }
+        let mag = this.length();
         return new Vector2(this.x / mag, this.y / mag);
     }
 
@@ -14828,9 +18077,9 @@ class Vector2
      * @param {Number} radians Radians to rotate by. 
      * @returns {Vector2} New vector with the length of this vector and direction rotated by given radians.
      */
-    rotatedRadians(radians)
+    rotatedByRadians(radians)
     {
-        return Vector2.fromRadians(this.getRadians() + radians).mulSelf(this.length);
+        return Vector2.fromRadians(this.getRadians() + radians).mulSelf(this.length());
     }
 
     /**
@@ -14838,9 +18087,9 @@ class Vector2
      * @param {Number} degrees Degrees to rotate by. 
      * @returns {Vector2} New vector with the length of this vector and direction rotated by given degrees.
      */
-    rotatedDegrees(degrees)
+    rotatedByDegrees(degrees)
     {
-        return Vector2.fromDegree(this.getDegrees() + degrees).mulSelf(this.length);
+        return Vector2.fromDegrees(this.getDegrees() + degrees).mulSelf(this.length());
     }
     
     /**
@@ -14955,7 +18204,7 @@ class Vector2
     normalizeSelf()
     {
         if (this.x == 0 && this.y == 0) { return this; }
-        let mag = this.length;
+        let mag = this.length();
         this.x /= mag;
         this.y /= mag;
         return this;
@@ -14991,7 +18240,7 @@ class Vector2
      * Return vector length (aka magnitude).
      * @returns {Number} Vector length.
      */
-    get length()
+    length()
     {
         return Math.sqrt((this.x * this.x) + (this.y * this.y));
     }
@@ -15009,16 +18258,16 @@ class Vector2
      * Get vector (0,0).
      * @returns {Vector2} result vector.
      */
-    static get zero()
+    static zero()
     {
-        return new Vector2();
+        return new Vector2(0, 0);
     }
 
     /**
      * Get vector with 1,1 values.
      * @returns {Vector2} result vector.
      */
-    static get one()
+    static one()
     {
         return new Vector2(1, 1);
     }
@@ -15027,7 +18276,7 @@ class Vector2
      * Get vector with 0.5,0.5 values.
      * @returns {Vector2} result vector.
      */
-    static get half()
+    static half()
     {
         return new Vector2(0.5, 0.5);
     }
@@ -15036,7 +18285,7 @@ class Vector2
      * Get vector with -1,0 values.
      * @returns {Vector2} result vector.
      */
-    static get left()
+    static left()
     {
         return new Vector2(-1, 0);
     }
@@ -15045,7 +18294,7 @@ class Vector2
      * Get vector with 1,0 values.
      * @returns {Vector2} result vector.
      */
-    static get right()
+    static right()
     {
         return new Vector2(1, 0);
     }
@@ -15054,7 +18303,7 @@ class Vector2
      * Get vector with 0,-1 values.
      * @returns {Vector2} result vector.
      */
-    static get up()
+    static up()
     {
         return new Vector2(0, -1);
     }
@@ -15063,7 +18312,7 @@ class Vector2
      * Get vector with 0,1 values.
      * @returns {Vector2} result vector.
      */
-    static get down()
+    static down()
     {
         return new Vector2(0, 1);
     }
@@ -15072,9 +18321,9 @@ class Vector2
      * Get a random vector with length of 1.
      * @returns {Vector2} result vector.
      */
-    static get random()
+    static random()
     {
-        return Vector2.fromDegree(Math.random() * 360);
+        return Vector2.fromDegrees(Math.random() * 360);
     }
 
     /**
@@ -15103,9 +18352,9 @@ class Vector2
      * @param {Vector2} other Other vector.
      * @returns {Number} Angle between vectors in degrees.
      */
-    degreesToFull(other) 
+    wrappedDegreesTo(other) 
     {
-        return Vector2.degreesBetweenFull(this, other);
+        return Vector2.wrappedDegreesBetween(this, other);
     };
 
     /**
@@ -15114,9 +18363,9 @@ class Vector2
      * @param {Vector2} other Other vector.
      * @returns {Number} Angle between vectors in radians.
      */
-    radiansToFull(other) 
+    wrappedRadiansTo(other) 
     {
-        return Vector2.radiansBetweenFull(this, other);
+        return Vector2.wrappedRadiansBetween(this, other);
     };
     
     /**
@@ -15134,7 +18383,7 @@ class Vector2
      * @param {Number} degrees Angle to create vector from (0 = vector pointing right).
      * @returns {Vector2} result vector.
      */
-    static fromDegree(degrees)
+    static fromDegrees(degrees)
     {
         let rads = degrees * (Math.PI / 180);
         return new Vector2(Math.cos(rads), Math.sin(rads));
@@ -15196,7 +18445,7 @@ class Vector2
      * @param {Vector2} p2 Second vector.
      * @returns {Number} Angle between vectors in degrees.
      */
-    static degreesBetweenFull(P1, P2) 
+    static wrappedDegreesBetween(P1, P2) 
     {
         let temp = P2.sub(P1);
         return temp.getDegrees();
@@ -15230,9 +18479,9 @@ class Vector2
      * @param {Vector2} p2 Second vector.
      * @returns {Number} Angle between vectors in radians.
      */
-    static radiansBetweenFull(P1, P2) 
+    static wrappedRadiansBetween(P1, P2) 
     {
-        return MathHelper.toRadians(Vector2.degreesBetweenFull(P1, P2));
+        return MathHelper.toRadians(Vector2.wrappedDegreesBetween(P1, P2));
     };
 
     /**
@@ -15388,22 +18637,27 @@ Object.freeze(Vector2.downReadonly);
 
 // export vector object
 module.exports = Vector2;
-},{"./math_helper":58}],68:[function(require,module,exports){
+
+/***/ }),
+
+/***/ 8329:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
 /**
  * Implement a 3d vector.
  * 
  * |-- copyright and license --|
- * @package    Shaku
- * @file       shaku\lib\utils\vector3.js
+ * @module     Shaku
+ * @file       shaku\src\utils\vector3.js
  * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
  * @copyright  (c) 2021 Ronen Ness
  * @license    MIT
  * |-- end copyright and license --|
  * 
  */
-'use strict';
 
-const MathHelper = require("./math_helper");
+
+const MathHelper = __webpack_require__(9646);
 
 /**
  * A Vector object for 3d positions.
@@ -15439,7 +18693,7 @@ class Vector3
      * @param {Number} z Z component.
      * @returns {Vector3} this.
      */
-    set(x, y)
+    set(x, y, z)
     {
         this.x = x;
         this.y = y;
@@ -15461,7 +18715,7 @@ class Vector3
     
     /**
      * Return a new vector of this + other.
-     * @param {Number|Vector3} Other Vector or number to add.
+     * @param {Number|Vector3} Other Vector3 or number to add to all components.
      * @returns {Vector3} result vector.
      */
     add(other) 
@@ -15478,7 +18732,7 @@ class Vector3
     
     /**
      * Return a new vector of this - other.
-     * @param {Number|Vector3} Other Vector or number to sub.
+     * @param {Number|Vector3} Other Vector3 or number to sub from all components.
      * @returns {Vector3} result vector.
      */
     sub(other) 
@@ -15495,7 +18749,7 @@ class Vector3
     
     /**
      * Return a new vector of this / other.
-     * @param {Number|Vector3} Other Vector or number to divide.
+     * @param {Number|Vector3} Other Vector3 or number to divide by all components.
      * @returns {Vector3} result vector.
      */
     div(other) 
@@ -15512,7 +18766,7 @@ class Vector3
     
     /**
      * Return a new vector of this * other.
-     * @param {Number|Vector3} Other Vector or number to multiply.
+     * @param {Number|Vector3} Other Vector3 or number to multiply with all components.
      * @returns {Vector3} result vector.
      */
     mul(other) 
@@ -15560,8 +18814,8 @@ class Vector3
      */
     normalized()
     {
-        if (this.x == 0 && this.y == 0 && this.z == 0) { return Vector3.zero; }
-        let mag = this.length;
+        if ((this.x == 0) && (this.y == 0) && (this.z == 0)) { return Vector3.zero; }
+        let mag = this.length();
         return new Vector3(this.x / mag, this.y / mag, this.z / mag);
     }
 
@@ -15688,7 +18942,7 @@ class Vector3
     normalizeSelf()
     {
         if (this.x == 0 && this.y == 0 && this.z == 0) { return this; }
-        let mag = this.length;
+        let mag = this.length();
         this.x /= mag;
         this.y /= mag;
         this.z /= mag;
@@ -15729,7 +18983,7 @@ class Vector3
      * Return vector length (aka magnitude).
      * @returns {Number} Vector length.
      */
-    get length()
+    length()
     {
         return Math.sqrt((this.x * this.x) + (this.y * this.y) + (this.z * this.z));
     }
@@ -15747,16 +19001,16 @@ class Vector3
      * Get vector with 0,0,0 values.
      * @returns {Vector3} result vector.
      */
-    static get zero()
+    static zero()
     {
-        return new Vector3();
+        return new Vector3(0, 0, 0);
     }
 
     /**
      * Get vector with 1,1,1 values.
      * @returns {Vector3} result vector.
      */
-    static get one()
+    static one()
     {
         return new Vector3(1, 1, 1);
     }
@@ -15765,7 +19019,7 @@ class Vector3
      * Get vector with 0.5,0.5 values.
      * @returns {Vector3} result vector.
      */
-    static get half()
+    static half()
     {
         return new Vector3(0.5, 0.5, 0.5);
     }
@@ -15774,7 +19028,7 @@ class Vector3
      * Get vector with -1,0,0 values.
      * @returns {Vector3} result vector.
      */
-    static get left()
+    static left()
     {
         return new Vector3(-1, 0, 0);
     }
@@ -15783,45 +19037,45 @@ class Vector3
      * Get vector with 1,0,0 values.
      * @returns {Vector3} result vector.
      */
-    static get right()
+    static right()
     {
         return new Vector3(1, 0, 0);
-    }
-
-    /**
-     * Get vector with 0,1,0 values.
-     * @returns {Vector3} result vector.
-     */
-    static get up()
-    {
-        return new Vector3(0, 1, 0);
     }
 
     /**
      * Get vector with 0,-1,0 values.
      * @returns {Vector3} result vector.
      */
-    static get down()
+    static up()
     {
-        return new Vector3(0, -1, 0);
+        return new Vector3(0, 1, 0);
     }
 
     /**
-     * Get vector with 0,0,-1 values.
+     * Get vector with 0,1,0 values.
      * @returns {Vector3} result vector.
      */
-    static get front()
+    static down()
     {
-        return new Vector3(0, 0, -1);
+        return new Vector3(0, -1, 0);
     }
 
     /**
      * Get vector with 0,0,1 values.
      * @returns {Vector3} result vector.
      */
-    static get back()
+    static front()
     {
         return new Vector3(0, 0, 1);
+    }
+
+    /**
+     * Get vector with 0,0,-1 values.
+     * @returns {Vector3} result vector.
+     */
+    static back()
+    {
+        return new Vector3(0, 0, -1);
     }
     
     /**
@@ -15981,14 +19235,14 @@ Vector3.rightReadonly = new Vector3(1, 0, 0);
 Object.freeze(Vector3.rightReadonly);
 
 /**
- * Vector with 0,1,0 values as a frozen shared object.
+ * Vector with 0,-1,0 values as a frozen shared object.
  * Be careful not to try and change it.
  */
 Vector3.upReadonly = new Vector3(0, 1, 0);
 Object.freeze(Vector3.upReadonly);
 
 /**
- * Vector with 0,-1,0 values as a frozen shared object.
+ * Vector with 0,1,0 values as a frozen shared object.
  * Be careful not to try and change it.
  */
 Vector3.downReadonly = new Vector3(0, -1, 0);
@@ -16010,5 +19264,54 @@ Object.freeze(Vector3.backReadonly);
 
 // export vector object
 module.exports = Vector3;
-},{"./math_helper":58}]},{},[40])(40)
-});
+
+/***/ })
+
+/******/ 	});
+/************************************************************************/
+/******/ 	// The module cache
+/******/ 	var __webpack_module_cache__ = {};
+/******/ 	
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/ 		// Check if module is in cache
+/******/ 		var cachedModule = __webpack_module_cache__[moduleId];
+/******/ 		if (cachedModule !== undefined) {
+/******/ 			return cachedModule.exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = __webpack_module_cache__[moduleId] = {
+/******/ 			// no module.id needed
+/******/ 			// no module.loaded needed
+/******/ 			exports: {}
+/******/ 		};
+/******/ 	
+/******/ 		// Execute the module function
+/******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
+/******/ 	
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/ 	
+/************************************************************************/
+/******/ 	/* webpack/runtime/global */
+/******/ 	(() => {
+/******/ 		__webpack_require__.g = (function() {
+/******/ 			if (typeof globalThis === 'object') return globalThis;
+/******/ 			try {
+/******/ 				return this || new Function('return this')();
+/******/ 			} catch (e) {
+/******/ 				if (typeof window === 'object') return window;
+/******/ 			}
+/******/ 		})();
+/******/ 	})();
+/******/ 	
+/************************************************************************/
+/******/ 	
+/******/ 	// startup
+/******/ 	// Load entry module and return exports
+/******/ 	// This entry module is referenced by other modules so it can't be inlined
+/******/ 	var __webpack_exports__ = __webpack_require__(8138);
+/******/ 	
+/******/ })()
+;

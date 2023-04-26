@@ -38,9 +38,10 @@ declare class Color {
     /**
      * Build and return new color from bytes array.
      * @param {Array<Number>} bytes Bytes array to build color from.
+     * @param {Number=} offset Optional offset to read bytes from.
      * @returns {Color} Newly created color.
      */
-    static fromBytesArray(bytes: Array<number>): Color;
+    static fromBytesArray(bytes: Array<number>, offset?: number | undefined): Color;
     /**
      * Get array with all built-in web color names.
      * @returns {Array<String>} Array with color names.

@@ -38,8 +38,11 @@ This asset type creates an atlas of all the font's characters as textures, so we
     * [.fontSize](#FontTextureAsset+fontSize)
     * [.placeholderCharacter](#FontTextureAsset+placeholderCharacter)
     * [.texture](#FontTextureAsset+texture)
+    * [.width](#FontTextureAsset+width) ⇒ <code>Number</code>
+    * [.height](#FontTextureAsset+height) ⇒ <code>Number</code>
     * [.valid](#FontTextureAsset+valid)
     * [.load(params)](#FontTextureAsset+load) ⇒ <code>Promise</code>
+    * [.getSize()](#FontTextureAsset+getSize) ⇒ <code>Vector2</code>
     * [.getSourceRect(character)](#FontTextureAsset+getSourceRect) ⇒ <code>Rectangle</code>
     * [.getPositionOffset(character)](#FontTextureAsset+getPositionOffset) ⇒ <code>Vector2</code>
     * [.getXAdvance(character)](#FontTextureAsset+getXAdvance) ⇒ <code>Number</code>
@@ -75,6 +78,20 @@ Get placeholder character.
 Get the texture.
 
 **Kind**: instance property of [<code>FontTextureAsset</code>](#FontTextureAsset)  
+<a name="FontTextureAsset+width"></a>
+
+### fontTextureAsset.width ⇒ <code>Number</code>
+Get texture width.
+
+**Kind**: instance property of [<code>FontTextureAsset</code>](#FontTextureAsset)  
+**Returns**: <code>Number</code> - Texture width.  
+<a name="FontTextureAsset+height"></a>
+
+### fontTextureAsset.height ⇒ <code>Number</code>
+Get texture height.
+
+**Kind**: instance property of [<code>FontTextureAsset</code>](#FontTextureAsset)  
+**Returns**: <code>Number</code> - Texture height.  
 <a name="FontTextureAsset+valid"></a>
 
 ### fontTextureAsset.valid
@@ -91,6 +108,13 @@ Generate the font texture from a font found in given URL.
 | --- | --- | --- |
 | params | <code>\*</code> | Additional params. Possible values are:                      - fontName: mandatory font name. on some browsers if the font name does not match the font you actually load via the URL, it will not be loaded properly.                      - missingCharPlaceholder (default='?'): character to use for missing characters.                      - smoothFont (default=true): if true, will set font to smooth mode.                      - fontSize (default=52): font size in texture. larget font size will take more memory, but allow for sharper text rendering in larger scales.                      - enforceTexturePowerOfTwo (default=true): if true, will force texture size to be power of two.                      - maxTextureWidth (default=1024): max texture width.                      - charactersSet (default=FontTextureAsset.defaultCharactersSet): which characters to set in the texture.                      - extraPadding (default=0,0): Optional extra padding to add around characters in texture.                      - sourceRectOffsetAdjustment (default=0,0): Optional extra offset in characters source rectangles. Use this for fonts that are too low / height and bleed into other characters source rectangles. |
 
+<a name="FontTextureAsset+getSize"></a>
+
+### fontTextureAsset.getSize() ⇒ <code>Vector2</code>
+Get texture size as a vector.
+
+**Kind**: instance method of [<code>FontTextureAsset</code>](#FontTextureAsset)  
+**Returns**: <code>Vector2</code> - Texture size.  
 <a name="FontTextureAsset+getSourceRect"></a>
 
 ### fontTextureAsset.getSourceRect(character) ⇒ <code>Rectangle</code>

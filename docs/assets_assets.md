@@ -21,12 +21,12 @@ To access the Assets manager you use `Shaku.assets`.
     * [.suffix](#Assets+suffix)
     * [.pendingAssets](#Assets+pendingAssets) ⇒ <code>Array.&lt;string&gt;</code>
     * [.failedAssets](#Assets+failedAssets) ⇒ <code>Array.&lt;string&gt;</code>
-    * [._wrapUrl(url)](#Assets+_wrapUrl) ⇒ <code>String</code>
     * [.waitForAll()](#Assets+waitForAll) ⇒ <code>Promise</code>
     * [.getCached(url)](#Assets+getCached) ⇒ <code>Asset</code>
     * [.loadSound(url)](#Assets+loadSound) ⇒ <code>Promise.&lt;SoundAsset&gt;</code>
     * [.loadTexture(url, [params])](#Assets+loadTexture) ⇒ <code>Promise.&lt;TextureAsset&gt;</code>
     * [.createRenderTarget(name, width, height, [channels])](#Assets+createRenderTarget) ⇒ <code>Promise.&lt;TextureAsset&gt;</code>
+    * [.createTextureAtlas(name, sources, [maxWidth], [maxHeight], [extraMargins])](#Assets+createTextureAtlas) ⇒ <code>Promise.&lt;TextureAtlas&gt;</code>
     * [.loadFontTexture(url, params)](#Assets+loadFontTexture) ⇒ <code>Promise.&lt;FontTextureAsset&gt;</code>
     * [.loadMsdfFontTexture(url, [params])](#Assets+loadMsdfFontTexture) ⇒ <code>Promise.&lt;MsdfFontTextureAsset&gt;</code>
     * [.loadJson(url)](#Assets+loadJson) ⇒ <code>Promise.&lt;JsonAsset&gt;</code>
@@ -71,18 +71,6 @@ This list will be reset if you call clearCache().
 
 **Kind**: instance property of [<code>Assets</code>](#Assets)  
 **Returns**: <code>Array.&lt;string&gt;</code> - URLs of assets that had error loading.  
-<a name="Assets+_wrapUrl"></a>
-
-### assets.\_wrapUrl(url) ⇒ <code>String</code>
-Wrap a URL with 'root' and 'suffix'.
-
-**Kind**: instance method of [<code>Assets</code>](#Assets)  
-**Returns**: <code>String</code> - Wrapped URL.  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| url | <code>String</code> | Url to wrap. |
-
 <a name="Assets+waitForAll"></a>
 
 ### assets.waitForAll() ⇒ <code>Promise</code>
@@ -162,6 +150,22 @@ let width = 512;
 let height = 512;
 let renderTarget = await Shaku.assets.createRenderTarget("optional_render_target_asset_id", width, height);
 ```
+<a name="Assets+createTextureAtlas"></a>
+
+### assets.createTextureAtlas(name, sources, [maxWidth], [maxHeight], [extraMargins]) ⇒ <code>Promise.&lt;TextureAtlas&gt;</code>
+Create a texture atlas asset.
+
+**Kind**: instance method of [<code>Assets</code>](#Assets)  
+**Returns**: <code>Promise.&lt;TextureAtlas&gt;</code> - Promise to resolve with asset instance, when loaded. You can access the loading asset with `.asset` on the promise.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| name | <code>String</code> \| <code>null</code> | Asset name (matched to URLs when using cache). If null, will not add to cache. |
+| sources | <code>Array.&lt;String&gt;</code> | List of URLs to load textures from. |
+| [maxWidth] | <code>Number</code> | Optional atlas textures max width. |
+| [maxHeight] | <code>Number</code> | Optional atlas textures max height. |
+| [extraMargins] | <code>Vector2</code> | Optional extra empty pixels to add between textures in atlas. |
+
 <a name="Assets+loadFontTexture"></a>
 
 ### assets.loadFontTexture(url, params) ⇒ <code>Promise.&lt;FontTextureAsset&gt;</code>

@@ -1,6 +1,6 @@
 declare const _exports: {
     resolver: import("./resolver");
-    setup(): any;
+    setup(): Promise<any>;
     createWorld(gridCellSize: number | import("../utils/vector2")): import("./collision_world");
     readonly RectangleShape: typeof import("./shapes/rectangle");
     readonly PointShape: typeof import("./shapes/point");

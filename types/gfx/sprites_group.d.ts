@@ -46,11 +46,6 @@ declare class SpritesGroup {
      */
     sort(compare: Function): void;
     /**
-     * Sort by texture and blend mode for maximum efficiency in batching.
-     * This will change sprites order.
-     */
-    sortForBatching(): void;
-    /**
      * Sprites count in group.
      * @returns {Number} Number of sprites in group.
      */

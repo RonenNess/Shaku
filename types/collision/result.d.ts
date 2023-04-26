@@ -13,14 +13,20 @@ declare class CollisionTestResult {
     /**
      * Collision position, only relevant when there's a single touching point.
      * For shapes with multiple touching points, this will be null.
+     * @name CollisionTestResult#position
+     * @type {Vector2}
      */
     position: Vector2;
     /**
      * First collided shape.
+     * @name CollisionTestResult#first
+     * @type {CollisionShape}
      */
     first: CollisionShape;
     /**
      * Second collided shape.
+     * @name CollisionTestResult#second
+     * @type {CollisionShape}
      */
     second: CollisionShape;
 }

@@ -29,6 +29,9 @@
           document.body.appendChild(Shaku.gfx.canvas);
           Shaku.gfx.setResolution(600, 600, true);
 
+          // create shapes batch
+          let shapesBatch = new Shaku.gfx.ShapesBatch();
+
           // perlin seed
           let seed = Math.random();
           let needUpdate = true;
@@ -45,19 +48,17 @@
               Shaku.startFrame();
               Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
 
+              shapesBatch.begin("opaque");
+
               // draw noise
-              let points = [];
-              let colors = [];
               for (let x = 0; x < 600; ++x) {
                 for (let y = 0; y < 600; ++y) {
                   let val = perlin.generateSmooth(x / 25, y / 25, 0.15);
-                  points.push(new Shaku.utils.Vector2(x, y));
-                  colors.push(new Shaku.utils.Color(val, val, val, 1));
+                  shapesBatch.addPoint(new Shaku.utils.Vector2(x, y), new Shaku.utils.Color(val, val, val, 1));
                 }
               }
 
-              // draw noise
-              Shaku.gfx.drawPoints(points, colors);
+              shapesBatch.end();
 
               // no longer need update
               needUpdate = false;

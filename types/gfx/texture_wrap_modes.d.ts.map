@@ -1,1 +1,1 @@
-{"version":3,"file":"texture_wrap_modes.d.ts","sourceRoot":"","sources":["../../lib/gfx/texture_wrap_modes.js"],"names":[],"mappings":";;;;+BAmBU,eAAe"}
+{"version":3,"file":"texture_wrap_modes.d.ts","sourceRoot":"","sources":["../../src/gfx/texture_wrap_modes.js"],"names":[],"mappings":";;;;+BAmBU,eAAe"}

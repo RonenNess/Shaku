@@ -110,7 +110,7 @@
             showDataParagraph.style.color = collision ? "red" : "green";
             tilemap.setDebugColor(collision ? Shaku.utils.Color.red : null);
             shapeToTest.setDebugColor(Shaku.utils.Color.red);
-            shapeToTest.debugDraw(1);
+            shapeToTest.debugDraw(1, world.getOrCreateDebugDrawBatch());
 
             // control the shape the user drags
             if (Shaku.input.down('1')) { userShapeType = 0; }
