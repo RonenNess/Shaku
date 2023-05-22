@@ -2423,6 +2423,10 @@ Since I decided to do breaking changes in the `gfx` manager anyway, I took the o
 - Added 'min', 'max', 'distanceToSquared', 'dot' and 'clamp' to Vectors.
 - Moved 'Matrix' into utils.
 
+## 2.1.1
+
+- Bugfix in frustum collision with box.
+
 # License
 
 *Shaku* is licensed under the permissive MIT license, so you can use it for any purpose (including commercially) and it should be compatible with most common licenses.

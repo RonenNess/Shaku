@@ -367,8 +367,6 @@ class Box
 
 const _vector = /*@__PURE__*/ new Vector3();
 
-const _testAxis = /*@__PURE__*/ new Vector3();
-
 
 // export the box object
 module.exports = Box;
