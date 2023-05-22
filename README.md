@@ -2413,7 +2413,7 @@ Since I decided to do breaking changes in the `gfx` manager anyway, I took the o
 - Added 'premultiplyAlpha' flag when loading a texture.
 - Improved effects uniform binds and renamed some of them - this might break custom effects.
 
-## 2.1.0 [WIP]
+## 2.1.0
 
 - Refactored 3d sprite batch and moved some functionality into the camera object instead.
 - Added 'Frustum' shape.
