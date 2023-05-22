@@ -16,6 +16,7 @@ const Rectangle = require("../utils/rectangle");
 const Vector2 = require("../utils/vector2");
 const Matrix = require('../utils/matrix.js');
 const Vector3 = require("../utils/vector3");
+const Frustum = require("../utils/frustum");
 
  /**
   * Implements a Camera object.

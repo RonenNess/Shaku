@@ -11,11 +11,8 @@
  * 
  */
 'use strict';
-const Vector3 = require('../../utils/vector3');
-const Matrix = require('../../utils/matrix.js');
 const DrawBatch = require('./draw_batch');
-const SpriteBatch = require('./sprite_batch');
-const Frustum = require('../../utils/frustum');
+const SpriteBatch = require('./sprite_batch'); 
 const _logger = require('../../logger.js').getLogger('gfx-sprite-batch');
 
 

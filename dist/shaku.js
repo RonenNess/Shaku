@@ -4583,6 +4583,7 @@ const Rectangle = __webpack_require__(4731);
 const Vector2 = __webpack_require__(2544);
 const Matrix = __webpack_require__(5529);
 const Vector3 = __webpack_require__(8329);
+const Frustum = __webpack_require__(4353);
 
  /**
   * Implements a Camera object.
@@ -6491,11 +6492,8 @@ module.exports = SpriteBatch;
  * 
  */
 
-const Vector3 = __webpack_require__(8329);
-const Matrix = __webpack_require__(5529);
 const DrawBatch = __webpack_require__(2069);
-const SpriteBatch = __webpack_require__(962);
-const Frustum = __webpack_require__(4353);
+const SpriteBatch = __webpack_require__(962); 
 const _logger = (__webpack_require__(5259).getLogger)('gfx-sprite-batch');
 
 
@@ -13216,7 +13214,7 @@ let _managersStarted = false;
 let _wasPaused = false;
 
 // current version
-const version = "2.0.1";
+const version = "2.1.0";
 
 
 /**
