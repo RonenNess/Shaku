@@ -4581,7 +4581,8 @@ module.exports = {BlendModes: BlendModes};
 
 const Rectangle = __webpack_require__(4731);
 const Vector2 = __webpack_require__(2544);
-const Matrix = __webpack_require__(5599);
+const Matrix = __webpack_require__(5529);
+const Vector3 = __webpack_require__(8329);
 
  /**
   * Implements a Camera object.
@@ -4599,11 +4600,40 @@ class Camera
          * You can set it manually, or use 'orthographicOffset' / 'orthographic' / 'perspective' helper functions.
          */
         this.projection = null;
+    
+        /**
+         * Camera view matrix.
+         * You can set it manually, or use 'setViewLookat' helper function.
+         */
+        this.view = null;
 
-        this._region = null;
-        this._gfx = gfx;
+        // internal stuff
+        this.__region = null;
+        this.__gfx = gfx;
+        this.__viewport = null;
         this.orthographic();
-        this._viewport = null;
+    }
+
+    /**
+     * Calc and return the currently-visible view frustum, based on active camera.
+     * @returns {Frustum} Visible frustum.
+     */
+    calcVisibleFrustum()
+    {
+        if (!this.projection || !this.view) { throw new Error("You must set both projection and view matrices to calculate visible frustum!"); }
+        const frustum = new Frustum();
+        frustum.setFromProjectionMatrix(Matrix.multiply(this.projection, this.view));
+        return frustum;
+    }
+
+    /**
+     * Set camera view matrix from source position and lookat.
+     * @param {Vector3=} eyePosition Camera source position.
+     * @param {Vector3=} lookAt Camera look-at target.
+     */
+    setViewLookat(eyePosition, lookAt)
+    {
+        this.view = Matrix.lookAt(eyePosition || new Vector3(0, 0, -500), lookAt || Vector3.zeroReadonly, Vector3.upReadonly);
     }
 
     /**
@@ -4612,7 +4642,7 @@ class Camera
      */
     get viewport()
     {
-        return this._viewport;
+        return this.__viewport;
     }
 
     /**
@@ -4621,7 +4651,7 @@ class Camera
      */
     set viewport(viewport)
     {
-        this._viewport = viewport;
+        this.__viewport = viewport;
         return viewport;
     }
 
@@ -4631,7 +4661,7 @@ class Camera
      */
     getRegion()
     {
-        return this._region.clone();
+        return this.__region.clone();
     }
 
     /**
@@ -4643,7 +4673,7 @@ class Camera
      */
     orthographicOffset(offset, ignoreViewportSize, near, far)
     {
-        let renderingSize = (ignoreViewportSize || !this.viewport) ? this._gfx.getCanvasSize() : this.viewport.getSize();
+        let renderingSize = (ignoreViewportSize || !this.viewport) ? this.__gfx.getCanvasSize() : this.viewport.getSize();
         let region = new Rectangle(offset.x, offset.y, renderingSize.x, renderingSize.y);
         this.orthographic(region, near, far);
     }
@@ -4657,9 +4687,9 @@ class Camera
     orthographic(region, near, far) 
     {
         if (region === undefined) {
-            region = this._gfx._internal.getRenderingRegionInternal();
+            region = this.__gfx._internal.getRenderingRegionInternal();
         }
-        this._region = region;
+        this.__region = region;
         this.projection = Matrix.orthographic(region.left, region.right, region.bottom, region.top, near || -1, far || 400);
     }
 
@@ -4740,7 +4770,7 @@ module.exports = {BuffersUsage: BuffersUsage};
 
 const { BlendModes } = __webpack_require__(3223);
 const { BuffersUsage } = __webpack_require__(8117);
-const Matrix = __webpack_require__(5599);
+const Matrix = __webpack_require__(5529);
 const _logger = (__webpack_require__(5259).getLogger)('gfx-draw-batch');
 
 /**
@@ -5063,7 +5093,7 @@ module.exports = DrawBatch;
 const { Rectangle } = __webpack_require__(3624);
 const Vector2 = __webpack_require__(2544);
 const Vector3 = __webpack_require__(8329);
-const Matrix = __webpack_require__(5599);
+const Matrix = __webpack_require__(5529);
 const Vertex = __webpack_require__(4288);
 const DrawBatch = __webpack_require__(2069);
 const _logger = (__webpack_require__(5259).getLogger)('gfx-sprite-batch');
@@ -5673,7 +5703,7 @@ module.exports = LinesBatch;
 const { Rectangle } = __webpack_require__(3624);
 const Vector2 = __webpack_require__(2544);
 const Vector3 = __webpack_require__(8329);
-const Matrix = __webpack_require__(5599);
+const Matrix = __webpack_require__(5529);
 const Vertex = __webpack_require__(4288);
 const DrawBatch = __webpack_require__(2069);
 const _logger = (__webpack_require__(5259).getLogger)('gfx-sprite-batch');
@@ -6462,9 +6492,10 @@ module.exports = SpriteBatch;
  */
 
 const Vector3 = __webpack_require__(8329);
-const Matrix = __webpack_require__(5599);
+const Matrix = __webpack_require__(5529);
 const DrawBatch = __webpack_require__(2069);
 const SpriteBatch = __webpack_require__(962);
+const Frustum = __webpack_require__(4353);
 const _logger = (__webpack_require__(5259).getLogger)('gfx-sprite-batch');
 
 
@@ -6482,18 +6513,18 @@ class SpriteBatch3D extends SpriteBatch
     constructor(batchSpritesCount, normalizeUvs)
     {
         super(batchSpritesCount, normalizeUvs, true);
-        this.setViewLookat();
+        this.__camera = this.#_gfx.createCamera();
         this.setPerspectiveCamera();
+        this.camera.setViewLookat();
     }
 
     /**
-     * Set to default view matrix.
-     * @param {Vector3=} eyePosition Camera source position.
-     * @param {Vector3=} lookAt Camera look-at target.
+     * Get camera instance.
+     * @returns {Camera} Camera instance.
      */
-    setViewLookat(eyePosition, lookAt)
+    get camera()
     {
-        this.__view = Matrix.lookAt(eyePosition || new Vector3(0, 0, -500), lookAt || new Vector3(0, 0, 0), Vector3.upReadonly);
+        return this.__camera;
     }
 
     /**
@@ -6505,13 +6536,12 @@ class SpriteBatch3D extends SpriteBatch
      */
     setPerspectiveCamera(fieldOfView, aspectRatio, zNear, zFar)
     {
-        let camera = this.#_gfx.createCamera();
+        let camera = this.__camera;
         fieldOfView = fieldOfView || ((45 * Math.PI) / 180);
         aspectRatio = aspectRatio || (this.#_gfx.getRenderingSize().x / this.#_gfx.getRenderingSize().y);
         zNear = zNear || 0.1;
         zFar = zFar || 10000.0;
         camera.perspective(fieldOfView, aspectRatio, zNear, zFar);
-        this.__camera = camera;
     }
 
     /**
@@ -6550,20 +6580,11 @@ class SpriteBatch3D extends SpriteBatch
 
     /**
      * Set the camera for this batch.
-     * @param {Matrix} camera Camera object to apply when drawing, or null if you want to set the camera manually.
+     * @param {Camera} camera Camera object to apply when drawing, or null if you want to set the camera manually.
      */
     setCamera(camera)
     {
         this.__camera = camera;
-    }
-
-    /**
-     * Set the view matrix for this batch.
-     * @param {Matrix} view View matrix, or null if you want to set the view matrix manually.
-     */
-    setView(view)
-    {
-        this.__view = view;
     }
 
     /**
@@ -6572,7 +6593,7 @@ class SpriteBatch3D extends SpriteBatch
      */
     _onSetEffect(effect, texture)
     {
-        if (this.__view) { effect.setViewMatrix(this.__view); }
+        if (this.__camera.view) { effect.setViewMatrix(this.__camera.view); }
         if (this.__camera) { this.#_gfx.applyCamera(this.__camera); }
     }
 }
@@ -6601,7 +6622,7 @@ module.exports = SpriteBatch3D;
 
 const { Rectangle } = __webpack_require__(3624);
 const Vector2 = __webpack_require__(2544);
-const Matrix = __webpack_require__(5599);
+const Matrix = __webpack_require__(5529);
 const DrawBatch = __webpack_require__(2069);
 const _logger = (__webpack_require__(5259).getLogger)('gfx-sprite-batch');
 
@@ -7335,13 +7356,10 @@ module.exports = TextSpriteBatch;
  * 
  */
 
-
-const TextureAsset = __webpack_require__(2262);
 const Color = __webpack_require__(9327);
-const Rectangle = __webpack_require__(4731);
 const { TextureFilterModes } = __webpack_require__(5387);
 const { TextureWrapMode, TextureWrapModes } = __webpack_require__(2464);
-const Matrix = __webpack_require__(5599);
+const Matrix = __webpack_require__(5529);
 const Vector2 = __webpack_require__(2544);
 const TextureAssetBase = __webpack_require__(4397);
 const _logger = (__webpack_require__(5259).getLogger)('gfx-effect');
@@ -8693,7 +8711,7 @@ const { Effect, SpritesEffect, SpritesEffectNoVertexColor, MsdfFontEffect, Shape
 const TextureAsset = __webpack_require__(2262);
 const { TextureFilterModes } = __webpack_require__(5387);
 const { TextureWrapModes } = __webpack_require__(2464);
-const Matrix = __webpack_require__(5599);
+const Matrix = __webpack_require__(5529);
 const Camera = __webpack_require__(2726);
 const Sprite = __webpack_require__(6565);
 const SpritesGroup = __webpack_require__(1036);
@@ -9908,471 +9926,6 @@ module.exports = new Gfx();
 
 /***/ }),
 
-/***/ 5599:
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
-
-/**
- * Matrix class.
- * Based on code from https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API/Matrix_math_for_the_web
- * 
- * |-- copyright and license --|
- * @module     Shaku
- * @file       shaku\src\gfx\matrix.js
- * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
- * @copyright  (c) 2021 Ronen Ness
- * @license    MIT
- * |-- end copyright and license --|
- * 
- */
-
-const Vector2 = __webpack_require__(2544);
-const Vector3 = __webpack_require__(8329);
-const Vertex = __webpack_require__(4288);
-const EPSILON = Number.EPSILON;
-
-
-/**
- * Implements a matrix.
- */
-class Matrix
-{
-    /**
-     * Create the matrix.
-     * @param values matrix values array.
-     * @param cloneValues if true or undefined, will clone values instead of just holding a reference to them.
-     */
-    constructor(values, cloneValues)
-    {
-        // if no values are set, use identity
-        if (!values) {
-            values = Matrix.identity.values;
-            cloneValues = true;
-        }
-
-        // clone values
-        if (cloneValues || cloneValues === undefined) {
-            this.values = values.slice(0);
-        }
-        // copy values reference
-        else {
-            this.values = values;
-        }
-    }
-
-    /**
-     * Set the matrix values.
-     */
-    set(v11, v12, v13, v14, v21, v22, v23, v24, v31, v32, v33, v34, v41, v42, v43, v44)
-    {
-        this.values = new Float32Array([ v11, v12, v13, v14,
-                        v21, v22, v23, v24,
-                        v31, v32, v33, v34,
-                        v41, v42, v43, v44
-                    ]);
-    }
-
-    /**
-     * Clone the matrix.
-     * @returns {Matrix} Cloned matrix.
-     */
-    clone()
-    {
-        let ret = new Matrix(this.values, true);
-        return ret;
-    }
-    
-    /**
-     * Compare this matrix to another matrix.
-     * @param {Matrix} other Matrix to compare to.
-     * @returns {Boolean} If matrices are the same.
-     */
-    equals(other)
-    {
-        if (other === this) { return true; }
-        if (!other) { return false; }
-        for (let i = 0; i < this.values.length; ++i) {
-            if (this.values[i] !== other.values[i]) { return false; }
-        }
-        return true;
-    }
-
-    /**
-     * Create an orthographic projection matrix.
-     * @returns {Matrix} a new matrix with result.
-     */
-    static orthographic(left, right, bottom, top, near, far) 
-    {
-        return new Matrix([
-          2 / (right - left), 0, 0, 0,
-          0, 2 / (top - bottom), 0, 0,
-          0, 0, 2 / (near - far), 0,
-     
-          (left + right) / (left - right),
-          (bottom + top) / (bottom - top),
-          (near + far) / (near - far),
-          1,
-        ], false);
-    }
-
-    /**
-     * Create a perspective projection matrix.
-     * @returns {Matrix} a new matrix with result.
-     */
-    static perspective(fieldOfViewInRadians, aspectRatio, near, far) 
-    {
-        var f = 1.0 / Math.tan(fieldOfViewInRadians / 2);
-        var rangeInv = 1 / (near - far);
-      
-        return new Matrix([
-          f / aspectRatio, 0,                               0,      0,
-          0,               f,                               0,      0,
-          0,               0,       (near + far) * rangeInv  ,     -1,
-          0,               0,       near * far * rangeInv * 2,      0
-        ], false);
-    }
-
-    /**
-     * Create a translation matrix.
-     * @returns {Matrix} a new matrix with result.
-     */
-    static translate(x, y, z)
-    {
-        return new Matrix([
-            1,          0,          0,          0,
-            0,          1,          0,          0,
-            0,          0,          1,          0,
-            x || 0,     y || 0,     z || 0,     1
-        ], false);
-    }
-
-    /**
-     * Create a scale matrix.
-     * @returns {Matrix} a new matrix with result.
-     */
-    static scale(x, y, z)
-    {
-        return new Matrix([
-            x || 1,         0,              0,              0,
-            0,              y || 1,         0,              0,
-            0,              0,              z || 1,         0,
-            0,              0,              0,              1
-        ], false);
-    }
-    
-    /**
-     * Create a rotation matrix around X axis.
-     * @returns {Matrix} a new matrix with result.
-     */
-    static rotateX(a)
-    {
-        let sin = Math.sin;
-        let cos = Math.cos;
-        return new Matrix([
-            1,       0,        0,     0,
-            0,  cos(a),  -sin(a),     0,
-            0,  sin(a),   cos(a),     0,
-            0,       0,        0,     1
-        ], false);
-    }
-        
-    /**
-     * Create a rotation matrix around Y axis.
-     * @returns {Matrix} a new matrix with result.
-     */
-    static rotateY(a)
-    {
-        let sin = Math.sin;
-        let cos = Math.cos;
-        return new Matrix([
-             cos(a),   0, sin(a),   0,
-                  0,   1,      0,   0,
-            -sin(a),   0, cos(a),   0,
-                  0,   0,      0,   1
-        ], false);
-    }
-        
-    /**
-     * Create a rotation matrix around Z axis.
-     * @returns {Matrix} a new matrix with result.
-     */
-    static rotateZ(a)
-    {
-        let sin = Math.sin;
-        let cos = Math.cos;
-        return new Matrix([
-            cos(a), -sin(a),    0,    0,
-            sin(a),  cos(a),    0,    0,
-                0,       0,    1,    0,
-                0,       0,    0,    1
-        ], false);
-    }
-    
-    /**
-     * Multiply two matrices. 
-     * @returns {Matrix} a new matrix with result.
-     */
-    static multiply(matrixA, matrixB) 
-    {
-        // Slice the second matrix up into rows
-        let row0 = [matrixB.values[ 0], matrixB.values[ 1], matrixB.values[ 2], matrixB.values[ 3]];
-        let row1 = [matrixB.values[ 4], matrixB.values[ 5], matrixB.values[ 6], matrixB.values[ 7]];
-        let row2 = [matrixB.values[ 8], matrixB.values[ 9], matrixB.values[10], matrixB.values[11]];
-        let row3 = [matrixB.values[12], matrixB.values[13], matrixB.values[14], matrixB.values[15]];
-      
-        // Multiply each row by matrixA
-        let result0 = multiplyMatrixAndPoint(matrixA.values, row0);
-        let result1 = multiplyMatrixAndPoint(matrixA.values, row1);
-        let result2 = multiplyMatrixAndPoint(matrixA.values, row2);
-        let result3 = multiplyMatrixAndPoint(matrixA.values, row3);
-      
-        // Turn the result rows back into a single matrix
-        return new Matrix([
-          result0[0], result0[1], result0[2], result0[3],
-          result1[0], result1[1], result1[2], result1[3],
-          result2[0], result2[1], result2[2], result2[3],
-          result3[0], result3[1], result3[2], result3[3]
-        ], false);
-    }
-
-    /**
-     * Creates a look-at matrix - a matrix rotated to look at a given position.
-     * @param {Vector3} eyePosition Eye position.
-     * @param {Vector3} targetPosition Position the matrix should look at.
-     * @param {Vector3=} upVector Optional vector representing 'up' direction.
-     * @returns {Matrix} a new matrix with result.
-     */
-    static lookAt(eyePosition, targetPosition, upVector)
-    {
-        const eye = eyePosition;
-        const center = targetPosition;
-        const up = upVector || Vector3.upReadonly;
-        let x0, x1, x2, y0, y1, y2, z0, z1, z2, len;
-        if (
-            Math.abs(eye.x - center.x) < EPSILON &&
-            Math.abs(eye.y - center.y) < EPSILON &&
-            Math.abs(eye.z - center.z) < EPSILON
-        ) {
-            return Matrix.identity.clone();
-        }
-        z0 = eye.x - center.x;
-        z1 = eye.y - center.y;
-        z2 = eye.z - center.z;
-        len = 1 / Math.hypot(z0, z1, z2);
-        z0 *= len;
-        z1 *= len;
-        z2 *= len;
-        x0 = up.y * z2 - up.z * z1;
-        x1 = up.z * z0 - up.x * z2;
-        x2 = up.x * z1 - up.y * z0;
-        len = Math.hypot(x0, x1, x2);
-        if (!len) {
-            x0 = 0;
-            x1 = 0;
-            x2 = 0;
-        } else {
-            len = 1 / len;
-            x0 *= len;
-            x1 *= len;
-            x2 *= len;
-        }
-        y0 = z1 * x2 - z2 * x1;
-        y1 = z2 * x0 - z0 * x2;
-        y2 = z0 * x1 - z1 * x0;
-        len = Math.hypot(y0, y1, y2);
-        if (!len) {
-            y0 = 0;
-            y1 = 0;
-            y2 = 0;
-        } else {
-            len = 1 / len;
-            y0 *= len;
-            y1 *= len;
-            y2 *= len;
-        }
-        const out = [];
-        out[0] = x0;
-        out[1] = y0;
-        out[2] = z0;
-        out[3] = 0;
-        out[4] = x1;
-        out[5] = y1;
-        out[6] = z1;
-        out[7] = 0;
-        out[8] = x2;
-        out[9] = y2;
-        out[10] = z2;
-        out[11] = 0;
-        out[12] = -(x0 * eye.x + x1 * eye.y + x2 * eye.z);
-        out[13] = -(y0 * eye.x + y1 * eye.y + y2 * eye.z);
-        out[14] = -(z0 * eye.x + z1 * eye.y + z2 * eye.z);
-        out[15] = 1;
-        return new Matrix(out, false);
-    }
-
-    /**
-     * Multiply an array of matrices.
-     * @param {Array<Matrix>} matrices Matrices to multiply.
-     * @returns {Matrix} new matrix with multiply result.
-     */
-    static multiplyMany(matrices)
-    {
-        let ret = matrices[0];
-        for(let i = 1; i < matrices.length; i++) {
-            ret = Matrix.multiply(ret, matrices[i]);
-        }        
-        return ret;
-    }
-        
-    /**
-     * Multiply two matrices and put result in first matrix. 
-     * @returns {Matrix} matrixA, after it was modified.
-     */
-    static multiplyIntoFirst(matrixA, matrixB) 
-    {
-        // Slice the second matrix up into rows
-        let row0 = [matrixB.values[ 0], matrixB.values[ 1], matrixB.values[ 2], matrixB.values[ 3]];
-        let row1 = [matrixB.values[ 4], matrixB.values[ 5], matrixB.values[ 6], matrixB.values[ 7]];
-        let row2 = [matrixB.values[ 8], matrixB.values[ 9], matrixB.values[10], matrixB.values[11]];
-        let row3 = [matrixB.values[12], matrixB.values[13], matrixB.values[14], matrixB.values[15]];
-    
-        // Multiply each row by matrixA
-        let result0 = multiplyMatrixAndPoint(matrixA.values, row0);
-        let result1 = multiplyMatrixAndPoint(matrixA.values, row1);
-        let result2 = multiplyMatrixAndPoint(matrixA.values, row2);
-        let result3 = multiplyMatrixAndPoint(matrixA.values, row3);
-    
-        // Turn the result rows back into a single matrix
-        matrixA.set(
-            result0[0], result0[1], result0[2], result0[3],
-            result1[0], result1[1], result1[2], result1[3],
-            result2[0], result2[1], result2[2], result2[3],
-            result3[0], result3[1], result3[2], result3[3]
-        );
-
-        // return the first matrix after it was modified
-        return matrixA;
-    }
-
-    /**
-     * Multiply an array of matrices into the first matrix in the array.
-     * @param {Array<Matrix>} matrices Matrices to multiply.
-     * @returns {Matrix} first matrix in array, after it was modified.
-     */
-    static multiplyManyIntoFirst(matrices)
-    {
-        let ret = matrices[0];
-        for(let i = 1; i < matrices.length; i++) {
-            ret = Matrix.multiplyIntoFirst(ret, matrices[i]);
-        }        
-        return ret;
-    }
-
-    /**
-     * Transform a 2d vertex.
-     * @param {Matrix} matrix Matrix to use to transform vector.
-     * @param {Vertex} vertex Vertex to transform.
-     * @returns {Vertex} A transformed vertex (cloned, not the original).
-     */
-    static transformVertex(matrix, vertex)
-    {
-        return new Vertex(
-            (vertex.position instanceof Vector2) ? Matrix.transformVector2(matrix, vertex.position) : Matrix.transformVector3(matrix, vertex.position), 
-            vertex.textureCoord, 
-            vertex.color);
-    }
-
-    /**
-     * Transform a 2d vector.
-     * @param {Matrix} matrix Matrix to use to transform vector.
-     * @param {Vector2} vector Vector to transform.
-     * @returns {Vector2} Transformed vector.
-     */
-    static transformVector2(matrix, vector)
-    {
-        const x = vector.x, y = vector.y, z = vector.z || 0;
-		const e = matrix.values;
-
-		const w = 1 / ( e[ 3 ] * x + e[ 7 ] * y + e[ 11 ] * z + e[ 15 ] );
-
-		const resx = ( e[ 0 ] * x + e[ 4 ] * y + e[ 8 ] * z + e[ 12 ] ) * w;
-		const resy = ( e[ 1 ] * x + e[ 5 ] * y + e[ 9 ] * z + e[ 13 ] ) * w;
-
-        return new Vector2(resx, resy);
-    }
-
-    /**
-     * Transform a 3d vector.
-     * @param {Matrix} matrix Matrix to use to transform vector.
-     * @param {Vector3} vector Vector to transform.
-     * @returns {Vector3} Transformed vector.
-     */
-    static transformVector3(matrix, vector)
-    {
-        const x = vector.x, y = vector.y, z = vector.z || 0;
-        const e = matrix.values;
-
-        const w = 1 / ( e[ 3 ] * x + e[ 7 ] * y + e[ 11 ] * z + e[ 15 ] );
-
-        const resx = ( e[ 0 ] * x + e[ 4 ] * y + e[ 8 ] * z + e[ 12 ] ) * w;
-        const resy = ( e[ 1 ] * x + e[ 5 ] * y + e[ 9 ] * z + e[ 13 ] ) * w;
-        const resz = ( e[ 2 ] * x + e[ 6 ] * y + e[ 10 ] * z + e[ 14 ] ) * w;
-
-        return new Vector3(resx, resy, resz);
-    }
-}
-
-
-/**
- * Multiply matrix and vector.
- * @private
- */
-function multiplyMatrixAndPoint(matrix, point) 
-{
-    // Give a simple variable name to each part of the matrix, a column and row number
-    let c0r0 = matrix[ 0], c1r0 = matrix[ 1], c2r0 = matrix[ 2], c3r0 = matrix[ 3];
-    let c0r1 = matrix[ 4], c1r1 = matrix[ 5], c2r1 = matrix[ 6], c3r1 = matrix[ 7];
-    let c0r2 = matrix[ 8], c1r2 = matrix[ 9], c2r2 = matrix[10], c3r2 = matrix[11];
-    let c0r3 = matrix[12], c1r3 = matrix[13], c2r3 = matrix[14], c3r3 = matrix[15];
-
-    // Now set some simple names for the point
-    let x = point[0];
-    let y = point[1];
-    let z = point[2];
-    let w = point[3];
-
-    // Multiply the point against each part of the 1st column, then add together
-    let resultX = (x * c0r0) + (y * c0r1) + (z * c0r2) + (w * c0r3);
-
-    // Multiply the point against each part of the 2nd column, then add together
-    let resultY = (x * c1r0) + (y * c1r1) + (z * c1r2) + (w * c1r3);
-
-    // Multiply the point against each part of the 3rd column, then add together
-    let resultZ = (x * c2r0) + (y * c2r1) + (z * c2r2) + (w * c2r3);
-
-    // Multiply the point against each part of the 4th column, then add together
-    let resultW = (x * c3r0) + (y * c3r1) + (z * c3r2) + (w * c3r3);
-
-    return [resultX, resultY, resultZ, resultW];
-}
-
-
-/**
- * An identity matrix.
- */
-Matrix.identity = new Matrix([
-    1, 0, 0, 0,
-    0, 1, 0, 0,
-    0, 0, 1, 0,
-    0, 0, 0, 1
-], false);
-Matrix.identity.isIdentity = true;
-Object.freeze(Matrix.identity);
-
-// export the matrix object
-module.exports = Matrix;
-
-/***/ }),
-
 /***/ 6565:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
@@ -10632,7 +10185,7 @@ module.exports = Sprite;
 
 const Color = __webpack_require__(9327);
 const Vector2 = __webpack_require__(2544);
-const Matrix = __webpack_require__(5599);
+const Matrix = __webpack_require__(5529);
 const Sprite = __webpack_require__(6565);
 
 
@@ -10914,7 +10467,7 @@ module.exports = {TextureWrapModes: TextureWrapModes};
  */
 
 const { Vector2, Color } = __webpack_require__(3624);
-const Matrix = __webpack_require__(5599);
+const Matrix = __webpack_require__(5529);
 
 /**
  * A vertex we can push to sprite batch.
@@ -13663,7 +13216,7 @@ let _managersStarted = false;
 let _wasPaused = false;
 
 // current version
-const version = "2.0.0";
+const version = "2.0.1";
 
 
 /**
@@ -14382,6 +13935,386 @@ module.exports = Animator;
 
 /***/ }),
 
+/***/ 5891:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+/**
+ * A 3d box shape.
+ * Based on code from THREE.js.
+ * 
+ * |-- copyright and license --|
+ * @module     Shaku
+ * @file       shaku\src\utils\game_time.js
+ * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
+ * @copyright  (c) 2021 Ronen Ness
+ * @license    MIT
+ * |-- end copyright and license --|
+ * 
+ */
+
+const Vector3 = __webpack_require__(8329);
+
+
+/**
+ * A 3D box shape.
+ */
+class Box 
+{
+    /**
+     * Create the 3d box.
+     * @param {Vector3} min Box min vector.
+     * @param {Vector3} max Box max vector.
+     */
+	constructor( min = new Vector3( + Infinity, + Infinity, + Infinity ), max = new Vector3( - Infinity, - Infinity, - Infinity ) ) 
+    {
+		this.min = min;
+		this.max = max;
+	}
+
+    /**
+     * Set the box min and max corners.
+     * @param {Vector3} min Box min vector.
+     * @param {Vector3} max Box max vector.
+     * @returns {Box} Self.
+     */
+	set(min, max) 
+    {
+		this.min.copy( min );
+		this.max.copy( max );
+		return this;
+	}
+
+    /**
+     * Set box values from array.
+     * @param {Array<Number>} array Array of values to load from.
+     * @returns {Box} Self.
+     */
+	setFromArray( array ) 
+    {
+		this.makeEmpty();
+		for ( let i = 0, il = array.length; i < il; i += 3 ) {
+			this.expandByPoint( _vector.fromArray( array, i ) );
+		}
+		return this;
+	}
+
+    /**
+     * Set box from array of points.
+     * @param {Array<Vector3>} points Points to set box from.
+     * @returns {Box} Self.
+     */
+	setFromPoints( points ) 
+    {
+		this.makeEmpty();
+		for ( let i = 0, il = points.length; i < il; i ++ ) {
+			this.expandByPoint( points[i] );
+		}
+		return this;
+	}
+
+    /**
+     * Set box from center and size.
+     * @param {Vector3} center Center position.
+     * @param {Vector3} size Box size.
+     * @returns {Box} Self.
+     */
+	setFromCenterAndSize( center, size ) 
+    {
+		const halfSize = size.mul(0.5);
+		this.min.copy( center.sub( halfSize ));
+		this.max.copy( center.add( halfSize ));
+		return this;
+	}
+
+    /**
+     * Clone this box.
+     * @returns {Box} Cloned box.
+     */
+	clone() 
+    {
+		return new this.constructor().copy(this);
+	}
+
+    /**
+     * Copy values from another box.
+     * @param {Box} box Box to copy.
+     * @returns {Box} Self.
+     */
+	copy( box ) 
+    {
+		this.min.copy( box.min );
+		this.max.copy( box.max );
+		return this;
+	}
+
+    /**
+     * Turn this box into empty state.
+     * @returns {Box} Self.
+     */
+	makeEmpty() 
+    {
+		this.min.x = this.min.y = this.min.z = + Infinity;
+		this.max.x = this.max.y = this.max.z = - Infinity;
+		return this;
+	}
+
+    /**
+     * Check if this box is empty.
+     * @returns {Boolean} True if empty.
+     */
+	isEmpty() 
+    {
+		// this is a more robust check for empty than ( volume <= 0 ) because volume can get positive with two negative axes
+		return ( this.max.x < this.min.x ) || ( this.max.y < this.min.y ) || ( this.max.z < this.min.z );
+
+	}
+
+    /**
+     * Get center position.
+     * @returns {Vector3} Center position.
+     */
+	getCenter()
+    {
+		return this.isEmpty() ? Vector3.zero() : this.min.add(this.max).mulSelf(0.5);
+	}
+
+    /**
+     * Get box size.
+     * @returns {Vector3} Box size.
+     */
+	getSize(target) {
+
+		return this.isEmpty() ? Vector3.zero() : this.max.sub(this.min);
+
+	}
+
+    /**
+     * Expand this box by a point.
+     * This will adjust the box boundaries to contain the point.
+     * @param {Vector3} point Point to extend box by.
+     * @returns {Box} Self.
+     */
+	expandByPoint( point ) 
+    {
+		this.min.minSelf(point);
+		this.max.maxSelf(point);
+		return this;
+	}
+
+    /**
+     * Expand this box by pushing its boundaries by a vector.
+     * This will adjust the box boundaries by pushing them away from the center by the value of the given vector.
+     * @param {Vector3} vector Vector to expand by.
+     * @returns {Box} Self.
+     */
+	expandByVector( vector ) 
+    {
+		this.min.subSelf(vector);
+		this.max.addSelf(vector);
+		return this;
+	}
+
+    /**
+     * Expand this box by pushing its boundaries by a given scalar.
+     * This will adjust the box boundaries by pushing them away from the center by the value of the given scalar.
+     * @param {Number} scalar Value to expand by.
+     * @returns {Box} Self.
+     */
+	expandByScalar(scalar) 
+    {
+		this.min.subSelf(scalar);
+		this.max.addSelf(scalar);
+		return this;
+	}
+
+    /**
+     * Check if this box contains a point.
+     * @param {Vector3} point Point to check.
+     * @returns {Boolean} True if box containing the point.
+     */
+	containsPoint( point ) 
+    {
+		return point.x < this.min.x || point.x > this.max.x ||
+			point.y < this.min.y || point.y > this.max.y ||
+			point.z < this.min.z || point.z > this.max.z ? false : true;
+	}
+
+    /**
+     * Check if this box contains another box.
+     * @param {Box} box Box to check.
+     * @returns {Boolean} True if box containing the box.
+     */
+	containsBox( box ) 
+    {
+		return this.min.x <= box.min.x && box.max.x <= this.max.x &&
+			this.min.y <= box.min.y && box.max.y <= this.max.y &&
+			this.min.z <= box.min.z && box.max.z <= this.max.z;
+	}
+
+    /**
+     * Check if this box collides with another box.
+     * @param {Box} box Box to test collidion with.
+     * @returns {Boolean} True if collide, false otherwise.
+     */
+	collideBox(box) 
+    {
+		// using 6 splitting planes to rule out intersections.
+		return box.max.x < this.min.x || box.min.x > this.max.x ||
+			box.max.y < this.min.y || box.min.y > this.max.y ||
+			box.max.z < this.min.z || box.min.z > this.max.z ? false : true;
+	}
+
+    /**
+     * Check if this box collides with a sphere.
+     * @param {Sphere} sphere Sphere to test collidion with.
+     * @returns {Boolean} True if collide, false otherwise.
+     */
+	collideSphere(sphere) 
+    {
+		// find the point on the AABB closest to the sphere center.
+		const clamped = this.clampPoint(sphere.center);
+
+		// if that point is inside the sphere, the AABB and sphere intersect.
+		return clamped.distanceToSquared(sphere.center) <= (sphere.radius * sphere.radius);
+
+	}
+
+    /**
+     * Check if this box collides with a plane.
+     * @param {Plane} plane Plane to test collidion with.
+     * @returns {Boolean} True if collide, false otherwise.
+     */
+	collidePlane(plane) 
+    {
+		// We compute the minimum and maximum dot product values. If those values
+		// are on the same side (back or front) of the plane, then there is no intersection.
+
+		let min, max;
+
+		if ( plane.normal.x > 0 ) {
+
+			min = plane.normal.x * this.min.x;
+			max = plane.normal.x * this.max.x;
+
+		} else {
+
+			min = plane.normal.x * this.max.x;
+			max = plane.normal.x * this.min.x;
+
+		}
+
+		if ( plane.normal.y > 0 ) {
+
+			min += plane.normal.y * this.min.y;
+			max += plane.normal.y * this.max.y;
+
+		} else {
+
+			min += plane.normal.y * this.max.y;
+			max += plane.normal.y * this.min.y;
+
+		}
+
+		if ( plane.normal.z > 0 ) {
+
+			min += plane.normal.z * this.min.z;
+			max += plane.normal.z * this.max.z;
+
+		} else {
+
+			min += plane.normal.z * this.max.z;
+			max += plane.normal.z * this.min.z;
+
+		}
+
+		return ( min <= - plane.constant && max >= - plane.constant );
+	}
+
+    /**
+     * Clamp a given vector inside this box.
+     * @param {Vector3} point Vector to clamp.
+     * @returns {Vector3} Vector clammped.
+     */
+	clampPoint( point ) 
+    {
+		return point.clampSelf(this.min, this.max);
+	}
+
+    /**
+     * Get distance between this box and a given point.
+     * @param {Vector3} point Point to get distance to.
+     * @returns {Number} Distance to point.
+     */
+	distanceToPoint( point ) 
+    {
+		return point.clamp(this.min, this.max).distanceTo(point);
+	}
+
+    /**
+     * Computes the intersection of this box with another box. 
+     * This will set the upper bound of this box to the lesser of the two boxes' upper bounds and the lower bound of this box to the greater of the two boxes' lower bounds. 
+     * If there's no overlap, makes this box empty.
+     * @param {Box} box Box to intersect with.
+     * @returns {Box} Self.
+     */
+	intersectWith( box ) {
+
+		this.min.max( box.min );
+		this.max.min( box.max );
+
+		// ensure that if there is no overlap, the result is fully empty, not slightly empty with non-inf/+inf values that will cause subsequence intersects to erroneously return valid values.
+		if ( this.isEmpty() ) this.makeEmpty();
+
+		return this;
+	}
+
+    /**
+     * Computes the union of this box and box.
+     * This will set the upper bound of this box to the greater of the two boxes' upper bounds and the lower bound of this box to the lesser of the two boxes' lower bounds.
+     * @param {Box} box Box to union with.
+     * @returns {Box} Self.
+     */
+	unionWith( box ) 
+    {
+		this.min.min( box.min );
+		this.max.max( box.max );
+		return this;
+	}
+
+
+    /**
+     * Move this box.
+     * @param {Vector3} offset Offset to move box by.
+     * @returns {Box} Self.
+     */
+	translate( offset ) 
+    {
+		this.min.add( offset );
+		this.max.add( offset );
+		return this;
+	}
+
+    /**
+     * Check if equal to another box.
+     * @param {Box} other Other box to compare to.
+     * @returns {Boolean} True if boxes are equal, false otherwise.
+     */
+	equals( box ) 
+    {
+		return box.min.equals( this.min ) && box.max.equals( this.max );
+	}
+}
+
+const _vector = /*@__PURE__*/ new Vector3();
+
+const _testAxis = /*@__PURE__*/ new Vector3();
+
+
+// export the box object
+module.exports = Box;
+
+/***/ }),
+
 /***/ 9668:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
@@ -14956,11 +14889,188 @@ module.exports = Color;
 
 /***/ }),
 
+/***/ 4353:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+/**
+ * A 3d frustum shape.
+ * Based on code from THREE.js.
+ * 
+ * |-- copyright and license --|
+ * @module     Shaku
+ * @file       shaku\src\utils\game_time.js
+ * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
+ * @copyright  (c) 2021 Ronen Ness
+ * @license    MIT
+ * |-- end copyright and license --|
+ * 
+ */
+
+const Plane = __webpack_require__(5597);
+const Matrix = __webpack_require__(5529);
+const Vector3 = __webpack_require__(8329);
+const Box = __webpack_require__(5891);
+
+
+/**
+ * Implement a 3D Frustum shape.
+ */
+class Frustum 
+{
+    /**
+     * Create the frustum.
+     * @param {Plane} p0 Frustum plane.
+     * @param {Plane} p1 Frustum plane. 
+     * @param {Plane} p2 Frustum plane. 
+     * @param {Plane} p3 Frustum plane. 
+     * @param {Plane} p4 Frustum plane. 
+     * @param {Plane} p5 Frustum plane. 
+     */
+	constructor( p0 = new Plane(), p1 = new Plane(), p2 = new Plane(), p3 = new Plane(), p4 = new Plane(), p5 = new Plane() ) 
+    {
+		this.planes = [ p0, p1, p2, p3, p4, p5 ];
+	}
+
+    /**
+     * Set the Frustum values.
+     * @param {Plane} p0 Frustum plane.
+     * @param {Plane} p1 Frustum plane. 
+     * @param {Plane} p2 Frustum plane. 
+     * @param {Plane} p3 Frustum plane. 
+     * @param {Plane} p4 Frustum plane. 
+     * @param {Plane} p5 Frustum plane. 
+     * @returns {Frustum} Self.
+     */
+	set( p0, p1, p2, p3, p4, p5 ) 
+    {
+		const planes = this.planes;
+		planes[ 0 ].copy( p0 );
+		planes[ 1 ].copy( p1 );
+		planes[ 2 ].copy( p2 );
+		planes[ 3 ].copy( p3 );
+		planes[ 4 ].copy( p4 );
+		planes[ 5 ].copy( p5 );
+		return this;
+	}
+
+    /**
+     * Copy values from another frustum.
+     * @param {Frustum} frustum Frustum to copy.
+     * @returns {Frustum} Self.
+     */
+	copy(frustum)
+    {
+		const planes = this.planes;
+		for ( let i = 0; i < 6; i ++ ) {
+			planes[ i ].copy( frustum.planes[ i ] );
+		}
+		return this;
+	}
+
+    /**
+     * Set frustum from projection matrix.
+     * @param {Matrix} m Matrix to build frustum from.
+     * @returns {Frustum} Self.
+     */
+	setFromProjectionMatrix( m ) 
+    {
+		const planes = this.planes;
+		const me = m.values;
+		const me0 = me[ 0 ], me1 = me[ 1 ], me2 = me[ 2 ], me3 = me[ 3 ];
+		const me4 = me[ 4 ], me5 = me[ 5 ], me6 = me[ 6 ], me7 = me[ 7 ];
+		const me8 = me[ 8 ], me9 = me[ 9 ], me10 = me[ 10 ], me11 = me[ 11 ];
+		const me12 = me[ 12 ], me13 = me[ 13 ], me14 = me[ 14 ], me15 = me[ 15 ];
+
+		planes[ 0 ].setComponents( me3 - me0, me7 - me4, me11 - me8, me15 - me12 ).normalizeSelf();
+		planes[ 1 ].setComponents( me3 + me0, me7 + me4, me11 + me8, me15 + me12 ).normalizeSelf();
+		planes[ 2 ].setComponents( me3 + me1, me7 + me5, me11 + me9, me15 + me13 ).normalizeSelf();
+		planes[ 3 ].setComponents( me3 - me1, me7 - me5, me11 - me9, me15 - me13 ).normalizeSelf();
+		planes[ 4 ].setComponents( me3 - me2, me7 - me6, me11 - me10, me15 - me14 ).normalizeSelf();
+		planes[ 5 ].setComponents( me3 + me2, me7 + me6, me11 + me10, me15 + me14 ).normalizeSelf();
+
+		return this;
+	}
+
+    /**
+     * Check if the frustum collides with a sphere.
+     * @param {Sphere} sphere Sphere to check.
+     * @returns {Boolean} True if point is in frustum, false otherwise.
+     */
+	collideSphere(sphere) 
+    {
+		const planes = this.planes;
+		const center = sphere.center;
+		const negRadius = - sphere.radius;
+		for ( let i = 0; i < 6; i ++ ) {
+			const distance = planes[ i ].distanceToPoint( center );
+			if ( distance < negRadius ) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+    /**
+     * Check if collide with a box.
+     * @param {Box} box Box to check.
+     * @returns {Boolean} True if collide, false otherwise.
+     */
+    collideBox( box ) 
+    {
+		const planes = this.planes;
+		for ( let i = 0; i < 6; i ++ ) 
+        {
+			const plane = planes[ i ];
+
+			// corner at max distance
+			_vector.x = plane.normal.x > 0 ? box.max.x : box.min.x;
+			_vector.y = plane.normal.y > 0 ? box.max.y : box.min.y;
+			_vector.z = plane.normal.z > 0 ? box.max.z : box.min.z;
+
+			if ( plane.distanceToPoint( _vector ) < 0 ) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+    /**
+     * Check if the frustum contains a point.
+     * @param {Vector3} point Vector to check.
+     * @returns {Boolean} True if point is in frustum, false otherwise.
+     */
+	containsPoint(point) 
+    {
+		const planes = this.planes;
+		for ( let i = 0; i < 6; i ++ ) {
+			if ( planes[i].distanceToPoint(point) < 0 ) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+    /**
+     * Clone this frustum.
+     * @returns {Frustum} Cloned frustum.
+     */
+	clone() 
+    {
+		return new this.constructor().copy( this );
+	}
+}
+
+
+// export the frustum class
+module.exports = Frustum;
+
+/***/ }),
+
 /***/ 4742:
 /***/ ((module) => {
 
 /**
- * A utility to hold gametime.
+ * A utility to provide gametime and delta between frames.
  * 
  * |-- copyright and license --|
  * @module     Shaku
@@ -14975,7 +15085,7 @@ module.exports = Color;
 
  
 /**
- * Class to hold current game time (elapse and deltatime).
+ * Class to hold current game time, both elapse and delta from last frame.
  */
 class GameTime
 {
@@ -15133,7 +15243,12 @@ const Utils = {
     PathFinder: __webpack_require__(2791),
     Transformation: __webpack_require__(1910),
     TransformationModes: __webpack_require__(6347),
-    ItemsSorter: __webpack_require__(321)
+    ItemsSorter: __webpack_require__(321),
+    Frustum: __webpack_require__(4353),
+    Plane: __webpack_require__(5597),
+    Sphere: __webpack_require__(7517),
+    Matrix: __webpack_require__(5529),
+    Box: __webpack_require__(5891)
 };
 
 // export the Utils module.
@@ -15720,6 +15835,520 @@ module.exports = MathHelper;
 
 /***/ }),
 
+/***/ 5529:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+/**
+ * Matrix class.
+ * Based on code from https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API/Matrix_math_for_the_web
+ * 
+ * |-- copyright and license --|
+ * @module     Shaku
+ * @file       shaku\src\gfx\matrix.js
+ * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
+ * @copyright  (c) 2021 Ronen Ness
+ * @license    MIT
+ * |-- end copyright and license --|
+ * 
+ */
+
+const Vector2 = __webpack_require__(2544);
+const Vector3 = __webpack_require__(8329);
+const Vertex = __webpack_require__(4288);
+const EPSILON = Number.EPSILON;
+
+
+/**
+ * Implements a matrix.
+ */
+class Matrix
+{
+    /**
+     * Create the matrix.
+     * @param values matrix values array.
+     * @param cloneValues if true or undefined, will clone values instead of just holding a reference to them.
+     */
+    constructor(values, cloneValues)
+    {
+        // if no values are set, use identity
+        if (!values) {
+            values = Matrix.identity.values;
+            cloneValues = true;
+        }
+
+        // clone values
+        if (cloneValues || cloneValues === undefined) {
+            this.values = values.slice(0);
+        }
+        // copy values reference
+        else {
+            this.values = values;
+        }
+    }
+
+    /**
+     * Set the matrix values.
+     */
+    set(v11, v12, v13, v14, v21, v22, v23, v24, v31, v32, v33, v34, v41, v42, v43, v44)
+    {
+        this.values = new Float32Array([ 
+            v11, v12, v13, v14,
+            v21, v22, v23, v24,
+            v31, v32, v33, v34,
+            v41, v42, v43, v44
+        ]);
+    }
+
+    /**
+     * Clone the matrix.
+     * @returns {Matrix} Cloned matrix.
+     */
+    clone()
+    {
+        let ret = new Matrix(this.values, true);
+        return ret;
+    }
+    
+    /**
+     * Compare this matrix to another matrix.
+     * @param {Matrix} other Matrix to compare to.
+     * @returns {Boolean} If matrices are the same.
+     */
+    equals(other)
+    {
+        if (other === this) { return true; }
+        if (!other) { return false; }
+        for (let i = 0; i < this.values.length; ++i) {
+            if (this.values[i] !== other.values[i]) { return false; }
+        }
+        return true;
+    }
+
+    /**
+     * Invert this matrix.
+     * @returns {Matrix} Self.
+     */
+    invertSelf() 
+    {
+		// based on http://www.euclideanspace.com/maths/algebra/matrix/functions/inverse/fourD/index.htm
+		const te = this.values,
+
+			n11 = te[ 0 ], n21 = te[ 1 ], n31 = te[ 2 ], n41 = te[ 3 ],
+			n12 = te[ 4 ], n22 = te[ 5 ], n32 = te[ 6 ], n42 = te[ 7 ],
+			n13 = te[ 8 ], n23 = te[ 9 ], n33 = te[ 10 ], n43 = te[ 11 ],
+			n14 = te[ 12 ], n24 = te[ 13 ], n34 = te[ 14 ], n44 = te[ 15 ],
+
+			t11 = n23 * n34 * n42 - n24 * n33 * n42 + n24 * n32 * n43 - n22 * n34 * n43 - n23 * n32 * n44 + n22 * n33 * n44,
+			t12 = n14 * n33 * n42 - n13 * n34 * n42 - n14 * n32 * n43 + n12 * n34 * n43 + n13 * n32 * n44 - n12 * n33 * n44,
+			t13 = n13 * n24 * n42 - n14 * n23 * n42 + n14 * n22 * n43 - n12 * n24 * n43 - n13 * n22 * n44 + n12 * n23 * n44,
+			t14 = n14 * n23 * n32 - n13 * n24 * n32 - n14 * n22 * n33 + n12 * n24 * n33 + n13 * n22 * n34 - n12 * n23 * n34;
+
+		const det = n11 * t11 + n21 * t12 + n31 * t13 + n41 * t14;
+
+		if ( det === 0 ) return this.set( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 );
+
+		const detInv = 1 / det;
+
+		te[ 0 ] = t11 * detInv;
+		te[ 1 ] = ( n24 * n33 * n41 - n23 * n34 * n41 - n24 * n31 * n43 + n21 * n34 * n43 + n23 * n31 * n44 - n21 * n33 * n44 ) * detInv;
+		te[ 2 ] = ( n22 * n34 * n41 - n24 * n32 * n41 + n24 * n31 * n42 - n21 * n34 * n42 - n22 * n31 * n44 + n21 * n32 * n44 ) * detInv;
+		te[ 3 ] = ( n23 * n32 * n41 - n22 * n33 * n41 - n23 * n31 * n42 + n21 * n33 * n42 + n22 * n31 * n43 - n21 * n32 * n43 ) * detInv;
+
+		te[ 4 ] = t12 * detInv;
+		te[ 5 ] = ( n13 * n34 * n41 - n14 * n33 * n41 + n14 * n31 * n43 - n11 * n34 * n43 - n13 * n31 * n44 + n11 * n33 * n44 ) * detInv;
+		te[ 6 ] = ( n14 * n32 * n41 - n12 * n34 * n41 - n14 * n31 * n42 + n11 * n34 * n42 + n12 * n31 * n44 - n11 * n32 * n44 ) * detInv;
+		te[ 7 ] = ( n12 * n33 * n41 - n13 * n32 * n41 + n13 * n31 * n42 - n11 * n33 * n42 - n12 * n31 * n43 + n11 * n32 * n43 ) * detInv;
+
+		te[ 8 ] = t13 * detInv;
+		te[ 9 ] = ( n14 * n23 * n41 - n13 * n24 * n41 - n14 * n21 * n43 + n11 * n24 * n43 + n13 * n21 * n44 - n11 * n23 * n44 ) * detInv;
+		te[ 10 ] = ( n12 * n24 * n41 - n14 * n22 * n41 + n14 * n21 * n42 - n11 * n24 * n42 - n12 * n21 * n44 + n11 * n22 * n44 ) * detInv;
+		te[ 11 ] = ( n13 * n22 * n41 - n12 * n23 * n41 - n13 * n21 * n42 + n11 * n23 * n42 + n12 * n21 * n43 - n11 * n22 * n43 ) * detInv;
+
+		te[ 12 ] = t14 * detInv;
+		te[ 13 ] = ( n13 * n24 * n31 - n14 * n23 * n31 + n14 * n21 * n33 - n11 * n24 * n33 - n13 * n21 * n34 + n11 * n23 * n34 ) * detInv;
+		te[ 14 ] = ( n14 * n22 * n31 - n12 * n24 * n31 - n14 * n21 * n32 + n11 * n24 * n32 + n12 * n21 * n34 - n11 * n22 * n34 ) * detInv;
+		te[ 15 ] = ( n12 * n23 * n31 - n13 * n22 * n31 + n13 * n21 * n32 - n11 * n23 * n32 - n12 * n21 * n33 + n11 * n22 * n33 ) * detInv;
+
+		return this;
+	}
+
+    /**
+     * Create an orthographic projection matrix.
+     * @returns {Matrix} a new matrix with result.
+     */
+    static orthographic(left, right, bottom, top, near, far) 
+    {
+        return new Matrix([
+          2 / (right - left), 0, 0, 0,
+          0, 2 / (top - bottom), 0, 0,
+          0, 0, 2 / (near - far), 0,
+     
+          (left + right) / (left - right),
+          (bottom + top) / (bottom - top),
+          (near + far) / (near - far),
+          1,
+        ], false);
+    }
+
+    /**
+     * Create a perspective projection matrix.
+     * @returns {Matrix} a new matrix with result.
+     */
+    static perspective(fieldOfViewInRadians, aspectRatio, near, far) 
+    {
+        var f = 1.0 / Math.tan(fieldOfViewInRadians / 2);
+        var rangeInv = 1 / (near - far);
+      
+        return new Matrix([
+          f / aspectRatio, 0,                               0,      0,
+          0,               f,                               0,      0,
+          0,               0,       (near + far) * rangeInv  ,     -1,
+          0,               0,       near * far * rangeInv * 2,      0
+        ], false);
+    }
+
+    /**
+     * Create a translation matrix.
+     * @returns {Matrix} a new matrix with result.
+     */
+    static translate(x, y, z)
+    {
+        return new Matrix([
+            1,          0,          0,          0,
+            0,          1,          0,          0,
+            0,          0,          1,          0,
+            x || 0,     y || 0,     z || 0,     1
+        ], false);
+    }
+
+    /**
+     * Create a scale matrix.
+     * @returns {Matrix} a new matrix with result.
+     */
+    static scale(x, y, z)
+    {
+        return new Matrix([
+            x || 1,         0,              0,              0,
+            0,              y || 1,         0,              0,
+            0,              0,              z || 1,         0,
+            0,              0,              0,              1
+        ], false);
+    }
+    
+    /**
+     * Create a rotation matrix around X axis.
+     * @returns {Matrix} a new matrix with result.
+     */
+    static rotateX(a)
+    {
+        let sin = Math.sin;
+        let cos = Math.cos;
+        return new Matrix([
+            1,       0,        0,     0,
+            0,  cos(a),  -sin(a),     0,
+            0,  sin(a),   cos(a),     0,
+            0,       0,        0,     1
+        ], false);
+    }
+        
+    /**
+     * Create a rotation matrix around Y axis.
+     * @returns {Matrix} a new matrix with result.
+     */
+    static rotateY(a)
+    {
+        let sin = Math.sin;
+        let cos = Math.cos;
+        return new Matrix([
+             cos(a),   0, sin(a),   0,
+                  0,   1,      0,   0,
+            -sin(a),   0, cos(a),   0,
+                  0,   0,      0,   1
+        ], false);
+    }
+        
+    /**
+     * Create a rotation matrix around Z axis.
+     * @returns {Matrix} a new matrix with result.
+     */
+    static rotateZ(a)
+    {
+        let sin = Math.sin;
+        let cos = Math.cos;
+        return new Matrix([
+            cos(a), -sin(a),    0,    0,
+            sin(a),  cos(a),    0,    0,
+                0,       0,    1,    0,
+                0,       0,    0,    1
+        ], false);
+    }
+    
+    /**
+     * Multiply two matrices. 
+     * @returns {Matrix} a new matrix with result.
+     */
+    static multiply(matrixA, matrixB) 
+    {
+        // Slice the second matrix up into rows
+        let row0 = [matrixB.values[ 0], matrixB.values[ 1], matrixB.values[ 2], matrixB.values[ 3]];
+        let row1 = [matrixB.values[ 4], matrixB.values[ 5], matrixB.values[ 6], matrixB.values[ 7]];
+        let row2 = [matrixB.values[ 8], matrixB.values[ 9], matrixB.values[10], matrixB.values[11]];
+        let row3 = [matrixB.values[12], matrixB.values[13], matrixB.values[14], matrixB.values[15]];
+      
+        // Multiply each row by matrixA
+        let result0 = multiplyMatrixAndPoint(matrixA.values, row0);
+        let result1 = multiplyMatrixAndPoint(matrixA.values, row1);
+        let result2 = multiplyMatrixAndPoint(matrixA.values, row2);
+        let result3 = multiplyMatrixAndPoint(matrixA.values, row3);
+      
+        // Turn the result rows back into a single matrix
+        return new Matrix([
+          result0[0], result0[1], result0[2], result0[3],
+          result1[0], result1[1], result1[2], result1[3],
+          result2[0], result2[1], result2[2], result2[3],
+          result3[0], result3[1], result3[2], result3[3]
+        ], false);
+    }
+
+    /**
+     * Creates a look-at matrix - a matrix rotated to look at a given position.
+     * @param {Vector3} eyePosition Eye position.
+     * @param {Vector3} targetPosition Position the matrix should look at.
+     * @param {Vector3=} upVector Optional vector representing 'up' direction.
+     * @returns {Matrix} a new matrix with result.
+     */
+    static lookAt(eyePosition, targetPosition, upVector)
+    {
+        const eye = eyePosition;
+        const center = targetPosition;
+        const up = upVector || Vector3.upReadonly;
+        let x0, x1, x2, y0, y1, y2, z0, z1, z2, len;
+        if (
+            Math.abs(eye.x - center.x) < EPSILON &&
+            Math.abs(eye.y - center.y) < EPSILON &&
+            Math.abs(eye.z - center.z) < EPSILON
+        ) {
+            return Matrix.identity.clone();
+        }
+        z0 = eye.x - center.x;
+        z1 = eye.y - center.y;
+        z2 = eye.z - center.z;
+        len = 1 / Math.hypot(z0, z1, z2);
+        z0 *= len;
+        z1 *= len;
+        z2 *= len;
+        x0 = up.y * z2 - up.z * z1;
+        x1 = up.z * z0 - up.x * z2;
+        x2 = up.x * z1 - up.y * z0;
+        len = Math.hypot(x0, x1, x2);
+        if (!len) {
+            x0 = 0;
+            x1 = 0;
+            x2 = 0;
+        } else {
+            len = 1 / len;
+            x0 *= len;
+            x1 *= len;
+            x2 *= len;
+        }
+        y0 = z1 * x2 - z2 * x1;
+        y1 = z2 * x0 - z0 * x2;
+        y2 = z0 * x1 - z1 * x0;
+        len = Math.hypot(y0, y1, y2);
+        if (!len) {
+            y0 = 0;
+            y1 = 0;
+            y2 = 0;
+        } else {
+            len = 1 / len;
+            y0 *= len;
+            y1 *= len;
+            y2 *= len;
+        }
+        const out = [];
+        out[0] = x0;
+        out[1] = y0;
+        out[2] = z0;
+        out[3] = 0;
+        out[4] = x1;
+        out[5] = y1;
+        out[6] = z1;
+        out[7] = 0;
+        out[8] = x2;
+        out[9] = y2;
+        out[10] = z2;
+        out[11] = 0;
+        out[12] = -(x0 * eye.x + x1 * eye.y + x2 * eye.z);
+        out[13] = -(y0 * eye.x + y1 * eye.y + y2 * eye.z);
+        out[14] = -(z0 * eye.x + z1 * eye.y + z2 * eye.z);
+        out[15] = 1;
+        return new Matrix(out, false);
+    }
+
+    /**
+     * Multiply an array of matrices.
+     * @param {Array<Matrix>} matrices Matrices to multiply.
+     * @returns {Matrix} new matrix with multiply result.
+     */
+    static multiplyMany(matrices)
+    {
+        let ret = matrices[0];
+        for(let i = 1; i < matrices.length; i++) {
+            ret = Matrix.multiply(ret, matrices[i]);
+        }        
+        return ret;
+    }
+        
+    /**
+     * Multiply two matrices and put result in first matrix. 
+     * @returns {Matrix} matrixA, after it was modified.
+     */
+    static multiplyIntoFirst(matrixA, matrixB) 
+    {
+        // Slice the second matrix up into rows
+        let row0 = [matrixB.values[ 0], matrixB.values[ 1], matrixB.values[ 2], matrixB.values[ 3]];
+        let row1 = [matrixB.values[ 4], matrixB.values[ 5], matrixB.values[ 6], matrixB.values[ 7]];
+        let row2 = [matrixB.values[ 8], matrixB.values[ 9], matrixB.values[10], matrixB.values[11]];
+        let row3 = [matrixB.values[12], matrixB.values[13], matrixB.values[14], matrixB.values[15]];
+    
+        // Multiply each row by matrixA
+        let result0 = multiplyMatrixAndPoint(matrixA.values, row0);
+        let result1 = multiplyMatrixAndPoint(matrixA.values, row1);
+        let result2 = multiplyMatrixAndPoint(matrixA.values, row2);
+        let result3 = multiplyMatrixAndPoint(matrixA.values, row3);
+    
+        // Turn the result rows back into a single matrix
+        matrixA.set(
+            result0[0], result0[1], result0[2], result0[3],
+            result1[0], result1[1], result1[2], result1[3],
+            result2[0], result2[1], result2[2], result2[3],
+            result3[0], result3[1], result3[2], result3[3]
+        );
+
+        // return the first matrix after it was modified
+        return matrixA;
+    }
+
+    /**
+     * Multiply an array of matrices into the first matrix in the array.
+     * @param {Array<Matrix>} matrices Matrices to multiply.
+     * @returns {Matrix} first matrix in array, after it was modified.
+     */
+    static multiplyManyIntoFirst(matrices)
+    {
+        let ret = matrices[0];
+        for(let i = 1; i < matrices.length; i++) {
+            ret = Matrix.multiplyIntoFirst(ret, matrices[i]);
+        }        
+        return ret;
+    }
+
+    /**
+     * Transform a 2d vertex.
+     * @param {Matrix} matrix Matrix to use to transform vector.
+     * @param {Vertex} vertex Vertex to transform.
+     * @returns {Vertex} A transformed vertex (cloned, not the original).
+     */
+    static transformVertex(matrix, vertex)
+    {
+        return new Vertex(
+            (vertex.position instanceof Vector2) ? Matrix.transformVector2(matrix, vertex.position) : Matrix.transformVector3(matrix, vertex.position), 
+            vertex.textureCoord, 
+            vertex.color);
+    }
+
+    /**
+     * Transform a 2d vector.
+     * @param {Matrix} matrix Matrix to use to transform vector.
+     * @param {Vector2} vector Vector to transform.
+     * @returns {Vector2} Transformed vector.
+     */
+    static transformVector2(matrix, vector)
+    {
+        const x = vector.x, y = vector.y, z = vector.z || 0;
+		const e = matrix.values;
+
+		const w = 1 / ( e[ 3 ] * x + e[ 7 ] * y + e[ 11 ] * z + e[ 15 ] );
+
+		const resx = ( e[ 0 ] * x + e[ 4 ] * y + e[ 8 ] * z + e[ 12 ] ) * w;
+		const resy = ( e[ 1 ] * x + e[ 5 ] * y + e[ 9 ] * z + e[ 13 ] ) * w;
+
+        return new Vector2(resx, resy);
+    }
+
+    /**
+     * Transform a 3d vector.
+     * @param {Matrix} matrix Matrix to use to transform vector.
+     * @param {Vector3} vector Vector to transform.
+     * @returns {Vector3} Transformed vector.
+     */
+    static transformVector3(matrix, vector)
+    {
+        const x = vector.x, y = vector.y, z = vector.z || 0;
+        const e = matrix.values;
+
+        const w = 1 / ( e[ 3 ] * x + e[ 7 ] * y + e[ 11 ] * z + e[ 15 ] );
+
+        const resx = ( e[ 0 ] * x + e[ 4 ] * y + e[ 8 ] * z + e[ 12 ] ) * w;
+        const resy = ( e[ 1 ] * x + e[ 5 ] * y + e[ 9 ] * z + e[ 13 ] ) * w;
+        const resz = ( e[ 2 ] * x + e[ 6 ] * y + e[ 10 ] * z + e[ 14 ] ) * w;
+
+        return new Vector3(resx, resy, resz);
+    }
+}
+
+
+/**
+ * Multiply matrix and vector.
+ * @private
+ */
+function multiplyMatrixAndPoint(matrix, point) 
+{
+    // Give a simple variable name to each part of the matrix, a column and row number
+    let c0r0 = matrix[ 0], c1r0 = matrix[ 1], c2r0 = matrix[ 2], c3r0 = matrix[ 3];
+    let c0r1 = matrix[ 4], c1r1 = matrix[ 5], c2r1 = matrix[ 6], c3r1 = matrix[ 7];
+    let c0r2 = matrix[ 8], c1r2 = matrix[ 9], c2r2 = matrix[10], c3r2 = matrix[11];
+    let c0r3 = matrix[12], c1r3 = matrix[13], c2r3 = matrix[14], c3r3 = matrix[15];
+
+    // Now set some simple names for the point
+    let x = point[0];
+    let y = point[1];
+    let z = point[2];
+    let w = point[3];
+
+    // Multiply the point against each part of the 1st column, then add together
+    let resultX = (x * c0r0) + (y * c0r1) + (z * c0r2) + (w * c0r3);
+
+    // Multiply the point against each part of the 2nd column, then add together
+    let resultY = (x * c1r0) + (y * c1r1) + (z * c1r2) + (w * c1r3);
+
+    // Multiply the point against each part of the 3rd column, then add together
+    let resultZ = (x * c2r0) + (y * c2r1) + (z * c2r2) + (w * c2r3);
+
+    // Multiply the point against each part of the 4th column, then add together
+    let resultW = (x * c3r0) + (y * c3r1) + (z * c3r2) + (w * c3r3);
+
+    return [resultX, resultY, resultZ, resultW];
+}
+
+
+/**
+ * An identity matrix.
+ */
+Matrix.identity = new Matrix([
+    1, 0, 0, 0,
+    0, 1, 0, 0,
+    0, 0, 1, 0,
+    0, 0, 0, 1
+], false);
+Matrix.identity.isIdentity = true;
+Object.freeze(Matrix.identity);
+
+// export the matrix object
+module.exports = Matrix;
+
+/***/ }),
+
 /***/ 2791:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
@@ -16151,6 +16780,219 @@ class Perlin
 
 // export the perlin generator
 module.exports = Perlin;
+
+/***/ }),
+
+/***/ 5597:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+/**
+ * A plane in 3D space.
+ * Based on code from THREE.js.
+ * 
+ * |-- copyright and license --|
+ * @module     Shaku
+ * @file       shaku\src\utils\game_time.js
+ * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
+ * @copyright  (c) 2021 Ronen Ness
+ * @license    MIT
+ * |-- end copyright and license --|
+ * 
+ */
+
+const Line = __webpack_require__(1708);
+const Sphere = __webpack_require__(7517);
+const Vector3 = __webpack_require__(8329);
+
+
+/**
+ * A plane in 3D space shape.
+ */
+class Plane 
+{
+    /**
+     * Create the plane.
+     * @param {Vector3} normal Plane normal vector.
+     * @param {Number} constant Plane constant.
+     */
+	constructor(normal = new Vector3(1, 0, 0), constant = 0)
+    {
+		this.normal = normal;
+		this.constant = constant;
+	}
+
+    /**
+     * Set the plane components.
+     * @param {Vector3} normal Plane normal.
+     * @param {Number} constant Plane constant.
+     * @returns {Plane} Self.
+     */
+	set( normal, constant ) 
+    {
+		this.normal.copy( normal );
+		this.constant = constant;
+		return this;
+	}
+
+    /**
+     * Set the plane components.
+     * @param {Number} x Plane normal X.
+     * @param {Number} y Plane normal Y.
+     * @param {Number} z Plane normal Z.
+     * @param {Number} w Plane constant.
+     * @returns {Plane} Self.
+     */
+	setComponents(x, y, z, w)
+    {
+		this.normal.set( x, y, z );
+		this.constant = w;
+		return this;
+	}
+
+    /**
+     * Set plane from normal and coplanar point vectors.
+     * @param {Vector3} normal Plane normal.
+     * @param {Vector3} point Coplanar point.
+     * @returns {Plane} Self.
+     */
+	setFromNormalAndCoplanarPoint(normal, point) 
+    {
+		this.normal.copy(normal);
+		this.constant = -(point.dot( this.normal ));
+		return this;
+	}
+
+    /**
+     * Copy values from another plane.
+     * @param {Plane} plane Plane to copy.
+     * @returns {Plane} Self.
+     */
+	copy(plane)
+    {
+		this.normal.copy( plane.normal );
+		this.constant = plane.constant;
+		return this;
+	}
+
+    /**
+     * Normalize the plane.
+     * @returns {Plane} self.
+     */
+	normalizeSelf() 
+    {
+		// Note: will lead to a divide by zero if the plane is invalid.
+		const inverseNormalLength = 1.0 / this.normal.length();
+		this.normal.mulSelf(inverseNormalLength);
+		this.constant *= inverseNormalLength;
+		return this;
+	}
+
+    /**
+     * Normalize a clone of this plane.
+     * @returns {Plane} Normalized clone.
+     */
+	normalized() 
+    {
+		return this.clone().normalizeSelf();
+	}
+
+    /**
+     * Negate this plane.
+     * @returns {Plane} Self.
+     */
+	negateSelf() 
+    {
+		this.constant *= -1;
+		this.normal.mulSelf(-1);
+		return this;
+	}
+
+    /**
+     * Calculate distance to point.
+     * @param {Vector3} point Point to calculate distance to.
+     * @returns {Number} Distance to point.
+     */
+	distanceToPoint(point) 
+    {
+		return this.normal.dot(point) + this.constant;
+	}
+
+    /**
+     * Calculate distance to sphere.
+     * @param {Sphere} sphere Sphere to calculate distance to.
+     * @returns {Number} Distance to sphere.
+     */
+	distanceToSphere(sphere) 
+    {
+		return this.distanceToPoint(sphere.center) - sphere.radius;
+	}
+
+    /**
+     * Check if this plane collide with a line.
+     * @param {Line} line Line to check.
+     * @returns {Boolean} True if collide, false otherwise.
+     */
+	collideLine( line ) 
+    {
+		// Note: this tests if a line collide the plane, not whether it (or its end-points) are coplanar with it.
+		const startSign = this.distanceToPoint( line.start );
+		const endSign = this.distanceToPoint( line.end );
+		return ( startSign < 0 && endSign > 0 ) || ( endSign < 0 && startSign > 0 );
+	}
+
+    /**
+     * Check if this plane collide with a sphere.
+     * @param {Sphere} sphere Sphere to check.
+     * @returns {Boolean} True if collide, false otherwise.
+     */
+	collideSphere(sphere) 
+    {
+		return sphere.collidePlane( this );
+	}
+
+    /**
+     * Coplanar a point.
+     * @returns {Vector3} Coplanar point as a new vector.
+     */
+	coplanarPoint() 
+    {
+		return this.normal.mul(-this.constant);
+	}
+
+    /**
+     * Translate this plane.
+     * @param {Vector3} offset Offset to translate to.
+     * @returns {Plane} Self.
+     */
+	translateSelf(offset) 
+    {
+		this.constant -= offset.dot( this.normal );
+		return this;
+	}
+
+    /**
+     * Check if this plane equals another plane.
+     * @param {Plane} plane Other plane to compare to.
+     * @returns {Boolean} True if equal, false otherwise.
+     */
+	equals(plane) 
+    {
+		return plane.normal.equals( this.normal ) && ( plane.constant === this.constant );
+	}
+
+    /**
+     * Clone this plane.
+     * @returns {Plane} Cloned plane.
+     */
+	clone() 
+    {
+		return new this.constructor().copy(this);
+	}
+}
+
+
+// export the plane object
+module.exports = Plane;
 
 /***/ }),
 
@@ -16678,6 +17520,139 @@ class SeededRandom
 
 // export the seeded random class.
 module.exports = SeededRandom;
+
+/***/ }),
+
+/***/ 7517:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+/**
+ * Implement a simple 3d sphere.
+ * 
+ * |-- copyright and license --|
+ * @module     Shaku
+ * @file       shaku\src\utils\sphere.js
+ * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
+ * @copyright  (c) 2021 Ronen Ness
+ * @license    MIT
+ * |-- end copyright and license --|
+ * 
+ */
+ 
+const MathHelper = __webpack_require__(9646);
+const Vector3 = __webpack_require__(8329);
+
+
+/**
+ * Implement a 3d sphere.
+ */
+class Sphere
+{
+    /**
+     * Create the Sphere.
+     * @param {Vector3} center Sphere center position.
+     * @param {Number} radius Sphere radius.
+     */
+    constructor(center, radius)
+    {
+        this.center = center.clone();
+        this.radius = radius;
+    }
+
+    /**
+     * Return a clone of this sphere.
+     * @returns {Sphere} Cloned sphere.
+     */
+    clone()
+    {
+        return new Sphere(this.center, this.radius);
+    }
+
+    /**
+     * Check if this sphere contains a Vector3.
+     * @param {Vector3} p Point to check.
+     * @returns {Boolean} if point is contained within the sphere.
+     */
+    containsVector(p) 
+    {
+        return this.center.distanceTo(p) <= this.radius;
+    }
+
+    /**
+     * Check if equal to another sphere.
+     * @param {Sphere} other Other sphere to compare to.
+     * @returns {Boolean} True if spheres are equal, false otherwise.
+     */
+    equals(other)
+    {
+        return (other === this) || 
+                (other && (other.constructor === this.constructor) && 
+                this.center.equals(other.center) && (this.radius == other.radius));
+    }
+
+    /**
+     * Create sphere from a dictionary.
+     * @param {*} data Dictionary with {center, radius}.
+     * @returns {Sphere} Newly created sphere.
+     */
+    static fromDict(data)
+    {
+        return new Sphere(Vector3.fromDict(data.center || {}), data.radius || 0);
+    }
+
+    /**
+     * Convert to dictionary.
+     * @param {Boolean} minimized If true, will not include keys that their values are 0. You can use fromDict on minimized dicts.
+     * @returns {*} Dictionary with {center, radius}.
+     */
+    toDict(minimized)
+    {
+        if (minimized) {
+            const ret = {};
+            if (this.radius) { ret.radius = this.radius; }
+            if (this.center.x || this.center.y) { ret.center = this.center.toDict(true); }
+            return ret;
+        }
+        return {center: this.center.toDict(), radius: this.radius};
+    }
+
+    /**
+     * Check if collide with a box.
+     * @param {Box} box Box to check.
+     * @returns {Boolean} True if collide, false otherwise.
+     */
+    collideBox( box ) 
+    {
+		return box.collideSphere( this );
+	}
+    
+    /**
+     * Check if collide with a plane.
+     * @param {Plane} plane Plane to test.
+     * @returns {Boolean} True if collide, false otherwise.
+     */
+    collidePlane(plane) 
+    {
+		return Math.abs( plane.distanceToPoint( this.center ) ) <= this.radius;
+	}
+
+    /**
+     * Lerp between two sphere.
+     * @param {Sphere} p1 First sphere.
+     * @param {Sphere} p2 Second sphere.
+     * @param {Number} a Lerp factor (0.0 - 1.0).
+     * @returns {Sphere} result sphere.
+     */
+    static lerp(p1, p2, a)
+    {
+        let lerpScalar = MathHelper.lerp;
+        return new Sphere(Vector3.lerp(p1.center, p2.center, a), lerpScalar(p1.radius, p2.radius, a));
+    }
+}
+
+
+// export the sphere class
+module.exports = Sphere;
 
 /***/ }),
 
@@ -17313,7 +18288,7 @@ module.exports = TransformModes;
 
 const MathHelper = __webpack_require__(9646);
 const TransformModes = __webpack_require__(6347);
-const Matrix = __webpack_require__(5599);
+const Matrix = __webpack_require__(5529);
 const Vector2 = __webpack_require__(2544);
 
 // some default values
@@ -18067,6 +19042,50 @@ class Vector2
     }
     
     /**
+     * Set self values to be min values between self and a given vector.
+     * @param {Vector2} v Vector to min with.
+     * @returns {Vector2} Self.
+     */
+    minSelf(v) 
+    {
+		this.x = Math.min( this.x, v.x );
+		this.y = Math.min( this.y, v.y );
+    	return this;
+	}
+
+    /**
+     * Set self values to be max values between self and a given vector.
+     * @param {Vector2} v Vector to max with.
+     * @returns {Vector2} Self.
+     */
+	maxSelf(v) 
+    {
+		this.x = Math.max( this.x, v.x );
+		this.y = Math.max( this.y, v.y );
+		return this;
+	}
+
+    /**
+     * Create a clone vector that is the min result between self and a given vector.
+     * @param {Vector2} v Vector to min with.
+     * @returns {Vector2} Result vector.
+     */
+    min(v) 
+    {
+		this.clone().minSelf(v);
+	}
+
+    /**
+     * Create a clone vector that is the max result between self and a given vector.
+     * @param {Vector2} v Vector to max with.
+     * @returns {Vector2} Result vector.
+     */
+    max(v) 
+    {
+		this.clone().maxSelf(v);
+	}
+
+    /**
      * Return a normalized copy of this vector.
      * @returns {Vector2} result vector.
      */
@@ -18383,6 +19402,51 @@ class Vector2
         return Vector2.distance(this, other);
     }
     
+    /**
+     * Calculate squared distance between this vector and another vector.
+     * @param {Vector2} other Other vector.
+     * @returns {Number} Distance between vectors.
+     */
+    distanceToSquared(other)
+    {
+		const dx = this.x - other.x, dy = this.y - other.y;
+		return dx * dx + dy * dy;
+	}
+
+    /**
+     * Return a clone and clamp its values to be between min and max.
+     * @param {Vector2} min Min vector.
+     * @param {Vector2} max Max vector.
+     * @returns {Vector2} Clamped vector.
+     */
+    clamp( min, max ) 
+    {
+        return this.clone().clampSelf(min, max);
+    }
+
+    /**
+     * Clamp this vector values to be between min and max.
+     * @param {Vector2} min Min vector.
+     * @param {Vector2} max Max vector.
+     * @returns {Vector2} Self.
+     */
+    clampSelf( min, max ) 
+    {
+		this.x = Math.max( min.x, Math.min( max.x, this.x ) );
+		this.y = Math.max( min.y, Math.min( max.y, this.y ) );
+		return this;
+	}
+
+    /**
+     * Calculate the dot product with another vector.
+     * @param {Vector2} other Vector to calculate dot with.
+     * @returns {Number} Dot product value.
+     */
+    dot(other)
+    {
+		return this.x * other.x + this.y * other.y;
+	}
+
     /**
      * Get vector from degrees.
      * @param {Number} degrees Angle to create vector from (0 = vector pointing right).
@@ -19084,7 +20148,7 @@ class Vector3
     }
     
     /**
-     * Calculate distance between this vector and another vectors.
+     * Calculate distance between this vector and another vector.
      * @param {Vector3} other Other vector.
      * @returns {Number} Distance between vectors.
      */
@@ -19093,6 +20157,52 @@ class Vector3
         return Vector3.distance(this, other);
     }
     
+    /**
+     * Calculate squared distance between this vector and another vector.
+     * @param {Vector3} other Other vector.
+     * @returns {Number} Distance between vectors.
+     */
+    distanceToSquared(other)
+    {
+		const dx = this.x - other.x, dy = this.y - other.y, dz = this.z - other.z;
+		return dx * dx + dy * dy + dz * dz;
+	}
+    
+    /**
+     * Return a clone and clamp its values to be between min and max.
+     * @param {Vector3} min Min vector.
+     * @param {Vector3} max Max vector.
+     * @returns {Vector3} Clamped vector.
+     */
+    clamp( min, max ) 
+    {
+        return this.clone().clampSelf(min, max);
+    }
+
+    /**
+     * Clamp this vector values to be between min and max.
+     * @param {Vector3} min Min vector.
+     * @param {Vector3} max Max vector.
+     * @returns {Vector3} Self.
+     */
+    clampSelf( min, max ) 
+    {
+		this.x = Math.max( min.x, Math.min( max.x, this.x ) );
+		this.y = Math.max( min.y, Math.min( max.y, this.y ) );
+		this.z = Math.max( min.z, Math.min( max.z, this.z ) );
+		return this;
+	}
+
+    /**
+     * Calculate the dot product with another vector.
+     * @param {Vector3} other Vector to calculate dot with.
+     * @returns {Number} Dot product value.
+     */
+    dot(other)
+    {
+		return this.x * other.x + this.y * other.y + this.z * other.z;
+	}
+
     /**
      * Lerp between two vectors.
      * @param {Vector3} p1 First vector.
@@ -19137,6 +20247,52 @@ class Vector3
 
 		return new Vector3(x, y, z);
     }
+
+    /**
+     * Set self values to be min values between self and a given vector.
+     * @param {Vector3} v Vector to min with.
+     * @returns {Vector3} Self.
+     */
+    minSelf(v) 
+    {
+		this.x = Math.min( this.x, v.x );
+		this.y = Math.min( this.y, v.y );
+		this.z = Math.min( this.z, v.z );
+    	return this;
+	}
+
+    /**
+     * Set self values to be max values between self and a given vector.
+     * @param {Vector3} v Vector to max with.
+     * @returns {Vector3} Self.
+     */
+	maxSelf(v) 
+    {
+		this.x = Math.max( this.x, v.x );
+		this.y = Math.max( this.y, v.y );
+		this.z = Math.max( this.z, v.z );
+		return this;
+	}
+
+    /**
+     * Create a clone vector that is the min result between self and a given vector.
+     * @param {Vector3} v Vector to min with.
+     * @returns {Vector3} Result vector.
+     */
+    min(v) 
+    {
+		this.clone().minSelf(v);
+	}
+
+    /**
+     * Create a clone vector that is the max result between self and a given vector.
+     * @param {Vector3} v Vector to max with.
+     * @returns {Vector3} Result vector.
+     */
+    max(v) 
+    {
+		this.clone().maxSelf(v);
+	}
 
     /**
      * Convert to string.

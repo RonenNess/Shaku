@@ -143,6 +143,50 @@ class Vector2
     }
     
     /**
+     * Set self values to be min values between self and a given vector.
+     * @param {Vector2} v Vector to min with.
+     * @returns {Vector2} Self.
+     */
+    minSelf(v) 
+    {
+		this.x = Math.min( this.x, v.x );
+		this.y = Math.min( this.y, v.y );
+    	return this;
+	}
+
+    /**
+     * Set self values to be max values between self and a given vector.
+     * @param {Vector2} v Vector to max with.
+     * @returns {Vector2} Self.
+     */
+	maxSelf(v) 
+    {
+		this.x = Math.max( this.x, v.x );
+		this.y = Math.max( this.y, v.y );
+		return this;
+	}
+
+    /**
+     * Create a clone vector that is the min result between self and a given vector.
+     * @param {Vector2} v Vector to min with.
+     * @returns {Vector2} Result vector.
+     */
+    min(v) 
+    {
+		this.clone().minSelf(v);
+	}
+
+    /**
+     * Create a clone vector that is the max result between self and a given vector.
+     * @param {Vector2} v Vector to max with.
+     * @returns {Vector2} Result vector.
+     */
+    max(v) 
+    {
+		this.clone().maxSelf(v);
+	}
+
+    /**
      * Return a normalized copy of this vector.
      * @returns {Vector2} result vector.
      */
@@ -459,6 +503,51 @@ class Vector2
         return Vector2.distance(this, other);
     }
     
+    /**
+     * Calculate squared distance between this vector and another vector.
+     * @param {Vector2} other Other vector.
+     * @returns {Number} Distance between vectors.
+     */
+    distanceToSquared(other)
+    {
+		const dx = this.x - other.x, dy = this.y - other.y;
+		return dx * dx + dy * dy;
+	}
+
+    /**
+     * Return a clone and clamp its values to be between min and max.
+     * @param {Vector2} min Min vector.
+     * @param {Vector2} max Max vector.
+     * @returns {Vector2} Clamped vector.
+     */
+    clamp( min, max ) 
+    {
+        return this.clone().clampSelf(min, max);
+    }
+
+    /**
+     * Clamp this vector values to be between min and max.
+     * @param {Vector2} min Min vector.
+     * @param {Vector2} max Max vector.
+     * @returns {Vector2} Self.
+     */
+    clampSelf( min, max ) 
+    {
+		this.x = Math.max( min.x, Math.min( max.x, this.x ) );
+		this.y = Math.max( min.y, Math.min( max.y, this.y ) );
+		return this;
+	}
+
+    /**
+     * Calculate the dot product with another vector.
+     * @param {Vector2} other Vector to calculate dot with.
+     * @returns {Number} Dot product value.
+     */
+    dot(other)
+    {
+		return this.x * other.x + this.y * other.y;
+	}
+
     /**
      * Get vector from degrees.
      * @param {Number} degrees Angle to create vector from (0 = vector pointing right).

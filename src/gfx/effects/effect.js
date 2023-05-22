@@ -11,13 +11,10 @@
  * 
  */
 'use strict';
-
-const TextureAsset = require('../../assets/texture_asset.js');
 const Color = require('../../utils/color.js');
-const Rectangle = require('../../utils/rectangle.js');
 const { TextureFilterModes } = require('../texture_filter_modes');
 const { TextureWrapMode, TextureWrapModes } = require('../texture_wrap_modes');
-const Matrix = require('../matrix.js');
+const Matrix = require('../../utils/matrix.js');
 const Vector2 = require('../../utils/vector2.js');
 const TextureAssetBase = require('../../assets/texture_asset_base.js');
 const _logger = require('../../logger.js').getLogger('gfx-effect');

@@ -13,7 +13,7 @@
 'use strict';
 const { Rectangle } = require('../../utils');
 const Vector2 = require('../../utils/vector2');
-const Matrix = require('../matrix');
+const Matrix = require('../../utils/matrix.js');
 const DrawBatch = require('./draw_batch');
 const _logger = require('../../logger.js').getLogger('gfx-sprite-batch');
 

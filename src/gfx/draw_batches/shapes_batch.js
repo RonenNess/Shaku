@@ -14,7 +14,7 @@
 const { Rectangle } = require('../../utils');
 const Vector2 = require('../../utils/vector2');
 const Vector3 = require('../../utils/vector3');
-const Matrix = require('../matrix');
+const Matrix = require('../../utils/matrix.js');
 const Vertex = require('../vertex');
 const DrawBatch = require('./draw_batch');
 const _logger = require('../../logger.js').getLogger('gfx-sprite-batch');

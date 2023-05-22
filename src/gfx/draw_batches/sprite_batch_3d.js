@@ -12,9 +12,10 @@
  */
 'use strict';
 const Vector3 = require('../../utils/vector3');
-const Matrix = require('../matrix');
+const Matrix = require('../../utils/matrix.js');
 const DrawBatch = require('./draw_batch');
 const SpriteBatch = require('./sprite_batch');
+const Frustum = require('../../utils/frustum');
 const _logger = require('../../logger.js').getLogger('gfx-sprite-batch');
 
 
@@ -32,18 +33,18 @@ class SpriteBatch3D extends SpriteBatch
     constructor(batchSpritesCount, normalizeUvs)
     {
         super(batchSpritesCount, normalizeUvs, true);
-        this.setViewLookat();
+        this.__camera = this.#_gfx.createCamera();
         this.setPerspectiveCamera();
+        this.camera.setViewLookat();
     }
 
     /**
-     * Set to default view matrix.
-     * @param {Vector3=} eyePosition Camera source position.
-     * @param {Vector3=} lookAt Camera look-at target.
+     * Get camera instance.
+     * @returns {Camera} Camera instance.
      */
-    setViewLookat(eyePosition, lookAt)
+    get camera()
     {
-        this.__view = Matrix.lookAt(eyePosition || new Vector3(0, 0, -500), lookAt || new Vector3(0, 0, 0), Vector3.upReadonly);
+        return this.__camera;
     }
 
     /**
@@ -55,13 +56,12 @@ class SpriteBatch3D extends SpriteBatch
      */
     setPerspectiveCamera(fieldOfView, aspectRatio, zNear, zFar)
     {
-        let camera = this.#_gfx.createCamera();
+        let camera = this.__camera;
         fieldOfView = fieldOfView || ((45 * Math.PI) / 180);
         aspectRatio = aspectRatio || (this.#_gfx.getRenderingSize().x / this.#_gfx.getRenderingSize().y);
         zNear = zNear || 0.1;
         zFar = zFar || 10000.0;
         camera.perspective(fieldOfView, aspectRatio, zNear, zFar);
-        this.__camera = camera;
     }
 
     /**
@@ -100,20 +100,11 @@ class SpriteBatch3D extends SpriteBatch
 
     /**
      * Set the camera for this batch.
-     * @param {Matrix} camera Camera object to apply when drawing, or null if you want to set the camera manually.
+     * @param {Camera} camera Camera object to apply when drawing, or null if you want to set the camera manually.
      */
     setCamera(camera)
     {
         this.__camera = camera;
-    }
-
-    /**
-     * Set the view matrix for this batch.
-     * @param {Matrix} view View matrix, or null if you want to set the view matrix manually.
-     */
-    setView(view)
-    {
-        this.__view = view;
     }
 
     /**
@@ -122,7 +113,7 @@ class SpriteBatch3D extends SpriteBatch
      */
     _onSetEffect(effect, texture)
     {
-        if (this.__view) { effect.setViewMatrix(this.__view); }
+        if (this.__camera.view) { effect.setViewMatrix(this.__camera.view); }
         if (this.__camera) { this.#_gfx.applyCamera(this.__camera); }
     }
 }

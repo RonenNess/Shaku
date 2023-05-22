@@ -14,7 +14,8 @@
 
 const Rectangle = require("../utils/rectangle");
 const Vector2 = require("../utils/vector2");
-const Matrix = require("./matrix");
+const Matrix = require('../utils/matrix.js');
+const Vector3 = require("../utils/vector3");
 
  /**
   * Implements a Camera object.
@@ -32,11 +33,40 @@ class Camera
          * You can set it manually, or use 'orthographicOffset' / 'orthographic' / 'perspective' helper functions.
          */
         this.projection = null;
+    
+        /**
+         * Camera view matrix.
+         * You can set it manually, or use 'setViewLookat' helper function.
+         */
+        this.view = null;
 
-        this._region = null;
-        this._gfx = gfx;
+        // internal stuff
+        this.__region = null;
+        this.__gfx = gfx;
+        this.__viewport = null;
         this.orthographic();
-        this._viewport = null;
+    }
+
+    /**
+     * Calc and return the currently-visible view frustum, based on active camera.
+     * @returns {Frustum} Visible frustum.
+     */
+    calcVisibleFrustum()
+    {
+        if (!this.projection || !this.view) { throw new Error("You must set both projection and view matrices to calculate visible frustum!"); }
+        const frustum = new Frustum();
+        frustum.setFromProjectionMatrix(Matrix.multiply(this.projection, this.view));
+        return frustum;
+    }
+
+    /**
+     * Set camera view matrix from source position and lookat.
+     * @param {Vector3=} eyePosition Camera source position.
+     * @param {Vector3=} lookAt Camera look-at target.
+     */
+    setViewLookat(eyePosition, lookAt)
+    {
+        this.view = Matrix.lookAt(eyePosition || new Vector3(0, 0, -500), lookAt || Vector3.zeroReadonly, Vector3.upReadonly);
     }
 
     /**
@@ -45,7 +75,7 @@ class Camera
      */
     get viewport()
     {
-        return this._viewport;
+        return this.__viewport;
     }
 
     /**
@@ -54,7 +84,7 @@ class Camera
      */
     set viewport(viewport)
     {
-        this._viewport = viewport;
+        this.__viewport = viewport;
         return viewport;
     }
 
@@ -64,7 +94,7 @@ class Camera
      */
     getRegion()
     {
-        return this._region.clone();
+        return this.__region.clone();
     }
 
     /**
@@ -76,7 +106,7 @@ class Camera
      */
     orthographicOffset(offset, ignoreViewportSize, near, far)
     {
-        let renderingSize = (ignoreViewportSize || !this.viewport) ? this._gfx.getCanvasSize() : this.viewport.getSize();
+        let renderingSize = (ignoreViewportSize || !this.viewport) ? this.__gfx.getCanvasSize() : this.viewport.getSize();
         let region = new Rectangle(offset.x, offset.y, renderingSize.x, renderingSize.y);
         this.orthographic(region, near, far);
     }
@@ -90,9 +120,9 @@ class Camera
     orthographic(region, near, far) 
     {
         if (region === undefined) {
-            region = this._gfx._internal.getRenderingRegionInternal();
+            region = this.__gfx._internal.getRenderingRegionInternal();
         }
-        this._region = region;
+        this.__region = region;
         this.projection = Matrix.orthographic(region.left, region.right, region.bottom, region.top, near || -1, far || 400);
     }
 

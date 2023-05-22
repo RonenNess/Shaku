@@ -12,7 +12,7 @@
  */
 'use strict';
 const { Vector2, Color } = require("../utils");
-const Matrix = require("./matrix");
+const Matrix = require('../utils/matrix.js');
 
 /**
  * A vertex we can push to sprite batch.

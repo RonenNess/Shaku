@@ -1,5 +1,5 @@
 /**
- * A utility to hold gametime.
+ * A utility to provide gametime and delta between frames.
  * 
  * |-- copyright and license --|
  * @module     Shaku
@@ -14,7 +14,7 @@
 
  
 /**
- * Class to hold current game time (elapse and deltatime).
+ * Class to hold current game time, both elapse and delta from last frame.
  */
 class GameTime
 {

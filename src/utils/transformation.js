@@ -13,7 +13,7 @@
 'use strict';
 const MathHelper = require("./math_helper");
 const TransformModes = require("./transform_modes");
-const Matrix = require("../gfx/matrix");
+const Matrix = require("./matrix");
 const Vector2 = require("./vector2");
 
 // some default values

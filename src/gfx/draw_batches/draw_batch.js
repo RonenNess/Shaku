@@ -13,7 +13,7 @@
 'use strict';
 const { BlendModes } = require('../blend_modes');
 const { BuffersUsage } = require('./buffers_usage');
-const Matrix = require('../matrix');
+const Matrix = require('../../utils/matrix.js');
 const _logger = require('../../logger.js').getLogger('gfx-draw-batch');
 
 /**

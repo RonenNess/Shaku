@@ -13,7 +13,7 @@
 'use strict';
 const Color = require("../utils/color");
 const Vector2 = require("../utils/vector2");
-const Matrix = require("./matrix");
+const Matrix = require('../utils/matrix.js');
 const Sprite = require("./sprite");
 
 

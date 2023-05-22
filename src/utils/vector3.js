@@ -434,7 +434,7 @@ class Vector3
     }
     
     /**
-     * Calculate distance between this vector and another vectors.
+     * Calculate distance between this vector and another vector.
      * @param {Vector3} other Other vector.
      * @returns {Number} Distance between vectors.
      */
@@ -443,6 +443,52 @@ class Vector3
         return Vector3.distance(this, other);
     }
     
+    /**
+     * Calculate squared distance between this vector and another vector.
+     * @param {Vector3} other Other vector.
+     * @returns {Number} Distance between vectors.
+     */
+    distanceToSquared(other)
+    {
+		const dx = this.x - other.x, dy = this.y - other.y, dz = this.z - other.z;
+		return dx * dx + dy * dy + dz * dz;
+	}
+    
+    /**
+     * Return a clone and clamp its values to be between min and max.
+     * @param {Vector3} min Min vector.
+     * @param {Vector3} max Max vector.
+     * @returns {Vector3} Clamped vector.
+     */
+    clamp( min, max ) 
+    {
+        return this.clone().clampSelf(min, max);
+    }
+
+    /**
+     * Clamp this vector values to be between min and max.
+     * @param {Vector3} min Min vector.
+     * @param {Vector3} max Max vector.
+     * @returns {Vector3} Self.
+     */
+    clampSelf( min, max ) 
+    {
+		this.x = Math.max( min.x, Math.min( max.x, this.x ) );
+		this.y = Math.max( min.y, Math.min( max.y, this.y ) );
+		this.z = Math.max( min.z, Math.min( max.z, this.z ) );
+		return this;
+	}
+
+    /**
+     * Calculate the dot product with another vector.
+     * @param {Vector3} other Vector to calculate dot with.
+     * @returns {Number} Dot product value.
+     */
+    dot(other)
+    {
+		return this.x * other.x + this.y * other.y + this.z * other.z;
+	}
+
     /**
      * Lerp between two vectors.
      * @param {Vector3} p1 First vector.
@@ -487,6 +533,52 @@ class Vector3
 
 		return new Vector3(x, y, z);
     }
+
+    /**
+     * Set self values to be min values between self and a given vector.
+     * @param {Vector3} v Vector to min with.
+     * @returns {Vector3} Self.
+     */
+    minSelf(v) 
+    {
+		this.x = Math.min( this.x, v.x );
+		this.y = Math.min( this.y, v.y );
+		this.z = Math.min( this.z, v.z );
+    	return this;
+	}
+
+    /**
+     * Set self values to be max values between self and a given vector.
+     * @param {Vector3} v Vector to max with.
+     * @returns {Vector3} Self.
+     */
+	maxSelf(v) 
+    {
+		this.x = Math.max( this.x, v.x );
+		this.y = Math.max( this.y, v.y );
+		this.z = Math.max( this.z, v.z );
+		return this;
+	}
+
+    /**
+     * Create a clone vector that is the min result between self and a given vector.
+     * @param {Vector3} v Vector to min with.
+     * @returns {Vector3} Result vector.
+     */
+    min(v) 
+    {
+		this.clone().minSelf(v);
+	}
+
+    /**
+     * Create a clone vector that is the max result between self and a given vector.
+     * @param {Vector3} v Vector to max with.
+     * @returns {Vector3} Result vector.
+     */
+    max(v) 
+    {
+		this.clone().maxSelf(v);
+	}
 
     /**
      * Convert to string.

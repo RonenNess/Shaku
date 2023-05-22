@@ -33,7 +33,12 @@ const Utils = {
     PathFinder: require('./path_finder'),
     Transformation: require('./transformation'),
     TransformationModes: require('./transform_modes'),
-    ItemsSorter: require('./items_sorter')
+    ItemsSorter: require('./items_sorter'),
+    Frustum: require('./frustum'),
+    Plane: require('./plane'),
+    Sphere: require('./sphere'),
+    Matrix: require('./matrix'),
+    Box: require('./box')
 };
 
 // export the Utils module.

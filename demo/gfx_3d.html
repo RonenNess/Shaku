@@ -121,7 +121,7 @@
             spritesBatch3d.begin();
 
             // set view matrix
-            spritesBatch3d.setViewLookat(
+            spritesBatch3d.camera.setViewLookat(
               new Shaku.utils.Vector3(position.x, 500, 600 + position.z), 
               new Shaku.utils.Vector3(position.x, 0, position.z)
             );
@@ -207,7 +207,7 @@ function step() {
   // set camera view matrix
   // eyePosition should be Vector3 with the position of your camera
   // lookatPosition should be Vector3 with the position the camera looks at
-  spritesBatch3d.setViewLookat(
+  spritesBatch3d.camera.setViewLookat(
     eyePosition, 
     lookatPosition
   );

@@ -19,7 +19,7 @@ const { Effect, SpritesEffect, SpritesEffectNoVertexColor, MsdfFontEffect, Shape
 const TextureAsset = require('../assets/texture_asset.js');
 const { TextureFilterModes } = require('./texture_filter_modes.js');
 const { TextureWrapModes } = require('./texture_wrap_modes.js');
-const Matrix = require('./matrix.js');
+const Matrix = require('../utils/matrix.js');
 const Camera = require('./camera.js');
 const Sprite = require('./sprite.js');
 const SpritesGroup = require('./sprites_group.js');
