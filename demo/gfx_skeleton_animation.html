@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Shaku</title>
+    <meta name="description" content="Shaku - a simple and easy-to-use javascript library for videogame programming.">
+    <meta name="author" content="Ronen Ness">
+    <link href="css/style.css" rel="stylesheet" type="text/css" media="all">
+  </head>
+  <body>
+    <div class="noselect">
+      <div style="padding:0.5em">
+        <h1 class="demo-title" style="margin-left: 0;">Shaku Gfx Demo: Skeleton Animation</h1>
+      </div>
+      <p>This demo demonstrate basic skeleton-based animation with Shaku.<br />
+      Check out <b>js/skeleton_animator.js</b> for a tiny skeleton animating utility.</p>
+      
+      <!-- include shaku -->
+      <script src="js/demos.js"></script>
+      <script src="js/shaku.js"></script>
+      <script src="js/skeleton_animator.js"></script>
+
+      <!-- demo code -->
+      <script>
+        async function runDemo()
+        {
+          // init shaku
+          await Shaku.init();
+
+          // screen size
+          let screenX = 800;
+          let screenY = 600;
+
+          // load textures
+          let texture = await Shaku.assets.loadTexture('assets/bones.png');
+
+          // build the skeleton animation data
+          const skeleton = [{
+            duration: 1,
+            root: {
+              name: 'root',
+              children: [
+                {
+                  name: 'abdomen',
+                  rotation: 90,
+                  order: 0,
+                },
+                {
+                  name: 'chest',
+                  rotation: -90,
+                  order: 0,
+                  children: [
+                    {
+                      name: 'head',
+                      order: 1,
+                    },
+                    {
+                      name: 'leftShoulder',
+                      constLength: 4,
+                      rotation: -100,
+                      children: [
+                        {
+                          name: 'leftArm',
+                          rotation: -60,
+                          order: 12,
+                          spriteLengthComponent: 'height',
+                          children: [
+                            {
+                              name: 'leftHand',
+                              rotation: -70,
+                              order: 14,
+                              children: [{
+                                origin: 0.9,
+                                order: 13,
+                                name: 'sword'
+                              }]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      name: 'rightShoulder',
+                      constLength: 4,
+                      rotation: 100,
+                      children: [
+                        {
+                          name: 'rightArm',
+                          rotation: 60,
+                          order: 2,
+                          spriteLengthComponent: 'height',
+                          children: [
+                            {
+                              name: 'rightHand',
+                              rotation: -60,
+                              order: 3,
+                              children: [{
+                                origin: 0.9,
+                                order: 4,
+                                name: 'sword'
+                              }]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                  ]
+                }, 
+              ]
+            }
+          }];
+
+          // build the 'skin', ie the sprites we want to render on the skeleton
+          const skin = {
+            head: {
+              texture: texture,
+              sourceRect: new Shaku.utils.Rectangle(0, 0, 8, 8),
+              origin: new Shaku.utils.Vector2(0.5, 1),
+              rotation: 90
+            },
+            chest: {
+              texture: texture,
+              sourceRect: new Shaku.utils.Rectangle(8, 0, 8, 8),
+              origin: new Shaku.utils.Vector2(0.5, 1),
+              rotation: 90
+            },
+            abdomen: {
+              texture: texture,
+              sourceRect: new Shaku.utils.Rectangle(1, 18, 6, 4),
+              origin: new Shaku.utils.Vector2(0.5, 0),
+              rotation: -90
+            },
+            leftArm: {
+              texture: texture,
+              sourceRect: new Shaku.utils.Rectangle(0, 9, 3, 6),
+              origin: new Shaku.utils.Vector2(0.5, 0),
+              rotation: -90
+            },
+            rightArm: {
+              texture: texture,
+              sourceRect: new Shaku.utils.Rectangle(3, 9, 3, 6),
+              origin: new Shaku.utils.Vector2(0.5, 0),
+              rotation: -90
+            },
+            leftHand: {
+              texture: texture,
+              sourceRect: new Shaku.utils.Rectangle(6, 9, 4, 7),
+              origin: new Shaku.utils.Vector2(0.5, 0),
+              rotation: -90
+            },
+            rightHand: {
+              texture: texture,
+              sourceRect: new Shaku.utils.Rectangle(12, 9, 4, 7),
+              origin: new Shaku.utils.Vector2(0.5, 0),
+              rotation: -90
+            },
+            crotch: {
+              texture: texture,
+              sourceRect: new Shaku.utils.Rectangle(9, 17, 5, 7),
+              origin: new Shaku.utils.Vector2(0.5, 0),
+              rotation: 0
+            },
+            sword: {
+              texture: texture,
+              sourceRect: new Shaku.utils.Rectangle(0, 43, 18, 5),
+              origin: new Shaku.utils.Vector2(0.1, 0.5),
+              rotation: -90
+            },
+          };
+
+          // create skeleton animator
+          const scale = 10;
+          const animator = new SkeletonRenderer(skeleton, skin, scale);
+          animator.position.set(400, 300);
+
+          // add canvas to document
+          document.body.appendChild(Shaku.gfx.canvas);
+          Shaku.gfx.setResolution(screenX, screenY, true);
+
+          // create sprites batch
+          let spritesBatch = new Shaku.gfx.SpriteBatch();
+
+          // do a main loop step.
+          function step() {
+            
+            Shaku.startFrame();
+            Shaku.gfx.clear(Shaku.utils.Color.gray);
+
+            // update skeleton animations
+            animator.update(Shaku.gameTime.delta);
+
+            // build sprites to draw for skeleton
+            const drawParts = [];
+            animator.walk((currBone, parent, sprite, transformations) => {
+              const size = sprite.sourceRect.getSize().mul(transformations.scale);
+              const rotation = (sprite.rotation + transformations.rotation) * (Math.PI / 180);
+              drawParts.push({
+                texture: sprite.texture, 
+                position: transformations.position, 
+                size: size, 
+                source: sprite.sourceRect, 
+                rotation: rotation, 
+                origin: sprite.origin,
+                order: currBone.order || 0
+              });
+            });
+            drawParts.sort((a, b) => (a.order - b.order));
+
+            // draw the parts
+            spritesBatch.begin();
+            for (let part of drawParts) {
+              spritesBatch.drawQuad(part.texture, part.position, part.size, part.source, undefined, part.rotation, part.origin);
+            }
+            spritesBatch.end();
+
+            Shaku.endFrame();
+            Shaku.requestAnimationFrame(step);
+          }
+          step();
+        }
+
+        // start demo
+        runDemo();
+
+      </script>
+
+    </div>
+  </body>
+</html>
