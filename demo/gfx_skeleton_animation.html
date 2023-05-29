@@ -8,6 +8,24 @@
     <link href="css/style.css" rel="stylesheet" type="text/css" media="all">
   </head>
   <body>
+
+    <div style="overflow-y:scroll; border: 1px black solid; width:480px; position:fixed; height:100%; right:0px; top:0px; padding:1em;">
+      <p id="general-errors" style="color:red"></p>
+      <h2>Skeleton Structure</h2>
+      <textarea id="skeleton-textarea" rows="20" style="width: 100%; resize:vertical; cursor:text"></textarea>
+      <p id="skeleton-textarea-errors" style="color:red"></p>
+      <h2>Animation</h2>
+      <textarea id="animation-textarea" rows="20" style="width: 100%; resize:vertical; cursor:text"></textarea>
+      <p id="animation-textarea-errors" style="color:red"></p>
+      <h2>Skin</h2>
+      <button id="set-skin-bones" type="button" class="btn btn-primary">Skeleton</button>
+      <button id="set-skin-barb" type="button" class="btn btn-primary">Barberian</button>
+      <button id="set-skin-mix" type="button" class="btn btn-primary">Mix!</button>
+      <textarea id="skin-textarea" rows="20" style="width: 100%; resize:vertical; cursor:text"></textarea>
+      <p id="skin-textarea-errors" style="color:red"></p>
+      <br /><br /><br />
+    </div>
+
     <div class="noselect">
       <div style="padding:0.5em">
         <h1 class="demo-title" style="margin-left: 0;">Shaku Gfx Demo: Skeleton Animation</h1>
@@ -32,146 +50,419 @@
           let screenY = 600;
 
           // load textures
-          let texture = await Shaku.assets.loadTexture('assets/bones.png');
+          let textures = {
+            'bones.png': await Shaku.assets.loadTexture('assets/bones.png'),
+            'barb.png': await Shaku.assets.loadTexture('assets/barb.png'),
+          };
 
           // build the skeleton animation data
-          const skeleton = [{
-            duration: 1,
-            root: {
-              name: 'root',
-              children: [
-                {
-                  name: 'abdomen',
-                  rotation: 90,
-                  order: 0,
-                },
-                {
-                  name: 'chest',
-                  rotation: -90,
-                  order: 0,
-                  children: [
-                    {
-                      name: 'head',
-                      order: 1,
-                    },
-                    {
-                      name: 'leftShoulder',
-                      constLength: 4,
-                      rotation: -100,
-                      children: [
-                        {
-                          name: 'leftArm',
-                          rotation: -60,
-                          order: 12,
-                          spriteLengthComponent: 'height',
-                          children: [
-                            {
-                              name: 'leftHand',
-                              rotation: -70,
-                              order: 14,
-                              children: [{
-                                origin: 0.9,
-                                order: 13,
-                                name: 'sword'
-                              }]
-                            }
-                          ]
-                        }
-                      ]
-                    },
-                    {
-                      name: 'rightShoulder',
-                      constLength: 4,
-                      rotation: 100,
-                      children: [
-                        {
-                          name: 'rightArm',
-                          rotation: 60,
-                          order: 2,
-                          spriteLengthComponent: 'height',
-                          children: [
-                            {
-                              name: 'rightHand',
-                              rotation: -60,
-                              order: 3,
-                              children: [{
-                                origin: 0.9,
-                                order: 4,
-                                name: 'sword'
-                              }]
-                            }
-                          ]
-                        }
-                      ]
-                    },
-                  ]
-                }, 
-              ]
-            }
-          }];
+          var skeleton = 
+          {
+            name: 'root',
+            children: [
+              {
+                name: 'abdomen',
+                rotation: 90,
+                order: 0,
+                children: [
+                  {
+                    name: 'crotch',
+                    children: [
+                      {
+                        name: 'leftHipJoint',
+                        constLength: 2,
+                        rotation: 90,
+                        children: [
+                          {
+                            rotation: -90,
+                            name: 'leftLeg',
+                            children: [
+                              {
+                                name: 'leftFoot',
+                                rotation: 20
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        name: 'rightHipJoint',
+                        constLength: 2,
+                        rotation: -90,
+                        children: [
+                          {
+                            rotation: 60,
+                            name: 'rightLeg',
+                            order: -1,
+                            children: [
+                              {
+                                order: -2,
+                                name: 'rightFoot',
+                                rotation: 30
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                name: 'chest',
+                rotation: -90,
+                order: 0,
+                children: [
+                  {
+                    name: 'head',
+                    order: 1,
+                  },
+                  {
+                    name: 'leftShoulder',
+                    constLength: 5,
+                    rotation: -100,
+                    children: [
+                      {
+                        name: 'leftArm',
+                        rotation: -60,
+                        order: 12,
+                        spriteLengthComponent: 'height',
+                        children: [
+                          {
+                            name: 'leftHand',
+                            rotation: -70,
+                            order: 14,
+                            children: [{
+                              origin: 0.9,
+                              order: 13,
+                              name: 'sword'
+                            }]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    name: 'rightShoulder',
+                    constLength: 5,
+                    rotation: 100,
+                    children: [
+                      {
+                        name: 'rightArm',
+                        rotation: 60,
+                        order: -1,
+                        spriteLengthComponent: 'height',
+                        children: [
+                          {
+                            name: 'rightHand',
+                            rotation: -60,
+                            order: -2,
+                            children: [{
+                              origin: 0.9,
+                              order: -3,
+                              name: 'sword'
+                            }]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                ]
+              }, 
+            ]
+          };
 
-          // build the 'skin', ie the sprites we want to render on the skeleton
-          const skin = {
+          // animation to play
+          var animation = [
+            {
+              "duration": 1,
+              "transitionToNext": "linear",
+              "transformations": {
+                "root/chest": {
+                  "rotation": 5
+                },
+                "root/chest/rightShoulder/rightArm": {
+                  "rotation": -20
+                },
+                "root/chest/leftShoulder/leftArm": {
+                  "rotation": 10
+                }
+              }
+            },
+            {
+              "duration": 1,
+              "transitionToNext": "quadLerp",
+              "transformations": {
+                "root/chest/head": {
+                  "rotation": -5
+                },
+                "root/abdomen/crotch/leftHipJoint/leftLeg": {
+                  "rotation": 10
+                },
+                "root/abdomen/crotch/leftHipJoint/leftLeg/leftFoot": {
+                  "rotation": -10
+                },
+                "root/abdomen/crotch/rightHipJoint/rightLeg": {
+                  "rotation": 10
+                },
+                "root/abdomen/crotch/rightHipJoint/rightLeg/rightFoot": {
+                  "rotation": -10
+                }
+              }
+            }
+          ];
+
+          // build the skeleton skin - the sprites we attach to bones.
+          const bonesSkin = {
             head: {
-              texture: texture,
+              texture: 'bones.png',
               sourceRect: new Shaku.utils.Rectangle(0, 0, 8, 8),
+              boneLength: 8,
               origin: new Shaku.utils.Vector2(0.5, 1),
               rotation: 90
             },
             chest: {
-              texture: texture,
-              sourceRect: new Shaku.utils.Rectangle(8, 0, 8, 8),
-              origin: new Shaku.utils.Vector2(0.5, 1),
+              texture: 'bones.png',
+              sourceRect: new Shaku.utils.Rectangle(8, 0, 10, 8),
+              boneLength: 8,
+              origin: new Shaku.utils.Vector2(0.45, 1),
               rotation: 90
             },
             abdomen: {
-              texture: texture,
+              texture: 'bones.png',
               sourceRect: new Shaku.utils.Rectangle(1, 18, 6, 4),
+              boneLength: 3,
               origin: new Shaku.utils.Vector2(0.5, 0),
               rotation: -90
             },
             leftArm: {
-              texture: texture,
+              texture: 'bones.png',
               sourceRect: new Shaku.utils.Rectangle(0, 9, 3, 6),
+              boneLength: 6,
               origin: new Shaku.utils.Vector2(0.5, 0),
               rotation: -90
             },
             rightArm: {
-              texture: texture,
+              texture: 'bones.png',
               sourceRect: new Shaku.utils.Rectangle(3, 9, 3, 6),
+              boneLength: 6,
               origin: new Shaku.utils.Vector2(0.5, 0),
               rotation: -90
             },
             leftHand: {
-              texture: texture,
+              texture: 'bones.png',
               sourceRect: new Shaku.utils.Rectangle(6, 9, 4, 7),
+              boneLength: 7,
               origin: new Shaku.utils.Vector2(0.5, 0),
               rotation: -90
             },
             rightHand: {
-              texture: texture,
+              texture: 'bones.png',
               sourceRect: new Shaku.utils.Rectangle(12, 9, 4, 7),
+              boneLength: 7,
               origin: new Shaku.utils.Vector2(0.5, 0),
               rotation: -90
             },
             crotch: {
-              texture: texture,
-              sourceRect: new Shaku.utils.Rectangle(9, 17, 5, 7),
+              texture: 'bones.png',
+              sourceRect: new Shaku.utils.Rectangle(9, 17, 7, 5),
+              boneLength: 4,
               origin: new Shaku.utils.Vector2(0.5, 0),
-              rotation: 0
+              rotation: -90
             },
             sword: {
-              texture: texture,
+              texture: 'bones.png',
               sourceRect: new Shaku.utils.Rectangle(0, 43, 18, 5),
               origin: new Shaku.utils.Vector2(0.1, 0.5),
+              boneLength: 18,
+              rotation: -90
+            },
+            leftLeg: {
+              texture: 'bones.png',
+              sourceRect: new Shaku.utils.Rectangle(1, 24, 3, 5),
+              boneLength: 5,
+              origin: new Shaku.utils.Vector2(0.5, 0),
+              rotation: -90
+            },
+            rightLeg: {
+              texture: 'bones.png',
+              sourceRect: new Shaku.utils.Rectangle(6, 24, 3, 5),
+              boneLength: 5,
+              origin: new Shaku.utils.Vector2(0.5, 0),
+              rotation: -90
+            },
+            leftFoot: {
+              texture: 'bones.png',
+              sourceRect: new Shaku.utils.Rectangle(1, 30, 6, 13),
+              boneLength: 13,
+              origin: new Shaku.utils.Vector2(0.4, 0),
+              rotation: -90
+            },
+            rightFoot: {
+              texture: 'bones.png',
+              sourceRect: new Shaku.utils.Rectangle(9, 30, 6, 13),
+              boneLength: 13,
+              origin: new Shaku.utils.Vector2(0.4, 0),
               rotation: -90
             },
           };
 
+          // build the barberian skin - the sprites we attach to bones.
+          const barberianSkin = {
+            head: {
+              texture: 'barb.png',
+              sourceRect: new Shaku.utils.Rectangle(10, 33, 5, 6),
+              boneLength: 6,
+              origin: new Shaku.utils.Vector2(0.5, 1),
+              rotation: 90
+            },
+            chest: {
+              texture: 'barb.png',
+              sourceRect: new Shaku.utils.Rectangle(2, 0, 11, 9),
+              boneLength: 8,
+              origin: new Shaku.utils.Vector2(0.45, 0.9),
+              rotation: 90
+            },
+            abdomen: {
+              texture: 'barb.png',
+              sourceRect: new Shaku.utils.Rectangle(0, 17, 7, 5),
+              boneLength: 3,
+              origin: new Shaku.utils.Vector2(0.4, 0.1),
+              rotation: -90
+            },
+            leftArm: {
+              texture: 'barb.png',
+              sourceRect: new Shaku.utils.Rectangle(1, 9, 5, 7),
+              boneLength: 6,
+              origin: new Shaku.utils.Vector2(0.5, 0.1),
+              rotation: -90
+            },
+            rightArm: {
+              texture: 'barb.png',
+              sourceRect: new Shaku.utils.Rectangle(10, 9, 5, 7),
+              boneLength: 6,
+              origin: new Shaku.utils.Vector2(0.5, 0.1),
+              rotation: -90
+            },
+            leftHand: {
+              texture: 'barb.png',
+              sourceRect: new Shaku.utils.Rectangle(13, 24, 3, 8),
+              boneLength: 8,
+              origin: new Shaku.utils.Vector2(0.5, 0),
+              rotation: -90
+            },
+            rightHand: {
+              texture: 'barb.png',
+              sourceRect: new Shaku.utils.Rectangle(9, 24, 3, 8),
+              boneLength: 8,
+              origin: new Shaku.utils.Vector2(0.5, 0),
+              rotation: -90
+            },
+            crotch: {
+              texture: 'barb.png',
+              sourceRect: new Shaku.utils.Rectangle(8, 18, 8, 3),
+              boneLength: 2,
+              origin: new Shaku.utils.Vector2(0.47, 0),
+              rotation: -90
+            },
+            sword: {
+              texture: 'barb.png',
+              sourceRect: new Shaku.utils.Rectangle(0, 43, 18, 5),
+              origin: new Shaku.utils.Vector2(0.1, 0.5),
+              boneLength: 18,
+              rotation: -90
+            },
+            leftLeg: {
+              texture: 'barb.png',
+              sourceRect: new Shaku.utils.Rectangle(0, 23, 4, 8),
+              boneLength: 7,
+              origin: new Shaku.utils.Vector2(0.6, 0),
+              rotation: -90
+            },
+            rightLeg: {
+              texture: 'barb.png',
+              sourceRect: new Shaku.utils.Rectangle(5, 23, 4, 8),
+              boneLength: 7,
+              origin: new Shaku.utils.Vector2(0.6, 0),
+              rotation: -90
+            },
+            leftFoot: {
+              texture: 'barb.png',
+              sourceRect: new Shaku.utils.Rectangle(0, 31, 4, 11),
+              boneLength: 11,
+              origin: new Shaku.utils.Vector2(0.6, 0),
+              rotation: -90
+            },
+            rightFoot: {
+              texture: 'barb.png',
+              sourceRect: new Shaku.utils.Rectangle(5, 31, 4, 11),
+              boneLength: 11,
+              origin: new Shaku.utils.Vector2(0.4, 0),
+              rotation: -90
+            },
+          };
+
+          // set default skin to skeleton
+          var skin = Math.random() < 0.5 ? barberianSkin : bonesSkin;
+
+          // fill textareas
+          document.getElementById('skeleton-textarea').value = JSON.stringify(skeleton, null, 2);
+          document.getElementById('animation-textarea').value = JSON.stringify(animation, null, 2);
+          document.getElementById('skin-textarea').value = JSON.stringify(skin, null, 2);
+
+          // button to set skeleton skin
+          document.getElementById('set-skin-bones').onclick = () => {
+            document.getElementById('skin-textarea').value = JSON.stringify(bonesSkin, null, 2);
+            document.getElementById('skin-textarea').onchange();
+          }
+          document.getElementById('set-skin-barb').onclick = () => {
+            document.getElementById('skin-textarea').value = JSON.stringify(barberianSkin, null, 2);
+            document.getElementById('skin-textarea').onchange();
+          }
+          document.getElementById('set-skin-mix').onclick = () => {
+            const mixed = {};
+            for (let key in bonesSkin) {
+              mixed[key] = Math.random() < 0.5 ? barberianSkin[key] : bonesSkin[key];
+            }
+            document.getElementById('skin-textarea').value = JSON.stringify(mixed, null, 2);
+            document.getElementById('skin-textarea').onchange();
+          }
+
           // create skeleton animator
-          const scale = 10;
-          const animator = new SkeletonRenderer(skeleton, skin, scale);
-          animator.position.set(400, 300);
+          var animator;
+          function updateAnimator()
+          {
+            const scale = 10;
+            animator = new SkeletonRenderer(skeleton, animation, skin, scale);
+            animator.position.set(400, 300);
+          }
+          updateAnimator();
+
+          // add callbacks to update skeleton from textareas
+          document.getElementById('skeleton-textarea').onkeyup = document.getElementById('skeleton-textarea').onchange = function() { 
+            try {
+              skeleton = JSON.parse(this.value); updateAnimator(); 
+              this.style.color = 'black';
+              document.getElementById('skeleton-textarea-errors').innerHTML = "";
+            }
+            catch (e) { this.style.color = 'red'; document.getElementById('skeleton-textarea-errors').innerHTML = e; }
+          }
+          document.getElementById('animation-textarea').onkeyup = document.getElementById('animation-textarea').onchange = function() { 
+            try {
+                animation = JSON.parse(this.value); updateAnimator(); 
+                this.style.color = 'black';
+                document.getElementById('animation-textarea-errors').innerHTML = "";
+              }
+              catch (e) { this.style.color = 'red'; document.getElementById('animation-textarea-errors').innerHTML = e; }
+          }
+          document.getElementById('skin-textarea').onkeyup = document.getElementById('skin-textarea').onchange = function() { 
+            try {
+              skin = JSON.parse(this.value); updateAnimator(); 
+              this.style.color = 'black';
+              document.getElementById('skin-textarea-errors').innerHTML = "";
+            }
+              catch (e) { this.style.color = 'red'; document.getElementById('skin-textarea-errors').innerHTML = e; }
+          }
 
           // add canvas to document
           document.body.appendChild(Shaku.gfx.canvas);
@@ -191,25 +482,31 @@
 
             // build sprites to draw for skeleton
             const drawParts = [];
-            animator.walk((currBone, parent, sprite, transformations) => {
-              const size = sprite.sourceRect.getSize().mul(transformations.scale);
-              const rotation = (sprite.rotation + transformations.rotation) * (Math.PI / 180);
-              drawParts.push({
-                texture: sprite.texture, 
-                position: transformations.position, 
-                size: size, 
-                source: sprite.sourceRect, 
-                rotation: rotation, 
-                origin: sprite.origin,
-                order: currBone.order || 0
+            try {
+              animator.walk((currBone, parent, sprite, transformations) => {
+                const size = new Shaku.utils.Vector2(sprite.sourceRect.width, sprite.sourceRect.height).mulSelf(transformations.scale);
+                const rotation = (sprite.rotation + transformations.rotation) * (Math.PI / 180);
+                drawParts.push({
+                  texture: sprite.texture, 
+                  position: transformations.position, 
+                  size: size, 
+                  source: Shaku.utils.Rectangle.fromDict(sprite.sourceRect), 
+                  rotation: rotation, 
+                  origin: Shaku.utils.Vector2.fromDict(sprite.origin),
+                  order: currBone.order || 0
+                });
               });
-            });
-            drawParts.sort((a, b) => (a.order - b.order));
+              drawParts.sort((a, b) => (a.order - b.order));
+              document.getElementById('general-errors').innerHTML = "";
+            } 
+            catch (e) {
+              document.getElementById('general-errors').innerHTML = e;
+            }
 
             // draw the parts
             spritesBatch.begin();
             for (let part of drawParts) {
-              spritesBatch.drawQuad(part.texture, part.position, part.size, part.source, undefined, part.rotation, part.origin);
+              spritesBatch.drawQuad(textures[part.texture], part.position, part.size, part.source, undefined, part.rotation, part.origin);
             }
             spritesBatch.end();
 
