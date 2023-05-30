@@ -15851,7 +15851,6 @@ module.exports = MathHelper;
 
 const Vector2 = __webpack_require__(2544);
 const Vector3 = __webpack_require__(8329);
-const Vertex = __webpack_require__(4288);
 const EPSILON = Number.EPSILON;
 
 

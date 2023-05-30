@@ -2427,6 +2427,7 @@ Since I decided to do breaking changes in the `gfx` manager anyway, I took the o
 
 - Bugfix in frustum collision with box.
 - Added skeleton animation demo.
+- Fixed cycle dependency in Matrix.
 
 # License
 

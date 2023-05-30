@@ -14,7 +14,6 @@
 'use strict';
 const Vector2 = require("./vector2");
 const Vector3 = require("./vector3");
-const Vertex = require("../gfx/vertex");
 const EPSILON = Number.EPSILON;
 
 
