@@ -88,6 +88,15 @@ class Camera3D extends Camera
     }
 
     /**
+     * Get projection view matrix.
+     * @returns {Matrix} Projection-view matrix.
+     */
+    getProjectionView()
+    {
+        return Matrix.multiply(this.projection, this.view);
+    }
+
+    /**
      * Make this camera a perspective camera.
      * @param {*} fieldOfView Field of view angle in radians.
      * @param {*} aspectRatio Aspect ratio.
