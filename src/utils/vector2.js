@@ -754,7 +754,6 @@ class Vector2
     }
 }
 
-
 /**
  * Vector with 0,0 values as a frozen shared object.
  * Be careful not to try and change it.

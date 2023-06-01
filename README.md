@@ -2431,6 +2431,7 @@ Since I decided to do breaking changes in the `gfx` manager anyway, I took the o
 - Separated 3d camera from 2d camera.
 - Added functionality to the 3d camera object.
 - Changed 'Matrix' API to make it more intuitive.
+- Added optimization for 'instanceof' checks (on Chrome its pretty much the same, on FF instanceof is ~6% slower).
 
 # License
 

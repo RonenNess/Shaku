@@ -91,7 +91,7 @@ class CollisionResolver
 
         // collision
         if (result) {
-            let position = (result instanceof Vector2) ? result : null;
+            let position = (result.isVector2) ? result : null;
             return new CollisionTestResult(position, first, second);
         }
 

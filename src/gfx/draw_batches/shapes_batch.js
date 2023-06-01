@@ -287,7 +287,7 @@ class ShapesBatch extends DrawBatch
      */
     drawRectangle(destRect, color, rotation, origin)
     {
-        if ((destRect instanceof Vector2) || (destRect instanceof Vector3)) {
+        if ((destRect.isVector2) || (destRect.isVector3)) {
             destRect = new Rectangle(0, 0, destRect.x, destRect.y);
         }
         let position = origin ? destRect.getPosition().addSelf(size.mul(origin)) : destRect.getCenter();

@@ -41,5 +41,13 @@ const Utils = {
     Box: require('./box')
 };
 
+// add a 'isXXX' property to all util objects, for faster alternative to 'instanceof' checks.
+// for example this will generate a 'isVector3' that will be true for all Vector3 instances.
+for (let key in Utils) {
+    if (Utils[key].prototype) {
+        Utils[key].prototype['is' + key] = true;
+    }
+}
+
 // export the Utils module.
 module.exports = Utils;

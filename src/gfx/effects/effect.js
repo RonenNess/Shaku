@@ -140,7 +140,7 @@ class Effect
                             _this._pendingUniformValues[name] = [v1, v2, v3, v4];
                             return;
                         }
-                        if (v1 instanceof Color) {
+                        if (v1.isColor) {
                             _this._gl[method](location, v1.floatArray);
                         }
                         else {

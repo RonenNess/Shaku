@@ -142,6 +142,16 @@ class Matrix
 	}
 
     /**
+     * Transform a target.
+     * @param {Vector2|Vector3|Vertex} target Transforms a target, that can be vector2, vector3, or vertex.
+     * @returns {Vector2|Vector3|Vector3} Transformed result.
+     */
+    transform(target)
+    {
+
+    }
+
+    /**
      * Create an orthographic projection matrix.
      * @returns {Matrix} a new matrix with result.
      */
@@ -421,7 +431,7 @@ class Matrix
     static transformVertex(matrix, vertex)
     {
         return new Vertex(
-            (vertex.position instanceof Vector2) ? Matrix.transformVector2(matrix, vertex.position) : Matrix.transformVector3(matrix, vertex.position), 
+            (vertex.position.isVector2) ? Matrix.transformVector2(matrix, vertex.position) : Matrix.transformVector3(matrix, vertex.position), 
             vertex.textureCoord, 
             vertex.color);
     }

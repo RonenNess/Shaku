@@ -769,14 +769,14 @@ class Gfx extends IManager
                 sprite.sourceRectangle = sourceRect;
                 sprite.size = size;
                 let positionOffset = fontTexture.getPositionOffset(character);
-                if (fontTexture instanceof MsdfFontTextureAsset) {
+                if (fontTexture.isMsdfFontTextureAsset) {
                     sprite.position.copy(position).addSelf(positionOffset.mul(scale * 0.5));
                 }
                 else {
                     sprite.position.copy(position).addSelf(positionOffset.mul(scale));
                 }
                 sprite.origin.set(0.5, 0.5);
-                if (color instanceof Color) {
+                if (color.isColor) {
                     sprite.color.copy(color);
                 }
                 else {
@@ -837,16 +837,16 @@ class Gfx extends IManager
     {
         let region = this.#_getRenderingRegionInternal();
 
-        if (shape instanceof Circle) {
+        if (shape.isCircle) {
             return region.collideCircle(shape);
         }
-        else if (shape instanceof Vector2) {
+        else if (shape.isVector2) {
             return region.containsVector(shape);
         }
-        else if (shape instanceof Rectangle) {
+        else if (shape.isRectangle) {
             return region.collideRect(shape);
         }
-        else if (shape instanceof Line) {
+        else if (shape.isLine) {
             return region.collideLine(shape);
         }
         else {

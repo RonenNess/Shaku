@@ -25,6 +25,12 @@ const Vector2 = require('../utils/vector2.js');
 const _logger = require('../logger.js').getLogger('assets');
 
 
+// add a 'isXXX' property to all util objects, for faster alternative to 'instanceof' checks.
+// for example this will generate a 'isVector3' that will be true for all Vector3 instances.
+for (let assetType of [SoundAsset, BinaryAsset, JsonAsset, TextureAsset, FontTextureAsset, MsdfFontTextureAsset, TextureAsset, TextureAtlasAsset]) {
+    assetType.prototype['is' + assetType.name] = true;
+}
+
 /**
  * Assets manager class.
  * Used to create, load and cache game assets, which includes textures, audio files, JSON objects, etc.

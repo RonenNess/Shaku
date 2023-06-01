@@ -109,12 +109,12 @@ class TextSpriteBatch extends SpriteBatchBase
         let texture = this.__currDrawingParams.texture;
 
         // sanity for msdf font
-        if (this.msdfFont && !(texture instanceof MsdfFontTextureAsset)) {
+        if (this.msdfFont && !(texture.isMsdfFontTextureAsset)) {
             _logger.warn("Trying to render an MSDF font but using an asset that isn't an instance of 'MsdfFontTextureAsset'!");
         }
 
         // sanity for none msdf font
-        if (!this.msdfFont && !(texture instanceof FontTextureAsset)) {
+        if (!this.msdfFont && !(texture.isFontTextureAsset)) {
             _logger.warn("Trying to render text sprites but using an asset that isn't an instance of 'FontTextureAsset'!");
         }
 

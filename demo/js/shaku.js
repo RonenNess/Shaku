@@ -171,6 +171,12 @@ const Vector2 = __webpack_require__(2544);
 const _logger = (__webpack_require__(5259).getLogger)('assets');
 
 
+// add a 'isXXX' property to all util objects, for faster alternative to 'instanceof' checks.
+// for example this will generate a 'isVector3' that will be true for all Vector3 instances.
+for (let assetType of [SoundAsset, BinaryAsset, JsonAsset, TextureAsset, FontTextureAsset, MsdfFontTextureAsset, TextureAsset, TextureAtlasAsset]) {
+    assetType.prototype['is' + assetType.name] = true;
+}
+
 /**
  * Assets manager class.
  * Used to create, load and cache game assets, which includes textures, audio files, JSON objects, etc.
@@ -3389,7 +3395,7 @@ class CollisionResolver
 
         // collision
         if (result) {
-            let position = (result instanceof Vector2) ? result : null;
+            let position = (result.isVector2) ? result : null;
             return new CollisionTestResult(position, first, second);
         }
 
@@ -5410,7 +5416,7 @@ class LinesBatch extends DrawBatch
      */
     drawRectangle(destRect, sourceRect, color, rotation, origin)
     {
-        if ((destRect instanceof Vector2) || (destRect instanceof Vector3)) {
+        if ((destRect.isVector2) || (destRect.isVector3)) {
             destRect = new Rectangle(0, 0, destRect.x, destRect.y);
         }
         this.drawQuad(destRect.getCenter(), destRect.getSize(), sourceRect, color, rotation, origin);
@@ -6040,7 +6046,7 @@ class ShapesBatch extends DrawBatch
      */
     drawRectangle(destRect, color, rotation, origin)
     {
-        if ((destRect instanceof Vector2) || (destRect instanceof Vector3)) {
+        if ((destRect.isVector2) || (destRect.isVector3)) {
             destRect = new Rectangle(0, 0, destRect.x, destRect.y);
         }
         let position = origin ? destRect.getPosition().addSelf(size.mul(origin)) : destRect.getCenter();
@@ -6523,7 +6529,7 @@ class SpriteBatch extends SpriteBatchBase
      */
     drawRectangle(texture, destRect, sourceRect, color, origin)
     {
-        if ((destRect instanceof Vector2) || (destRect instanceof Vector3)) {
+        if ((destRect.isVector2) || (destRect.isVector3)) {
             destRect = new Rectangle(0, 0, destRect.x, destRect.y);
         }
         let position = origin ? destRect.getPosition().addSelf(size.mul(origin)) : destRect.getCenter();
@@ -7370,12 +7376,12 @@ class TextSpriteBatch extends SpriteBatchBase
         let texture = this.__currDrawingParams.texture;
 
         // sanity for msdf font
-        if (this.msdfFont && !(texture instanceof MsdfFontTextureAsset)) {
+        if (this.msdfFont && !(texture.isMsdfFontTextureAsset)) {
             _logger.warn("Trying to render an MSDF font but using an asset that isn't an instance of 'MsdfFontTextureAsset'!");
         }
 
         // sanity for none msdf font
-        if (!this.msdfFont && !(texture instanceof FontTextureAsset)) {
+        if (!this.msdfFont && !(texture.isFontTextureAsset)) {
             _logger.warn("Trying to render text sprites but using an asset that isn't an instance of 'FontTextureAsset'!");
         }
 
@@ -7546,7 +7552,7 @@ class Effect
                             _this._pendingUniformValues[name] = [v1, v2, v3, v4];
                             return;
                         }
-                        if (v1 instanceof Color) {
+                        if (v1.isColor) {
                             _this._gl[method](location, v1.floatArray);
                         }
                         else {
@@ -9522,14 +9528,14 @@ class Gfx extends IManager
                 sprite.sourceRectangle = sourceRect;
                 sprite.size = size;
                 let positionOffset = fontTexture.getPositionOffset(character);
-                if (fontTexture instanceof MsdfFontTextureAsset) {
+                if (fontTexture.isMsdfFontTextureAsset) {
                     sprite.position.copy(position).addSelf(positionOffset.mul(scale * 0.5));
                 }
                 else {
                     sprite.position.copy(position).addSelf(positionOffset.mul(scale));
                 }
                 sprite.origin.set(0.5, 0.5);
-                if (color instanceof Color) {
+                if (color.isColor) {
                     sprite.color.copy(color);
                 }
                 else {
@@ -9590,16 +9596,16 @@ class Gfx extends IManager
     {
         let region = this.#_getRenderingRegionInternal();
 
-        if (shape instanceof Circle) {
+        if (shape.isCircle) {
             return region.collideCircle(shape);
         }
-        else if (shape instanceof Vector2) {
+        else if (shape.isVector2) {
             return region.containsVector(shape);
         }
-        else if (shape instanceof Rectangle) {
+        else if (shape.isRectangle) {
             return region.collideRect(shape);
         }
-        else if (shape instanceof Line) {
+        else if (shape.isLine) {
             return region.collideLine(shape);
         }
         else {
@@ -12777,7 +12783,7 @@ class Sfx extends IManager
      */
     createSound(sound)
     {
-        if (!(sound instanceof SoundAsset)) { throw new Error("Sound type must be an instance of SoundAsset!"); }
+        if (!(sound.isSoundAsset)) { throw new Error("Sound type must be an instance of SoundAsset!"); }
         var ret = new SoundInstance(this, sound.url);
         return ret;
     }
@@ -15316,6 +15322,14 @@ const Utils = {
     Box: __webpack_require__(5891)
 };
 
+// add a 'isXXX' property to all util objects, for faster alternative to 'instanceof' checks.
+// for example this will generate a 'isVector3' that will be true for all Vector3 instances.
+for (let key in Utils) {
+    if (Utils[key].prototype) {
+        Utils[key].prototype['is' + key] = true;
+    }
+}
+
 // export the Utils module.
 module.exports = Utils;
 
@@ -16047,6 +16061,16 @@ class Matrix
 	}
 
     /**
+     * Transform a target.
+     * @param {Vector2|Vector3|Vertex} target Transforms a target, that can be vector2, vector3, or vertex.
+     * @returns {Vector2|Vector3|Vector3} Transformed result.
+     */
+    transform(target)
+    {
+
+    }
+
+    /**
      * Create an orthographic projection matrix.
      * @returns {Matrix} a new matrix with result.
      */
@@ -16326,7 +16350,7 @@ class Matrix
     static transformVertex(matrix, vertex)
     {
         return new Vertex(
-            (vertex.position instanceof Vector2) ? Matrix.transformVector2(matrix, vertex.position) : Matrix.transformVector3(matrix, vertex.position), 
+            (vertex.position.isVector2) ? Matrix.transformVector2(matrix, vertex.position) : Matrix.transformVector3(matrix, vertex.position), 
             vertex.textureCoord, 
             vertex.color);
     }
@@ -19726,7 +19750,6 @@ class Vector2
         return {x: this.x, y: this.y};
     }
 }
-
 
 /**
  * Vector with 0,0 values as a frozen shared object.

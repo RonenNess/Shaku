@@ -147,7 +147,7 @@ class Sfx extends IManager
      */
     createSound(sound)
     {
-        if (!(sound instanceof SoundAsset)) { throw new Error("Sound type must be an instance of SoundAsset!"); }
+        if (!(sound.isSoundAsset)) { throw new Error("Sound type must be an instance of SoundAsset!"); }
         var ret = new SoundInstance(this, sound.url);
         return ret;
     }
