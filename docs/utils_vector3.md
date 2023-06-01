@@ -38,6 +38,14 @@ A Vector object for 3d positions.
         * [.length()](#Vector3+length) ⇒ <code>Number</code>
         * [.scaled()](#Vector3+scaled) ⇒ [<code>Vector3</code>](#Vector3)
         * [.distanceTo(other)](#Vector3+distanceTo) ⇒ <code>Number</code>
+        * [.distanceToSquared(other)](#Vector3+distanceToSquared) ⇒ <code>Number</code>
+        * [.clamp(min, max)](#Vector3+clamp) ⇒ [<code>Vector3</code>](#Vector3)
+        * [.clampSelf(min, max)](#Vector3+clampSelf) ⇒ [<code>Vector3</code>](#Vector3)
+        * [.dot(other)](#Vector3+dot) ⇒ <code>Number</code>
+        * [.minSelf(v)](#Vector3+minSelf) ⇒ [<code>Vector3</code>](#Vector3)
+        * [.maxSelf(v)](#Vector3+maxSelf) ⇒ [<code>Vector3</code>](#Vector3)
+        * [.min(v)](#Vector3+min) ⇒ [<code>Vector3</code>](#Vector3)
+        * [.max(v)](#Vector3+max) ⇒ [<code>Vector3</code>](#Vector3)
         * [.string()](#Vector3+string)
         * [.toArray()](#Vector3+toArray) ⇒ <code>Array.&lt;Number&gt;</code>
         * [.toDict(minimized)](#Vector3+toDict) ⇒ <code>\*</code>
@@ -301,7 +309,7 @@ Return a copy of this vector multiplied by a factor.
 <a name="Vector3+distanceTo"></a>
 
 ### vector3.distanceTo(other) ⇒ <code>Number</code>
-Calculate distance between this vector and another vectors.
+Calculate distance between this vector and another vector.
 
 **Kind**: instance method of [<code>Vector3</code>](#Vector3)  
 **Returns**: <code>Number</code> - Distance between vectors.  
@@ -309,6 +317,104 @@ Calculate distance between this vector and another vectors.
 | Param | Type | Description |
 | --- | --- | --- |
 | other | [<code>Vector3</code>](#Vector3) | Other vector. |
+
+<a name="Vector3+distanceToSquared"></a>
+
+### vector3.distanceToSquared(other) ⇒ <code>Number</code>
+Calculate squared distance between this vector and another vector.
+
+**Kind**: instance method of [<code>Vector3</code>](#Vector3)  
+**Returns**: <code>Number</code> - Distance between vectors.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| other | [<code>Vector3</code>](#Vector3) | Other vector. |
+
+<a name="Vector3+clamp"></a>
+
+### vector3.clamp(min, max) ⇒ [<code>Vector3</code>](#Vector3)
+Return a clone and clamp its values to be between min and max.
+
+**Kind**: instance method of [<code>Vector3</code>](#Vector3)  
+**Returns**: [<code>Vector3</code>](#Vector3) - Clamped vector.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| min | [<code>Vector3</code>](#Vector3) | Min vector. |
+| max | [<code>Vector3</code>](#Vector3) | Max vector. |
+
+<a name="Vector3+clampSelf"></a>
+
+### vector3.clampSelf(min, max) ⇒ [<code>Vector3</code>](#Vector3)
+Clamp this vector values to be between min and max.
+
+**Kind**: instance method of [<code>Vector3</code>](#Vector3)  
+**Returns**: [<code>Vector3</code>](#Vector3) - Self.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| min | [<code>Vector3</code>](#Vector3) | Min vector. |
+| max | [<code>Vector3</code>](#Vector3) | Max vector. |
+
+<a name="Vector3+dot"></a>
+
+### vector3.dot(other) ⇒ <code>Number</code>
+Calculate the dot product with another vector.
+
+**Kind**: instance method of [<code>Vector3</code>](#Vector3)  
+**Returns**: <code>Number</code> - Dot product value.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| other | [<code>Vector3</code>](#Vector3) | Vector to calculate dot with. |
+
+<a name="Vector3+minSelf"></a>
+
+### vector3.minSelf(v) ⇒ [<code>Vector3</code>](#Vector3)
+Set self values to be min values between self and a given vector.
+
+**Kind**: instance method of [<code>Vector3</code>](#Vector3)  
+**Returns**: [<code>Vector3</code>](#Vector3) - Self.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| v | [<code>Vector3</code>](#Vector3) | Vector to min with. |
+
+<a name="Vector3+maxSelf"></a>
+
+### vector3.maxSelf(v) ⇒ [<code>Vector3</code>](#Vector3)
+Set self values to be max values between self and a given vector.
+
+**Kind**: instance method of [<code>Vector3</code>](#Vector3)  
+**Returns**: [<code>Vector3</code>](#Vector3) - Self.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| v | [<code>Vector3</code>](#Vector3) | Vector to max with. |
+
+<a name="Vector3+min"></a>
+
+### vector3.min(v) ⇒ [<code>Vector3</code>](#Vector3)
+Create a clone vector that is the min result between self and a given vector.
+
+**Kind**: instance method of [<code>Vector3</code>](#Vector3)  
+**Returns**: [<code>Vector3</code>](#Vector3) - Result vector.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| v | [<code>Vector3</code>](#Vector3) | Vector to min with. |
+
+<a name="Vector3+max"></a>
+
+### vector3.max(v) ⇒ [<code>Vector3</code>](#Vector3)
+Create a clone vector that is the max result between self and a given vector.
+
+**Kind**: instance method of [<code>Vector3</code>](#Vector3)  
+**Returns**: [<code>Vector3</code>](#Vector3) - Result vector.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| v | [<code>Vector3</code>](#Vector3) | Vector to max with. |
 
 <a name="Vector3+string"></a>
 

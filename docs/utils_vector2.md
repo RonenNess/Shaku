@@ -24,6 +24,10 @@ A simple Vector object for 2d positions.
         * [.round()](#Vector2+round) ⇒ [<code>Vector2</code>](#Vector2)
         * [.floor()](#Vector2+floor) ⇒ [<code>Vector2</code>](#Vector2)
         * [.ceil()](#Vector2+ceil) ⇒ [<code>Vector2</code>](#Vector2)
+        * [.minSelf(v)](#Vector2+minSelf) ⇒ [<code>Vector2</code>](#Vector2)
+        * [.maxSelf(v)](#Vector2+maxSelf) ⇒ [<code>Vector2</code>](#Vector2)
+        * [.min(v)](#Vector2+min) ⇒ [<code>Vector2</code>](#Vector2)
+        * [.max(v)](#Vector2+max) ⇒ [<code>Vector2</code>](#Vector2)
         * [.normalized()](#Vector2+normalized) ⇒ [<code>Vector2</code>](#Vector2)
         * [.rotatedByRadians(radians)](#Vector2+rotatedByRadians) ⇒ [<code>Vector2</code>](#Vector2)
         * [.rotatedByDegrees(degrees)](#Vector2+rotatedByDegrees) ⇒ [<code>Vector2</code>](#Vector2)
@@ -44,6 +48,10 @@ A simple Vector object for 2d positions.
         * [.wrappedDegreesTo(other)](#Vector2+wrappedDegreesTo) ⇒ <code>Number</code>
         * [.wrappedRadiansTo(other)](#Vector2+wrappedRadiansTo) ⇒ <code>Number</code>
         * [.distanceTo(other)](#Vector2+distanceTo) ⇒ <code>Number</code>
+        * [.distanceToSquared(other)](#Vector2+distanceToSquared) ⇒ <code>Number</code>
+        * [.clamp(min, max)](#Vector2+clamp) ⇒ [<code>Vector2</code>](#Vector2)
+        * [.clampSelf(min, max)](#Vector2+clampSelf) ⇒ [<code>Vector2</code>](#Vector2)
+        * [.dot(other)](#Vector2+dot) ⇒ <code>Number</code>
         * [.getDegrees()](#Vector2+getDegrees) ⇒ <code>Number</code>
         * [.getRadians()](#Vector2+getRadians) ⇒ <code>Number</code>
         * [.string()](#Vector2+string)
@@ -186,6 +194,54 @@ Return a ceiled copy of this vector.
 
 **Kind**: instance method of [<code>Vector2</code>](#Vector2)  
 **Returns**: [<code>Vector2</code>](#Vector2) - result vector.  
+<a name="Vector2+minSelf"></a>
+
+### vector2.minSelf(v) ⇒ [<code>Vector2</code>](#Vector2)
+Set self values to be min values between self and a given vector.
+
+**Kind**: instance method of [<code>Vector2</code>](#Vector2)  
+**Returns**: [<code>Vector2</code>](#Vector2) - Self.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| v | [<code>Vector2</code>](#Vector2) | Vector to min with. |
+
+<a name="Vector2+maxSelf"></a>
+
+### vector2.maxSelf(v) ⇒ [<code>Vector2</code>](#Vector2)
+Set self values to be max values between self and a given vector.
+
+**Kind**: instance method of [<code>Vector2</code>](#Vector2)  
+**Returns**: [<code>Vector2</code>](#Vector2) - Self.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| v | [<code>Vector2</code>](#Vector2) | Vector to max with. |
+
+<a name="Vector2+min"></a>
+
+### vector2.min(v) ⇒ [<code>Vector2</code>](#Vector2)
+Create a clone vector that is the min result between self and a given vector.
+
+**Kind**: instance method of [<code>Vector2</code>](#Vector2)  
+**Returns**: [<code>Vector2</code>](#Vector2) - Result vector.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| v | [<code>Vector2</code>](#Vector2) | Vector to min with. |
+
+<a name="Vector2+max"></a>
+
+### vector2.max(v) ⇒ [<code>Vector2</code>](#Vector2)
+Create a clone vector that is the max result between self and a given vector.
+
+**Kind**: instance method of [<code>Vector2</code>](#Vector2)  
+**Returns**: [<code>Vector2</code>](#Vector2) - Result vector.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| v | [<code>Vector2</code>](#Vector2) | Vector to max with. |
+
 <a name="Vector2+normalized"></a>
 
 ### vector2.normalized() ⇒ [<code>Vector2</code>](#Vector2)
@@ -393,6 +449,56 @@ Calculate distance between this vector and another vectors.
 | Param | Type | Description |
 | --- | --- | --- |
 | other | [<code>Vector2</code>](#Vector2) | Other vector. |
+
+<a name="Vector2+distanceToSquared"></a>
+
+### vector2.distanceToSquared(other) ⇒ <code>Number</code>
+Calculate squared distance between this vector and another vector.
+
+**Kind**: instance method of [<code>Vector2</code>](#Vector2)  
+**Returns**: <code>Number</code> - Distance between vectors.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| other | [<code>Vector2</code>](#Vector2) | Other vector. |
+
+<a name="Vector2+clamp"></a>
+
+### vector2.clamp(min, max) ⇒ [<code>Vector2</code>](#Vector2)
+Return a clone and clamp its values to be between min and max.
+
+**Kind**: instance method of [<code>Vector2</code>](#Vector2)  
+**Returns**: [<code>Vector2</code>](#Vector2) - Clamped vector.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| min | [<code>Vector2</code>](#Vector2) | Min vector. |
+| max | [<code>Vector2</code>](#Vector2) | Max vector. |
+
+<a name="Vector2+clampSelf"></a>
+
+### vector2.clampSelf(min, max) ⇒ [<code>Vector2</code>](#Vector2)
+Clamp this vector values to be between min and max.
+
+**Kind**: instance method of [<code>Vector2</code>](#Vector2)  
+**Returns**: [<code>Vector2</code>](#Vector2) - Self.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| min | [<code>Vector2</code>](#Vector2) | Min vector. |
+| max | [<code>Vector2</code>](#Vector2) | Max vector. |
+
+<a name="Vector2+dot"></a>
+
+### vector2.dot(other) ⇒ <code>Number</code>
+Calculate the dot product with another vector.
+
+**Kind**: instance method of [<code>Vector2</code>](#Vector2)  
+**Returns**: <code>Number</code> - Dot product value.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| other | [<code>Vector2</code>](#Vector2) | Vector to calculate dot with. |
 
 <a name="Vector2+getDegrees"></a>
 

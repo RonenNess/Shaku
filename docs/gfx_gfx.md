@@ -49,6 +49,7 @@ To access the Graphics manager you use `Shaku.gfx`.
     * [.setContextAttributes(flags)](#Gfx+setContextAttributes)
     * [.setCanvas(element)](#Gfx+setCanvas)
     * [.createCamera(withViewport)](#Gfx+createCamera) ⇒ <code>Camera</code>
+    * [.createCamera3D(withViewport)](#Gfx+createCamera3D) ⇒ <code>Camera3D</code>
     * [.setCameraOrthographic(offset)](#Gfx+setCameraOrthographic) ⇒ <code>Camera</code>
     * [.maximizeCanvasSize([limitToParent], [allowOddNumbers])](#Gfx+maximizeCanvasSize)
     * [.setRenderTarget(texture, [keepCamera])](#Gfx+setRenderTarget)
@@ -355,6 +356,18 @@ Create and return a new camera instance.
 
 **Kind**: instance method of [<code>Gfx</code>](#Gfx)  
 **Returns**: <code>Camera</code> - New camera object.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| withViewport | <code>Boolean</code> | If true, will create camera with viewport value equal to canvas' size. |
+
+<a name="Gfx+createCamera3D"></a>
+
+### gfx.createCamera3D(withViewport) ⇒ <code>Camera3D</code>
+Create and return a new 3D camera instance.
+
+**Kind**: instance method of [<code>Gfx</code>](#Gfx)  
+**Returns**: <code>Camera3D</code> - New camera object.  
 
 | Param | Type | Description |
 | --- | --- | --- |

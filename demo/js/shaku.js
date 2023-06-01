@@ -4679,7 +4679,7 @@ module.exports = Camera;
  * 
  * |-- copyright and license --|
  * @module     Shaku
- * @file       shaku\src\gfx\camera.js
+ * @file       shaku\src\gfx\camera3d.js
  * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
  * @copyright  (c) 2021 Ronen Ness
  * @license    MIT
@@ -14016,7 +14016,7 @@ module.exports = Animator;
  * 
  * |-- copyright and license --|
  * @module     Shaku
- * @file       shaku\src\utils\game_time.js
+ * @file       shaku\src\utils\box.js
  * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
  * @copyright  (c) 2021 Ronen Ness
  * @license    MIT
@@ -14968,7 +14968,7 @@ module.exports = Color;
  * 
  * |-- copyright and license --|
  * @module     Shaku
- * @file       shaku\src\utils\game_time.js
+ * @file       shaku\src\utils\frustum.js
  * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
  * @copyright  (c) 2021 Ronen Ness
  * @license    MIT
@@ -15923,7 +15923,7 @@ module.exports = MathHelper;
  * 
  * |-- copyright and license --|
  * @module     Shaku
- * @file       shaku\src\gfx\matrix.js
+ * @file       shaku\src\utils\matrix.js
  * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
  * @copyright  (c) 2021 Ronen Ness
  * @license    MIT
@@ -16913,7 +16913,7 @@ module.exports = Perlin;
  * 
  * |-- copyright and license --|
  * @module     Shaku
- * @file       shaku\src\utils\game_time.js
+ * @file       shaku\src\utils\plane.js
  * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
  * @copyright  (c) 2021 Ronen Ness
  * @license    MIT

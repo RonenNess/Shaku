@@ -91,6 +91,9 @@ Its the most efficient (both memory and CPU) way to implement grid based / tilem
 <dt><a href="#Camera">Camera</a></dt>
 <dd><p>Implements a Camera object.</p>
 </dd>
+<dt><a href="#Camera3D">Camera3D</a></dt>
+<dd><p>Implements a 3d Camera object.</p>
+</dd>
 <dt><a href="#DrawBatch">DrawBatch</a></dt>
 <dd><p>Base class for a drawing batch, used to draw a collection of sprites or shapes.</p>
 </dd>
@@ -143,9 +146,6 @@ An effect = vertex shader + fragment shader + uniforms &amp; attributes + setup 
 <dd><p>Gfx is the graphics manager. 
 Everything related to rendering and managing your game canvas goes here.</p>
 <p>To access the Graphics manager you use <code>Shaku.gfx</code>.</p>
-</dd>
-<dt><a href="#Matrix">Matrix</a></dt>
-<dd><p>Implements a matrix.</p>
 </dd>
 <dt><a href="#Sprite">Sprite</a></dt>
 <dd><p>Sprite class.</p>
@@ -204,6 +204,9 @@ This object wraps the entire lib namespace, and this is what you use to access a
 Usage example:
 (new Animator(sprite)).from({&#39;position.x&#39;: 0}).to({&#39;position.x&#39;: 100}).duration(1).play();</p>
 </dd>
+<dt><a href="#Box">Box</a></dt>
+<dd><p>A 3D box shape.</p>
+</dd>
 <dt><a href="#Circle">Circle</a></dt>
 <dd><p>Implement a simple 2d Circle.</p>
 </dd>
@@ -211,8 +214,11 @@ Usage example:
 <dd><p>Implement a color.
 All color components are expected to be in 0.0 - 1.0 range (and not 0-255).</p>
 </dd>
+<dt><a href="#Frustum">Frustum</a></dt>
+<dd><p>Implement a 3D Frustum shape.</p>
+</dd>
 <dt><a href="#GameTime">GameTime</a></dt>
-<dd><p>Class to hold current game time (elapse and deltatime).</p>
+<dd><p>Class to hold current game time, both elapse and delta from last frame.</p>
 </dd>
 <dt><a href="#ItemsSorter">ItemsSorter</a></dt>
 <dd><p>Utility class to arrange rectangles in minimal region.</p>
@@ -222,6 +228,9 @@ All color components are expected to be in 0.0 - 1.0 range (and not 0-255).</p>
 </dd>
 <dt><a href="#MathHelper">MathHelper</a></dt>
 <dd><p>Implement some math utilities functions.</p>
+</dd>
+<dt><a href="#Matrix">Matrix</a></dt>
+<dd><p>Implements a matrix.</p>
 </dd>
 <dt><a href="#IGrid">IGrid</a></dt>
 <dd><p>Interface for a supported grid.</p>
@@ -234,11 +243,17 @@ All color components are expected to be in 0.0 - 1.0 range (and not 0-255).</p>
 Based on code from noisejs by Stefan Gustavson.
 <a href="https://github.com/josephg/noisejs/blob/master/perlin.js">https://github.com/josephg/noisejs/blob/master/perlin.js</a></p>
 </dd>
+<dt><a href="#Plane">Plane</a></dt>
+<dd><p>A plane in 3D space shape.</p>
+</dd>
 <dt><a href="#Rectangle">Rectangle</a></dt>
 <dd><p>Implement a simple 2d Rectangle.</p>
 </dd>
 <dt><a href="#SeededRandom">SeededRandom</a></dt>
 <dd><p>Class to generate random numbers with seed.</p>
+</dd>
+<dt><a href="#Sphere">Sphere</a></dt>
+<dd><p>Implement a 3d sphere.</p>
 </dd>
 <dt><a href="#Storage">Storage</a></dt>
 <dd><p>A thin wrapper layer around storage utility.</p>
@@ -2147,13 +2162,11 @@ Implements a Camera object.
 
 * [Camera](#Camera)
     * [new Camera(gfx)](#new_Camera_new)
-    * [.projection](#Camera+projection)
     * [.viewport](#Camera+viewport) ⇒ [<code>Rectangle</code>](#Rectangle)
     * [.viewport](#Camera+viewport)
     * [.getRegion()](#Camera+getRegion) ⇒ [<code>Rectangle</code>](#Rectangle)
     * [.orthographicOffset(offset, ignoreViewportSize, near, far)](#Camera+orthographicOffset)
     * [.orthographic(region, near, far)](#Camera+orthographic)
-    * [.perspective(fieldOfView, aspectRatio, near, far)](#Camera+perspective)
 
 <a name="new_Camera_new"></a>
 
@@ -2165,13 +2178,6 @@ Create the camera.
 | --- | --- | --- |
 | gfx | [<code>Gfx</code>](#Gfx) | The gfx manager instance. |
 
-<a name="Camera+projection"></a>
-
-### camera.projection
-Camera projection matrix.
-You can set it manually, or use 'orthographicOffset' / 'orthographic' / 'perspective' helper functions.
-
-**Kind**: instance property of [<code>Camera</code>](#Camera)  
 <a name="Camera+viewport"></a>
 
 ### camera.viewport ⇒ [<code>Rectangle</code>](#Rectangle)
@@ -2224,12 +2230,86 @@ Make this camera an orthographic camera.
 | near | <code>Number</code> | Near clipping plane. |
 | far | <code>Number</code> | Far clipping plane. |
 
-<a name="Camera+perspective"></a>
+<a name="Camera3D"></a>
 
-### camera.perspective(fieldOfView, aspectRatio, near, far)
+## Camera3D
+Implements a 3d Camera object.
+
+**Kind**: global class  
+
+* [Camera3D](#Camera3D)
+    * [new Camera3D(gfx)](#new_Camera3D_new)
+    * [.projection](#Camera3D+projection)
+    * [.view](#Camera3D+view)
+    * [.calcVisibleFrustum()](#Camera3D+calcVisibleFrustum) ⇒ [<code>Frustum</code>](#Frustum)
+    * [.setViewLookat([eyePosition], [lookAt])](#Camera3D+setViewLookat)
+    * [.getDirection()](#Camera3D+getDirection) ⇒ [<code>Vector3</code>](#Vector3)
+    * [.getViewProjection()](#Camera3D+getViewProjection) ⇒ [<code>Matrix</code>](#Matrix)
+    * [.perspective(fieldOfView, aspectRatio, near, far)](#Camera3D+perspective)
+
+<a name="new_Camera3D_new"></a>
+
+### new Camera3D(gfx)
+Create the camera.
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| gfx | [<code>Gfx</code>](#Gfx) | The gfx manager instance. |
+
+<a name="Camera3D+projection"></a>
+
+### camera3D.projection
+Camera projection matrix.
+You can set it manually, or use 'orthographicOffset' / 'orthographic' / 'perspective' helper functions.
+
+**Kind**: instance property of [<code>Camera3D</code>](#Camera3D)  
+<a name="Camera3D+view"></a>
+
+### camera3D.view
+Camera view matrix.
+You can set it manually, or use 'setViewLookat' helper function.
+
+**Kind**: instance property of [<code>Camera3D</code>](#Camera3D)  
+<a name="Camera3D+calcVisibleFrustum"></a>
+
+### camera3D.calcVisibleFrustum() ⇒ [<code>Frustum</code>](#Frustum)
+Calc and return the currently-visible view frustum, based on active camera.
+
+**Kind**: instance method of [<code>Camera3D</code>](#Camera3D)  
+**Returns**: [<code>Frustum</code>](#Frustum) - Visible frustum.  
+<a name="Camera3D+setViewLookat"></a>
+
+### camera3D.setViewLookat([eyePosition], [lookAt])
+Set camera view matrix from source position and lookat.
+
+**Kind**: instance method of [<code>Camera3D</code>](#Camera3D)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| [eyePosition] | [<code>Vector3</code>](#Vector3) | Camera source position. |
+| [lookAt] | [<code>Vector3</code>](#Vector3) | Camera look-at target. |
+
+<a name="Camera3D+getDirection"></a>
+
+### camera3D.getDirection() ⇒ [<code>Vector3</code>](#Vector3)
+Get 3d direction vector of this camera.
+
+**Kind**: instance method of [<code>Camera3D</code>](#Camera3D)  
+**Returns**: [<code>Vector3</code>](#Vector3) - 3D direction vector.  
+<a name="Camera3D+getViewProjection"></a>
+
+### camera3D.getViewProjection() ⇒ [<code>Matrix</code>](#Matrix)
+Get view projection matrix.
+
+**Kind**: instance method of [<code>Camera3D</code>](#Camera3D)  
+**Returns**: [<code>Matrix</code>](#Matrix) - View-projection matrix.  
+<a name="Camera3D+perspective"></a>
+
+### camera3D.perspective(fieldOfView, aspectRatio, near, far)
 Make this camera a perspective camera.
 
-**Kind**: instance method of [<code>Camera</code>](#Camera)  
+**Kind**: instance method of [<code>Camera3D</code>](#Camera3D)  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -2814,12 +2894,11 @@ Responsible to drawing 3D quads with textures on them.
 
 * [SpriteBatch3D](#SpriteBatch3D)
     * [new SpriteBatch3D([batchSpritesCount], [normalizeUvs])](#new_SpriteBatch3D_new)
+    * [.camera](#SpriteBatch3D+camera) ⇒ [<code>Camera</code>](#Camera)
     * [.supportVertexColor](#SpriteBatch3D+supportVertexColor)
     * [.defaultEffect](#SpriteBatch3D+defaultEffect)
-    * [.setViewLookat([eyePosition], [lookAt])](#SpriteBatch3D+setViewLookat)
     * [.setPerspectiveCamera([fieldOfView], [aspectRatio], [zNear], [zFar])](#SpriteBatch3D+setPerspectiveCamera)
     * [.setCamera(camera)](#SpriteBatch3D+setCamera)
-    * [.setView(view)](#SpriteBatch3D+setView)
 
 <a name="new_SpriteBatch3D_new"></a>
 
@@ -2832,6 +2911,13 @@ Create the 3d sprites batch.
 | [batchSpritesCount] | <code>Number</code> | Internal buffers size, in sprites count (sprite = 4 vertices). Bigger value = faster rendering but more RAM. |
 | [normalizeUvs] | <code>Boolean</code> | If true (default) will normalize UV values from 0 to 1. |
 
+<a name="SpriteBatch3D+camera"></a>
+
+### spriteBatch3D.camera ⇒ [<code>Camera</code>](#Camera)
+Get camera instance.
+
+**Kind**: instance property of [<code>SpriteBatch3D</code>](#SpriteBatch3D)  
+**Returns**: [<code>Camera</code>](#Camera) - Camera instance.  
 <a name="SpriteBatch3D+supportVertexColor"></a>
 
 ### spriteBatch3D.supportVertexColor
@@ -2840,18 +2926,6 @@ Create the 3d sprites batch.
 
 ### spriteBatch3D.defaultEffect
 **Kind**: instance property of [<code>SpriteBatch3D</code>](#SpriteBatch3D)  
-<a name="SpriteBatch3D+setViewLookat"></a>
-
-### spriteBatch3D.setViewLookat([eyePosition], [lookAt])
-Set to default view matrix.
-
-**Kind**: instance method of [<code>SpriteBatch3D</code>](#SpriteBatch3D)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| [eyePosition] | [<code>Vector3</code>](#Vector3) | Camera source position. |
-| [lookAt] | [<code>Vector3</code>](#Vector3) | Camera look-at target. |
-
 <a name="SpriteBatch3D+setPerspectiveCamera"></a>
 
 ### spriteBatch3D.setPerspectiveCamera([fieldOfView], [aspectRatio], [zNear], [zFar])
@@ -2875,18 +2949,7 @@ Set the camera for this batch.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| camera | [<code>Matrix</code>](#Matrix) | Camera object to apply when drawing, or null if you want to set the camera manually. |
-
-<a name="SpriteBatch3D+setView"></a>
-
-### spriteBatch3D.setView(view)
-Set the view matrix for this batch.
-
-**Kind**: instance method of [<code>SpriteBatch3D</code>](#SpriteBatch3D)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| view | [<code>Matrix</code>](#Matrix) | View matrix, or null if you want to set the view matrix manually. |
+| camera | [<code>Camera</code>](#Camera) | Camera object to apply when drawing, or null if you want to set the camera manually. |
 
 <a name="SpriteBatchBase"></a>
 
@@ -3528,6 +3591,7 @@ To access the Graphics manager you use `Shaku.gfx`.
     * [.setContextAttributes(flags)](#Gfx+setContextAttributes)
     * [.setCanvas(element)](#Gfx+setCanvas)
     * [.createCamera(withViewport)](#Gfx+createCamera) ⇒ [<code>Camera</code>](#Camera)
+    * [.createCamera3D(withViewport)](#Gfx+createCamera3D) ⇒ [<code>Camera3D</code>](#Camera3D)
     * [.setCameraOrthographic(offset)](#Gfx+setCameraOrthographic) ⇒ [<code>Camera</code>](#Camera)
     * [.maximizeCanvasSize([limitToParent], [allowOddNumbers])](#Gfx+maximizeCanvasSize)
     * [.setRenderTarget(texture, [keepCamera])](#Gfx+setRenderTarget)
@@ -3839,6 +3903,18 @@ Create and return a new camera instance.
 | --- | --- | --- |
 | withViewport | <code>Boolean</code> | If true, will create camera with viewport value equal to canvas' size. |
 
+<a name="Gfx+createCamera3D"></a>
+
+### gfx.createCamera3D(withViewport) ⇒ [<code>Camera3D</code>](#Camera3D)
+Create and return a new 3D camera instance.
+
+**Kind**: instance method of [<code>Gfx</code>](#Gfx)  
+**Returns**: [<code>Camera3D</code>](#Camera3D) - New camera object.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| withViewport | <code>Boolean</code> | If true, will create camera with viewport value equal to canvas' size. |
+
 <a name="Gfx+setCameraOrthographic"></a>
 
 ### gfx.setCameraOrthographic(offset) ⇒ [<code>Camera</code>](#Camera)
@@ -4042,212 +4118,6 @@ Only relevant when depth is used.
 | Param | Type | Description |
 | --- | --- | --- |
 | [value] | <code>Number</code> | Value to clear depth buffer to. |
-
-<a name="Matrix"></a>
-
-## Matrix
-Implements a matrix.
-
-**Kind**: global class  
-
-* [Matrix](#Matrix)
-    * [new Matrix(values, cloneValues)](#new_Matrix_new)
-    * _instance_
-        * [.set()](#Matrix+set)
-        * [.clone()](#Matrix+clone) ⇒ [<code>Matrix</code>](#Matrix)
-        * [.equals(other)](#Matrix+equals) ⇒ <code>Boolean</code>
-    * _static_
-        * [.orthographic()](#Matrix.orthographic) ⇒ [<code>Matrix</code>](#Matrix)
-        * [.perspective()](#Matrix.perspective) ⇒ [<code>Matrix</code>](#Matrix)
-        * [.translate()](#Matrix.translate) ⇒ [<code>Matrix</code>](#Matrix)
-        * [.scale()](#Matrix.scale) ⇒ [<code>Matrix</code>](#Matrix)
-        * [.rotateX()](#Matrix.rotateX) ⇒ [<code>Matrix</code>](#Matrix)
-        * [.rotateY()](#Matrix.rotateY) ⇒ [<code>Matrix</code>](#Matrix)
-        * [.rotateZ()](#Matrix.rotateZ) ⇒ [<code>Matrix</code>](#Matrix)
-        * [.multiply()](#Matrix.multiply) ⇒ [<code>Matrix</code>](#Matrix)
-        * [.lookAt(eyePosition, targetPosition, [upVector])](#Matrix.lookAt) ⇒ [<code>Matrix</code>](#Matrix)
-        * [.multiplyMany(matrices)](#Matrix.multiplyMany) ⇒ [<code>Matrix</code>](#Matrix)
-        * [.multiplyIntoFirst()](#Matrix.multiplyIntoFirst) ⇒ [<code>Matrix</code>](#Matrix)
-        * [.multiplyManyIntoFirst(matrices)](#Matrix.multiplyManyIntoFirst) ⇒ [<code>Matrix</code>](#Matrix)
-        * [.transformVertex(matrix, vertex)](#Matrix.transformVertex) ⇒ [<code>Vertex</code>](#Vertex)
-        * [.transformVector2(matrix, vector)](#Matrix.transformVector2) ⇒ [<code>Vector2</code>](#Vector2)
-        * [.transformVector3(matrix, vector)](#Matrix.transformVector3) ⇒ [<code>Vector3</code>](#Vector3)
-
-<a name="new_Matrix_new"></a>
-
-### new Matrix(values, cloneValues)
-Create the matrix.
-
-
-| Param | Description |
-| --- | --- |
-| values | matrix values array. |
-| cloneValues | if true or undefined, will clone values instead of just holding a reference to them. |
-
-<a name="Matrix+set"></a>
-
-### matrix.set()
-Set the matrix values.
-
-**Kind**: instance method of [<code>Matrix</code>](#Matrix)  
-<a name="Matrix+clone"></a>
-
-### matrix.clone() ⇒ [<code>Matrix</code>](#Matrix)
-Clone the matrix.
-
-**Kind**: instance method of [<code>Matrix</code>](#Matrix)  
-**Returns**: [<code>Matrix</code>](#Matrix) - Cloned matrix.  
-<a name="Matrix+equals"></a>
-
-### matrix.equals(other) ⇒ <code>Boolean</code>
-Compare this matrix to another matrix.
-
-**Kind**: instance method of [<code>Matrix</code>](#Matrix)  
-**Returns**: <code>Boolean</code> - If matrices are the same.  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| other | [<code>Matrix</code>](#Matrix) | Matrix to compare to. |
-
-<a name="Matrix.orthographic"></a>
-
-### Matrix.orthographic() ⇒ [<code>Matrix</code>](#Matrix)
-Create an orthographic projection matrix.
-
-**Kind**: static method of [<code>Matrix</code>](#Matrix)  
-**Returns**: [<code>Matrix</code>](#Matrix) - a new matrix with result.  
-<a name="Matrix.perspective"></a>
-
-### Matrix.perspective() ⇒ [<code>Matrix</code>](#Matrix)
-Create a perspective projection matrix.
-
-**Kind**: static method of [<code>Matrix</code>](#Matrix)  
-**Returns**: [<code>Matrix</code>](#Matrix) - a new matrix with result.  
-<a name="Matrix.translate"></a>
-
-### Matrix.translate() ⇒ [<code>Matrix</code>](#Matrix)
-Create a translation matrix.
-
-**Kind**: static method of [<code>Matrix</code>](#Matrix)  
-**Returns**: [<code>Matrix</code>](#Matrix) - a new matrix with result.  
-<a name="Matrix.scale"></a>
-
-### Matrix.scale() ⇒ [<code>Matrix</code>](#Matrix)
-Create a scale matrix.
-
-**Kind**: static method of [<code>Matrix</code>](#Matrix)  
-**Returns**: [<code>Matrix</code>](#Matrix) - a new matrix with result.  
-<a name="Matrix.rotateX"></a>
-
-### Matrix.rotateX() ⇒ [<code>Matrix</code>](#Matrix)
-Create a rotation matrix around X axis.
-
-**Kind**: static method of [<code>Matrix</code>](#Matrix)  
-**Returns**: [<code>Matrix</code>](#Matrix) - a new matrix with result.  
-<a name="Matrix.rotateY"></a>
-
-### Matrix.rotateY() ⇒ [<code>Matrix</code>](#Matrix)
-Create a rotation matrix around Y axis.
-
-**Kind**: static method of [<code>Matrix</code>](#Matrix)  
-**Returns**: [<code>Matrix</code>](#Matrix) - a new matrix with result.  
-<a name="Matrix.rotateZ"></a>
-
-### Matrix.rotateZ() ⇒ [<code>Matrix</code>](#Matrix)
-Create a rotation matrix around Z axis.
-
-**Kind**: static method of [<code>Matrix</code>](#Matrix)  
-**Returns**: [<code>Matrix</code>](#Matrix) - a new matrix with result.  
-<a name="Matrix.multiply"></a>
-
-### Matrix.multiply() ⇒ [<code>Matrix</code>](#Matrix)
-Multiply two matrices.
-
-**Kind**: static method of [<code>Matrix</code>](#Matrix)  
-**Returns**: [<code>Matrix</code>](#Matrix) - a new matrix with result.  
-<a name="Matrix.lookAt"></a>
-
-### Matrix.lookAt(eyePosition, targetPosition, [upVector]) ⇒ [<code>Matrix</code>](#Matrix)
-Creates a look-at matrix - a matrix rotated to look at a given position.
-
-**Kind**: static method of [<code>Matrix</code>](#Matrix)  
-**Returns**: [<code>Matrix</code>](#Matrix) - a new matrix with result.  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| eyePosition | [<code>Vector3</code>](#Vector3) | Eye position. |
-| targetPosition | [<code>Vector3</code>](#Vector3) | Position the matrix should look at. |
-| [upVector] | [<code>Vector3</code>](#Vector3) | Optional vector representing 'up' direction. |
-
-<a name="Matrix.multiplyMany"></a>
-
-### Matrix.multiplyMany(matrices) ⇒ [<code>Matrix</code>](#Matrix)
-Multiply an array of matrices.
-
-**Kind**: static method of [<code>Matrix</code>](#Matrix)  
-**Returns**: [<code>Matrix</code>](#Matrix) - new matrix with multiply result.  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| matrices | [<code>Array.&lt;Matrix&gt;</code>](#Matrix) | Matrices to multiply. |
-
-<a name="Matrix.multiplyIntoFirst"></a>
-
-### Matrix.multiplyIntoFirst() ⇒ [<code>Matrix</code>](#Matrix)
-Multiply two matrices and put result in first matrix.
-
-**Kind**: static method of [<code>Matrix</code>](#Matrix)  
-**Returns**: [<code>Matrix</code>](#Matrix) - matrixA, after it was modified.  
-<a name="Matrix.multiplyManyIntoFirst"></a>
-
-### Matrix.multiplyManyIntoFirst(matrices) ⇒ [<code>Matrix</code>](#Matrix)
-Multiply an array of matrices into the first matrix in the array.
-
-**Kind**: static method of [<code>Matrix</code>](#Matrix)  
-**Returns**: [<code>Matrix</code>](#Matrix) - first matrix in array, after it was modified.  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| matrices | [<code>Array.&lt;Matrix&gt;</code>](#Matrix) | Matrices to multiply. |
-
-<a name="Matrix.transformVertex"></a>
-
-### Matrix.transformVertex(matrix, vertex) ⇒ [<code>Vertex</code>](#Vertex)
-Transform a 2d vertex.
-
-**Kind**: static method of [<code>Matrix</code>](#Matrix)  
-**Returns**: [<code>Vertex</code>](#Vertex) - A transformed vertex (cloned, not the original).  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| matrix | [<code>Matrix</code>](#Matrix) | Matrix to use to transform vector. |
-| vertex | [<code>Vertex</code>](#Vertex) | Vertex to transform. |
-
-<a name="Matrix.transformVector2"></a>
-
-### Matrix.transformVector2(matrix, vector) ⇒ [<code>Vector2</code>](#Vector2)
-Transform a 2d vector.
-
-**Kind**: static method of [<code>Matrix</code>](#Matrix)  
-**Returns**: [<code>Vector2</code>](#Vector2) - Transformed vector.  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| matrix | [<code>Matrix</code>](#Matrix) | Matrix to use to transform vector. |
-| vector | [<code>Vector2</code>](#Vector2) | Vector to transform. |
-
-<a name="Matrix.transformVector3"></a>
-
-### Matrix.transformVector3(matrix, vector) ⇒ [<code>Vector3</code>](#Vector3)
-Transform a 3d vector.
-
-**Kind**: static method of [<code>Matrix</code>](#Matrix)  
-**Returns**: [<code>Vector3</code>](#Vector3) - Transformed vector.  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| matrix | [<code>Matrix</code>](#Matrix) | Matrix to use to transform vector. |
-| vector | [<code>Vector3</code>](#Vector3) | Vector to transform. |
 
 <a name="Sprite"></a>
 
@@ -4549,7 +4419,6 @@ A vertex we can push to sprite batch.
 
 * [Vertex](#Vertex)
     * [new Vertex(position, textureCoord, color)](#new_Vertex_new)
-    * [.transform(matrix)](#Vertex+transform) ⇒ [<code>Vertex</code>](#Vertex)
     * [.setPosition(position)](#Vertex+setPosition) ⇒ [<code>Vertex</code>](#Vertex)
     * [.setTextureCoords(textureCoord)](#Vertex+setTextureCoords) ⇒ [<code>Vertex</code>](#Vertex)
     * [.setColor(color)](#Vertex+setColor) ⇒ [<code>Vertex</code>](#Vertex)
@@ -4565,18 +4434,6 @@ Create the vertex data.
 | position | [<code>Vector2</code>](#Vector2) \| [<code>Vector3</code>](#Vector3) | Vertex position. |
 | textureCoord | [<code>Vector2</code>](#Vector2) | Vertex texture coord (in pixels). |
 | color | [<code>Color</code>](#Color) | Vertex color (undefined will default to white). |
-
-<a name="Vertex+transform"></a>
-
-### vertex.transform(matrix) ⇒ [<code>Vertex</code>](#Vertex)
-Transform this vertex position from a matrix.
-
-**Kind**: instance method of [<code>Vertex</code>](#Vertex)  
-**Returns**: [<code>Vertex</code>](#Vertex) - this.  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| matrix | [<code>Matrix</code>](#Matrix) | Transformation matrix. |
 
 <a name="Vertex+setPosition"></a>
 
@@ -6248,6 +6105,322 @@ Make this Animator update automatically with the gameTime delta time, until its 
 
 **Kind**: instance method of [<code>Animator</code>](#Animator)  
 **Returns**: [<code>Animator</code>](#Animator) - this.  
+<a name="Box"></a>
+
+## Box
+A 3D box shape.
+
+**Kind**: global class  
+
+* [Box](#Box)
+    * [new Box(min, max)](#new_Box_new)
+    * [.set(min, max)](#Box+set) ⇒ [<code>Box</code>](#Box)
+    * [.setFromArray(array)](#Box+setFromArray) ⇒ [<code>Box</code>](#Box)
+    * [.setFromPoints(points)](#Box+setFromPoints) ⇒ [<code>Box</code>](#Box)
+    * [.setFromCenterAndSize(center, size)](#Box+setFromCenterAndSize) ⇒ [<code>Box</code>](#Box)
+    * [.clone()](#Box+clone) ⇒ [<code>Box</code>](#Box)
+    * [.copy(box)](#Box+copy) ⇒ [<code>Box</code>](#Box)
+    * [.makeEmpty()](#Box+makeEmpty) ⇒ [<code>Box</code>](#Box)
+    * [.isEmpty()](#Box+isEmpty) ⇒ <code>Boolean</code>
+    * [.getCenter()](#Box+getCenter) ⇒ [<code>Vector3</code>](#Vector3)
+    * [.getSize()](#Box+getSize) ⇒ [<code>Vector3</code>](#Vector3)
+    * [.expandByPoint(point)](#Box+expandByPoint) ⇒ [<code>Box</code>](#Box)
+    * [.expandByVector(vector)](#Box+expandByVector) ⇒ [<code>Box</code>](#Box)
+    * [.expandByScalar(scalar)](#Box+expandByScalar) ⇒ [<code>Box</code>](#Box)
+    * [.containsPoint(point)](#Box+containsPoint) ⇒ <code>Boolean</code>
+    * [.containsBox(box)](#Box+containsBox) ⇒ <code>Boolean</code>
+    * [.collideBox(box)](#Box+collideBox) ⇒ <code>Boolean</code>
+    * [.collideSphere(sphere)](#Box+collideSphere) ⇒ <code>Boolean</code>
+    * [.collidePlane(plane)](#Box+collidePlane) ⇒ <code>Boolean</code>
+    * [.clampPoint(point)](#Box+clampPoint) ⇒ [<code>Vector3</code>](#Vector3)
+    * [.distanceToPoint(point)](#Box+distanceToPoint) ⇒ <code>Number</code>
+    * [.intersectWith(box)](#Box+intersectWith) ⇒ [<code>Box</code>](#Box)
+    * [.unionWith(box)](#Box+unionWith) ⇒ [<code>Box</code>](#Box)
+    * [.translate(offset)](#Box+translate) ⇒ [<code>Box</code>](#Box)
+    * [.equals(other)](#Box+equals) ⇒ <code>Boolean</code>
+
+<a name="new_Box_new"></a>
+
+### new Box(min, max)
+Create the 3d box.
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| min | [<code>Vector3</code>](#Vector3) | Box min vector. |
+| max | [<code>Vector3</code>](#Vector3) | Box max vector. |
+
+<a name="Box+set"></a>
+
+### box.set(min, max) ⇒ [<code>Box</code>](#Box)
+Set the box min and max corners.
+
+**Kind**: instance method of [<code>Box</code>](#Box)  
+**Returns**: [<code>Box</code>](#Box) - Self.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| min | [<code>Vector3</code>](#Vector3) | Box min vector. |
+| max | [<code>Vector3</code>](#Vector3) | Box max vector. |
+
+<a name="Box+setFromArray"></a>
+
+### box.setFromArray(array) ⇒ [<code>Box</code>](#Box)
+Set box values from array.
+
+**Kind**: instance method of [<code>Box</code>](#Box)  
+**Returns**: [<code>Box</code>](#Box) - Self.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| array | <code>Array.&lt;Number&gt;</code> | Array of values to load from. |
+
+<a name="Box+setFromPoints"></a>
+
+### box.setFromPoints(points) ⇒ [<code>Box</code>](#Box)
+Set box from array of points.
+
+**Kind**: instance method of [<code>Box</code>](#Box)  
+**Returns**: [<code>Box</code>](#Box) - Self.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| points | [<code>Array.&lt;Vector3&gt;</code>](#Vector3) | Points to set box from. |
+
+<a name="Box+setFromCenterAndSize"></a>
+
+### box.setFromCenterAndSize(center, size) ⇒ [<code>Box</code>](#Box)
+Set box from center and size.
+
+**Kind**: instance method of [<code>Box</code>](#Box)  
+**Returns**: [<code>Box</code>](#Box) - Self.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| center | [<code>Vector3</code>](#Vector3) | Center position. |
+| size | [<code>Vector3</code>](#Vector3) | Box size. |
+
+<a name="Box+clone"></a>
+
+### box.clone() ⇒ [<code>Box</code>](#Box)
+Clone this box.
+
+**Kind**: instance method of [<code>Box</code>](#Box)  
+**Returns**: [<code>Box</code>](#Box) - Cloned box.  
+<a name="Box+copy"></a>
+
+### box.copy(box) ⇒ [<code>Box</code>](#Box)
+Copy values from another box.
+
+**Kind**: instance method of [<code>Box</code>](#Box)  
+**Returns**: [<code>Box</code>](#Box) - Self.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| box | [<code>Box</code>](#Box) | Box to copy. |
+
+<a name="Box+makeEmpty"></a>
+
+### box.makeEmpty() ⇒ [<code>Box</code>](#Box)
+Turn this box into empty state.
+
+**Kind**: instance method of [<code>Box</code>](#Box)  
+**Returns**: [<code>Box</code>](#Box) - Self.  
+<a name="Box+isEmpty"></a>
+
+### box.isEmpty() ⇒ <code>Boolean</code>
+Check if this box is empty.
+
+**Kind**: instance method of [<code>Box</code>](#Box)  
+**Returns**: <code>Boolean</code> - True if empty.  
+<a name="Box+getCenter"></a>
+
+### box.getCenter() ⇒ [<code>Vector3</code>](#Vector3)
+Get center position.
+
+**Kind**: instance method of [<code>Box</code>](#Box)  
+**Returns**: [<code>Vector3</code>](#Vector3) - Center position.  
+<a name="Box+getSize"></a>
+
+### box.getSize() ⇒ [<code>Vector3</code>](#Vector3)
+Get box size.
+
+**Kind**: instance method of [<code>Box</code>](#Box)  
+**Returns**: [<code>Vector3</code>](#Vector3) - Box size.  
+<a name="Box+expandByPoint"></a>
+
+### box.expandByPoint(point) ⇒ [<code>Box</code>](#Box)
+Expand this box by a point.
+This will adjust the box boundaries to contain the point.
+
+**Kind**: instance method of [<code>Box</code>](#Box)  
+**Returns**: [<code>Box</code>](#Box) - Self.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| point | [<code>Vector3</code>](#Vector3) | Point to extend box by. |
+
+<a name="Box+expandByVector"></a>
+
+### box.expandByVector(vector) ⇒ [<code>Box</code>](#Box)
+Expand this box by pushing its boundaries by a vector.
+This will adjust the box boundaries by pushing them away from the center by the value of the given vector.
+
+**Kind**: instance method of [<code>Box</code>](#Box)  
+**Returns**: [<code>Box</code>](#Box) - Self.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| vector | [<code>Vector3</code>](#Vector3) | Vector to expand by. |
+
+<a name="Box+expandByScalar"></a>
+
+### box.expandByScalar(scalar) ⇒ [<code>Box</code>](#Box)
+Expand this box by pushing its boundaries by a given scalar.
+This will adjust the box boundaries by pushing them away from the center by the value of the given scalar.
+
+**Kind**: instance method of [<code>Box</code>](#Box)  
+**Returns**: [<code>Box</code>](#Box) - Self.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| scalar | <code>Number</code> | Value to expand by. |
+
+<a name="Box+containsPoint"></a>
+
+### box.containsPoint(point) ⇒ <code>Boolean</code>
+Check if this box contains a point.
+
+**Kind**: instance method of [<code>Box</code>](#Box)  
+**Returns**: <code>Boolean</code> - True if box containing the point.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| point | [<code>Vector3</code>](#Vector3) | Point to check. |
+
+<a name="Box+containsBox"></a>
+
+### box.containsBox(box) ⇒ <code>Boolean</code>
+Check if this box contains another box.
+
+**Kind**: instance method of [<code>Box</code>](#Box)  
+**Returns**: <code>Boolean</code> - True if box containing the box.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| box | [<code>Box</code>](#Box) | Box to check. |
+
+<a name="Box+collideBox"></a>
+
+### box.collideBox(box) ⇒ <code>Boolean</code>
+Check if this box collides with another box.
+
+**Kind**: instance method of [<code>Box</code>](#Box)  
+**Returns**: <code>Boolean</code> - True if collide, false otherwise.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| box | [<code>Box</code>](#Box) | Box to test collidion with. |
+
+<a name="Box+collideSphere"></a>
+
+### box.collideSphere(sphere) ⇒ <code>Boolean</code>
+Check if this box collides with a sphere.
+
+**Kind**: instance method of [<code>Box</code>](#Box)  
+**Returns**: <code>Boolean</code> - True if collide, false otherwise.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| sphere | [<code>Sphere</code>](#Sphere) | Sphere to test collidion with. |
+
+<a name="Box+collidePlane"></a>
+
+### box.collidePlane(plane) ⇒ <code>Boolean</code>
+Check if this box collides with a plane.
+
+**Kind**: instance method of [<code>Box</code>](#Box)  
+**Returns**: <code>Boolean</code> - True if collide, false otherwise.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| plane | [<code>Plane</code>](#Plane) | Plane to test collidion with. |
+
+<a name="Box+clampPoint"></a>
+
+### box.clampPoint(point) ⇒ [<code>Vector3</code>](#Vector3)
+Clamp a given vector inside this box.
+
+**Kind**: instance method of [<code>Box</code>](#Box)  
+**Returns**: [<code>Vector3</code>](#Vector3) - Vector clammped.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| point | [<code>Vector3</code>](#Vector3) | Vector to clamp. |
+
+<a name="Box+distanceToPoint"></a>
+
+### box.distanceToPoint(point) ⇒ <code>Number</code>
+Get distance between this box and a given point.
+
+**Kind**: instance method of [<code>Box</code>](#Box)  
+**Returns**: <code>Number</code> - Distance to point.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| point | [<code>Vector3</code>](#Vector3) | Point to get distance to. |
+
+<a name="Box+intersectWith"></a>
+
+### box.intersectWith(box) ⇒ [<code>Box</code>](#Box)
+Computes the intersection of this box with another box. 
+This will set the upper bound of this box to the lesser of the two boxes' upper bounds and the lower bound of this box to the greater of the two boxes' lower bounds. 
+If there's no overlap, makes this box empty.
+
+**Kind**: instance method of [<code>Box</code>](#Box)  
+**Returns**: [<code>Box</code>](#Box) - Self.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| box | [<code>Box</code>](#Box) | Box to intersect with. |
+
+<a name="Box+unionWith"></a>
+
+### box.unionWith(box) ⇒ [<code>Box</code>](#Box)
+Computes the union of this box and box.
+This will set the upper bound of this box to the greater of the two boxes' upper bounds and the lower bound of this box to the lesser of the two boxes' lower bounds.
+
+**Kind**: instance method of [<code>Box</code>](#Box)  
+**Returns**: [<code>Box</code>](#Box) - Self.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| box | [<code>Box</code>](#Box) | Box to union with. |
+
+<a name="Box+translate"></a>
+
+### box.translate(offset) ⇒ [<code>Box</code>](#Box)
+Move this box.
+
+**Kind**: instance method of [<code>Box</code>](#Box)  
+**Returns**: [<code>Box</code>](#Box) - Self.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| offset | [<code>Vector3</code>](#Vector3) | Offset to move box by. |
+
+<a name="Box+equals"></a>
+
+### box.equals(other) ⇒ <code>Boolean</code>
+Check if equal to another box.
+
+**Kind**: instance method of [<code>Box</code>](#Box)  
+**Returns**: <code>Boolean</code> - True if boxes are equal, false otherwise.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| other | [<code>Box</code>](#Box) | Other box to compare to. |
+
 <a name="Circle"></a>
 
 ## Circle
@@ -6669,10 +6842,126 @@ Lerp between two colors.
 | p2 | [<code>Color</code>](#Color) | Second color. |
 | a | <code>Number</code> | Lerp factor (0.0 - 1.0). |
 
+<a name="Frustum"></a>
+
+## Frustum
+Implement a 3D Frustum shape.
+
+**Kind**: global class  
+
+* [Frustum](#Frustum)
+    * [new Frustum(p0, p1, p2, p3, p4, p5)](#new_Frustum_new)
+    * [.set(p0, p1, p2, p3, p4, p5)](#Frustum+set) ⇒ [<code>Frustum</code>](#Frustum)
+    * [.copy(frustum)](#Frustum+copy) ⇒ [<code>Frustum</code>](#Frustum)
+    * [.setFromProjectionMatrix(m)](#Frustum+setFromProjectionMatrix) ⇒ [<code>Frustum</code>](#Frustum)
+    * [.collideSphere(sphere)](#Frustum+collideSphere) ⇒ <code>Boolean</code>
+    * [.collideBox(box)](#Frustum+collideBox) ⇒ <code>Boolean</code>
+    * [.containsPoint(point)](#Frustum+containsPoint) ⇒ <code>Boolean</code>
+    * [.clone()](#Frustum+clone) ⇒ [<code>Frustum</code>](#Frustum)
+
+<a name="new_Frustum_new"></a>
+
+### new Frustum(p0, p1, p2, p3, p4, p5)
+Create the frustum.
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| p0 | [<code>Plane</code>](#Plane) | Frustum plane. |
+| p1 | [<code>Plane</code>](#Plane) | Frustum plane. |
+| p2 | [<code>Plane</code>](#Plane) | Frustum plane. |
+| p3 | [<code>Plane</code>](#Plane) | Frustum plane. |
+| p4 | [<code>Plane</code>](#Plane) | Frustum plane. |
+| p5 | [<code>Plane</code>](#Plane) | Frustum plane. |
+
+<a name="Frustum+set"></a>
+
+### frustum.set(p0, p1, p2, p3, p4, p5) ⇒ [<code>Frustum</code>](#Frustum)
+Set the Frustum values.
+
+**Kind**: instance method of [<code>Frustum</code>](#Frustum)  
+**Returns**: [<code>Frustum</code>](#Frustum) - Self.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| p0 | [<code>Plane</code>](#Plane) | Frustum plane. |
+| p1 | [<code>Plane</code>](#Plane) | Frustum plane. |
+| p2 | [<code>Plane</code>](#Plane) | Frustum plane. |
+| p3 | [<code>Plane</code>](#Plane) | Frustum plane. |
+| p4 | [<code>Plane</code>](#Plane) | Frustum plane. |
+| p5 | [<code>Plane</code>](#Plane) | Frustum plane. |
+
+<a name="Frustum+copy"></a>
+
+### frustum.copy(frustum) ⇒ [<code>Frustum</code>](#Frustum)
+Copy values from another frustum.
+
+**Kind**: instance method of [<code>Frustum</code>](#Frustum)  
+**Returns**: [<code>Frustum</code>](#Frustum) - Self.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| frustum | [<code>Frustum</code>](#Frustum) | Frustum to copy. |
+
+<a name="Frustum+setFromProjectionMatrix"></a>
+
+### frustum.setFromProjectionMatrix(m) ⇒ [<code>Frustum</code>](#Frustum)
+Set frustum from projection matrix.
+
+**Kind**: instance method of [<code>Frustum</code>](#Frustum)  
+**Returns**: [<code>Frustum</code>](#Frustum) - Self.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| m | [<code>Matrix</code>](#Matrix) | Matrix to build frustum from. |
+
+<a name="Frustum+collideSphere"></a>
+
+### frustum.collideSphere(sphere) ⇒ <code>Boolean</code>
+Check if the frustum collides with a sphere.
+
+**Kind**: instance method of [<code>Frustum</code>](#Frustum)  
+**Returns**: <code>Boolean</code> - True if point is in frustum, false otherwise.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| sphere | [<code>Sphere</code>](#Sphere) | Sphere to check. |
+
+<a name="Frustum+collideBox"></a>
+
+### frustum.collideBox(box) ⇒ <code>Boolean</code>
+Check if collide with a box.
+
+**Kind**: instance method of [<code>Frustum</code>](#Frustum)  
+**Returns**: <code>Boolean</code> - True if collide, false otherwise.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| box | [<code>Box</code>](#Box) | Box to check. |
+
+<a name="Frustum+containsPoint"></a>
+
+### frustum.containsPoint(point) ⇒ <code>Boolean</code>
+Check if the frustum contains a point.
+
+**Kind**: instance method of [<code>Frustum</code>](#Frustum)  
+**Returns**: <code>Boolean</code> - True if point is in frustum, false otherwise.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| point | [<code>Vector3</code>](#Vector3) | Vector to check. |
+
+<a name="Frustum+clone"></a>
+
+### frustum.clone() ⇒ [<code>Frustum</code>](#Frustum)
+Clone this frustum.
+
+**Kind**: instance method of [<code>Frustum</code>](#Frustum)  
+**Returns**: [<code>Frustum</code>](#Frustum) - Cloned frustum.  
 <a name="GameTime"></a>
 
 ## GameTime
-Class to hold current game time (elapse and deltatime).
+Class to hold current game time, both elapse and delta from last frame.
 
 **Kind**: global class  
 
@@ -7109,6 +7398,267 @@ Wrap degrees value to be between 0 to 360.
 | --- | --- | --- |
 | degrees | <code>Number</code> | Degrees to wrap. |
 
+<a name="Matrix"></a>
+
+## Matrix
+Implements a matrix.
+
+**Kind**: global class  
+
+* [Matrix](#Matrix)
+    * [new Matrix(values, cloneValues)](#new_Matrix_new)
+    * _instance_
+        * [.set()](#Matrix+set)
+        * [.clone()](#Matrix+clone) ⇒ [<code>Matrix</code>](#Matrix)
+        * [.equals(other)](#Matrix+equals) ⇒ <code>Boolean</code>
+        * [.inverted()](#Matrix+inverted) ⇒ [<code>Matrix</code>](#Matrix)
+        * [.invertSelf()](#Matrix+invertSelf) ⇒ [<code>Matrix</code>](#Matrix)
+        * [.transform(target)](#Matrix+transform) ⇒ [<code>Vector2</code>](#Vector2) \| [<code>Vector3</code>](#Vector3) \| [<code>Vector3</code>](#Vector3)
+        * [.multiplySelfWith(other)](#Matrix+multiplySelfWith) ⇒ [<code>Matrix</code>](#Matrix)
+        * [.multiplyWith(other)](#Matrix+multiplyWith) ⇒ [<code>Matrix</code>](#Matrix)
+    * _static_
+        * [.createOrthographic()](#Matrix.createOrthographic) ⇒ [<code>Matrix</code>](#Matrix)
+        * [.createPerspective()](#Matrix.createPerspective) ⇒ [<code>Matrix</code>](#Matrix)
+        * [.createTranslation()](#Matrix.createTranslation) ⇒ [<code>Matrix</code>](#Matrix)
+        * [.createScale()](#Matrix.createScale) ⇒ [<code>Matrix</code>](#Matrix)
+        * [.createRotationX()](#Matrix.createRotationX) ⇒ [<code>Matrix</code>](#Matrix)
+        * [.createRotationY()](#Matrix.createRotationY) ⇒ [<code>Matrix</code>](#Matrix)
+        * [.createRotationZ()](#Matrix.createRotationZ) ⇒ [<code>Matrix</code>](#Matrix)
+        * [.multiply()](#Matrix.multiply) ⇒ [<code>Matrix</code>](#Matrix)
+        * [.createLookAt(eyePosition, targetPosition, [upVector])](#Matrix.createLookAt) ⇒ [<code>Matrix</code>](#Matrix)
+        * [.multiplyMany(matrices)](#Matrix.multiplyMany) ⇒ [<code>Matrix</code>](#Matrix)
+        * [.multiplyIntoFirst()](#Matrix.multiplyIntoFirst) ⇒ [<code>Matrix</code>](#Matrix)
+        * [.multiplyManyIntoFirst(matrices)](#Matrix.multiplyManyIntoFirst) ⇒ [<code>Matrix</code>](#Matrix)
+        * [.transformVertex(matrix, vertex)](#Matrix.transformVertex) ⇒ [<code>Vertex</code>](#Vertex)
+        * [.transformVector2(matrix, vector)](#Matrix.transformVector2) ⇒ [<code>Vector2</code>](#Vector2)
+        * [.transformVector3(matrix, vector)](#Matrix.transformVector3) ⇒ [<code>Vector3</code>](#Vector3)
+
+<a name="new_Matrix_new"></a>
+
+### new Matrix(values, cloneValues)
+Create the matrix.
+
+
+| Param | Description |
+| --- | --- |
+| values | matrix values array. |
+| cloneValues | if true or undefined, will clone values instead of just holding a reference to them. |
+
+<a name="Matrix+set"></a>
+
+### matrix.set()
+Set the matrix values.
+
+**Kind**: instance method of [<code>Matrix</code>](#Matrix)  
+<a name="Matrix+clone"></a>
+
+### matrix.clone() ⇒ [<code>Matrix</code>](#Matrix)
+Clone the matrix.
+
+**Kind**: instance method of [<code>Matrix</code>](#Matrix)  
+**Returns**: [<code>Matrix</code>](#Matrix) - Cloned matrix.  
+<a name="Matrix+equals"></a>
+
+### matrix.equals(other) ⇒ <code>Boolean</code>
+Compare this matrix to another matrix.
+
+**Kind**: instance method of [<code>Matrix</code>](#Matrix)  
+**Returns**: <code>Boolean</code> - If matrices are the same.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| other | [<code>Matrix</code>](#Matrix) | Matrix to compare to. |
+
+<a name="Matrix+inverted"></a>
+
+### matrix.inverted() ⇒ [<code>Matrix</code>](#Matrix)
+Clone and invert the matrix.
+
+**Kind**: instance method of [<code>Matrix</code>](#Matrix)  
+**Returns**: [<code>Matrix</code>](#Matrix) - Clonsed inverted matrix.  
+<a name="Matrix+invertSelf"></a>
+
+### matrix.invertSelf() ⇒ [<code>Matrix</code>](#Matrix)
+Invert this matrix.
+
+**Kind**: instance method of [<code>Matrix</code>](#Matrix)  
+**Returns**: [<code>Matrix</code>](#Matrix) - Self.  
+<a name="Matrix+transform"></a>
+
+### matrix.transform(target) ⇒ [<code>Vector2</code>](#Vector2) \| [<code>Vector3</code>](#Vector3) \| [<code>Vector3</code>](#Vector3)
+Transform a target.
+
+**Kind**: instance method of [<code>Matrix</code>](#Matrix)  
+**Returns**: [<code>Vector2</code>](#Vector2) \| [<code>Vector3</code>](#Vector3) \| [<code>Vector3</code>](#Vector3) - Transformed result.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| target | [<code>Vector2</code>](#Vector2) \| [<code>Vector3</code>](#Vector3) \| [<code>Vertex</code>](#Vertex) | Transforms a target, that can be vector2, vector3, or vertex. |
+
+<a name="Matrix+multiplySelfWith"></a>
+
+### matrix.multiplySelfWith(other) ⇒ [<code>Matrix</code>](#Matrix)
+Multiply this matrix with another matrix, putting results in self.
+
+**Kind**: instance method of [<code>Matrix</code>](#Matrix)  
+**Returns**: [<code>Matrix</code>](#Matrix) - This.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| other | [<code>Matrix</code>](#Matrix) | Matrix to multiply with. |
+
+<a name="Matrix+multiplyWith"></a>
+
+### matrix.multiplyWith(other) ⇒ [<code>Matrix</code>](#Matrix)
+Multiply this matrix with another matrix and return a new result matrix.
+
+**Kind**: instance method of [<code>Matrix</code>](#Matrix)  
+**Returns**: [<code>Matrix</code>](#Matrix) - New result matrix.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| other | [<code>Matrix</code>](#Matrix) | Matrix to multiply with. |
+
+<a name="Matrix.createOrthographic"></a>
+
+### Matrix.createOrthographic() ⇒ [<code>Matrix</code>](#Matrix)
+Create an orthographic projection matrix.
+
+**Kind**: static method of [<code>Matrix</code>](#Matrix)  
+**Returns**: [<code>Matrix</code>](#Matrix) - a new matrix with result.  
+<a name="Matrix.createPerspective"></a>
+
+### Matrix.createPerspective() ⇒ [<code>Matrix</code>](#Matrix)
+Create a perspective projection matrix.
+
+**Kind**: static method of [<code>Matrix</code>](#Matrix)  
+**Returns**: [<code>Matrix</code>](#Matrix) - a new matrix with result.  
+<a name="Matrix.createTranslation"></a>
+
+### Matrix.createTranslation() ⇒ [<code>Matrix</code>](#Matrix)
+Create a translation matrix.
+
+**Kind**: static method of [<code>Matrix</code>](#Matrix)  
+**Returns**: [<code>Matrix</code>](#Matrix) - a new matrix with result.  
+<a name="Matrix.createScale"></a>
+
+### Matrix.createScale() ⇒ [<code>Matrix</code>](#Matrix)
+Create a scale matrix.
+
+**Kind**: static method of [<code>Matrix</code>](#Matrix)  
+**Returns**: [<code>Matrix</code>](#Matrix) - a new matrix with result.  
+<a name="Matrix.createRotationX"></a>
+
+### Matrix.createRotationX() ⇒ [<code>Matrix</code>](#Matrix)
+Create a rotation matrix around X axis.
+
+**Kind**: static method of [<code>Matrix</code>](#Matrix)  
+**Returns**: [<code>Matrix</code>](#Matrix) - a new matrix with result.  
+<a name="Matrix.createRotationY"></a>
+
+### Matrix.createRotationY() ⇒ [<code>Matrix</code>](#Matrix)
+Create a rotation matrix around Y axis.
+
+**Kind**: static method of [<code>Matrix</code>](#Matrix)  
+**Returns**: [<code>Matrix</code>](#Matrix) - a new matrix with result.  
+<a name="Matrix.createRotationZ"></a>
+
+### Matrix.createRotationZ() ⇒ [<code>Matrix</code>](#Matrix)
+Create a rotation matrix around Z axis.
+
+**Kind**: static method of [<code>Matrix</code>](#Matrix)  
+**Returns**: [<code>Matrix</code>](#Matrix) - a new matrix with result.  
+<a name="Matrix.multiply"></a>
+
+### Matrix.multiply() ⇒ [<code>Matrix</code>](#Matrix)
+Multiply two matrices.
+
+**Kind**: static method of [<code>Matrix</code>](#Matrix)  
+**Returns**: [<code>Matrix</code>](#Matrix) - a new matrix with result.  
+<a name="Matrix.createLookAt"></a>
+
+### Matrix.createLookAt(eyePosition, targetPosition, [upVector]) ⇒ [<code>Matrix</code>](#Matrix)
+Creates a look-at matrix - a matrix rotated to look at a given position.
+
+**Kind**: static method of [<code>Matrix</code>](#Matrix)  
+**Returns**: [<code>Matrix</code>](#Matrix) - a new matrix with result.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| eyePosition | [<code>Vector3</code>](#Vector3) | Eye position. |
+| targetPosition | [<code>Vector3</code>](#Vector3) | Position the matrix should look at. |
+| [upVector] | [<code>Vector3</code>](#Vector3) | Optional vector representing 'up' direction. |
+
+<a name="Matrix.multiplyMany"></a>
+
+### Matrix.multiplyMany(matrices) ⇒ [<code>Matrix</code>](#Matrix)
+Multiply an array of matrices.
+
+**Kind**: static method of [<code>Matrix</code>](#Matrix)  
+**Returns**: [<code>Matrix</code>](#Matrix) - new matrix with multiply result.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| matrices | [<code>Array.&lt;Matrix&gt;</code>](#Matrix) | Matrices to multiply. |
+
+<a name="Matrix.multiplyIntoFirst"></a>
+
+### Matrix.multiplyIntoFirst() ⇒ [<code>Matrix</code>](#Matrix)
+Multiply two matrices and put result in first matrix.
+
+**Kind**: static method of [<code>Matrix</code>](#Matrix)  
+**Returns**: [<code>Matrix</code>](#Matrix) - matrixA, after it was modified.  
+<a name="Matrix.multiplyManyIntoFirst"></a>
+
+### Matrix.multiplyManyIntoFirst(matrices) ⇒ [<code>Matrix</code>](#Matrix)
+Multiply an array of matrices into the first matrix in the array.
+
+**Kind**: static method of [<code>Matrix</code>](#Matrix)  
+**Returns**: [<code>Matrix</code>](#Matrix) - first matrix in array, after it was modified.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| matrices | [<code>Array.&lt;Matrix&gt;</code>](#Matrix) | Matrices to multiply. |
+
+<a name="Matrix.transformVertex"></a>
+
+### Matrix.transformVertex(matrix, vertex) ⇒ [<code>Vertex</code>](#Vertex)
+Transform a 2d vertex.
+
+**Kind**: static method of [<code>Matrix</code>](#Matrix)  
+**Returns**: [<code>Vertex</code>](#Vertex) - A transformed vertex (cloned, not the original).  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| matrix | [<code>Matrix</code>](#Matrix) | Matrix to use to transform vector. |
+| vertex | [<code>Vertex</code>](#Vertex) | Vertex to transform. |
+
+<a name="Matrix.transformVector2"></a>
+
+### Matrix.transformVector2(matrix, vector) ⇒ [<code>Vector2</code>](#Vector2)
+Transform a 2d vector.
+
+**Kind**: static method of [<code>Matrix</code>](#Matrix)  
+**Returns**: [<code>Vector2</code>](#Vector2) - Transformed vector.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| matrix | [<code>Matrix</code>](#Matrix) | Matrix to use to transform vector. |
+| vector | [<code>Vector2</code>](#Vector2) | Vector to transform. |
+
+<a name="Matrix.transformVector3"></a>
+
+### Matrix.transformVector3(matrix, vector) ⇒ [<code>Vector3</code>](#Vector3)
+Transform a 3d vector.
+
+**Kind**: static method of [<code>Matrix</code>](#Matrix)  
+**Returns**: [<code>Vector3</code>](#Vector3) - Transformed vector.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| matrix | [<code>Matrix</code>](#Matrix) | Matrix to use to transform vector. |
+| vector | [<code>Vector3</code>](#Vector3) | Vector to transform. |
+
 <a name="IGrid"></a>
 
 ## IGrid
@@ -7238,6 +7788,202 @@ Generate a perlin noise value for x,y coordinates.
 | y | <code>Number</code> | Y coordinate to generate perlin noise for. |
 | contrast | <code>Number</code> | Optional contrast factor. |
 
+<a name="Plane"></a>
+
+## Plane
+A plane in 3D space shape.
+
+**Kind**: global class  
+
+* [Plane](#Plane)
+    * [new Plane(normal, constant)](#new_Plane_new)
+    * [.set(normal, constant)](#Plane+set) ⇒ [<code>Plane</code>](#Plane)
+    * [.setComponents(x, y, z, w)](#Plane+setComponents) ⇒ [<code>Plane</code>](#Plane)
+    * [.setFromNormalAndCoplanarPoint(normal, point)](#Plane+setFromNormalAndCoplanarPoint) ⇒ [<code>Plane</code>](#Plane)
+    * [.copy(plane)](#Plane+copy) ⇒ [<code>Plane</code>](#Plane)
+    * [.normalizeSelf()](#Plane+normalizeSelf) ⇒ [<code>Plane</code>](#Plane)
+    * [.normalized()](#Plane+normalized) ⇒ [<code>Plane</code>](#Plane)
+    * [.negateSelf()](#Plane+negateSelf) ⇒ [<code>Plane</code>](#Plane)
+    * [.distanceToPoint(point)](#Plane+distanceToPoint) ⇒ <code>Number</code>
+    * [.distanceToSphere(sphere)](#Plane+distanceToSphere) ⇒ <code>Number</code>
+    * [.collideLine(line)](#Plane+collideLine) ⇒ <code>Boolean</code>
+    * [.collideSphere(sphere)](#Plane+collideSphere) ⇒ <code>Boolean</code>
+    * [.coplanarPoint()](#Plane+coplanarPoint) ⇒ [<code>Vector3</code>](#Vector3)
+    * [.translateSelf(offset)](#Plane+translateSelf) ⇒ [<code>Plane</code>](#Plane)
+    * [.equals(plane)](#Plane+equals) ⇒ <code>Boolean</code>
+    * [.clone()](#Plane+clone) ⇒ [<code>Plane</code>](#Plane)
+
+<a name="new_Plane_new"></a>
+
+### new Plane(normal, constant)
+Create the plane.
+
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| normal | [<code>Vector3</code>](#Vector3) |  | Plane normal vector. |
+| constant | <code>Number</code> | <code>0</code> | Plane constant. |
+
+<a name="Plane+set"></a>
+
+### plane.set(normal, constant) ⇒ [<code>Plane</code>](#Plane)
+Set the plane components.
+
+**Kind**: instance method of [<code>Plane</code>](#Plane)  
+**Returns**: [<code>Plane</code>](#Plane) - Self.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| normal | [<code>Vector3</code>](#Vector3) | Plane normal. |
+| constant | <code>Number</code> | Plane constant. |
+
+<a name="Plane+setComponents"></a>
+
+### plane.setComponents(x, y, z, w) ⇒ [<code>Plane</code>](#Plane)
+Set the plane components.
+
+**Kind**: instance method of [<code>Plane</code>](#Plane)  
+**Returns**: [<code>Plane</code>](#Plane) - Self.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| x | <code>Number</code> | Plane normal X. |
+| y | <code>Number</code> | Plane normal Y. |
+| z | <code>Number</code> | Plane normal Z. |
+| w | <code>Number</code> | Plane constant. |
+
+<a name="Plane+setFromNormalAndCoplanarPoint"></a>
+
+### plane.setFromNormalAndCoplanarPoint(normal, point) ⇒ [<code>Plane</code>](#Plane)
+Set plane from normal and coplanar point vectors.
+
+**Kind**: instance method of [<code>Plane</code>](#Plane)  
+**Returns**: [<code>Plane</code>](#Plane) - Self.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| normal | [<code>Vector3</code>](#Vector3) | Plane normal. |
+| point | [<code>Vector3</code>](#Vector3) | Coplanar point. |
+
+<a name="Plane+copy"></a>
+
+### plane.copy(plane) ⇒ [<code>Plane</code>](#Plane)
+Copy values from another plane.
+
+**Kind**: instance method of [<code>Plane</code>](#Plane)  
+**Returns**: [<code>Plane</code>](#Plane) - Self.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| plane | [<code>Plane</code>](#Plane) | Plane to copy. |
+
+<a name="Plane+normalizeSelf"></a>
+
+### plane.normalizeSelf() ⇒ [<code>Plane</code>](#Plane)
+Normalize the plane.
+
+**Kind**: instance method of [<code>Plane</code>](#Plane)  
+**Returns**: [<code>Plane</code>](#Plane) - self.  
+<a name="Plane+normalized"></a>
+
+### plane.normalized() ⇒ [<code>Plane</code>](#Plane)
+Normalize a clone of this plane.
+
+**Kind**: instance method of [<code>Plane</code>](#Plane)  
+**Returns**: [<code>Plane</code>](#Plane) - Normalized clone.  
+<a name="Plane+negateSelf"></a>
+
+### plane.negateSelf() ⇒ [<code>Plane</code>](#Plane)
+Negate this plane.
+
+**Kind**: instance method of [<code>Plane</code>](#Plane)  
+**Returns**: [<code>Plane</code>](#Plane) - Self.  
+<a name="Plane+distanceToPoint"></a>
+
+### plane.distanceToPoint(point) ⇒ <code>Number</code>
+Calculate distance to point.
+
+**Kind**: instance method of [<code>Plane</code>](#Plane)  
+**Returns**: <code>Number</code> - Distance to point.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| point | [<code>Vector3</code>](#Vector3) | Point to calculate distance to. |
+
+<a name="Plane+distanceToSphere"></a>
+
+### plane.distanceToSphere(sphere) ⇒ <code>Number</code>
+Calculate distance to sphere.
+
+**Kind**: instance method of [<code>Plane</code>](#Plane)  
+**Returns**: <code>Number</code> - Distance to sphere.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| sphere | [<code>Sphere</code>](#Sphere) | Sphere to calculate distance to. |
+
+<a name="Plane+collideLine"></a>
+
+### plane.collideLine(line) ⇒ <code>Boolean</code>
+Check if this plane collide with a line.
+
+**Kind**: instance method of [<code>Plane</code>](#Plane)  
+**Returns**: <code>Boolean</code> - True if collide, false otherwise.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| line | [<code>Line</code>](#Line) | Line to check. |
+
+<a name="Plane+collideSphere"></a>
+
+### plane.collideSphere(sphere) ⇒ <code>Boolean</code>
+Check if this plane collide with a sphere.
+
+**Kind**: instance method of [<code>Plane</code>](#Plane)  
+**Returns**: <code>Boolean</code> - True if collide, false otherwise.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| sphere | [<code>Sphere</code>](#Sphere) | Sphere to check. |
+
+<a name="Plane+coplanarPoint"></a>
+
+### plane.coplanarPoint() ⇒ [<code>Vector3</code>](#Vector3)
+Coplanar a point.
+
+**Kind**: instance method of [<code>Plane</code>](#Plane)  
+**Returns**: [<code>Vector3</code>](#Vector3) - Coplanar point as a new vector.  
+<a name="Plane+translateSelf"></a>
+
+### plane.translateSelf(offset) ⇒ [<code>Plane</code>](#Plane)
+Translate this plane.
+
+**Kind**: instance method of [<code>Plane</code>](#Plane)  
+**Returns**: [<code>Plane</code>](#Plane) - Self.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| offset | [<code>Vector3</code>](#Vector3) | Offset to translate to. |
+
+<a name="Plane+equals"></a>
+
+### plane.equals(plane) ⇒ <code>Boolean</code>
+Check if this plane equals another plane.
+
+**Kind**: instance method of [<code>Plane</code>](#Plane)  
+**Returns**: <code>Boolean</code> - True if equal, false otherwise.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| plane | [<code>Plane</code>](#Plane) | Other plane to compare to. |
+
+<a name="Plane+clone"></a>
+
+### plane.clone() ⇒ [<code>Plane</code>](#Plane)
+Clone this plane.
+
+**Kind**: instance method of [<code>Plane</code>](#Plane)  
+**Returns**: [<code>Plane</code>](#Plane) - Cloned plane.  
 <a name="Rectangle"></a>
 
 ## Rectangle
@@ -7580,6 +8326,130 @@ Pick a random value from array.
 | Param | Type | Description |
 | --- | --- | --- |
 | options | <code>Array</code> | Options to pick random value from. |
+
+<a name="Sphere"></a>
+
+## Sphere
+Implement a 3d sphere.
+
+**Kind**: global class  
+
+* [Sphere](#Sphere)
+    * [new Sphere(center, radius)](#new_Sphere_new)
+    * _instance_
+        * [.clone()](#Sphere+clone) ⇒ [<code>Sphere</code>](#Sphere)
+        * [.containsVector(p)](#Sphere+containsVector) ⇒ <code>Boolean</code>
+        * [.equals(other)](#Sphere+equals) ⇒ <code>Boolean</code>
+        * [.toDict(minimized)](#Sphere+toDict) ⇒ <code>\*</code>
+        * [.collideBox(box)](#Sphere+collideBox) ⇒ <code>Boolean</code>
+        * [.collidePlane(plane)](#Sphere+collidePlane) ⇒ <code>Boolean</code>
+    * _static_
+        * [.fromDict(data)](#Sphere.fromDict) ⇒ [<code>Sphere</code>](#Sphere)
+        * [.lerp(p1, p2, a)](#Sphere.lerp) ⇒ [<code>Sphere</code>](#Sphere)
+
+<a name="new_Sphere_new"></a>
+
+### new Sphere(center, radius)
+Create the Sphere.
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| center | [<code>Vector3</code>](#Vector3) | Sphere center position. |
+| radius | <code>Number</code> | Sphere radius. |
+
+<a name="Sphere+clone"></a>
+
+### sphere.clone() ⇒ [<code>Sphere</code>](#Sphere)
+Return a clone of this sphere.
+
+**Kind**: instance method of [<code>Sphere</code>](#Sphere)  
+**Returns**: [<code>Sphere</code>](#Sphere) - Cloned sphere.  
+<a name="Sphere+containsVector"></a>
+
+### sphere.containsVector(p) ⇒ <code>Boolean</code>
+Check if this sphere contains a Vector3.
+
+**Kind**: instance method of [<code>Sphere</code>](#Sphere)  
+**Returns**: <code>Boolean</code> - if point is contained within the sphere.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| p | [<code>Vector3</code>](#Vector3) | Point to check. |
+
+<a name="Sphere+equals"></a>
+
+### sphere.equals(other) ⇒ <code>Boolean</code>
+Check if equal to another sphere.
+
+**Kind**: instance method of [<code>Sphere</code>](#Sphere)  
+**Returns**: <code>Boolean</code> - True if spheres are equal, false otherwise.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| other | [<code>Sphere</code>](#Sphere) | Other sphere to compare to. |
+
+<a name="Sphere+toDict"></a>
+
+### sphere.toDict(minimized) ⇒ <code>\*</code>
+Convert to dictionary.
+
+**Kind**: instance method of [<code>Sphere</code>](#Sphere)  
+**Returns**: <code>\*</code> - Dictionary with {center, radius}.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| minimized | <code>Boolean</code> | If true, will not include keys that their values are 0. You can use fromDict on minimized dicts. |
+
+<a name="Sphere+collideBox"></a>
+
+### sphere.collideBox(box) ⇒ <code>Boolean</code>
+Check if collide with a box.
+
+**Kind**: instance method of [<code>Sphere</code>](#Sphere)  
+**Returns**: <code>Boolean</code> - True if collide, false otherwise.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| box | [<code>Box</code>](#Box) | Box to check. |
+
+<a name="Sphere+collidePlane"></a>
+
+### sphere.collidePlane(plane) ⇒ <code>Boolean</code>
+Check if collide with a plane.
+
+**Kind**: instance method of [<code>Sphere</code>](#Sphere)  
+**Returns**: <code>Boolean</code> - True if collide, false otherwise.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| plane | [<code>Plane</code>](#Plane) | Plane to test. |
+
+<a name="Sphere.fromDict"></a>
+
+### Sphere.fromDict(data) ⇒ [<code>Sphere</code>](#Sphere)
+Create sphere from a dictionary.
+
+**Kind**: static method of [<code>Sphere</code>](#Sphere)  
+**Returns**: [<code>Sphere</code>](#Sphere) - Newly created sphere.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| data | <code>\*</code> | Dictionary with {center, radius}. |
+
+<a name="Sphere.lerp"></a>
+
+### Sphere.lerp(p1, p2, a) ⇒ [<code>Sphere</code>](#Sphere)
+Lerp between two sphere.
+
+**Kind**: static method of [<code>Sphere</code>](#Sphere)  
+**Returns**: [<code>Sphere</code>](#Sphere) - result sphere.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| p1 | [<code>Sphere</code>](#Sphere) | First sphere. |
+| p2 | [<code>Sphere</code>](#Sphere) | Second sphere. |
+| a | <code>Number</code> | Lerp factor (0.0 - 1.0). |
 
 <a name="Storage"></a>
 
@@ -8321,6 +9191,10 @@ A simple Vector object for 2d positions.
         * [.round()](#Vector2+round) ⇒ [<code>Vector2</code>](#Vector2)
         * [.floor()](#Vector2+floor) ⇒ [<code>Vector2</code>](#Vector2)
         * [.ceil()](#Vector2+ceil) ⇒ [<code>Vector2</code>](#Vector2)
+        * [.minSelf(v)](#Vector2+minSelf) ⇒ [<code>Vector2</code>](#Vector2)
+        * [.maxSelf(v)](#Vector2+maxSelf) ⇒ [<code>Vector2</code>](#Vector2)
+        * [.min(v)](#Vector2+min) ⇒ [<code>Vector2</code>](#Vector2)
+        * [.max(v)](#Vector2+max) ⇒ [<code>Vector2</code>](#Vector2)
         * [.normalized()](#Vector2+normalized) ⇒ [<code>Vector2</code>](#Vector2)
         * [.rotatedByRadians(radians)](#Vector2+rotatedByRadians) ⇒ [<code>Vector2</code>](#Vector2)
         * [.rotatedByDegrees(degrees)](#Vector2+rotatedByDegrees) ⇒ [<code>Vector2</code>](#Vector2)
@@ -8341,6 +9215,10 @@ A simple Vector object for 2d positions.
         * [.wrappedDegreesTo(other)](#Vector2+wrappedDegreesTo) ⇒ <code>Number</code>
         * [.wrappedRadiansTo(other)](#Vector2+wrappedRadiansTo) ⇒ <code>Number</code>
         * [.distanceTo(other)](#Vector2+distanceTo) ⇒ <code>Number</code>
+        * [.distanceToSquared(other)](#Vector2+distanceToSquared) ⇒ <code>Number</code>
+        * [.clamp(min, max)](#Vector2+clamp) ⇒ [<code>Vector2</code>](#Vector2)
+        * [.clampSelf(min, max)](#Vector2+clampSelf) ⇒ [<code>Vector2</code>](#Vector2)
+        * [.dot(other)](#Vector2+dot) ⇒ <code>Number</code>
         * [.getDegrees()](#Vector2+getDegrees) ⇒ <code>Number</code>
         * [.getRadians()](#Vector2+getRadians) ⇒ <code>Number</code>
         * [.string()](#Vector2+string)
@@ -8476,6 +9354,54 @@ Return a ceiled copy of this vector.
 
 **Kind**: instance method of [<code>Vector2</code>](#Vector2)  
 **Returns**: [<code>Vector2</code>](#Vector2) - result vector.  
+<a name="Vector2+minSelf"></a>
+
+### vector2.minSelf(v) ⇒ [<code>Vector2</code>](#Vector2)
+Set self values to be min values between self and a given vector.
+
+**Kind**: instance method of [<code>Vector2</code>](#Vector2)  
+**Returns**: [<code>Vector2</code>](#Vector2) - Self.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| v | [<code>Vector2</code>](#Vector2) | Vector to min with. |
+
+<a name="Vector2+maxSelf"></a>
+
+### vector2.maxSelf(v) ⇒ [<code>Vector2</code>](#Vector2)
+Set self values to be max values between self and a given vector.
+
+**Kind**: instance method of [<code>Vector2</code>](#Vector2)  
+**Returns**: [<code>Vector2</code>](#Vector2) - Self.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| v | [<code>Vector2</code>](#Vector2) | Vector to max with. |
+
+<a name="Vector2+min"></a>
+
+### vector2.min(v) ⇒ [<code>Vector2</code>](#Vector2)
+Create a clone vector that is the min result between self and a given vector.
+
+**Kind**: instance method of [<code>Vector2</code>](#Vector2)  
+**Returns**: [<code>Vector2</code>](#Vector2) - Result vector.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| v | [<code>Vector2</code>](#Vector2) | Vector to min with. |
+
+<a name="Vector2+max"></a>
+
+### vector2.max(v) ⇒ [<code>Vector2</code>](#Vector2)
+Create a clone vector that is the max result between self and a given vector.
+
+**Kind**: instance method of [<code>Vector2</code>](#Vector2)  
+**Returns**: [<code>Vector2</code>](#Vector2) - Result vector.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| v | [<code>Vector2</code>](#Vector2) | Vector to max with. |
+
 <a name="Vector2+normalized"></a>
 
 ### vector2.normalized() ⇒ [<code>Vector2</code>](#Vector2)
@@ -8683,6 +9609,56 @@ Calculate distance between this vector and another vectors.
 | Param | Type | Description |
 | --- | --- | --- |
 | other | [<code>Vector2</code>](#Vector2) | Other vector. |
+
+<a name="Vector2+distanceToSquared"></a>
+
+### vector2.distanceToSquared(other) ⇒ <code>Number</code>
+Calculate squared distance between this vector and another vector.
+
+**Kind**: instance method of [<code>Vector2</code>](#Vector2)  
+**Returns**: <code>Number</code> - Distance between vectors.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| other | [<code>Vector2</code>](#Vector2) | Other vector. |
+
+<a name="Vector2+clamp"></a>
+
+### vector2.clamp(min, max) ⇒ [<code>Vector2</code>](#Vector2)
+Return a clone and clamp its values to be between min and max.
+
+**Kind**: instance method of [<code>Vector2</code>](#Vector2)  
+**Returns**: [<code>Vector2</code>](#Vector2) - Clamped vector.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| min | [<code>Vector2</code>](#Vector2) | Min vector. |
+| max | [<code>Vector2</code>](#Vector2) | Max vector. |
+
+<a name="Vector2+clampSelf"></a>
+
+### vector2.clampSelf(min, max) ⇒ [<code>Vector2</code>](#Vector2)
+Clamp this vector values to be between min and max.
+
+**Kind**: instance method of [<code>Vector2</code>](#Vector2)  
+**Returns**: [<code>Vector2</code>](#Vector2) - Self.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| min | [<code>Vector2</code>](#Vector2) | Min vector. |
+| max | [<code>Vector2</code>](#Vector2) | Max vector. |
+
+<a name="Vector2+dot"></a>
+
+### vector2.dot(other) ⇒ <code>Number</code>
+Calculate the dot product with another vector.
+
+**Kind**: instance method of [<code>Vector2</code>](#Vector2)  
+**Returns**: <code>Number</code> - Dot product value.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| other | [<code>Vector2</code>](#Vector2) | Vector to calculate dot with. |
 
 <a name="Vector2+getDegrees"></a>
 
@@ -8982,6 +9958,14 @@ A Vector object for 3d positions.
         * [.length()](#Vector3+length) ⇒ <code>Number</code>
         * [.scaled()](#Vector3+scaled) ⇒ [<code>Vector3</code>](#Vector3)
         * [.distanceTo(other)](#Vector3+distanceTo) ⇒ <code>Number</code>
+        * [.distanceToSquared(other)](#Vector3+distanceToSquared) ⇒ <code>Number</code>
+        * [.clamp(min, max)](#Vector3+clamp) ⇒ [<code>Vector3</code>](#Vector3)
+        * [.clampSelf(min, max)](#Vector3+clampSelf) ⇒ [<code>Vector3</code>](#Vector3)
+        * [.dot(other)](#Vector3+dot) ⇒ <code>Number</code>
+        * [.minSelf(v)](#Vector3+minSelf) ⇒ [<code>Vector3</code>](#Vector3)
+        * [.maxSelf(v)](#Vector3+maxSelf) ⇒ [<code>Vector3</code>](#Vector3)
+        * [.min(v)](#Vector3+min) ⇒ [<code>Vector3</code>](#Vector3)
+        * [.max(v)](#Vector3+max) ⇒ [<code>Vector3</code>](#Vector3)
         * [.string()](#Vector3+string)
         * [.toArray()](#Vector3+toArray) ⇒ <code>Array.&lt;Number&gt;</code>
         * [.toDict(minimized)](#Vector3+toDict) ⇒ <code>\*</code>
@@ -9236,7 +10220,7 @@ Return a copy of this vector multiplied by a factor.
 <a name="Vector3+distanceTo"></a>
 
 ### vector3.distanceTo(other) ⇒ <code>Number</code>
-Calculate distance between this vector and another vectors.
+Calculate distance between this vector and another vector.
 
 **Kind**: instance method of [<code>Vector3</code>](#Vector3)  
 **Returns**: <code>Number</code> - Distance between vectors.  
@@ -9244,6 +10228,104 @@ Calculate distance between this vector and another vectors.
 | Param | Type | Description |
 | --- | --- | --- |
 | other | [<code>Vector3</code>](#Vector3) | Other vector. |
+
+<a name="Vector3+distanceToSquared"></a>
+
+### vector3.distanceToSquared(other) ⇒ <code>Number</code>
+Calculate squared distance between this vector and another vector.
+
+**Kind**: instance method of [<code>Vector3</code>](#Vector3)  
+**Returns**: <code>Number</code> - Distance between vectors.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| other | [<code>Vector3</code>](#Vector3) | Other vector. |
+
+<a name="Vector3+clamp"></a>
+
+### vector3.clamp(min, max) ⇒ [<code>Vector3</code>](#Vector3)
+Return a clone and clamp its values to be between min and max.
+
+**Kind**: instance method of [<code>Vector3</code>](#Vector3)  
+**Returns**: [<code>Vector3</code>](#Vector3) - Clamped vector.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| min | [<code>Vector3</code>](#Vector3) | Min vector. |
+| max | [<code>Vector3</code>](#Vector3) | Max vector. |
+
+<a name="Vector3+clampSelf"></a>
+
+### vector3.clampSelf(min, max) ⇒ [<code>Vector3</code>](#Vector3)
+Clamp this vector values to be between min and max.
+
+**Kind**: instance method of [<code>Vector3</code>](#Vector3)  
+**Returns**: [<code>Vector3</code>](#Vector3) - Self.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| min | [<code>Vector3</code>](#Vector3) | Min vector. |
+| max | [<code>Vector3</code>](#Vector3) | Max vector. |
+
+<a name="Vector3+dot"></a>
+
+### vector3.dot(other) ⇒ <code>Number</code>
+Calculate the dot product with another vector.
+
+**Kind**: instance method of [<code>Vector3</code>](#Vector3)  
+**Returns**: <code>Number</code> - Dot product value.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| other | [<code>Vector3</code>](#Vector3) | Vector to calculate dot with. |
+
+<a name="Vector3+minSelf"></a>
+
+### vector3.minSelf(v) ⇒ [<code>Vector3</code>](#Vector3)
+Set self values to be min values between self and a given vector.
+
+**Kind**: instance method of [<code>Vector3</code>](#Vector3)  
+**Returns**: [<code>Vector3</code>](#Vector3) - Self.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| v | [<code>Vector3</code>](#Vector3) | Vector to min with. |
+
+<a name="Vector3+maxSelf"></a>
+
+### vector3.maxSelf(v) ⇒ [<code>Vector3</code>](#Vector3)
+Set self values to be max values between self and a given vector.
+
+**Kind**: instance method of [<code>Vector3</code>](#Vector3)  
+**Returns**: [<code>Vector3</code>](#Vector3) - Self.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| v | [<code>Vector3</code>](#Vector3) | Vector to max with. |
+
+<a name="Vector3+min"></a>
+
+### vector3.min(v) ⇒ [<code>Vector3</code>](#Vector3)
+Create a clone vector that is the min result between self and a given vector.
+
+**Kind**: instance method of [<code>Vector3</code>](#Vector3)  
+**Returns**: [<code>Vector3</code>](#Vector3) - Result vector.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| v | [<code>Vector3</code>](#Vector3) | Vector to min with. |
+
+<a name="Vector3+max"></a>
+
+### vector3.max(v) ⇒ [<code>Vector3</code>](#Vector3)
+Create a clone vector that is the max result between self and a given vector.
+
+**Kind**: instance method of [<code>Vector3</code>](#Vector3)  
+**Returns**: [<code>Vector3</code>](#Vector3) - Result vector.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| v | [<code>Vector3</code>](#Vector3) | Vector to max with. |
 
 <a name="Vector3+string"></a>
 

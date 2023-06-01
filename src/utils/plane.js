@@ -4,7 +4,7 @@
  * 
  * |-- copyright and license --|
  * @module     Shaku
- * @file       shaku\src\utils\game_time.js
+ * @file       shaku\src\utils\plane.js
  * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
  * @copyright  (c) 2021 Ronen Ness
  * @license    MIT

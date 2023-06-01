@@ -13,13 +13,11 @@ Implements a Camera object.
 
 * [Camera](#Camera)
     * [new Camera(gfx)](#new_Camera_new)
-    * [.projection](#Camera+projection)
     * [.viewport](#Camera+viewport) ⇒ <code>Rectangle</code>
     * [.viewport](#Camera+viewport)
     * [.getRegion()](#Camera+getRegion) ⇒ <code>Rectangle</code>
     * [.orthographicOffset(offset, ignoreViewportSize, near, far)](#Camera+orthographicOffset)
     * [.orthographic(region, near, far)](#Camera+orthographic)
-    * [.perspective(fieldOfView, aspectRatio, near, far)](#Camera+perspective)
 
 <a name="new_Camera_new"></a>
 
@@ -31,13 +29,6 @@ Create the camera.
 | --- | --- | --- |
 | gfx | <code>Gfx</code> | The gfx manager instance. |
 
-<a name="Camera+projection"></a>
-
-### camera.projection
-Camera projection matrix.
-You can set it manually, or use 'orthographicOffset' / 'orthographic' / 'perspective' helper functions.
-
-**Kind**: instance property of [<code>Camera</code>](#Camera)  
 <a name="Camera+viewport"></a>
 
 ### camera.viewport ⇒ <code>Rectangle</code>
@@ -89,18 +80,4 @@ Make this camera an orthographic camera.
 | region | <code>Rectangle</code> | Camera left, top, bottom and right. If not set, will take entire canvas. |
 | near | <code>Number</code> | Near clipping plane. |
 | far | <code>Number</code> | Far clipping plane. |
-
-<a name="Camera+perspective"></a>
-
-### camera.perspective(fieldOfView, aspectRatio, near, far)
-Make this camera a perspective camera.
-
-**Kind**: instance method of [<code>Camera</code>](#Camera)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| fieldOfView | <code>\*</code> | Field of view angle in radians. |
-| aspectRatio | <code>\*</code> | Aspect ratio. |
-| near | <code>\*</code> | Near clipping plane. |
-| far | <code>\*</code> | Far clipping plane. |
 

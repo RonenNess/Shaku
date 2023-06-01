@@ -4,7 +4,7 @@
  * 
  * |-- copyright and license --|
  * @module     Shaku
- * @file       shaku\src\gfx\matrix.js
+ * @file       shaku\src\utils\matrix.js
  * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
  * @copyright  (c) 2021 Ronen Ness
  * @license    MIT

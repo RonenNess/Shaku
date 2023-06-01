@@ -7,7 +7,7 @@
 <a name="GameTime"></a>
 
 ## GameTime
-Class to hold current game time (elapse and deltatime).
+Class to hold current game time, both elapse and delta from last frame.
 
 **Kind**: global class  
 

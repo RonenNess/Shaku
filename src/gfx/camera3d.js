@@ -3,7 +3,7 @@
  * 
  * |-- copyright and license --|
  * @module     Shaku
- * @file       shaku\src\gfx\camera.js
+ * @file       shaku\src\gfx\camera3d.js
  * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
  * @copyright  (c) 2021 Ronen Ness
  * @license    MIT
