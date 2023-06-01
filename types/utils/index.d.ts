@@ -30,4 +30,9 @@ export const TransformationModes: {
     Absolute: string;
 };
 export const ItemsSorter: typeof import("./items_sorter");
+export const Frustum: typeof import("./frustum");
+export const Plane: typeof import("./plane");
+export const Sphere: typeof import("./sphere");
+export const Matrix: typeof import("./matrix");
+export const Box: typeof import("./box");
 //# sourceMappingURL=index.d.ts.map

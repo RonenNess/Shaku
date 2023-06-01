@@ -17,8 +17,8 @@ declare class CollisionWorld {
     resolver: CollisionResolver;
     _gridCellSize: Vector2;
     _grid: {};
-    _shapesToUpdate: Set<any>;
-    _cellsToDelete: Set<any>;
+    _shapesToUpdate: any;
+    _cellsToDelete: any;
     /**
      * Reset stats.
      */

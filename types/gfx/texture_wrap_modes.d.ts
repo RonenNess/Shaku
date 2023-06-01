@@ -7,6 +7,6 @@ export namespace TextureWrapModes {
 	const Clamp: TextureWrapMode;
 	const Repeat: TextureWrapMode;
 	const RepeatMirrored: TextureWrapMode;
-    const _values: Set<string>;
+    const _values: any;
 }
 //# sourceMappingURL=texture_wrap_modes.d.ts.map

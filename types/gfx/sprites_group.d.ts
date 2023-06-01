@@ -53,6 +53,6 @@ declare class SpritesGroup {
 }
 import Vector2 = require("../utils/vector2");
 import Color = require("../utils/color");
-import Matrix = require("./matrix");
+import Matrix = require("../utils/matrix.js");
 import Sprite = require("./sprite");
 //# sourceMappingURL=sprites_group.d.ts.map

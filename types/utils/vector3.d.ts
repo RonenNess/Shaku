@@ -228,11 +228,61 @@ declare class Vector3 {
      */
     scaled(fac: any): Vector3;
     /**
-     * Calculate distance between this vector and another vectors.
+     * Calculate distance between this vector and another vector.
      * @param {Vector3} other Other vector.
      * @returns {Number} Distance between vectors.
      */
     distanceTo(other: Vector3): number;
+    /**
+     * Calculate squared distance between this vector and another vector.
+     * @param {Vector3} other Other vector.
+     * @returns {Number} Distance between vectors.
+     */
+    distanceToSquared(other: Vector3): number;
+    /**
+     * Return a clone and clamp its values to be between min and max.
+     * @param {Vector3} min Min vector.
+     * @param {Vector3} max Max vector.
+     * @returns {Vector3} Clamped vector.
+     */
+    clamp(min: Vector3, max: Vector3): Vector3;
+    /**
+     * Clamp this vector values to be between min and max.
+     * @param {Vector3} min Min vector.
+     * @param {Vector3} max Max vector.
+     * @returns {Vector3} Self.
+     */
+    clampSelf(min: Vector3, max: Vector3): Vector3;
+    /**
+     * Calculate the dot product with another vector.
+     * @param {Vector3} other Vector to calculate dot with.
+     * @returns {Number} Dot product value.
+     */
+    dot(other: Vector3): number;
+    /**
+     * Set self values to be min values between self and a given vector.
+     * @param {Vector3} v Vector to min with.
+     * @returns {Vector3} Self.
+     */
+    minSelf(v: Vector3): Vector3;
+    /**
+     * Set self values to be max values between self and a given vector.
+     * @param {Vector3} v Vector to max with.
+     * @returns {Vector3} Self.
+     */
+    maxSelf(v: Vector3): Vector3;
+    /**
+     * Create a clone vector that is the min result between self and a given vector.
+     * @param {Vector3} v Vector to min with.
+     * @returns {Vector3} Result vector.
+     */
+    min(v: Vector3): Vector3;
+    /**
+     * Create a clone vector that is the max result between self and a given vector.
+     * @param {Vector3} v Vector to max with.
+     * @returns {Vector3} Result vector.
+     */
+    max(v: Vector3): Vector3;
     /**
      * Convert to string.
      */

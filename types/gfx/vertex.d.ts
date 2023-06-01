@@ -14,12 +14,6 @@ declare class Vertex {
     textureCoord: import("../utils/vector2") | typeof import("../utils/vector2");
     color: any;
     /**
-     * Transform this vertex position from a matrix.
-     * @param {Matrix} matrix Transformation matrix.
-     * @returns {Vertex} this.
-     */
-    transform(matrix: Matrix): Vertex;
-    /**
      * Set position.
      * @param {Vector2|Vector3} position Vertex position.
      * @returns {Vertex} this.
@@ -38,5 +32,4 @@ declare class Vertex {
      */
     setColor(color: typeof import("../utils/color")): Vertex;
 }
-import Matrix = require("./matrix");
 //# sourceMappingURL=vertex.d.ts.map

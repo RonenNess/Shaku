@@ -1,6 +1,6 @@
 declare const _exports: {
-    _playingSounds: Set<any>;
-    setup(): Promise<any>;
+    _playingSounds: any;
+    setup(): any;
     startFrame(): void;
     endFrame(): void;
     destroy(): void;

@@ -7,7 +7,12 @@ export = _exports;
  * To access the Sfx manager use `Shaku.sfx`.
  */
 declare class Sfx extends IManager {
-    _playingSounds: Set<any>;
+    _playingSounds: any;
+    /**
+     * @inheritdoc
+     * @private
+     **/
+    private setup;
     /**
      * Get the SoundMixer class.
      * @see SoundMixer

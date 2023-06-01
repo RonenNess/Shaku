@@ -227,7 +227,12 @@ declare class Input extends IManager {
      * @returns {String} Key code to use for touch events.
      */
     get TouchKeyCode(): string;
-    _customKeys: Set<any>;
+    /**
+     * @inheritdoc
+     * @private
+     **/
+    private setup;
+    _customKeys: any;
     _gamepadsData: any[] | globalThis.Gamepad[];
     _defaultGamepad: any;
     _defaultGamepadIndex: number;

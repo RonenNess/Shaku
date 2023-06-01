@@ -1,7 +1,7 @@
 declare const _exports: {
     _loaded: {};
-    _waitingAssets: Set<any>;
-    _failedAssets: Set<any>;
+    _waitingAssets: any;
+    _failedAssets: any;
     _successfulLoadedAssetsCount: number;
     root: string;
     suffix: string;
@@ -9,14 +9,14 @@ declare const _exports: {
     readonly pendingAssets: string[];
     readonly failedAssets: string[];
     waitForAll(): Promise<any>;
-    setup(): Promise<any>;
+    setup(): any;
     startFrame(): void;
     endFrame(): void;
     "__#13@#_getFromCache"(url: string, type: any): any;
     "__#13@#_loadAndCacheAsset"(newAsset: import("./asset"), params: any): Promise<any>;
     getCached(url: string): import("./asset");
-    "__#13@#_loadAssetType"(url: any, typeClass: any, params: any): Promise<any>;
-    "__#13@#_createAsset"(name: any, classType: any, initMethod: any, needWait: any): Promise<any>;
+    "__#13@#_loadAssetType"(url: any, typeClass: any, params: any): any;
+    "__#13@#_createAsset"(name: any, classType: any, initMethod: any, needWait: any): any;
     loadSound(url: string): Promise<import("./sound_asset")>;
     loadTexture(url: string, params?: any): Promise<import("./texture_asset")>;
     createRenderTarget(name: string, width: number, height: number, channels?: number): Promise<import("./texture_asset")>;

@@ -156,7 +156,7 @@ declare class Effect {
 declare namespace Effect {
     export { UniformTypes, UniformBinds, AttributeTypes, AttributeBinds, _gfx, UniformType };
 }
-import Matrix = require("../matrix.js");
+import Matrix = require("../../utils/matrix.js");
 import TextureAssetBase = require("../../assets/texture_asset_base.js");
 import Color = require("../../utils/color.js");
 import Vector2 = require("../../utils/vector2.js");
@@ -186,7 +186,7 @@ declare namespace UniformTypes {
     export const Float4Array: string;
     export const Int4: string;
     export const Int4Array: string;
-    const _values: Set<string>;
+    const _values: any;
 }
 declare namespace UniformBinds {
     export const MainTexture: string;

@@ -187,6 +187,12 @@ declare class Gfx extends IManager {
      */
     createCamera(withViewport: boolean): Camera;
     /**
+     * Create and return a new 3D camera instance.
+     * @param {Boolean} withViewport If true, will create camera with viewport value equal to canvas' size.
+     * @returns {Camera3D} New camera object.
+     */
+    createCamera3D(withViewport: boolean): Camera3D;
+    /**
      * Set default orthographic camera from offset.
      * @param {Vector2} offset Camera top-left corner.
      * @returns {Camera} Camera instance.
@@ -255,6 +261,11 @@ declare class Gfx extends IManager {
      * @returns {Vector2} Canvas size.
      */
     getCanvasSize(): Vector2;
+    /**
+     * @inheritdoc
+     * @private
+     */
+    private setup;
     /**
      * Generate a sprites group to render a string using a font texture.
      * Take the result of this method and use with gfx.drawGroup() to render the text.
@@ -400,9 +411,10 @@ import LinesBatch = require("./draw_batches/lines_batch.js");
 import Sprites3dEffect = require("./effects/sprites_3d.js");
 import Sprite = require("./sprite.js");
 import SpritesGroup = require("./sprites_group.js");
-import Matrix = require("./matrix.js");
+import Matrix = require("../utils/matrix.js");
 import Vertex = require("./vertex");
 import Camera = require("./camera.js");
+import Camera3D = require("./camera3d.js");
 import Vector2 = require("../utils/vector2.js");
 import Rectangle = require("../utils/rectangle.js");
 import FontTextureAsset = require("../assets/font_texture_asset.js");

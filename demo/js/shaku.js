@@ -16067,7 +16067,30 @@ class Matrix
      */
     transform(target)
     {
+        if (target.isVector2) { return Matrix.transformVector2(this, target); }
+        if (target.isVector3) { return Matrix.transformVector3(this, target); }
+        if (target.Vertex) { return Matrix.transformVertex(this, target); }
+        throw new Error("Unknown type to transform!");
+    }
 
+    /**
+     * Multiply this matrix with another matrix, putting results in self.
+     * @param {Matrix} other Matrix to multiply with.
+     * @returns {Matrix} This.
+     */
+    multiplySelfWith(other)
+    {
+        return Matrix.multiplyIntoFirst(this, other);
+    }
+
+    /**
+     * Multiply this matrix with another matrix and return a new result matrix.
+     * @param {Matrix} other Matrix to multiply with.
+     * @returns {Matrix} New result matrix.
+     */
+    multiplyWith(other)
+    {
+        return Matrix.multiply(this, other);
     }
 
     /**

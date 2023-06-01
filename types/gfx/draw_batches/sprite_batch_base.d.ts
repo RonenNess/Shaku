@@ -93,5 +93,5 @@ declare class SpriteBatchBase extends DrawBatch {
     #private;
 }
 import DrawBatch = require("./draw_batch");
-import Matrix = require("../matrix");
+import Matrix = require("../../utils/matrix.js");
 //# sourceMappingURL=sprite_batch_base.d.ts.map

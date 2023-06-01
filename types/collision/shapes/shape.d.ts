@@ -7,7 +7,7 @@ declare class CollisionShape {
     _worldRange: any;
     _debugColor: any;
     _forceDebugColor: Color;
-    _collisionFlags: number;
+    _collisionFlags: any;
     /**
      * Get the collision shape's unique identifier.
      * @returns {String} Shape's unique identifier
@@ -16,11 +16,11 @@ declare class CollisionShape {
     /**
      * Set collision flags (matched against collision mask when checking collision).
      */
-    set collisionFlags(arg: number);
+    set collisionFlags(arg: any);
     /**
      * Get collision flags (matched against collision mask when checking collision).
      */
-    get collisionFlags(): number;
+    get collisionFlags(): any;
     /**
      * Get Shapes beatch to draw this shape with, either given or default from world.
      * If not provided and have no world, will throw exception.

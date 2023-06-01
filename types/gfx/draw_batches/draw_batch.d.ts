@@ -72,13 +72,13 @@ declare class DrawBatch {
     begin(blendMode?: {
         AlphaBlend: string;
         Opaque: string;
+        /**
+         * Base class for a drawing batch, used to draw a collection of sprites or shapes.
+         */
         Additive: string;
         Multiply: string;
         Subtract: string;
         Screen: string;
-        /**
-         * Create the draw batch.
-         */
         Overlay: string;
         Invert: string;
         Darken: string;
@@ -126,5 +126,5 @@ declare namespace DrawBatch {
     const _gfx: any;
 }
 import { BuffersUsage } from "./buffers_usage";
-import Matrix = require("../matrix");
+import Matrix = require("../../utils/matrix.js");
 //# sourceMappingURL=draw_batch.d.ts.map

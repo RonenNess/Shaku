@@ -129,8 +129,8 @@ declare const _exports: {
         single_quote: number;
     };
     readonly TouchKeyCode: string;
-    setup(): Promise<any>;
-    _customKeys: Set<any>;
+    setup(): any;
+    _customKeys: any;
     startFrame(): void;
     _gamepadsData: any[] | Gamepad[];
     _defaultGamepad: any;

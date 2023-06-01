@@ -15,7 +15,7 @@ declare class TextureAtlasAsset extends Asset {
     /**
      * Build the texture atlas.
      * @private
-     * @param {Array<string>|Array<Image>} sources Source URLs or images to load into texture.
+     * @param {Array<string>|Array<Image>} sources Source URLs or images to load into texture. If array of Images, should also contain an '__origin_url' property under them for asset key.
      * @param {Number=} maxWidth Optional texture atlas width limit.
      * @param {Number=} maxHeight Optional texture atlas height limit.
      * @param {Vector2=} extraMargins Extra pixels to add between textures.

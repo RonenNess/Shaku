@@ -15,6 +15,6 @@ export namespace BlendModes {
 	const Darken: BlendMode;
 	const DestIn: BlendMode;
 	const DestOut: BlendMode;
-    const _values: Set<string>;
+    const _values: any;
 }
 //# sourceMappingURL=blend_modes.d.ts.map

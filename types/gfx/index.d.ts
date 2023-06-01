@@ -46,7 +46,7 @@ declare const _exports: {
     readonly MsdfFontEffect: typeof import("./effects/msdf_font");
     readonly Sprite: typeof import("./sprite");
     readonly SpritesGroup: typeof import("./sprites_group");
-    readonly Matrix: typeof import("./matrix");
+    readonly Matrix: typeof import("../utils/matrix");
     readonly Vertex: typeof import("./vertex");
     readonly TextAlignments: {
         Left: string;
@@ -54,6 +54,7 @@ declare const _exports: {
         Center: string;
     };
     createCamera(withViewport: boolean): import("./camera");
+    createCamera3D(withViewport: boolean): import("./camera3d");
     setCameraOrthographic(offset: import("../utils/vector2")): import("./camera");
     maximizeCanvasSize(limitToParent?: boolean, allowOddNumbers?: boolean): void;
     setRenderTarget(texture: import("../assets/texture_asset") | import("../assets/texture_asset")[], keepCamera?: boolean): void;
@@ -66,7 +67,7 @@ declare const _exports: {
     getRenderingRegion(includeOffset: boolean): import("../utils/rectangle");
     getRenderingSize(): import("../utils/vector2");
     getCanvasSize(): import("../utils/vector2");
-    setup(): Promise<any>;
+    setup(): any;
     buildText(fontTexture: import("../assets/font_texture_asset"), text: string, fontSize?: number, color?: import("../utils/color") | import("../utils/color")[], alignment?: string, offset?: import("../utils/vector2"), marginFactor?: import("../utils/vector2")): import("./sprites_group");
     centerCanvas(): void;
     inScreen(shape: any): boolean;

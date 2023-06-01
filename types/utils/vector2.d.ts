@@ -199,6 +199,30 @@ declare class Vector2 {
      */
     ceil(): Vector2;
     /**
+     * Set self values to be min values between self and a given vector.
+     * @param {Vector2} v Vector to min with.
+     * @returns {Vector2} Self.
+     */
+    minSelf(v: Vector2): Vector2;
+    /**
+     * Set self values to be max values between self and a given vector.
+     * @param {Vector2} v Vector to max with.
+     * @returns {Vector2} Self.
+     */
+    maxSelf(v: Vector2): Vector2;
+    /**
+     * Create a clone vector that is the min result between self and a given vector.
+     * @param {Vector2} v Vector to min with.
+     * @returns {Vector2} Result vector.
+     */
+    min(v: Vector2): Vector2;
+    /**
+     * Create a clone vector that is the max result between self and a given vector.
+     * @param {Vector2} v Vector to max with.
+     * @returns {Vector2} Result vector.
+     */
+    max(v: Vector2): Vector2;
+    /**
      * Return a normalized copy of this vector.
      * @returns {Vector2} result vector.
      */
@@ -314,6 +338,32 @@ declare class Vector2 {
      * @returns {Number} Distance between vectors.
      */
     distanceTo(other: Vector2): number;
+    /**
+     * Calculate squared distance between this vector and another vector.
+     * @param {Vector2} other Other vector.
+     * @returns {Number} Distance between vectors.
+     */
+    distanceToSquared(other: Vector2): number;
+    /**
+     * Return a clone and clamp its values to be between min and max.
+     * @param {Vector2} min Min vector.
+     * @param {Vector2} max Max vector.
+     * @returns {Vector2} Clamped vector.
+     */
+    clamp(min: Vector2, max: Vector2): Vector2;
+    /**
+     * Clamp this vector values to be between min and max.
+     * @param {Vector2} min Min vector.
+     * @param {Vector2} max Max vector.
+     * @returns {Vector2} Self.
+     */
+    clampSelf(min: Vector2, max: Vector2): Vector2;
+    /**
+     * Calculate the dot product with another vector.
+     * @param {Vector2} other Vector to calculate dot with.
+     * @returns {Number} Dot product value.
+     */
+    dot(other: Vector2): number;
     /**
      * Get vector's angle in degrees.
      * @returns {Number} Vector angle in degrees.

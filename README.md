@@ -2423,7 +2423,7 @@ Since I decided to do breaking changes in the `gfx` manager anyway, I took the o
 - Added 'min', 'max', 'distanceToSquared', 'dot' and 'clamp' to Vectors.
 - Moved 'Matrix' into utils.
 
-## 2.2.0 [WIP]
+## 2.2.0
 
 - Bugfix in frustum collision with box.
 - Added skeleton animation demo.

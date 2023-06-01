@@ -9,8 +9,8 @@ export = _exports;
  */
 declare class Assets extends IManager {
     _loaded: {};
-    _waitingAssets: Set<any>;
-    _failedAssets: Set<any>;
+    _waitingAssets: any;
+    _failedAssets: any;
     _successfulLoadedAssetsCount: number;
     /**
      * Optional URL root to prepend to all loaded assets URLs.
@@ -43,6 +43,11 @@ declare class Assets extends IManager {
      * @returns {Promise} Promise to resolve when all assets are loaded, or reject if there are failed assets.
      */
     waitForAll(): Promise<any>;
+    /**
+     * @inheritdoc
+     * @private
+     */
+    private setup;
     /**
      * Get asset directly from cache, synchronous and without a Promise.
      * @param {String} url Asset URL or name.

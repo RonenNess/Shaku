@@ -4,7 +4,7 @@
  */
 declare class Logger {
     constructor(name: any);
-    _nameHeader: string;
+    _nameHeader: any;
     _throwErrors: boolean;
     /**
      * Write a trace level log message.
