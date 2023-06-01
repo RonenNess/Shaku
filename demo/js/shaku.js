@@ -173,9 +173,13 @@ const _logger = (__webpack_require__(5259).getLogger)('assets');
 
 // add a 'isXXX' property to all util objects, for faster alternative to 'instanceof' checks.
 // for example this will generate a 'isVector3' that will be true for all Vector3 instances.
-for (let assetType of [SoundAsset, BinaryAsset, JsonAsset, TextureAsset, FontTextureAsset, MsdfFontTextureAsset, TextureAsset, TextureAtlasAsset]) {
-    assetType.prototype['is' + assetType.name] = true;
-}
+SoundAsset.prototype.isSoundAsset = true;
+BinaryAsset.prototype.isBinaryAsset = true;
+JsonAsset.prototype.isJsonAsset = true;
+TextureAsset.prototype.isTextureAsset = true;
+FontTextureAsset.prototype.isFontTextureAsset = true;
+MsdfFontTextureAsset.prototype.isMsdfFontTextureAsset = true;
+TextureAtlasAsset.prototype.isTextureAtlasAsset = true;
 
 /**
  * Assets manager class.
@@ -4760,7 +4764,7 @@ class Camera3D extends Camera
      */
     getViewProjection()
     {
-        Matrix.multiply(this.view, this.projection);
+        return Matrix.multiply(this.view, this.projection);
     }
 
     /**
@@ -13290,7 +13294,7 @@ let _managersStarted = false;
 let _wasPaused = false;
 
 // current version
-const version = "2.2.1";
+const version = "2.2.2";
 
 
 /**

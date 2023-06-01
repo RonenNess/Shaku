@@ -2437,6 +2437,10 @@ Since I decided to do breaking changes in the `gfx` manager anyway, I took the o
 
 - Fixed another faulty circlular import.
 
+# 2.2.2
+
+- Fixed warnings in minified version + broken method to get camera viewproj matrix.
+
 # License
 
 *Shaku* is licensed under the permissive MIT license, so you can use it for any purpose (including commercially) and it should be compatible with most common licenses.

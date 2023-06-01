@@ -84,7 +84,7 @@ class Camera3D extends Camera
      */
     getViewProjection()
     {
-        Matrix.multiply(this.view, this.projection);
+        return Matrix.multiply(this.view, this.projection);
     }
 
     /**
