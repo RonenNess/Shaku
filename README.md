@@ -2433,6 +2433,10 @@ Since I decided to do breaking changes in the `gfx` manager anyway, I took the o
 - Changed 'Matrix' API to make it more intuitive.
 - Added optimization for 'instanceof' checks (on Chrome its pretty much the same, on FF instanceof is ~6% slower).
 
+## 2.2.1
+
+- Fixed another faulty circlular import.
+
 # License
 
 *Shaku* is licensed under the permissive MIT license, so you can use it for any purpose (including commercially) and it should be compatible with most common licenses.

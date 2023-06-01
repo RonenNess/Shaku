@@ -10548,7 +10548,9 @@ module.exports = {TextureWrapModes: TextureWrapModes};
  * 
  */
 
-const { Vector2, Color } = __webpack_require__(3624);
+const Vector2 = __webpack_require__(2544);
+const Vector3 = __webpack_require__(8329);
+const Color = __webpack_require__(9327);
 
 
 /**
@@ -13288,7 +13290,7 @@ let _managersStarted = false;
 let _wasPaused = false;
 
 // current version
-const version = "2.2.0";
+const version = "2.2.1";
 
 
 /**

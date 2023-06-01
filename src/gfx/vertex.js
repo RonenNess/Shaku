@@ -11,7 +11,9 @@
  * 
  */
 'use strict';
-const { Vector2, Color } = require("../utils");
+const Vector2 = require("../utils/vector2");
+const Vector3 = require("../utils/vector3");
+const Color = require("../utils/color");
 
 
 /**

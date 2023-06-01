@@ -1,6 +1,6 @@
 {
   "name": "shaku",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "A simple and effective JavaScript game development framework that knows its place!",
   "main": "./src/index.js",
   "types": "types/index",
