@@ -127,7 +127,7 @@
             );
 
             // create transformation matrix
-            const matrix = Shaku.gfx.Matrix.translate(position.x, position.y, position.z);
+            const matrix = Shaku.gfx.Matrix.createTranslation(position.x, position.y, position.z);
 
             // draw floor
             spritesBatch3d.drawVertices(grassTexture, [vf1, vf2, vf3, vf4]);

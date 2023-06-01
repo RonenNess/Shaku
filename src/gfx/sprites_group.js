@@ -67,19 +67,19 @@ class SpritesGroup
         // add position
         if ((this.position.x !== 0) || (this.position.y !== 0)) 
         { 
-            matrices.push(Matrix.translate(this.position.x, this.position.y, 0));
+            matrices.push(Matrix.createTranslation(this.position.x, this.position.y, 0));
         }
         
         // add rotation
         if (this.rotation) 
         { 
-            matrices.push(Matrix.rotateZ(-this.rotation));
+            matrices.push(Matrix.createRotationZ(-this.rotation));
         }
         
         // add scale
         if ((this.scale.x !== 1) || (this.scale.y !== 1)) 
         { 
-            matrices.push(Matrix.scale(this.scale.x, this.scale.y));
+            matrices.push(Matrix.createScale(this.scale.x, this.scale.y));
         }
 
         // calculate matrix (or null if there are no transformations)

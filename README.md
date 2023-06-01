@@ -2423,11 +2423,14 @@ Since I decided to do breaking changes in the `gfx` manager anyway, I took the o
 - Added 'min', 'max', 'distanceToSquared', 'dot' and 'clamp' to Vectors.
 - Moved 'Matrix' into utils.
 
-## 2.1.1 [WIP]
+## 2.2.0 [WIP]
 
 - Bugfix in frustum collision with box.
 - Added skeleton animation demo.
 - Fixed cycle dependency in Matrix.
+- Separated 3d camera from 2d camera.
+- Added functionality to the 3d camera object.
+- Changed 'Matrix' API to make it more intuitive.
 
 # License
 

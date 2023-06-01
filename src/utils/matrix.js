@@ -12,6 +12,7 @@
  * 
  */
 'use strict';
+const Vertex = require("../gfx/vertex");
 const Vector2 = require("./vector2");
 const Vector3 = require("./vector3");
 const EPSILON = Number.EPSILON;
@@ -84,6 +85,15 @@ class Matrix
     }
 
     /**
+     * Clone and invert the matrix.
+     * @returns {Matrix} Clonsed inverted matrix.
+     */
+    inverted()
+    {
+        return this.clone().invertSelf();
+    }
+
+    /**
      * Invert this matrix.
      * @returns {Matrix} Self.
      */
@@ -135,7 +145,7 @@ class Matrix
      * Create an orthographic projection matrix.
      * @returns {Matrix} a new matrix with result.
      */
-    static orthographic(left, right, bottom, top, near, far) 
+    static createOrthographic(left, right, bottom, top, near, far) 
     {
         return new Matrix([
           2 / (right - left), 0, 0, 0,
@@ -153,7 +163,7 @@ class Matrix
      * Create a perspective projection matrix.
      * @returns {Matrix} a new matrix with result.
      */
-    static perspective(fieldOfViewInRadians, aspectRatio, near, far) 
+    static createPerspective(fieldOfViewInRadians, aspectRatio, near, far) 
     {
         var f = 1.0 / Math.tan(fieldOfViewInRadians / 2);
         var rangeInv = 1 / (near - far);
@@ -170,7 +180,7 @@ class Matrix
      * Create a translation matrix.
      * @returns {Matrix} a new matrix with result.
      */
-    static translate(x, y, z)
+    static createTranslation(x, y, z)
     {
         return new Matrix([
             1,          0,          0,          0,
@@ -184,7 +194,7 @@ class Matrix
      * Create a scale matrix.
      * @returns {Matrix} a new matrix with result.
      */
-    static scale(x, y, z)
+    static createScale(x, y, z)
     {
         return new Matrix([
             x || 1,         0,              0,              0,
@@ -198,7 +208,7 @@ class Matrix
      * Create a rotation matrix around X axis.
      * @returns {Matrix} a new matrix with result.
      */
-    static rotateX(a)
+    static createRotationX(a)
     {
         let sin = Math.sin;
         let cos = Math.cos;
@@ -214,7 +224,7 @@ class Matrix
      * Create a rotation matrix around Y axis.
      * @returns {Matrix} a new matrix with result.
      */
-    static rotateY(a)
+    static createRotationY(a)
     {
         let sin = Math.sin;
         let cos = Math.cos;
@@ -230,7 +240,7 @@ class Matrix
      * Create a rotation matrix around Z axis.
      * @returns {Matrix} a new matrix with result.
      */
-    static rotateZ(a)
+    static createRotationZ(a)
     {
         let sin = Math.sin;
         let cos = Math.cos;
@@ -276,7 +286,7 @@ class Matrix
      * @param {Vector3=} upVector Optional vector representing 'up' direction.
      * @returns {Matrix} a new matrix with result.
      */
-    static lookAt(eyePosition, targetPosition, upVector)
+    static createLookAt(eyePosition, targetPosition, upVector)
     {
         const eye = eyePosition;
         const center = targetPosition;

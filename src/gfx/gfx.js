@@ -37,6 +37,7 @@ const LinesBatch = require('./draw_batches/lines_batch.js');
 const Sprites3dEffect = require('./effects/sprites_3d.js');
 const SpriteBatch3D = require('./draw_batches/sprite_batch_3d.js');
 const TextureAtlasAsset = require('../assets/texture_atlas_asset.js');
+const Camera3D = require('./camera3d.js');
 const _logger = require('../logger.js').getLogger('gfx');
 
 let _gl = null;
@@ -338,6 +339,20 @@ class Gfx extends IManager
     createCamera(withViewport)
     {
         let ret = new Camera(this);
+        if (withViewport) {
+            ret.viewport = this.getRenderingRegion();
+        }
+        return ret;
+    }
+
+    /**
+     * Create and return a new 3D camera instance.
+     * @param {Boolean} withViewport If true, will create camera with viewport value equal to canvas' size.
+     * @returns {Camera3D} New camera object.
+     */
+    createCamera3D(withViewport)
+    {
+        let ret = new Camera3D(this);
         if (withViewport) {
             ret.viewport = this.getRenderingRegion();
         }

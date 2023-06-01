@@ -12,7 +12,7 @@
  */
 'use strict';
 const { Vector2, Color } = require("../utils");
-const Matrix = require('../utils/matrix.js');
+
 
 /**
  * A vertex we can push to sprite batch.
@@ -30,16 +30,6 @@ class Vertex
         this.position = position || Vector2.zero();
         this.textureCoord = textureCoord || Vector2.zero();
         this.color = color || Color.white;
-    }
-
-    /**
-     * Transform this vertex position from a matrix.
-     * @param {Matrix} matrix Transformation matrix.
-     * @returns {Vertex} this.
-     */
-    transform(matrix)
-    {
-        return this;
     }
 
     /**

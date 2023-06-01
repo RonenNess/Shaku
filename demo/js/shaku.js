@@ -4596,45 +4596,10 @@ class Camera
      */
     constructor(gfx)
     {
-        /**
-         * Camera projection matrix.
-         * You can set it manually, or use 'orthographicOffset' / 'orthographic' / 'perspective' helper functions.
-         */
-        this.projection = null;
-    
-        /**
-         * Camera view matrix.
-         * You can set it manually, or use 'setViewLookat' helper function.
-         */
-        this.view = null;
-
-        // internal stuff
         this.__region = null;
         this.__gfx = gfx;
         this.__viewport = null;
         this.orthographic();
-    }
-
-    /**
-     * Calc and return the currently-visible view frustum, based on active camera.
-     * @returns {Frustum} Visible frustum.
-     */
-    calcVisibleFrustum()
-    {
-        if (!this.projection || !this.view) { throw new Error("You must set both projection and view matrices to calculate visible frustum!"); }
-        const frustum = new Frustum();
-        frustum.setFromProjectionMatrix(Matrix.multiply(this.projection, this.view));
-        return frustum;
-    }
-
-    /**
-     * Set camera view matrix from source position and lookat.
-     * @param {Vector3=} eyePosition Camera source position.
-     * @param {Vector3=} lookAt Camera look-at target.
-     */
-    setViewLookat(eyePosition, lookAt)
-    {
-        this.view = Matrix.lookAt(eyePosition || new Vector3(0, 0, -500), lookAt || Vector3.zeroReadonly, Vector3.upReadonly);
     }
 
     /**
@@ -4691,7 +4656,105 @@ class Camera
             region = this.__gfx._internal.getRenderingRegionInternal();
         }
         this.__region = region;
-        this.projection = Matrix.orthographic(region.left, region.right, region.bottom, region.top, near || -1, far || 400);
+        this.projection = Matrix.createOrthographic(region.left, region.right, region.bottom, region.top, near || -1, far || 400);
+    }
+}
+
+// export the camera object
+module.exports = Camera;
+
+/***/ }),
+
+/***/ 8871:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+/**
+ * Camera class.
+ * 
+ * |-- copyright and license --|
+ * @module     Shaku
+ * @file       shaku\src\gfx\camera.js
+ * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
+ * @copyright  (c) 2021 Ronen Ness
+ * @license    MIT
+ * |-- end copyright and license --|
+ * 
+ */
+
+const Matrix = __webpack_require__(5529);
+const Vector3 = __webpack_require__(8329);
+const Frustum = __webpack_require__(4353);
+const Camera = __webpack_require__(2726);
+
+ /**
+  * Implements a 3d Camera object.
+  */
+class Camera3D extends Camera
+{
+    /**
+     * Create the camera.
+     * @param {Gfx} gfx The gfx manager instance.
+     */
+    constructor(gfx)
+    {
+        super(gfx);
+
+        /**
+         * Camera projection matrix.
+         * You can set it manually, or use 'orthographicOffset' / 'orthographic' / 'perspective' helper functions.
+         */
+        this.projection = null;
+    
+        /**
+         * Camera view matrix.
+         * You can set it manually, or use 'setViewLookat' helper function.
+         */
+        this.view = null;
+
+        // build perspective camera by default
+        this.perspective();
+        this.setViewLookat(new Vector3(0, 5, -10), Vector3.zero());
+    }
+
+    /**
+     * Calc and return the currently-visible view frustum, based on active camera.
+     * @returns {Frustum} Visible frustum.
+     */
+    calcVisibleFrustum()
+    {
+        if (!this.projection || !this.view) { throw new Error("You must set both projection and view matrices to calculate visible frustum!"); }
+        const frustum = new Frustum();
+        frustum.setFromProjectionMatrix(Matrix.multiply(this.projection, this.view));
+        return frustum;
+    }
+
+    /**
+     * Set camera view matrix from source position and lookat.
+     * @param {Vector3=} eyePosition Camera source position.
+     * @param {Vector3=} lookAt Camera look-at target.
+     */
+    setViewLookat(eyePosition, lookAt)
+    {
+        this.view = Matrix.createLookAt(eyePosition || new Vector3(0, 0, -500), lookAt || Vector3.zeroReadonly, Vector3.upReadonly);
+    }
+
+    /**
+     * Get 3d direction vector of this camera.
+     * @returns {Vector3} 3D direction vector.
+     */
+    getDirection()
+    {
+		const e = this.view.values;
+		return new Vector3( - e[ 8 ], - e[ 9 ], - e[ 10 ] ).normalizeSelf();
+    }
+
+    /**
+     * Get view projection matrix.
+     * @returns {Matrix} View-projection matrix.
+     */
+    getViewProjection()
+    {
+        Matrix.multiply(this.view, this.projection);
     }
 
     /**
@@ -4703,12 +4766,12 @@ class Camera
      */
     perspective(fieldOfView, aspectRatio, near, far) 
     {
-        this.projection = Matrix.perspective(fieldOfView || (Math.PI / 2), aspectRatio || 1, near || 0.1, far || 1000);
+        this.projection = Matrix.createPerspective(fieldOfView || (Math.PI / 2), aspectRatio || 1, near || 0.1, far || 1000);
     }
 }
 
 // export the camera object
-module.exports = Camera;
+module.exports = Camera3D;
 
 /***/ }),
 
@@ -6511,7 +6574,7 @@ class SpriteBatch3D extends SpriteBatch
     constructor(batchSpritesCount, normalizeUvs)
     {
         super(batchSpritesCount, normalizeUvs, true);
-        this.__camera = this.#_gfx.createCamera();
+        this.__camera = this.#_gfx.createCamera3D();
         this.setPerspectiveCamera();
         this.camera.setViewLookat();
     }
@@ -8727,6 +8790,7 @@ const LinesBatch = __webpack_require__(8333);
 const Sprites3dEffect = __webpack_require__(7090);
 const SpriteBatch3D = __webpack_require__(7561);
 const TextureAtlasAsset = __webpack_require__(2493);
+const Camera3D = __webpack_require__(8871);
 const _logger = (__webpack_require__(5259).getLogger)('gfx');
 
 let _gl = null;
@@ -9028,6 +9092,20 @@ class Gfx extends IManager
     createCamera(withViewport)
     {
         let ret = new Camera(this);
+        if (withViewport) {
+            ret.viewport = this.getRenderingRegion();
+        }
+        return ret;
+    }
+
+    /**
+     * Create and return a new 3D camera instance.
+     * @param {Boolean} withViewport If true, will create camera with viewport value equal to canvas' size.
+     * @returns {Camera3D} New camera object.
+     */
+    createCamera3D(withViewport)
+    {
+        let ret = new Camera3D(this);
         if (withViewport) {
             ret.viewport = this.getRenderingRegion();
         }
@@ -10237,19 +10315,19 @@ class SpritesGroup
         // add position
         if ((this.position.x !== 0) || (this.position.y !== 0)) 
         { 
-            matrices.push(Matrix.translate(this.position.x, this.position.y, 0));
+            matrices.push(Matrix.createTranslation(this.position.x, this.position.y, 0));
         }
         
         // add rotation
         if (this.rotation) 
         { 
-            matrices.push(Matrix.rotateZ(-this.rotation));
+            matrices.push(Matrix.createRotationZ(-this.rotation));
         }
         
         // add scale
         if ((this.scale.x !== 1) || (this.scale.y !== 1)) 
         { 
-            matrices.push(Matrix.scale(this.scale.x, this.scale.y));
+            matrices.push(Matrix.createScale(this.scale.x, this.scale.y));
         }
 
         // calculate matrix (or null if there are no transformations)
@@ -10465,7 +10543,7 @@ module.exports = {TextureWrapModes: TextureWrapModes};
  */
 
 const { Vector2, Color } = __webpack_require__(3624);
-const Matrix = __webpack_require__(5529);
+
 
 /**
  * A vertex we can push to sprite batch.
@@ -10483,16 +10561,6 @@ class Vertex
         this.position = position || Vector2.zero();
         this.textureCoord = textureCoord || Vector2.zero();
         this.color = color || Color.white;
-    }
-
-    /**
-     * Transform this vertex position from a matrix.
-     * @param {Matrix} matrix Transformation matrix.
-     * @returns {Vertex} this.
-     */
-    transform(matrix)
-    {
-        return this;
     }
 
     /**
@@ -13214,7 +13282,7 @@ let _managersStarted = false;
 let _wasPaused = false;
 
 // current version
-const version = "2.1.0";
+const version = "2.2.0";
 
 
 /**
@@ -15849,6 +15917,7 @@ module.exports = MathHelper;
  * 
  */
 
+const Vertex = __webpack_require__(4288);
 const Vector2 = __webpack_require__(2544);
 const Vector3 = __webpack_require__(8329);
 const EPSILON = Number.EPSILON;
@@ -15921,6 +15990,15 @@ class Matrix
     }
 
     /**
+     * Clone and invert the matrix.
+     * @returns {Matrix} Clonsed inverted matrix.
+     */
+    inverted()
+    {
+        return this.clone().invertSelf();
+    }
+
+    /**
      * Invert this matrix.
      * @returns {Matrix} Self.
      */
@@ -15972,7 +16050,7 @@ class Matrix
      * Create an orthographic projection matrix.
      * @returns {Matrix} a new matrix with result.
      */
-    static orthographic(left, right, bottom, top, near, far) 
+    static createOrthographic(left, right, bottom, top, near, far) 
     {
         return new Matrix([
           2 / (right - left), 0, 0, 0,
@@ -15990,7 +16068,7 @@ class Matrix
      * Create a perspective projection matrix.
      * @returns {Matrix} a new matrix with result.
      */
-    static perspective(fieldOfViewInRadians, aspectRatio, near, far) 
+    static createPerspective(fieldOfViewInRadians, aspectRatio, near, far) 
     {
         var f = 1.0 / Math.tan(fieldOfViewInRadians / 2);
         var rangeInv = 1 / (near - far);
@@ -16007,7 +16085,7 @@ class Matrix
      * Create a translation matrix.
      * @returns {Matrix} a new matrix with result.
      */
-    static translate(x, y, z)
+    static createTranslation(x, y, z)
     {
         return new Matrix([
             1,          0,          0,          0,
@@ -16021,7 +16099,7 @@ class Matrix
      * Create a scale matrix.
      * @returns {Matrix} a new matrix with result.
      */
-    static scale(x, y, z)
+    static createScale(x, y, z)
     {
         return new Matrix([
             x || 1,         0,              0,              0,
@@ -16035,7 +16113,7 @@ class Matrix
      * Create a rotation matrix around X axis.
      * @returns {Matrix} a new matrix with result.
      */
-    static rotateX(a)
+    static createRotationX(a)
     {
         let sin = Math.sin;
         let cos = Math.cos;
@@ -16051,7 +16129,7 @@ class Matrix
      * Create a rotation matrix around Y axis.
      * @returns {Matrix} a new matrix with result.
      */
-    static rotateY(a)
+    static createRotationY(a)
     {
         let sin = Math.sin;
         let cos = Math.cos;
@@ -16067,7 +16145,7 @@ class Matrix
      * Create a rotation matrix around Z axis.
      * @returns {Matrix} a new matrix with result.
      */
-    static rotateZ(a)
+    static createRotationZ(a)
     {
         let sin = Math.sin;
         let cos = Math.cos;
@@ -16113,7 +16191,7 @@ class Matrix
      * @param {Vector3=} upVector Optional vector representing 'up' direction.
      * @returns {Matrix} a new matrix with result.
      */
-    static lookAt(eyePosition, targetPosition, upVector)
+    static createLookAt(eyePosition, targetPosition, upVector)
     {
         const eye = eyePosition;
         const center = targetPosition;
@@ -18758,19 +18836,19 @@ class Transformation
         // apply position
         if ((this._position.x !== 0) || (this._position.y !== 0)) 
         { 
-            matrices.push(Matrix.translate(this._position.x, this._position.y, 0));
+            matrices.push(Matrix.createTranslation(this._position.x, this._position.y, 0));
         }
         
         // apply rotation
         if (this._rotation) 
         { 
-            matrices.push(Matrix.rotateZ(-this._rotation));
+            matrices.push(Matrix.createRotationZ(-this._rotation));
         }
         
         // apply scale
         if ((this._scale.x !== 1) || (this._scale.y !== 1)) 
         { 
-            matrices.push(Matrix.scale(this._scale.x, this._scale.y));
+            matrices.push(Matrix.createScale(this._scale.x, this._scale.y));
         }
 
         // no transformations? identity matrix

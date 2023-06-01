@@ -29,45 +29,10 @@ class Camera
      */
     constructor(gfx)
     {
-        /**
-         * Camera projection matrix.
-         * You can set it manually, or use 'orthographicOffset' / 'orthographic' / 'perspective' helper functions.
-         */
-        this.projection = null;
-    
-        /**
-         * Camera view matrix.
-         * You can set it manually, or use 'setViewLookat' helper function.
-         */
-        this.view = null;
-
-        // internal stuff
         this.__region = null;
         this.__gfx = gfx;
         this.__viewport = null;
         this.orthographic();
-    }
-
-    /**
-     * Calc and return the currently-visible view frustum, based on active camera.
-     * @returns {Frustum} Visible frustum.
-     */
-    calcVisibleFrustum()
-    {
-        if (!this.projection || !this.view) { throw new Error("You must set both projection and view matrices to calculate visible frustum!"); }
-        const frustum = new Frustum();
-        frustum.setFromProjectionMatrix(Matrix.multiply(this.projection, this.view));
-        return frustum;
-    }
-
-    /**
-     * Set camera view matrix from source position and lookat.
-     * @param {Vector3=} eyePosition Camera source position.
-     * @param {Vector3=} lookAt Camera look-at target.
-     */
-    setViewLookat(eyePosition, lookAt)
-    {
-        this.view = Matrix.lookAt(eyePosition || new Vector3(0, 0, -500), lookAt || Vector3.zeroReadonly, Vector3.upReadonly);
     }
 
     /**
@@ -124,19 +89,7 @@ class Camera
             region = this.__gfx._internal.getRenderingRegionInternal();
         }
         this.__region = region;
-        this.projection = Matrix.orthographic(region.left, region.right, region.bottom, region.top, near || -1, far || 400);
-    }
-
-    /**
-     * Make this camera a perspective camera.
-     * @param {*} fieldOfView Field of view angle in radians.
-     * @param {*} aspectRatio Aspect ratio.
-     * @param {*} near Near clipping plane.
-     * @param {*} far Far clipping plane.
-     */
-    perspective(fieldOfView, aspectRatio, near, far) 
-    {
-        this.projection = Matrix.perspective(fieldOfView || (Math.PI / 2), aspectRatio || 1, near || 0.1, far || 1000);
+        this.projection = Matrix.createOrthographic(region.left, region.right, region.bottom, region.top, near || -1, far || 400);
     }
 }
 

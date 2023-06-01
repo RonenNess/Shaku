@@ -30,7 +30,7 @@ class SpriteBatch3D extends SpriteBatch
     constructor(batchSpritesCount, normalizeUvs)
     {
         super(batchSpritesCount, normalizeUvs, true);
-        this.__camera = this.#_gfx.createCamera();
+        this.__camera = this.#_gfx.createCamera3D();
         this.setPerspectiveCamera();
         this.camera.setViewLookat();
     }

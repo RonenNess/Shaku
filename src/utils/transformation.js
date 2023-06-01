@@ -487,19 +487,19 @@ class Transformation
         // apply position
         if ((this._position.x !== 0) || (this._position.y !== 0)) 
         { 
-            matrices.push(Matrix.translate(this._position.x, this._position.y, 0));
+            matrices.push(Matrix.createTranslation(this._position.x, this._position.y, 0));
         }
         
         // apply rotation
         if (this._rotation) 
         { 
-            matrices.push(Matrix.rotateZ(-this._rotation));
+            matrices.push(Matrix.createRotationZ(-this._rotation));
         }
         
         // apply scale
         if ((this._scale.x !== 1) || (this._scale.y !== 1)) 
         { 
-            matrices.push(Matrix.scale(this._scale.x, this._scale.y));
+            matrices.push(Matrix.createScale(this._scale.x, this._scale.y));
         }
 
         // no transformations? identity matrix
