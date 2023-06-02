@@ -2437,11 +2437,11 @@ Since I decided to do breaking changes in the `gfx` manager anyway, I took the o
 
 - Fixed another faulty circlular import.
 
-# 2.2.2
+## 2.2.2
 
 - Fixed warnings in minified version + broken method to get camera viewproj matrix.
 
-# 2.2.3 [WIP]
+## 2.2.3 [WIP]
 
 - Fixed bug that effect override flags don't update properly when you change them.
 
