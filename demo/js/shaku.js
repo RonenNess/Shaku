@@ -8797,7 +8797,6 @@ const Sprite = __webpack_require__(6565);
 const SpritesGroup = __webpack_require__(1036);
 const Vector2 = __webpack_require__(2544);
 const FontTextureAsset = __webpack_require__(167);
-const MsdfFontTextureAsset = __webpack_require__(1252);
 const { TextAlignment, TextAlignments } = __webpack_require__(8684);
 const Circle = __webpack_require__(9668);
 const SpriteBatch = __webpack_require__(962);
@@ -8817,6 +8816,7 @@ let _initSettings = { antialias: true, alpha: true, depth: false, premultipliedA
 let _canvas = null;
 let _lastBlendMode = null;
 let _activeEffect = null;
+let _activeEffectFlags = null;
 let _camera = null;
 let _projection = null;
 let _fb = null;
@@ -9830,13 +9830,14 @@ class GfxInternal
         }
 
         // same effect? skip
-        if (_activeEffect === effect) {
+        if ((_activeEffect === effect) && (_activeEffectFlags === overrideFlags)) {
             return;
         }
 
         // set effect
         effect.setAsActive(overrideFlags);
         _activeEffect = effect;
+        _activeEffectFlags = overrideFlags;
 
         // set projection matrix
         if (_projection) { 

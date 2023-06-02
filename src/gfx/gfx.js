@@ -25,7 +25,6 @@ const Sprite = require('./sprite.js');
 const SpritesGroup = require('./sprites_group.js');
 const Vector2 = require('../utils/vector2.js');
 const FontTextureAsset = require('../assets/font_texture_asset.js');
-const MsdfFontTextureAsset = require('../assets/msdf_font_texture_asset.js');
 const { TextAlignment, TextAlignments } = require('./text_alignments.js');
 const Circle = require('../utils/circle.js');
 const SpriteBatch = require('./draw_batches/sprite_batch.js');
@@ -45,6 +44,7 @@ let _initSettings = { antialias: true, alpha: true, depth: false, premultipliedA
 let _canvas = null;
 let _lastBlendMode = null;
 let _activeEffect = null;
+let _activeEffectFlags = null;
 let _camera = null;
 let _projection = null;
 let _fb = null;
@@ -1058,13 +1058,14 @@ class GfxInternal
         }
 
         // same effect? skip
-        if (_activeEffect === effect) {
+        if ((_activeEffect === effect) && (_activeEffectFlags === overrideFlags)) {
             return;
         }
 
         // set effect
         effect.setAsActive(overrideFlags);
         _activeEffect = effect;
+        _activeEffectFlags = overrideFlags;
 
         // set projection matrix
         if (_projection) { 
