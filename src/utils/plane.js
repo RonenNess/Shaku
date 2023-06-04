@@ -18,7 +18,7 @@ const Vector3 = require("./vector3");
 
 
 /**
- * A plane in 3D space shape.
+ * A plane in 3D space.
  */
 class Plane 
 {

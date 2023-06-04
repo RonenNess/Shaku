@@ -38,7 +38,8 @@ const Utils = {
     Plane: require('./plane'),
     Sphere: require('./sphere'),
     Matrix: require('./matrix'),
-    Box: require('./box')
+    Box: require('./box'),
+    Ray: require('./ray')
 };
 
 // add a 'isXXX' property to all util objects, for faster alternative to 'instanceof' checks.

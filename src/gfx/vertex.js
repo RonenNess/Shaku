@@ -37,33 +37,36 @@ class Vertex
     /**
      * Set position.
      * @param {Vector2|Vector3} position Vertex position.
+     * @param {Boolean} useRef If true, will not clone the given position vector and use its reference instead.
      * @returns {Vertex} this.
      */
-    setPosition(position)
+    setPosition(position, useRef)
     {
-        this.position = position.clone();
+        this.position = useRef ? position : position.clone();
         return this;
     }
 
     /**
      * Set texture coordinates.
      * @param {Vector2} textureCoord Vertex texture coord (in pixels).
+     * @param {Boolean} useRef If true, will not clone the given coords vector and use its reference instead.
      * @returns {Vertex} this.
      */
-    setTextureCoords(textureCoord)
+    setTextureCoords(textureCoord, useRef)
     {
-        this.textureCoord = textureCoord.clone();
+        this.textureCoord = useRef ? textureCoord : textureCoord.clone();
         return this;
     }
 
     /**
      * Set vertex color.
      * @param {Color} color Vertex color.
+     * @param {Boolean} useRef If true, will not clone the given color and use its reference instead.
      * @returns {Vertex} this.
      */
-    setColor(color)
+    setColor(color, useRef)
     {
-        this.color = color.clone();
+        this.color = useRef ? color : color.clone();
         return this;
     }
 }

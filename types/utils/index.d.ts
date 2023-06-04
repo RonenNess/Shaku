@@ -35,4 +35,5 @@ export const Plane: typeof import("./plane");
 export const Sphere: typeof import("./sphere");
 export const Matrix: typeof import("./matrix");
 export const Box: typeof import("./box");
+export const Ray: typeof import("./ray");
 //# sourceMappingURL=index.d.ts.map

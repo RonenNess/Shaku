@@ -244,7 +244,10 @@ Based on code from noisejs by Stefan Gustavson.
 <a href="https://github.com/josephg/noisejs/blob/master/perlin.js">https://github.com/josephg/noisejs/blob/master/perlin.js</a></p>
 </dd>
 <dt><a href="#Plane">Plane</a></dt>
-<dd><p>A plane in 3D space shape.</p>
+<dd><p>A plane in 3D space.</p>
+</dd>
+<dt><a href="#Ray">Ray</a></dt>
+<dd><p>A 3D ray.</p>
 </dd>
 <dt><a href="#Rectangle">Rectangle</a></dt>
 <dd><p>Implement a simple 2d Rectangle.</p>
@@ -253,7 +256,7 @@ Based on code from noisejs by Stefan Gustavson.
 <dd><p>Class to generate random numbers with seed.</p>
 </dd>
 <dt><a href="#Sphere">Sphere</a></dt>
-<dd><p>Implement a 3d sphere.</p>
+<dd><p>A 3D sphere.</p>
 </dd>
 <dt><a href="#Storage">Storage</a></dt>
 <dd><p>A thin wrapper layer around storage utility.</p>
@@ -2245,6 +2248,7 @@ Implements a 3d Camera object.
     * [.setViewLookat([eyePosition], [lookAt])](#Camera3D+setViewLookat)
     * [.getDirection()](#Camera3D+getDirection) ⇒ [<code>Vector3</code>](#Vector3)
     * [.getViewProjection()](#Camera3D+getViewProjection) ⇒ [<code>Matrix</code>](#Matrix)
+    * [.getProjectionView()](#Camera3D+getProjectionView) ⇒ [<code>Matrix</code>](#Matrix)
     * [.perspective(fieldOfView, aspectRatio, near, far)](#Camera3D+perspective)
 
 <a name="new_Camera3D_new"></a>
@@ -2304,6 +2308,13 @@ Get view projection matrix.
 
 **Kind**: instance method of [<code>Camera3D</code>](#Camera3D)  
 **Returns**: [<code>Matrix</code>](#Matrix) - View-projection matrix.  
+<a name="Camera3D+getProjectionView"></a>
+
+### camera3D.getProjectionView() ⇒ [<code>Matrix</code>](#Matrix)
+Get projection view matrix.
+
+**Kind**: instance method of [<code>Camera3D</code>](#Camera3D)  
+**Returns**: [<code>Matrix</code>](#Matrix) - Projection-view matrix.  
 <a name="Camera3D+perspective"></a>
 
 ### camera3D.perspective(fieldOfView, aspectRatio, near, far)
@@ -4419,9 +4430,9 @@ A vertex we can push to sprite batch.
 
 * [Vertex](#Vertex)
     * [new Vertex(position, textureCoord, color)](#new_Vertex_new)
-    * [.setPosition(position)](#Vertex+setPosition) ⇒ [<code>Vertex</code>](#Vertex)
-    * [.setTextureCoords(textureCoord)](#Vertex+setTextureCoords) ⇒ [<code>Vertex</code>](#Vertex)
-    * [.setColor(color)](#Vertex+setColor) ⇒ [<code>Vertex</code>](#Vertex)
+    * [.setPosition(position, useRef)](#Vertex+setPosition) ⇒ [<code>Vertex</code>](#Vertex)
+    * [.setTextureCoords(textureCoord, useRef)](#Vertex+setTextureCoords) ⇒ [<code>Vertex</code>](#Vertex)
+    * [.setColor(color, useRef)](#Vertex+setColor) ⇒ [<code>Vertex</code>](#Vertex)
 
 <a name="new_Vertex_new"></a>
 
@@ -4437,7 +4448,7 @@ Create the vertex data.
 
 <a name="Vertex+setPosition"></a>
 
-### vertex.setPosition(position) ⇒ [<code>Vertex</code>](#Vertex)
+### vertex.setPosition(position, useRef) ⇒ [<code>Vertex</code>](#Vertex)
 Set position.
 
 **Kind**: instance method of [<code>Vertex</code>](#Vertex)  
@@ -4446,10 +4457,11 @@ Set position.
 | Param | Type | Description |
 | --- | --- | --- |
 | position | [<code>Vector2</code>](#Vector2) \| [<code>Vector3</code>](#Vector3) | Vertex position. |
+| useRef | <code>Boolean</code> | If true, will not clone the given position vector and use its reference instead. |
 
 <a name="Vertex+setTextureCoords"></a>
 
-### vertex.setTextureCoords(textureCoord) ⇒ [<code>Vertex</code>](#Vertex)
+### vertex.setTextureCoords(textureCoord, useRef) ⇒ [<code>Vertex</code>](#Vertex)
 Set texture coordinates.
 
 **Kind**: instance method of [<code>Vertex</code>](#Vertex)  
@@ -4458,10 +4470,11 @@ Set texture coordinates.
 | Param | Type | Description |
 | --- | --- | --- |
 | textureCoord | [<code>Vector2</code>](#Vector2) | Vertex texture coord (in pixels). |
+| useRef | <code>Boolean</code> | If true, will not clone the given coords vector and use its reference instead. |
 
 <a name="Vertex+setColor"></a>
 
-### vertex.setColor(color) ⇒ [<code>Vertex</code>](#Vertex)
+### vertex.setColor(color, useRef) ⇒ [<code>Vertex</code>](#Vertex)
 Set vertex color.
 
 **Kind**: instance method of [<code>Vertex</code>](#Vertex)  
@@ -4470,6 +4483,7 @@ Set vertex color.
 | Param | Type | Description |
 | --- | --- | --- |
 | color | [<code>Color</code>](#Color) | Vertex color. |
+| useRef | <code>Boolean</code> | If true, will not clone the given color and use its reference instead. |
 
 <a name="Gamepad"></a>
 
@@ -7791,7 +7805,7 @@ Generate a perlin noise value for x,y coordinates.
 <a name="Plane"></a>
 
 ## Plane
-A plane in 3D space shape.
+A plane in 3D space.
 
 **Kind**: global class  
 
@@ -7984,6 +7998,153 @@ Clone this plane.
 
 **Kind**: instance method of [<code>Plane</code>](#Plane)  
 **Returns**: [<code>Plane</code>](#Plane) - Cloned plane.  
+<a name="Ray"></a>
+
+## Ray
+A 3D ray.
+
+**Kind**: global class  
+
+* [Ray](#Ray)
+    * [new Ray(origin, direction)](#new_Ray_new)
+    * [.set(origin, direction)](#Ray+set) ⇒ [<code>Plane</code>](#Plane)
+    * [.copy(ray)](#Ray+copy) ⇒ [<code>Ray</code>](#Ray)
+    * [.equals(ray)](#Ray+equals) ⇒ <code>Boolean</code>
+    * [.at(distance)](#Ray+at) ⇒ [<code>Vector3</code>](#Vector3)
+    * [.distanceToPoint(point)](#Ray+distanceToPoint) ⇒ <code>Number</code>
+    * [.distanceToPointSquared(point)](#Ray+distanceToPointSquared) ⇒ <code>Number</code>
+    * [.collideSphere(sphere)](#Ray+collideSphere) ⇒ <code>Boolean</code>
+    * [.collideBox(box)](#Ray+collideBox) ⇒ <code>Boolean</code>
+    * [.findColliionPointWithBox(box)](#Ray+findColliionPointWithBox) ⇒ [<code>Vector3</code>](#Vector3) \| <code>null</code>
+    * [.clone()](#Ray+clone) ⇒ [<code>Ray</code>](#Ray)
+
+<a name="new_Ray_new"></a>
+
+### new Ray(origin, direction)
+Create the Ray.
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| origin | [<code>Vector3</code>](#Vector3) | Ray origin point. |
+| direction | [<code>Vector3</code>](#Vector3) | Ray 3d direction. |
+
+<a name="Ray+set"></a>
+
+### ray.set(origin, direction) ⇒ [<code>Plane</code>](#Plane)
+Set the ray components.
+
+**Kind**: instance method of [<code>Ray</code>](#Ray)  
+**Returns**: [<code>Plane</code>](#Plane) - Self.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| origin | [<code>Vector3</code>](#Vector3) | Ray origin point. |
+| direction | [<code>Vector3</code>](#Vector3) | Ray 3d direction. |
+
+<a name="Ray+copy"></a>
+
+### ray.copy(ray) ⇒ [<code>Ray</code>](#Ray)
+Copy values from another ray.
+
+**Kind**: instance method of [<code>Ray</code>](#Ray)  
+**Returns**: [<code>Ray</code>](#Ray) - Self.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| ray | [<code>Ray</code>](#Ray) | Ray to copy. |
+
+<a name="Ray+equals"></a>
+
+### ray.equals(ray) ⇒ <code>Boolean</code>
+Check if this ray equals another ray.
+
+**Kind**: instance method of [<code>Ray</code>](#Ray)  
+**Returns**: <code>Boolean</code> - True if equal, false otherwise.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| ray | [<code>Ray</code>](#Ray) | Other ray to compare to. |
+
+<a name="Ray+at"></a>
+
+### ray.at(distance) ⇒ [<code>Vector3</code>](#Vector3)
+Get the 3d point on the ray by distance from origin.
+
+**Kind**: instance method of [<code>Ray</code>](#Ray)  
+**Returns**: [<code>Vector3</code>](#Vector3) - Point on ray from origin.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| distance | <code>Number</code> | Distance from origin to travel. |
+
+<a name="Ray+distanceToPoint"></a>
+
+### ray.distanceToPoint(point) ⇒ <code>Number</code>
+Calculate distance to a 3d point.
+
+**Kind**: instance method of [<code>Ray</code>](#Ray)  
+**Returns**: <code>Number</code> - Distance to point.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| point | [<code>Vector3</code>](#Vector3) | Point to calculate distance to. |
+
+<a name="Ray+distanceToPointSquared"></a>
+
+### ray.distanceToPointSquared(point) ⇒ <code>Number</code>
+Calculate squared distance to a 3d point.
+
+**Kind**: instance method of [<code>Ray</code>](#Ray)  
+**Returns**: <code>Number</code> - Squared distance to point.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| point | [<code>Vector3</code>](#Vector3) | Point to calculate distance to. |
+
+<a name="Ray+collideSphere"></a>
+
+### ray.collideSphere(sphere) ⇒ <code>Boolean</code>
+Check if this ray collides with a sphere.
+
+**Kind**: instance method of [<code>Ray</code>](#Ray)  
+**Returns**: <code>Boolean</code> - True if collide with sphere, false otherwise.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| sphere | [<code>Sphere</code>](#Sphere) | Sphere to test collision with. |
+
+<a name="Ray+collideBox"></a>
+
+### ray.collideBox(box) ⇒ <code>Boolean</code>
+Check if this ray collides with a box.
+
+**Kind**: instance method of [<code>Ray</code>](#Ray)  
+**Returns**: <code>Boolean</code> - True if collide with box, false otherwise.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| box | [<code>Box</code>](#Box) | Box to test collision with. |
+
+<a name="Ray+findColliionPointWithBox"></a>
+
+### ray.findColliionPointWithBox(box) ⇒ [<code>Vector3</code>](#Vector3) \| <code>null</code>
+Return the collision point between the ray and a box, or null if they don't collide.
+
+**Kind**: instance method of [<code>Ray</code>](#Ray)  
+**Returns**: [<code>Vector3</code>](#Vector3) \| <code>null</code> - Collision point or null.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| box | [<code>Box</code>](#Box) | Box to get collision with. |
+
+<a name="Ray+clone"></a>
+
+### ray.clone() ⇒ [<code>Ray</code>](#Ray)
+Clone this ray.
+
+**Kind**: instance method of [<code>Ray</code>](#Ray)  
+**Returns**: [<code>Ray</code>](#Ray) - Cloned ray.  
 <a name="Rectangle"></a>
 
 ## Rectangle
@@ -8330,7 +8491,7 @@ Pick a random value from array.
 <a name="Sphere"></a>
 
 ## Sphere
-Implement a 3d sphere.
+A 3D sphere.
 
 **Kind**: global class  
 

@@ -7,7 +7,7 @@
 <a name="Sphere"></a>
 
 ## Sphere
-Implement a 3d sphere.
+A 3D sphere.
 
 **Kind**: global class  
 

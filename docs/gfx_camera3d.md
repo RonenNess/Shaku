@@ -19,6 +19,7 @@ Implements a 3d Camera object.
     * [.setViewLookat([eyePosition], [lookAt])](#Camera3D+setViewLookat)
     * [.getDirection()](#Camera3D+getDirection) ⇒ <code>Vector3</code>
     * [.getViewProjection()](#Camera3D+getViewProjection) ⇒ <code>Matrix</code>
+    * [.getProjectionView()](#Camera3D+getProjectionView) ⇒ <code>Matrix</code>
     * [.perspective(fieldOfView, aspectRatio, near, far)](#Camera3D+perspective)
 
 <a name="new_Camera3D_new"></a>
@@ -78,6 +79,13 @@ Get view projection matrix.
 
 **Kind**: instance method of [<code>Camera3D</code>](#Camera3D)  
 **Returns**: <code>Matrix</code> - View-projection matrix.  
+<a name="Camera3D+getProjectionView"></a>
+
+### camera3D.getProjectionView() ⇒ <code>Matrix</code>
+Get projection view matrix.
+
+**Kind**: instance method of [<code>Camera3D</code>](#Camera3D)  
+**Returns**: <code>Matrix</code> - Projection-view matrix.  
 <a name="Camera3D+perspective"></a>
 
 ### camera3D.perspective(fieldOfView, aspectRatio, near, far)

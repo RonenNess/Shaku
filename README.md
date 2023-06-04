@@ -2444,6 +2444,8 @@ Since I decided to do breaking changes in the `gfx` manager anyway, I took the o
 ## 2.2.3 [WIP]
 
 - Fixed bug that effect override flags don't update properly when you change them.
+- Added 'useRef' option to vertex set methods, so we can reuse uvs and colors.
+- Added 3D ray object.
 
 # License
 

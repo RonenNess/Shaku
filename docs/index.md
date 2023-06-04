@@ -81,6 +81,7 @@ You can view the entire docs as a single file [here](shaku_full.md), or by topic
 * [Utils: Path Finder](utils_path_finder.md)
 * [Utils: Perlin](utils_perlin.md)
 * [Utils: Plane](utils_plane.md)
+* [Utils: Ray](utils_ray.md)
 * [Utils: Rectangle](utils_rectangle.md)
 * [Utils: Seeded Random](utils_seeded_random.md)
 * [Utils: Sphere](utils_sphere.md)

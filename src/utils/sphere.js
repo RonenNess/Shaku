@@ -16,7 +16,7 @@ const Vector3 = require('./vector3');
 
 
 /**
- * Implement a 3d sphere.
+ * A 3D sphere.
  */
 class Sphere
 {

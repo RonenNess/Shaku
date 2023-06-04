@@ -30,6 +30,11 @@ declare class Camera3D extends Camera {
      */
     getViewProjection(): Matrix;
     /**
+     * Get projection view matrix.
+     * @returns {Matrix} Projection-view matrix.
+     */
+    getProjectionView(): Matrix;
+    /**
      * Make this camera a perspective camera.
      * @param {*} fieldOfView Field of view angle in radians.
      * @param {*} aspectRatio Aspect ratio.

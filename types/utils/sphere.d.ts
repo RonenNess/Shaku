@@ -1,6 +1,6 @@
 export = Sphere;
 /**
- * Implement a 3d sphere.
+ * A 3D sphere.
  */
 declare class Sphere {
     /**

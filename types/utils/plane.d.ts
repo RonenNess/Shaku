@@ -1,6 +1,6 @@
 export = Plane;
 /**
- * A plane in 3D space shape.
+ * A plane in 3D space.
  */
 declare class Plane {
     /**

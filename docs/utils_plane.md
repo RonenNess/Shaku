@@ -7,7 +7,7 @@
 <a name="Plane"></a>
 
 ## Plane
-A plane in 3D space shape.
+A plane in 3D space.
 
 **Kind**: global class  
 
