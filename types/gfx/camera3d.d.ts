@@ -42,9 +42,18 @@ declare class Camera3D extends Camera {
      * @param {*} far Far clipping plane.
      */
     perspective(fieldOfView: any, aspectRatio: any, near: any, far: any): void;
+    /**
+     * Unproject a 2d vector into 3D space.
+     * You can use this method to get the 3D direction the user points on with the mouse.
+     * @param {Vector2} point Vector to unproject.
+     * @param {Number} zDistance Distance from camera to locate the 3D point at (0 = near plane, 1 = far plane).
+     * @returns
+     */
+    unproject(point: Vector2, zDistance?: number): Vector3;
 }
 import Camera = require("./camera.js");
 import Matrix = require("../utils/matrix.js");
 import Frustum = require("../utils/frustum");
 import Vector3 = require("../utils/vector3");
+import Vector2 = require("../utils/vector2.js");
 //# sourceMappingURL=camera3d.d.ts.map

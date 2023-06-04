@@ -2250,6 +2250,7 @@ Implements a 3d Camera object.
     * [.getViewProjection()](#Camera3D+getViewProjection) ⇒ [<code>Matrix</code>](#Matrix)
     * [.getProjectionView()](#Camera3D+getProjectionView) ⇒ [<code>Matrix</code>](#Matrix)
     * [.perspective(fieldOfView, aspectRatio, near, far)](#Camera3D+perspective)
+    * [.unproject(point, zDistance)](#Camera3D+unproject) ⇒ [<code>Vector3</code>](#Vector3)
 
 <a name="new_Camera3D_new"></a>
 
@@ -2328,6 +2329,20 @@ Make this camera a perspective camera.
 | aspectRatio | <code>\*</code> | Aspect ratio. |
 | near | <code>\*</code> | Near clipping plane. |
 | far | <code>\*</code> | Far clipping plane. |
+
+<a name="Camera3D+unproject"></a>
+
+### camera3D.unproject(point, zDistance) ⇒ [<code>Vector3</code>](#Vector3)
+Unproject a 2d vector into 3D space.
+You can use this method to get the 3D direction the user points on with the mouse.
+
+**Kind**: instance method of [<code>Camera3D</code>](#Camera3D)  
+**Returns**: [<code>Vector3</code>](#Vector3) - Unprojected point in 3D space.  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| point | [<code>Vector2</code>](#Vector2) |  | Vector to unproject. |
+| zDistance | <code>Number</code> | <code>0</code> | Distance from camera to locate the 3D point at (0 = near plane, 1 = far plane). |
 
 <a name="DrawBatch"></a>
 

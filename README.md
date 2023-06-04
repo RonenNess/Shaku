@@ -2441,11 +2441,12 @@ Since I decided to do breaking changes in the `gfx` manager anyway, I took the o
 
 - Fixed warnings in minified version + broken method to get camera viewproj matrix.
 
-## 2.2.3 [WIP]
+## 2.2.3
 
 - Fixed bug that effect override flags don't update properly when you change them.
 - Added 'useRef' option to vertex set methods, so we can reuse uvs and colors.
 - Added 3D ray object.
+- Added unproject to 3D camera.
 
 # License
 
