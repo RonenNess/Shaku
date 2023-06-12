@@ -50,7 +50,7 @@ let _managersStarted = false;
 let _wasPaused = false;
 
 // current version
-const version = "2.2.3";
+const version = "2.2.4";
 
 
 /**

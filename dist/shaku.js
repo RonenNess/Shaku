@@ -7501,6 +7501,9 @@ const _logger = (__webpack_require__(5259).getLogger)('gfx-effect');
 // currently applied effect
 let _currEffect = null;
 
+// will store all supported depth funcs
+let _depthFuncs = null;
+
 
 /**
  * Effect base class.
@@ -7746,7 +7749,20 @@ class Effect
         if ((overrideFlags.enableFaceCulling !== undefined) ? overrideFlags.enableFaceCulling : this.enableFaceCulling) { this._gl.enable(this._gl.CULL_FACE); } else { this._gl.disable(this._gl.CULL_FACE); }
         if ((overrideFlags.enableStencilTest !== undefined) ? overrideFlags.enableStencilTest : this.enableStencilTest) { this._gl.enable(this._gl.STENCIL_TEST); } else { this._gl.disable(this._gl.STENCIL_TEST); }
         if ((overrideFlags.enableDithering !== undefined) ? overrideFlags.enableDithering : this.enableDithering) { this._gl.enable(this._gl.DITHER); } else { this._gl.disable(this._gl.DITHER); }
-        this._gl.depthFunc(this._gl.LEQUAL);
+
+        // set polygon offset
+        const polygonOffset = (overrideFlags.polygonOffset !== undefined) ? overrideFlags.polygonOffset : this.polygonOffset;
+        if (polygonOffset) { 
+            this._gl.enable(this._gl.POLYGON_OFFSET_FILL);
+            this._gl.polygonOffset(polygonOffset.factor || 0, polygonOffset.units || 0);
+        } 
+        else { 
+            this._gl.disable(this._gl.POLYGON_OFFSET_FILL); 
+            this._gl.polygonOffset(0, 0);
+        }
+
+        // default depth func
+        this._gl.depthFunc(overrideFlags.depthFunc || this.depthFunc);
          
         // set as active
         _currEffect = this;
@@ -7830,6 +7846,15 @@ class Effect
     }
 
     /**
+     * Get depth func to use when rendering using this effect.
+     * Use 'DepthFuncs' to get options.
+     */
+    get depthFunc()
+    {
+        return Effect.DepthFuncs.LessEqual;
+    }
+
+    /**
      * Should this effect enable stencil test?
      */
     get enableStencilTest()
@@ -7843,6 +7868,38 @@ class Effect
     get enableDithering()
     {
         return false;
+    }
+
+    /**
+     * Get polygon offset factor, to apply on depth value before checking.
+     * @returns {Boolean|*} Return false to disable polygon offset, or {factor, unit} to apply polygon offset.
+     */
+    get polygonOffset()
+    {
+        return false;
+    }
+
+    /**
+     * Get all supported depth funcs we can set.
+     * @returns {*} Depth func options: {Never, Less, Equal, LessEqual, Greater, GreaterEqual, Always, NotEqual}.
+     */
+    static get DepthFuncs()
+    {
+        if (!_depthFuncs) {
+            const gl = Effect._gfx._internal.gl;
+            _depthFuncs = {
+                Never: gl.NEVER,
+                Less: gl.LESS,
+                Equal: gl.EQUAL,
+                LessEqual: gl.LEQUAL,
+                Greater: gl.GREATER,
+                GreaterEqual: gl.GEQUAL,
+                Always: gl.ALWAYS,
+                NotEqual: gl.NOTEQUAL,
+            };
+            Object.freeze(_depthFuncs);
+        }
+        return _depthFuncs;
     }
 
     /**
@@ -13361,7 +13418,7 @@ let _managersStarted = false;
 let _wasPaused = false;
 
 // current version
-const version = "2.2.3";
+const version = "2.2.4";
 
 
 /**
