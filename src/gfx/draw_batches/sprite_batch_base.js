@@ -61,6 +61,14 @@ class SpriteBatchBase extends DrawBatch
          * @name SpriteBatch#onOverflow
          */
         this.onOverflow = null;
+
+        /**
+         * Optional method to trigger right before drawing this batch.
+         * Receive params: effect, texture.
+         * @type {Function}
+         * @name SpriteBatch#beforeDraw
+         */
+        this.beforeDraw = null;
         
         /** 
          * If true, will floor vertices positions before pushing them to batch.
@@ -531,6 +539,11 @@ class SpriteBatchBase extends DrawBatch
         // nothing to draw? skip
         if (_currBatchCount === 0) {
             return;
+        }
+
+        // call the before-draw callback
+        if (this.beforeDraw) {
+            this.beforeDraw(effect, texture);
         }
 
         // get some fields we'll need

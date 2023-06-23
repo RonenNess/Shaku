@@ -2812,6 +2812,7 @@ Responsible to drawing a batch of sprites with as little draw calls as possible.
     * [new SpriteBatch([batchSpritesCount], [enableVertexColor], [enableNormals])](#new_SpriteBatch_new)
     * [.defaultEffect](#SpriteBatch+defaultEffect)
     * [.onOverflow](#SpriteBatch+onOverflow) : <code>function</code>
+    * [.beforeDraw](#SpriteBatch+beforeDraw) : <code>function</code>
     * [.snapPixels](#SpriteBatch+snapPixels) : <code>Boolean</code>
     * [.cullOutOfScreen](#SpriteBatch+cullOutOfScreen) : <code>Boolean</code>
     * [.drawVertices(texture, vertices)](#SpriteBatch+drawVertices)
@@ -2839,6 +2840,13 @@ Create the sprites batch.
 
 ### spriteBatch.onOverflow : <code>function</code>
 Optional method to trigger when sprite batch overflows and can't contain any more quads.
+
+**Kind**: instance property of [<code>SpriteBatch</code>](#SpriteBatch)  
+<a name="SpriteBatch+beforeDraw"></a>
+
+### spriteBatch.beforeDraw : <code>function</code>
+Optional method to trigger right before drawing this batch.
+Receive params: effect, texture.
 
 **Kind**: instance property of [<code>SpriteBatch</code>](#SpriteBatch)  
 <a name="SpriteBatch+snapPixels"></a>
