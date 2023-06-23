@@ -25,11 +25,11 @@ class SpriteBatch3D extends SpriteBatch
     /**
      * Create the 3d sprites batch.
      * @param {Number=} batchSpritesCount Internal buffers size, in sprites count (sprite = 4 vertices). Bigger value = faster rendering but more RAM.
-     * @param {Boolean=} normalizeUvs If true (default) will normalize UV values from 0 to 1.
+     * @param {Boolean=} enableNormals If true (not default) will support vertex normals.
      */
-    constructor(batchSpritesCount, normalizeUvs)
+    constructor(batchSpritesCount, enableNormals)
     {
-        super(batchSpritesCount, normalizeUvs, true);
+        super(batchSpritesCount, true, enableNormals);
         this.__camera = this.#_gfx.createCamera3D();
         this.setPerspectiveCamera();
         this.camera.setViewLookat();

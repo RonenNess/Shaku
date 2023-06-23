@@ -718,6 +718,7 @@ Effect.AttributeBinds = {
     Position: 'position',  // bind attribute to be used for vertices position array.
     TextureCoords: 'uv',   // bind attribute to be used for texture coords array.
     Colors: 'color',       // bind attribute to be used for vertices colors array.
+    Normals: 'normal',     // bind attribute to be used for vertices normals array.
 }
 Object.freeze(Effect.AttributeBinds);
 

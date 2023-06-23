@@ -6442,7 +6442,6 @@ module.exports = ShapesBatch;
  * 
  */
 
-const TextureAsset = __webpack_require__(2262);
 const TextureAssetBase = __webpack_require__(4397);
 const { Rectangle } = __webpack_require__(3624);
 const Vector2 = __webpack_require__(2544);
@@ -6462,11 +6461,12 @@ class SpriteBatch extends SpriteBatchBase
      * Create the sprites batch.
      * @param {Number=} batchSpritesCount Internal buffers size, in sprites count (sprite = 4 vertices). Bigger value = faster rendering but more RAM.
      * @param {Boolean=} enableVertexColor If true (default) will support vertex color. 
+     * @param {Boolean=} enableNormals If true (not default) will support vertex normals.
      */
-    constructor(batchSpritesCount, enableVertexColor)
+    constructor(batchSpritesCount, enableVertexColor, enableNormals)
     {
         // init draw batch
-        super(batchSpritesCount, enableVertexColor);
+        super(batchSpritesCount, enableVertexColor, enableNormals);
     }
 
     /**
@@ -6519,6 +6519,7 @@ class SpriteBatch extends SpriteBatchBase
         let colors = this._buffers.colorsArray;
         let uvs = this._buffers.textureArray;
         let positions = this._buffers.positionArray;
+        let normals = this._buffers.normalsArray;
         for (let vertex of vertices)
         {
             // push color
@@ -6527,6 +6528,14 @@ class SpriteBatch extends SpriteBatchBase
                 colors[colors._index++] = (vertex.color.g || 0);
                 colors[colors._index++] = (vertex.color.b || 0);
                 colors[colors._index++] = (vertex.color.a || 0);
+            }
+
+            // push normals
+            if (normals)
+            {
+                normals[normals._index++] = vertex.normal.x;
+                normals[normals._index++] = vertex.normal.y;
+                normals[normals._index++] = vertex.normal.z;
             }
 
             // push texture coords
@@ -6642,11 +6651,11 @@ class SpriteBatch3D extends SpriteBatch
     /**
      * Create the 3d sprites batch.
      * @param {Number=} batchSpritesCount Internal buffers size, in sprites count (sprite = 4 vertices). Bigger value = faster rendering but more RAM.
-     * @param {Boolean=} normalizeUvs If true (default) will normalize UV values from 0 to 1.
+     * @param {Boolean=} enableNormals If true (not default) will support vertex normals.
      */
-    constructor(batchSpritesCount, normalizeUvs)
+    constructor(batchSpritesCount, enableNormals)
     {
-        super(batchSpritesCount, normalizeUvs, true);
+        super(batchSpritesCount, true, enableNormals);
         this.__camera = this.#_gfx.createCamera3D();
         this.setPerspectiveCamera();
         this.camera.setViewLookat();
@@ -6770,14 +6779,15 @@ class SpriteBatchBase extends DrawBatch
      * Create the sprites batch.
      * @param {Number=} batchSpritesCount Internal buffers size, in sprites count (sprite = 4 vertices). Bigger value = faster rendering but more RAM.
      * @param {Boolean=} enableVertexColor If true (default) will support vertex color. 
+     * @param {Boolean=} enableNormals If true (not default) will support vertex normals.
      */
-    constructor(batchSpritesCount, enableVertexColor)
+    constructor(batchSpritesCount, enableVertexColor, enableNormals)
     {
         // init draw batch
         super();
 
         // create buffers for drawing sprites
-        this.#_createBuffers(batchSpritesCount || 500, enableVertexColor);
+        this.#_createBuffers(batchSpritesCount || 500, enableVertexColor, Boolean(enableNormals));
 
         /**
          * How many quads this batch can hold.
@@ -6848,6 +6858,7 @@ class SpriteBatchBase extends DrawBatch
             if (this._buffers.positionBuffer) gl.deleteBuffer(this._buffers.positionBuffer);
             if (this._buffers.colorsBuffer) gl.deleteBuffer(this._buffers.colorsBuffer);
             if (this._buffers.textureCoordBuffer) gl.deleteBuffer(this._buffers.textureCoordBuffer);
+            if (this._buffers.normalsBuffer) gl.deleteBuffer(this._buffers.normalsBuffer);
         }
         this._buffers = null;
     }
@@ -6864,10 +6875,11 @@ class SpriteBatchBase extends DrawBatch
      * Build the dynamic buffers.
      * @private
      */
-    #_createBuffers(batchSpritesCount, enableVertexColor)
+    #_createBuffers(batchSpritesCount, enableVertexColor, enableNormals)
     {
         let gl = this.#_gl;
 
+        // default enable vertex color
         if (enableVertexColor === undefined) { enableVertexColor = true; }
         
         // dynamic buffers, used for batch rendering
@@ -6881,6 +6893,9 @@ class SpriteBatchBase extends DrawBatch
 
             colorsBuffer: enableVertexColor ? gl.createBuffer() : null,
             colorsArray: enableVertexColor ? (new Float32Array(4 * 4 * batchSpritesCount)) : null,
+
+            normalsBuffer: enableNormals ? gl.createBuffer() : null,
+            normalsArray: enableNormals ? (new Float32Array(3 * 4 * batchSpritesCount)) : null,
 
             indexBuffer: gl.createBuffer(),
         }
@@ -6925,6 +6940,7 @@ class SpriteBatchBase extends DrawBatch
         extendBuffer(this._buffers.positionArray);
         extendBuffer(this._buffers.textureArray);
         extendBuffer(this._buffers.colorsArray);
+        extendBuffer(this._buffers.normalsArray);
     }
 
     /**
@@ -7184,6 +7200,14 @@ class SpriteBatchBase extends DrawBatch
             positions[positions._index++] = bottomLeft.x;          positions[positions._index++] = bottomLeft.y;          positions[positions._index++] = zDepth;
             positions[positions._index++] = bottomRight.x;         positions[positions._index++] = bottomRight.y;         positions[positions._index++] = zDepth;
 
+            // update normals buffer
+            let normals = this._buffers.normalsArray;
+            if (normals) {
+                normals[normals._index++] = 0;
+                normals[normals._index++] = 0;
+                normals[normals._index++] = 1;
+            }
+
             // check if full
             if (this.__quadsCount >= this.__maxQuadsCount) {
                 this._handleFullBuffer();
@@ -7266,9 +7290,11 @@ class SpriteBatchBase extends DrawBatch
         let positionArray = this._buffers.positionArray;
         let textureArray = this._buffers.textureArray;
         let colorsArray = this.__currDrawingParams.hasVertexColor ? this._buffers.colorsArray : null;
+        let normalsArray = this._buffers.normalsArray;
         let positionBuffer = this._buffers.positionBuffer;
         let textureCoordBuffer = this._buffers.textureCoordBuffer;
         let colorsBuffer = this._buffers.colorsBuffer;
+        let normalsBuffer = this._buffers.normalsBuffer;
         let indexBuffer = this._buffers.indexBuffer;
 
         // call base method to set effect and draw params
@@ -7297,6 +7323,16 @@ class SpriteBatchBase extends DrawBatch
                 gl.bufferData(gl.ARRAY_BUFFER, 
                     colorsArray, 
                     this.__buffersUsage, 0, _currBatchCount * 4 * 4);
+            }
+        }
+
+        // copy normals buffer
+        if (normalsBuffer) {
+            effect.setColorsAttribute(normalsBuffer, true);
+            if (needBuffersCopy && normalsArray) {
+                gl.bufferData(gl.ARRAY_BUFFER, 
+                    normalsArray, 
+                    this.__buffersUsage, 0, _currBatchCount * 4 * 3);
             }
         }
 
@@ -8197,6 +8233,7 @@ Effect.AttributeBinds = {
     Position: 'position',  // bind attribute to be used for vertices position array.
     TextureCoords: 'uv',   // bind attribute to be used for texture coords array.
     Colors: 'color',       // bind attribute to be used for vertices colors array.
+    Normals: 'normal',     // bind attribute to be used for vertices normals array.
 }
 Object.freeze(Effect.AttributeBinds);
 
@@ -10688,12 +10725,14 @@ class Vertex
      * @param {Vector2|Vector3} position Vertex position.
      * @param {Vector2} textureCoord Vertex texture coord (in pixels).
      * @param {Color} color Vertex color (undefined will default to white).
+     * @param {Vector3} normal Vertex normal.
      */
-    constructor(position, textureCoord, color)
+    constructor(position, textureCoord, color, normal)
     {
         this.position = position || Vector2.zero();
         this.textureCoord = textureCoord || Vector2.zero();
         this.color = color || Color.white;
+        this.normal = normal;
     }
 
     /**
@@ -10729,6 +10768,18 @@ class Vertex
     setColor(color, useRef)
     {
         this.color = useRef ? color : color.clone();
+        return this;
+    }
+    
+    /**
+     * Set vertex normal.
+     * @param {Vector3} normal Vertex normal.
+     * @param {Boolean} useRef If true, will not clone the given normal and use its reference instead.
+     * @returns {Vertex} this.
+     */
+    setNormal(normal, useRef)
+    {
+        this.normal = useRef ? normal : normal.clone();
         return this;
     }
 }

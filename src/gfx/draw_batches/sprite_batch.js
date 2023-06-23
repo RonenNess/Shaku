@@ -11,7 +11,6 @@
  * 
  */
 'use strict';
-const TextureAsset = require('../../assets/texture_asset');
 const TextureAssetBase = require('../../assets/texture_asset_base');
 const { Rectangle } = require('../../utils');
 const Vector2 = require('../../utils/vector2');
@@ -31,11 +30,12 @@ class SpriteBatch extends SpriteBatchBase
      * Create the sprites batch.
      * @param {Number=} batchSpritesCount Internal buffers size, in sprites count (sprite = 4 vertices). Bigger value = faster rendering but more RAM.
      * @param {Boolean=} enableVertexColor If true (default) will support vertex color. 
+     * @param {Boolean=} enableNormals If true (not default) will support vertex normals.
      */
-    constructor(batchSpritesCount, enableVertexColor)
+    constructor(batchSpritesCount, enableVertexColor, enableNormals)
     {
         // init draw batch
-        super(batchSpritesCount, enableVertexColor);
+        super(batchSpritesCount, enableVertexColor, enableNormals);
     }
 
     /**
@@ -88,6 +88,7 @@ class SpriteBatch extends SpriteBatchBase
         let colors = this._buffers.colorsArray;
         let uvs = this._buffers.textureArray;
         let positions = this._buffers.positionArray;
+        let normals = this._buffers.normalsArray;
         for (let vertex of vertices)
         {
             // push color
@@ -96,6 +97,14 @@ class SpriteBatch extends SpriteBatchBase
                 colors[colors._index++] = (vertex.color.g || 0);
                 colors[colors._index++] = (vertex.color.b || 0);
                 colors[colors._index++] = (vertex.color.a || 0);
+            }
+
+            // push normals
+            if (normals)
+            {
+                normals[normals._index++] = vertex.normal.x;
+                normals[normals._index++] = vertex.normal.y;
+                normals[normals._index++] = vertex.normal.z;
             }
 
             // push texture coords

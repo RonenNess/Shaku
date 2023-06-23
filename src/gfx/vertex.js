@@ -26,12 +26,14 @@ class Vertex
      * @param {Vector2|Vector3} position Vertex position.
      * @param {Vector2} textureCoord Vertex texture coord (in pixels).
      * @param {Color} color Vertex color (undefined will default to white).
+     * @param {Vector3} normal Vertex normal.
      */
-    constructor(position, textureCoord, color)
+    constructor(position, textureCoord, color, normal)
     {
         this.position = position || Vector2.zero();
         this.textureCoord = textureCoord || Vector2.zero();
         this.color = color || Color.white;
+        this.normal = normal;
     }
 
     /**
@@ -67,6 +69,18 @@ class Vertex
     setColor(color, useRef)
     {
         this.color = useRef ? color : color.clone();
+        return this;
+    }
+    
+    /**
+     * Set vertex normal.
+     * @param {Vector3} normal Vertex normal.
+     * @param {Boolean} useRef If true, will not clone the given normal and use its reference instead.
+     * @returns {Vertex} this.
+     */
+    setNormal(normal, useRef)
+    {
+        this.normal = useRef ? normal : normal.clone();
         return this;
     }
 }

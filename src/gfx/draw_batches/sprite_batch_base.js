@@ -27,14 +27,15 @@ class SpriteBatchBase extends DrawBatch
      * Create the sprites batch.
      * @param {Number=} batchSpritesCount Internal buffers size, in sprites count (sprite = 4 vertices). Bigger value = faster rendering but more RAM.
      * @param {Boolean=} enableVertexColor If true (default) will support vertex color. 
+     * @param {Boolean=} enableNormals If true (not default) will support vertex normals.
      */
-    constructor(batchSpritesCount, enableVertexColor)
+    constructor(batchSpritesCount, enableVertexColor, enableNormals)
     {
         // init draw batch
         super();
 
         // create buffers for drawing sprites
-        this.#_createBuffers(batchSpritesCount || 500, enableVertexColor);
+        this.#_createBuffers(batchSpritesCount || 500, enableVertexColor, Boolean(enableNormals));
 
         /**
          * How many quads this batch can hold.
@@ -105,6 +106,7 @@ class SpriteBatchBase extends DrawBatch
             if (this._buffers.positionBuffer) gl.deleteBuffer(this._buffers.positionBuffer);
             if (this._buffers.colorsBuffer) gl.deleteBuffer(this._buffers.colorsBuffer);
             if (this._buffers.textureCoordBuffer) gl.deleteBuffer(this._buffers.textureCoordBuffer);
+            if (this._buffers.normalsBuffer) gl.deleteBuffer(this._buffers.normalsBuffer);
         }
         this._buffers = null;
     }
@@ -121,10 +123,11 @@ class SpriteBatchBase extends DrawBatch
      * Build the dynamic buffers.
      * @private
      */
-    #_createBuffers(batchSpritesCount, enableVertexColor)
+    #_createBuffers(batchSpritesCount, enableVertexColor, enableNormals)
     {
         let gl = this.#_gl;
 
+        // default enable vertex color
         if (enableVertexColor === undefined) { enableVertexColor = true; }
         
         // dynamic buffers, used for batch rendering
@@ -138,6 +141,9 @@ class SpriteBatchBase extends DrawBatch
 
             colorsBuffer: enableVertexColor ? gl.createBuffer() : null,
             colorsArray: enableVertexColor ? (new Float32Array(4 * 4 * batchSpritesCount)) : null,
+
+            normalsBuffer: enableNormals ? gl.createBuffer() : null,
+            normalsArray: enableNormals ? (new Float32Array(3 * 4 * batchSpritesCount)) : null,
 
             indexBuffer: gl.createBuffer(),
         }
@@ -182,6 +188,7 @@ class SpriteBatchBase extends DrawBatch
         extendBuffer(this._buffers.positionArray);
         extendBuffer(this._buffers.textureArray);
         extendBuffer(this._buffers.colorsArray);
+        extendBuffer(this._buffers.normalsArray);
     }
 
     /**
@@ -441,6 +448,14 @@ class SpriteBatchBase extends DrawBatch
             positions[positions._index++] = bottomLeft.x;          positions[positions._index++] = bottomLeft.y;          positions[positions._index++] = zDepth;
             positions[positions._index++] = bottomRight.x;         positions[positions._index++] = bottomRight.y;         positions[positions._index++] = zDepth;
 
+            // update normals buffer
+            let normals = this._buffers.normalsArray;
+            if (normals) {
+                normals[normals._index++] = 0;
+                normals[normals._index++] = 0;
+                normals[normals._index++] = 1;
+            }
+
             // check if full
             if (this.__quadsCount >= this.__maxQuadsCount) {
                 this._handleFullBuffer();
@@ -523,9 +538,11 @@ class SpriteBatchBase extends DrawBatch
         let positionArray = this._buffers.positionArray;
         let textureArray = this._buffers.textureArray;
         let colorsArray = this.__currDrawingParams.hasVertexColor ? this._buffers.colorsArray : null;
+        let normalsArray = this._buffers.normalsArray;
         let positionBuffer = this._buffers.positionBuffer;
         let textureCoordBuffer = this._buffers.textureCoordBuffer;
         let colorsBuffer = this._buffers.colorsBuffer;
+        let normalsBuffer = this._buffers.normalsBuffer;
         let indexBuffer = this._buffers.indexBuffer;
 
         // call base method to set effect and draw params
@@ -554,6 +571,16 @@ class SpriteBatchBase extends DrawBatch
                 gl.bufferData(gl.ARRAY_BUFFER, 
                     colorsArray, 
                     this.__buffersUsage, 0, _currBatchCount * 4 * 4);
+            }
+        }
+
+        // copy normals buffer
+        if (normalsBuffer) {
+            effect.setColorsAttribute(normalsBuffer, true);
+            if (needBuffersCopy && normalsArray) {
+                gl.bufferData(gl.ARRAY_BUFFER, 
+                    normalsArray, 
+                    this.__buffersUsage, 0, _currBatchCount * 4 * 3);
             }
         }
 
