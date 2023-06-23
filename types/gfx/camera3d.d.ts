@@ -47,7 +47,7 @@ declare class Camera3D extends Camera {
      * You can use this method to get the 3D direction the user points on with the mouse.
      * @param {Vector2} point Vector to unproject.
      * @param {Number} zDistance Distance from camera to locate the 3D point at (0 = near plane, 1 = far plane).
-     * @returns
+     * @returns {Vector3} Unprojected point in 3D space.
      */
     unproject(point: Vector2, zDistance?: number): Vector3;
 }

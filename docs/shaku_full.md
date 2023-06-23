@@ -2809,7 +2809,7 @@ Responsible to drawing a batch of sprites with as little draw calls as possible.
 **Kind**: global class  
 
 * [SpriteBatch](#SpriteBatch)
-    * [new SpriteBatch([batchSpritesCount], [enableVertexColor])](#new_SpriteBatch_new)
+    * [new SpriteBatch([batchSpritesCount], [enableVertexColor], [enableNormals])](#new_SpriteBatch_new)
     * [.defaultEffect](#SpriteBatch+defaultEffect)
     * [.onOverflow](#SpriteBatch+onOverflow) : <code>function</code>
     * [.snapPixels](#SpriteBatch+snapPixels) : <code>Boolean</code>
@@ -2821,7 +2821,7 @@ Responsible to drawing a batch of sprites with as little draw calls as possible.
 
 <a name="new_SpriteBatch_new"></a>
 
-### new SpriteBatch([batchSpritesCount], [enableVertexColor])
+### new SpriteBatch([batchSpritesCount], [enableVertexColor], [enableNormals])
 Create the sprites batch.
 
 
@@ -2829,6 +2829,7 @@ Create the sprites batch.
 | --- | --- | --- |
 | [batchSpritesCount] | <code>Number</code> | Internal buffers size, in sprites count (sprite = 4 vertices). Bigger value = faster rendering but more RAM. |
 | [enableVertexColor] | <code>Boolean</code> | If true (default) will support vertex color. |
+| [enableNormals] | <code>Boolean</code> | If true (not default) will support vertex normals. |
 
 <a name="SpriteBatch+defaultEffect"></a>
 
@@ -2919,7 +2920,7 @@ Responsible to drawing 3D quads with textures on them.
 **Kind**: global class  
 
 * [SpriteBatch3D](#SpriteBatch3D)
-    * [new SpriteBatch3D([batchSpritesCount], [normalizeUvs])](#new_SpriteBatch3D_new)
+    * [new SpriteBatch3D([batchSpritesCount], [enableNormals])](#new_SpriteBatch3D_new)
     * [.camera](#SpriteBatch3D+camera) ⇒ [<code>Camera</code>](#Camera)
     * [.supportVertexColor](#SpriteBatch3D+supportVertexColor)
     * [.defaultEffect](#SpriteBatch3D+defaultEffect)
@@ -2928,14 +2929,14 @@ Responsible to drawing 3D quads with textures on them.
 
 <a name="new_SpriteBatch3D_new"></a>
 
-### new SpriteBatch3D([batchSpritesCount], [normalizeUvs])
+### new SpriteBatch3D([batchSpritesCount], [enableNormals])
 Create the 3d sprites batch.
 
 
 | Param | Type | Description |
 | --- | --- | --- |
 | [batchSpritesCount] | <code>Number</code> | Internal buffers size, in sprites count (sprite = 4 vertices). Bigger value = faster rendering but more RAM. |
-| [normalizeUvs] | <code>Boolean</code> | If true (default) will normalize UV values from 0 to 1. |
+| [enableNormals] | <code>Boolean</code> | If true (not default) will support vertex normals. |
 
 <a name="SpriteBatch3D+camera"></a>
 
@@ -2985,7 +2986,7 @@ Base class for sprite-based rendering, ie vertices with textures.
 **Kind**: global class  
 
 * [SpriteBatchBase](#SpriteBatchBase)
-    * [new SpriteBatchBase([batchSpritesCount], [enableVertexColor])](#new_SpriteBatchBase_new)
+    * [new SpriteBatchBase([batchSpritesCount], [enableVertexColor], [enableNormals])](#new_SpriteBatchBase_new)
     * [.isDestroyed](#SpriteBatchBase+isDestroyed)
     * [.supportVertexColor](#SpriteBatchBase+supportVertexColor) ⇒ <code>Boolean</code>
     * [.defaultEffect](#SpriteBatchBase+defaultEffect)
@@ -2998,7 +2999,7 @@ Base class for sprite-based rendering, ie vertices with textures.
 
 <a name="new_SpriteBatchBase_new"></a>
 
-### new SpriteBatchBase([batchSpritesCount], [enableVertexColor])
+### new SpriteBatchBase([batchSpritesCount], [enableVertexColor], [enableNormals])
 Create the sprites batch.
 
 
@@ -3006,6 +3007,7 @@ Create the sprites batch.
 | --- | --- | --- |
 | [batchSpritesCount] | <code>Number</code> | Internal buffers size, in sprites count (sprite = 4 vertices). Bigger value = faster rendering but more RAM. |
 | [enableVertexColor] | <code>Boolean</code> | If true (default) will support vertex color. |
+| [enableNormals] | <code>Boolean</code> | If true (not default) will support vertex normals. |
 
 <a name="SpriteBatchBase+isDestroyed"></a>
 
@@ -3137,28 +3139,33 @@ An effect = vertex shader + fragment shader + uniforms & attributes + setup code
 
 * [Effect](#Effect)
     * [new Effect()](#new_Effect_new)
-    * [.uniformTypes](#Effect+uniformTypes) ⇒ <code>\*</code>
-    * [.attributeTypes](#Effect+attributeTypes) ⇒ <code>\*</code>
-    * [.vertexCode](#Effect+vertexCode) ⇒ <code>String</code>
-    * [.fragmentCode](#Effect+fragmentCode) ⇒ <code>String</code>
-    * [.enableDepthTest](#Effect+enableDepthTest)
-    * [.enableFaceCulling](#Effect+enableFaceCulling)
-    * [.enableStencilTest](#Effect+enableStencilTest)
-    * [.enableDithering](#Effect+enableDithering)
-    * [.hasVertexColor](#Effect+hasVertexColor) ⇒ <code>Boolean</code>
-    * [.setAsActive(overrideFlags)](#Effect+setAsActive)
-    * [.prepareToDrawBatch(mesh, world)](#Effect+prepareToDrawBatch)
-    * [.getBoundUniform(bindKey)](#Effect+getBoundUniform) ⇒
-    * [.setTexture(texture)](#Effect+setTexture) ⇒ <code>Boolean</code>
-    * [.setColor(color)](#Effect+setColor)
-    * [.setProjectionMatrix(matrix)](#Effect+setProjectionMatrix)
-    * [.setWorldMatrix(matrix)](#Effect+setWorldMatrix)
-    * [.setViewMatrix(matrix)](#Effect+setViewMatrix)
-    * [.setOutline(weight, color)](#Effect+setOutline)
-    * [.setUvNormalizationFactor(factor)](#Effect+setUvNormalizationFactor)
-    * [.setPositionsAttribute(buffer, forceSetBuffer)](#Effect+setPositionsAttribute)
-    * [.setTextureCoordsAttribute(buffer, forceSetBuffer)](#Effect+setTextureCoordsAttribute)
-    * [.setColorsAttribute(buffer, forceSetBuffer)](#Effect+setColorsAttribute)
+    * _instance_
+        * [.uniformTypes](#Effect+uniformTypes) ⇒ <code>\*</code>
+        * [.attributeTypes](#Effect+attributeTypes) ⇒ <code>\*</code>
+        * [.vertexCode](#Effect+vertexCode) ⇒ <code>String</code>
+        * [.fragmentCode](#Effect+fragmentCode) ⇒ <code>String</code>
+        * [.enableDepthTest](#Effect+enableDepthTest)
+        * [.enableFaceCulling](#Effect+enableFaceCulling)
+        * [.depthFunc](#Effect+depthFunc)
+        * [.enableStencilTest](#Effect+enableStencilTest)
+        * [.enableDithering](#Effect+enableDithering)
+        * [.polygonOffset](#Effect+polygonOffset) ⇒ <code>Boolean</code> \| <code>\*</code>
+        * [.hasVertexColor](#Effect+hasVertexColor) ⇒ <code>Boolean</code>
+        * [.setAsActive(overrideFlags)](#Effect+setAsActive)
+        * [.prepareToDrawBatch(mesh, world)](#Effect+prepareToDrawBatch)
+        * [.getBoundUniform(bindKey)](#Effect+getBoundUniform) ⇒
+        * [.setTexture(texture)](#Effect+setTexture) ⇒ <code>Boolean</code>
+        * [.setColor(color)](#Effect+setColor)
+        * [.setProjectionMatrix(matrix)](#Effect+setProjectionMatrix)
+        * [.setWorldMatrix(matrix)](#Effect+setWorldMatrix)
+        * [.setViewMatrix(matrix)](#Effect+setViewMatrix)
+        * [.setOutline(weight, color)](#Effect+setOutline)
+        * [.setUvNormalizationFactor(factor)](#Effect+setUvNormalizationFactor)
+        * [.setPositionsAttribute(buffer, forceSetBuffer)](#Effect+setPositionsAttribute)
+        * [.setTextureCoordsAttribute(buffer, forceSetBuffer)](#Effect+setTextureCoordsAttribute)
+        * [.setColorsAttribute(buffer, forceSetBuffer)](#Effect+setColorsAttribute)
+    * _static_
+        * [.DepthFuncs](#Effect.DepthFuncs) ⇒ <code>\*</code>
 
 <a name="new_Effect_new"></a>
 
@@ -3219,6 +3226,13 @@ Should this effect enable depth test?
 Should this effect enable face culling?
 
 **Kind**: instance property of [<code>Effect</code>](#Effect)  
+<a name="Effect+depthFunc"></a>
+
+### effect.depthFunc
+Get depth func to use when rendering using this effect.
+Use 'DepthFuncs' to get options.
+
+**Kind**: instance property of [<code>Effect</code>](#Effect)  
 <a name="Effect+enableStencilTest"></a>
 
 ### effect.enableStencilTest
@@ -3231,6 +3245,13 @@ Should this effect enable stencil test?
 Should this effect enable dithering?
 
 **Kind**: instance property of [<code>Effect</code>](#Effect)  
+<a name="Effect+polygonOffset"></a>
+
+### effect.polygonOffset ⇒ <code>Boolean</code> \| <code>\*</code>
+Get polygon offset factor, to apply on depth value before checking.
+
+**Kind**: instance property of [<code>Effect</code>](#Effect)  
+**Returns**: <code>Boolean</code> \| <code>\*</code> - Return false to disable polygon offset, or {factor, unit} to apply polygon offset.  
 <a name="Effect+hasVertexColor"></a>
 
 ### effect.hasVertexColor ⇒ <code>Boolean</code>
@@ -3398,6 +3419,13 @@ Only works if there's an attribute type bound to 'Colors'.
 | buffer | <code>WebGLBuffer</code> | Vertices colors buffer. |
 | forceSetBuffer | <code>Boolean</code> | If true, will always set buffer even if buffer is currently set. |
 
+<a name="Effect.DepthFuncs"></a>
+
+### Effect.DepthFuncs ⇒ <code>\*</code>
+Get all supported depth funcs we can set.
+
+**Kind**: static property of [<code>Effect</code>](#Effect)  
+**Returns**: <code>\*</code> - Depth func options: {Never, Less, Equal, LessEqual, Greater, GreaterEqual, Always, NotEqual}.  
 <a name="MsdfFontEffect"></a>
 
 ## MsdfFontEffect
@@ -4444,14 +4472,15 @@ A vertex we can push to sprite batch.
 **Kind**: global class  
 
 * [Vertex](#Vertex)
-    * [new Vertex(position, textureCoord, color)](#new_Vertex_new)
+    * [new Vertex(position, textureCoord, color, normal)](#new_Vertex_new)
     * [.setPosition(position, useRef)](#Vertex+setPosition) ⇒ [<code>Vertex</code>](#Vertex)
     * [.setTextureCoords(textureCoord, useRef)](#Vertex+setTextureCoords) ⇒ [<code>Vertex</code>](#Vertex)
     * [.setColor(color, useRef)](#Vertex+setColor) ⇒ [<code>Vertex</code>](#Vertex)
+    * [.setNormal(normal, useRef)](#Vertex+setNormal) ⇒ [<code>Vertex</code>](#Vertex)
 
 <a name="new_Vertex_new"></a>
 
-### new Vertex(position, textureCoord, color)
+### new Vertex(position, textureCoord, color, normal)
 Create the vertex data.
 
 
@@ -4460,6 +4489,7 @@ Create the vertex data.
 | position | [<code>Vector2</code>](#Vector2) \| [<code>Vector3</code>](#Vector3) | Vertex position. |
 | textureCoord | [<code>Vector2</code>](#Vector2) | Vertex texture coord (in pixels). |
 | color | [<code>Color</code>](#Color) | Vertex color (undefined will default to white). |
+| normal | [<code>Vector3</code>](#Vector3) | Vertex normal. |
 
 <a name="Vertex+setPosition"></a>
 
@@ -4499,6 +4529,19 @@ Set vertex color.
 | --- | --- | --- |
 | color | [<code>Color</code>](#Color) | Vertex color. |
 | useRef | <code>Boolean</code> | If true, will not clone the given color and use its reference instead. |
+
+<a name="Vertex+setNormal"></a>
+
+### vertex.setNormal(normal, useRef) ⇒ [<code>Vertex</code>](#Vertex)
+Set vertex normal.
+
+**Kind**: instance method of [<code>Vertex</code>](#Vertex)  
+**Returns**: [<code>Vertex</code>](#Vertex) - this.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| normal | [<code>Vector3</code>](#Vector3) | Vertex normal. |
+| useRef | <code>Boolean</code> | If true, will not clone the given normal and use its reference instead. |
 
 <a name="Gamepad"></a>
 

@@ -7,8 +7,9 @@ declare class SpriteBatchBase extends DrawBatch {
      * Create the sprites batch.
      * @param {Number=} batchSpritesCount Internal buffers size, in sprites count (sprite = 4 vertices). Bigger value = faster rendering but more RAM.
      * @param {Boolean=} enableVertexColor If true (default) will support vertex color.
+     * @param {Boolean=} enableNormals If true (not default) will support vertex normals.
      */
-    constructor(batchSpritesCount?: number | undefined, enableVertexColor?: boolean | undefined);
+    constructor(batchSpritesCount?: number | undefined, enableVertexColor?: boolean | undefined, enableNormals?: boolean | undefined);
     /**
      * How many quads this batch can hold.
      * @private
@@ -50,6 +51,8 @@ declare class SpriteBatchBase extends DrawBatch {
         textureArray: Float32Array;
         colorsBuffer: any;
         colorsArray: Float32Array;
+        normalsBuffer: any;
+        normalsArray: Float32Array;
         indexBuffer: any;
     };
     __indicesType: any;

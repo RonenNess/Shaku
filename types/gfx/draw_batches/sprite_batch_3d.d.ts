@@ -4,6 +4,12 @@ export = SpriteBatch3D;
  * Responsible to drawing 3D quads with textures on them.
  */
 declare class SpriteBatch3D extends SpriteBatch {
+    /**
+     * Create the 3d sprites batch.
+     * @param {Number=} batchSpritesCount Internal buffers size, in sprites count (sprite = 4 vertices). Bigger value = faster rendering but more RAM.
+     * @param {Boolean=} enableNormals If true (not default) will support vertex normals.
+     */
+    constructor(batchSpritesCount?: number | undefined, enableNormals?: boolean | undefined);
     __camera: any;
     /**
      * Get camera instance.

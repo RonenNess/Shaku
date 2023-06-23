@@ -8,11 +8,13 @@ declare class Vertex {
      * @param {Vector2|Vector3} position Vertex position.
      * @param {Vector2} textureCoord Vertex texture coord (in pixels).
      * @param {Color} color Vertex color (undefined will default to white).
+     * @param {Vector3} normal Vertex normal.
      */
-    constructor(position: Vector2 | Vector3, textureCoord: Vector2, color: Color);
+    constructor(position: Vector2 | Vector3, textureCoord: Vector2, color: Color, normal: Vector3);
     position: Vector2 | Vector3;
     textureCoord: Vector2;
     color: any;
+    normal: Vector3;
     /**
      * Set position.
      * @param {Vector2|Vector3} position Vertex position.
@@ -34,6 +36,13 @@ declare class Vertex {
      * @returns {Vertex} this.
      */
     setColor(color: Color, useRef: boolean): Vertex;
+    /**
+     * Set vertex normal.
+     * @param {Vector3} normal Vertex normal.
+     * @param {Boolean} useRef If true, will not clone the given normal and use its reference instead.
+     * @returns {Vertex} this.
+     */
+    setNormal(normal: Vector3, useRef: boolean): Vertex;
 }
 import Vector2 = require("../utils/vector2");
 import Vector3 = require("../utils/vector3");

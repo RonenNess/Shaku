@@ -1,1 +1,1 @@
-{"version":3,"file":"sprite_batch_3d.d.ts","sourceRoot":"","sources":["../../../src/gfx/draw_batches/sprite_batch_3d.js"],"names":[],"mappings":";AAkBA;;;GAGG;AACH;IAUQ,cAA2C;IAK/C;;;OAGG;IACH,qBAGC;IAED;;;;;;OAMG;IACH,sJAQC;IAoCD;;;OAGG;IACH,gCAGC;;CAWJ"}
+{"version":3,"file":"sprite_batch_3d.d.ts","sourceRoot":"","sources":["../../../src/gfx/draw_batches/sprite_batch_3d.js"],"names":[],"mappings":";AAkBA;;;GAGG;AACH;IAEI;;;;OAIG;IACH,yFAMC;IAHG,cAA2C;IAK/C;;;OAGG;IACH,qBAGC;IAED;;;;;;OAMG;IACH,sJAQC;IAoCD;;;OAGG;IACH,gCAGC;;CAWJ"}

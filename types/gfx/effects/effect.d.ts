@@ -4,6 +4,11 @@ export = Effect;
  * An effect = vertex shader + fragment shader + uniforms & attributes + setup code.
  */
 declare class Effect {
+    /**
+     * Get all supported depth funcs we can set.
+     * @returns {*} Depth func options: {Never, Less, Equal, LessEqual, Greater, GreaterEqual, Always, NotEqual}.
+     */
+    static get DepthFuncs(): any;
     _gl: WebGl;
     _program: any;
     uniforms: {};
@@ -74,6 +79,11 @@ declare class Effect {
      */
     get enableFaceCulling(): boolean;
     /**
+     * Get depth func to use when rendering using this effect.
+     * Use 'DepthFuncs' to get options.
+     */
+    get depthFunc(): any;
+    /**
      * Should this effect enable stencil test?
      */
     get enableStencilTest(): boolean;
@@ -81,6 +91,11 @@ declare class Effect {
      * Should this effect enable dithering?
      */
     get enableDithering(): boolean;
+    /**
+     * Get polygon offset factor, to apply on depth value before checking.
+     * @returns {Boolean|*} Return false to disable polygon offset, or {factor, unit} to apply polygon offset.
+     */
+    get polygonOffset(): any;
     /**
      * Set the main texture.
      * Note: this will only work for effects that utilize the 'MainTexture' uniform.
@@ -215,6 +230,7 @@ declare namespace AttributeBinds {
     const Position: string;
     const TextureCoords: string;
     const Colors: string;
+    const Normals: string;
 }
 declare var _gfx: any;
 type UniformType = string;

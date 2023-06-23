@@ -2453,6 +2453,7 @@ Since I decided to do breaking changes in the `gfx` manager anyway, I took the o
 - Added support in setting 'polygonOffset' via effects or override flags.
 - Added support in setting 'depthFunc' via effect or override flags.
 - Added support in normals in effects and vertices.
+- Remove leftover deprecated param from base rendering batch.
 
 # License
 
