@@ -305,20 +305,6 @@ class Effect
     }
 
     /**
-     * Prepare effect before drawing it with batching.
-     * @param {Mesh} mesh Mesh we're about to draw.
-     * @param {Matrix} world World matrix.
-     */
-    prepareToDrawBatch(mesh, world)
-    {
-        this._cachedValues = {};
-        this.setPositionsAttribute(mesh.positions);
-        this.setTextureCoordsAttribute(mesh.textureCoords);
-        this.setColorsAttribute(mesh.colors);
-        this.setWorldMatrix(world);
-    }
-
-    /**
      * Get a uniform method from a bind key.
      * @param {UniformBinds} bindKey Uniform bind key.
      * @returns Uniform set method, or null if not set.
@@ -600,6 +586,22 @@ class Effect
          if (attr) {
             if (!forceSetBuffer && buffer === this._cachedValues.colors) { return; }
             this._cachedValues.colors = buffer;
+            this.attributes[attr](buffer);
+         }
+     }
+         
+    /**
+     * Set the vertices normals buffer.
+     * Only works if there's an attribute type bound to 'Normals'.
+     * @param {WebGLBuffer} buffer Vertices normals buffer.
+     * @param {Boolean} forceSetBuffer If true, will always set buffer even if buffer is currently set.
+     */
+     setNormalsAttribute(buffer, forceSetBuffer)
+     {
+        let attr = this._attributeBinds[Effect.AttributeBinds.Normals];
+         if (attr) {
+            if (!forceSetBuffer && buffer === this._cachedValues.normals) { return; }
+            this._cachedValues.normals = buffer;
             this.attributes[attr](buffer);
          }
      }

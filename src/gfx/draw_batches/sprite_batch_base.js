@@ -576,7 +576,7 @@ class SpriteBatchBase extends DrawBatch
 
         // copy normals buffer
         if (normalsBuffer) {
-            effect.setColorsAttribute(normalsBuffer, true);
+            effect.setNormalsAttribute(normalsBuffer, true);
             if (needBuffersCopy && normalsArray) {
                 gl.bufferData(gl.ARRAY_BUFFER, 
                     normalsArray, 

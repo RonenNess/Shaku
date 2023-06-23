@@ -3152,7 +3152,6 @@ An effect = vertex shader + fragment shader + uniforms & attributes + setup code
         * [.polygonOffset](#Effect+polygonOffset) ⇒ <code>Boolean</code> \| <code>\*</code>
         * [.hasVertexColor](#Effect+hasVertexColor) ⇒ <code>Boolean</code>
         * [.setAsActive(overrideFlags)](#Effect+setAsActive)
-        * [.prepareToDrawBatch(mesh, world)](#Effect+prepareToDrawBatch)
         * [.getBoundUniform(bindKey)](#Effect+getBoundUniform) ⇒
         * [.setTexture(texture)](#Effect+setTexture) ⇒ <code>Boolean</code>
         * [.setColor(color)](#Effect+setColor)
@@ -3164,6 +3163,7 @@ An effect = vertex shader + fragment shader + uniforms & attributes + setup code
         * [.setPositionsAttribute(buffer, forceSetBuffer)](#Effect+setPositionsAttribute)
         * [.setTextureCoordsAttribute(buffer, forceSetBuffer)](#Effect+setTextureCoordsAttribute)
         * [.setColorsAttribute(buffer, forceSetBuffer)](#Effect+setColorsAttribute)
+        * [.setNormalsAttribute(buffer, forceSetBuffer)](#Effect+setNormalsAttribute)
     * _static_
         * [.DepthFuncs](#Effect.DepthFuncs) ⇒ <code>\*</code>
 
@@ -3269,18 +3269,6 @@ Make this effect active.
 | Param | Type | Description |
 | --- | --- | --- |
 | overrideFlags | <code>\*</code> | Optional flags to override in effect.  May include the following: enableDepthTest, enableFaceCulling, enableStencilTest, enableDithering. |
-
-<a name="Effect+prepareToDrawBatch"></a>
-
-### effect.prepareToDrawBatch(mesh, world)
-Prepare effect before drawing it with batching.
-
-**Kind**: instance method of [<code>Effect</code>](#Effect)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| mesh | <code>Mesh</code> | Mesh we're about to draw. |
-| world | [<code>Matrix</code>](#Matrix) | World matrix. |
 
 <a name="Effect+getBoundUniform"></a>
 
@@ -3417,6 +3405,19 @@ Only works if there's an attribute type bound to 'Colors'.
 | Param | Type | Description |
 | --- | --- | --- |
 | buffer | <code>WebGLBuffer</code> | Vertices colors buffer. |
+| forceSetBuffer | <code>Boolean</code> | If true, will always set buffer even if buffer is currently set. |
+
+<a name="Effect+setNormalsAttribute"></a>
+
+### effect.setNormalsAttribute(buffer, forceSetBuffer)
+Set the vertices normals buffer.
+Only works if there's an attribute type bound to 'Normals'.
+
+**Kind**: instance method of [<code>Effect</code>](#Effect)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| buffer | <code>WebGLBuffer</code> | Vertices normals buffer. |
 | forceSetBuffer | <code>Boolean</code> | If true, will always set buffer even if buffer is currently set. |
 
 <a name="Effect.DepthFuncs"></a>
