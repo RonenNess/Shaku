@@ -6951,6 +6951,7 @@ class SpriteBatchBase extends DrawBatch
         super.clear();
         if (this._buffers.positionArray) { this._buffers.positionArray._index = 0; }
         if (this._buffers.textureArray) { this._buffers.textureArray._index = 0; }
+        if (this._buffers.normalsArray) { this._buffers.normalsArray._index = 0; }
         if (this._buffers.colorsArray && this.supportVertexColor) { this._buffers.colorsArray._index = 0; }
         this.__quadsCount = 0;
         this.__dirty = false;
