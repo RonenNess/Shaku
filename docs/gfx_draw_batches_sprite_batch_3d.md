@@ -13,7 +13,7 @@ Responsible to drawing 3D quads with textures on them.
 **Kind**: global class  
 
 * [SpriteBatch3D](#SpriteBatch3D)
-    * [new SpriteBatch3D([batchSpritesCount], [normalizeUvs])](#new_SpriteBatch3D_new)
+    * [new SpriteBatch3D([batchSpritesCount], [enableNormals])](#new_SpriteBatch3D_new)
     * [.camera](#SpriteBatch3D+camera) ⇒ <code>Camera</code>
     * [.supportVertexColor](#SpriteBatch3D+supportVertexColor)
     * [.defaultEffect](#SpriteBatch3D+defaultEffect)
@@ -22,14 +22,14 @@ Responsible to drawing 3D quads with textures on them.
 
 <a name="new_SpriteBatch3D_new"></a>
 
-### new SpriteBatch3D([batchSpritesCount], [normalizeUvs])
+### new SpriteBatch3D([batchSpritesCount], [enableNormals])
 Create the 3d sprites batch.
 
 
 | Param | Type | Description |
 | --- | --- | --- |
 | [batchSpritesCount] | <code>Number</code> | Internal buffers size, in sprites count (sprite = 4 vertices). Bigger value = faster rendering but more RAM. |
-| [normalizeUvs] | <code>Boolean</code> | If true (default) will normalize UV values from 0 to 1. |
+| [enableNormals] | <code>Boolean</code> | If true (not default) will support vertex normals. |
 
 <a name="SpriteBatch3D+camera"></a>
 

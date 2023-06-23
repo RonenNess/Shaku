@@ -45,8 +45,10 @@ An effect = vertex shader + fragment shader + uniforms & attributes + setup code
         * [.fragmentCode](#Effect+fragmentCode) ⇒ <code>String</code>
         * [.enableDepthTest](#Effect+enableDepthTest)
         * [.enableFaceCulling](#Effect+enableFaceCulling)
+        * [.depthFunc](#Effect+depthFunc)
         * [.enableStencilTest](#Effect+enableStencilTest)
         * [.enableDithering](#Effect+enableDithering)
+        * [.polygonOffset](#Effect+polygonOffset) ⇒ <code>Boolean</code> \| <code>\*</code>
         * [.hasVertexColor](#Effect+hasVertexColor) ⇒ <code>Boolean</code>
         * [.setAsActive(overrideFlags)](#Effect+setAsActive)
         * [.prepareToDrawBatch(mesh, world)](#Effect+prepareToDrawBatch)
@@ -62,6 +64,7 @@ An effect = vertex shader + fragment shader + uniforms & attributes + setup code
         * [.setTextureCoordsAttribute(buffer, forceSetBuffer)](#Effect+setTextureCoordsAttribute)
         * [.setColorsAttribute(buffer, forceSetBuffer)](#Effect+setColorsAttribute)
     * _static_
+        * [.DepthFuncs](#Effect.DepthFuncs) ⇒ <code>\*</code>
         * [.UniformBinds](#Effect.UniformBinds)
         * [.AttributeTypes](#Effect.AttributeTypes)
         * [.AttributeBinds](#Effect.AttributeBinds)
@@ -125,6 +128,13 @@ Should this effect enable depth test?
 Should this effect enable face culling?
 
 **Kind**: instance property of [<code>Effect</code>](#Effect)  
+<a name="Effect+depthFunc"></a>
+
+### effect.depthFunc
+Get depth func to use when rendering using this effect.
+Use 'DepthFuncs' to get options.
+
+**Kind**: instance property of [<code>Effect</code>](#Effect)  
 <a name="Effect+enableStencilTest"></a>
 
 ### effect.enableStencilTest
@@ -137,6 +147,13 @@ Should this effect enable stencil test?
 Should this effect enable dithering?
 
 **Kind**: instance property of [<code>Effect</code>](#Effect)  
+<a name="Effect+polygonOffset"></a>
+
+### effect.polygonOffset ⇒ <code>Boolean</code> \| <code>\*</code>
+Get polygon offset factor, to apply on depth value before checking.
+
+**Kind**: instance property of [<code>Effect</code>](#Effect)  
+**Returns**: <code>Boolean</code> \| <code>\*</code> - Return false to disable polygon offset, or {factor, unit} to apply polygon offset.  
 <a name="Effect+hasVertexColor"></a>
 
 ### effect.hasVertexColor ⇒ <code>Boolean</code>
@@ -304,6 +321,13 @@ Only works if there's an attribute type bound to 'Colors'.
 | buffer | <code>WebGLBuffer</code> | Vertices colors buffer. |
 | forceSetBuffer | <code>Boolean</code> | If true, will always set buffer even if buffer is currently set. |
 
+<a name="Effect.DepthFuncs"></a>
+
+### Effect.DepthFuncs ⇒ <code>\*</code>
+Get all supported depth funcs we can set.
+
+**Kind**: static property of [<code>Effect</code>](#Effect)  
+**Returns**: <code>\*</code> - Depth func options: {Never, Less, Equal, LessEqual, Greater, GreaterEqual, Always, NotEqual}.  
 <a name="Effect.UniformBinds"></a>
 
 ### Effect.UniformBinds
