@@ -56,26 +56,43 @@ class GameTime
          */
         this.elapsed = this.elapsedTime.seconds;
 
+        /**
+         * Raw timestamp in milliseconds.
+         * This value updates only as long as you run Shaku frames, and continue to update even if game is paused.
+         */
+        this.rawTimestamp = _rawTimestampMs;
+
         // freeze object
         Object.freeze(this);
     }
 
     /**
+     * Update raw time-related data.
+     * Called automatically from 'update'.
+     * @private
+     */
+    static updateRawData()
+    {
+        _rawTimestampMs = getAccurateTimestampMs();
+    }
+
+    /**
      * Update game time.
+     * @private
      */
     static update()
     {
-        // get current time
-        let curr = getAccurateTimestampMs();
+        // update raw data
+        GameTime.updateRawData();
 
         // calculate delta time
         let delta = 0;
         if (_prevTime) {
-            delta = curr - _prevTime;
+            delta = _rawTimestampMs - _prevTime;
         }
 
         // update previous time
-        _prevTime = curr;
+        _prevTime = _rawTimestampMs;
 
         // update delta and elapsed
         _currDelta = delta;
@@ -84,11 +101,12 @@ class GameTime
 
     /**
      * Get raw timestamp in milliseconds.
+     * This value updates only as long as you run Shaku frames, and continue to update even if game is paused.
      * @returns {Number} raw timestamp in milliseconds.
      */
     static rawTimestamp()
     {
-        return getAccurateTimestampMs();
+        return _rawTimestampMs;
     }
 
     /**
@@ -128,6 +146,7 @@ var _prevTime = null;
 // current delta and elapsed
 var _currDelta = 0;
 var _currElapsed = 0;
+var _rawTimestampMs = getAccurateTimestampMs();
 
 // export the GameTime class.
 module.exports = GameTime;

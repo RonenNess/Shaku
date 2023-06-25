@@ -217,6 +217,7 @@ class Shaku
 
         // update times
         if (this.pauseGameTime) {
+            GameTime.updateRawData();
             GameTime.resetDelta();
         }
         else {
@@ -226,7 +227,7 @@ class Shaku
         // get frame start time
         _startFrameTime = GameTime.rawTimestamp();
 
-        // create new gameTime object
+        // create new gameTime object to freeze values
         _gameTime = new GameTime();
 
         // update animators

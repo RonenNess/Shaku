@@ -2455,6 +2455,7 @@ Since I decided to do breaking changes in the `gfx` manager anyway, I took the o
 - Added support in normals in effects and vertices.
 - Removed leftover deprecated param from base rendering batch.
 - Removed deprecated effect method 'prepareToDrawBatch'.
+- Small optimizations and adjustments to 'GameTime'.
 
 # License
 
