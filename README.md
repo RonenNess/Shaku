@@ -2448,7 +2448,7 @@ Since I decided to do breaking changes in the `gfx` manager anyway, I took the o
 - Added 3D ray object.
 - Added unproject to 3D camera.
 
-## 2.2.4 [WIP]
+## 2.2.4
 
 - Added support in setting 'polygonOffset' via effects or override flags.
 - Added support in setting 'depthFunc' via effect or override flags.
