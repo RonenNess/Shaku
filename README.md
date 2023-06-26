@@ -2457,6 +2457,7 @@ Since I decided to do breaking changes in the `gfx` manager anyway, I took the o
 - Removed deprecated effect method 'prepareToDrawBatch'.
 - Small optimizations and adjustments to 'GameTime'.
 - Added math helper method to calculate normal.
+- Fixed bug with lerpDegrees method to wrap degrees.
 
 # License
 

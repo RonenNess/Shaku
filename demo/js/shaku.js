@@ -16096,7 +16096,7 @@ class MathHelper
         var ret = this.lerpRadians(a1, a2, alpha);
 
         // convert back to degrees and return
-        return this.toDegrees(ret);
+        return this.wrapDegrees(this.toDegrees(ret));
     }
 
     /**
