@@ -7054,8 +7054,8 @@ Class to hold current game time, both elapse and delta from last frame.
         * [.elapsedTime](#GameTime+elapsedTime)
         * [.delta](#GameTime+delta)
         * [.elapsed](#GameTime+elapsed)
+        * [.rawTimestamp](#GameTime+rawTimestamp)
     * _static_
-        * [.update()](#GameTime.update)
         * [.rawTimestamp()](#GameTime.rawTimestamp) ⇒ <code>Number</code>
         * [.reset()](#GameTime.reset)
         * [.resetDelta()](#GameTime.resetDelta)
@@ -7097,16 +7097,18 @@ Delta time, in seconds, since last frame.
 Total time, in seconds, since Shaku was initialized.
 
 **Kind**: instance property of [<code>GameTime</code>](#GameTime)  
-<a name="GameTime.update"></a>
+<a name="GameTime+rawTimestamp"></a>
 
-### GameTime.update()
-Update game time.
+### gameTime.rawTimestamp
+Raw timestamp in milliseconds.
+This value updates only as long as you run Shaku frames, and continue to update even if game is paused.
 
-**Kind**: static method of [<code>GameTime</code>](#GameTime)  
+**Kind**: instance property of [<code>GameTime</code>](#GameTime)  
 <a name="GameTime.rawTimestamp"></a>
 
 ### GameTime.rawTimestamp() ⇒ <code>Number</code>
 Get raw timestamp in milliseconds.
+This value updates only as long as you run Shaku frames, and continue to update even if game is paused.
 
 **Kind**: static method of [<code>GameTime</code>](#GameTime)  
 **Returns**: <code>Number</code> - raw timestamp in milliseconds.  
@@ -7305,6 +7307,7 @@ Implement some math utilities functions.
     * [.lerpDegrees(a1, a2, alpha)](#MathHelper.lerpDegrees) ⇒ <code>Number</code>
     * [.round10(num)](#MathHelper.round10) ⇒ <code>Number</code>
     * [.wrapDegrees(degrees)](#MathHelper.wrapDegrees) ⇒ <code>Number</code>
+    * [.calculateNormal(v1, v2, v3)](#MathHelper.calculateNormal) ⇒ [<code>Vector3</code>](#Vector3)
 
 <a name="MathHelper.lerp"></a>
 
@@ -7478,6 +7481,20 @@ Wrap degrees value to be between 0 to 360.
 | Param | Type | Description |
 | --- | --- | --- |
 | degrees | <code>Number</code> | Degrees to wrap. |
+
+<a name="MathHelper.calculateNormal"></a>
+
+### MathHelper.calculateNormal(v1, v2, v3) ⇒ [<code>Vector3</code>](#Vector3)
+Calculate the normal vector of a polygon using 3 points on it.
+
+**Kind**: static method of [<code>MathHelper</code>](#MathHelper)  
+**Returns**: [<code>Vector3</code>](#Vector3) - Normal vector, normalized.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| v1 | [<code>Vector3</code>](#Vector3) | Vector on the polygon. |
+| v2 | [<code>Vector3</code>](#Vector3) | Vector on the polygon. |
+| v3 | [<code>Vector3</code>](#Vector3) | Vector on the polygon. |
 
 <a name="Matrix"></a>
 

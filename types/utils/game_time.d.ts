@@ -4,11 +4,19 @@ export = GameTime;
  */
 declare class GameTime {
     /**
-     * Update game time.
+     * Update raw time-related data.
+     * Called automatically from 'update'.
+     * @private
      */
-    static update(): void;
+    private static updateRawData;
+    /**
+     * Update game time.
+     * @private
+     */
+    private static update;
     /**
      * Get raw timestamp in milliseconds.
+     * This value updates only as long as you run Shaku frames, and continue to update even if game is paused.
      * @returns {Number} raw timestamp in milliseconds.
      */
     static rawTimestamp(): number;
@@ -48,5 +56,10 @@ declare class GameTime {
      * Total time, in seconds, since Shaku was initialized.
      */
     elapsed: number;
+    /**
+     * Raw timestamp in milliseconds.
+     * This value updates only as long as you run Shaku frames, and continue to update even if game is paused.
+     */
+    rawTimestamp: number;
 }
 //# sourceMappingURL=game_time.d.ts.map

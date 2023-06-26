@@ -49,12 +49,6 @@ declare class Effect {
      */
     setAsActive(overrideFlags: any): void;
     /**
-     * Prepare effect before drawing it with batching.
-     * @param {Mesh} mesh Mesh we're about to draw.
-     * @param {Matrix} world World matrix.
-     */
-    prepareToDrawBatch(mesh: Mesh, world: Matrix): void;
-    /**
      * Get a uniform method from a bind key.
      * @param {UniformBinds} bindKey Uniform bind key.
      * @returns Uniform set method, or null if not set.
@@ -166,14 +160,21 @@ declare class Effect {
      * @param {Boolean} forceSetBuffer If true, will always set buffer even if buffer is currently set.
      */
     setColorsAttribute(buffer: WebGLBuffer, forceSetBuffer: boolean): void;
+    /**
+     * Set the vertices normals buffer.
+     * Only works if there's an attribute type bound to 'Normals'.
+     * @param {WebGLBuffer} buffer Vertices normals buffer.
+     * @param {Boolean} forceSetBuffer If true, will always set buffer even if buffer is currently set.
+     */
+    setNormalsAttribute(buffer: WebGLBuffer, forceSetBuffer: boolean): void;
     #private;
 }
 declare namespace Effect {
     export { UniformTypes, UniformBinds, AttributeTypes, AttributeBinds, _gfx, UniformType };
 }
-import Matrix = require("../../utils/matrix.js");
 import TextureAssetBase = require("../../assets/texture_asset_base.js");
 import Color = require("../../utils/color.js");
+import Matrix = require("../../utils/matrix.js");
 import Vector2 = require("../../utils/vector2.js");
 /**
  * Uniform types enum.

@@ -26,6 +26,7 @@ Implement some math utilities functions.
     * [.lerpDegrees(a1, a2, alpha)](#MathHelper.lerpDegrees) ⇒ <code>Number</code>
     * [.round10(num)](#MathHelper.round10) ⇒ <code>Number</code>
     * [.wrapDegrees(degrees)](#MathHelper.wrapDegrees) ⇒ <code>Number</code>
+    * [.calculateNormal(v1, v2, v3)](#MathHelper.calculateNormal) ⇒ <code>Vector3</code>
 
 <a name="MathHelper.PI2"></a>
 
@@ -205,4 +206,18 @@ Wrap degrees value to be between 0 to 360.
 | Param | Type | Description |
 | --- | --- | --- |
 | degrees | <code>Number</code> | Degrees to wrap. |
+
+<a name="MathHelper.calculateNormal"></a>
+
+### MathHelper.calculateNormal(v1, v2, v3) ⇒ <code>Vector3</code>
+Calculate the normal vector of a polygon using 3 points on it.
+
+**Kind**: static method of [<code>MathHelper</code>](#MathHelper)  
+**Returns**: <code>Vector3</code> - Normal vector, normalized.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| v1 | <code>Vector3</code> | Vector on the polygon. |
+| v2 | <code>Vector3</code> | Vector on the polygon. |
+| v3 | <code>Vector3</code> | Vector on the polygon. |
 

@@ -98,6 +98,14 @@ declare class MathHelper {
      * @returns {Number} degrees wrapped to be 0-360 values.
      */
     static wrapDegrees(degrees: number): number;
+    /**
+     * Calculate the normal vector of a polygon using 3 points on it.
+     * @param {Vector3} v1 Vector on the polygon.
+     * @param {Vector3} v2 Vector on the polygon.
+     * @param {Vector3} v3 Vector on the polygon.
+     * @returns {Vector3} Normal vector, normalized.
+     */
+    static calculateNormal(v1: typeof import("./vector3"), v2: typeof import("./vector3"), v3: typeof import("./vector3")): typeof import("./vector3");
 }
 declare namespace MathHelper {
     const PI2: number;

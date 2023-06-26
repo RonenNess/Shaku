@@ -32,6 +32,13 @@ declare class SpriteBatchBase extends DrawBatch {
      */
     onOverflow: Function;
     /**
+     * Optional method to trigger right before drawing this batch.
+     * Receive params: effect, texture.
+     * @type {Function}
+     * @name SpriteBatch#beforeDraw
+     */
+    beforeDraw: Function;
+    /**
      * If true, will floor vertices positions before pushing them to batch.
      * @type {Boolean}
      * @name SpriteBatch#snapPixels

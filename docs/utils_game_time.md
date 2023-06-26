@@ -19,8 +19,8 @@ Class to hold current game time, both elapse and delta from last frame.
         * [.elapsedTime](#GameTime+elapsedTime)
         * [.delta](#GameTime+delta)
         * [.elapsed](#GameTime+elapsed)
+        * [.rawTimestamp](#GameTime+rawTimestamp)
     * _static_
-        * [.update()](#GameTime.update)
         * [.rawTimestamp()](#GameTime.rawTimestamp) ⇒ <code>Number</code>
         * [.reset()](#GameTime.reset)
         * [.resetDelta()](#GameTime.resetDelta)
@@ -62,16 +62,18 @@ Delta time, in seconds, since last frame.
 Total time, in seconds, since Shaku was initialized.
 
 **Kind**: instance property of [<code>GameTime</code>](#GameTime)  
-<a name="GameTime.update"></a>
+<a name="GameTime+rawTimestamp"></a>
 
-### GameTime.update()
-Update game time.
+### gameTime.rawTimestamp
+Raw timestamp in milliseconds.
+This value updates only as long as you run Shaku frames, and continue to update even if game is paused.
 
-**Kind**: static method of [<code>GameTime</code>](#GameTime)  
+**Kind**: instance property of [<code>GameTime</code>](#GameTime)  
 <a name="GameTime.rawTimestamp"></a>
 
 ### GameTime.rawTimestamp() ⇒ <code>Number</code>
 Get raw timestamp in milliseconds.
+This value updates only as long as you run Shaku frames, and continue to update even if game is paused.
 
 **Kind**: static method of [<code>GameTime</code>](#GameTime)  
 **Returns**: <code>Number</code> - raw timestamp in milliseconds.  

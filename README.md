@@ -2456,6 +2456,7 @@ Since I decided to do breaking changes in the `gfx` manager anyway, I took the o
 - Removed leftover deprecated param from base rendering batch.
 - Removed deprecated effect method 'prepareToDrawBatch'.
 - Small optimizations and adjustments to 'GameTime'.
+- Added math helper method to calculate normal.
 
 # License
 

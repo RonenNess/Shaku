@@ -199,6 +199,32 @@ class MathHelper
         if (degrees < 0) { degrees += 360; }
         return degrees;
     }
+
+    /**
+     * Calculate the normal vector of a polygon using 3 points on it.
+     * @param {Vector3} v1 Vector on the polygon.
+     * @param {Vector3} v2 Vector on the polygon.
+     * @param {Vector3} v3 Vector on the polygon.
+     * @returns {Vector3} Normal vector, normalized.
+     */
+    static calculateNormal(v1, v2, v3)
+    {
+        const { Vector3 } = require(".");
+
+        // create vectors between the points
+        var _a = v2.sub(v1);
+        var _b = v3.sub(v1);
+
+        // calculate normal
+        var surfaceNormal = new Vector3(0, 0, 0);
+        surfaceNormal.x = (_a.y * _b.z) - (_a.z - _b.y);
+        surfaceNormal.y = - ((_b.z * _a.x) - (_b.x * _a.z));
+        surfaceNormal.z = (_a.x * _b.y) - (_a.y * _b.x);
+        surfaceNormal.normalizeSelf();
+        
+        // return result
+        return surfaceNormal;
+    }
 }
 
 /**

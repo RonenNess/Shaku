@@ -205,6 +205,8 @@ class Shaku
             if (this.input) { 
                 this.input.startFrame(); 
             }
+            GameTime.updateRawData();
+            _gameTime = new GameTime();
             _wasPaused = true;
             return; 
         }
@@ -215,11 +217,11 @@ class Shaku
             GameTime.resetDelta();
         }
 
-        // update times
+        // reset delta if paused
         if (this.pauseGameTime) {
-            GameTime.updateRawData();
             GameTime.resetDelta();
         }
+        // update game time
         else {
             GameTime.update();
         }
