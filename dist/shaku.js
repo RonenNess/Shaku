@@ -13881,6 +13881,7 @@ class Shaku
         }
 
         // get frame end time and update average frames time
+        GameTime.updateRawData();
         let _endFrameTime = GameTime.rawTimestamp();
         _frameTimeMeasuresCount++;
         _totalFrameTimes += (_endFrameTime - _startFrameTime);

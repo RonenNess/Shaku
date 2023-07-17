@@ -2462,6 +2462,7 @@ Since I decided to do breaking changes in the `gfx` manager anyway, I took the o
 ## 2.2.5 [WIP]
 
 - Added support in tangents and binormal in effects.
+- Fixed broken average frame time calculation.
 
 # License
 
