@@ -83,6 +83,30 @@ class Vertex
         this.normal = useRef ? normal : normal.clone();
         return this;
     }
+        
+    /**
+     * Set vertex binormal.
+     * @param {Vector3} binormal Vertex binormal.
+     * @param {Boolean} useRef If true, will not clone the given binormal and use its reference instead.
+     * @returns {Vertex} this.
+     */
+    setBinormal(binormal, useRef)
+    {
+        this.binormal = useRef ? binormal : binormal.clone();
+        return this;
+    }
+            
+    /**
+     * Set vertex tangent.
+     * @param {Vector3} tangent Vertex tangent.
+     * @param {Boolean} useRef If true, will not clone the given tangent and use its reference instead.
+     * @returns {Vertex} this.
+     */
+    setTangent(tangent, useRef)
+    {
+        this.tangent = useRef ? tangent : tangent.clone();
+        return this;
+    }
 }
 
 // export the vertex class

@@ -31,11 +31,13 @@ class SpriteBatch extends SpriteBatchBase
      * @param {Number=} batchSpritesCount Internal buffers size, in sprites count (sprite = 4 vertices). Bigger value = faster rendering but more RAM.
      * @param {Boolean=} enableVertexColor If true (default) will support vertex color. 
      * @param {Boolean=} enableNormals If true (not default) will support vertex normals.
+     * @param {Boolean=} enableBinormals If true (not default) will support vertex binormals.
+     * @param {Boolean=} enableTangents If true (not default) will support vertex tangents.
      */
-    constructor(batchSpritesCount, enableVertexColor, enableNormals)
+    constructor(batchSpritesCount, enableVertexColor, enableNormals, enableBinormals, enableTangents)
     {
         // init draw batch
-        super(batchSpritesCount, enableVertexColor, enableNormals);
+        super(batchSpritesCount, enableVertexColor, enableNormals, enableBinormals, enableTangents);
     }
 
     /**
@@ -89,6 +91,8 @@ class SpriteBatch extends SpriteBatchBase
         let uvs = this._buffers.textureArray;
         let positions = this._buffers.positionArray;
         let normals = this._buffers.normalsArray;
+        let binormals = this._buffers.binormalsArray;
+        let tangents = this._buffers.tangentsArray;
         for (let vertex of vertices)
         {
             // push color
@@ -102,9 +106,40 @@ class SpriteBatch extends SpriteBatchBase
             // push normals
             if (normals)
             {
-                normals[normals._index++] = vertex.normal.x;
-                normals[normals._index++] = vertex.normal.y;
-                normals[normals._index++] = vertex.normal.z;
+                if (vertex.normal) {
+                    normals[normals._index++] = vertex.normal.x;
+                    normals[normals._index++] = vertex.normal.y;
+                    normals[normals._index++] = vertex.normal.z;
+                }
+                else {
+                    normals[normals._index++] = normals[normals._index++] = normals[normals._index++] = 0;
+                }
+            }
+
+            // push binormals
+            if (binormals)
+            {
+                if (vertex.binormal) {
+                    binormals[binormals._index++] = vertex.binormal.x;
+                    binormals[binormals._index++] = vertex.binormal.y;
+                    binormals[binormals._index++] = vertex.binormal.z;
+                }
+                else {
+                    binormals[binormals._index++] = binormals[binormals._index++] = binormals[binormals._index++] = 0;
+                }
+            }
+
+            // push tangents
+            if (tangents)
+            {
+                if (vertex.tangent) {
+                    tangents[tangents._index++] = vertex.tangent.x;
+                    tangents[tangents._index++] = vertex.tangent.y;
+                    tangents[tangents._index++] = vertex.tangent.z;
+                }
+                else {
+                    tangents[tangents._index++] = tangents[tangents._index++] = tangents[tangents._index++] = 0;
+                }
             }
 
             // push texture coords

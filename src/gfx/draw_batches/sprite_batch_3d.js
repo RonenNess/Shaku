@@ -26,10 +26,12 @@ class SpriteBatch3D extends SpriteBatch
      * Create the 3d sprites batch.
      * @param {Number=} batchSpritesCount Internal buffers size, in sprites count (sprite = 4 vertices). Bigger value = faster rendering but more RAM.
      * @param {Boolean=} enableNormals If true (not default) will support vertex normals.
+     * @param {Boolean=} enableBinormals If true (not default) will support vertex binormals.
+     * @param {Boolean=} enableTangents If true (not default) will support vertex tangents.
      */
-    constructor(batchSpritesCount, enableNormals)
+    constructor(batchSpritesCount, enableNormals, enableBinormals, enableTangents)
     {
-        super(batchSpritesCount, true, enableNormals);
+        super(batchSpritesCount, true, enableNormals, enableBinormals, enableTangents);
         this.__camera = this.#_gfx.createCamera3D();
         this.setPerspectiveCamera();
         this.camera.setViewLookat();

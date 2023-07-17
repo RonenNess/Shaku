@@ -17,6 +17,8 @@ A vertex we can push to sprite batch.
     * [.setTextureCoords(textureCoord, useRef)](#Vertex+setTextureCoords) ⇒ [<code>Vertex</code>](#Vertex)
     * [.setColor(color, useRef)](#Vertex+setColor) ⇒ [<code>Vertex</code>](#Vertex)
     * [.setNormal(normal, useRef)](#Vertex+setNormal) ⇒ [<code>Vertex</code>](#Vertex)
+    * [.setBinormal(binormal, useRef)](#Vertex+setBinormal) ⇒ [<code>Vertex</code>](#Vertex)
+    * [.setTangent(tangent, useRef)](#Vertex+setTangent) ⇒ [<code>Vertex</code>](#Vertex)
 
 <a name="new_Vertex_new"></a>
 
@@ -82,4 +84,30 @@ Set vertex normal.
 | --- | --- | --- |
 | normal | <code>Vector3</code> | Vertex normal. |
 | useRef | <code>Boolean</code> | If true, will not clone the given normal and use its reference instead. |
+
+<a name="Vertex+setBinormal"></a>
+
+### vertex.setBinormal(binormal, useRef) ⇒ [<code>Vertex</code>](#Vertex)
+Set vertex binormal.
+
+**Kind**: instance method of [<code>Vertex</code>](#Vertex)  
+**Returns**: [<code>Vertex</code>](#Vertex) - this.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| binormal | <code>Vector3</code> | Vertex binormal. |
+| useRef | <code>Boolean</code> | If true, will not clone the given binormal and use its reference instead. |
+
+<a name="Vertex+setTangent"></a>
+
+### vertex.setTangent(tangent, useRef) ⇒ [<code>Vertex</code>](#Vertex)
+Set vertex tangent.
+
+**Kind**: instance method of [<code>Vertex</code>](#Vertex)  
+**Returns**: [<code>Vertex</code>](#Vertex) - this.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| tangent | <code>Vector3</code> | Vertex tangent. |
+| useRef | <code>Boolean</code> | If true, will not clone the given tangent and use its reference instead. |
 

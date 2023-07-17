@@ -12,7 +12,7 @@ Base class for sprite-based rendering, ie vertices with textures.
 **Kind**: global class  
 
 * [SpriteBatchBase](#SpriteBatchBase)
-    * [new SpriteBatchBase([batchSpritesCount], [enableVertexColor], [enableNormals])](#new_SpriteBatchBase_new)
+    * [new SpriteBatchBase([batchSpritesCount], [enableVertexColor], [enableNormals], [enableBinormals], [enableTangents])](#new_SpriteBatchBase_new)
     * [.isDestroyed](#SpriteBatchBase+isDestroyed)
     * [.supportVertexColor](#SpriteBatchBase+supportVertexColor) ⇒ <code>Boolean</code>
     * [.defaultEffect](#SpriteBatchBase+defaultEffect)
@@ -25,7 +25,7 @@ Base class for sprite-based rendering, ie vertices with textures.
 
 <a name="new_SpriteBatchBase_new"></a>
 
-### new SpriteBatchBase([batchSpritesCount], [enableVertexColor], [enableNormals])
+### new SpriteBatchBase([batchSpritesCount], [enableVertexColor], [enableNormals], [enableBinormals], [enableTangents])
 Create the sprites batch.
 
 
@@ -34,6 +34,8 @@ Create the sprites batch.
 | [batchSpritesCount] | <code>Number</code> | Internal buffers size, in sprites count (sprite = 4 vertices). Bigger value = faster rendering but more RAM. |
 | [enableVertexColor] | <code>Boolean</code> | If true (default) will support vertex color. |
 | [enableNormals] | <code>Boolean</code> | If true (not default) will support vertex normals. |
+| [enableBinormals] | <code>Boolean</code> | If true (not default) will support vertex binormals. |
+| [enableTangents] | <code>Boolean</code> | If true (not default) will support vertex tangents. |
 
 <a name="SpriteBatchBase+isDestroyed"></a>
 

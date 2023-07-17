@@ -13,7 +13,7 @@ Responsible to drawing a batch of sprites with as little draw calls as possible.
 **Kind**: global class  
 
 * [SpriteBatch](#SpriteBatch)
-    * [new SpriteBatch([batchSpritesCount], [enableVertexColor], [enableNormals])](#new_SpriteBatch_new)
+    * [new SpriteBatch([batchSpritesCount], [enableVertexColor], [enableNormals], [enableBinormals], [enableTangents])](#new_SpriteBatch_new)
     * [.defaultEffect](#SpriteBatch+defaultEffect)
     * [.drawVertices(texture, vertices)](#SpriteBatch+drawVertices)
     * [.drawQuad(texture, position, size, sourceRectangle, color, [rotation], [origin], [skew])](#SpriteBatch+drawQuad)
@@ -22,7 +22,7 @@ Responsible to drawing a batch of sprites with as little draw calls as possible.
 
 <a name="new_SpriteBatch_new"></a>
 
-### new SpriteBatch([batchSpritesCount], [enableVertexColor], [enableNormals])
+### new SpriteBatch([batchSpritesCount], [enableVertexColor], [enableNormals], [enableBinormals], [enableTangents])
 Create the sprites batch.
 
 
@@ -31,6 +31,8 @@ Create the sprites batch.
 | [batchSpritesCount] | <code>Number</code> | Internal buffers size, in sprites count (sprite = 4 vertices). Bigger value = faster rendering but more RAM. |
 | [enableVertexColor] | <code>Boolean</code> | If true (default) will support vertex color. |
 | [enableNormals] | <code>Boolean</code> | If true (not default) will support vertex normals. |
+| [enableBinormals] | <code>Boolean</code> | If true (not default) will support vertex binormals. |
+| [enableTangents] | <code>Boolean</code> | If true (not default) will support vertex tangents. |
 
 <a name="SpriteBatch+defaultEffect"></a>
 

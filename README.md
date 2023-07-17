@@ -2459,6 +2459,10 @@ Since I decided to do breaking changes in the `gfx` manager anyway, I took the o
 - Added math helper method to calculate normal.
 - Fixed bug with lerpDegrees method to wrap degrees.
 
+## 2.2.5 [WIP]
+
+- Added support in tangents and binormal in effects.
+
 # License
 
 *Shaku* is licensed under the permissive MIT license, so you can use it for any purpose (including commercially) and it should be compatible with most common licenses.

@@ -6462,11 +6462,13 @@ class SpriteBatch extends SpriteBatchBase
      * @param {Number=} batchSpritesCount Internal buffers size, in sprites count (sprite = 4 vertices). Bigger value = faster rendering but more RAM.
      * @param {Boolean=} enableVertexColor If true (default) will support vertex color. 
      * @param {Boolean=} enableNormals If true (not default) will support vertex normals.
+     * @param {Boolean=} enableBinormals If true (not default) will support vertex binormals.
+     * @param {Boolean=} enableTangents If true (not default) will support vertex tangents.
      */
-    constructor(batchSpritesCount, enableVertexColor, enableNormals)
+    constructor(batchSpritesCount, enableVertexColor, enableNormals, enableBinormals, enableTangents)
     {
         // init draw batch
-        super(batchSpritesCount, enableVertexColor, enableNormals);
+        super(batchSpritesCount, enableVertexColor, enableNormals, enableBinormals, enableTangents);
     }
 
     /**
@@ -6520,6 +6522,8 @@ class SpriteBatch extends SpriteBatchBase
         let uvs = this._buffers.textureArray;
         let positions = this._buffers.positionArray;
         let normals = this._buffers.normalsArray;
+        let binormals = this._buffers.binormalsArray;
+        let tangents = this._buffers.tangentsArray;
         for (let vertex of vertices)
         {
             // push color
@@ -6533,9 +6537,40 @@ class SpriteBatch extends SpriteBatchBase
             // push normals
             if (normals)
             {
-                normals[normals._index++] = vertex.normal.x;
-                normals[normals._index++] = vertex.normal.y;
-                normals[normals._index++] = vertex.normal.z;
+                if (vertex.normal) {
+                    normals[normals._index++] = vertex.normal.x;
+                    normals[normals._index++] = vertex.normal.y;
+                    normals[normals._index++] = vertex.normal.z;
+                }
+                else {
+                    normals[normals._index++] = normals[normals._index++] = normals[normals._index++] = 0;
+                }
+            }
+
+            // push binormals
+            if (binormals)
+            {
+                if (vertex.binormal) {
+                    binormals[binormals._index++] = vertex.binormal.x;
+                    binormals[binormals._index++] = vertex.binormal.y;
+                    binormals[binormals._index++] = vertex.binormal.z;
+                }
+                else {
+                    binormals[binormals._index++] = binormals[binormals._index++] = binormals[binormals._index++] = 0;
+                }
+            }
+
+            // push tangents
+            if (tangents)
+            {
+                if (vertex.tangent) {
+                    tangents[tangents._index++] = vertex.tangent.x;
+                    tangents[tangents._index++] = vertex.tangent.y;
+                    tangents[tangents._index++] = vertex.tangent.z;
+                }
+                else {
+                    tangents[tangents._index++] = tangents[tangents._index++] = tangents[tangents._index++] = 0;
+                }
             }
 
             // push texture coords
@@ -6652,10 +6687,12 @@ class SpriteBatch3D extends SpriteBatch
      * Create the 3d sprites batch.
      * @param {Number=} batchSpritesCount Internal buffers size, in sprites count (sprite = 4 vertices). Bigger value = faster rendering but more RAM.
      * @param {Boolean=} enableNormals If true (not default) will support vertex normals.
+     * @param {Boolean=} enableBinormals If true (not default) will support vertex binormals.
+     * @param {Boolean=} enableTangents If true (not default) will support vertex tangents.
      */
-    constructor(batchSpritesCount, enableNormals)
+    constructor(batchSpritesCount, enableNormals, enableBinormals, enableTangents)
     {
-        super(batchSpritesCount, true, enableNormals);
+        super(batchSpritesCount, true, enableNormals, enableBinormals, enableTangents);
         this.__camera = this.#_gfx.createCamera3D();
         this.setPerspectiveCamera();
         this.camera.setViewLookat();
@@ -6780,14 +6817,16 @@ class SpriteBatchBase extends DrawBatch
      * @param {Number=} batchSpritesCount Internal buffers size, in sprites count (sprite = 4 vertices). Bigger value = faster rendering but more RAM.
      * @param {Boolean=} enableVertexColor If true (default) will support vertex color. 
      * @param {Boolean=} enableNormals If true (not default) will support vertex normals.
+     * @param {Boolean=} enableBinormals If true (not default) will support vertex binormals.
+     * @param {Boolean=} enableTangents If true (not default) will support vertex tangents.
      */
-    constructor(batchSpritesCount, enableVertexColor, enableNormals)
+    constructor(batchSpritesCount, enableVertexColor, enableNormals, enableBinormals, enableTangents)
     {
         // init draw batch
         super();
 
         // create buffers for drawing sprites
-        this.#_createBuffers(batchSpritesCount || 500, enableVertexColor, Boolean(enableNormals));
+        this.#_createBuffers(batchSpritesCount || 500, enableVertexColor, Boolean(enableNormals), Boolean(enableBinormals), Boolean(enableTangents));
 
         /**
          * How many quads this batch can hold.
@@ -6867,6 +6906,8 @@ class SpriteBatchBase extends DrawBatch
             if (this._buffers.colorsBuffer) gl.deleteBuffer(this._buffers.colorsBuffer);
             if (this._buffers.textureCoordBuffer) gl.deleteBuffer(this._buffers.textureCoordBuffer);
             if (this._buffers.normalsBuffer) gl.deleteBuffer(this._buffers.normalsBuffer);
+            if (this._buffers.binormalsBuffer) gl.deleteBuffer(this._buffers.binormalsBuffer);
+            if (this._buffers.tangentsBuffer) gl.deleteBuffer(this._buffers.tangentsBuffer);
         }
         this._buffers = null;
     }
@@ -6883,7 +6924,7 @@ class SpriteBatchBase extends DrawBatch
      * Build the dynamic buffers.
      * @private
      */
-    #_createBuffers(batchSpritesCount, enableVertexColor, enableNormals)
+    #_createBuffers(batchSpritesCount, enableVertexColor, enableNormals, enableBinormals, enableTangents)
     {
         let gl = this.#_gl;
 
@@ -6904,6 +6945,12 @@ class SpriteBatchBase extends DrawBatch
 
             normalsBuffer: enableNormals ? gl.createBuffer() : null,
             normalsArray: enableNormals ? (new Float32Array(3 * 4 * batchSpritesCount)) : null,
+
+            binormalsBuffer: enableBinormals ? gl.createBuffer() : null,
+            binormalsArray: enableBinormals ? (new Float32Array(3 * 4 * batchSpritesCount)) : null,
+
+            tangentsBuffer: enableTangents ? gl.createBuffer() : null,
+            tangentsArray: enableTangents ? (new Float32Array(3 * 4 * batchSpritesCount)) : null,
 
             indexBuffer: gl.createBuffer(),
         }
@@ -6949,6 +6996,8 @@ class SpriteBatchBase extends DrawBatch
         extendBuffer(this._buffers.textureArray);
         extendBuffer(this._buffers.colorsArray);
         extendBuffer(this._buffers.normalsArray);
+        extendBuffer(this._buffers.binormalsArray);
+        extendBuffer(this._buffers.tangentsArray);
     }
 
     /**
@@ -6960,6 +7009,8 @@ class SpriteBatchBase extends DrawBatch
         if (this._buffers.positionArray) { this._buffers.positionArray._index = 0; }
         if (this._buffers.textureArray) { this._buffers.textureArray._index = 0; }
         if (this._buffers.normalsArray) { this._buffers.normalsArray._index = 0; }
+        if (this._buffers.binormalsArray) { this._buffers.binormalsArray._index = 0; }
+        if (this._buffers.tangentsArray) { this._buffers.tangentsArray._index = 0; }
         if (this._buffers.colorsArray && this.supportVertexColor) { this._buffers.colorsArray._index = 0; }
         this.__quadsCount = 0;
         this.__dirty = false;
@@ -7217,6 +7268,22 @@ class SpriteBatchBase extends DrawBatch
                 normals[normals._index++] = 1;
             }
 
+            // update default binormals buffer
+            let binormals = this._buffers.binormalsArray;
+            if (binormals) {
+                binormals[binormals._index++] = 1;
+                binormals[binormals._index++] = 0;
+                binormals[binormals._index++] = 0;
+            }
+            
+            // update default tangents buffer
+            let tangents = this._buffers.tangentsArray;
+            if (tangents) {
+                tangents[tangents._index++] = 0;
+                tangents[tangents._index++] = 1;
+                tangents[tangents._index++] = 0;
+            }
+
             // check if full
             if (this.__quadsCount >= this.__maxQuadsCount) {
                 this._handleFullBuffer();
@@ -7305,10 +7372,14 @@ class SpriteBatchBase extends DrawBatch
         let textureArray = this._buffers.textureArray;
         let colorsArray = this.__currDrawingParams.hasVertexColor ? this._buffers.colorsArray : null;
         let normalsArray = this._buffers.normalsArray;
+        let binormalsArray = this._buffers.binormalsArray;
+        let tangentsArray = this._buffers.tangentsArray;
         let positionBuffer = this._buffers.positionBuffer;
         let textureCoordBuffer = this._buffers.textureCoordBuffer;
         let colorsBuffer = this._buffers.colorsBuffer;
         let normalsBuffer = this._buffers.normalsBuffer;
+        let binormalsBuffer = this._buffers.binormalsBuffer;
+        let tangentsBuffer = this._buffers.tangentsBuffer;
         let indexBuffer = this._buffers.indexBuffer;
 
         // call base method to set effect and draw params
@@ -7346,6 +7417,26 @@ class SpriteBatchBase extends DrawBatch
             if (needBuffersCopy && normalsArray) {
                 gl.bufferData(gl.ARRAY_BUFFER, 
                     normalsArray, 
+                    this.__buffersUsage, 0, _currBatchCount * 4 * 3);
+            }
+        }
+
+        // copy binormals buffer
+        if (binormalsBuffer) {
+            effect.setBinormalsAttribute(binormalsBuffer, true);
+            if (needBuffersCopy && binormalsArray) {
+                gl.bufferData(gl.ARRAY_BUFFER, 
+                    binormalsArray, 
+                    this.__buffersUsage, 0, _currBatchCount * 4 * 3);
+            }
+        }
+
+        // copy tangents buffer
+        if (tangentsBuffer) {
+            effect.setTangentsAttribute(tangentsBuffer, true);
+            if (needBuffersCopy && tangentsArray) {
+                gl.bufferData(gl.ARRAY_BUFFER, 
+                    tangentsArray, 
                     this.__buffersUsage, 0, _currBatchCount * 4 * 3);
             }
         }
@@ -8109,31 +8200,64 @@ class Effect
      * @param {WebGLBuffer} buffer Vertices colors buffer.
      * @param {Boolean} forceSetBuffer If true, will always set buffer even if buffer is currently set.
      */
-     setColorsAttribute(buffer, forceSetBuffer)
-     {
-         let attr = this._attributeBinds[Effect.AttributeBinds.Colors];
-         if (attr) {
-            if (!forceSetBuffer && buffer === this._cachedValues.colors) { return; }
-            this._cachedValues.colors = buffer;
-            this.attributes[attr](buffer);
-         }
-     }
-         
+    setColorsAttribute(buffer, forceSetBuffer)
+    {
+        let attr = this._attributeBinds[Effect.AttributeBinds.Colors];
+        if (attr) {
+        if (!forceSetBuffer && buffer === this._cachedValues.colors) { return; }
+        this._cachedValues.colors = buffer;
+        this.attributes[attr](buffer);
+        }
+    }
+        
     /**
      * Set the vertices normals buffer.
      * Only works if there's an attribute type bound to 'Normals'.
      * @param {WebGLBuffer} buffer Vertices normals buffer.
      * @param {Boolean} forceSetBuffer If true, will always set buffer even if buffer is currently set.
      */
-     setNormalsAttribute(buffer, forceSetBuffer)
-     {
-        let attr = this._attributeBinds[Effect.AttributeBinds.Normals];
-         if (attr) {
-            if (!forceSetBuffer && buffer === this._cachedValues.normals) { return; }
-            this._cachedValues.normals = buffer;
+    setNormalsAttribute(buffer, forceSetBuffer)
+    {
+    let attr = this._attributeBinds[Effect.AttributeBinds.Normals];
+        if (attr) {
+        if (!forceSetBuffer && buffer === this._cachedValues.normals) { return; }
+        this._cachedValues.normals = buffer;
+        this.attributes[attr](buffer);
+        }
+    }
+         
+    /**
+     * Set the vertices binormals buffer.
+     * Only works if there's an attribute type bound to 'Binormals'.
+     * @param {WebGLBuffer} buffer Vertices binormals buffer.
+     * @param {Boolean} forceSetBuffer If true, will always set buffer even if buffer is currently set.
+     */
+    setBinormalsAttribute(buffer, forceSetBuffer)
+    {
+        let attr = this._attributeBinds[Effect.AttributeBinds.Binormals];
+        if (attr) {
+            if (!forceSetBuffer && buffer === this._cachedValues.binormals) { return; }
+            this._cachedValues.binormals = buffer;
             this.attributes[attr](buffer);
-         }
-     }
+        }
+    }
+
+    /**
+     * Set the vertices tangents buffer.
+     * Only works if there's an attribute type bound to 'Tangents'.
+     * @param {WebGLBuffer} buffer Vertices tangents buffer.
+     * @param {Boolean} forceSetBuffer If true, will always set buffer even if buffer is currently set.
+     */
+    setTangentsAttribute(buffer, forceSetBuffer)
+    {
+       let attr = this._attributeBinds[Effect.AttributeBinds.Tangents];
+        if (attr) {
+           if (!forceSetBuffer && buffer === this._cachedValues.tangents) { return; }
+           this._cachedValues.tangents = buffer;
+           this.attributes[attr](buffer);
+        }
+    }
+     
 }
 
 /**
@@ -8250,6 +8374,8 @@ Effect.AttributeBinds = {
     TextureCoords: 'uv',   // bind attribute to be used for texture coords array.
     Colors: 'color',       // bind attribute to be used for vertices colors array.
     Normals: 'normal',     // bind attribute to be used for vertices normals array.
+    Binormals: 'binormal', // bind attribute to be used for vertices binormals array.
+    Tangents: 'tangent',   // bind attribute to be used for vertices tangents array.
 }
 Object.freeze(Effect.AttributeBinds);
 
@@ -10796,6 +10922,30 @@ class Vertex
     setNormal(normal, useRef)
     {
         this.normal = useRef ? normal : normal.clone();
+        return this;
+    }
+        
+    /**
+     * Set vertex binormal.
+     * @param {Vector3} binormal Vertex binormal.
+     * @param {Boolean} useRef If true, will not clone the given binormal and use its reference instead.
+     * @returns {Vertex} this.
+     */
+    setBinormal(binormal, useRef)
+    {
+        this.binormal = useRef ? binormal : binormal.clone();
+        return this;
+    }
+            
+    /**
+     * Set vertex tangent.
+     * @param {Vector3} tangent Vertex tangent.
+     * @param {Boolean} useRef If true, will not clone the given tangent and use its reference instead.
+     * @returns {Vertex} this.
+     */
+    setTangent(tangent, useRef)
+    {
+        this.tangent = useRef ? tangent : tangent.clone();
         return this;
     }
 }
@@ -13485,7 +13635,7 @@ let _managersStarted = false;
 let _wasPaused = false;
 
 // current version
-const version = "2.2.4";
+const version = "2.2.5";
 
 
 /**

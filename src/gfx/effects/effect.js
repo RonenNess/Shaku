@@ -580,31 +580,64 @@ class Effect
      * @param {WebGLBuffer} buffer Vertices colors buffer.
      * @param {Boolean} forceSetBuffer If true, will always set buffer even if buffer is currently set.
      */
-     setColorsAttribute(buffer, forceSetBuffer)
-     {
-         let attr = this._attributeBinds[Effect.AttributeBinds.Colors];
-         if (attr) {
-            if (!forceSetBuffer && buffer === this._cachedValues.colors) { return; }
-            this._cachedValues.colors = buffer;
-            this.attributes[attr](buffer);
-         }
-     }
-         
+    setColorsAttribute(buffer, forceSetBuffer)
+    {
+        let attr = this._attributeBinds[Effect.AttributeBinds.Colors];
+        if (attr) {
+        if (!forceSetBuffer && buffer === this._cachedValues.colors) { return; }
+        this._cachedValues.colors = buffer;
+        this.attributes[attr](buffer);
+        }
+    }
+        
     /**
      * Set the vertices normals buffer.
      * Only works if there's an attribute type bound to 'Normals'.
      * @param {WebGLBuffer} buffer Vertices normals buffer.
      * @param {Boolean} forceSetBuffer If true, will always set buffer even if buffer is currently set.
      */
-     setNormalsAttribute(buffer, forceSetBuffer)
-     {
-        let attr = this._attributeBinds[Effect.AttributeBinds.Normals];
-         if (attr) {
-            if (!forceSetBuffer && buffer === this._cachedValues.normals) { return; }
-            this._cachedValues.normals = buffer;
+    setNormalsAttribute(buffer, forceSetBuffer)
+    {
+    let attr = this._attributeBinds[Effect.AttributeBinds.Normals];
+        if (attr) {
+        if (!forceSetBuffer && buffer === this._cachedValues.normals) { return; }
+        this._cachedValues.normals = buffer;
+        this.attributes[attr](buffer);
+        }
+    }
+         
+    /**
+     * Set the vertices binormals buffer.
+     * Only works if there's an attribute type bound to 'Binormals'.
+     * @param {WebGLBuffer} buffer Vertices binormals buffer.
+     * @param {Boolean} forceSetBuffer If true, will always set buffer even if buffer is currently set.
+     */
+    setBinormalsAttribute(buffer, forceSetBuffer)
+    {
+        let attr = this._attributeBinds[Effect.AttributeBinds.Binormals];
+        if (attr) {
+            if (!forceSetBuffer && buffer === this._cachedValues.binormals) { return; }
+            this._cachedValues.binormals = buffer;
             this.attributes[attr](buffer);
-         }
-     }
+        }
+    }
+
+    /**
+     * Set the vertices tangents buffer.
+     * Only works if there's an attribute type bound to 'Tangents'.
+     * @param {WebGLBuffer} buffer Vertices tangents buffer.
+     * @param {Boolean} forceSetBuffer If true, will always set buffer even if buffer is currently set.
+     */
+    setTangentsAttribute(buffer, forceSetBuffer)
+    {
+       let attr = this._attributeBinds[Effect.AttributeBinds.Tangents];
+        if (attr) {
+           if (!forceSetBuffer && buffer === this._cachedValues.tangents) { return; }
+           this._cachedValues.tangents = buffer;
+           this.attributes[attr](buffer);
+        }
+    }
+     
 }
 
 /**
@@ -721,6 +754,8 @@ Effect.AttributeBinds = {
     TextureCoords: 'uv',   // bind attribute to be used for texture coords array.
     Colors: 'color',       // bind attribute to be used for vertices colors array.
     Normals: 'normal',     // bind attribute to be used for vertices normals array.
+    Binormals: 'binormal', // bind attribute to be used for vertices binormals array.
+    Tangents: 'tangent',   // bind attribute to be used for vertices tangents array.
 }
 Object.freeze(Effect.AttributeBinds);
 

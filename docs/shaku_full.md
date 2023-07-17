@@ -2809,7 +2809,7 @@ Responsible to drawing a batch of sprites with as little draw calls as possible.
 **Kind**: global class  
 
 * [SpriteBatch](#SpriteBatch)
-    * [new SpriteBatch([batchSpritesCount], [enableVertexColor], [enableNormals])](#new_SpriteBatch_new)
+    * [new SpriteBatch([batchSpritesCount], [enableVertexColor], [enableNormals], [enableBinormals], [enableTangents])](#new_SpriteBatch_new)
     * [.defaultEffect](#SpriteBatch+defaultEffect)
     * [.onOverflow](#SpriteBatch+onOverflow) : <code>function</code>
     * [.beforeDraw](#SpriteBatch+beforeDraw) : <code>function</code>
@@ -2822,7 +2822,7 @@ Responsible to drawing a batch of sprites with as little draw calls as possible.
 
 <a name="new_SpriteBatch_new"></a>
 
-### new SpriteBatch([batchSpritesCount], [enableVertexColor], [enableNormals])
+### new SpriteBatch([batchSpritesCount], [enableVertexColor], [enableNormals], [enableBinormals], [enableTangents])
 Create the sprites batch.
 
 
@@ -2831,6 +2831,8 @@ Create the sprites batch.
 | [batchSpritesCount] | <code>Number</code> | Internal buffers size, in sprites count (sprite = 4 vertices). Bigger value = faster rendering but more RAM. |
 | [enableVertexColor] | <code>Boolean</code> | If true (default) will support vertex color. |
 | [enableNormals] | <code>Boolean</code> | If true (not default) will support vertex normals. |
+| [enableBinormals] | <code>Boolean</code> | If true (not default) will support vertex binormals. |
+| [enableTangents] | <code>Boolean</code> | If true (not default) will support vertex tangents. |
 
 <a name="SpriteBatch+defaultEffect"></a>
 
@@ -2928,7 +2930,7 @@ Responsible to drawing 3D quads with textures on them.
 **Kind**: global class  
 
 * [SpriteBatch3D](#SpriteBatch3D)
-    * [new SpriteBatch3D([batchSpritesCount], [enableNormals])](#new_SpriteBatch3D_new)
+    * [new SpriteBatch3D([batchSpritesCount], [enableNormals], [enableBinormals], [enableTangents])](#new_SpriteBatch3D_new)
     * [.camera](#SpriteBatch3D+camera) ⇒ [<code>Camera</code>](#Camera)
     * [.supportVertexColor](#SpriteBatch3D+supportVertexColor)
     * [.defaultEffect](#SpriteBatch3D+defaultEffect)
@@ -2937,7 +2939,7 @@ Responsible to drawing 3D quads with textures on them.
 
 <a name="new_SpriteBatch3D_new"></a>
 
-### new SpriteBatch3D([batchSpritesCount], [enableNormals])
+### new SpriteBatch3D([batchSpritesCount], [enableNormals], [enableBinormals], [enableTangents])
 Create the 3d sprites batch.
 
 
@@ -2945,6 +2947,8 @@ Create the 3d sprites batch.
 | --- | --- | --- |
 | [batchSpritesCount] | <code>Number</code> | Internal buffers size, in sprites count (sprite = 4 vertices). Bigger value = faster rendering but more RAM. |
 | [enableNormals] | <code>Boolean</code> | If true (not default) will support vertex normals. |
+| [enableBinormals] | <code>Boolean</code> | If true (not default) will support vertex binormals. |
+| [enableTangents] | <code>Boolean</code> | If true (not default) will support vertex tangents. |
 
 <a name="SpriteBatch3D+camera"></a>
 
@@ -2994,7 +2998,7 @@ Base class for sprite-based rendering, ie vertices with textures.
 **Kind**: global class  
 
 * [SpriteBatchBase](#SpriteBatchBase)
-    * [new SpriteBatchBase([batchSpritesCount], [enableVertexColor], [enableNormals])](#new_SpriteBatchBase_new)
+    * [new SpriteBatchBase([batchSpritesCount], [enableVertexColor], [enableNormals], [enableBinormals], [enableTangents])](#new_SpriteBatchBase_new)
     * [.isDestroyed](#SpriteBatchBase+isDestroyed)
     * [.supportVertexColor](#SpriteBatchBase+supportVertexColor) ⇒ <code>Boolean</code>
     * [.defaultEffect](#SpriteBatchBase+defaultEffect)
@@ -3007,7 +3011,7 @@ Base class for sprite-based rendering, ie vertices with textures.
 
 <a name="new_SpriteBatchBase_new"></a>
 
-### new SpriteBatchBase([batchSpritesCount], [enableVertexColor], [enableNormals])
+### new SpriteBatchBase([batchSpritesCount], [enableVertexColor], [enableNormals], [enableBinormals], [enableTangents])
 Create the sprites batch.
 
 
@@ -3016,6 +3020,8 @@ Create the sprites batch.
 | [batchSpritesCount] | <code>Number</code> | Internal buffers size, in sprites count (sprite = 4 vertices). Bigger value = faster rendering but more RAM. |
 | [enableVertexColor] | <code>Boolean</code> | If true (default) will support vertex color. |
 | [enableNormals] | <code>Boolean</code> | If true (not default) will support vertex normals. |
+| [enableBinormals] | <code>Boolean</code> | If true (not default) will support vertex binormals. |
+| [enableTangents] | <code>Boolean</code> | If true (not default) will support vertex tangents. |
 
 <a name="SpriteBatchBase+isDestroyed"></a>
 
@@ -3172,6 +3178,8 @@ An effect = vertex shader + fragment shader + uniforms & attributes + setup code
         * [.setTextureCoordsAttribute(buffer, forceSetBuffer)](#Effect+setTextureCoordsAttribute)
         * [.setColorsAttribute(buffer, forceSetBuffer)](#Effect+setColorsAttribute)
         * [.setNormalsAttribute(buffer, forceSetBuffer)](#Effect+setNormalsAttribute)
+        * [.setBinormalsAttribute(buffer, forceSetBuffer)](#Effect+setBinormalsAttribute)
+        * [.setTangentsAttribute(buffer, forceSetBuffer)](#Effect+setTangentsAttribute)
     * _static_
         * [.DepthFuncs](#Effect.DepthFuncs) ⇒ <code>\*</code>
 
@@ -3426,6 +3434,32 @@ Only works if there's an attribute type bound to 'Normals'.
 | Param | Type | Description |
 | --- | --- | --- |
 | buffer | <code>WebGLBuffer</code> | Vertices normals buffer. |
+| forceSetBuffer | <code>Boolean</code> | If true, will always set buffer even if buffer is currently set. |
+
+<a name="Effect+setBinormalsAttribute"></a>
+
+### effect.setBinormalsAttribute(buffer, forceSetBuffer)
+Set the vertices binormals buffer.
+Only works if there's an attribute type bound to 'Binormals'.
+
+**Kind**: instance method of [<code>Effect</code>](#Effect)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| buffer | <code>WebGLBuffer</code> | Vertices binormals buffer. |
+| forceSetBuffer | <code>Boolean</code> | If true, will always set buffer even if buffer is currently set. |
+
+<a name="Effect+setTangentsAttribute"></a>
+
+### effect.setTangentsAttribute(buffer, forceSetBuffer)
+Set the vertices tangents buffer.
+Only works if there's an attribute type bound to 'Tangents'.
+
+**Kind**: instance method of [<code>Effect</code>](#Effect)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| buffer | <code>WebGLBuffer</code> | Vertices tangents buffer. |
 | forceSetBuffer | <code>Boolean</code> | If true, will always set buffer even if buffer is currently set. |
 
 <a name="Effect.DepthFuncs"></a>
@@ -4486,6 +4520,8 @@ A vertex we can push to sprite batch.
     * [.setTextureCoords(textureCoord, useRef)](#Vertex+setTextureCoords) ⇒ [<code>Vertex</code>](#Vertex)
     * [.setColor(color, useRef)](#Vertex+setColor) ⇒ [<code>Vertex</code>](#Vertex)
     * [.setNormal(normal, useRef)](#Vertex+setNormal) ⇒ [<code>Vertex</code>](#Vertex)
+    * [.setBinormal(binormal, useRef)](#Vertex+setBinormal) ⇒ [<code>Vertex</code>](#Vertex)
+    * [.setTangent(tangent, useRef)](#Vertex+setTangent) ⇒ [<code>Vertex</code>](#Vertex)
 
 <a name="new_Vertex_new"></a>
 
@@ -4551,6 +4587,32 @@ Set vertex normal.
 | --- | --- | --- |
 | normal | [<code>Vector3</code>](#Vector3) | Vertex normal. |
 | useRef | <code>Boolean</code> | If true, will not clone the given normal and use its reference instead. |
+
+<a name="Vertex+setBinormal"></a>
+
+### vertex.setBinormal(binormal, useRef) ⇒ [<code>Vertex</code>](#Vertex)
+Set vertex binormal.
+
+**Kind**: instance method of [<code>Vertex</code>](#Vertex)  
+**Returns**: [<code>Vertex</code>](#Vertex) - this.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| binormal | [<code>Vector3</code>](#Vector3) | Vertex binormal. |
+| useRef | <code>Boolean</code> | If true, will not clone the given binormal and use its reference instead. |
+
+<a name="Vertex+setTangent"></a>
+
+### vertex.setTangent(tangent, useRef) ⇒ [<code>Vertex</code>](#Vertex)
+Set vertex tangent.
+
+**Kind**: instance method of [<code>Vertex</code>](#Vertex)  
+**Returns**: [<code>Vertex</code>](#Vertex) - this.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| tangent | [<code>Vector3</code>](#Vector3) | Vertex tangent. |
+| useRef | <code>Boolean</code> | If true, will not clone the given tangent and use its reference instead. |
 
 <a name="Gamepad"></a>
 

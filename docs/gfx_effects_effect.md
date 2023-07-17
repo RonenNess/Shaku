@@ -63,6 +63,8 @@ An effect = vertex shader + fragment shader + uniforms & attributes + setup code
         * [.setTextureCoordsAttribute(buffer, forceSetBuffer)](#Effect+setTextureCoordsAttribute)
         * [.setColorsAttribute(buffer, forceSetBuffer)](#Effect+setColorsAttribute)
         * [.setNormalsAttribute(buffer, forceSetBuffer)](#Effect+setNormalsAttribute)
+        * [.setBinormalsAttribute(buffer, forceSetBuffer)](#Effect+setBinormalsAttribute)
+        * [.setTangentsAttribute(buffer, forceSetBuffer)](#Effect+setTangentsAttribute)
     * _static_
         * [.DepthFuncs](#Effect.DepthFuncs) ⇒ <code>\*</code>
         * [.UniformBinds](#Effect.UniformBinds)
@@ -320,6 +322,32 @@ Only works if there's an attribute type bound to 'Normals'.
 | Param | Type | Description |
 | --- | --- | --- |
 | buffer | <code>WebGLBuffer</code> | Vertices normals buffer. |
+| forceSetBuffer | <code>Boolean</code> | If true, will always set buffer even if buffer is currently set. |
+
+<a name="Effect+setBinormalsAttribute"></a>
+
+### effect.setBinormalsAttribute(buffer, forceSetBuffer)
+Set the vertices binormals buffer.
+Only works if there's an attribute type bound to 'Binormals'.
+
+**Kind**: instance method of [<code>Effect</code>](#Effect)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| buffer | <code>WebGLBuffer</code> | Vertices binormals buffer. |
+| forceSetBuffer | <code>Boolean</code> | If true, will always set buffer even if buffer is currently set. |
+
+<a name="Effect+setTangentsAttribute"></a>
+
+### effect.setTangentsAttribute(buffer, forceSetBuffer)
+Set the vertices tangents buffer.
+Only works if there's an attribute type bound to 'Tangents'.
+
+**Kind**: instance method of [<code>Effect</code>](#Effect)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| buffer | <code>WebGLBuffer</code> | Vertices tangents buffer. |
 | forceSetBuffer | <code>Boolean</code> | If true, will always set buffer even if buffer is currently set. |
 
 <a name="Effect.DepthFuncs"></a>
