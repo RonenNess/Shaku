@@ -1,6 +1,10 @@
-import _logger from "../logger.js').getLogger('assets";
+import _logger from "../logger.js";
 import Color from "../utils/color";
 import TextureAssetBase from "./texture_asset_base";
+
+const _loggggger = _logger.getLogger(assets); // TODO
+
+
 
 // the webgl context to use
 var gl = null;

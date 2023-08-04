@@ -1,5 +1,5 @@
 import ShapesBatch from "../gfx/draw_batches/shapes_batch";
-import _logger from "../logger.js').getLogger('collision";
+import _logger from "../logger.js";
 import Circle from "../utils/circle";
 import Color from "../utils/color";
 import Rectangle from "../utils/rectangle";
@@ -10,6 +10,18 @@ import CollisionTestResult from "./result";
 import CircleShape from "./shapes/circle";
 import PointShape from "./shapes/point";
 import CollisionShape from "./shapes/shape";
+
+const _loggggger = _logger.getLogger(collision); // TODO
+
+
+
+
+
+
+
+
+
+
 
 /**
  * A collision world is a set of collision shapes that interact with each other.

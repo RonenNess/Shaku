@@ -1,7 +1,7 @@
 import FontTextureAsset from "../assets/font_texture_asset";
 import TextureAsset from "../assets/texture_asset";
 import TextureAtlasAsset from "../assets/texture_atlas_asset";
-import _logger from "../logger.js').getLogger('gfx";
+import _logger from "../logger.js";
 import IManager from "../manager";
 import Circle from "../utils/circle";
 import Color from "../utils/color";
@@ -20,6 +20,26 @@ import Sprites3dEffect from "./effects/sprites_3d";
 import Sprite from "./sprite";
 import SpritesGroup from "./sprites_group";
 import Vertex from "./vertex";
+
+const _loggggger = _logger.getLogger(gfx); // TODO
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 const { BlendModes } = require('./blend_modes.js');
 

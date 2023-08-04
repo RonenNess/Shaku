@@ -1,7 +1,12 @@
-import _logger from "../logger.js').getLogger('input";
+import _logger from "../logger.js";
 import IManager from "../manager";
 import Vector2 from "../utils/vector2";
 import Gamepad from "./gamepad";
+
+const _loggggger = _logger.getLogger(input); // TODO
+
+
+
 
 const { MouseButton, MouseButtons, KeyboardKey, KeyboardKeys } = require('./key_codes.js');
 

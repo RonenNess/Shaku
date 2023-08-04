@@ -1,4 +1,3 @@
+import * as Shaku from "./shaku";
 
-
-global.Shaku = require('./shaku');
-export default global.Shaku;
+export default Shaku;

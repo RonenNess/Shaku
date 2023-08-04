@@ -1,7 +1,5 @@
-
-
 // default logger drivers.
-var _drivers = console;
+let _drivers: Console = console;
 
 // application name
 var _application = "Shaku";
@@ -11,40 +9,43 @@ var _application = "Shaku";
  * By default writes logs to console.
  */
 class Logger {
-	constructor(name) {
+	private _nameHeader: string;
+	private _throwErrors: boolean;
+
+	public constructor(name: string) {
 		this._nameHeader = ('[' + _application + '][' + name + ']').padEnd(25, ' ');
 		this._throwErrors = false;
 	}
 
 	/**
 	 * Write a trace level log message.
-	 * @param {String} msg Message to write.
+	 * @param sg Message to write.
 	 */
-	trace(msg) {
+	public trace(msg: string): void {
 		_drivers.trace(this._nameHeader, msg);
 	}
 
 	/**
 	 * Write a debug level log message.
-	 * @param {String} msg Message to write.
+	 * @param msg Message to write.
 	 */
-	debug(msg) {
+	public debug(msg: string): void {
 		_drivers.debug(this._nameHeader, msg);
 	}
 
 	/**
 	 * Write an info level log message.
-	 * @param {String} msg Message to write.
+	 * @param msg Message to write.
 	 */
-	info(msg) {
+	public info(msg: string): void {
 		_drivers.info(this._nameHeader, msg);
 	}
 
 	/**
 	 * Write a warning level log message.
-	 * @param {String} msg Message to write.
+	 * @param msg Message to write.
 	 */
-	warn(msg) {
+	public warn(msg: string): void {
 		_drivers.warn(this._nameHeader, msg);
 		if(this._throwErrors) {
 			throw new Error(msg);
@@ -53,9 +54,9 @@ class Logger {
 
 	/**
 	 * Write an error level log message.
-	 * @param {String} msg Message to write.
+	 * @param msg Message to write.
 	 */
-	error(msg) {
+	public error(msg: string): void {
 		_drivers.error(this._nameHeader, msg);
 		if(this._throwErrors) {
 			throw new Error(msg);
@@ -64,9 +65,9 @@ class Logger {
 
 	/**
 	 * Set logger to throw an error every time a log message with severity higher than warning is written.
-	 * @param {Boolean} enable Set to true to throw error on warnings.
+	 * @param enable Set to true to throw error on warnings.
 	 */
-	throwErrorOnWarnings(enable) {
+	public throwErrorOnWarnings(enable: boolean): void {
 		this._throwErrors = Boolean(enable);
 	}
 }
@@ -79,22 +80,27 @@ class NullDrivers {
 	/**
 	 * @private
 	 */
-	constructor() {
+	public constructor() {
 	}
-	trace(msg) {
+
+	public trace(msg: string): void {
 	}
-	debug(msg) {
+
+	public debug(msg: string): void {
 	}
-	info(msg) {
+
+	public info(msg: string): void {
 	}
-	warn(msg) {
+
+	public warn(msg: string): void {
 	}
-	error(msg) {
+
+	public error(msg: string): void {
 	}
 }
 
 // cached loggers
-const _cachedLoggers = {};
+const _cachedLoggers: Record<string, unknown> = {};
 
 /**
  * The Logger module is a small object to get loggers and control the underlying logger drivers.
@@ -103,10 +109,10 @@ const LoggerModule = {
 
 	/**
 	 * Get a logger object for a given logger name.
-	 * @param {String} name Logger name.
-	 * @returns {Logger} Logger to use.
+	 * @param name Logger name.
+	 * @returns Logger to use.
 	 */
-	getLogger: function(name) {
+	getLogger: function(name: string): Logger {
 		if(!_cachedLoggers[name]) {
 			_cachedLoggers[name] = new Logger(name);
 		}

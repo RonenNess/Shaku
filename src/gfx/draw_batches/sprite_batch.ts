@@ -1,9 +1,15 @@
 import TextureAssetBase from "../../assets/texture_asset_base";
-import _logger from "../../logger.js').getLogger('gfx-sprite-batch";
+import _logger from "../../logger.js";
 import Vector2 from "../../utils/vector2";
 import Vector3 from "../../utils/vector3";
 import DrawBatch from "./draw_batch";
 import SpriteBatchBase from "./sprite_batch_base";
+
+const _loggggger = _logger.getLogger(gfx - sprite - batch); // TODO
+
+
+
+
 
 const { Rectangle } = require('../../utils');
 

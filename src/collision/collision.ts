@@ -1,4 +1,4 @@
-import _logger from "../logger.js').getLogger('collision";
+import _logger from "../logger.js";
 import IManager from "../manager";
 import Vector2 from "../utils/vector2";
 import CollisionWorld from "./collision_world";
@@ -9,6 +9,18 @@ import LinesShape from "./shapes/lines";
 import PointShape from "./shapes/point";
 import RectangleShape from "./shapes/rectangle";
 import TilemapShape from "./shapes/tilemap";
+
+const _loggggger = _logger.getLogger(collision); // TODO
+
+
+
+
+
+
+
+
+
+
 
 /**
  * Collision is the collision manager.

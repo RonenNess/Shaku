@@ -1,5 +1,3 @@
-
-
 const isBrowser = typeof window !== 'undefined';
 
 import assets from "./assets";

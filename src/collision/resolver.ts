@@ -1,6 +1,10 @@
-import _logger from "../logger.js').getLogger('collision";
+import _logger from "../logger.js";
 import CollisionTestResult from "./result";
 import CollisionShape from "./shapes/shape";
+
+const _loggggger = _logger.getLogger(collision); // TODO
+
+
 
 /**
  * The collision resolver is responsible to implement collision detection between pair of shapes of same or different types.

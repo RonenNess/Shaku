@@ -1,3 +1,1 @@
-
-
-export default require('./assets');
+export * from "./assets";
