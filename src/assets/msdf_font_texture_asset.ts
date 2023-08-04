@@ -42,7 +42,7 @@ export default class MsdfFontTextureAsset extends FontTextureAsset {
 			await Promise.all([atlas_json.load(), atlas_texture.load()]);
 
 			let atlas_metadata = atlas_json.data;
-			atlas_texture.filter = TextureFilterModes.Linear;
+			atlas_texture.filter = TextureFilterModes.LINEAR;
 
 			if(atlas_metadata.common.pages > 1) {
 				throw new Error("Can't use MSDF font with several pages");

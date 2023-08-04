@@ -4,13 +4,14 @@ import TransformModes from "./transform_modes";
 import Vector2 from "./vector2";
 
 // some default values
-const _defaults = {};
-_defaults.position = Vector2.zero();
-_defaults.positionMode = TransformModes.Relative;
-_defaults.scale = Vector2.one();
-_defaults.scaleMode = TransformModes.AxisAligned;
-_defaults.rotation = 0;
-_defaults.rotationMode = TransformModes.Relative;
+const _defaults = {
+	position: Vector2.zero(),
+	positionMode: TransformModes.RELATIVE,
+	scale: Vector2.one(),
+	scaleMode: TransformModes.AXIS_ALIGNED,
+	rotation: 0,
+	rotationMode: TransformModes.RELATIVE,
+};
 
 /**
  * Transformations helper class to store 2d position, rotation and scale.
@@ -27,14 +28,25 @@ _defaults.rotationMode = TransformModes.Relative;
  * const combined = Shaku.utils.Transformation.combine(transform, worldTransform);
  * const matrix = combined.asMatrix();
  */
-class Transformation {
+export default class Transformation {
+	private _position: Vector2;
+	private _positionMode: TransformModes;
+	private _scale: Vector2;
+	private _scaleMode: TransformModes;
+	private _rotation: number;
+	private _rotationMode: TransformModes;
+	private _dirty: boolean;
+	private _matrix: Matrix;
+	private _worldMatrix: Matrix;
+	private _worldPosition: Vector2;
+
 	/**
 	 * Create the transformations.
-	 * @param {Vector2} position Optional position value.
-	 * @param {Number} rotation Optional rotation value.
-	 * @param {Vector2} scale Optional sscale value.
+	 * @param position Optional position value.
+	 * @param rotation Optional rotation value.
+	 * @param scale Optional sscale value.
 	 */
-	constructor(position, rotation, scale) {
+	public constructor(position: Vector2, rotation: number, scale: Vector2) {
 		/**
 		 * @private
 		 * Transformation local position.
@@ -495,11 +507,11 @@ class Transformation {
  */
 function combineScalar(childValue, parentValue, parent, mode) {
 	switch(mode) {
-		case TransformModes.Absolute:
+		case TransformModes.ABSOLUTE:
 			return childValue;
 
-		case TransformModes.AxisAligned:
-		case TransformModes.Relative:
+		case TransformModes.AXIS_ALIGNED:
+		case TransformModes.RELATIVE:
 			return parentValue + childValue;
 
 		default:
@@ -517,13 +529,13 @@ function combineScalar(childValue, parentValue, parent, mode) {
  */
 function combineVector(childValue, parentValue, parent, mode) {
 	switch(mode) {
-		case TransformModes.Absolute:
+		case TransformModes.ABSOLUTE:
 			return childValue.clone();
 
-		case TransformModes.AxisAligned:
+		case TransformModes.AXIS_ALIGNED:
 			return parentValue.add(childValue);
 
-		case TransformModes.Relative:
+		case TransformModes.RELATIVE:
 			return parentValue.add(childValue.rotatedByRadians(parent._rotation));
 
 		default:
@@ -541,19 +553,16 @@ function combineVector(childValue, parentValue, parent, mode) {
  */
 function combineVectorMul(childValue, parentValue, parent, mode) {
 	switch(mode) {
-		case TransformModes.Absolute:
+		case TransformModes.ABSOLUTE:
 			return childValue.clone();
 
-		case TransformModes.AxisAligned:
+		case TransformModes.AXIS_ALIGNED:
 			return parentValue.mul(childValue);
 
-		case TransformModes.Relative:
+		case TransformModes.RELATIVE:
 			return parentValue.mul(childValue.rotatedByRadians(parent._rotation));
 
 		default:
 			throw new Error("Unknown transform mode!");
 	}
 }
-
-// export the transformation object
-export default Transformation;

@@ -1,28 +1,16 @@
-
-
-/** @typedef {String} BlendMode */
-
 /**
  * Blend modes we can draw with, determine how we blend new draws with existing buffer.
- * @readonly
- * @enum {BlendMode}
  */
-export const BlendModes = {
-	AlphaBlend: "alpha",
-	Opaque: "opaque",
-	Additive: "additive",
-	Multiply: "multiply",
-	Subtract: "subtract",
-	Screen: "screen",
-	Overlay: "overlay",
-	Invert: "invert",
-	Darken: "darken",
-	DestIn: "dest-in",
-	DestOut: "dest-out"
+export enum BlendModes {
+	ALPHA_BLEND = "alpha",
+	OPAQUE = "opaque",
+	ADDITIVE = "additive",
+	MULTIPLY = "multiply",
+	SUBSTRACT = "subtract",
+	SCREEN = "screen",
+	OBERLAY = "overlay",
+	INVERT = "invert",
+	DARKEN = "darken",
+	DEST_IN = "dest-in",
+	DEST_OUT = "dest-out",
 };
-
-Object.defineProperty(BlendModes, '_values', {
-	value: new Set(Object.values(BlendModes)),
-	writable: false,
-});
-Object.freeze(BlendModes);

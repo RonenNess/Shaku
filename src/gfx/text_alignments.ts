@@ -1,28 +1,20 @@
-
-
-/** @typedef {String} TextAlignment */
-
 /**
  * Possible text alignments.
- * @readonly
- * @enum {TextAlignment}
  */
-export const TextAlignments = {
+export enum TextAlignments {
 
 	/**
 	 * Align text left-to-right.
 	 */
-	Left: "left",
+	LEFT = "left",
 
 	/**
 	 * Align text right-to-left.
 	 */
-	Right: "right",
+	RIGHT = "right",
 
 	/**
 	 * Align text to center.
 	 */
-	Center: "center",
+	CENTER = "center",
 };
-
-Object.freeze(TextAlignments);

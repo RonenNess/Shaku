@@ -94,14 +94,14 @@ class Gfx implements IManager {
 		 * @type {TextureFilterModes}
 		 * @name Gfx#defaultTextureFilter
 		 */
-		this.defaultTextureFilter = TextureFilterModes.Nearest;
+		this.defaultTextureFilter = TextureFilterModes.NEAREST;
 
 		/**
 		 * Default wrap modes to use when no wrap mode is set.
 		 * @type {TextureWrapModes}
 		 * @name Gfx#TextureWrapModes
 		 */
-		this.defaultTextureWrapMode = TextureWrapModes.Clamp;
+		this.defaultTextureWrapMode = TextureWrapModes.CLAMP;
 
 		/**
 		 * A 1x1 white texture.
@@ -664,7 +664,7 @@ class Gfx implements IManager {
 		}
 
 		// default alignment
-		alignment = alignment || TextAlignments.Left;
+		alignment = alignment || TextAlignments.LEFT;
 
 		// default color
 		color = color || Color.black;
@@ -691,11 +691,11 @@ class Gfx implements IManager {
 			let offsetX = 0;
 			switch(alignment) {
 
-				case TextAlignments.Right:
+				case TextAlignments.RIGHT:
 					offsetX = -lineWidth;
 					break;
 
-				case TextAlignments.Center:
+				case TextAlignments.CENTER:
 					offsetX = -lineWidth / 2;
 					break;
 
@@ -1084,49 +1084,49 @@ class GfxInternal {
 			// get gl context and set defaults
 			var gl = _gl;
 			switch(blendMode) {
-				case BlendModes.AlphaBlend:
+				case BlendModes.ALPHA_BLEND:
 					gl.enable(gl.BLEND);
 					gl.blendEquation(gl.FUNC_ADD);
 					gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
 					break;
 
-				case BlendModes.Opaque:
+				case BlendModes.OPAQUE:
 					gl.disable(gl.BLEND);
 					break;
 
-				case BlendModes.Additive:
+				case BlendModes.ADDITIVE:
 					gl.enable(gl.BLEND);
 					gl.blendEquation(gl.FUNC_ADD);
 					gl.blendFunc(gl.ONE, gl.ONE);
 					break;
 
-				case BlendModes.Multiply:
+				case BlendModes.MULTIPLY:
 					gl.enable(gl.BLEND);
 					gl.blendEquation(gl.FUNC_ADD);
 					gl.blendFuncSeparate(gl.DST_COLOR, gl.ONE_MINUS_SRC_ALPHA, gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
 					break;
 
-				case BlendModes.Screen:
+				case BlendModes.SCREEN:
 					gl.enable(gl.BLEND);
 					gl.blendEquation(gl.FUNC_ADD);
 					gl.blendFuncSeparate(gl.ONE, gl.ONE_MINUS_SRC_COLOR, gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
 					break;
 
-				case BlendModes.Subtract:
+				case BlendModes.SUBSTRACT:
 					gl.enable(gl.BLEND);
 					gl.blendEquation(gl.FUNC_ADD);
 					gl.blendFuncSeparate(gl.ONE, gl.ONE, gl.ONE, gl.ONE);
 					gl.blendEquationSeparate(gl.FUNC_REVERSE_SUBTRACT, gl.FUNC_ADD);
 					break;
 
-				case BlendModes.Invert:
+				case BlendModes.INVERT:
 					gl.enable(gl.BLEND);
 					gl.blendEquation(gl.FUNC_ADD);
 					gl.blendFunc(gl.ONE_MINUS_DST_COLOR, gl.ZERO);
 					gl.blendFuncSeparate(gl.ONE_MINUS_DST_COLOR, gl.ZERO, gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
 					break;
 
-				case BlendModes.Overlay:
+				case BlendModes.OBERLAY:
 					gl.enable(gl.BLEND);
 					if(gl.MAX) {
 						gl.blendEquation(gl.MAX);
@@ -1137,19 +1137,19 @@ class GfxInternal {
 					}
 					break;
 
-				case BlendModes.Darken:
+				case BlendModes.DARKEN:
 					gl.enable(gl.BLEND);
 					gl.blendEquation(gl.MIN);
 					gl.blendFuncSeparate(gl.DST_COLOR, gl.ONE_MINUS_SRC_ALPHA, gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
 					break;
 
-				case BlendModes.DestIn:
+				case BlendModes.DEST_IN:
 					gl.enable(gl.BLEND);
 					gl.blendEquation(gl.FUNC_ADD);
 					gl.blendFunc(gl.ZERO, gl.SRC_ALPHA);
 					break;
 
-				case BlendModes.DestOut:
+				case BlendModes.DEST_OUT:
 					gl.enable(gl.BLEND);
 					gl.blendEquation(gl.FUNC_ADD);
 					gl.blendFunc(gl.ZERO, gl.ONE_MINUS_SRC_ALPHA);

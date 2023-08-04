@@ -94,7 +94,7 @@ class Effect {
 			}
 
 			// build setter method for matrices
-			if(uniformData.type === UniformTypes.Matrix) {
+			if(uniformData.type === UniformTypes.MATRIX) {
 				(function(_this, name, location, method) {
 					_this.uniforms[name] = (mat) => {
 						if(_currEffect !== _this) {
@@ -106,7 +106,7 @@ class Effect {
 				})(this, uniform, uniformLocation, uniformData.type);
 			}
 			// build setter method for textures
-			else if(uniformData.type === UniformTypes.Texture) {
+			else if(uniformData.type === UniformTypes.TEXTURE) {
 				(function(_this, name, location, method) {
 					_this.uniforms[name] = (texture, index) => {
 						if(_currEffect !== _this) {
@@ -125,7 +125,7 @@ class Effect {
 				})(this, uniform, uniformLocation, uniformData.type);
 			}
 			// build setter method for colors
-			else if(uniformData.type === UniformTypes.Color) {
+			else if(uniformData.type === UniformTypes.COLOR) {
 				(function(_this, name, location, method) {
 					_this.uniforms[name] = (v1, v2, v3, v4) => {
 						if(_currEffect !== _this) {
@@ -620,48 +620,38 @@ function compileShader(effectClass, gl, code, type) {
 	return shader;
 }
 
-/** @typedef {String} UniformType */
-
 /**
  * Uniform types enum.
- * @readonly
- * @enum {UniformType}
  */
-const UniformTypes =
-{
-	Texture: 'texture',
-	Matrix: 'uniformMatrix4fv',
-	Color: 'uniform4fv',
+enum UniformTypes {
+	TEXTURE = 'texture',
+	MATRIX = 'uniformMatrix4fv',
+	COLOR = 'uniform4fv',
 
-	Float: 'uniform1f',
-	FloatArray: 'uniform1fv',
+	FLOAT = 'uniform1f',
+	FLOAT_ARRAY = 'uniform1fv',
 
-	Int: 'uniform1i',
-	IntArray: 'uniform1iv',
+	INT = 'uniform1i',
+	INT_ARRAY = 'uniform1iv',
 
-	Float2: 'uniform2f',
-	Float2Array: 'uniform2fv',
+	FLOAT2 = 'uniform2f',
+	FLOAT2_ARRAY = 'uniform2fv',
 
-	Int2: 'uniform2i',
-	Int2Array: 'uniform2iv',
+	INT2 = 'uniform2i',
+	INT2_ARRAY = 'uniform2iv',
 
-	Float3: 'uniform3f',
-	Float3Array: 'uniform3fv',
+	FLOAT3 = 'uniform3f',
+	FLOAT3_ARRAY = 'uniform3fv',
 
-	Int3: 'uniform3i',
-	Int3Array: 'uniform3iv',
+	INT3 = 'uniform3i',
+	INT3_ARRAY = 'uniform3iv',
 
-	Float4: 'uniform4f',
-	Float4Array: 'uniform4fv',
+	FLOAT4 = 'uniform4f',
+	FLOAT4_ARRAY = 'uniform4fv',
 
-	Int4: 'uniform4i',
-	Int4Array: 'uniform4iv',
+	INT4 = 'uniform4i',
+	INT4_ARRAY = 'uniform4iv',
 };
-Object.defineProperty(UniformTypes, '_values', {
-	value: new Set(Object.values(UniformTypes)),
-	writable: false,
-});
-Object.freeze(UniformTypes);
 
 // attach uniform types to effect
 Effect.UniformTypes = UniformTypes;

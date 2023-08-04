@@ -18,7 +18,7 @@ class DrawBatch {
 	 */
 	constructor() {
 		// set default usage mode
-		this.setBuffersUsage(BuffersUsage.StreamDraw);
+		this.setBuffersUsage(BuffersUsage.STREAM_DRAW);
 
 		// will have values after calling 'begin()'
 		this.__currDrawingParams = null;
@@ -40,7 +40,7 @@ class DrawBatch {
 	makeStatic() {
 		this.__validateBatch();
 		if(!this.isDrawing) { throw new Error("Must call 'makeStatic()' between 'begin()' and 'end()'."); }
-		this.setBuffersUsage(this.BuffersUsage.StaticDraw);
+		this.setBuffersUsage(this.BuffersUsage.STATIC_DRAW);
 		this.__staticBuffers = true;
 	}
 
@@ -93,15 +93,15 @@ class DrawBatch {
 	 */
 	setBuffersUsage(usage) {
 		switch(usage) {
-			case BuffersUsage.DynamicDraw:
+			case BuffersUsage.DYNAMIC_DRAW:
 				this.__buffersUsage = DrawBatch._gfx._internal.gl.DYNAMIC_DRAW;
 				break;
 
-			case BuffersUsage.StreamDraw:
+			case BuffersUsage.STREAM_DRAW:
 				this.__buffersUsage = DrawBatch._gfx._internal.gl.STREAM_DRAW;
 				break;
 
-			case BuffersUsage.StaticDraw:
+			case BuffersUsage.STATIC_DRAW:
 				this.__buffersUsage = DrawBatch._gfx._internal.gl.STATIC_DRAW;
 				break;
 
@@ -239,7 +239,7 @@ class DrawBatch {
 	 * Get the default blend mode to use for this drawing batch.
 	 */
 	get defaultBlendMode() {
-		return BlendModes.AlphaBlend;
+		return BlendModes.ALPHA_BLEND;
 	}
 
 	/**

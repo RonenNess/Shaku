@@ -652,7 +652,7 @@ class Input implements IManager {
 	 * @returns {Boolean} True if there's a shift key pressed down.
 	 */
 	get shiftDown() {
-		return Boolean(this.keyDown(this.KeyboardKeys.shift));
+		return Boolean(this.keyDown(this.KeyboardKeys.SHIFT));
 	}
 
 	/**
@@ -660,7 +660,7 @@ class Input implements IManager {
 	 * @returns {Boolean} True if there's a Ctrl key pressed down.
 	 */
 	get ctrlDown() {
-		return Boolean(this.keyDown(this.KeyboardKeys.ctrl));
+		return Boolean(this.keyDown(this.KeyboardKeys.CTRL));
 	}
 
 	/**
@@ -668,7 +668,7 @@ class Input implements IManager {
 	 * @returns {Boolean} True if there's an Alt key pressed down.
 	 */
 	get altDown() {
-		return Boolean(this.keyDown(this.KeyboardKeys.alt));
+		return Boolean(this.keyDown(this.KeyboardKeys.ALT));
 	}
 
 	/**
@@ -1077,7 +1077,7 @@ class Input implements IManager {
 
 		// mark that touch started
 		if(this.delegateTouchInputToMouse) {
-			this._mouseButtonDown(this.MouseButtons.left);
+			this._mouseButtonDown(this.MouseButtons.LEFT);
 		}
 	}
 
@@ -1108,7 +1108,7 @@ class Input implements IManager {
 
 		// mark that touch ended
 		if(this.delegateTouchInputToMouse) {
-			this._mouseButtonUp(this.MouseButtons.left);
+			this._mouseButtonUp(this.MouseButtons.LEFT);
 		}
 	}
 
@@ -1140,7 +1140,7 @@ class Input implements IManager {
 	 */
 	_onMouseDown(event) {
 		event = this._getEvent(event);
-		if(this.disableMouseWheelAutomaticScrolling && (event.button === this.MouseButtons.middle)) {
+		if(this.disableMouseWheelAutomaticScrolling && (event.button === this.MouseButtons.MIDDLE)) {
 			event.preventDefault();
 		}
 		this._mouseButtonDown(event.button);
