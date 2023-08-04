@@ -1,1 +1,0 @@
-npm run build & copy dist\shaku.js demo\js\shaku.js /Y

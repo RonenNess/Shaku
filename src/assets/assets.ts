@@ -27,7 +27,7 @@ TextureAtlasAsset.prototype.isTextureAtlasAsset = true;
  *
  * To access the Assets manager you use `Shaku.assets`.
  */
-class Assets extends IManager {
+class Assets implements IManager {
 	private _loaded: Record<string, Asset> | null;
 	private _waitingAssets: Set<string>;
 	private _failedAssets: Set<string>;
@@ -40,7 +40,6 @@ class Assets extends IManager {
 	 * Create the manager.
 	 */
 	public constructor() {
-		super();
 		this._loaded = null;
 		this._waitingAssets = new Set();
 		this._failedAssets = new Set();

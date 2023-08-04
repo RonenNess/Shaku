@@ -1,5 +1,10 @@
-# Dist
+node_modules/
 dist/
+typings/
+
+
+
+
 
 # Logs
 logs

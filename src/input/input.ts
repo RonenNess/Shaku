@@ -24,12 +24,11 @@ const _touchKeyCode = "touch";
  *
  * To access the Input manager use `Shaku.input`.
  */
-class Input extends IManager {
+class Input implements IManager {
 	/**
 	 * Create the manager.
 	 */
 	constructor() {
-		super();
 
 		// callbacks and target we listen to input on
 		this._callbacks = null;

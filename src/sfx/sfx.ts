@@ -15,12 +15,11 @@ const _loggggger = _logger.getLogger(sfx); // TODO
  *
  * To access the Sfx manager use `Shaku.sfx`.
  */
-class Sfx extends IManager {
+class Sfx implements IManager {
 	/**
 	 * Create the manager.
 	 */
 	constructor() {
-		super();
 		this._playingSounds = null;
 	}
 

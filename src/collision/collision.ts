@@ -29,13 +29,11 @@ const _loggggger = _logger.getLogger(collision); // TODO
  *
  * To access the Collision manager you use `Shaku.collision`.
  */
-class Collision extends IManager {
+class Collision implements IManager {
 	/**
 	 * Create the manager.
 	 */
 	constructor() {
-		super();
-
 		/**
 		 * The collision resolver we use to detect collision between different shapes.
 		 * You can use this object directly without creating a collision world, if you just need to test collision between shapes.

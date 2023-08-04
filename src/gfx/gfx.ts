@@ -72,12 +72,11 @@ let _webglVersion = 0;
  *
  * To access the Graphics manager you use `Shaku.gfx`.
  */
-class Gfx extends IManager {
+class Gfx implements IManager {
 	/**
 	 * Create the manager.
 	 */
 	constructor() {
-		super();
 
 		/**
 		 * A dictionary containing all built-in effect instances.

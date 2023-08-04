@@ -1,1 +1,3 @@
-export * from "./assets";
+import * as assets from "./assets";
+
+export default assets;
