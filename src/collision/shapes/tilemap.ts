@@ -8,7 +8,7 @@ import CollisionShape from "./shape";
  * A collision tilemap shape is a grid of equal-sized cells that can either block or not (+ have collision flags).
  * Its the most efficient (both memory and CPU) way to implement grid based / tilemap collision.
  */
-class TilemapShape extends CollisionShape {
+export default class TilemapShape extends CollisionShape {
 	/**
 	 * Create the collision tilemap.
 	 * @param {Vector2} offset Tilemap top-left corner.
@@ -153,6 +153,3 @@ class TilemapShape extends CollisionShape {
 		}
 	}
 }
-
-// export collision shape class
-export default TilemapShape;

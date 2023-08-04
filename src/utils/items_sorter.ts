@@ -4,7 +4,7 @@ import Vector2 from "./vector2";
 /**
  * Utility class to arrange rectangles in minimal region.
  */
-class ItemsSorter {
+export default class ItemsSorter {
 	/**
 	 * Efficiently arrange rectangles into a minimal size area.
 	 * Based on code from here:
@@ -22,17 +22,17 @@ class ItemsSorter {
 	 * If the object have 'width' and 'height' properties, these properties will be used to define the rectangle size.
 	 * If not but the object have 'x' and 'y' properties, x and y will be taken instead.
 	 * The source object will be included in the result objects.
-	 * @param {Function=} processRegionWidthMethod If provided, will run this method when trying to decide on the result region width.
+	 * @param processRegionWidthMethod If provided, will run this method when trying to decide on the result region width.
 	 * Method receive desired width as argument, and return a new width to override the decision. You can use this method to limit max width or round it to multiplies of 2 for textures.
 	 * Note: by default, the algorithm will try to create a square region.
-	 * @param {Vector2=} extraMargins Optional extra empty pixels to add between textures in atlas.
-	 * @returns {*} Result object with the following keys: {width, height, rectangles, utilized}.
+	 * @param extraMargins Optional extra empty pixels to add between textures in atlas.
+	 * @returns Result object with the following keys: {width, height, rectangles, utilized}.
 	 *  width = required container width.
 	 *  height = required container width.
 	 *  rectangles = list of sorted rectangles. every entry has {x, y, width, height, source} where x and y are the offset in container and source is the source input object.
 	 *  utilized = how much of the output space was utilized.
 	 */
-	static arrangeRectangles(rectangles, processRegionWidthMethod, extraMargins) {
+	public static arrangeRectangles<R extends Rectangle | Vector2>(rectangles: R, processRegionWidthMethod?: (...args: unknown[]) => unknown, extraMargins?: Vector2): { x: number, y: number, width: number, height: number, rectangles: R[], utilized: number; } {
 		// default margins
 		extraMargins = extraMargins || Vector2.zeroReadonly;
 
@@ -146,6 +146,3 @@ class ItemsSorter {
 		};
 	}
 }
-
-// export the main method
-export default ItemsSorter;

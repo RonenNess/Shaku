@@ -7,11 +7,17 @@ import CollisionWorld from "../collision_world";
 /**
  * Collision shape base class.
  */
-class CollisionShape {
+export default abstract class CollisionShape {
+	private _world: CollisionWorld | null;
+	private _worldRange: Rectangle | null;
+	private _debugColor: Color | null;
+	private _forceDebugColor: Color | null;
+	private _collisionFlags: number;
+
 	/**
 	 * Create the collision shape.
 	 */
-	constructor() {
+	public constructor() {
 		this._world = null;
 		this._worldRange = null;
 		this._debugColor = null;
@@ -21,23 +27,21 @@ class CollisionShape {
 
 	/**
 	 * Get the collision shape's unique identifier.
-	 * @returns {String} Shape's unique identifier
+	 * @returns Shape's unique identifier
 	 */
-	get shapeId() {
-		throw new Error("Not Implemented!");
-	}
+	public abstract get shapeId(): string;
 
 	/**
 	 * Get collision flags (matched against collision mask when checking collision).
 	 */
-	get collisionFlags() {
+	public get collisionFlags() {
 		return this._collisionFlags;
 	}
 
 	/**
 	 * Set collision flags (matched against collision mask when checking collision).
 	 */
-	set collisionFlags(value) {
+	public set collisionFlags(value) {
 		this._debugColor = null;
 		this._collisionFlags = value;
 		return this._collisionFlags;
@@ -48,7 +52,7 @@ class CollisionShape {
 	 * If not provided and have no world, will throw exception.
 	 * @private
 	 */
-	_getDebugDrawBatch(shapesBatch) {
+	protected _getDebugDrawBatch(shapesBatch: ShapesBatch) {
 		if(!shapesBatch && !this._world) {
 			throw new Error("Can't debug-draw a collision shape that is not under any collision world without providing a shapes batch to use!");
 		}
@@ -57,33 +61,29 @@ class CollisionShape {
 
 	/**
 	 * Set the debug color to use to draw this shape.
-	 * @param {Color} color Color to set or null to use default.
+	 * @param color Color to set or null to use default.
 	 */
-	setDebugColor(color) {
+	public setDebugColor(color: Color) {
 		this._forceDebugColor = color;
 	}
 
 	/**
 	 * Debug draw this shape.
-	 * @param {Number} opacity Shape opacity factor.
-	 * @param {ShapesBatch} shapesBatch Optional shapes batch to use to debug draw the shape. By default will use the collision world.
+	 * @param opacity Shape opacity factor.
+	 * @param shapesBatch Optional shapes batch to use to debug draw the shape. By default will use the collision world.
 	 */
-	debugDraw(opacity, shapesBatch) {
-		throw new Error("Not Implemented!");
-	}
+	public abstract debugDraw(opacity: number, shapesBatch: ShapesBatch): void;
 
 	/**
 	 * Get shape center position.
-	 * @returns {Vector2} Center position.
+	 * @returns Center position.
 	 */
-	getCenter() {
-		throw new Error("Not Implemented!");
-	}
+	public abstract getCenter(): Vector2;
 
 	/**
 	 * Remove self from parent world object.
 	 */
-	remove() {
+	public remove() {
 		if(this._world) {
 			this._world.removeShape(this);
 		}
@@ -93,7 +93,7 @@ class CollisionShape {
 	 * Get debug drawing color.
 	 * @private
 	 */
-	_getDebugColor() {
+	protected _getDebugColor() {
 		// use forced debug color
 		if(this._forceDebugColor) {
 			return this._forceDebugColor.clone();
@@ -112,34 +112,30 @@ class CollisionShape {
 	 * Get default debug colors for given collision flags.
 	 * @private
 	 */
-	_getDefaultDebugColorFor(flags) {
+	protected _getDefaultDebugColorFor(flags: number) {
 		return defaultDebugColors[flags % defaultDebugColors.length];
 	}
 
 	/**
 	 * Get collision shape's estimated radius box.
 	 * @private
-	 * @returns {Number} Shape's radius
+	 * @returns Shape's radius
 	 */
-	_getRadius() {
-		throw new Error("Not Implemented!");
-	}
+	protected _getRadius(): number;
 
 	/**
 	 * Get collision shape's bounding box.
 	 * @private
 	 * @returns {Rectangle} Shape's bounding box.
 	 */
-	_getBoundingBox() {
-		throw new Error("Not Implemented!");
-	}
+	protected _getBoundingBox(): Rectangle;
 
 	/**
 	 * Set the parent collision world this shape is currently in.
 	 * @private
-	 * @param {CollisionWorld} world New parent collision world or null to remove.
+	 * @param world New parent collision world or null to remove.
 	 */
-	_setParent(world) {
+	protected _setParent(world: CollisionWorld) {
 		// same world? skip
 		if(world === this._world) {
 			return;
@@ -159,7 +155,7 @@ class CollisionShape {
 	 * Called when the collision shape changes and we need to update the parent world.
 	 * @private
 	 */
-	_shapeChanged() {
+	protected _shapeChanged(): void {
 		if(this._world) {
 			this._world._queueUpdate(this);
 		}
@@ -167,7 +163,25 @@ class CollisionShape {
 }
 
 // default debug colors to use
-const defaultDebugColors = [Color.red, Color.blue, Color.green, Color.yellow, Color.purple, Color.teal, Color.brown, Color.orange, Color.khaki, Color.darkcyan, Color.cornflowerblue, Color.darkgray, Color.chocolate, Color.aquamarine, Color.cadetblue, Color.magenta, Color.seagreen, Color.pink, Color.olive, Color.violet];
-
-// export collision shape class
-export default CollisionShape;
+const defaultDebugColors = [
+	Color.red,
+	Color.blue,
+	Color.green,
+	Color.yellow,
+	Color.purple,
+	Color.teal,
+	Color.brown,
+	Color.orange,
+	Color.khaki,
+	Color.darkcyan,
+	Color.cornflowerblue,
+	Color.darkgray,
+	Color.chocolate,
+	Color.aquamarine,
+	Color.cadetblue,
+	Color.magenta,
+	Color.seagreen,
+	Color.pink,
+	Color.olive,
+	Color.violet,
+];

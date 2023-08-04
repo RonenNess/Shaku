@@ -4,18 +4,20 @@ import Asset from "./asset";
  * A loadable binary data asset.
  * This asset type loads array of bytes from a remote file.
  */
-class BinaryAsset extends Asset {
+export default class BinaryAsset extends Asset {
+	private _data: Uint8Array | null;
+
 	/** @inheritdoc */
-	constructor(url) {
+	constructor(url: string) {
 		super(url);
 		this._data = null;
 	}
 
 	/**
 	 * Load the binary data from the asset URL.
-	 * @returns {Promise} Promise to resolve when fully loaded.
+	 * @returns Promise to resolve when fully loaded.
 	 */
-	load() {
+	public load(): Promise<void> {
 		return new Promise((resolve, reject) => {
 
 			var request = new XMLHttpRequest();
@@ -48,10 +50,10 @@ class BinaryAsset extends Asset {
 
 	/**
 	 * Create the binary data asset from array or Uint8Array.
-	 * @param {Array<Number>|Uint8Array} source Data to create asset from.
-	 * @returns {Promise} Promise to resolve when asset is ready.
+	 * @param source Data to create asset from.
+	 * @returns Promise to resolve when asset is ready.
 	 */
-	create(source) {
+	public create(source: Uint8Array): Promise<void> {
 		return new Promise((resolve, reject) => {
 			if(Array.isArray(source)) { source = new Uint8Array(source); }
 			if(!(source instanceof Uint8Array)) { return reject("Binary asset source must be of type 'Uint8Array'!"); }
@@ -62,31 +64,28 @@ class BinaryAsset extends Asset {
 	}
 
 	/** @inheritdoc */
-	get valid() {
+	public get valid(): boolean {
 		return Boolean(this._data);
 	}
 
 	/** @inheritdoc */
-	destroy() {
+	public destroy() {
 		this._data = null;
 	}
 
 	/**
 	 * Get binary data.
-	 * @returns {Uint8Array} Data as bytes array.
+	 * @returns Data as bytes array.
 	 */
-	get data() {
+	public get data(): Uint8Array {
 		return this._data;
 	}
 
 	/**
 	 * Convert and return data as string.
-	 * @returns {String} Data converted to string.
+	 * @returns Data converted to string.
 	 */
-	string() {
+	public string(): string {
 		return (new TextDecoder()).decode(this._data);
 	}
 }
-
-// export the asset type.
-export default BinaryAsset;

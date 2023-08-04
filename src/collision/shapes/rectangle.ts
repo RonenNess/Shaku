@@ -4,7 +4,7 @@ import CollisionShape from "./shape";
 /**
  * Collision rectangle class.
  */
-class RectangleShape extends CollisionShape {
+export default class RectangleShape extends CollisionShape {
 	/**
 	 * Create the collision shape.
 	 * @param {Rectangle} rectangle the rectangle shape.
@@ -67,6 +67,3 @@ class RectangleShape extends CollisionShape {
 		if(needToBegin) { shapesBatch.end(); }
 	}
 }
-
-// export collision shape class
-export default RectangleShape;

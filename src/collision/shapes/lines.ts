@@ -7,7 +7,7 @@ import CollisionShape from "./shape";
  * Collision lines class.
  * This shape is made of one line or more.
  */
-class LinesShape extends CollisionShape {
+export default class LinesShape extends CollisionShape {
 	/**
 	 * Create the collision shape.
 	 * @param {Array<Line>|Line} lines Starting line / lines.
@@ -100,6 +100,3 @@ class LinesShape extends CollisionShape {
 		if(needToBegin) { shapesBatch.end(); }
 	}
 }
-
-// export collision lines class
-export default LinesShape;

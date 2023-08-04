@@ -5,24 +5,27 @@ import Vector3 from "./vector3";
 /**
  * A plane in 3D space.
  */
-class Plane {
+export default class Plane {
+	public normal: Vector3;
+	public constant: number;
+
 	/**
 	 * Create the plane.
-	 * @param {Vector3} normal Plane normal vector.
-	 * @param {Number} constant Plane constant.
+	 * @param normal Plane normal vector.
+	 * @param constant Plane constant.
 	 */
-	constructor(normal = new Vector3(1, 0, 0), constant = 0) {
+	public constructor(normal = new Vector3(1, 0, 0), constant = 0) {
 		this.normal = normal;
 		this.constant = constant;
 	}
 
 	/**
 	 * Set the plane components.
-	 * @param {Vector3} normal Plane normal.
-	 * @param {Number} constant Plane constant.
-	 * @returns {Plane} Self.
+	 * @param normal Plane normal.
+	 * @param constant Plane constant.
+	 * @returns Self.
 	 */
-	set(normal, constant) {
+	public set(normal: Vector3, constant: number): Plane {
 		this.normal.copy(normal);
 		this.constant = constant;
 		return this;
@@ -30,13 +33,13 @@ class Plane {
 
 	/**
 	 * Set the plane components.
-	 * @param {Number} x Plane normal X.
-	 * @param {Number} y Plane normal Y.
-	 * @param {Number} z Plane normal Z.
-	 * @param {Number} w Plane constant.
-	 * @returns {Plane} Self.
+	 * @param x Plane normal X.
+	 * @param y Plane normal Y.
+	 * @param z Plane normal Z.
+	 * @param w Plane constant.
+	 * @returns Self.
 	 */
-	setComponents(x, y, z, w) {
+	public setComponents(x: number, y: number, z: number, w: number): Plane {
 		this.normal.set(x, y, z);
 		this.constant = w;
 		return this;
@@ -44,11 +47,11 @@ class Plane {
 
 	/**
 	 * Set plane from normal and coplanar point vectors.
-	 * @param {Vector3} normal Plane normal.
-	 * @param {Vector3} point Coplanar point.
-	 * @returns {Plane} Self.
+	 * @param normal Plane normal.
+	 * @param point Coplanar point.
+	 * @returns Self.
 	 */
-	setFromNormalAndCoplanarPoint(normal, point) {
+	public setFromNormalAndCoplanarPoint(normal: Vector3, point: Vector3): Plane {
 		this.normal.copy(normal);
 		this.constant = -(point.dot(this.normal));
 		return this;
@@ -56,10 +59,10 @@ class Plane {
 
 	/**
 	 * Copy values from another plane.
-	 * @param {Plane} plane Plane to copy.
-	 * @returns {Plane} Self.
+	 * @param plane Plane to copy.
+	 * @returns Self.
 	 */
-	copy(plane) {
+	public copy(plane: Plane): Plane {
 		this.normal.copy(plane.normal);
 		this.constant = plane.constant;
 		return this;
@@ -67,9 +70,9 @@ class Plane {
 
 	/**
 	 * Normalize the plane.
-	 * @returns {Plane} self.
+	 * @returns self.
 	 */
-	normalizeSelf() {
+	public normalizeSelf(): Plane {
 		// Note: will lead to a divide by zero if the plane is invalid.
 		const inverseNormalLength = 1.0 / this.normal.length();
 		this.normal.mulSelf(inverseNormalLength);
@@ -79,17 +82,17 @@ class Plane {
 
 	/**
 	 * Normalize a clone of this plane.
-	 * @returns {Plane} Normalized clone.
+	 * @returns Normalized clone.
 	 */
-	normalized() {
+	public normalized(): Plane {
 		return this.clone().normalizeSelf();
 	}
 
 	/**
 	 * Negate this plane.
-	 * @returns {Plane} Self.
+	 * @returns Self.
 	 */
-	negateSelf() {
+	public negateSelf(): Plane {
 		this.constant *= -1;
 		this.normal.mulSelf(-1);
 		return this;
@@ -97,28 +100,28 @@ class Plane {
 
 	/**
 	 * Calculate distance to point.
-	 * @param {Vector3} point Point to calculate distance to.
-	 * @returns {Number} Distance to point.
+	 * @param point Point to calculate distance to.
+	 * @returns Distance to point.
 	 */
-	distanceToPoint(point) {
+	public distanceToPoint(point: Vector3): number {
 		return this.normal.dot(point) + this.constant;
 	}
 
 	/**
 	 * Calculate distance to sphere.
-	 * @param {Sphere} sphere Sphere to calculate distance to.
-	 * @returns {Number} Distance to sphere.
+	 * @param sphere Sphere to calculate distance to.
+	 * @returns Distance to sphere.
 	 */
-	distanceToSphere(sphere) {
+	public distanceToSphere(sphere: Sphere): number {
 		return this.distanceToPoint(sphere.center) - sphere.radius;
 	}
 
 	/**
 	 * Check if this plane collide with a line.
-	 * @param {Line} line Line to check.
-	 * @returns {Boolean} True if collide, false otherwise.
+	 * @param line Line to check.
+	 * @returns True if collide, false otherwise.
 	 */
-	collideLine(line) {
+	public collideLine(line: Line): boolean {
 		// Note: this tests if a line collide the plane, not whether it (or its end-points) are coplanar with it.
 		const startSign = this.distanceToPoint(line.start);
 		const endSign = this.distanceToPoint(line.end);
@@ -127,48 +130,45 @@ class Plane {
 
 	/**
 	 * Check if this plane collide with a sphere.
-	 * @param {Sphere} sphere Sphere to check.
-	 * @returns {Boolean} True if collide, false otherwise.
+	 * @param sphere Sphere to check.
+	 * @returns True if collide, false otherwise.
 	 */
-	collideSphere(sphere) {
+	public collideSphere(sphere: Sphere): boolean {
 		return sphere.collidePlane(this);
 	}
 
 	/**
 	 * Coplanar a point.
-	 * @returns {Vector3} Coplanar point as a new vector.
+	 * @returns Coplanar point as a new vector.
 	 */
-	coplanarPoint() {
+	public coplanarPoint(): Vector3 {
 		return this.normal.mul(-this.constant);
 	}
 
 	/**
 	 * Translate this plane.
-	 * @param {Vector3} offset Offset to translate to.
-	 * @returns {Plane} Self.
+	 * @param offset Offset to translate to.
+	 * @returns Self.
 	 */
-	translateSelf(offset) {
+	public translateSelf(offset: Vector3): Plane {
 		this.constant -= offset.dot(this.normal);
 		return this;
 	}
 
 	/**
 	 * Check if this plane equals another plane.
-	 * @param {Plane} plane Other plane to compare to.
-	 * @returns {Boolean} True if equal, false otherwise.
+	 * @param plane Other plane to compare to.
+	 * @returns True if equal, false otherwise.
 	 */
-	equals(plane) {
+	public equals(plane: Plane): boolean {
 		return plane.normal.equals(this.normal) && (plane.constant === this.constant);
 	}
 
 	/**
 	 * Clone this plane.
-	 * @returns {Plane} Cloned plane.
+	 * @returns Cloned plane.
 	 */
-	clone() {
-		return new this.constructor().copy(this);
+	public clone(): Plane {
+		return new Plane().copy(this);
 	}
 }
-
-// export the plane object
-export default Plane;

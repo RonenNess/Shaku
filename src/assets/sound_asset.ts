@@ -4,7 +4,7 @@ import Asset from "./asset";
  * A loadable sound asset.
  * This is the asset type you use to play sounds.
  */
-class SoundAsset extends Asset {
+export default class SoundAsset extends Asset {
 	/** @inheritdoc */
 	constructor(url) {
 		super(url);
@@ -54,6 +54,3 @@ class SoundAsset extends Asset {
 		this._valid = false;
 	}
 }
-
-// export the asset type.
-export default SoundAsset;

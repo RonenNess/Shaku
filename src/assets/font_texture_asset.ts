@@ -7,7 +7,7 @@ import TextureAsset from "./texture_asset";
  * A font texture asset, dynamically generated from loaded font and canvas.
  * This asset type creates an atlas of all the font's characters as textures, so we can later render them as sprites.
  */
-class FontTextureAsset extends Asset {
+export default class FontTextureAsset extends Asset {
 	/** @inheritdoc */
 	constructor(url) {
 		super(url);
@@ -318,6 +318,3 @@ function measureTextWidth(fontFamily, fontSize, char, extraWidth) {
 	}
 	return Math.ceil(result);
 };
-
-// export the asset type.
-export default FontTextureAsset;

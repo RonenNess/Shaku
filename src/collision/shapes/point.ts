@@ -6,7 +6,7 @@ import CollisionShape from "./shape";
 /**
  * Collision point class.
  */
-class PointShape extends CollisionShape {
+export default class PointShape extends CollisionShape {
 	/**
 	 * Create the collision shape.
 	 * @param {Vector2} position Point position.
@@ -77,6 +77,3 @@ class PointShape extends CollisionShape {
 		if(needToBegin) { shapesBatch.end(); }
 	}
 }
-
-// export collision shape class
-export default PointShape;

@@ -1,35 +1,46 @@
 import Vector2 from "./vector2";
+import Vector3 from "./vector3";
 
 /**
  * Interface for a supported grid.
  */
-class IGrid {
+interface IGrid {
 	/**
 	 * Check if a given tile is blocked from a given neihbor.
-	 * @param {Vector2|Vector3} _from Source tile index.
-	 * @param {Vector2|Vector3} _to Target tile index. Must be a neighbor of _from.
-	 * @returns {Boolean} Can we travel from _from to _to?
+	 * @param _from Source tile index.
+	 * @param _to Target tile index. Must be a neighbor of _from.
+	 * @returns Can we travel from _from to _to?
 	 */
-	isBlocked(_from, _to) { throw new Error("Not Implemented"); }
+	isBlocked(_from: Vector2, _to: Vector2): boolean;
+	isBlocked(_from: Vector3, _to: Vector3): boolean;
+	isBlocked(_from: Vector2 | Vector3, _to: Vector2 | Vector3): boolean;
 
 	/**
 	 * Get the price to travel on a given tile.
 	 * Should return 1 for "normal" traveling price, > 1 for expensive tile, and < 1 for a cheap tile to pass on.
-	 * @param {Vector2|Vector3} _index Tile index.
-	 * @returns {Number} Price factor to walk on.
+	 * @param _index Tile index.
+	 * @returns Price factor to walk on.
 	 */
-	getPrice(_index) { throw new Error("Not Implemented"); }
+	getPrice(_index: Vector2): number;
+	getPrice(_index: Vector3): number;
+	getPrice(_index: Vector2 | Vector3): number;
 }
 
 /**
  * A path node.
  */
 class Node {
+	public position: Vector2 | Vector3;
+	public gCost: number;
+	public hCost: number;
+	public parent: Node | null;
+	public price: number;
+
 	/**
 	 * Create the node from a position.
-	 * @param {Vector2|Vector3} position Node position.
+	 * @param position Node position.
 	 */
-	constructor(position) {
+	public constructor(position: Vector2 | Vector3) {
 		this.position = position;
 		this.gCost = 0;
 		this.hCost = 0;
@@ -40,21 +51,21 @@ class Node {
 	/**
 	 * Get the node fCost factor.
 	 */
-	get fCost() {
+	public get fCost() {
 		return this.gCost + this.hCost;
 	}
 }
 
 /**
  * Find a path between start to target.
- * @param {IGrid} grid Grid provider to check if tiles are blocked.
- * @param {Vector2|Vector3} startPos Starting tile index.
- * @param {Vector2|Vector3} targetPos Target tile index.
- * @param {*} options Additional options: { maxIterations, ignorePrices, allowDiagonal }
- * @returns {Array<Vector2>} List of tiles to traverse.
+ * @param grid Grid provider to check if tiles are blocked.
+ * @param startPos Starting tile index.
+ * @param targetPos Target tile index.
+ * @param options Additional options: { maxIterations, ignorePrices, allowDiagonal }
+ * @returns List of tiles to traverse.
  */
-function findPath(grid, startPos, targetPos, options) {
-	let ret = _ImpFindPath(grid, startPos, targetPos, options || {});
+function findPath<P extends Vector2 | Vector3>(grid: IGrid, startPos: P, targetPos: P, options: { maxIterations?: number, ignorePrices?: boolean, allowDiagonal?: boolean; } = {}): P[] {
+	let ret = _ImpFindPath(grid, startPos, targetPos, options);
 	return ret;
 }
 
@@ -62,7 +73,7 @@ function findPath(grid, startPos, targetPos, options) {
  * Internal function that implements the path-finding algorithm.
  * @private
  */
-function _ImpFindPath(grid, startPos, targetPos, options) {
+function _ImpFindPath<P extends Vector2 | Vector3>(grid: IGrid, startPos: P, targetPos: P, options: { maxIterations?: number, ignorePrices?: boolean, allowDiagonal?: boolean; }): P[] {
 	// do we allow diagonal tiles?
 	const allowDiagonal = options.allowDiagonal;
 
@@ -175,7 +186,7 @@ function _ImpFindPath(grid, startPos, targetPos, options) {
  * Go from end to start (for shortest path) and build list reversed.
  * @private
  */
-function retracePath(startNode, endNode) {
+function retracePath(startNode: Node, endNode: Node) {
 	let path = [];
 	let currentNode = endNode;
 

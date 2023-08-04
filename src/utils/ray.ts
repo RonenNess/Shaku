@@ -1,26 +1,31 @@
+import Box from "./box";
+import Sphere from "./sphere";
 import Vector3 from "./vector3";
 
 /**
  * A 3D ray.
  */
-class Ray {
+export default class Ray {
+	public origin: Vector3;
+	public direction: Vector3;
+
 	/**
 	 * Create the Ray.
-	 * @param {Vector3} origin Ray origin point.
-	 * @param {Vector3} direction Ray 3d direction.
+	 * @param origin Ray origin point.
+	 * @param direction Ray 3d direction.
 	 */
-	constructor(origin, direction) {
+	public constructor(origin: Vector3, direction: Vector3) {
 		this.origin = origin.clone();
 		this.direction = direction.clone();
 	}
 
 	/**
 	 * Set the ray components.
-	 * @param {Vector3} origin Ray origin point.
-	 * @param {Vector3} direction Ray 3d direction.
-	 * @returns {Plane} Self.
+	 * @paramorigin Ray origin point.
+	 * @paramdirection Ray 3d direction.
+	 * @returns Self.
 	 */
-	set(origin, direction) {
+	public set(origin: Vector3, direction: Vector3): Ray {
 		this.origin.copy(origin);
 		this.direction.copy(direction);
 		return this;
@@ -28,47 +33,47 @@ class Ray {
 
 	/**
 	 * Copy values from another ray.
-	 * @param {Ray} ray Ray to copy.
-	 * @returns {Ray} Self.
+	 * @param ray Ray to copy.
+	 * @returns Self.
 	 */
-	copy(ray) {
+	public copy(ray: Ray): Ray {
 		this.set(ray.origin, ray.direction);
 		return this;
 	}
 
 	/**
 	 * Check if this ray equals another ray.
-	 * @param {Ray} ray Other ray to compare to.
-	 * @returns {Boolean} True if equal, false otherwise.
+	 * @param ray Other ray to compare to.
+	 * @returns True if equal, false otherwise.
 	 */
-	equals(ray) {
+	public equals(ray: Ray): boolean {
 		return ray.origin.equals(this.origin) && ray.direction.equals(this.direction);
 	}
 
 	/**
 	 * Get the 3d point on the ray by distance from origin.
-	 * @param {Number} distance Distance from origin to travel.
-	 * @returns {Vector3} Point on ray from origin.
+	 * @param distance Distance from origin to travel.
+	 * @returns Point on ray from origin.
 	 */
-	at(distance) {
+	public at(distance: number): Vector3 {
 		return this.origin.add(this.direction.mul(distance));
 	}
 
 	/**
 	 * Calculate distance to a 3d point.
-	 * @param {Vector3} point Point to calculate distance to.
-	 * @returns {Number} Distance to point.
+	 * @param point Point to calculate distance to.
+	 * @returns Distance to point.
 	 */
-	distanceToPoint(point) {
+	public distanceToPoint(point: Vector3): number {
 		return Math.sqrt(this.distanceToPointSquared(point));
 	}
 
 	/**
 	 * Calculate squared distance to a 3d point.
-	 * @param {Vector3} point Point to calculate distance to.
-	 * @returns {Number} Squared distance to point.
+	 * @param point Point to calculate distance to.
+	 * @returns Squared distance to point.
 	 */
-	distanceToPointSquared(point) {
+	public distanceToPointSquared(point: Vector3): number {
 		const directionDistance = point.sub(this.origin).dot(this.direction);
 
 		// point behind the ray
@@ -82,28 +87,28 @@ class Ray {
 
 	/**
 	 * Check if this ray collides with a sphere.
-	 * @param {Sphere} sphere Sphere to test collision with.
-	 * @returns {Boolean} True if collide with sphere, false otherwise.
+	 * @param sphere Sphere to test collision with.
+	 * @returns True if collide with sphere, false otherwise.
 	 */
-	collideSphere(sphere) {
+	public collideSphere(sphere: Sphere): boolean {
 		return this.distanceToPointSquared(sphere.center) <= (sphere.radius * sphere.radius);
 	}
 
 	/**
 	 * Check if this ray collides with a box.
-	 * @param {Box} box Box to test collision with.
-	 * @returns {Boolean} True if collide with box, false otherwise.
+	 * @param box Box to test collision with.
+	 * @returns True if collide with box, false otherwise.
 	 */
-	collideBox(box) {
+	public collideBox(box: Box): boolean {
 		return Boolean(this.findColliionPointWithBox(box));
 	}
 
 	/**
 	 * Return the collision point between the ray and a box, or null if they don't collide.
-	 * @param {Box} box Box to get collision with.
-	 * @returns {Vector3|null} Collision point or null.
+	 * @param box Box to get collision with.
+	 * @returns Collision point or null.
 	 */
-	findColliionPointWithBox(box) {
+	public findColliionPointWithBox(box: Box): Vector3 | null {
 
 		let tmin, tmax, tymin, tymax, tzmin, tzmax;
 
@@ -173,12 +178,9 @@ class Ray {
 
 	/**
 	 * Clone this ray.
-	 * @returns {Ray} Cloned ray.
+	 * @returns Cloned ray.
 	 */
-	clone() {
+	public clone(): Ray {
 		return new Ray(this.origin, this.direction);
 	}
 }
-
-// export the ray object
-export default Ray;

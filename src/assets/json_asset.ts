@@ -4,7 +4,7 @@ import Asset from "./asset";
  * A loadable json asset.
  * This asset type loads JSON from a remote file.
  */
-class JsonAsset extends Asset {
+export default class JsonAsset extends Asset {
 	/** @inheritdoc */
 	constructor(url) {
 		super(url);
@@ -102,6 +102,3 @@ class JsonAsset extends Asset {
 		this._data = null;
 	}
 }
-
-// export the asset type.
-export default JsonAsset;

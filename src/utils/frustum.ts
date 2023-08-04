@@ -1,36 +1,39 @@
 import Box from "./box";
 import Matrix from "./matrix";
 import Plane from "./plane";
+import Sphere from "./sphere";
 import Vector3 from "./vector3";
 
 /**
  * Implement a 3D Frustum shape.
  */
-class Frustum {
+export default class Frustum {
+	public planes: Plane[];
+
 	/**
 	 * Create the frustum.
-	 * @param {Plane} p0 Frustum plane.
-	 * @param {Plane} p1 Frustum plane.
-	 * @param {Plane} p2 Frustum plane.
-	 * @param {Plane} p3 Frustum plane.
-	 * @param {Plane} p4 Frustum plane.
-	 * @param {Plane} p5 Frustum plane.
+	 * @param p0 Frustum plane.
+	 * @param p1 Frustum plane.
+	 * @param p2 Frustum plane.
+	 * @param p3 Frustum plane.
+	 * @param p4 Frustum plane.
+	 * @param p5 Frustum plane.
 	 */
-	constructor(p0 = new Plane(), p1 = new Plane(), p2 = new Plane(), p3 = new Plane(), p4 = new Plane(), p5 = new Plane()) {
+	public constructor(p0 = new Plane(), p1 = new Plane(), p2 = new Plane(), p3 = new Plane(), p4 = new Plane(), p5 = new Plane()) {
 		this.planes = [p0, p1, p2, p3, p4, p5];
 	}
 
 	/**
 	 * Set the Frustum values.
-	 * @param {Plane} p0 Frustum plane.
-	 * @param {Plane} p1 Frustum plane.
-	 * @param {Plane} p2 Frustum plane.
-	 * @param {Plane} p3 Frustum plane.
-	 * @param {Plane} p4 Frustum plane.
-	 * @param {Plane} p5 Frustum plane.
-	 * @returns {Frustum} Self.
+	 * @param p0 Frustum plane.
+	 * @param p1 Frustum plane.
+	 * @param p2 Frustum plane.
+	 * @param p3 Frustum plane.
+	 * @param p4 Frustum plane.
+	 * @param p5 Frustum plane.
+	 * @returns Self.
 	 */
-	set(p0, p1, p2, p3, p4, p5) {
+	public set(p0: Plane, p1: Plane, p2: Plane, p3: Plane, p4: Plane, p5: Plane): Frustum {
 		const planes = this.planes;
 		planes[0].copy(p0);
 		planes[1].copy(p1);
@@ -43,10 +46,10 @@ class Frustum {
 
 	/**
 	 * Copy values from another frustum.
-	 * @param {Frustum} frustum Frustum to copy.
-	 * @returns {Frustum} Self.
+	 * @param frustum Frustum to copy.
+	 * @returns Self.
 	 */
-	copy(frustum) {
+	public copy(frustum: Frustum): Frustum {
 		const planes = this.planes;
 		for(let i = 0; i < 6; i++) {
 			planes[i].copy(frustum.planes[i]);
@@ -56,10 +59,10 @@ class Frustum {
 
 	/**
 	 * Set frustum from projection matrix.
-	 * @param {Matrix} m Matrix to build frustum from.
-	 * @returns {Frustum} Self.
+	 * @param m Matrix to build frustum from.
+	 * @returns Self.
 	 */
-	setFromProjectionMatrix(m) {
+	public setFromProjectionMatrix(m: Matrix): Frustum {
 		const planes = this.planes;
 		const me = m.values;
 		const me0 = me[0], me1 = me[1], me2 = me[2], me3 = me[3];
@@ -79,10 +82,10 @@ class Frustum {
 
 	/**
 	 * Check if the frustum collides with a sphere.
-	 * @param {Sphere} sphere Sphere to check.
-	 * @returns {Boolean} True if point is in frustum, false otherwise.
+	 * @param sphere Sphere to check.
+	 * @returns True if point is in frustum, false otherwise.
 	 */
-	collideSphere(sphere) {
+	public collideSphere(sphere: Sphere): boolean {
 		const planes = this.planes;
 		const center = sphere.center;
 		const negRadius = - sphere.radius;
@@ -97,10 +100,10 @@ class Frustum {
 
 	/**
 	 * Check if collide with a box.
-	 * @param {Box} box Box to check.
-	 * @returns {Boolean} True if collide, false otherwise.
+	 * @param box Box to check.
+	 * @returns True if collide, false otherwise.
 	 */
-	collideBox(box) {
+	public collideBox(box: Box): boolean {
 		const planes = this.planes;
 		for(let i = 0; i < 6; i++) {
 			const plane = planes[i];
@@ -119,10 +122,10 @@ class Frustum {
 
 	/**
 	 * Check if the frustum contains a point.
-	 * @param {Vector3} point Vector to check.
-	 * @returns {Boolean} True if point is in frustum, false otherwise.
+	 * @param point Vector to check.
+	 * @returns True if point is in frustum, false otherwise.
 	 */
-	containsPoint(point) {
+	public containsPoint(point: Vector3): boolean {
 		const planes = this.planes;
 		for(let i = 0; i < 6; i++) {
 			if(planes[i].distanceToPoint(point) < 0) {
@@ -134,14 +137,11 @@ class Frustum {
 
 	/**
 	 * Clone this frustum.
-	 * @returns {Frustum} Cloned frustum.
+	 * @returns Cloned frustum.
 	 */
-	clone() {
-		return new this.constructor().copy(this);
+	public clone(): Frustum {
+		return new Frustum().copy(this);
 	}
 }
 
 const _vector = /*@__PURE__*/ new Vector3();
-
-// export the frustum class
-export default Frustum;

@@ -53,7 +53,7 @@ export default abstract class Asset {
 	 * Notify all waiting callbacks that this asset is ready.
 	 * @private
 	 */
-	private _notifyReady(): void {
+	protected _notifyReady(): void {
 		if(this._waitingCallbacks) {
 			for(let i = 0; i < this._waitingCallbacks.length; ++i) {
 				this._waitingCallbacks[i](this);
@@ -94,5 +94,5 @@ export default abstract class Asset {
 	/**
 	 * Destroy the asset, freeing any allocated resources in the process.
 	 */
-	public abstract destroy(): Promise<void>;
+	public abstract destroy(): void;
 }

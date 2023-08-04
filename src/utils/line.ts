@@ -3,40 +3,43 @@ import Vector2 from "./vector2";
 /**
  * Implement a simple 2d Line.
  */
-class Line {
+export default class Line {
+	public from: Vector2;
+	public to: Vector2;
+
 	/**
 	 * Create the Line.
-	 * @param {Vector2} from Line start position.
-	 * @param {Vector2} to Line end position.
+	 * @param from Line start position.
+	 * @param to Line end position.
 	 */
-	constructor(from, to) {
+	public constructor(from: Vector2, to: Vector2) {
 		this.from = from.clone();
 		this.to = to.clone();
 	}
 
 	/**
 	 * Return a clone of this line.
-	 * @returns {Line} Cloned line.
+	 * @returns Cloned line.
 	 */
-	clone() {
+	public clone(): Line {
 		return new Line(this.from, this.to);
 	}
 
 	/**
 	 * Create Line from a dictionary.
-	 * @param {*} data Dictionary with {from, to}.
-	 * @returns {Line} Newly created line.
+	 * @param data Dictionary with {from, to}.
+	 * @returns Newly created line.
 	 */
-	static fromDict(data) {
+	public static fromDict(data: { from: Vector2, to: Vector2; }): Line {
 		return new Line(Vector2.fromDict(data.from || {}), Vector2.fromDict(data.to || {}));
 	}
 
 	/**
 	 * Convert to dictionary.
-	 * @param {Boolean} minimized If true, will not include keys that their values are 0. You can use fromDict on minimized dicts.
-	 * @returns {*} Dictionary with {from, to}.
+	 * @param minimized If true, will not include keys that their values are 0. You can use fromDict on minimized dicts.
+	 * @returns Dictionary with {from, to}.
 	 */
-	toDict(minimized) {
+	public toDict(minimized: boolean): { from: Vector2, to: Vector2; } {
 		if(minimized) {
 			const ret = {};
 			if(this.from.x || this.from.y) { ret.from = this.from.toDict(true); }
@@ -48,11 +51,11 @@ class Line {
 
 	/**
 	 * Check if this circle contains a Vector2.
-	 * @param {Vector2} p Point to check.
-	 * @param {Number} threshold Distance between point and line to consider as intersecting. Default is 0.5, meaning it will treat point and line as round integers (sort-of).
-	 * @returns {Boolean} if point is contained within the circle.
+	 * @param p Point to check.
+	 * @param threshold Distance between point and line to consider as intersecting. Default is 0.5, meaning it will treat point and line as round integers (sort-of).
+	 * @returns if point is contained within the circle.
 	 */
-	containsVector(p, threshold) {
+	public containsVector(p: Vector2, threshold: number): boolean {
 		let A = this.from;
 		let B = this.to;
 		let distance = Vector2.distance;
@@ -62,10 +65,10 @@ class Line {
 
 	/**
 	 * Check if this line collides with another line.
-	 * @param {Line} other Other line to test collision with.
-	 * @returns {Boolean} True if lines collide, false otherwise.
+	 * @param other Other line to test collision with.
+	 * @returns True if lines collide, false otherwise.
 	 */
-	collideLine(other) {
+	public collideLine(other: Line): boolean {
 		let p0 = this.from;
 		let p1 = this.to;
 		let p2 = other.from;
@@ -90,10 +93,10 @@ class Line {
 
 	/**
 	 * Get the shortest distance between this line segment and a vector.
-	 * @param {Vector2} v Vector to get distance to.
-	 * @returns {Number} Shortest distance between line and vector.
+	 * @param v Vector to get distance to.
+	 * @returns Shortest distance between line and vector.
 	 */
-	distanceToVector(v) {
+	public distanceToVector(v: Vector2): number {
 		let x1 = this.from.x;
 		let x2 = this.to.x;
 		let y1 = this.from.y;
@@ -131,26 +134,23 @@ class Line {
 	}
 
 	/**
-	 * Check if equal to another circle.
-	 * @param {Circle} other Other circle to compare to.
-	 * @returns {Boolean} True if circles are equal, false otherwise.
+	 * Check if equal to another line.
+	 * @param other Other line to compare to.
+	 * @returns True if lines are equal, false otherwise.
 	 */
-	equals(other) {
+	public equals(other: Line): boolean {
 		return (this === other) ||
 			(other && (other.constructor === this.constructor) && this.from.equals(other.from) && this.to.equals(other.to));
 	}
 
 	/**
 	 * Lerp between two lines.
-	 * @param {Line} l1 First lines.
-	 * @param {Line} l2 Second lines.
-	 * @param {Number} a Lerp factor (0.0 - 1.0).
-	 * @returns {Line} result lines.
+	 * @param l1 First lines.
+	 * @param l2 Second lines.
+	 * @param a Lerp factor (0.0 - 1.0).
+	 * @returns result lines.
 	 */
-	static lerp(l1, l2, a) {
+	public static lerp(l1: Line, l2: Line, a: number): Line {
 		return new Line(Vector2.lerp(l1.from, l2.from, a), Vector2.lerp(l1.to, l2.to, a));
 	}
 }
-
-// export the line class
-export default Line;

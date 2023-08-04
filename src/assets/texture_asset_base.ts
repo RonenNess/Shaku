@@ -7,7 +7,7 @@ import { TextureWrapMode } from "../gfx/texture_wrap_modes";
 /**
  * Base type for all texture asset types.
  */
-class TextureAssetBase extends Asset {
+export default class TextureAssetBase extends Asset {
 	/** @inheritdoc */
 	constructor(url) {
 		super(url);
@@ -88,6 +88,3 @@ class TextureAssetBase extends Asset {
 		throw new Error("Not Implemented!");
 	}
 }
-
-// export the asset type.
-export default TextureAssetBase;

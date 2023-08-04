@@ -4,125 +4,113 @@
  * Storage adapter class that implement access to a storage device.
  * Used by the Storage utilitiy.
  */
-class StorageAdapter {
+export default interface StorageAdapter {
 	/**
 	 * Return if this storage adapter is persistent storage or not.
-	 * @returns {Boolean} True if this storage type is persistent.
+	 * @returns True if this storage type is persistent.
 	 */
-	get persistent() {
-		throw new Error("Not Implemented.");
-	}
+	get persistent(): boolean;
 
 	/**
 	 * Check if this adapter is OK to be used.
 	 * For example, an adapter for localStorage will make sure it exists and not null.
-	 * @returns {Boolean} True if storage adapter is valid to be used.
+	 * @returns True if storage adapter is valid to be used.
 	 */
-	isValid() {
-		throw new Error("Not Implemented.");
-	}
+	isValid(): boolean;
 
 	/**
 	 * Check if a key exists.
-	 * @param {String} key Key to check.
-	 * @returns {Boolean} True if key exists in storage.
+	 * @param key Key to check.
+	 * @returns True if key exists in storage.
 	 */
-	exists(key) {
-		throw new Error("Not Implemented.");
-	}
+	exists(key: string): boolean;
 
 	/**
 	 * Set value.
-	 * @param {String} key Key to set.
-	 * @param {String} value Value to set.
+	 * @param key Key to set.
+	 * @param value Value to set.
 	 */
-	setItem(key, value) {
-		throw new Error("Not Implemented.");
-	}
+	setItem(key: string, value: string): void;
 
 	/**
 	 * Get value.
-	 * @param {String} key Key to get.
-	 * @returns {String} Value or null if not set.
+	 * @param key Key to get.
+	 * @returns Value or null if not set.
 	 */
-	getItem(key) {
-		throw new Error("Not Implemented.");
-	}
+	getItem(key: string): string | null;
 
 	/**
 	 * Delete value.
 	 * @param {String} key Key to delete.
 	 */
-	deleteItem(key) {
-		throw new Error("Not Implemented.");
-	}
+	deleteItem(key: string): void;
 
 	/**
 	 * Clear all values from this storage device.
-	 * @param {String} prefix Storage keys prefix.
+	 * @param prefix Storage keys prefix.
 	 */
-	clear(prefix) {
-		throw new Error("Not Implemented.");
-	}
+	clear(prefix: string): void;
 }
 
 /**
  * Implement simple memory storage adapter.
  */
-class StorageAdapterMemory {
+class StorageAdapterMemory implements StorageAdapter {
+	private _data: Record<string, string>;
+
 	/**
 	 * Create the memory storage adapter.
 	 */
-	constructor() {
+	public constructor() {
 		this._data = {};
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	get persistent() {
+	public get persistent(): boolean {
 		return false;
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	isValid() {
+	public isValid(): boolean {
 		return true;
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	exists(key) {
+	public exists(key: string): boolean {
 		return Boolean(this._data[key]);
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	setItem(key, value) {
+	public setItem(key: string, value: string): void {
 		this._data[key] = value;
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	getItem(key) {
+	public getItem(key: string): string | null {
 		return this._data[key];
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	deleteItem(key) {
+	public deleteItem(key: string): void {
 		delete this._data[key];
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	clear(prefix) {
+	public clear(prefix: string): void {
 		for(let key in this._data) {
 			if(key.indexOf(prefix) === 0) {
 				delete this._data[key];
@@ -130,23 +118,24 @@ class StorageAdapterMemory {
 		}
 	}
 }
+
 StorageAdapter.memory = StorageAdapterMemory;
 
 /**
  * Implement simple localstorage storage adapter.
  */
-class StorageAdapterLocalStorage {
+class StorageAdapterLocalStorage implements StorageAdapter {
 	/**
 	 * @inheritdoc
 	 */
-	get persistent() {
+	public get persistent(): boolean {
 		return true;
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	isValid() {
+	public isValid(): boolean {
 		try {
 			return (typeof localStorage !== "undefined") && (localStorage !== null);
 		}
@@ -158,35 +147,35 @@ class StorageAdapterLocalStorage {
 	/**
 	 * @inheritdoc
 	 */
-	exists(key) {
+	public exists(key: string): boolean {
 		return localStorage.getItem(key) !== null;
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	setItem(key, value) {
+	public setItem(key: string, value: string): void {
 		localStorage.setItem(key, value);
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	getItem(key) {
+	public getItem(key: string): string | null {
 		return localStorage.getItem(key);
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	deleteItem(key) {
+	public deleteItem(key: string): void {
 		localStorage.deleteItem(key);
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	clear(prefix) {
+	public clear(prefix: string): void {
 		for(let i = 0; i < localStorage.length; i++) {
 			const key = localStorage.key(i);
 			if(key.indexOf(prefix) === 0) {
@@ -200,18 +189,18 @@ StorageAdapter.localStorage = StorageAdapterLocalStorage;
 /**
  * Implement simple sessionStorage storage adapter.
  */
-class StorageAdapterSessionStorage {
+class StorageAdapterSessionStorage implements StorageAdapter {
 	/**
 	 * @inheritdoc
 	 */
-	get persistent() {
+	public get persistent(): boolean {
 		return false;
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	isValid() {
+	public isValid(): boolean {
 		try {
 			return (typeof sessionStorage !== "undefined") && (sessionStorage !== null);
 		}
@@ -223,35 +212,35 @@ class StorageAdapterSessionStorage {
 	/**
 	 * @inheritdoc
 	 */
-	exists(key) {
+	public exists(key: string): boolean {
 		return sessionStorage.getItem(key) !== null;
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	setItem(key, value) {
+	public setItem(key: string, value: string): void {
 		sessionStorage.setItem(key, value);
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	getItem(key) {
+	public getItem(key: string): string | null {
 		return sessionStorage.getItem(key);
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	deleteItem(key) {
+	public deleteItem(key: string): void {
 		sessionStorage.deleteItem(key);
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	clear(prefix) {
+	public clear(prefix: string): void {
 		for(let i = 0; i < sessionStorage.length; i++) {
 			const key = sessionStorage.key(i);
 			if(key.indexOf(prefix) === 0) {
@@ -261,6 +250,3 @@ class StorageAdapterSessionStorage {
 	}
 }
 StorageAdapter.sessionStorage = StorageAdapterSessionStorage;
-
-// export the storage adapter class
-export default StorageAdapter;

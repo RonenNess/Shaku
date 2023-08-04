@@ -12,7 +12,7 @@ var gl = null;
 /**
  * A texture atlas we can build at runtime to combine together multiple textures.
  */
-class TextureAtlasAsset extends Asset {
+export default class TextureAtlasAsset extends Asset {
 	/** @inheritdoc */
 	constructor(url) {
 		super(url);
@@ -254,6 +254,3 @@ async function loadAllSources(sources) {
 		resolve(images);
 	});
 }
-
-// export the asset type.
-export default TextureAtlasAsset;

@@ -1,23 +1,28 @@
-
-
 // import some utilities
-
 import MathHelper from "./math_helper";
 
 const lerp = MathHelper.lerp;
 
 // do fade
-function fade(t) {
+function fade(t: number): number {
 	return t * t * t * (t * (t * 6 - 15) + 10);
 }
 
-// store gradient value
-function Grad(x, y, z) {
-	this.x = x; this.y = y; this.z = z;
+class Grad {
+	public x: number;
+	public y: number;
+	public z: number;
+
+	public constructor(x: number, y: number, z: number) {
+		this.x = x;
+		this.y = y;
+		this.z = z;
+	}
+
+	public dot2(x: number, y: number): number {
+		return this.x * x + this.y * y;
+	}
 }
-Grad.prototype.dot2 = function(x, y) {
-	return this.x * x + this.y * y;
-};
 
 // const premutations
 const p = [151, 160, 137, 91, 90, 15,
@@ -39,21 +44,24 @@ const p = [151, 160, 137, 91, 90, 15,
  * Based on code from noisejs by Stefan Gustavson.
  * https://github.com/josephg/noisejs/blob/master/perlin.js
  */
-class Perlin {
+export default class Perlin {
+	private _perm: number[];
+	private _gradP: Grad[];
+
 	/**
 	 * Create the perlin noise generator.
-	 * @param {Number} seed Seed for perlin noise, or undefined for random.
+	 * @param seed Seed for perlin noise, or undefined for random.
 	 */
-	constructor(seed) {
+	constructor(seed?: number) {
 		if(seed === undefined) { seed = Math.random(); }
 		this.seed(seed);
 	}
 
 	/**
 	 * Set the perlin noise seed.
-	 * @param {Number} seed New seed value. May be either a decimal between 0 to 1, or an unsigned short between 0 to 65536.
+	 * @param seed New seed value. May be either a decimal between 0 to 1, or an unsigned short between 0 to 65536.
 	 */
-	seed(seed) {
+	public seed(seed: number) {
 		// scale the seed out
 		if(seed > 0 && seed < 1) {
 			seed *= 65536;
@@ -92,13 +100,13 @@ class Perlin {
 
 	/**
 	 * Generate a perlin noise value for x,y coordinates.
-	 * @param {Number} x X coordinate to generate perlin noise for.
-	 * @param {Number} y Y coordinate to generate perlin noise for.
-	 * @param {Number} blurDistance Distance to take neighbors to blur returned value with. Defaults to 0.25.
-	 * @param {Number} contrast Optional contrast factor.
-	 * @returns {Number} Perlin noise value for given point.
+	 * @param x X coordinate to generate perlin noise for.
+	 * @param y Y coordinate to generate perlin noise for.
+	 * @param blurDistance Distance to take neighbors to blur returned value with. Defaults to 0.25.
+	 * @param contrast Optional contrast factor.
+	 * @returns Perlin noise value for given point.
 	 */
-	generateSmooth(x, y, blurDistance, contrast) {
+	public generateSmooth(x: number, y: number, blurDistance: number, contrast: number): number {
 		if(blurDistance === undefined) {
 			blurDistance = 0.25;
 		}
@@ -111,12 +119,12 @@ class Perlin {
 
 	/**
 	 * Generate a perlin noise value for x,y coordinates.
-	 * @param {Number} x X coordinate to generate perlin noise for.
-	 * @param {Number} y Y coordinate to generate perlin noise for.
-	 * @param {Number} contrast Optional contrast factor.
-	 * @returns {Number} Perlin noise value for given point, ranged from 0 to 1.
+	 * @param x X coordinate to generate perlin noise for.
+	 * @param y Y coordinate to generate perlin noise for.
+	 * @param contrast Optional contrast factor.
+	 * @returns Perlin noise value for given point, ranged from 0 to 1.
 	 */
-	generate(x, y, contrast) {
+	public generate(x: number, y: number, contrast: number): number {
 		// default contrast
 		if(contrast === undefined) {
 			contrast = 1;
@@ -151,6 +159,3 @@ class Perlin {
 			fade(y)) + 0.5, 1);
 	};
 }
-
-// export the perlin generator
-export default Perlin;

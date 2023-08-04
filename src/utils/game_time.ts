@@ -1,13 +1,18 @@
-
-
 /**
  * Class to hold current game time, both elapse and delta from last frame.
  */
-class GameTime {
+export default class GameTime {
+	public timestamp: number;
+	public deltaTime: { milliseconds: number; seconds: number; };
+	public elapsedTime: { milliseconds: number; seconds: number; };
+	public delta: number | null;
+	public elapsed: number;
+	public rawTimestamp: number;
+
 	/**
 	 * create the gametime object with current time.
 	 */
-	constructor() {
+	public constructor() {
 		/**
 		 * Current timestamp
 		 */
@@ -56,7 +61,7 @@ class GameTime {
 	 * Called automatically from 'update'.
 	 * @private
 	 */
-	static updateRawData() {
+	public static updateRawData() {
 		_rawTimestampMs = getAccurateTimestampMs();
 	}
 
@@ -64,7 +69,7 @@ class GameTime {
 	 * Update game time.
 	 * @private
 	 */
-	static update() {
+	public static update() {
 		// update raw data
 		GameTime.updateRawData();
 
@@ -85,16 +90,16 @@ class GameTime {
 	/**
 	 * Get raw timestamp in milliseconds.
 	 * This value updates only as long as you run Shaku frames, and continue to update even if game is paused.
-	 * @returns {Number} raw timestamp in milliseconds.
+	 * @returns raw timestamp in milliseconds.
 	 */
-	static rawTimestamp() {
+	public static rawTimestamp(): number {
 		return _rawTimestampMs;
 	}
 
 	/**
 	 * Reset elapsed and delta time.
 	 */
-	static reset() {
+	public static reset() {
 		_prevTime = null;
 		_currDelta = 0;
 		_currElapsed = 0;
@@ -103,7 +108,7 @@ class GameTime {
 	/**
 	 * Reset current frame's delta time.
 	 */
-	static resetDelta() {
+	public static resetDelta() {
 		_prevTime = null;
 		_currDelta = 0;
 	}
@@ -113,7 +118,7 @@ class GameTime {
 const gotPerformance = (typeof performance !== 'undefined') && performance.now;
 
 // get most accurate timestamp in milliseconds.
-function getAccurateTimestampMs() {
+function getAccurateTimestampMs(): number {
 	if(gotPerformance) {
 		return performance.now();
 	}
@@ -121,12 +126,9 @@ function getAccurateTimestampMs() {
 }
 
 // previous time (to calculate delta).
-var _prevTime = null;
+var _prevTime: number | null = null;
 
 // current delta and elapsed
 var _currDelta = 0;
 var _currElapsed = 0;
 var _rawTimestampMs = getAccurateTimestampMs();
-
-// export the GameTime class.
-export default GameTime;

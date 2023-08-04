@@ -4,40 +4,43 @@ import Vector2 from "./vector2";
 /**
  * Implement a simple 2d Circle.
  */
-class Circle {
+export default class Circle {
+	public center: Vector2;
+	public radius: number;
+
 	/**
 	 * Create the Circle.
-	 * @param {Vector2} center Circle center position.
-	 * @param {Number} radius Circle radius.
+	 * @param center Circle center position.
+	 * @param radius Circle radius.
 	 */
-	constructor(center, radius) {
+	public constructor(center: Vector2, radius: number) {
 		this.center = center.clone();
 		this.radius = radius;
 	}
 
 	/**
 	 * Return a clone of this circle.
-	 * @returns {Circle} Cloned circle.
+	 * @returns Cloned circle.
 	 */
-	clone() {
+	public clone(): Circle {
 		return new Circle(this.center, this.radius);
 	}
 
 	/**
 	 * Check if this circle contains a Vector2.
-	 * @param {Vector2} p Point to check.
-	 * @returns {Boolean} if point is contained within the circle.
+	 * @param p Point to check.
+	 * @returns if point is contained within the circle.
 	 */
-	containsVector(p) {
+	public containsVector(p: Vector2): boolean {
 		return this.center.distanceTo(p) <= this.radius;
 	}
 
 	/**
 	 * Check if equal to another circle.
-	 * @param {Circle} other Other circle to compare to.
-	 * @returns {Boolean} True if circles are equal, false otherwise.
+	 * @param other Other circle to compare to.
+	 * @returns True if circles are equal, false otherwise.
 	 */
-	equals(other) {
+	public equals(other: Circle): boolean {
 		return (other === this) ||
 			(other && (other.constructor === this.constructor) &&
 				this.center.equals(other.center) && (this.radius == other.radius));
@@ -45,19 +48,19 @@ class Circle {
 
 	/**
 	 * Create circle from a dictionary.
-	 * @param {*} data Dictionary with {center, radius}.
-	 * @returns {Circle} Newly created circle.
+	 * @param data Dictionary with {center, radius}.
+	 * @returns Newly created circle.
 	 */
-	static fromDict(data) {
+	public static fromDict(data: { center: Vector2, radius: number; }): Circle {
 		return new Circle(Vector2.fromDict(data.center || {}), data.radius || 0);
 	}
 
 	/**
 	 * Convert to dictionary.
-	 * @param {Boolean} minimized If true, will not include keys that their values are 0. You can use fromDict on minimized dicts.
-	 * @returns {*} Dictionary with {center, radius}.
+	 * @param minimized If true, will not include keys that their values are 0. You can use fromDict on minimized dicts.
+	 * @returns Dictionary with {center, radius}.
 	 */
-	toDict(minimized) {
+	public toDict(minimized: boolean): { center: Vector2, radius: number; } {
 		if(minimized) {
 			const ret = {};
 			if(this.radius) { ret.radius = this.radius; }
@@ -69,16 +72,13 @@ class Circle {
 
 	/**
 	 * Lerp between two circle.
-	 * @param {Circle} p1 First circle.
-	 * @param {Circle} p2 Second circle.
-	 * @param {Number} a Lerp factor (0.0 - 1.0).
-	 * @returns {Circle} result circle.
+	 * @param p1 First circle.
+	 * @param p2 Second circle.
+	 * @param a Lerp factor (0.0 - 1.0).
+	 * @returns result circle.
 	 */
-	static lerp(p1, p2, a) {
+	public static lerp(p1: Circle, p2: Circle, a: number): Circle {
 		let lerpScalar = MathHelper.lerp;
 		return new Circle(Vector2.lerp(p1.center, p2.center, a), lerpScalar(p1.radius, p2.radius, a));
 	}
 }
-
-// export the circle class
-export default Circle;

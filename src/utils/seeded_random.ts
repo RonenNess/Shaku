@@ -1,25 +1,25 @@
-
-
 /**
  * Class to generate random numbers with seed.
  */
-class SeededRandom {
+export default class SeededRandom {
+	public seed: number;
+
 	/**
 	 * Create the seeded random object.
-	 * @param {Number} seed Seed to start from. If not provided, will use 0.
+	 * @param seed Seed to start from. If not provided, will use 0.
 	 */
-	constructor(seed) {
+	public constructor(seed?: number) {
 		if(seed === undefined) { seed = 0; }
 		this.seed = seed;
 	}
 
 	/**
 	 * Get next random value.
-	 * @param {Number} min Optional min value. If max is not provided, this will be used as max.
-	 * @param {Number} max Optional max value.
-	 * @returns {Number} A randomly generated value.
+	 * @param min Optional min value. If max is not provided, this will be used as max.
+	 * @param max Optional max value.
+	 * @returns A randomly generated value.
 	 */
-	random(min, max) {
+	public random(min?: number, max?: number): number {
 		// generate next value
 		this.seed = (this.seed * 9301 + 49297) % 233280;
 		let rnd = this.seed / 233280;
@@ -38,13 +38,10 @@ class SeededRandom {
 
 	/**
 	 * Pick a random value from array.
-	 * @param {Array} options Options to pick random value from.
-	 * @returns {*} Random value from options array.
+	 * @param options Options to pick random value from.
+	 * @returns Random value from options array.
 	 */
-	pick(options) {
+	public pick<T>(options: T[]): T {
 		return options[Math.floor(this.random(options.length))];
 	}
 }
-
-// export the seeded random class.
-export default SeededRandom;

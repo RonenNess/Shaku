@@ -1,5 +1,3 @@
-
-
 const _autoAnimators = [];
 
 /**

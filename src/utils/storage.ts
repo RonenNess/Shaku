@@ -3,15 +3,20 @@ import StorageAdapter from "./storage_adapter";
 /**
  * A thin wrapper layer around storage utility.
  */
-class Storage {
+export default class Storage {
+	private _adapter: StorageAdapter | null;
+	private _keysPrefix: string;
+	public valuesAsBase64: boolean;
+	public keysAsBase64: boolean;
+
 	/**
 	 * Create the storage.
-	 * @param {Array<StorageAdapter>} adapters List of storage adapters to pick from. Will use the first option returning 'isValid()' = true.
-	 * @param {String} prefix Optional prefix to add to all keys under this storage instance.
-	 * @param {Boolean} valuesAsBase64 If true, will encode and decode data as base64.
-	 * @param {Boolean} keysAsBase64 If true, will encode and decode keys as base64.
+	 * @param adapters List of storage adapters to pick from. Will use the first option returning 'isValid()' = true.
+	 * @param prefix Optional prefix to add to all keys under this storage instance.
+	 * @param valuesAsBase64 If true, will encode and decode data as base64.
+	 * @param keysAsBase64 If true, will encode and decode keys as base64.
 	 */
-	constructor(adapters, prefix, valuesAsBase64, keysAsBase64) {
+	public constructor(adapters: StorageAdapter[], prefix: string, valuesAsBase64: boolean, keysAsBase64: boolean) {
 		// default adapters
 		adapters = adapters || Storage.defaultAdapters;
 
@@ -39,27 +44,27 @@ class Storage {
 
 	/**
 	 * Return if this storage adapter is persistent storage or not.
-	 * @returns {Boolean} True if this storage type is persistent.
+	 * @returns True if this storage type is persistent.
 	 */
-	get persistent() {
+	public get persistent(): boolean {
 		return this.isValid && this._adapter.persistent;
 	}
 
 	/**
 	 * Check if this storage instance has a valid adapter.
-	 * @returns {Boolean} True if found a valid adapter to use, false otherwise.
+	 * @returns True if found a valid adapter to use, false otherwise.
 	 */
-	get isValid() {
+	public get isValid(): boolean {
 		return Boolean(this._adapter);
 	}
 
 	/**
 	 * Convert key to string and add prefix if needed.
 	 * @private
-	 * @param {String} key Key to normalize.
-	 * @returns {String} Normalized key.
+	 * @param key Key to normalize.
+	 * @returns Normalized key.
 	 */
-	normalizeKey(key) {
+	public normalizeKey(key: string): string {
 		key = this._keysPrefix + key.toString();
 		if(this.keysAsBase64) {
 			key = btoa(key);
@@ -69,10 +74,10 @@ class Storage {
 
 	/**
 	 * Check if a key exists.
-	 * @param {String} key Key to check.
-	 * @returns {Boolean} True if key exists in storage.
+	 * @param key Key to check.
+	 * @returns True if key exists in storage.
 	 */
-	exists(key) {
+	public exists(key: string): boolean {
 		if(typeof key !== 'string') { throw new Error("Key must be a string!"); }
 		key = this.normalizeKey(key);
 		return this._adapter.exists(key);
@@ -82,7 +87,7 @@ class Storage {
 	 * Set value.
 	 * @private
 	 */
-	#_set(key, value) {
+	#_set(key: string, value: string): void {
 		// json stringify
 		value = JSON.stringify({
 			data: value,
@@ -104,7 +109,7 @@ class Storage {
 	 * Get value.
 	 * @private
 	 */
-	#_get(key) {
+	#_get(key: string): object | null {
 		// get value
 		var value = this._adapter.getItem(key);
 
@@ -137,10 +142,10 @@ class Storage {
 
 	/**
 	 * Set value.
-	 * @param {String} key Key to set.
-	 * @param {String} value Value to set.
+	 * @param key Key to set.
+	 * @param value Value to set.
 	 */
-	setItem(key, value) {
+	public setItem(key: string, value: string): void {
 		// sanity and normalize key
 		if(typeof key !== 'string') { throw new Error("Key must be a string!"); }
 		key = this.normalizeKey(key);
@@ -151,10 +156,10 @@ class Storage {
 
 	/**
 	 * Get value.
-	 * @param {String} key Key to get.
-	 * @returns {String} Value or null if not set.
+	 * @param key Key to get.
+	 * @returns Value or null if not set.
 	 */
-	getItem(key) {
+	public getItem(key: string): object | null {
 		// sanity and normalize key
 		if(typeof key !== 'string') { throw new Error("Key must be a string!"); }
 		key = this.normalizeKey(key);
@@ -165,28 +170,28 @@ class Storage {
 
 	/**
 	 * Get value and JSON parse it.
-	 * @param {String} key Key to get.
-	 * @returns {*} Value as a dictionary object or null if not set.
+	 * @param key Key to get.
+	 * @returns Value as a dictionary object or null if not set.
 	 */
-	getJson(key) {
+	public getJson(key: string): object | null {
 		return this.getItem(key) || null;
 	}
 
 	/**
 	 * Set value as JSON.
-	 * @param {String} key Key to set.
-	 * @param {*} value Value to set as a dictionary.
+	 * @param key Key to set.
+	 * @param value Value to set as a dictionary.
 	 */
-	setJson(key, value) {
+	public setJson(key: string, value: object): void {
 		key = this.normalizeKey(key);
 		this.#_set(key, value);
 	}
 
 	/**
 	 * Delete value.
-	 * @param {String} key Key to delete.
+	 * @param key Key to delete.
 	 */
-	deleteItem(key) {
+	public deleteItem(key: string): void {
 		if(typeof key !== 'string') { throw new Error("Key must be a string!"); }
 		key = this.normalizeKey(key);
 		this._adapter.deleteItem(key);
@@ -195,7 +200,7 @@ class Storage {
 	/**
 	 * Clear all values from this storage instance, based on prefix + adapter type.
 	 */
-	clear() {
+	public clear(): void {
 		this._adapter.clear(this._keysPrefix);
 	}
 }
@@ -203,7 +208,8 @@ class Storage {
 /**
  * Default adapters to use when no adapters list is provided.
  */
-Storage.defaultAdapters = [new StorageAdapter.localStorage(), new StorageAdapter.sessionStorage(), new StorageAdapter.memory()];
-
-// export the storage class
-export default Storage;
+Storage.defaultAdapters = [
+	new StorageAdapter.localStorage(),
+	new StorageAdapter.sessionStorage(),
+	new StorageAdapter.memory()
+];

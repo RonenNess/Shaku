@@ -5,12 +5,16 @@ import CollisionShape from "./shape";
 /**
  * Collision circle class.
  */
-class CircleShape extends CollisionShape {
+export default class CircleShape extends CollisionShape {
+	private _circle: Circle;
+	private _position: unknown;
+	private _boundingBox: Rectangle;
+
 	/**
 	 * Create the collision shape.
-	 * @param {Circle} circle the circle shape.
+	 * @param circle the circle shape.
 	 */
-	constructor(circle) {
+	public constructor(circle: Circle) {
 		super();
 		this.setShape(circle);
 	}
@@ -18,15 +22,15 @@ class CircleShape extends CollisionShape {
 	/**
 	 * @inheritdoc
 	 */
-	get shapeId() {
+	public get shapeId() {
 		return "circle";
 	}
 
 	/**
 	 * Set this collision shape from circle.
-	 * @param {Circle} circle Circle shape.
+	 * @param circle Circle shape.
 	 */
-	setShape(circle) {
+	public setShape(circle: Circle) {
 		this._circle = circle;
 		this._position = circle.center;
 		this._boundingBox = new Rectangle(circle.center.x - circle.radius, circle.center.y - circle.radius, circle.radius * 2, circle.radius * 2);
@@ -68,6 +72,3 @@ class CircleShape extends CollisionShape {
 		if(needToBegin) { shapesBatch.end(); }
 	}
 }
-
-// export collision shape class
-export default CircleShape;

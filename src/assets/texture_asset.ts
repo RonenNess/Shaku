@@ -13,7 +13,7 @@ var gl = null;
  * A loadable texture asset.
  * This asset type loads an image from URL or source, and turn it into a texture.
  */
-class TextureAsset extends TextureAssetBase {
+export default class TextureAsset extends TextureAssetBase {
 	/** @inheritdoc */
 	constructor(url) {
 		super(url);
@@ -337,6 +337,3 @@ class TextureAsset extends TextureAssetBase {
 function isPowerOf2(value) {
 	return (value & (value - 1)) == 0;
 }
-
-// export the asset type.
-export default TextureAsset;

@@ -9,7 +9,7 @@ import TextureAsset from "./texture_asset";
  * A MSDF font texture asset, from a pregenerated msdf texture atlas (from msdf-bmfont-xml, for example).
  * This asset uses a signed distance field atlas to render characters as sprites at high res.
  */
-class MsdfFontTextureAsset extends FontTextureAsset {
+export default class MsdfFontTextureAsset extends FontTextureAsset {
 	/** @inheritdoc */
 	constructor(url) {
 		super(url);
@@ -127,6 +127,3 @@ class MsdfFontTextureAsset extends FontTextureAsset {
 		this._kernings = null;
 	}
 }
-
-// export the asset type.
-export default MsdfFontTextureAsset;
