@@ -1,8 +1,8 @@
+import { TextureFilterMode } from "../gfx/texture_filter_modes";
 import Vector2 from "../utils/vector2";
 import Asset from "./asset";
 
-const { TextureFilterMode } = require('../gfx/texture_filter_modes');
-const { TextureWrapMode } = require('../gfx/texture_wrap_modes');
+import { TextureWrapMode } from "../gfx/texture_wrap_modes";
 
 /**
  * Base type for all texture asset types.

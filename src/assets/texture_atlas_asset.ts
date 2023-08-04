@@ -4,7 +4,7 @@ import Asset from "./asset";
 import TextureAsset from "./texture_asset";
 import TextureInAtlasAsset from "./texture_in_atlas_asset";
 
-const { Rectangle } = require("../utils");
+import { Rectangle } from "../utils";
 
 // the webgl context to use
 var gl = null;

@@ -1,3 +1,3 @@
+import * as gfx from './gfx';
 
-
-export default require('./gfx');
+export default gfx;

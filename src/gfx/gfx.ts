@@ -8,6 +8,7 @@ import Color from "../utils/color";
 import Matrix from "../utils/matrix";
 import Rectangle from "../utils/rectangle";
 import Vector2 from "../utils/vector2";
+import { BlendModes } from "./blend_modes.js";
 import Camera from "./camera";
 import Camera3D from "./camera3d";
 import DrawBatch from "./draw_batches/draw_batch";
@@ -16,12 +17,15 @@ import ShapesBatch from "./draw_batches/shapes_batch";
 import SpriteBatch from "./draw_batches/sprite_batch";
 import SpriteBatch3D from "./draw_batches/sprite_batch_3d";
 import TextSpriteBatch from "./draw_batches/text_batch";
+import { Effect, MsdfFontEffect, ShapesEffect, SpritesEffect, SpritesEffectNoVertexColor, SpritesWithOutlineEffect } from "./effects";
 import Sprites3dEffect from "./effects/sprites_3d";
 import Sprite from "./sprite";
 import SpritesGroup from "./sprites_group";
+import { TextureFilterModes } from "./texture_filter_modes.js";
+import { TextureWrapModes } from "./texture_wrap_modes.js";
 import Vertex from "./vertex";
 
-const _loggggger = _logger.getLogger(gfx); // TODO
+const _loggggger = _logger.getLogger("gfx"); // TODO
 
 
 
@@ -41,14 +45,14 @@ const _loggggger = _logger.getLogger(gfx); // TODO
 
 
 
-const { BlendModes } = require('./blend_modes.js');
 
-const { Effect, SpritesEffect, SpritesEffectNoVertexColor, MsdfFontEffect, ShapesEffect, SpritesWithOutlineEffect } = require('./effects');
 
-const { TextureFilterModes } = require('./texture_filter_modes.js');
-const { TextureWrapModes } = require('./texture_wrap_modes.js');
 
-const { TextAlignment, TextAlignments } = require('./text_alignments.js');
+
+
+
+
+import { TextAlignment, TextAlignments } from "./text_alignments.js";
 
 let _gl = null;
 let _initSettings = { antialias: true, alpha: true, depth: false, premultipliedAlpha: true, desynchronized: false };

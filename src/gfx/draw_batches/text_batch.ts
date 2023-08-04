@@ -3,12 +3,12 @@ import SpritesGroup from "../sprites_group";
 import DrawBatch from "./draw_batch";
 import SpriteBatchBase from "./sprite_batch_base";
 
-const _loggggger = _logger.getLogger(gfx - effect); // TODO
+const _loggggger = _logger.getLogger("gfx - effect"); // TODO
 
 
 
 
-const { Color } = require('../../utils');
+import { Color } from "../../utils";
 
 /**
  * Text sprite batch renderer.

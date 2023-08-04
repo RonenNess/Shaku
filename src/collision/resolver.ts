@@ -2,7 +2,7 @@ import _logger from "../logger.js";
 import CollisionTestResult from "./result";
 import CollisionShape from "./shapes/shape";
 
-const _loggggger = _logger.getLogger(collision); // TODO
+const _loggggger = _logger.getLogger("collision"); // TODO
 
 
 

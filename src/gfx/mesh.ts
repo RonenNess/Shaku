@@ -1,6 +1,6 @@
 
 
-const { Color } = require("../utils");
+import { Color } from "../utils";
 
 /**
  * Class to hold a mesh.

@@ -1,3 +1,3 @@
+import * as sfx from './sfx';
 
-
-export default require('./sfx');
+export default sfx;

@@ -3,12 +3,12 @@ import IManager from "../manager";
 import Vector2 from "../utils/vector2";
 import Gamepad from "./gamepad";
 
-const _loggggger = _logger.getLogger(input); // TODO
+const _loggggger = _logger.getLogger("input"); // TODO
 
 
 
 
-const { MouseButton, MouseButtons, KeyboardKey, KeyboardKeys } = require('./key_codes.js');
+import { KeyboardKey, KeyboardKeys, MouseButton, MouseButtons } from "./key_codes.js";
 
 // get timestamp
 function timestamp() {

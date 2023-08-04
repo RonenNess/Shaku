@@ -1,15 +1,12 @@
-
-
-const { Rectangle } = require('../../utils');
-
 import _logger from "../../logger.js";
+import { Rectangle } from '../../utils';
 import Matrix from "../../utils/matrix";
 import Vector2 from "../../utils/vector2";
 import Vector3 from "../../utils/vector3";
 import Vertex from "../vertex";
 import DrawBatch from "./draw_batch";
 
-const _loggggger = _logger.getLogger(gfx - sprite - batch); // TODO
+const _loggggger = _logger.getLogger("gfx - sprite - batch"); // TODO
 
 
 

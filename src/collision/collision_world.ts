@@ -11,7 +11,7 @@ import CircleShape from "./shapes/circle";
 import PointShape from "./shapes/point";
 import CollisionShape from "./shapes/shape";
 
-const _loggggger = _logger.getLogger(collision); // TODO
+const _loggggger = _logger.getLogger("collision"); // TODO
 
 
 

@@ -1,3 +1,3 @@
+import * as input from './input';
 
-
-export default require('./input');
+export default input;

@@ -4,13 +4,13 @@ import Color from "../../utils/color";
 import Matrix from "../../utils/matrix";
 import Vector2 from "../../utils/vector2";
 
-const _loggggger = _logger.getLogger(gfx - effect); // TODO
+const _loggggger = _logger.getLogger("gfx - effect"); // TODO
 
 
 
 
-const { TextureFilterModes } = require('../texture_filter_modes');
-const { TextureWrapMode, TextureWrapModes } = require('../texture_wrap_modes');
+import { TextureFilterModes } from "../texture_filter_modes";
+import { TextureWrapMode, TextureWrapModes } from "../texture_wrap_modes";
 
 // currently applied effect
 let _currEffect = null;

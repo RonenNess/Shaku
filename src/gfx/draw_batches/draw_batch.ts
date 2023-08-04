@@ -1,12 +1,12 @@
 
 
-const { BlendModes } = require('../blend_modes');
-const { BuffersUsage } = require('./buffers_usage');
+import { BlendModes } from "../blend_modes";
+import { BuffersUsage } from "./buffers_usage";
 
 import _logger from "../../logger.js";
 import Matrix from "../../utils/matrix";
 
-const _loggggger = _logger.getLogger(gfx - draw - batch); // TODO
+const _loggggger = _logger.getLogger("gfx - draw - batch"); // TODO
 
 
 /**

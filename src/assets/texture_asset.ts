@@ -2,7 +2,7 @@ import _logger from "../logger.js";
 import Color from "../utils/color";
 import TextureAssetBase from "./texture_asset_base";
 
-const _loggggger = _logger.getLogger(assets); // TODO
+const _loggggger = _logger.getLogger("assets"); // TODO
 
 
 

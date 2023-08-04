@@ -1,3 +1,3 @@
+import * as collision from './collision';
 
-
-export default require('./collision');
+export default collision;

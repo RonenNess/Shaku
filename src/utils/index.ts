@@ -1,33 +1,55 @@
-
+import Animator from './animator';
+import Box from './box';
+import Circle from './circle';
+import Color from './color';
+import Frustum from './frustum';
+import GameTime from './game_time';
+import ItemsSorter from './items_sorter';
+import Line from './line';
+import MathHelper from './math_helper';
+import Matrix from './matrix';
+import PathFinder from './path_finder';
+import Perlin from './perlin';
+import Plane from './plane';
+import Ray from './ray';
+import Rectangle from './rectangle';
+import SeededRandom from './seeded_random';
+import Sphere from './sphere';
+import Storage from './storage';
+import StorageAdapter from './storage_adapter';
+import TransformationModes from './transform_modes';
+import Transformation from './transformation';
+import Vector2 from './vector2';
+import Vector3 from './vector3';
 
 /**
  * Shaku Utils module.
  * Contains general stuff, utilities and core objects that Shaku uses.
  */
 const Utils = {
-	Vector2: require('./vector2'),
-	Vector3: require('./vector3'),
-	Rectangle: require('./rectangle'),
-	Circle: require('./circle'),
-	Line: require('./line'),
-	Color: require('./color'),
-	Animator: require('./animator'),
-	GameTime: require('./game_time'),
-	MathHelper: require('./math_helper'),
-	SeededRandom: require('./seeded_random'),
-	Perlin: require('./perlin'),
-	Storage: require('./storage'),
-	StorageAdapter: require('./storage_adapter'),
-	PathFinder: require('./path_finder'),
-	Transformation: require('./transformation'),
-	TransformationModes: require('./transform_modes'),
-	ItemsSorter: require('./items_sorter'),
-	Frustum: require('./frustum'),
-	Plane: require('./plane'),
-	Sphere: require('./sphere'),
-	Matrix: require('./matrix'),
-	Box: require('./box'),
-	Ray: require('./ray')
+	Vector2,
+	Vector3,
+	Rectangle,
+	Circle,
+	Line,
+	Color,
+	Animator,
+	GameTime,
+	MathHelper,
+	SeededRandom,
+	Perlin,
+	Storage,
+	StorageAdapter,
+	PathFinder,
+	Transformation,
+	TransformationModes,
+	ItemsSorter,
+	Frustum,
+	Plane,
+	Sphere,
+	Matrix,
+	Box,
+	Ray,
 };
 
 // add a 'isXXX' property to all util objects, for faster alternative to 'instanceof' checks.

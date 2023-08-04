@@ -1,10 +1,15 @@
+import Effect from './effect';
+import MsdfFontEffect from './msdf_font';
+import ShapesEffect from './shapes';
+import SpritesEffect from './sprites';
+import SpritesEffectNoVertexColor from './sprites_no_vertex_color';
+import SpritesWithOutlineEffect from './sprites_with_outline';
 
-
-module.exports = {
-	Effect: require('./effect'),
-	SpritesEffect: require('./sprites'),
-	SpritesEffectNoVertexColor: require('./sprites_no_vertex_color'),
-	SpritesWithOutlineEffect: require('./sprites_with_outline'),
-	ShapesEffect: require('./shapes'),
-	MsdfFontEffect: require('./msdf_font'),
+export default {
+	Effect,
+	SpritesEffect,
+	SpritesEffectNoVertexColor,
+	SpritesWithOutlineEffect,
+	ShapesEffect,
+	MsdfFontEffect,
 };

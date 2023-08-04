@@ -180,7 +180,7 @@ class MathHelper {
 	 * @returns {Vector3} Normal vector, normalized.
 	 */
 	static calculateNormal(v1, v2, v3) {
-		const { Vector3 } = require(".");
+		import { Vector3 } from ".";
 
 		// create vectors between the points
 		var _a = v2.sub(v1);

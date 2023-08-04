@@ -1,6 +1,6 @@
 import _logger from "../logger.js";
 
-const _loggggger = _logger.getLogger(sfx); // TODO
+const _loggggger = _logger.getLogger("sfx"); // TODO
 
 /**
  * A sound effect instance you can play and stop.

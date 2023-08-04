@@ -5,13 +5,13 @@ import Vector3 from "../../utils/vector3";
 import DrawBatch from "./draw_batch";
 import SpriteBatchBase from "./sprite_batch_base";
 
-const _loggggger = _logger.getLogger(gfx - sprite - batch); // TODO
+const _loggggger = _logger.getLogger("gfx - sprite - batch"); // TODO
 
 
 
 
 
-const { Rectangle } = require('../../utils');
+import { Rectangle } from "../../utils";
 
 /**
  * Sprite batch renderer.

@@ -10,7 +10,7 @@ import PointShape from "./shapes/point";
 import RectangleShape from "./shapes/rectangle";
 import TilemapShape from "./shapes/tilemap";
 
-const _loggggger = _logger.getLogger(collision); // TODO
+const _loggggger = _logger.getLogger("collision"); // TODO
 
 
 

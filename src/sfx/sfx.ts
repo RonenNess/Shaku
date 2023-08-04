@@ -4,7 +4,7 @@ import IManager from "../manager";
 import SoundInstance from "./sound_instance";
 import SoundMixer from "./sound_mixer";
 
-const _loggggger = _logger.getLogger(sfx); // TODO
+const _loggggger = _logger.getLogger("sfx"); // TODO
 
 
 
