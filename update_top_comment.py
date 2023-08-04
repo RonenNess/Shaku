@@ -38,7 +38,7 @@ def process_files(root, files, template):
             content = replaceTextBetween(content, ' * |-- copyright and license --|', ' * |-- end copyright and license --|', to_push)
 
             open(file_path, 'w').write(content)
-    
+
         else:
             missing.append(file_path)
 
