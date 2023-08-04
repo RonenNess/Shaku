@@ -1,11 +1,20 @@
 import * as esbuild from "esbuild";
 
+const shaderPlugin = {
+
+};
+
 const browserIIFE = () => esbuild.build({
 	entryPoints: ["src/index.ts"],
-	bundle: true,
 	outfile: "dist/shaku.js",
-	platform: "browser",
+	format: "iife",
+	globalName: "Shaku",
+	bundle: true,
 	minify: true,
+	loader: {
+		".vert": "text",
+		".frag": "text",
+	},
 });
 
 await Promise

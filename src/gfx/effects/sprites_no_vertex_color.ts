@@ -1,36 +1,11 @@
 import Effect from "./effect";
 
 // vertex shader code
-const vertexShader = `
-attribute vec3 position;
-attribute vec2 uv;
-
-uniform mat4 projection;
-uniform mat4 world;
-
-varying vec2 v_texCoord;
-
-void main(void) {
-    gl_Position = projection * world * vec4(position, 1.0);
-    gl_PointSize = 1.0;
-    v_texCoord = uv;
-}
-    `;
+import vertexShader from "./shaders/sprites_no_vertex_color.vert";
 
 // fragment shader code
-const fragmentShader = `
-#ifdef GL_ES
-    precision highp float;
-#endif
+import fragmentShader from "./shaders/sprites_no_vertex_color.frag";
 
-uniform sampler2D mainTexture;
-varying vec2 v_texCoord;
-
-void main(void) {
-    gl_FragColor = texture2D(mainTexture, v_texCoord);
-    gl_FragColor.rgb *= gl_FragColor.a;
-}
-    `;
 
 /**
  * Default basic effect to draw 2d sprites without vertex color.
