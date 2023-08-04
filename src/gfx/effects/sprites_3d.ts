@@ -1,40 +1,24 @@
-/**
- * Implement a basic effect to draw 3d sprites.
- * 
- * |-- copyright and license --|
- * @module     Shaku
- * @file       shaku\src\gfx\effects\sprites_3d.js
- * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
- * @copyright  (c) 2021 Ronen Ness
- * @license    MIT
- * |-- end copyright and license --|
- * 
- */
-'use strict';
-const SpritesEffect = require("./sprites");
-
+import SpritesEffect from "./sprites";
 
 /**
  * Default basic effect to draw 2d sprites.
  */
-class Sprites3dEffect extends SpritesEffect
-{
-    /**
-     * @inheritdoc
-     */
-    get enableDepthTest() { return true; }
+class Sprites3dEffect extends SpritesEffect {
+	/**
+	 * @inheritdoc
+	 */
+	get enableDepthTest() { return true; }
 
-    /**
-     * @inheritdoc
-     */
-    get enableFaceCulling() { return false; }
+	/**
+	 * @inheritdoc
+	 */
+	get enableFaceCulling() { return false; }
 
-    /**
-     * @inheritdoc
-     */
-    get vertexCode()
-    {
-        const vertexShader = `
+	/**
+	 * @inheritdoc
+	 */
+	get vertexCode() {
+		const vertexShader = `
           attribute vec3 position;
           attribute vec2 uv;
           attribute vec4 color;
@@ -53,15 +37,14 @@ class Sprites3dEffect extends SpritesEffect
               v_color = color;
           }
         `;
-        return vertexShader;
-    }
+		return vertexShader;
+	}
 
-    /**
-     * @inheritdoc
-     */
-    get fragmentCode()
-    {
-        const fragmentShader = `  
+	/**
+	 * @inheritdoc
+	 */
+	get fragmentCode() {
+		const fragmentShader = `
           #ifdef GL_ES
               precision highp float;
           #endif
@@ -76,11 +59,10 @@ class Sprites3dEffect extends SpritesEffect
               if (gl_FragColor.a <= 0.0) { discard; }
               gl_FragColor.rgb *= gl_FragColor.a;
           }
-        `; 
-        return fragmentShader;
-    }
+        `;
+		return fragmentShader;
+	}
 }
 
-
 // export the basic shader
-module.exports = Sprites3dEffect;
+export default Sprites3dEffect;

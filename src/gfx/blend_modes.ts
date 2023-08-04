@@ -1,16 +1,4 @@
-/**
- * Define supported blend modes.
- * 
- * |-- copyright and license --|
- * @module     Shaku
- * @file       shaku\src\gfx\blend_modes.js
- * @author     Ronen Ness (ronenness@gmail.com | http://ronenness.com)
- * @copyright  (c) 2021 Ronen Ness
- * @license    MIT
- * |-- end copyright and license --|
- * 
- */
-'use strict';
+
 
 /** @typedef {String} BlendMode */
 
@@ -20,23 +8,23 @@
  * @enum {BlendMode}
  */
 const BlendModes = {
-    AlphaBlend: "alpha",
-    Opaque: "opaque",
-    Additive: "additive",
-    Multiply: "multiply",
-    Subtract: "subtract",
-    Screen: "screen",
-    Overlay: "overlay",
-    Invert: "invert",
-    Darken: "darken",
-    DestIn: "dest-in",
-    DestOut: "dest-out"
+	AlphaBlend: "alpha",
+	Opaque: "opaque",
+	Additive: "additive",
+	Multiply: "multiply",
+	Subtract: "subtract",
+	Screen: "screen",
+	Overlay: "overlay",
+	Invert: "invert",
+	Darken: "darken",
+	DestIn: "dest-in",
+	DestOut: "dest-out"
 };
 
 Object.defineProperty(BlendModes, '_values', {
-    value: new Set(Object.values(BlendModes)),
-    writable: false,
+	value: new Set(Object.values(BlendModes)),
+	writable: false,
 });
 Object.freeze(BlendModes);
 
-module.exports = {BlendModes: BlendModes};
+module.exports = { BlendModes: BlendModes };
