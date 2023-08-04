@@ -3,32 +3,43 @@ import MathHelper from "./math_helper";
 /**
  * A simple Vector object for 2d positions.
  */
-class Vector2 {
+export default class Vector2 {
+	public static readonly zeroReadonly = new Vector2(0, 0);
+	public static readonly oneReadonly = new Vector2(1, 1);
+	public static readonly halfReadonly = new Vector2(0.5, 0.5);
+	public static readonly leftReadonly = new Vector2(-1, 0);
+	public static readonly rightReadonly = new Vector2(1, 0);
+	public static readonly upReadonly = new Vector2(0, -1);
+	public static readonly downReadonly = new Vector2(0, 1);
+
+	public x: number;
+	public y: number;
+
 	/**
 	 * Create the Vector object.
-	 * @param {number} x Vector X.
-	 * @param {number} y Vector Y.
+	 * @param x Vector X.
+	 * @param y Vector Y.
 	 */
-	constructor(x = 0, y = 0) {
+	public constructor(x = 0, y = 0) {
 		this.x = x;
 		this.y = y;
 	}
 
 	/**
 	 * Clone the vector.
-	 * @returns {Vector2} cloned vector.
+	 * @returns cloned vector.
 	 */
-	clone() {
+	public clone(): Vector2 {
 		return new Vector2(this.x, this.y);
 	}
 
 	/**
 	 * Set vector value.
-	 * @param {Number} x X component.
-	 * @param {Number} y Y component.
-	 * @returns {Vector2} this.
+	 * @param x X component.
+	 * @param y Y component.
+	 * @returns this.
 	 */
-	set(x, y) {
+	public set(x: number, y: number): Vector2 {
 		this.x = x;
 		this.y = y;
 		return this;
@@ -36,9 +47,9 @@ class Vector2 {
 
 	/**
 	 * Copy values from other vector into self.
-	 * @returns {Vector2} this.
+	 * @returns this.
 	 */
-	copy(other) {
+	public copy(other: Vector2): Vector2 {
 		this.x = other.x;
 		this.y = other.y;
 		return this;
@@ -46,10 +57,10 @@ class Vector2 {
 
 	/**
 	 * Return a new vector of this + other.
-	 * @param {Number|Vector2} Other Vector3 or number to add to all components.
-	 * @returns {Vector2} result vector.
+	 * @param other Vector2 or number to add to all components.
+	 * @returns result vector.
 	 */
-	add(other) {
+	public add(other: number | Vector2): Vector2 {
 		if(typeof other === 'number') {
 			return new Vector2(this.x + other, this.y + (arguments[1] === undefined ? other : arguments[1]));
 		}
@@ -58,10 +69,10 @@ class Vector2 {
 
 	/**
 	 * Return a new vector of this - other.
-	 * @param {Number|Vector2} Other Vector3 or number to sub from all components.
-	 * @returns {Vector2} result vector.
+	 * @param other Vector2 or number to sub from all components.
+	 * @returns result vector.
 	 */
-	sub(other) {
+	public sub(other: number | Vector2): Vector2 {
 		if(typeof other === 'number') {
 			return new Vector2(this.x - other, this.y - (arguments[1] === undefined ? other : arguments[1]));
 		}
@@ -70,10 +81,10 @@ class Vector2 {
 
 	/**
 	 * Return a new vector of this / other.
-	 * @param {Number|Vector2} Other Vector3 or number to divide by all components.
-	 * @returns {Vector2} result vector.
+	 * @param other Vector2 or number to divide by all components.
+	 * @returns result vector.
 	 */
-	div(other) {
+	public div(other: number | Vector2): Vector2 {
 		if(typeof other === 'number') {
 			return new Vector2(this.x / other, this.y / (arguments[1] === undefined ? other : arguments[1]));
 		}
@@ -82,10 +93,10 @@ class Vector2 {
 
 	/**
 	 * Return a new vector of this * other.
-	 * @param {Number|Vector2} Other Vector2 or number to multiply with all components.
-	 * @returns {Vector2} result vector.
+	 * @param other Vector2 or number to multiply with all components.
+	 * @returns result vector.
 	 */
-	mul(other) {
+	public mul(other: number | Vector2): Vector2 {
 		if(typeof other === 'number') {
 			return new Vector2(this.x * other, this.y * (arguments[1] === undefined ? other : arguments[1]));
 		}
@@ -94,34 +105,34 @@ class Vector2 {
 
 	/**
 	 * Return a round copy of this vector.
-	 * @returns {Vector2} result vector.
+	 * @returns result vector.
 	 */
-	round() {
+	public round(): Vector2 {
 		return new Vector2(Math.round(this.x), Math.round(this.y));
 	}
 
 	/**
 	 * Return a floored copy of this vector.
-	 * @returns {Vector2} result vector.
+	 * @returns result vector.
 	 */
-	floor() {
+	public floor(): Vector2 {
 		return new Vector2(Math.floor(this.x), Math.floor(this.y));
 	}
 
 	/**
 	 * Return a ceiled copy of this vector.
-	 * @returns {Vector2} result vector.
+	 * @returns result vector.
 	 */
-	ceil() {
+	public ceil(): Vector2 {
 		return new Vector2(Math.ceil(this.x), Math.ceil(this.y));
 	}
 
 	/**
 	 * Set self values to be min values between self and a given vector.
-	 * @param {Vector2} v Vector to min with.
-	 * @returns {Vector2} Self.
+	 * @param v Vector to min with.
+	 * @returns Self.
 	 */
-	minSelf(v) {
+	public minSelf(v: Vector2): Vector2 {
 		this.x = Math.min(this.x, v.x);
 		this.y = Math.min(this.y, v.y);
 		return this;
@@ -129,10 +140,10 @@ class Vector2 {
 
 	/**
 	 * Set self values to be max values between self and a given vector.
-	 * @param {Vector2} v Vector to max with.
-	 * @returns {Vector2} Self.
+	 * @param v Vector to max with.
+	 * @returns Self.
 	 */
-	maxSelf(v) {
+	public maxSelf(v: Vector2): Vector2 {
 		this.x = Math.max(this.x, v.x);
 		this.y = Math.max(this.y, v.y);
 		return this;
@@ -140,27 +151,27 @@ class Vector2 {
 
 	/**
 	 * Create a clone vector that is the min result between self and a given vector.
-	 * @param {Vector2} v Vector to min with.
-	 * @returns {Vector2} Result vector.
+	 * @param v Vector to min with.
+	 * @returns Result vector.
 	 */
-	min(v) {
-		this.clone().minSelf(v);
+	public min(v: Vector2): Vector2 {
+		return this.clone().minSelf(v);
 	}
 
 	/**
 	 * Create a clone vector that is the max result between self and a given vector.
-	 * @param {Vector2} v Vector to max with.
-	 * @returns {Vector2} Result vector.
+	 * @param v Vector to max with.
+	 * @returns Result vector.
 	 */
-	max(v) {
-		this.clone().maxSelf(v);
+	public max(v: Vector2): Vector2 {
+		return this.clone().maxSelf(v);
 	}
 
 	/**
 	 * Return a normalized copy of this vector.
-	 * @returns {Vector2} result vector.
+	 * @returns result vector.
 	 */
-	normalized() {
+	public normalized(): Vector2 {
 		if(this.x == 0 && this.y == 0) { return Vector2.zero(); }
 		let mag = this.length();
 		return new Vector2(this.x / mag, this.y / mag);
@@ -168,28 +179,28 @@ class Vector2 {
 
 	/**
 	 * Get a copy of this vector rotated by radians.
-	 * @param {Number} radians Radians to rotate by.
-	 * @returns {Vector2} New vector with the length of this vector and direction rotated by given radians.
+	 * @param radians Radians to rotate by.
+	 * @returns New vector with the length of this vector and direction rotated by given radians.
 	 */
-	rotatedByRadians(radians) {
+	public rotatedByRadians(radians: number): Vector2 {
 		return Vector2.fromRadians(this.getRadians() + radians).mulSelf(this.length());
 	}
 
 	/**
 	 * Get a copy of this vector rotated by degrees.
-	 * @param {Number} degrees Degrees to rotate by.
-	 * @returns {Vector2} New vector with the length of this vector and direction rotated by given degrees.
+	 * @param degrees Degrees to rotate by.
+	 * @returns New vector with the length of this vector and direction rotated by given degrees.
 	 */
-	rotatedByDegrees(degrees) {
+	public rotatedByDegrees(degrees: number): Vector2 {
 		return Vector2.fromDegrees(this.getDegrees() + degrees).mulSelf(this.length());
 	}
 
 	/**
 	 * Add other vector values to self.
-	 * @param {Number|Vector2} Other Vector or number to add.
-	 * @returns {Vector2} this.
+	 * @param other Vector or number to add.
+	 * @returns this.
 	 */
-	addSelf(other) {
+	public addSelf(other: number | Vector2): Vector2 {
 		if(typeof other === 'number') {
 			this.x += other;
 			this.y += (arguments[1] === undefined ? other : arguments[1]);
@@ -203,10 +214,10 @@ class Vector2 {
 
 	/**
 	 * Sub other vector values from self.
-	 * @param {Number|Vector2} Other Vector or number to substract.
-	 * @returns {Vector2} this.
+	 * @param other Vector or number to substract.
+	 * @returns this.
 	 */
-	subSelf(other) {
+	public subSelf(other: number | Vector2): Vector2 {
 		if(typeof other === 'number') {
 			this.x -= other;
 			this.y -= (arguments[1] === undefined ? other : arguments[1]);
@@ -220,10 +231,10 @@ class Vector2 {
 
 	/**
 	 * Divide this vector by other vector values.
-	 * @param {Number|Vector2} Other Vector or number to divide by.
-	 * @returns {Vector2} this.
+	 * @param other Vector or number to divide by.
+	 * @returns this.
 	 */
-	divSelf(other) {
+	public divSelf(other: number | Vector2): Vector2 {
 		if(typeof other === 'number') {
 			this.x /= other;
 			this.y /= (arguments[1] === undefined ? other : arguments[1]);
@@ -237,10 +248,10 @@ class Vector2 {
 
 	/**
 	 * Multiply this vector by other vector values.
-	 * @param {Number|Vector2} Other Vector or number to multiply by.
-	 * @returns {Vector2} this.
+	 * @param other Vector or number to multiply by.
+	 * @returns this.
 	 */
-	mulSelf(other) {
+	public mulSelf(other: number | Vector2): Vector2 {
 		if(typeof other === 'number') {
 			this.x *= other;
 			this.y *= (arguments[1] === undefined ? other : arguments[1]);
@@ -254,9 +265,9 @@ class Vector2 {
 
 	/**
 	 * Round self.
-	 * @returns {Vector2} this.
+	 * @returns this.
 	 */
-	roundSelf() {
+	public roundSelf(): Vector2 {
 		this.x = Math.round(this.x);
 		this.y = Math.round(this.y);
 		return this;
@@ -264,9 +275,9 @@ class Vector2 {
 
 	/**
 	 * Floor self.
-	 * @returns {Vector2} this.
+	 * @returns this.
 	 */
-	floorSelf() {
+	public floorSelf(): Vector2 {
 		this.x = Math.floor(this.x);
 		this.y = Math.floor(this.y);
 		return this;
@@ -274,9 +285,9 @@ class Vector2 {
 
 	/**
 	 * Ceil self.
-	 * @returns {Vector2} this.
+	 * @returns this.
 	 */
-	ceilSelf() {
+	public ceilSelf(): Vector2 {
 		this.x = Math.ceil(this.x);
 		this.y = Math.ceil(this.y);
 		return this;
@@ -284,9 +295,9 @@ class Vector2 {
 
 	/**
 	 * Return a normalized copy of this vector.
-	 * @returns {Vector2} this.
+	 * @returns this.
 	 */
-	normalizeSelf() {
+	public normalizeSelf(): Vector2 {
 		if(this.x == 0 && this.y == 0) { return this; }
 		let mag = this.length();
 		this.x /= mag;
@@ -296,20 +307,20 @@ class Vector2 {
 
 	/**
 	 * Return if vector equals another vector.
-	 * @param {Vector2} other Other vector to compare to.
-	 * @returns {Boolean} if vectors are equal.
+	 * @param other Other vector to compare to.
+	 * @returns if vectors are equal.
 	 */
-	equals(other) {
+	public equals(other: Vector2): boolean {
 		return ((this === other) || ((other.constructor === this.constructor) && this.x === other.x && this.y === other.y));
 	}
 
 	/**
 	 * Return if vector approximately equals another vector.
-	 * @param {Vector2} other Other vector to compare to.
-	 * @param {Number} threshold Distance threshold to consider as equal. Defaults to 1.
-	 * @returns {Boolean} if vectors are equal.
+	 * @param other Other vector to compare to.
+	 * @param threshold Distance threshold to consider as equal. Defaults to 1.
+	 * @returns if vectors are equal.
 	 */
-	approximate(other, threshold) {
+	public approximate(other: Vector2, threshold: number): boolean {
 		threshold = threshold || 1;
 		return ((this === other) ||
 			(
@@ -320,158 +331,158 @@ class Vector2 {
 
 	/**
 	 * Return vector length (aka magnitude).
-	 * @returns {Number} Vector length.
+	 * @returns Vector length.
 	 */
-	length() {
+	public length(): number {
 		return Math.sqrt((this.x * this.x) + (this.y * this.y));
 	}
 
 	/**
 	 * Return a copy of this vector multiplied by a factor.
-	 * @returns {Vector2} result vector.
+	 * @returns result vector.
 	 */
-	scaled(fac) {
+	public scaled(fac: number): Vector2 {
 		return new Vector2(this.x * fac, this.y * fac);
 	}
 
 	/**
 	 * Get vector (0,0).
-	 * @returns {Vector2} result vector.
+	 * @returns result vector.
 	 */
-	static zero() {
+	public static zero(): Vector2 {
 		return new Vector2(0, 0);
 	}
 
 	/**
 	 * Get vector with 1,1 values.
-	 * @returns {Vector2} result vector.
+	 * @returns result vector.
 	 */
-	static one() {
+	public static one(): Vector2 {
 		return new Vector2(1, 1);
 	}
 
 	/**
 	 * Get vector with 0.5,0.5 values.
-	 * @returns {Vector2} result vector.
+	 * @returns result vector.
 	 */
-	static half() {
+	public static half(): Vector2 {
 		return new Vector2(0.5, 0.5);
 	}
 
 	/**
 	 * Get vector with -1,0 values.
-	 * @returns {Vector2} result vector.
+	 * @returns result vector.
 	 */
-	static left() {
+	public static left(): Vector2 {
 		return new Vector2(-1, 0);
 	}
 
 	/**
 	 * Get vector with 1,0 values.
-	 * @returns {Vector2} result vector.
+	 * @returns result vector.
 	 */
-	static right() {
+	public static right(): Vector2 {
 		return new Vector2(1, 0);
 	}
 
 	/**
 	 * Get vector with 0,-1 values.
-	 * @returns {Vector2} result vector.
+	 * @returns result vector.
 	 */
-	static up() {
+	public static up(): Vector2 {
 		return new Vector2(0, -1);
 	}
 
 	/**
 	 * Get vector with 0,1 values.
-	 * @returns {Vector2} result vector.
+	 * @returns result vector.
 	 */
-	static down() {
+	public static down(): Vector2 {
 		return new Vector2(0, 1);
 	}
 
 	/**
 	 * Get a random vector with length of 1.
-	 * @returns {Vector2} result vector.
+	 * @returns result vector.
 	 */
-	static random() {
+	public static random(): Vector2 {
 		return Vector2.fromDegrees(Math.random() * 360);
 	}
 
 	/**
 	 * Get degrees between this vector and another vector.
-	 * @param {Vector2} other Other vector.
-	 * @returns {Number} Angle between vectors in degrees.
+	 * @param other Other vector.
+	 * @returns Angle between vectors in degrees.
 	 */
-	degreesTo(other) {
+	public degreesTo(other: Vector2): number {
 		return Vector2.degreesBetween(this, other);
-	};
+	}
 
 	/**
 	 * Get radians between this vector and another vector.
-	 * @param {Vector2} other Other vector.
-	 * @returns {Number} Angle between vectors in radians.
+	 * @param other Other vector.
+	 * @returns Angle between vectors in radians.
 	 */
-	radiansTo(other) {
+	public radiansTo(other: Vector2): number {
 		return Vector2.radiansBetween(this, other);
-	};
+	}
 
 	/**
 	 * Get degrees between this vector and another vector.
 	 * Return values between 0 to 360.
-	 * @param {Vector2} other Other vector.
-	 * @returns {Number} Angle between vectors in degrees.
+	 * @param other Other vector.
+	 * @returns Angle between vectors in degrees.
 	 */
-	wrappedDegreesTo(other) {
+	public wrappedDegreesTo(other: Vector2): number {
 		return Vector2.wrappedDegreesBetween(this, other);
-	};
+	}
 
 	/**
 	 * Get radians between this vector and another vector.
 	 * Return values between 0 to PI2.
-	 * @param {Vector2} other Other vector.
-	 * @returns {Number} Angle between vectors in radians.
+	 * @param other Other vector.
+	 * @returns Angle between vectors in radians.
 	 */
-	wrappedRadiansTo(other) {
+	public wrappedRadiansTo(other: Vector2): number {
 		return Vector2.wrappedRadiansBetween(this, other);
-	};
+	}
 
 	/**
 	 * Calculate distance between this vector and another vectors.
-	 * @param {Vector2} other Other vector.
-	 * @returns {Number} Distance between vectors.
+	 * @param other Other vector.
+	 * @returns Distance between vectors.
 	 */
-	distanceTo(other) {
+	public distanceTo(other: Vector2): number {
 		return Vector2.distance(this, other);
 	}
 
 	/**
 	 * Calculate squared distance between this vector and another vector.
-	 * @param {Vector2} other Other vector.
-	 * @returns {Number} Distance between vectors.
+	 * @param other Other vector.
+	 * @returns Distance between vectors.
 	 */
-	distanceToSquared(other) {
+	public distanceToSquared(other: Vector2): number {
 		const dx = this.x - other.x, dy = this.y - other.y;
 		return dx * dx + dy * dy;
 	}
 
 	/**
 	 * Return a clone and clamp its values to be between min and max.
-	 * @param {Vector2} min Min vector.
-	 * @param {Vector2} max Max vector.
-	 * @returns {Vector2} Clamped vector.
+	 * @param min Min vector.
+	 * @param max Max vector.
+	 * @returns Clamped vector.
 	 */
-	clamp(min, max) {
+	public clamp(min: Vector2, max: Vector2): Vector2 {
 		return this.clone().clampSelf(min, max);
 	}
 
 	/**
 	 * Clamp this vector values to be between min and max.
-	 * @param {Vector2} min Min vector.
-	 * @param {Vector2} max Max vector.
-	 * @returns {Vector2} Self.
+	 * @param min Min vector.
+	 * @param max Max vector.
+	 * @returns Self.
 	 */
-	clampSelf(min, max) {
+	public clampSelf(min: Vector2, max: Vector2): Vector2 {
 		this.x = Math.max(min.x, Math.min(max.x, this.x));
 		this.y = Math.max(min.y, Math.min(max.y, this.y));
 		return this;
@@ -479,40 +490,40 @@ class Vector2 {
 
 	/**
 	 * Calculate the dot product with another vector.
-	 * @param {Vector2} other Vector to calculate dot with.
-	 * @returns {Number} Dot product value.
+	 * @param other Vector to calculate dot with.
+	 * @returns Dot product value.
 	 */
-	dot(other) {
+	public dot(other: Vector2): number {
 		return this.x * other.x + this.y * other.y;
 	}
 
 	/**
 	 * Get vector from degrees.
-	 * @param {Number} degrees Angle to create vector from (0 = vector pointing right).
-	 * @returns {Vector2} result vector.
+	 * @param degrees Angle to create vector from (0 = vector pointing right).
+	 * @returns result vector.
 	 */
-	static fromDegrees(degrees) {
+	public static fromDegrees(degrees: number): Vector2 {
 		let rads = degrees * (Math.PI / 180);
 		return new Vector2(Math.cos(rads), Math.sin(rads));
 	}
 
 	/**
 	 * Get vector from radians.
-	 * @param {Number} radians Angle to create vector from (0 = vector pointing right).
-	 * @returns {Vector2} result vector.
+	 * @param radians Angle to create vector from (0 = vector pointing right).
+	 * @returns result vector.
 	 */
-	static fromRadians(radians) {
+	public static fromRadians(radians: number): Vector2 {
 		return new Vector2(Math.cos(radians), Math.sin(radians));
 	}
 
 	/**
 	 * Lerp between two vectors.
-	 * @param {Vector2} p1 First vector.
-	 * @param {Vector2} p2 Second vector.
-	 * @param {Number} a Lerp factor (0.0 - 1.0).
-	 * @returns {Vector2} result vector.
+	 * @param p1 First vector.
+	 * @param p2 Second vector.
+	 * @param a Lerp factor (0.0 - 1.0).
+	 * @returns result vector.
 	 */
-	static lerp(p1, p2, a) {
+	public static lerp(p1: Vector2, p2: Vector2, a: number): Vector2 {
 		let lerpScalar = MathHelper.lerp;
 		return new Vector2(lerpScalar(p1.x, p2.x, a), lerpScalar(p1.y, p2.y, a));
 	}
@@ -520,44 +531,44 @@ class Vector2 {
 	/**
 	 * Get degrees between two vectors.
 	 * Return values between -180 to 180.
-	 * @param {Vector2} p1 First vector.
-	 * @param {Vector2} p2 Second vector.
-	 * @returns {Number} Angle between vectors in degrees.
+	 * @param p1 First vector.
+	 * @param p2 Second vector.
+	 * @returns Angle between vectors in degrees.
 	 */
-	static degreesBetween(P1, P2) {
-		let deltaY = P2.y - P1.y,
-			deltaX = P2.x - P1.x;
+	public static degreesBetween(p1: Vector2, p2: Vector2): number {
+		let deltaY = p2.y - p1.y,
+			deltaX = p2.x - p1.x;
 		return Math.atan2(deltaY, deltaX) * (180 / Math.PI);
-	};
+	}
 
 	/**
 	 * Get radians between two vectors.
 	 * Return values between -PI to PI.
-	 * @param {Vector2} p1 First vector.
-	 * @param {Vector2} p2 Second vector.
-	 * @returns {Number} Angle between vectors in radians.
+	 * @param p1 First vector.
+	 * @param p2 Second vector.
+	 * @returns Angle between vectors in radians.
 	 */
-	static radiansBetween(P1, P2) {
-		return MathHelper.toRadians(Vector2.degreesBetween(P1, P2));
-	};
+	public static radiansBetween(p1: Vector2, p2: Vector2): number {
+		return MathHelper.toRadians(Vector2.degreesBetween(p1, p2));
+	}
 
 	/**
 	 * Get degrees between two vectors.
 	 * Return values between 0 to 360.
-	 * @param {Vector2} p1 First vector.
-	 * @param {Vector2} p2 Second vector.
-	 * @returns {Number} Angle between vectors in degrees.
+	 * @param p1 First vector.
+	 * @param p2 Second vector.
+	 * @returns Angle between vectors in degrees.
 	 */
-	static wrappedDegreesBetween(P1, P2) {
-		let temp = P2.sub(P1);
+	public static wrappedDegreesBetween(p1: Vector2, p2: Vector2): number {
+		let temp = p2.sub(p1);
 		return temp.getDegrees();
-	};
+	}
 
 	/**
 	 * Get vector's angle in degrees.
-	 * @returns {Number} Vector angle in degrees.
+	 * @returns Vector angle in degrees.
 	 */
-	getDegrees() {
+	public getDegrees(): number {
 		var angle = Math.atan2(this.y, this.x);
 		var degrees = 180 * angle / Math.PI;
 		return (360 + Math.round(degrees)) % 360;
@@ -565,9 +576,9 @@ class Vector2 {
 
 	/**
 	 * Get vector's angle in radians.
-	 * @returns {Number} Vector angle in degrees.
+	 * @returns Vector angle in degrees.
 	 */
-	getRadians() {
+	public getRadians(): number {
 		var angle = Math.atan2(this.y, this.x);
 		return angle;
 	}
@@ -575,21 +586,21 @@ class Vector2 {
 	/**
 	 * Get radians between two vectors.
 	 * Return values between 0 to PI2.
-	 * @param {Vector2} p1 First vector.
-	 * @param {Vector2} p2 Second vector.
-	 * @returns {Number} Angle between vectors in radians.
+	 * @param p1 First vector.
+	 * @param p2 Second vector.
+	 * @returns Angle between vectors in radians.
 	 */
-	static wrappedRadiansBetween(P1, P2) {
-		return MathHelper.toRadians(Vector2.wrappedDegreesBetween(P1, P2));
+	public static wrappedRadiansBetween(p1: Vector2, p2: Vector2): number {
+		return MathHelper.toRadians(Vector2.wrappedDegreesBetween(p1, p2));
 	};
 
 	/**
 	 * Calculate distance between two vectors.
-	 * @param {Vector2} p1 First vector.
-	 * @param {Vector2} p2 Second vector.
-	 * @returns {Number} Distance between vectors.
+	 * @param p1 First vector.
+	 * @param p2 Second vector.
+	 * @returns Distance between vectors.
 	 */
-	static distance(p1, p2) {
+	public static distance(p1: Vector2, p2: Vector2): number {
 		let a = p1.x - p2.x;
 		let b = p1.y - p2.y;
 		return Math.sqrt(a * a + b * b);
@@ -597,73 +608,75 @@ class Vector2 {
 
 	/**
 	 * Return cross product between two vectors.
-	 * @param {Vector2} p1 First vector.
-	 * @param {Vector2} p2 Second vector.
-	 * @returns {Number} Cross between vectors.
+	 * @param p1 First vector.
+	 * @param p2 Second vector.
+	 * @returns Cross between vectors.
 	 */
-	static cross(p1, p2) {
+	public static cross(p1: Vector2, p2: Vector2): number {
 		return p1.x * p2.y - p1.y * p2.x;
 	}
 
 	/**
 	 * Return dot product between two vectors.
-	 * @param {Vector2} p1 First vector.
-	 * @param {Vector2} p2 Second vector.
-	 * @returns {Number} Dot between vectors.
+	 * @param p1 First vector.
+	 * @param p2 Second vector.
+	 * @returns Dot between vectors.
 	 */
-	static dot(p1, p2) {
+	public static dot(p1: Vector2, p2: Vector2): number {
 		return p1.x * p2.x + p1.y * p2.y;
 	}
 
 	/**
 	 * Convert to string.
 	 */
-	string() {
+	public string(): string {
 		return this.x + ',' + this.y;
 	}
 
 	/**
 	 * Parse and return a vector object from string in the form of "x,y".
-	 * @param {String} str String to parse.
-	 * @returns {Vector2} Parsed vector.
+	 * @param str String to parse.
+	 * @returns Parsed vector.
 	 */
-	static parse(str) {
+	public static parse(str: `${number},${number}`): Vector2 {
 		let parts = str.split(',');
 		return new Vector2(parseFloat(parts[0].trim()), parseFloat(parts[1].trim()));
 	}
 
 	/**
 	 * Convert to array of numbers.
-	 * @returns {Array<Number>} Vector components as array.
+	 * @returns Vector components as array.
 	 */
-	toArray() {
+	public toArray(): [number, number] {
 		return [this.x, this.y];
 	}
 
 	/**
 	 * Create vector from array of numbers.
-	 * @param {Array<Number>} arr Array of numbers to create vector from.
-	 * @returns {Vector2} Vector instance.
+	 * @param arr Array of numbers to create vector from.
+	 * @returns Vector instance.
 	 */
-	static fromArray(arr) {
+	public static fromArray(arr: [number, number]): Vector2 {
 		return new Vector2(arr[0], arr[1]);
 	}
 
 	/**
 	 * Create vector from a dictionary.
-	 * @param {*} data Dictionary with {x,y}.
-	 * @returns {Vector2} Newly created vector.
+	 * @param data Dictionary with {x,y}.
+	 * @returns Newly created vector.
 	 */
-	static fromDict(data) {
+	public static fromDict(data: { x: number, y: number; }): Vector2 {
 		return new Vector2(data.x || 0, data.y || 0);
 	}
 
 	/**
 	 * Convert to dictionary.
-	 * @param {Boolean} minimized If true, will not include keys that their values are 0. You can use fromDict on minimized dicts.
-	 * @returns {*} Dictionary with {x,y}
+	 * @param If true, will not include keys that their values are 0. You can use fromDict on minimized dicts.
+	 * @returns Dictionary with {x,y}
 	 */
-	toDict(minimized) {
+	public toDict(minimized: true): Partial<{ x: number, y: number; }>;
+	public toDict(minimized?: false): { x: number, y: number; };
+	public toDict(minimized?: boolean): Partial<{ x: number, y: number; }> {
 		if(minimized) {
 			const ret = {};
 			if(this.x) { ret.x = this.x; }
@@ -673,55 +686,3 @@ class Vector2 {
 		return { x: this.x, y: this.y };
 	}
 }
-
-/**
- * Vector with 0,0 values as a frozen shared object.
- * Be careful not to try and change it.
- */
-Vector2.zeroReadonly = new Vector2(0, 0);
-Object.freeze(Vector2.zeroReadonly);
-
-/**
- * Vector with 1,1 values as a frozen shared object.
- * Be careful not to try and change it.
- */
-Vector2.oneReadonly = new Vector2(1, 1);
-Object.freeze(Vector2.oneReadonly);
-
-/**
- * Vector with 0.5,0.5 values as a frozen shared object.
- * Be careful not to try and change it.
- */
-Vector2.halfReadonly = new Vector2(0.5, 0.5);
-Object.freeze(Vector2.halfReadonly);
-
-/**
- * Vector with -1,0 values as a frozen shared object.
- * Be careful not to try and change it.
- */
-Vector2.leftReadonly = new Vector2(-1, 0);
-Object.freeze(Vector2.leftReadonly);
-
-/**
- * Vector with 1,0 values as a frozen shared object.
- * Be careful not to try and change it.
- */
-Vector2.rightReadonly = new Vector2(1, 0);
-Object.freeze(Vector2.rightReadonly);
-
-/**
- * Vector with 0,1 values as a frozen shared object.
- * Be careful not to try and change it.
- */
-Vector2.upReadonly = new Vector2(0, -1);
-Object.freeze(Vector2.upReadonly);
-
-/**
- * Vector with 0,-1 values as a frozen shared object.
- * Be careful not to try and change it.
- */
-Vector2.downReadonly = new Vector2(0, 1);
-Object.freeze(Vector2.downReadonly);
-
-// export vector object
-export default Vector2;
