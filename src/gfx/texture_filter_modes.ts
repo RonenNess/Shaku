@@ -1,5 +1,3 @@
-
-
 /** @typedef {String} TextureFilterMode */
 
 /**
@@ -7,7 +5,7 @@
  * @readonly
  * @enum {TextureFilterMode}
  */
-const TextureFilterModes = {
+export const TextureFilterModes = {
 	Nearest: "NEAREST",
 	Linear: "LINEAR",
 	NearestMipmapNearest: "NEAREST_MIPMAP_NEAREST",
@@ -22,4 +20,3 @@ Object.defineProperty(TextureFilterModes, '_values', {
 });
 
 Object.freeze(TextureFilterModes);
-module.exports = { TextureFilterModes: TextureFilterModes };

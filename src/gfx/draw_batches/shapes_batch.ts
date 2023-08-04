@@ -2,7 +2,7 @@
 
 import { Rectangle } from "../../utils";
 
-import _logger from "../../logger.js";
+import _logger from "../../logger";
 import Matrix from "../../utils/matrix";
 import Vector2 from "../../utils/vector2";
 import Vector3 from "../../utils/vector3";

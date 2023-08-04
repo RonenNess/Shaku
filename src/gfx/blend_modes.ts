@@ -7,7 +7,7 @@
  * @readonly
  * @enum {BlendMode}
  */
-const BlendModes = {
+export const BlendModes = {
 	AlphaBlend: "alpha",
 	Opaque: "opaque",
 	Additive: "additive",
@@ -26,5 +26,3 @@ Object.defineProperty(BlendModes, '_values', {
 	writable: false,
 });
 Object.freeze(BlendModes);
-
-module.exports = { BlendModes: BlendModes };

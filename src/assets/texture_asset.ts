@@ -1,4 +1,4 @@
-import _logger from "../logger.js";
+import _logger from "../logger";
 import Color from "../utils/color";
 import TextureAssetBase from "./texture_asset_base";
 

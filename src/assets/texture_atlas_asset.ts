@@ -1,4 +1,4 @@
-import Utils from "../utils";
+import * as Utils from "../utils";
 import Vector2 from "../utils/vector2";
 import Asset from "./asset";
 import TextureAsset from "./texture_asset";

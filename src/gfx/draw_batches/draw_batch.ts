@@ -3,7 +3,7 @@
 import { BlendModes } from "../blend_modes";
 import { BuffersUsage } from "./buffers_usage";
 
-import _logger from "../../logger.js";
+import _logger from "../../logger";
 import Matrix from "../../utils/matrix";
 
 const _loggggger = _logger.getLogger("gfx - draw - batch"); // TODO

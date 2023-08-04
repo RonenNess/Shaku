@@ -1,4 +1,4 @@
-import _logger from "../logger.js";
+import _logger from "../logger";
 
 const _loggggger = _logger.getLogger("sfx"); // TODO
 

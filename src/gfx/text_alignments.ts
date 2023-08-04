@@ -7,7 +7,7 @@
  * @readonly
  * @enum {TextAlignment}
  */
-const TextAlignments = {
+export const TextAlignments = {
 
 	/**
 	 * Align text left-to-right.
@@ -26,4 +26,3 @@ const TextAlignments = {
 };
 
 Object.freeze(TextAlignments);
-module.exports = { TextAlignments: TextAlignments };

@@ -1,4 +1,4 @@
-import TextureFilterModes from "../gfx/texture_filter_modes";
+import { TextureFilterModes } from "../gfx/texture_filter_modes";
 import Rectangle from "../utils/rectangle";
 import Vector2 from "../utils/vector2";
 import FontTextureAsset from "./font_texture_asset";

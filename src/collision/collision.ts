@@ -1,4 +1,4 @@
-import _logger from "../logger.js";
+import _logger from "../logger";
 import IManager from "../manager";
 import Vector2 from "../utils/vector2";
 import CollisionWorld from "./collision_world";

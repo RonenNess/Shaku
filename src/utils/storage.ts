@@ -1,4 +1,4 @@
-import StorageAdapter from "./storage_adapter";
+import { type StorageAdapter } from "./storage_adapter";
 
 /**
  * A thin wrapper layer around storage utility.

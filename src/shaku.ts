@@ -4,7 +4,7 @@ import assets from "./assets";
 import collision from "./collision";
 import logger from "./logger";
 import IManager from "./manager";
-import utils from "./utils";
+import * as utils from "./utils";
 import GameTime from "./utils/game_time";
 
 const sfx = isBrowser ? require('./sfx') : null;

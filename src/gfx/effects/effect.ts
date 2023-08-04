@@ -1,5 +1,5 @@
 import TextureAssetBase from "../../assets/texture_asset_base";
-import _logger from "../../logger.js";
+import _logger from "../../logger";
 import Color from "../../utils/color";
 import Matrix from "../../utils/matrix";
 import Vector2 from "../../utils/vector2";

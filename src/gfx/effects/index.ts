@@ -5,11 +5,11 @@ import SpritesEffect from './sprites';
 import SpritesEffectNoVertexColor from './sprites_no_vertex_color';
 import SpritesWithOutlineEffect from './sprites_with_outline';
 
-export default {
+export {
 	Effect,
+	MsdfFontEffect,
+	ShapesEffect,
 	SpritesEffect,
 	SpritesEffectNoVertexColor,
-	SpritesWithOutlineEffect,
-	ShapesEffect,
-	MsdfFontEffect,
+	SpritesWithOutlineEffect
 };

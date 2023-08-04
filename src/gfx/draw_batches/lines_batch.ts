@@ -1,4 +1,4 @@
-import _logger from "../../logger.js";
+import _logger from "../../logger";
 import { Rectangle } from '../../utils';
 import Matrix from "../../utils/matrix";
 import Vector2 from "../../utils/vector2";

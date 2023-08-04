@@ -1,4 +1,4 @@
-import _logger from "../../logger.js";
+import _logger from "../../logger";
 import SpritesGroup from "../sprites_group";
 import DrawBatch from "./draw_batch";
 import SpriteBatchBase from "./sprite_batch_base";

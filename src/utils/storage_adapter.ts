@@ -1,10 +1,8 @@
-
-
 /**
  * Storage adapter class that implement access to a storage device.
  * Used by the Storage utilitiy.
  */
-export default interface StorageAdapter {
+export interface StorageAdapter {
 	/**
 	 * Return if this storage adapter is persistent storage or not.
 	 * @returns True if this storage type is persistent.

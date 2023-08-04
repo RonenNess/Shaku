@@ -1,5 +1,5 @@
 import SoundAsset from "../assets/sound_asset";
-import _logger from "../logger.js";
+import _logger from "../logger";
 import IManager from "../manager";
 import SoundInstance from "./sound_instance";
 import SoundMixer from "./sound_mixer";

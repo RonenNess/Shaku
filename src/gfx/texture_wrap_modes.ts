@@ -7,7 +7,7 @@
  * @readonly
  * @enum {TextureWrapMode}
  */
-const TextureWrapModes = {
+export const TextureWrapModes = {
 	Clamp: "CLAMP_TO_EDGE",
 	Repeat: "REPEAT",
 	RepeatMirrored: "MIRRORED_REPEAT",
@@ -19,4 +19,3 @@ Object.defineProperty(TextureWrapModes, '_values', {
 });
 
 Object.freeze(TextureWrapModes);
-module.exports = { TextureWrapModes: TextureWrapModes };

@@ -1,5 +1,5 @@
 import ShapesBatch from "../gfx/draw_batches/shapes_batch";
-import _logger from "../logger.js";
+import _logger from "../logger";
 import Circle from "../utils/circle";
 import Color from "../utils/color";
 import Rectangle from "../utils/rectangle";

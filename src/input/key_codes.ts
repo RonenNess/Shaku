@@ -7,7 +7,7 @@
  * @readonly
  * @enum {MouseButton}
  */
-const MouseButtons = {
+export const MouseButtons = {
 	left: 0,
 	middle: 1,
 	right: 2,
@@ -20,7 +20,7 @@ const MouseButtons = {
  * @readonly
  * @enum {KeyboardKey}
  */
-const KeyboardKeys = {
+export const KeyboardKeys = {
 	backspace: 8,
 	tab: 9,
 	enter: 13,
@@ -123,6 +123,3 @@ const KeyboardKeys = {
 	close_braket: 221,
 	single_quote: 222,
 };
-
-// export keyboard keys and mouse buttons
-module.exports = { KeyboardKeys: KeyboardKeys, MouseButtons: MouseButtons };

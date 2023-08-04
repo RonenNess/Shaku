@@ -61,4 +61,28 @@ for(let key in Utils) {
 }
 
 // export the Utils module.
-export default Utils;
+export {
+	Animator,
+	Box,
+	Circle,
+	Color,
+	Frustum,
+	GameTime,
+	ItemsSorter,
+	Line,
+	MathHelper,
+	Matrix,
+	PathFinder,
+	Perlin,
+	Plane,
+	Ray,
+	Rectangle,
+	SeededRandom,
+	Sphere,
+	Storage,
+	StorageAdapter,
+	Transformation,
+	TransformationModes,
+	Vector2,
+	Vector3
+};

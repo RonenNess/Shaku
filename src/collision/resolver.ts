@@ -1,4 +1,4 @@
-import _logger from "../logger.js";
+import _logger from "../logger";
 import CollisionTestResult from "./result";
 import CollisionShape from "./shapes/shape";
 

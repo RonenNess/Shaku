@@ -1,14 +1,14 @@
 import FontTextureAsset from "../assets/font_texture_asset";
 import TextureAsset from "../assets/texture_asset";
 import TextureAtlasAsset from "../assets/texture_atlas_asset";
-import _logger from "../logger.js";
+import _logger from "../logger";
 import IManager from "../manager";
 import Circle from "../utils/circle";
 import Color from "../utils/color";
 import Matrix from "../utils/matrix";
 import Rectangle from "../utils/rectangle";
 import Vector2 from "../utils/vector2";
-import { BlendModes } from "./blend_modes.js";
+import { BlendModes } from "./blend_modes";
 import Camera from "./camera";
 import Camera3D from "./camera3d";
 import DrawBatch from "./draw_batches/draw_batch";
@@ -21,8 +21,8 @@ import { Effect, MsdfFontEffect, ShapesEffect, SpritesEffect, SpritesEffectNoVer
 import Sprites3dEffect from "./effects/sprites_3d";
 import Sprite from "./sprite";
 import SpritesGroup from "./sprites_group";
-import { TextureFilterModes } from "./texture_filter_modes.js";
-import { TextureWrapModes } from "./texture_wrap_modes.js";
+import { TextureFilterModes } from "./texture_filter_modes";
+import { TextureWrapModes } from "./texture_wrap_modes";
 import Vertex from "./vertex";
 
 const _loggggger = _logger.getLogger("gfx"); // TODO
@@ -52,7 +52,7 @@ const _loggggger = _logger.getLogger("gfx"); // TODO
 
 
 
-import { TextAlignment, TextAlignments } from "./text_alignments.js";
+import { TextAlignment, TextAlignments } from "./text_alignments";
 
 let _gl = null;
 let _initSettings = { antialias: true, alpha: true, depth: false, premultipliedAlpha: true, desynchronized: false };

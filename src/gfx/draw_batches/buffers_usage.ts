@@ -8,7 +8,7 @@
  * @readonly
  * @enum {BuffersUsage}
  */
-const BuffersUsage = {
+export const BuffersUsage = {
 	StaticDraw: 'static',
 	DynamicDraw: 'dynamic',
 	StreamDraw: 'stream',
@@ -19,5 +19,3 @@ Object.defineProperty(BuffersUsage, '_values', {
 	writable: false,
 });
 Object.freeze(BuffersUsage);
-
-module.exports = { BuffersUsage: BuffersUsage };
