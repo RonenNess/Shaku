@@ -4,12 +4,46 @@ import MathHelper from "./math_helper";
  * A simple Vector object for 2d positions.
  */
 export default class Vector2 {
+	/**
+	 * Vector with 0,0 values as a frozen shared object.
+	 * Be careful not to try and change it.
+	 */
 	public static readonly zeroReadonly = new Vector2(0, 0);
+
+	/**
+	 * Vector with 1,1 values as a frozen shared object.
+	 * Be careful not to try and change it.
+	 */
 	public static readonly oneReadonly = new Vector2(1, 1);
+
+	/**
+	 * Vector with 0.5,0.5 values as a frozen shared object.
+	 * Be careful not to try and change it.
+	 */
 	public static readonly halfReadonly = new Vector2(0.5, 0.5);
+
+	/**
+	 * Vector with -1,0 values as a frozen shared object.
+	 * Be careful not to try and change it.
+	 */
 	public static readonly leftReadonly = new Vector2(-1, 0);
+
+	/**
+	 * Vector with 1,0 values as a frozen shared object.
+	 * Be careful not to try and change it.
+	 */
 	public static readonly rightReadonly = new Vector2(1, 0);
+
+	/**
+	 * Vector with 0,1 values as a frozen shared object.
+	 * Be careful not to try and change it.
+	 */
 	public static readonly upReadonly = new Vector2(0, -1);
+
+	/**
+	 * Vector with 0,-1 values as a frozen shared object.
+	 * Be careful not to try and change it.
+	 */
 	public static readonly downReadonly = new Vector2(0, 1);
 
 	public x: number;
