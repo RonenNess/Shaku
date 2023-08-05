@@ -155,7 +155,7 @@ export default class Rectangle {
 	 * Convert to string.
 	 */
 	public string(): string {
-		return this.x + ',' + this.y + ',' + this.width + ',' + this.height;
+		return this.x + "," + this.y + "," + this.width + "," + this.height;
 	}
 
 	/**
@@ -301,7 +301,7 @@ export default class Rectangle {
 	 * @returns resized rectangle.
 	 */
 	public resize(amount: number | Vector2): Rectangle {
-		if(typeof amount === 'number') {
+		if(typeof amount === "number") {
 			amount = new Vector2(amount, amount);
 		}
 		return new Rectangle(this.x - amount.x / 2, this.y - amount.y / 2, this.width + amount.x, this.height + amount.y);

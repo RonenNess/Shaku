@@ -1,3 +1,3 @@
-import * as sfx from './sfx';
+import * as sfx from "./sfx";
 
 export default sfx;

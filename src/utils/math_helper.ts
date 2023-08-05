@@ -44,7 +44,7 @@ export default class MathHelper {
 	/**
 	 * Make a number a multiply of another number by rounding it up.
 	 * @param numToRound Number to round up.
-	 * @param multiple Number to make 'numToRound' a multiply of.
+	 * @param multiple Number to make "numToRound" a multiply of.
 	 * @returns Result number.
 	 */
 	public static roundToMultiple(numToRound: number, multiple: number): number {

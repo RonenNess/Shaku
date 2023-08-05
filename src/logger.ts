@@ -13,7 +13,7 @@ class Logger {
 	private _throwErrors: boolean;
 
 	public constructor(name: string) {
-		this._nameHeader = ('[' + _application + '][' + name + ']').padEnd(25, ' ');
+		this._nameHeader = ("[" + _application + "][" + name + "]").padEnd(25, " ");
 		this._throwErrors = false;
 	}
 
@@ -135,7 +135,7 @@ const LoggerModule = {
 
 	/**
 	 * Set logger application name.
-	 * @param {String} name Set application name to replace the 'Shaku' in the headers.
+	 * @param {String} name Set application name to replace the "Shaku" in the headers.
 	 */
 	setApplicationName: function(name) {
 		_application = name;

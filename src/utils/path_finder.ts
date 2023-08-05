@@ -82,7 +82,7 @@ function _ImpFindPath<P extends Vector2 | Vector3>(grid: IGrid, startPos: P, tar
 	function getOrCreateNode(position) {
 
 		// get from cache
-		let key = (position.x + ',' + position.y);
+		let key = (position.x + "," + position.y);
 		if(nodesCache[key]) {
 			return nodesCache[key];
 		}

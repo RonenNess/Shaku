@@ -48,7 +48,7 @@ export default class TilemapShape extends CollisionShape {
 		if(index.x < 0 || index.y < 0 || index.x >= this._gridSize.x || index.y >= this._gridSize.y) {
 			throw new Error(`Collision tile with index ${index.x},${index.y} is out of bounds!`);
 		}
-		return index.x + ',' + index.y;
+		return index.x + "," + index.y;
 	}
 
 	/**
@@ -84,7 +84,7 @@ export default class TilemapShape extends CollisionShape {
 	 */
 	getTileAt(position) {
 		let index = new Vector2(Math.floor(position.x / this._tileSize.x), Math.floor(position.y / this._tileSize.y));
-		let key = index.x + ',' + index.y;
+		let key = index.x + "," + index.y;
 		return this._tiles[key] || null;
 	}
 
@@ -100,7 +100,7 @@ export default class TilemapShape extends CollisionShape {
 		let endIndex = new Vector2(Math.floor(bottomRight.x / this._tileSize.x), Math.floor(bottomRight.y / this._tileSize.y));
 		for(let i = startIndex.x; i <= endIndex.x; ++i) {
 			for(let j = startIndex.y; j <= endIndex.y; ++j) {
-				let key = i + ',' + j;
+				let key = i + "," + j;
 				let tile = this._tiles[key];
 				if(tile && (callback(tile) === false)) {
 					return;

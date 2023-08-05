@@ -1,5 +1,6 @@
 import TextureAssetBase from "../../assets/texture_asset_base";
 import _logger from "../../logger";
+import { Rectangle } from "../../utils";
 import Vector2 from "../../utils/vector2";
 import Vector3 from "../../utils/vector3";
 import DrawBatch from "./draw_batch";
@@ -11,7 +12,7 @@ const _loggggger = _logger.getLogger("gfx - sprite - batch"); // TODO
 
 
 
-import { Rectangle } from "../../utils";
+
 
 /**
  * Sprite batch renderer.
@@ -161,7 +162,7 @@ class SpriteBatch extends SpriteBatchBase {
 	 * @param {Rectangle} sourceRectangle Source rectangle, or undefined to use the entire texture.
 	 * @param {Color|Array<Color>|undefined} color Tint color, or undefined to not change color. If array is set, will assign each color to different vertex, starting from top-left.
 	 * @param {Number=} rotation Rotate sprite.
-	 * @param {Vector2=} origin Drawing origin. This will be the point at 'position' and rotation origin.
+	 * @param {Vector2=} origin Drawing origin. This will be the point at "position" and rotation origin.
 	 * @param {Vector2=} skew Skew the drawing corners on X and Y axis, around the origin point.
 	 */
 	drawQuad(texture, position, size, sourceRectangle, color, rotation, origin, skew) {
@@ -185,7 +186,7 @@ class SpriteBatch extends SpriteBatchBase {
 	 * @param {Rectangle|Vector2} destRect Destination rectangle to draw on. If vector is provided, will draw from 0,0 with vector as size.
 	 * @param {Rectangle=} sourceRect Source rectangle, or undefined to use the entire texture.
 	 * @param {Color|Array<Color>|undefined} color Tint color, or undefined to not change color. If array is set, will assign each color to different vertex, starting from top-left.
-	 * @param {Vector2=} origin Drawing origin. This will be the point at 'position' and rotation origin.
+	 * @param {Vector2=} origin Drawing origin. This will be the point at "position" and rotation origin.
 	 */
 	drawRectangle(texture, destRect, sourceRect, color, origin) {
 		if((destRect.isVector2) || (destRect.isVector3)) {

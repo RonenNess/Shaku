@@ -3,7 +3,7 @@ const _autoAnimators = [];
 /**
  * Implement an animator object that change values over time using Linear Interpolation.
  * Usage example:
- * (new Animator(sprite)).from({'position.x': 0}).to({'position.x': 100}).duration(1).play();
+ * (new Animator(sprite)).from({"position.x": 0}).to({"position.x": 100}).duration(1).play();
  */
 class Animator {
 	/**
@@ -70,17 +70,17 @@ class Animator {
 			if(fromValue === undefined) {
 				this._fromValues[key] = fromValue = this.#_getValueFromTarget(keyParts);
 				if(fromValue === undefined) {
-					throw new Error(`Animator issue: missing origin value for key '${key}' and property not found in target object.`);
+					throw new Error(`Animator issue: missing origin value for key "${key}" and property not found in target object.`);
 				}
 			}
 
 			// if to-value is a method, call it
-			if(typeof toValue === 'function') {
+			if(typeof toValue === "function") {
 				toValue = toValue();
 			}
 
 			// if from-value is a method, call it
-			if(typeof fromValue === 'function') {
+			if(typeof fromValue === "function") {
 				fromValue = toValue();
 			}
 
@@ -89,14 +89,14 @@ class Animator {
 
 			// calculate new value
 			let newValue = null;
-			if(typeof fromValue === 'number') {
+			if(typeof fromValue === "number") {
 				newValue = lerp(fromValue, toValue, a);
 			}
 			else if(fromValue.constructor.lerp) {
 				newValue = fromValue.constructor.lerp(fromValue, toValue, a);
 			}
 			else {
-				throw new Error(`Animator issue: from-value for key '${key}' is not a number, and its class type don't implement a 'lerp()' method!`);
+				throw new Error(`Animator issue: from-value for key "${key}" is not a number, and its class type don't implement a 'lerp()' method!`);
 			}
 
 			// set new value
@@ -105,7 +105,7 @@ class Animator {
 
 		// if repeating, reset progress
 		if(this._repeats && this._progress >= 1) {
-			if(typeof this._repeats === 'number') { this._repeats--; }
+			if(typeof this._repeats === "number") { this._repeats--; }
 			this._progress = 0;
 			if(this._repeatsWithReverseAnimation) {
 				this.flipFromAndTo();
@@ -152,7 +152,7 @@ class Animator {
 	 * @private
 	 */
 	#_validateValueType(value) {
-		return (typeof value === 'number') || (typeof value === 'function') || (value && value.constructor && value.constructor.lerp);
+		return (typeof value === "number") || (typeof value === "function") || (value && value.constructor && value.constructor.lerp);
 	}
 
 	/**
@@ -198,9 +198,9 @@ class Animator {
 	}
 
 	/**
-	 * Set 'from' values.
+	 * Set "from" values.
 	 * You don't have to provide 'from' values, when a value is not set the animator will just take whatever was set in target when first update is called.
-	 * @param {*} values Values to set as 'from' values.
+	 * @param {*} values Values to set as "from" values.
 	 * Key = property name in target (can contain dots for nested), value = value to start animation from.
 	 * @returns {Animator} this.
 	 */
@@ -216,8 +216,8 @@ class Animator {
 	}
 
 	/**
-	 * Set 'to' values, ie the result when animation ends.
-	 * @param {*} values Values to set as 'to' values.
+	 * Set "to" values, ie the result when animation ends.
+	 * @param {*} values Values to set as "to" values.
 	 * Key = property name in target (can contain dots for nested), value = value to start animation from.
 	 * @returns {Animator} this.
 	 */
@@ -226,14 +226,14 @@ class Animator {
 			if(!this.#_validateValueType(values[key])) {
 				throw new Error("Illegal value type to use with Animator! All values must be either numbers, methods, or a class instance that has a static lerp() method.");
 			}
-			this._toValues[key] = { keyParts: key.split('.'), value: values[key] };
+			this._toValues[key] = { keyParts: key.split("."), value: values[key] };
 		}
 		this._originalTo = null;
 		return this;
 	}
 
 	/**
-	 * Flip between the 'from' and the 'to' states.
+	 * Flip between the "from" and the "to" states.
 	 */
 	flipFromAndTo() {
 		let newFrom = {};
@@ -244,7 +244,7 @@ class Animator {
 
 		for(let key in this._toValues) {
 			newFrom[key] = this._toValues[key].value;
-			newTo[key] = { keyParts: key.split('.'), value: this._fromValues[key] };
+			newTo[key] = { keyParts: key.split("."), value: this._fromValues[key] };
 		}
 
 		this._fromValues = newFrom;

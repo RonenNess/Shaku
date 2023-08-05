@@ -1,8 +1,5 @@
-
-
-import { Rectangle } from "../../utils";
-
 import _logger from "../../logger";
+import { Rectangle } from "../../utils";
 import Matrix from "../../utils/matrix";
 import Vector2 from "../../utils/vector2";
 import Vector3 from "../../utils/vector3";
@@ -242,7 +239,7 @@ class ShapesBatch extends DrawBatch {
 	 * @param {Vector2|Vector3|Number} size Drawing size. If vector3 is provided, will pass z value to the shader code position attribute for the bottom vertices, as position.z + size.z.
 	 * @param {Color|Array<Color>|undefined=} color Rectangle color, or undefined to not change color. If array is set, will assign each color to different vertex, starting from top-left.
 	 * @param {Number=} rotation Rotate rectangle.
-	 * @param {Vector2=} origin Drawing origin. This will be the point at 'position' and rotation origin.
+	 * @param {Vector2=} origin Drawing origin. This will be the point at "position" and rotation origin.
 	 * @param {Vector2=} skew Skew the drawing corners on X and Y axis, around the origin point.
 	 */
 	drawQuad(position, size, color, rotation, origin, skew) {
@@ -264,7 +261,7 @@ class ShapesBatch extends DrawBatch {
 	 * @param {Rectangle|Vector2} destRect Destination rectangle to draw on. If vector is provided, will draw from 0,0 with vector as size.
 	 * @param {Color|Array<Color>|undefined=} color Rectangle color, or undefined to not change color. If array is set, will assign each color to different vertex, starting from top-left.
 	 * @param {Number=} rotation Rotate rectangle.
-	 * @param {Vector2=} origin Drawing origin. This will be the point at 'position' and rotation origin.
+	 * @param {Vector2=} origin Drawing origin. This will be the point at "position" and rotation origin.
 	 */
 	drawRectangle(destRect, color, rotation, origin) {
 		if((destRect.isVector2) || (destRect.isVector3)) {
@@ -306,7 +303,7 @@ class ShapesBatch extends DrawBatch {
 		if(!ratio) {
 			ratio = Vector2.oneReadonly;
 		}
-		else if(typeof ratio === 'number') {
+		else if(typeof ratio === "number") {
 			ratio = new Vector2(1, ratio);
 		}
 

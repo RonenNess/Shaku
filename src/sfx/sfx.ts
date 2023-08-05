@@ -75,7 +75,7 @@ class Sfx implements IManager {
 
 	/**
 	 * Play a sound once without any special properties and without returning a sound instance.
-	 * Its a more convinient method to play sounds, but less efficient than 'createSound()' if you want to play multiple times.
+	 * Its a more convinient method to play sounds, but less efficient than "createSound()" if you want to play multiple times.
 	 * @example
 	 * let sound = await Shaku.assets.loadSound("assets/my_sound.ogg");
 	 * Shaku.sfx.play(sound, 0.75);

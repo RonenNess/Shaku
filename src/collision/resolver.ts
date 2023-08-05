@@ -65,7 +65,7 @@ class CollisionResolver {
 	testWithHandler(first, second, handler) {
 		// missing handler?
 		if(!handler) {
-			_logger.warn(`Missing collision handler for shapes '${first.shapeId}' and '${second.shapeId}'.`);
+			_logger.warn(`Missing collision handler for shapes "${first.shapeId}" and "${second.shapeId}".`);
 			return null;
 		}
 

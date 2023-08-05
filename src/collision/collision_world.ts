@@ -1,10 +1,10 @@
+import gfx from "./../gfx";
 import ShapesBatch from "../gfx/draw_batches/shapes_batch";
 import _logger from "../logger";
 import Circle from "../utils/circle";
 import Color from "../utils/color";
 import Rectangle from "../utils/rectangle";
 import Vector2 from "../utils/vector2";
-import gfx from "./../gfx";
 import CollisionResolver from "./resolver";
 import CollisionTestResult from "./result";
 import CircleShape from "./shapes/circle";
@@ -41,8 +41,8 @@ class CollisionWorld {
 		this.resolver = resolver;
 
 		// set grid cell size
-		if(typeof gridCellSize === 'undefined') { gridCellSize = new Vector2(512, 512); }
-		else if(typeof gridCellSize === 'number') { gridCellSize = new Vector2(gridCellSize, gridCellSize); }
+		if(typeof gridCellSize === "undefined") { gridCellSize = new Vector2(512, 512); }
+		else if(typeof gridCellSize === "number") { gridCellSize = new Vector2(gridCellSize, gridCellSize); }
 		else { gridCellSize = gridCellSize.clone(); }
 		this._gridCellSize = gridCellSize;
 
@@ -121,7 +121,7 @@ class CollisionWorld {
 	 * @private
 	 */
 	#_getCell(i, j) {
-		let key = i + ',' + j;
+		let key = i + "," + j;
 		let ret = this._grid[key];
 		if(!ret) {
 			this._stats.createdGridCells++;
@@ -176,7 +176,7 @@ class CollisionWorld {
 					}
 
 					// remove from cell
-					let key = i + ',' + j;
+					let key = i + "," + j;
 					let currSet = this._grid[key];
 					if(currSet) {
 						currSet.delete(shape);
@@ -276,7 +276,7 @@ class CollisionWorld {
 			let maxy = shape._worldRange[3];
 			for(let i = minx; i < maxx; ++i) {
 				for(let j = miny; j < maxy; ++j) {
-					let key = i + ',' + j;
+					let key = i + "," + j;
 					let currSet = this._grid[key];
 					if(currSet) {
 						currSet.delete(shape);
@@ -323,7 +323,7 @@ class CollisionWorld {
 			for(let j = miny; j < maxy; ++j) {
 
 				// get current grid chunk
-				let key = i + ',' + j;
+				let key = i + "," + j;
 				let currSet = this._grid[key];
 
 				// iterate shapes in grid chunk
@@ -550,7 +550,7 @@ class CollisionWorld {
 			for(let j = miny; j <= maxy; ++j) {
 
 				// get current cell
-				let cell = this._grid[i + ',' + j];
+				let cell = this._grid[i + "," + j];
 
 				// draw grid cell
 				let color = (cell && cell.size) ? gridHighlitColor : gridColor;

@@ -17,13 +17,13 @@ class Camera3D extends Camera {
 
 		/**
 		 * Camera projection matrix.
-		 * You can set it manually, or use 'orthographicOffset' / 'orthographic' / 'perspective' helper functions.
+		 * You can set it manually, or use "orthographicOffset" / "orthographic" / "perspective" helper functions.
 		 */
 		this.projection = null;
 
 		/**
 		 * Camera view matrix.
-		 * You can set it manually, or use 'setViewLookat' helper function.
+		 * You can set it manually, or use "setViewLookat" helper function.
 		 */
 		this.view = null;
 

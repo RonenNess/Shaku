@@ -11,7 +11,7 @@ export default class Storage {
 
 	/**
 	 * Create the storage.
-	 * @param adapters List of storage adapters to pick from. Will use the first option returning 'isValid()' = true.
+	 * @param adapters List of storage adapters to pick from. Will use the first option returning "isValid()" = true.
 	 * @param prefix Optional prefix to add to all keys under this storage instance.
 	 * @param valuesAsBase64 If true, will encode and decode data as base64.
 	 * @param keysAsBase64 If true, will encode and decode keys as base64.
@@ -39,7 +39,7 @@ export default class Storage {
 		this.keysAsBase64 = Boolean(keysAsBase64);
 
 		// set prefix
-		this._keysPrefix = 'shaku_storage_' + (prefix || '') + '_';
+		this._keysPrefix = "shaku_storage_" + (prefix || "") + "_";
 	}
 
 	/**
@@ -78,7 +78,7 @@ export default class Storage {
 	 * @returns True if key exists in storage.
 	 */
 	public exists(key: string): boolean {
-		if(typeof key !== 'string') { throw new Error("Key must be a string!"); }
+		if(typeof key !== "string") { throw new Error("Key must be a string!"); }
 		key = this.normalizeKey(key);
 		return this._adapter.exists(key);
 	}
@@ -147,7 +147,7 @@ export default class Storage {
 	 */
 	public setItem(key: string, value: string): void {
 		// sanity and normalize key
-		if(typeof key !== 'string') { throw new Error("Key must be a string!"); }
+		if(typeof key !== "string") { throw new Error("Key must be a string!"); }
 		key = this.normalizeKey(key);
 
 		// write value with metadata
@@ -161,7 +161,7 @@ export default class Storage {
 	 */
 	public getItem(key: string): object | null {
 		// sanity and normalize key
-		if(typeof key !== 'string') { throw new Error("Key must be a string!"); }
+		if(typeof key !== "string") { throw new Error("Key must be a string!"); }
 		key = this.normalizeKey(key);
 
 		// read value from metadata
@@ -192,7 +192,7 @@ export default class Storage {
 	 * @param key Key to delete.
 	 */
 	public deleteItem(key: string): void {
-		if(typeof key !== 'string') { throw new Error("Key must be a string!"); }
+		if(typeof key !== "string") { throw new Error("Key must be a string!"); }
 		key = this.normalizeKey(key);
 		this._adapter.deleteItem(key);
 	}

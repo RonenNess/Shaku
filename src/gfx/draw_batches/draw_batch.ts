@@ -1,10 +1,7 @@
-
-
-import { BlendModes } from "../blend_modes";
-import { BuffersUsage } from "./buffers_usage";
-
 import _logger from "../../logger";
 import Matrix from "../../utils/matrix";
+import { BlendModes } from "../blend_modes";
+import { BuffersUsage } from "./buffers_usage";
 
 const _loggggger = _logger.getLogger("gfx - draw - batch"); // TODO
 
@@ -20,13 +17,13 @@ class DrawBatch {
 		// set default usage mode
 		this.setBuffersUsage(BuffersUsage.STREAM_DRAW);
 
-		// will have values after calling 'begin()'
+		// will have values after calling "begin()"
 		this.__currDrawingParams = null;
 
 		// if true, it means the buffers have been frozen and can't be changed
 		this.__staticBuffers = false;
 
-		// are we currently between 'begin()' and 'end()' calls
+		// are we currently between "begin()" and "end()" calls
 		this.__drawing = false;
 	}
 
@@ -35,7 +32,7 @@ class DrawBatch {
 	 * This means you won't be able to change the drawings in this batch once end() is called, but you'll be able to redraw
 	 * the batch with different effects and transformations without copying any data, and much faster.
 	 * This also free up some internal arrays, thus reducing the memory used for this batch.
-	 * Note: must be called after 'begin()' and right before the 'end()' call.
+	 * Note: must be called after "begin()" and right before the "end()" call.
 	 */
 	makeStatic() {
 		this.__validateBatch();
@@ -151,7 +148,7 @@ class DrawBatch {
 		// sanity - batch is not destoryed
 		this.__validateBatch();
 
-		// we might still have values in this.__currDrawingParams if 'preserve buffers' is true.
+		// we might still have values in this.__currDrawingParams if "preserve buffers" is true.
 		// if so, we extract last texture from it
 		let lastTexture = this.__currDrawingParams ? (this.__currDrawingParams.texture || null) : null;
 
@@ -219,7 +216,7 @@ class DrawBatch {
 
 	/**
 	 * Clear this buffer from any drawings in it.
-	 * Called internally if 'preserveBuffers' is not true.
+	 * Called internally if "preserveBuffers" is not true.
 	 */
 	clear() {
 		if(this.__staticBuffers) {

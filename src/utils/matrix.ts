@@ -301,7 +301,7 @@ export default class Matrix {
 	 * Creates a look-at matrix - a matrix rotated to look at a given position.
 	 * @param eyePosition Eye position.
 	 * @param targetPosition Position the matrix should look at.
-	 * @param upVector Optional vector representing 'up' direction.
+	 * @param upVector Optional vector representing "up" direction.
 	 * @returns a new matrix with result.
 	 */
 	public static createLookAt(eyePosition: Vector3, targetPosition: Vector3, upVector?: Vector3): Matrix {

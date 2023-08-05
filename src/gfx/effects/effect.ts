@@ -3,14 +3,16 @@ import _logger from "../../logger";
 import Color from "../../utils/color";
 import Matrix from "../../utils/matrix";
 import Vector2 from "../../utils/vector2";
+import { TextureFilterModes } from "../texture_filter_modes";
+import { TextureWrapMode, TextureWrapModes } from "../texture_wrap_modes";
 
 const _loggggger = _logger.getLogger("gfx - effect"); // TODO
 
 
 
 
-import { TextureFilterModes } from "../texture_filter_modes";
-import { TextureWrapMode, TextureWrapModes } from "../texture_wrap_modes";
+
+
 
 // currently applied effect
 let _currEffect = null;
@@ -83,14 +85,14 @@ class Effect {
 			let uniformLocation = this._gl.getUniformLocation(this._program, uniform);
 			if(uniformLocation === -1) {
 				_logger.error("Could not find uniform: " + uniform);
-				throw new Error(`Uniform named '${uniform}' was not found in shader code!`);
+				throw new Error(`Uniform named "${uniform}" was not found in shader code!`);
 			}
 
 			// get gl setter method
 			let uniformData = this.uniformTypes[uniform];
 			if(!UniformTypes._values.has(uniformData.type)) {
 				_logger.error("Uniform has invalid type: " + uniformData.type);
-				throw new Error(`Uniform '${uniform}' have illegal value type '${uniformData.type}'!`);
+				throw new Error(`Uniform "${uniform}" have illegal value type "${uniformData.type}"!`);
 			}
 
 			// build setter method for matrices
@@ -115,7 +117,7 @@ class Effect {
 						}
 						index = index || 0;
 						const glTexture = texture._glTexture || texture;
-						const textureCode = _this._gl['TEXTURE' + (index || 0)];
+						const textureCode = _this._gl["TEXTURE" + (index || 0)];
 						_this._gl.activeTexture(textureCode);
 						_this._gl.bindTexture(_this._gl.TEXTURE_2D, glTexture);
 						_this._gl.uniform1i(location, (index || 0));
@@ -174,7 +176,7 @@ class Effect {
 			let attributeLocation = this._gl.getAttribLocation(this._program, attr);
 			if(attributeLocation === -1) {
 				_logger.error("Could not find attribute: " + attr);
-				throw new Error(`Attribute named '${attr}' was not found in shader code!`);
+				throw new Error(`Attribute named "${attr}" was not found in shader code!`);
 			}
 
 			// get attribute data
@@ -335,7 +337,7 @@ class Effect {
 
 	/**
 	 * Get depth func to use when rendering using this effect.
-	 * Use 'DepthFuncs' to get options.
+	 * Use "DepthFuncs" to get options.
 	 */
 	get depthFunc() {
 		return Effect.DepthFuncs.LessEqual;
@@ -387,7 +389,7 @@ class Effect {
 
 	/**
 	 * Set the main texture.
-	 * Note: this will only work for effects that utilize the 'MainTexture' uniform.
+	 * Note: this will only work for effects that utilize the "MainTexture" uniform.
 	 * @param {TextureAssetBase} texture Texture to set.
 	 * @returns {Boolean} True if texture was changed, false if there was no need to change the texture.
 	 */
@@ -426,7 +428,7 @@ class Effect {
 
 	/**
 	 * Set the main tint color.
-	 * Note: this will only work for effects that utilize the 'Color' uniform.
+	 * Note: this will only work for effects that utilize the "Color" uniform.
 	 * @param {Color} color Color to set.
 	 */
 	setColor(color) {
@@ -440,7 +442,7 @@ class Effect {
 
 	/**
 	 * Set the projection matrix uniform.
-	 * Note: this will only work for effects that utilize the 'Projection' uniform.
+	 * Note: this will only work for effects that utilize the "Projection" uniform.
 	 * @param {Matrix} matrix Matrix to set.
 	 */
 	setProjectionMatrix(matrix) {
@@ -454,7 +456,7 @@ class Effect {
 
 	/**
 	 * Set the world matrix uniform.
-	 * Note: this will only work for effects that utilize the 'World' uniform.
+	 * Note: this will only work for effects that utilize the "World" uniform.
 	 * @param {Matrix} matrix Matrix to set.
 	 */
 	setWorldMatrix(matrix) {
@@ -466,7 +468,7 @@ class Effect {
 
 	/**
 	 * Set the view matrix uniform.
-	 * Note: this will only work for effects that utilize the 'View' uniform.
+	 * Note: this will only work for effects that utilize the "View" uniform.
 	 * @param {Matrix} matrix Matrix to set.
 	 */
 	setViewMatrix(matrix) {
@@ -478,7 +480,7 @@ class Effect {
 
 	/**
 	 * Set outline params.
-	 * Note: this will only work for effects that utilize the 'OutlineWeight' and 'OutlineColor' uniforms.
+	 * Note: this will only work for effects that utilize the "OutlineWeight" and "OutlineColor" uniforms.
 	 * @param {Number} weight Outline weight, range from 0.0 to 1.0.
 	 * @param {Color} color Outline color.
 	 */
@@ -492,7 +494,7 @@ class Effect {
 
 	/**
 	 * Set a factor to normalize UV values to be 0-1.
-	 * Note: this will only work for effects that utilize the 'UvNormalizationFactor' uniform.
+	 * Note: this will only work for effects that utilize the "UvNormalizationFactor" uniform.
 	 * @param {Vector2} factor Normalize UVs factor.
 	 */
 	setUvNormalizationFactor(factor) {
@@ -612,7 +614,7 @@ function compileShader(effectClass, gl, code, type) {
 	gl.compileShader(shader);
 
 	if(!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-		_logger.error(`Error compiling ${type === gl.VERTEX_SHADER ? "vertex" : "fragment"} shader for effect '${effectClass.name}':`);
+		_logger.error(`Error compiling ${type === gl.VERTEX_SHADER ? "vertex" : "fragment"} shader for effect "${effectClass.name}":`);
 		_logger.error(gl.getShaderInfoLog(shader));
 		throw new Error("Failed to compile a shader.");
 	}
@@ -624,33 +626,33 @@ function compileShader(effectClass, gl, code, type) {
  * Uniform types enum.
  */
 enum UniformTypes {
-	TEXTURE = 'texture',
-	MATRIX = 'uniformMatrix4fv',
-	COLOR = 'uniform4fv',
+	TEXTURE = "texture",
+	MATRIX = "uniformMatrix4fv",
+	COLOR = "uniform4fv",
 
-	FLOAT = 'uniform1f',
-	FLOAT_ARRAY = 'uniform1fv',
+	FLOAT = "uniform1f",
+	FLOAT_ARRAY = "uniform1fv",
 
-	INT = 'uniform1i',
-	INT_ARRAY = 'uniform1iv',
+	INT = "uniform1i",
+	INT_ARRAY = "uniform1iv",
 
-	FLOAT2 = 'uniform2f',
-	FLOAT2_ARRAY = 'uniform2fv',
+	FLOAT2 = "uniform2f",
+	FLOAT2_ARRAY = "uniform2fv",
 
-	INT2 = 'uniform2i',
-	INT2_ARRAY = 'uniform2iv',
+	INT2 = "uniform2i",
+	INT2_ARRAY = "uniform2iv",
 
-	FLOAT3 = 'uniform3f',
-	FLOAT3_ARRAY = 'uniform3fv',
+	FLOAT3 = "uniform3f",
+	FLOAT3_ARRAY = "uniform3fv",
 
-	INT3 = 'uniform3i',
-	INT3_ARRAY = 'uniform3iv',
+	INT3 = "uniform3i",
+	INT3_ARRAY = "uniform3iv",
 
-	FLOAT4 = 'uniform4f',
-	FLOAT4_ARRAY = 'uniform4fv',
+	FLOAT4 = "uniform4f",
+	FLOAT4_ARRAY = "uniform4fv",
 
-	INT4 = 'uniform4i',
-	INT4_ARRAY = 'uniform4iv',
+	INT4 = "uniform4i",
+	INT4_ARRAY = "uniform4iv",
 };
 
 // attach uniform types to effect
@@ -661,25 +663,25 @@ Effect.UniformTypes = UniformTypes;
  * This is a set of commonly used uniforms and their names inside the shader code.
  *
  * Every bind here comes with a built-in method to set and is used internally by Shaku.
- * For example, if you want to include outline properties in your effect, you can use the 'OutlineWeight' and 'OutlineColor' binds (with matching name in the shader code).
+ * For example, if you want to include outline properties in your effect, you can use the "OutlineWeight" and "OutlineColor" binds (with matching name in the shader code).
  * When you use the built-in binds, Shaku will know how to set them itself when relevant, for example in text rendering Shaku will use the outline binds if they exist.
  *
  * If you don't use the built-in binds you can just call your uniforms however you like, but you'll need to set them all manually.
  * Shaku will not know how to set them.
  */
 Effect.UniformBinds = {
-	MainTexture: 'mainTexture',                         // bind uniform to be used as the main texture.
-	Color: 'color',                                     // bind uniform to be used as a main color.
-	Projection: 'projection',                           // bind uniform to be used as the projection matrix.
-	World: 'world',                                     // bind uniform to be used as the world matrix.
-	View: 'view',                                       // bind uniform to be used as the view matrix.
-	UvOffset: 'uvOffset',                               // bind uniform to be used as UV offset.
-	UvScale: 'uvScale',                                 // bind uniform to be used as UV scale.
-	OutlineWeight: 'outlineWeight',                     // bind uniform to be used as outline weight.
-	OutlineColor: 'outlineColor',                       // bind uniform to be used as outline color.
-	UvNormalizationFactor: 'uvNormalizationFactor',     // bind uniform to be used as factor to normalize uv values to be 0-1.
-	TextureWidth: 'textureWidth',                       // bind uniform to be used as texture width in pixels.
-	TextureHeight: 'textureHeight'                      // bind uniform to be used as texture height in pixels.
+	MainTexture: "mainTexture",                         // bind uniform to be used as the main texture.
+	Color: "color",                                     // bind uniform to be used as a main color.
+	Projection: "projection",                           // bind uniform to be used as the projection matrix.
+	World: "world",                                     // bind uniform to be used as the world matrix.
+	View: "view",                                       // bind uniform to be used as the view matrix.
+	UvOffset: "uvOffset",                               // bind uniform to be used as UV offset.
+	UvScale: "uvScale",                                 // bind uniform to be used as UV scale.
+	OutlineWeight: "outlineWeight",                     // bind uniform to be used as outline weight.
+	OutlineColor: "outlineColor",                       // bind uniform to be used as outline color.
+	UvNormalizationFactor: "uvNormalizationFactor",     // bind uniform to be used as factor to normalize uv values to be 0-1.
+	TextureWidth: "textureWidth",                       // bind uniform to be used as texture width in pixels.
+	TextureHeight: "textureHeight"                      // bind uniform to be used as texture height in pixels.
 };
 Object.freeze(Effect.UniformBinds);
 
@@ -687,12 +689,12 @@ Object.freeze(Effect.UniformBinds);
  * Define attribute types.
  */
 Effect.AttributeTypes = {
-	Byte: 'BYTE',
-	Short: 'SHORT',
-	UByte: 'UNSIGNED_BYTE',
-	UShort: 'UNSIGNED_SHORT',
-	Float: 'FLOAT',
-	HalfFloat: 'HALF_FLOAT',
+	Byte: "BYTE",
+	Short: "SHORT",
+	UByte: "UNSIGNED_BYTE",
+	UShort: "UNSIGNED_SHORT",
+	Float: "FLOAT",
+	HalfFloat: "HALF_FLOAT",
 };
 Object.freeze(Effect.AttributeTypes);
 
@@ -701,12 +703,12 @@ Object.freeze(Effect.AttributeTypes);
  * If an effect support one or more of these attributes, Shaku will know how to fill them automatically.
  */
 Effect.AttributeBinds = {
-	Position: 'position',  // bind attribute to be used for vertices position array.
-	TextureCoords: 'uv',   // bind attribute to be used for texture coords array.
-	Colors: 'color',       // bind attribute to be used for vertices colors array.
-	Normals: 'normal',     // bind attribute to be used for vertices normals array.
-	Binormals: 'binormal', // bind attribute to be used for vertices binormals array.
-	Tangents: 'tangent',   // bind attribute to be used for vertices tangents array.
+	Position: "position",  // bind attribute to be used for vertices position array.
+	TextureCoords: "uv",   // bind attribute to be used for texture coords array.
+	Colors: "color",       // bind attribute to be used for vertices colors array.
+	Normals: "normal",     // bind attribute to be used for vertices normals array.
+	Binormals: "binormal", // bind attribute to be used for vertices binormals array.
+	Tangents: "tangent",   // bind attribute to be used for vertices tangents array.
 };
 Object.freeze(Effect.AttributeBinds);
 
@@ -716,7 +718,7 @@ Object.freeze(Effect.AttributeBinds);
  * @param {TextureFilterModes} filter Texture filter to set.
  */
 function _setTextureFilter(gl, filter) {
-	if(!TextureFilterModes._values.has(filter)) { throw new Error("Invalid texture filter mode! Please pick a value from 'TextureFilterModes'."); }
+	if(!TextureFilterModes._values.has(filter)) { throw new Error(`Invalid texture filter mode! Please pick a value from "TextureFilterModes".`); }
 	let glMode = gl[filter];
 	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, glMode);
 	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, glMode);

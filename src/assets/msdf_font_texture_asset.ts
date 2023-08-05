@@ -34,7 +34,7 @@ export default class MsdfFontTextureAsset extends FontTextureAsset {
 	 * @param params Additional params. Possible values are:
 	 * - jsonUrl: mandatory url for the font's json metadata (generated via msdf-bmfont-xml, for example)
 	 * - textureUrl: mandatory url for the font's texture atlas (generated via msdf-bmfont-xml, for example)
-	 * - missingCharPlaceholder (default='?'): character to use for missing characters.
+	 * - missingCharPlaceholder (default="?"): character to use for missing characters.
 	 *
 	 * @returns Promise to resolve when fully loaded.
 	 */
@@ -42,7 +42,7 @@ export default class MsdfFontTextureAsset extends FontTextureAsset {
 		return new Promise(async (resolve, reject) => {
 
 			if(!params || !params.jsonUrl || !params.textureUrl) {
-				return reject("When loading an msdf font you must provide params with a 'jsonUrl' and a 'textureUrl'!");
+				return reject("When loading an msdf font you must provide params with a "jsonUrl" and a "textureUrl"!");
 			}
 
 			// TODO: allow atlas with multiple textures
@@ -61,7 +61,7 @@ export default class MsdfFontTextureAsset extends FontTextureAsset {
 			}
 
 			// set default missing char placeholder + store it
-			this._placeholderChar = (params.missingCharPlaceholder || '?')[0];
+			this._placeholderChar = (params.missingCharPlaceholder || "?")[0];
 
 			if(!atlasMetadata.info.charset.includes(this._placeholderChar)) {
 				throw new Error("The atlas' charset doesn't include the given placeholder character");

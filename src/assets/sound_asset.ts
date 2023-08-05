@@ -26,8 +26,8 @@ export default class SoundAsset extends Asset {
 
 			// create request to load audio file
 			var request = new XMLHttpRequest();
-			request.open('GET', this.url, true);
-			request.responseType = 'arraybuffer';
+			request.open("GET", this.url, true);
+			request.responseType = "arraybuffer";
 
 			// on load, validate audio content
 			request.onload = () => {

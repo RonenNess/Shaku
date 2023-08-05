@@ -10,8 +10,8 @@ import MsdfFontTextureAsset from "./msdf_font_texture_asset";
 import TextureAsset from "./texture_asset";
 import { default as TextureAtlas, default as TextureAtlasAsset } from "./texture_atlas_asset";
 
-// add a 'isXXX' property to all util objects, for faster alternative to 'instanceof' checks.
-// for example this will generate a 'isVector3' that will be true for all Vector3 instances.
+// add a "isXXX" property to all util objects, for faster alternative to "instanceof" checks.
+// for example this will generate a "isVector3" that will be true for all Vector3 instances.
 SoundAsset.prototype.isSoundAsset = true;
 BinaryAsset.prototype.isBinaryAsset = true;
 JsonAsset.prototype.isJsonAsset = true;
@@ -47,19 +47,19 @@ class Assets implements IManager {
 
 		/**
 		 * Optional URL root to prepend to all loaded assets URLs.
-		 * For example, if all your assets are under '/static/assets/', you can set this url as root and omit it when loading assets later.
+		 * For example, if all your assets are under "/static/assets/", you can set this url as root and omit it when loading assets later.
 		 */
-		this.root = '';
+		this.root = "";
 
 		/**
 		 * Optional suffix to add to all loaded assets URLs.
-		 * You can use this for anti-cache mechanism if you want to reload all assets. For example, you can set this value to "'?dt=' + Date.now()".
+		 * You can use this for anti-cache mechanism if you want to reload all assets. For example, you can set this value to ""?dt=" + Date.now()".
 		 */
-		this.suffix = '';
+		this.suffix = "";
 	}
 
 	/**
-	 * Wrap a URL with 'root' and 'suffix'.
+	 * Wrap a URL with "root" and "suffix".
 	 * @param url Url to wrap.
 	 * @returns Wrapped URL.
 	 */
@@ -159,7 +159,7 @@ class Assets implements IManager {
 		let cached = this._loaded[url] || null;
 		if(cached && type) {
 			if(!(cached instanceof type)) {
-				throw new Error(`Asset with URL '${url}' is already loaded, but has unexpected type (expecting ${type})!`);
+				throw new Error(`Asset with URL "${url}" is already loaded, but has unexpected type (expecting ${type})!`);
 			}
 		}
 		return cached;
@@ -182,12 +182,12 @@ class Assets implements IManager {
 		return new Promise(async (resolve, reject) => {
 
 			// load asset
-			_logger.debug(`Load asset [${typeName}] from URL '${url}'.`);
+			_logger.debug(`Load asset [${typeName}] from URL "${url}".`);
 			try {
 				await newAsset.load(params);
 			}
 			catch(e) {
-				_logger.warn(`Failed to load asset [${typeName}] from URL '${url}'.`);
+				_logger.warn(`Failed to load asset [${typeName}] from URL "${url}".`);
 				this._failedAssets.add(url);
 				return reject(e);
 			}
@@ -197,12 +197,12 @@ class Assets implements IManager {
 
 			// make sure valid
 			if(!newAsset.valid) {
-				_logger.warn(`Failed to load asset [${typeName}] from URL '${url}'.`);
+				_logger.warn(`Failed to load asset [${typeName}] from URL "${url}".`);
 				this._failedAssets.add(url);
 				return reject("Loaded asset is not valid!");
 			}
 
-			_logger.debug(`Successfully loaded asset [${typeName}] from URL '${url}'.`);
+			_logger.debug(`Successfully loaded asset [${typeName}] from URL "${url}".`);
 
 			// resolve
 			this._successfulLoadedAssetsCount++;
@@ -271,7 +271,7 @@ class Assets implements IManager {
 		let promise = new Promise(async (resolve, reject) => {
 
 			// make sure not in cache
-			if(name && this._loaded[name]) { return reject(`Asset of type '${classType.name}' to create with URL '${name}' already exist in cache!`); }
+			if(name && this._loaded[name]) { return reject(`Asset of type "${classType.name}" to create with URL "${name}" already exist in cache!`); }
 
 			// create and return
 			await initMethod(_asset);
@@ -356,7 +356,7 @@ class Assets implements IManager {
 				this._successfulLoadedAssetsCount++;
 			}
 			catch(e) {
-				_logger.warn(`Failed to create texture atlas: '${e}'.`);
+				_logger.warn(`Failed to create texture atlas: "${e}".`);
 				this._failedAssets.add(url);
 			}
 		}, true);
@@ -365,7 +365,7 @@ class Assets implements IManager {
 	/**
 	 * Load a font texture asset. If already loaded, will use cache.
 	 * @example
-	 * let fontTexture = await Shaku.assets.loadFontTexture('assets/DejaVuSansMono.ttf', {fontName: 'DejaVuSansMono'});
+	 * let fontTexture = await Shaku.assets.loadFontTexture("assets/DejaVuSansMono.ttf", {fontName: "DejaVuSansMono"});
 	 * @param {String} url Asset URL.
 	 * @param {*} params Optional params dictionary. See FontTextureAsset.load() for more details.
 	 * @returns {Promise<FontTextureAsset>} promise to resolve with asset instance, when loaded. You can access the loading asset with `.asset` on the promise.
@@ -377,7 +377,7 @@ class Assets implements IManager {
 	/**
 	 * Load a MSDF font texture asset. If already loaded, will use cache.
 	 * @example
-	 * let fontTexture = await Shaku.assets.loadMsdfFontTexture('DejaVuSansMono.font', {jsonUrl: 'assets/DejaVuSansMono.json', textureUrl: 'assets/DejaVuSansMono.png'});
+	 * let fontTexture = await Shaku.assets.loadMsdfFontTexture("DejaVuSansMono.font", {jsonUrl: "assets/DejaVuSansMono.json", textureUrl: "assets/DejaVuSansMono.png"});
 	 * @param {String} url Asset URL.
 	 * @param {*=} params Optional params dictionary. See MsdfFontTextureAsset.load() for more details.
 	 * @returns {Promise<MsdfFontTextureAsset>} promise to resolve with asset instance, when loaded. You can access the loading asset with `.asset` on the promise.
@@ -389,7 +389,7 @@ class Assets implements IManager {
 	/**
 	 * Load a json asset. If already loaded, will use cache.
 	 * @example
-	 * let jsonData = await Shaku.assets.loadJson('assets/my_json_data.json');
+	 * let jsonData = await Shaku.assets.loadJson("assets/my_json_data.json");
 	 * console.log(jsonData.data);
 	 * @param {String} url Asset URL.
 	 * @returns {Promise<JsonAsset>} promise to resolve with asset instance, when loaded. You can access the loading asset with `.asset` on the promise.
@@ -401,8 +401,8 @@ class Assets implements IManager {
 	/**
 	 * Create a new json asset. If already exist, will reject promise.
 	 * @example
-	 * let jsonData = await Shaku.assets.createJson('optional_json_data_id', {"foo": "bar"});
-	 * // you can now load this asset from anywhere in your code using 'optional_json_data_id' as url
+	 * let jsonData = await Shaku.assets.createJson("optional_json_data_id", {"foo": "bar"});
+	 * // you can now load this asset from anywhere in your code using "optional_json_data_id" as url
 	 * @param {String} name Asset name (matched to URLs when using cache). If null, will not add to cache.
 	 * @param {Object|String} data Optional starting data.
 	 * @returns {Promise<JsonAsset>} promise to resolve with asset instance, when ready. You can access the loading asset with `.asset` on the promise.
@@ -422,7 +422,7 @@ class Assets implements IManager {
 	/**
 	 * Load a binary data asset. If already loaded, will use cache.
 	 * @example
-	 * let binData = await Shaku.assets.loadBinary('assets/my_bin_data.dat');
+	 * let binData = await Shaku.assets.loadBinary("assets/my_bin_data.dat");
 	 * console.log(binData.data);
 	 * @param {String} url Asset URL.
 	 * @returns {Promise<BinaryAsset>} promise to resolve with asset instance, when loaded. You can access the loading asset with `.asset` on the promise.
@@ -434,8 +434,8 @@ class Assets implements IManager {
 	/**
 	 * Create a new binary asset. If already exist, will reject promise.
 	 * @example
-	 * let binData = await Shaku.assets.createBinary('optional_bin_data_id', [1,2,3,4]);
-	 * // you can now load this asset from anywhere in your code using 'optional_bin_data_id' as url
+	 * let binData = await Shaku.assets.createBinary("optional_bin_data_id", [1,2,3,4]);
+	 * // you can now load this asset from anywhere in your code using "optional_bin_data_id" as url
 	 * @param {String} name Asset name (matched to URLs when using cache). If null, will not add to cache.
 	 * @param {Array<Number>|Uint8Array} data Binary data to set.
 	 * @returns {Promise<BinaryAsset>} promise to resolve with asset instance, when ready. You can access the loading asset with `.asset` on the promise.

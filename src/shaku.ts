@@ -1,4 +1,4 @@
-const isBrowser = typeof window !== 'undefined';
+const isBrowser = typeof window !== "undefined";
 
 import assets from "./assets";
 import collision from "./collision";
@@ -7,11 +7,11 @@ import IManager from "./manager";
 import * as utils from "./utils";
 import GameTime from "./utils/game_time";
 
-const sfx = isBrowser ? require('./sfx') : null;
-const gfx = isBrowser ? require('./gfx') : null;
-const input = isBrowser ? require('./input') : null;
+const sfx = isBrowser ? require("./sfx") : null;
+const gfx = isBrowser ? require("./gfx") : null;
+const input = isBrowser ? require("./input") : null;
 
-const _logger = logger.getLogger('shaku');
+const _logger = logger.getLogger("shaku");
 
 // is shaku in silent mode
 var _isSilent = false;
@@ -33,7 +33,7 @@ let _startFrameTime = 0;
 let _frameTimeMeasuresCount = 0;
 let _totalFrameTimes = 0;
 
-// are managers currently in 'started' mode?
+// are managers currently in "started" mode?
 let _managersStarted = false;
 
 // were we previously paused?
@@ -171,7 +171,7 @@ class Shaku {
 	}
 
 	/**
-	 * Get if the Shaku is currently paused, either because the 'paused' property is set, or because the document is not focused.
+	 * Get if the Shaku is currently paused, either because the "paused" property is set, or because the document is not focused.
 	 * @returns {Boolean} True if currently paused for any reason.
 	 */
 	isCurrentlyPaused() {

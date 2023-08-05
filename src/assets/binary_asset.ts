@@ -21,8 +21,8 @@ export default class BinaryAsset extends Asset {
 		return new Promise((resolve, reject) => {
 
 			var request = new XMLHttpRequest();
-			request.open('GET', this.url, true);
-			request.responseType = 'arraybuffer';
+			request.open("GET", this.url, true);
+			request.responseType = "arraybuffer";
 
 			// on load, validate audio content
 			request.onload = () => {

@@ -149,7 +149,7 @@ export default class Color {
 	}
 
 	/**
-	 * Convert this color to hex string (starting with '#').
+	 * Convert this color to hex string (starting with "#").
 	 * @returns Color as hex.
 	 */
 	public get asHex(): string {
@@ -165,7 +165,7 @@ export default class Color {
 	 * @returns New color value.
 	 */
 	public static fromHex(val: string): Color {
-		if(typeof val !== 'string' && val[0] != '#') {
+		if(typeof val !== "string" && val[0] != "#") {
 			throw new PintarJS.Error("Invalid color format!");
 		}
 		var parsed = hexToColor(val);
@@ -255,7 +255,7 @@ export default class Color {
 	 * Convert to string.
 	 */
 	public string(): string {
-		return this.r + ',' + this.g + ',' + this.b + ',' + this.a;
+		return this.r + "," + this.g + "," + this.b + "," + this.a;
 	}
 
 	/**
@@ -495,14 +495,14 @@ const colorKeys = Object.keys(colorNameToHex);
 Object.freeze(colorKeys);
 
 // add transparent getter
-Object.defineProperty(Color, 'transparent', {
+Object.defineProperty(Color, "transparent", {
 	get: function() {
 		return new Color(0, 0, 0, 0);
 	}
 });
 
 // add transparent white getter
-Object.defineProperty(Color, 'transwhite', {
+Object.defineProperty(Color, "transwhite", {
 	get: function() {
 		return new Color(1, 1, 1, 0);
 	}

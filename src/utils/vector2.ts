@@ -95,7 +95,7 @@ export default class Vector2 {
 	 * @returns result vector.
 	 */
 	public add(other: number | Vector2): Vector2 {
-		if(typeof other === 'number') {
+		if(typeof other === "number") {
 			return new Vector2(this.x + other, this.y + (arguments[1] === undefined ? other : arguments[1]));
 		}
 		return new Vector2(this.x + other.x, this.y + other.y);
@@ -107,7 +107,7 @@ export default class Vector2 {
 	 * @returns result vector.
 	 */
 	public sub(other: number | Vector2): Vector2 {
-		if(typeof other === 'number') {
+		if(typeof other === "number") {
 			return new Vector2(this.x - other, this.y - (arguments[1] === undefined ? other : arguments[1]));
 		}
 		return new Vector2(this.x - other.x, this.y - other.y);
@@ -119,7 +119,7 @@ export default class Vector2 {
 	 * @returns result vector.
 	 */
 	public div(other: number | Vector2): Vector2 {
-		if(typeof other === 'number') {
+		if(typeof other === "number") {
 			return new Vector2(this.x / other, this.y / (arguments[1] === undefined ? other : arguments[1]));
 		}
 		return new Vector2(this.x / other.x, this.y / other.y);
@@ -131,7 +131,7 @@ export default class Vector2 {
 	 * @returns result vector.
 	 */
 	public mul(other: number | Vector2): Vector2 {
-		if(typeof other === 'number') {
+		if(typeof other === "number") {
 			return new Vector2(this.x * other, this.y * (arguments[1] === undefined ? other : arguments[1]));
 		}
 		return new Vector2(this.x * other.x, this.y * other.y);
@@ -235,7 +235,7 @@ export default class Vector2 {
 	 * @returns this.
 	 */
 	public addSelf(other: number | Vector2): Vector2 {
-		if(typeof other === 'number') {
+		if(typeof other === "number") {
 			this.x += other;
 			this.y += (arguments[1] === undefined ? other : arguments[1]);
 		}
@@ -252,7 +252,7 @@ export default class Vector2 {
 	 * @returns this.
 	 */
 	public subSelf(other: number | Vector2): Vector2 {
-		if(typeof other === 'number') {
+		if(typeof other === "number") {
 			this.x -= other;
 			this.y -= (arguments[1] === undefined ? other : arguments[1]);
 		}
@@ -269,7 +269,7 @@ export default class Vector2 {
 	 * @returns this.
 	 */
 	public divSelf(other: number | Vector2): Vector2 {
-		if(typeof other === 'number') {
+		if(typeof other === "number") {
 			this.x /= other;
 			this.y /= (arguments[1] === undefined ? other : arguments[1]);
 		}
@@ -286,7 +286,7 @@ export default class Vector2 {
 	 * @returns this.
 	 */
 	public mulSelf(other: number | Vector2): Vector2 {
-		if(typeof other === 'number') {
+		if(typeof other === "number") {
 			this.x *= other;
 			this.y *= (arguments[1] === undefined ? other : arguments[1]);
 		}
@@ -664,7 +664,7 @@ export default class Vector2 {
 	 * Convert to string.
 	 */
 	public string(): string {
-		return this.x + ',' + this.y;
+		return this.x + "," + this.y;
 	}
 
 	/**
@@ -673,7 +673,7 @@ export default class Vector2 {
 	 * @returns Parsed vector.
 	 */
 	public static parse(str: `${number},${number}`): Vector2 {
-		let parts = str.split(',');
+		let parts = str.split(",");
 		return new Vector2(parseFloat(parts[0].trim()), parseFloat(parts[1].trim()));
 	}
 

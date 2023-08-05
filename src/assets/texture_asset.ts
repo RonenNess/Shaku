@@ -265,10 +265,10 @@ export default class TextureAsset extends TextureAssetBase {
 
 		// build internal canvas and context to get pixel data
 		if(!this._ctxForPixelData) {
-			let canvas = document.createElement('canvas');
+			let canvas = document.createElement("canvas");
 			canvas.width = 1;
 			canvas.height = 1;
-			this._ctxForPixelData = canvas.getContext('2d');
+			this._ctxForPixelData = canvas.getContext("2d");
 		}
 
 		// get pixel data
@@ -301,10 +301,10 @@ export default class TextureAsset extends TextureAssetBase {
 
 		// build internal canvas and context to get pixel data
 		if(!this._ctxForPixelData) {
-			let canvas = document.createElement('canvas');
+			let canvas = document.createElement("canvas");
 			canvas.width = width;
 			canvas.height = height;
-			this._ctxForPixelData = canvas.getContext('2d');
+			this._ctxForPixelData = canvas.getContext("2d");
 		}
 
 		// get pixel data

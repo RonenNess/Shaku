@@ -21,6 +21,7 @@ import { Effect, MsdfFontEffect, ShapesEffect, SpritesEffect, SpritesEffectNoVer
 import Sprites3dEffect from "./effects/sprites_3d";
 import Sprite from "./sprite";
 import SpritesGroup from "./sprites_group";
+import { TextAlignment, TextAlignments } from "./text_alignments";
 import { TextureFilterModes } from "./texture_filter_modes";
 import { TextureWrapModes } from "./texture_wrap_modes";
 import Vertex from "./vertex";
@@ -52,7 +53,7 @@ const _loggggger = _logger.getLogger("gfx"); // TODO
 
 
 
-import { TextAlignment, TextAlignments } from "./text_alignments";
+
 
 let _gl = null;
 let _initSettings = { antialias: true, alpha: true, depth: false, premultipliedAlpha: true, desynchronized: false };
@@ -162,7 +163,7 @@ class Gfx implements IManager {
 	 * Set the canvas element to initialize on.
 	 * You must call this *before* initializing Shaku. Calling this will prevent Shaku from creating its own canvas.
 	 * @example
-	 * Shaku.gfx.setCanvas(document.getElementById('my-canvas'));
+	 * Shaku.gfx.setCanvas(document.getElementById("my-canvas"));
 	 * @param {HTMLCanvasElement} element Canvas element to initialize on.
 	 */
 	setCanvas(element) {
@@ -379,8 +380,8 @@ class Gfx implements IManager {
 		else {
 			width = window.innerWidth;
 			height = window.innerHeight;
-			_canvas.style.left = '0px';
-			_canvas.style.top = '0px';
+			_canvas.style.left = "0px";
+			_canvas.style.top = "0px";
 		}
 
 		// make sure even numbers
@@ -399,7 +400,7 @@ class Gfx implements IManager {
 	 * Set a render target (texture) to render on.
 	 * @example
 	 * // create render target
-	 * let renderTarget = await Shaku.assets.createRenderTarget('_my_render_target', 800, 600);
+	 * let renderTarget = await Shaku.assets.createRenderTarget("_my_render_target", 800, 600);
 	 *
 	 * // use render target
 	 * Shaku.gfx.setRenderTarget(renderTarget);
@@ -439,7 +440,7 @@ class Gfx implements IManager {
 		for(let index = 0; index < texture.length; ++index) {
 
 			// attach the texture as the first color attachment
-			const attachmentPoint = _gl['COLOR_ATTACHMENT' + index];
+			const attachmentPoint = _gl["COLOR_ATTACHMENT" + index];
 			_gl.framebufferTexture2D(_gl.FRAMEBUFFER, attachmentPoint, _gl.TEXTURE_2D, texture[index]._glTexture, 0);
 
 			// index 0 is the "main" render target
@@ -481,8 +482,8 @@ class Gfx implements IManager {
 		}
 
 		if(updateCanvasStyle) {
-			_canvas.style.width = width + 'px';
-			_canvas.style.height = height + 'px';
+			_canvas.style.width = width + "px";
+			_canvas.style.height = height + "px";
 		}
 
 		_gl.viewport(0, 0, width, height);
@@ -549,7 +550,7 @@ class Gfx implements IManager {
 
 	/**
 	 * Get current rendering size.
-	 * Unlike 'canvasSize', this takes viewport and render target into consideration.
+	 * Unlike "canvasSize", this takes viewport and render target into consideration.
 	 * @returns {Vector2} rendering size.
 	 */
 	getRenderingSize() {
@@ -576,17 +577,17 @@ class Gfx implements IManager {
 
 			// if no canvas is set, create one
 			if(!_canvas) {
-				_canvas = document.createElement('canvas');
+				_canvas = document.createElement("canvas");
 			}
 
 			// get webgl context
-			_gl = _canvas.getContext('webgl2', _initSettings);
+			_gl = _canvas.getContext("webgl2", _initSettings);
 			_webglVersion = 2;
 
 			// no webgl2? try webgl1
 			if(!_gl) {
 				_logger.warn("Failed to init WebGL2, attempt fallback to WebGL1.");
-				_gl = _canvas.getContext('webgl', _initSettings);
+				_gl = _canvas.getContext("webgl", _initSettings);
 				_webglVersion = 1;
 			}
 
@@ -614,9 +615,9 @@ class Gfx implements IManager {
 
 			// create a useful single white pixel texture
 			let whitePixelImage = new Image();
-			whitePixelImage.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+ip1sAAAAASUVORK5CYII=';
+			whitePixelImage.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+ip1sAAAAASUVORK5CYII=";
 			await new Promise((resolve, reject) => { whitePixelImage.onload = resolve; });
-			this.whiteTexture = new TextureAsset('__runtime_white_pixel__');
+			this.whiteTexture = new TextureAsset("__runtime_white_pixel__");
 			this.whiteTexture.fromImage(whitePixelImage);
 
 			// create default camera
@@ -635,9 +636,9 @@ class Gfx implements IManager {
 	 * Note: its best to always draw texts with *batching* enabled.
 	 * @example
 	 * // load font texture
-	 * let fontTexture = await Shaku.assets.loadFontTexture('assets/DejaVuSansMono.ttf', {fontName: 'DejaVuSansMono'});
+	 * let fontTexture = await Shaku.assets.loadFontTexture("assets/DejaVuSansMono.ttf", {fontName: "DejaVuSansMono"});
 	 *
-	 * // generate 'hello world!' text (note: you don't have to regenerate every frame if text didn't change)
+	 * // generate "hello world!" text (note: you don't have to regenerate every frame if text didn't change)
 	 * let text1 = Shaku.gfx.buildText(fontTexture, "Hello World!");
 	 * text1.position.set(40, 40);
 	 *
@@ -654,8 +655,8 @@ class Gfx implements IManager {
 	 */
 	buildText(fontTexture, text, fontSize, color, alignment, offset, marginFactor) {
 		// make sure text is a string
-		if(typeof text !== 'string') {
-			text = '' + text;
+		if(typeof text !== "string") {
+			text = "" + text;
 		}
 
 		// sanity
@@ -725,7 +726,7 @@ class Gfx implements IManager {
 			let sourceRect = fontTexture.getSourceRect(character);
 
 			// special case - break line
-			if(character === '\n') {
+			if(character === "\n") {
 				breakLine();
 				continue;
 			}
@@ -734,7 +735,7 @@ class Gfx implements IManager {
 			let size = new Vector2(sourceRect.width * scale, sourceRect.height * scale);
 
 			// create sprite (unless its space)
-			if(character !== ' ') {
+			if(character !== " ") {
 
 				// create sprite and add to group
 				let sprite = new Sprite(fontTexture);
@@ -793,10 +794,10 @@ class Gfx implements IManager {
 		let parent = canvas.parentElement;
 		let pwidth = Math.min(parent.clientWidth, window.innerWidth);
 		let pheight = Math.min(parent.clientHeight, window.innerHeight);
-		canvas.style.left = Math.round(pwidth / 2 - canvas.clientWidth / 2) + 'px';
-		canvas.style.top = Math.round(pheight / 2 - canvas.clientHeight / 2) + 'px';
-		canvas.style.display = 'block';
-		canvas.style.position = 'relative';
+		canvas.style.left = Math.round(pwidth / 2 - canvas.clientWidth / 2) + "px";
+		canvas.style.top = Math.round(pheight / 2 - canvas.clientHeight / 2) + "px";
+		canvas.style.display = "block";
+		canvas.style.position = "relative";
 	}
 
 	/**
@@ -1057,7 +1058,7 @@ class GfxInternal {
 	}
 
 	setTextureFilter(filter) {
-		if(!TextureFilterModes._values.has(filter)) { throw new Error("Invalid texture filter mode! Please pick a value from 'TextureFilterModes'."); }
+		if(!TextureFilterModes._values.has(filter)) { throw new Error("Invalid texture filter mode! Please pick a value from "TextureFilterModes"."); }
 		let glMode = _gl[filter];
 		_gl.texParameteri(_gl.TEXTURE_2D, _gl.TEXTURE_MIN_FILTER, glMode);
 		_gl.texParameteri(_gl.TEXTURE_2D, _gl.TEXTURE_MAG_FILTER, glMode);
@@ -1065,8 +1066,8 @@ class GfxInternal {
 
 	setTextureWrapMode(wrapX, wrapY) {
 		if(wrapY === undefined) { wrapY = wrapX; }
-		if(!TextureWrapModes._values.has(wrapX)) { throw new Error("Invalid texture wrap mode! Please pick a value from 'TextureWrapModes'."); }
-		if(!TextureWrapModes._values.has(wrapY)) { throw new Error("Invalid texture wrap mode! Please pick a value from 'TextureWrapModes'."); }
+		if(!TextureWrapModes._values.has(wrapX)) { throw new Error("Invalid texture wrap mode! Please pick a value from "TextureWrapModes"."); }
+		if(!TextureWrapModes._values.has(wrapY)) { throw new Error("Invalid texture wrap mode! Please pick a value from "TextureWrapModes"."); }
 		_gl.texParameteri(_gl.TEXTURE_2D, _gl.TEXTURE_WRAP_S, _gl[wrapX]);
 		_gl.texParameteri(_gl.TEXTURE_2D, _gl.TEXTURE_WRAP_T, _gl[wrapY]);
 	}
@@ -1157,7 +1158,7 @@ class GfxInternal {
 					break;
 
 				default:
-					throw new Error(`Unknown blend mode '${blendMode}'!`);
+					throw new Error(`Unknown blend mode "${blendMode}"!`);
 			}
 
 			// store last blend mode

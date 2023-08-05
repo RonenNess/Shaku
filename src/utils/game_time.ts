@@ -58,7 +58,7 @@ export default class GameTime {
 
 	/**
 	 * Update raw time-related data.
-	 * Called automatically from 'update'.
+	 * Called automatically from "update".
 	 * @private
 	 */
 	public static updateRawData() {
@@ -115,7 +115,7 @@ export default class GameTime {
 }
 
 // do we have the performance.now method?
-const gotPerformance = (typeof performance !== 'undefined') && performance.now;
+const gotPerformance = (typeof performance !== "undefined") && performance.now;
 
 // get most accurate timestamp in milliseconds.
 function getAccurateTimestampMs(): number {

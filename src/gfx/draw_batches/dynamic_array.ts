@@ -1,7 +1,7 @@
 
 
 /**
- * A polyfill version of 'ArrayBuffer.transfer'.
+ * A polyfill version of "ArrayBuffer.transfer".
  * If native ArrayBuffer.transfer exists, will use it internally.
  * From: https://reference.codeproject.com/javascript/reference/global_objects/arraybuffer/transfer#Browser_compatibility
  */

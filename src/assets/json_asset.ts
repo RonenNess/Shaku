@@ -21,8 +21,8 @@ export default class JsonAsset extends Asset {
 		return new Promise((resolve, reject) => {
 
 			var request = new XMLHttpRequest();
-			request.open('GET', this.url, true);
-			request.responseType = 'json';
+			request.open("GET", this.url, true);
+			request.responseType = "json";
 
 			// on load, validate audio content
 			request.onload = () => {
@@ -64,7 +64,7 @@ export default class JsonAsset extends Asset {
 			// make sure data is a valid json + clone it
 			try {
 				if(source) {
-					if(typeof source === 'string') {
+					if(typeof source === "string") {
 						source = JSON.parse(source);
 					}
 					else {

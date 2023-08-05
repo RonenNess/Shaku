@@ -101,14 +101,14 @@ class Sprite {
 	 * @param {Rectangle} sourceRectangle Source rectangle, or undefined to use the entire texture.
 	 * @param {Color|Array<Color>|undefined} color Tint color, or undefined to not change color. If array is set, will assign each color to different vertex, starting from top-left.
 	 * @param {Number=} rotation Rotate sprite.
-	 * @param {Vector2=} origin Drawing origin. This will be the point at 'position' and rotation origin.
+	 * @param {Vector2=} origin Drawing origin. This will be the point at "position" and rotation origin.
 	 * @param {Vector2=} skew Skew the drawing corners on X and Y axis, around the origin point.
 	 * @returns {Sprite} New sprite instance.
 	 */
 	static build(texture, position, size, sourceRectangle, color, rotation, origin, skew) {
 		let sprite = new Sprite(texture, sourceRectangle);
 		sprite.position = position;
-		sprite.size = (typeof size === 'number') ? new Vector2(size, size) : size;
+		sprite.size = (typeof size === "number") ? new Vector2(size, size) : size;
 		if(color) { sprite.color = color; }
 		if(rotation) { sprite.rotation = rotation; }
 		if(origin) { sprite.origin = origin; }
