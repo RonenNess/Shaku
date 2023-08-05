@@ -1,5 +1,3 @@
-
-
 import { Color } from "../utils";
 
 /**

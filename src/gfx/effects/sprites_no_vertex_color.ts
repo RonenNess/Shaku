@@ -1,11 +1,6 @@
 import Effect from "./effect";
-
-// vertex shader code
-import vertexShader from "./shaders/sprites_no_vertex_color.vert";
-
-// fragment shader code
 import fragmentShader from "./shaders/sprites_no_vertex_color.frag";
-
+import vertexShader from "./shaders/sprites_no_vertex_color.vert";
 
 /**
  * Default basic effect to draw 2d sprites without vertex color.

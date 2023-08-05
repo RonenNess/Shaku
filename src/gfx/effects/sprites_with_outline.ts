@@ -1,10 +1,6 @@
 import Effect from "./effect";
-
-// vertex shader code
-import vertexShader from "./shaders/sprites_with_outline.vert";
-
-// fragment shader code
 import fragmentShader from "./shaders/sprites_with_outline.frag";
+import vertexShader from "./shaders/sprites_with_outline.vert";
 
 /**
  * Default basic effect to draw 2d sprites with outline.

@@ -1,8 +1,6 @@
-import SpritesEffect from "./sprites";
-
-import vertexShader from "./shaders/sprites_3d.vert";
-
 import fragmentShader from "./shaders/sprites_3d.frag";
+import vertexShader from "./shaders/sprites_3d.vert";
+import SpritesEffect from "./sprites";
 
 /**
  * Default basic effect to draw 2d sprites.

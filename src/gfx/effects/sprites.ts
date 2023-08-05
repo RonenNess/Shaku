@@ -1,10 +1,6 @@
 import Effect from "./effect";
-
-// vertex shader code
-import vertexShader from "./shaders/sprites.vert";
-
-// fragment shader code
 import fragmentShader from "./shaders/sprites.frag";
+import vertexShader from "./shaders/sprites.vert";
 
 /**
  * Default basic effect to draw 2d sprites.

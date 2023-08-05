@@ -1,10 +1,6 @@
 import Effect from "./effect";
-
-// vertex shader code
-import vertexShader from "./shaders/msdf_font.vert";
-
-// fragment shader code
 import fragmentShader from "./shaders/msdf_font.frag";
+import vertexShader from "./shaders/msdf_font.vert";
 
 /**
  * Default effect to draw MSDF font textures.

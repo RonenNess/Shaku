@@ -1,7 +1,4 @@
-
-
 import { Rectangle } from "../../utils";
-
 import Matrix from "../../utils/matrix";
 import Vector2 from "../../utils/vector2";
 import DrawBatch from "./draw_batch";

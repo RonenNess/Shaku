@@ -1,10 +1,6 @@
 import Effect from "./effect";
-
-// vertex shader code
-import vertexShader from "./shaders/shapes.vert";
-
-// fragment shader code
 import fragmentShader from "./shaders/shapes.frag";
+import vertexShader from "./shaders/shapes.vert";
 
 /**
  * Default basic effect to draw 2d shapes.
