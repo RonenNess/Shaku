@@ -1,3 +1,5 @@
+import ShapesBatch from "../../gfx/draw_batches/shapes_batch";
+import { Vector2 } from "../../utils";
 import Rectangle from "../../utils/rectangle";
 import CollisionShape from "./shape";
 
@@ -5,11 +7,15 @@ import CollisionShape from "./shape";
  * Collision rectangle class.
  */
 export default class RectangleShape extends CollisionShape {
+	private _rect: Rectangle;
+	private _center: Vector2;
+	private _radius: number;
+
 	/**
 	 * Create the collision shape.
-	 * @param {Rectangle} rectangle the rectangle shape.
+	 * @param rectangle the rectangle shape.
 	 */
-	constructor(rectangle) {
+	public constructor(rectangle: Rectangle) {
 		super();
 		this.setShape(rectangle);
 	}
@@ -17,15 +23,15 @@ export default class RectangleShape extends CollisionShape {
 	/**
 	 * @inheritdoc
 	 */
-	get shapeId() {
+	public get shapeId(): "rect" {
 		return "rect";
 	}
 
 	/**
 	 * Set this collision shape from rectangle.
-	 * @param {Rectangle} rectangle Rectangle shape.
+	 * @param rectangle Rectangle shape.
 	 */
-	setShape(rectangle) {
+	public setShape(rectangle: Rectangle): void {
 		this._rect = rectangle;
 		this._center = rectangle.getCenter();
 		this._radius = this._rect.getBoundingCircle().radius;
@@ -35,28 +41,28 @@ export default class RectangleShape extends CollisionShape {
 	/**
 	 * @inheritdoc
 	 */
-	_getRadius() {
+	protected _getRadius(): number {
 		return this._radius;
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	_getBoundingBox() {
+	protected _getBoundingBox(): Rectangle {
 		return this._rect;
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	getCenter() {
+	public getCenter(): Vector2 {
 		return this._center.clone();
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	debugDraw(opacity, shapesBatch) {
+	public debugDraw(opacity = 1, shapesBatch: ShapesBatch) {
 		if(opacity === undefined) { opacity = 1; }
 		let color = this._getDebugColor();
 		color.a *= opacity;

@@ -1,3 +1,4 @@
+import ShapesBatch from "../../gfx/draw_batches/shapes_batch";
 import Circle from "../../utils/circle";
 import Rectangle from "../../utils/rectangle";
 import Vector2 from "../../utils/vector2";
@@ -7,11 +8,14 @@ import CollisionShape from "./shape";
  * Collision point class.
  */
 export default class PointShape extends CollisionShape {
+	private _position: Vector2;
+	private _boundingBox: Rectangle;
+
 	/**
 	 * Create the collision shape.
-	 * @param {Vector2} position Point position.
+	 * @param position Point position.
 	 */
-	constructor(position) {
+	public constructor(position: Vector2) {
 		super();
 		this.setPosition(position);
 	}
@@ -19,15 +23,15 @@ export default class PointShape extends CollisionShape {
 	/**
 	 * @inheritdoc
 	 */
-	get shapeId() {
+	public get shapeId(): "point" {
 		return "point";
 	}
 
 	/**
 	 * Set this collision shape from vector2.
-	 * @param {Vector2} position Point position.
+	 * @param position Point position.
 	 */
-	setPosition(position) {
+	public setPosition(position: Vector2): void {
 		this._position = position.clone();
 		this._boundingBox = new Rectangle(position.x, position.y, 1, 1);
 		this._shapeChanged();
@@ -35,38 +39,38 @@ export default class PointShape extends CollisionShape {
 
 	/**
 	 * Get point position.
-	 * @returns {Vector2} Point position.
+	 * @returns Point position.
 	 */
-	getPosition() {
+	public getPosition(): Vector2 {
 		return this._position.clone();
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	getCenter() {
+	public getCenter(): Vector2 {
 		return this._position.clone();
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	_getRadius() {
+	protected _getRadius(): 1 {
 		return 1;
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	_getBoundingBox() {
+	protected _getBoundingBox(): Rectangle {
 		return this._boundingBox;
 	}
 
 	/**
 	 * Debug draw this shape.
-	 * @param {Number} opacity Shape opacity factor.
+	 * @param opacity Shape opacity factor.
 	 */
-	debugDraw(opacity, shapesBatch) {
+	public debugDraw(opacity = 1, shapesBatch: ShapesBatch) {
 		if(opacity === undefined) { opacity = 1; }
 		let color = this._getDebugColor();
 		color.a *= opacity;

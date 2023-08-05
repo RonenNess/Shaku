@@ -52,7 +52,7 @@ export default abstract class CollisionShape {
 	 * If not provided and have no world, will throw exception.
 	 * @private
 	 */
-	protected _getDebugDrawBatch(shapesBatch: ShapesBatch) {
+	protected _getDebugDrawBatch(shapesBatch: ShapesBatch): ShapesBatch {
 		if(!shapesBatch && !this._world) {
 			throw new Error("Can't debug-draw a collision shape that is not under any collision world without providing a shapes batch to use!");
 		}
@@ -63,7 +63,7 @@ export default abstract class CollisionShape {
 	 * Set the debug color to use to draw this shape.
 	 * @param color Color to set or null to use default.
 	 */
-	public setDebugColor(color: Color) {
+	public setDebugColor(color: Color): void {
 		this._forceDebugColor = color;
 	}
 
@@ -83,7 +83,7 @@ export default abstract class CollisionShape {
 	/**
 	 * Remove self from parent world object.
 	 */
-	public remove() {
+	public remove(): void {
 		if(this._world) {
 			this._world.removeShape(this);
 		}
@@ -93,7 +93,7 @@ export default abstract class CollisionShape {
 	 * Get debug drawing color.
 	 * @private
 	 */
-	protected _getDebugColor() {
+	protected _getDebugColor(): Color {
 		// use forced debug color
 		if(this._forceDebugColor) {
 			return this._forceDebugColor.clone();
@@ -112,7 +112,7 @@ export default abstract class CollisionShape {
 	 * Get default debug colors for given collision flags.
 	 * @private
 	 */
-	protected _getDefaultDebugColorFor(flags: number) {
+	protected _getDefaultDebugColorFor(flags: number): Color {
 		return defaultDebugColors[flags % defaultDebugColors.length];
 	}
 
@@ -121,21 +121,21 @@ export default abstract class CollisionShape {
 	 * @private
 	 * @returns Shape's radius
 	 */
-	protected _getRadius(): number;
+	protected abstract _getRadius(): number;
 
 	/**
 	 * Get collision shape's bounding box.
 	 * @private
 	 * @returns {Rectangle} Shape's bounding box.
 	 */
-	protected _getBoundingBox(): Rectangle;
+	protected abstract _getBoundingBox(): Rectangle;
 
 	/**
 	 * Set the parent collision world this shape is currently in.
 	 * @private
 	 * @param world New parent collision world or null to remove.
 	 */
-	protected _setParent(world: CollisionWorld) {
+	protected _setParent(world: CollisionWorld): void {
 		// same world? skip
 		if(world === this._world) {
 			return;

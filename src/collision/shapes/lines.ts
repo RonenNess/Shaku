@@ -1,3 +1,5 @@
+import ShapesBatch from "../../gfx/draw_batches/shapes_batch";
+import { Vector2 } from "../../utils";
 import Circle from "../../utils/circle";
 import Line from "../../utils/line";
 import Rectangle from "../../utils/rectangle";
@@ -8,11 +10,15 @@ import CollisionShape from "./shape";
  * This shape is made of one line or more.
  */
 export default class LinesShape extends CollisionShape {
+	private _lines: Line[];
+	private _circle: Circle;
+	private _boundingBox: Rectangle;
+
 	/**
 	 * Create the collision shape.
-	 * @param {Array<Line>|Line} lines Starting line / lines.
+	 * @param lines Starting line / lines.
 	 */
-	constructor(lines) {
+	public constructor(lines: Line | Line[]) {
 		super();
 		this._lines = [];
 		this.addLines(lines);
@@ -21,15 +27,15 @@ export default class LinesShape extends CollisionShape {
 	/**
 	 * @inheritdoc
 	 */
-	get shapeId() {
+	public get shapeId(): "lines" {
 		return "lines";
 	}
 
 	/**
 	 * Add line or lines to this collision shape.
-	 * @param {Array<Line>|Line} lines Line / lines to add.
+	 * @param lines Line / lines to add.
 	 */
-	addLines(lines) {
+	public addLines(lines: Line | Line[]): void {
 		// convert to array
 		if(!Array.isArray(lines)) {
 			lines = [lines];
@@ -55,9 +61,9 @@ export default class LinesShape extends CollisionShape {
 
 	/**
 	 * Set this shape from line or lines array.
-	 * @param {Array<Line>|Line} lines Line / lines to set.
+	 * @param lines Line / lines to set.
 	 */
-	setLines(lines) {
+	public setLines(lines: Line | Line[]): void {
 		this._lines = [];
 		this.addLines(lines);
 	}
@@ -65,28 +71,28 @@ export default class LinesShape extends CollisionShape {
 	/**
 	 * @inheritdoc
 	 */
-	_getRadius() {
+	protected _getRadius(): number {
 		return this._circle.radius;
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	getCenter() {
+	public getCenter(): Vector2 {
 		return this._circle.center.clone();
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	_getBoundingBox() {
+	protected _getBoundingBox(): Rectangle {
 		return this._boundingBox;
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	debugDraw(opacity, shapesBatch) {
+	public debugDraw(opacity = 1, shapesBatch: ShapesBatch): void {
 		if(opacity === undefined) { opacity = 1; }
 		let color = this._getDebugColor();
 		color.a *= opacity;

@@ -1,6 +1,7 @@
 import _logger from "../../logger";
 import Matrix from "../../utils/matrix";
 import { BlendModes } from "../blend_modes";
+import { Effect } from "../effects";
 import { BuffersUsage } from "./buffers_usage";
 
 const _loggggger = _logger.getLogger("gfx - draw - batch"); // TODO
@@ -134,12 +135,12 @@ class DrawBatch {
 	/**
 	 * Start drawing this batch.
 	 * You must call this before doing any draw calls.
-	 * @param {BlendModes=} blendMode Blend mode to draw this batch in.
-	 * @param {Effect=} effect Effect to use. If not defined will use this batch type default effect.
-	 * @param {Matrix=} transform Optional transformations to apply on all sprites.
-	 * @param {*=} overrideEffectFlags Optional flags to override effect's defaults. Possible keys: {enableDepthTest, enableFaceCulling, enableStencilTest, enableDithering}.
+	 * @param blendMode Blend mode to draw this batch in.
+	 * @param effect Effect to use. If not defined will use this batch type default effect.
+	 * @param transform Optional transformations to apply on all sprites.
+	 * @param overrideEffectFlags Optional flags to override effect's defaults. Possible keys: {enableDepthTest, enableFaceCulling, enableStencilTest, enableDithering}.
 	 */
-	begin(blendMode, effect, transform, overrideEffectFlags) {
+	public begin(blendMode?: BlendModes, effect?: Effect, transform?: Matrix, overrideEffectFlags?: { enableDepthTest?: boolean, enableFaceCulling?: boolean, enableStencilTest?: boolean, enableDithering?: boolean; }) {
 		// sanity - not already drawing
 		if(this.isDrawing) {
 			throw new Error("Can't call Drawing Batch 'begin' twice without calling 'end()' first!");
