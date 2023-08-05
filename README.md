@@ -56,23 +56,22 @@ Let's take a quick look at how we make a game main loop with *Shaku*:
 // Init code goes here, we'll review it later..
 
 // main loop (do updates, render and request next step)
-function step()
-{
-    // start a new frame and clear screen
-    Shaku.startFrame();
-    Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
+function step() {
+	// start a new frame and clear screen
+	Shaku.startFrame();
+	Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
 
-    // draw a sprite using the spritebatch
-    spritesBatch.begin();
-    let position = new Shaku.utils.Vector2(400, 300);
-    let size = new Shaku.utils.Vector2(100, 100);
-    spritesBatch.drawQuad(texture, position, size);
-    spritesBatch.end();
+	// draw a sprite using the spritebatch
+	spritesBatch.begin();
+	const position = new Shaku.utils.Vector2(400, 300);
+	const size = new Shaku.utils.Vector2(100, 100);
+	spritesBatch.drawQuad(texture, position, size);
+	spritesBatch.end();
 
 
-    // end frame and request next step
-    Shaku.endFrame();
-    Shaku.requestAnimationFrame(step);
+	// end frame and request next step
+	Shaku.endFrame();
+	Shaku.requestAnimationFrame(step);
 }
 ```
 
@@ -117,42 +116,40 @@ The following is a boilerplate HTML with *Shaku* running an empty game main loop
 ```html
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Shaku Example</title>
-    <script src="dist/shaku.js"></script>
-  </head>
-  <body>
-      <script>
-        (async function runGame()
-        {
-          // init shaku
-          await Shaku.init();
+	<head>
+	<title>Shaku Example</title>
+	<script src="dist/shaku.js"></script>
+	</head>
+	<body>
+		<script>
+		(async function runGame() {
+			// init shaku
+			await Shaku.init();
 
-          // add shaku's canvas to document and set resolution to 800x600
-          document.body.appendChild(Shaku.gfx.canvas);
-          Shaku.gfx.setResolution(800, 600, true);
+			// add shaku's canvas to document and set resolution to 800x600
+			document.body.appendChild(Shaku.gfx.canvas);
+			Shaku.gfx.setResolution(800, 600, true);
 
-          // TODO: LOAD ASSETS AND INIT GAME LOGIC HERE
+			// TODO: LOAD ASSETS AND INIT GAME LOGIC HERE
 
-          // do a single main loop step and request next step inside
-          function step()
-          {
-            // start a new frame and clear screen
-            Shaku.startFrame();
-            Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
+			// do a single main loop step and request next step inside
+			function step() {
+				// start a new frame and clear screen
+				Shaku.startFrame();
+				Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
 
-            // TODO: PUT YOUR GAME UPDATES AND RENDERING HERE
+				// TODO: PUT YOUR GAME UPDATES AND RENDERING HERE
 
-            // end frame and invoke the next step in 60 FPS rate (or more, depend on machine and browser)
-            Shaku.endFrame();
-            Shaku.requestAnimationFrame(step);
-          }
+				// end frame and invoke the next step in 60 FPS rate (or more, depend on machine and browser)
+				Shaku.endFrame();
+				Shaku.requestAnimationFrame(step);
+			}
 
-          // start the main loop
-          step();
-        })();
-      </script>
-  </body>
+			// start the main loop
+			step();
+		})();
+		</script>
+	</body>
 </html>
 ```
 
@@ -180,33 +177,31 @@ Everything in *Shaku* is located under the `Shaku` object.
 Since the initialization process and asset loading is mostly asynchronous operations, its best to wrap the init code in an `async` method and utilize `await` calls to simplify the code. A common *Shaku* initialization code will look something like this:
 
 ```js
-(async function runGame()
-{
-    // init shaku.
-    // for pixel art games its best to set antialias=false before init.
-    Shaku.gfx.setContextAttributes({antialias: false});
-    await Shaku.init();
+(async function runGame() {
+	// init shaku.
+	// for pixel art games its best to set antialias=false before init.
+	Shaku.gfx.setContextAttributes({antialias: false});
+	await Shaku.init();
 
-    // add shaku's canvas to document and set resolution to 800x600.
-    // this will set the canvas and renderer size.
-    document.body.appendChild(Shaku.gfx.canvas);
-    Shaku.gfx.setResolution(800, 600, true);
+	// add shaku's canvas to document and set resolution to 800x600.
+	// this will set the canvas and renderer size.
+	document.body.appendChild(Shaku.gfx.canvas);
+	Shaku.gfx.setResolution(800, 600, true);
 
-    // TODO: add code to load assets and init game logic here.
+	// TODO: add code to load assets and init game logic here.
 
-    // game main loop
-    function step()
-    {
-        // start frame and clear the screen
-        Shaku.startFrame();
-        Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
+	// game main loop
+	function step() {
+		// start frame and clear the screen
+		Shaku.startFrame();
+		Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
 
-        // TODO: add game logic code here
+		// TODO: add game logic code here
 
-        Shaku.endFrame();
-        Shaku.requestAnimationFrame(step);
-    }
-    step();
+		Shaku.endFrame();
+		Shaku.requestAnimationFrame(step);
+	}
+	step();
 })();
 ```
 
@@ -256,8 +251,8 @@ const spriteBatch = new Shaku.gfx.SpriteBatch();
 
 // draw the texture with the batch
 spritesBatch.begin();
-let position = new Shaku.utils.Vector2(400, 300);
-let size = new Shaku.utils.Vector2(100, 100);
+const position = new Shaku.utils.Vector2(400, 300);
+const size = new Shaku.utils.Vector2(100, 100);
 spritesBatch.drawQuad(texture, position, size);
 spritesBatch.end();
 ```
@@ -267,13 +262,13 @@ Now let's draw with some more parameters:
 
 ```js
 spritesBatch.begin();
-let position = new Shaku.utils.Vector2(100, 125);
-let size = new Shaku.utils.Vector2(32, 64);
-let sourceRect = new Shaku.utils.Rectangle(32, 0, 32, 64);
-let color = Shaku.utils.Color.red;
-let rotation = Math.PI / 2;
-let origin = new Shaku.utils.Vector2(0.5, 1);
-let skew = new Shaku.utils.Vector2(32, 0);
+const position = new Shaku.utils.Vector2(100, 125);
+const size = new Shaku.utils.Vector2(32, 64);
+const sourceRect = new Shaku.utils.Rectangle(32, 0, 32, 64);
+const color = Shaku.utils.Color.red;
+const rotation = Math.PI / 2;
+const origin = new Shaku.utils.Vector2(0.5, 1);
+const skew = new Shaku.utils.Vector2(32, 0);
 Shaku.gfx.drawQuad(texture, position, size, sourceRect, color, rotation, origin, skew);
 spritesBatch.end();
 ```
@@ -312,8 +307,8 @@ Lets create a sprite and set some of its fields:
 // this part comes after we init shaku, but still outside the main loop:
 
 // load texture and create sprite
-let texture = await Shaku.assets.loadTexture('assets/my_texture.png');
-let sprite = new Shaku.gfx.Sprite(texture);
+const texture = await Shaku.assets.loadTexture('assets/my_texture.png');
+const sprite = new Shaku.gfx.Sprite(texture);
 
 // set some fields
 sprite.position.set(100, 125);
@@ -340,7 +335,7 @@ Let's see how we use it:
 // this part comes after we init shaku, but still outside the main loop:
 
 // create a group
-let group = new Shaku.gfx.SpritesGroup();
+const group = new Shaku.gfx.SpritesGroup();
 
 // set group position, scale and rotation
 // these transformations will affect all sprites in group
@@ -349,13 +344,13 @@ group.rotation = Math.PI / 2;
 group.scale.set(2, 2);
 
 // add some sprites to the group
-let texture = await Shaku.assets.loadTexture('assets/my_texture.png');
+const texture = await Shaku.assets.loadTexture('assets/my_texture.png');
 for (let i = 0; i < 3; ++i) {
-  let sprite = new Shaku.gfx.Sprite(texture);
-  sprite.position = new Shaku.utils.Vector2(i * 100, 0);
-  sprite.size = new Shaku.utils.Vector2(50, 50);
-  sprite.origin = new Shaku.utils.Vector2(0, 0);
-  group.add(sprite);
+	const sprite = new Shaku.gfx.Sprite(texture);
+	sprite.position = new Shaku.utils.Vector2(i * 100, 0);
+	sprite.size = new Shaku.utils.Vector2(50, 50);
+	sprite.origin = new Shaku.utils.Vector2(0, 0);
+	group.add(sprite);
 }
 
 // this part comes between the Shaku.startFrame() and the Shaku.endFrame() calls:
@@ -385,7 +380,7 @@ Let's take a look at a basic 3D sprites example:
 
 // create a 3d sprite and set a default perspective camera.
 // check out setPerspectiveCamera() arguments to see more options.
-let spritesBatch3d = new Shaku.gfx.SpriteBatch3D();
+const spritesBatch3d = new Shaku.gfx.SpriteBatch3D();
 spritesBatch3d.setPerspectiveCamera();
 
 // this part comes between the Shaku.startFrame() and the Shaku.endFrame() calls:
@@ -395,23 +390,23 @@ spritesBatch3d.begin();
 
 // set view matrix (camera position and where we look at)
 spritesBatch3d.setViewLookat(
-  new Shaku.utils.Vector3(0, 500, 600),
-  new Shaku.utils.Vector3(0, 0, 0)
+	new Shaku.utils.Vector3(0, 500, 600),
+	new Shaku.utils.Vector3(0, 0, 0)
 );
 
 // draw 3d quad from 4 vertices
 const v1 = (new Shaku.gfx.Vertex())
-          .setPosition(new Shaku.utils.Vector3(-spriteSize.x / 2, 0, 0))
-          .setTextureCoords(new Shaku.utils.Vector2(0, 1));
+	.setPosition(new Shaku.utils.Vector3(-spriteSize.x / 2, 0, 0))
+	.setTextureCoords(new Shaku.utils.Vector2(0, 1));
 const v2 = (new Shaku.gfx.Vertex())
-          .setPosition(new Shaku.utils.Vector3(spriteSize.x / 2, 0, 0))
-          .setTextureCoords(new Shaku.utils.Vector2(1, 1));
+	.setPosition(new Shaku.utils.Vector3(spriteSize.x / 2, 0, 0))
+	.setTextureCoords(new Shaku.utils.Vector2(1, 1));
 const v3 = (new Shaku.gfx.Vertex())
-          .setPosition(new Shaku.utils.Vector3(-spriteSize.x / 2, spriteSize.y, 0))
-          .setTextureCoords(new Shaku.utils.Vector2(0, 0));
+	.setPosition(new Shaku.utils.Vector3(-spriteSize.x / 2, spriteSize.y, 0))
+	.setTextureCoords(new Shaku.utils.Vector2(0, 0));
 const v4 = (new Shaku.gfx.Vertex())
-          .setPosition(new Shaku.utils.Vector3(spriteSize.x / 2, spriteSize.y, 0))
-          .setTextureCoords(new Shaku.utils.Vector2(1, 0));
+	.setPosition(new Shaku.utils.Vector3(spriteSize.x / 2, spriteSize.y, 0))
+	.setTextureCoords(new Shaku.utils.Vector2(1, 0));
 spritesBatch3d.drawVertices(texture, [v1, v2, v3, v4]);
 
 // end rendering
@@ -426,7 +421,7 @@ spritesBatch3d.end();
 // this part comes after we init shaku, but still outside the main loop:
 
 // create shapes batch to render 2d shapes
-let shapesBatch = new Shaku.gfx.ShapesBatch();
+const shapesBatch = new Shaku.gfx.ShapesBatch();
 
 // this part comes between the Shaku.startFrame() and the Shaku.endFrame() calls:
 
@@ -437,7 +432,7 @@ shapesBatch.begin();
 shapesBatch.drawCircle(new Shaku.utils.Circle(Shaku.gfx.getCanvasSize().div(2), 400), Shaku.utils.Color.red, 32, Shaku.utils.Color.blue);
 
 // draw a rectangle at offset 100,100 and size 256,256, with red color, that rotates over time
-let rotation = Shaku.gameTime.elapsed;
+const rotation = Shaku.gameTime.elapsed;
 shapesBatch.drawRectangle(new Shaku.utils.Rectangle(100, 100, 256, 256), Shaku.utils.Color.red, rotation);
 
 // draw everything on screen
@@ -464,13 +459,13 @@ Let's take a look at how we generate a Sprite Font and render some text with it:
 
 // load font texture
 // note: the fontName argument MUST match the font name defined in the ttf file.
-let fontTexture = await Shaku.assets.loadFontTexture('assets/DejaVuSansMono.ttf', {fontName: 'DejaVuSansMono'});
+const fontTexture = await Shaku.assets.loadFontTexture('assets/DejaVuSansMono.ttf', {fontName: 'DejaVuSansMono'});
 
 // create text sprite batch
-let textSpriteBatch = new Shaku.gfx.TextSpriteBatch();
+const textSpriteBatch = new Shaku.gfx.TextSpriteBatch();
 
 // generate a text group to render in white, aligned to the left, and positioned at 100,100.
-let textGroup = Shaku.gfx.buildText(fontTexture, "Hello World!\nThis is second line.", 24, Shaku.utils.Color.white, Shaku.gfx.TextAlignments.Left);
+const textGroup = Shaku.gfx.buildText(fontTexture, "Hello World!\nThis is second line.", 24, Shaku.utils.Color.white, Shaku.gfx.TextAlignments.Left);
 textGroup.position.set(100, 100);
 
 // this part comes between the Shaku.startFrame() and the Shaku.endFrame() calls:
@@ -504,7 +499,7 @@ For example [the following game](https://store.steampowered.com/app/2135030/Hell
 A render target in essence is just a texture asset you can draw on, created like this:
 
 ```js
-let renderTarget = await Shaku.assets.createRenderTarget('_my_render_target', width, height);
+const renderTarget = await Shaku.assets.createRenderTarget('_my_render_target', width, height);
 ```
 
 Then you can start drawing on it by setting it as the active render target:
@@ -524,8 +519,8 @@ And finally we can use the render target just like we would use any other textur
 
 ```js
 spritesBatch.begin();
-let position = new Shaku.utils.Vector2(400, 300);
-let size = new Shaku.utils.Vector2(100, 100);
+const position = new Shaku.utils.Vector2(400, 300);
+const size = new Shaku.utils.Vector2(100, 100);
 spritesBatch.drawQuad(renderTarget, position, size);
 spritesBatch.end();
 ```
@@ -545,7 +540,7 @@ To change the default camera:
 
 ```js
 // create camera object
-let camera = Shaku.gfx.createCamera();
+const camera = Shaku.gfx.createCamera();
 
 // set offset and use the camera (call this before rendering)
 camera.orthographicOffset(cameraOffset);
@@ -573,24 +568,24 @@ Creating a Texture Atlas manually is a tedious work, and as you add more and mor
 ```js
 // all source textures URLs
 const sourceUrls = [
-    'assets/stone_wall.png',
-    'assets/grass.png',
-    'assets/tree.png',
-    ...
+	'assets/stone_wall.png',
+	'assets/grass.png',
+	'assets/tree.png',
+	...
 ];
 
 // create a texture atlas named 'my-texture-atlas'.
 // you can also limit its dimensions if needed to.
-let textureAtlas = await Shaku.assets.createTextureAtlas('my-texture-atlas', sourceUrls);
+const textureAtlas = await Shaku.assets.createTextureAtlas('my-texture-atlas', sourceUrls);
 
 // then you can use the texture atlas like this:
 
 // extract one of the textures
 // textureInAtlas is an object with `texture` and `sourceRectangle`.
-let textureInAtlas = textureAtlas.getTexture('assets/stone_wall.png');
+const textureInAtlas = textureAtlas.getTexture('assets/stone_wall.png');
 
 // draw the texture at 100,100
-let size = textureInAtlas.sourceRectangle.getSize();
+const size = textureInAtlas.sourceRectangle.getSize();
 spritesBatch.begin();
 spritesBatch.drawQuad(textureInAtlas, new Shaku.utils.Vector2(100, 100), size);
 spritesBatch.end();
@@ -616,44 +611,41 @@ Lets write a simple custom effect and then review and explain the code:
 
 ```js
 // define a custom effect
-class MyEffect extends Shaku.gfx.SpritesEffect
-{
-    /**
-     * Override the fragment shader for our custom effect.
-     */
-    get fragmentCode()
-    {
-      const fragmentShader = `
-            #ifdef GL_ES
-                precision highp float;
-            #endif
+class MyEffect extends Shaku.gfx.SpritesEffect {
+	/**
+	 * Override the fragment shader for our custom effect.
+	 */
+	get fragmentCode() {
+		const fragmentShader = `
+			#ifdef GL_ES
+				precision highp float;
+			#endif
 
-            uniform sampler2D mainTexture;
-            uniform float elapsedTime;
+			uniform sampler2D mainTexture;
+			uniform float elapsedTime;
 
-            varying vec2 v_texCoord;
-            varying vec4 v_color;
+			varying vec2 v_texCoord;
+			varying vec4 v_color;
 
-            void main(void) {
-                gl_FragColor = texture2D(mainTexture, v_texCoord) * v_color;
-                gl_FragColor.r *= sin(v_texCoord.y * 10.0 + elapsedTime) + 0.1;
-                gl_FragColor.g *= sin(1.8 + v_texCoord.y * 10.0 + elapsedTime) + 0.1;
-                gl_FragColor.b *= sin(3.6 + v_texCoord.y * 10.0 + elapsedTime) + 0.1;
-                gl_FragColor.rgb *= gl_FragColor.a;
-            }
-        `;
-        return fragmentShader;
-    }
+			void main(void) {
+				gl_FragColor = texture2D(mainTexture, v_texCoord) * v_color;
+				gl_FragColor.r *= sin(v_texCoord.y * 10.0 + elapsedTime) + 0.1;
+				gl_FragColor.g *= sin(1.8 + v_texCoord.y * 10.0 + elapsedTime) + 0.1;
+				gl_FragColor.b *= sin(3.6 + v_texCoord.y * 10.0 + elapsedTime) + 0.1;
+				gl_FragColor.rgb *= gl_FragColor.a;
+			}
+		`;
+		return fragmentShader;
+	}
 
-    /**
-     * Override the uniform types dictionary to add our custom uniform type.
-     */
-    get uniformTypes()
-    {
-      let ret = super.uniformTypes;
-      ret['elapsedTime'] = { type: Shaku.gfx.Effect.UniformTypes.Float };
-      return ret;
-    }
+	/**
+	 * Override the uniform types dictionary to add our custom uniform type.
+	 */
+	get uniformTypes() {
+		const ret = super.uniformTypes;
+		ret['elapsedTime'] = { type: Shaku.gfx.Effect.UniformTypes.Float };
+		return ret;
+	}
 }
 ```
 
@@ -669,13 +661,13 @@ Now lets review the code.
 
 1. First, notice we're extending the `Shaku.gfx.SpritesEffect` class. This is the default effect *Shaku* uses for sprites, and by inheriting from it we can skip implementing the vertex shader and just use the default one. It also covers the basic attributes binding for vertices data. If you want to create a brand new effect that doesn't use anything from the built-in sprites effect, extend `Shaku.gfx.Effect` instead.
 2. Next we have `get fragmentCode()`, that returns the fragment shader code to compile for this effect. There is also a `get fragmentCode()` getter for the vertex shader code, but as mentioned earlier we relay on the default sprites vertex shader so we don't need to implement it.
-4. And finally, `get uniformTypes()` returns a dictionary with uniforms we want to set in the effect. Note that we do `let ret = super.uniformTypes;` to extend the base class uniforms so we won't miss out on any functionality from the basic effect.
+4. And finally, `get uniformTypes()` returns a dictionary with uniforms we want to set in the effect. Note that we do `const ret = super.uniformTypes;` to extend the base class uniforms so we won't miss out on any functionality from the basic effect.
 
 Now we can start using this effect with our Sprites Batch:
 
 ```js
 // create the custom effect
-let effect = new MyEffect();
+const effect = new MyEffect();
 
 // update effect elapsed time and render with it
 // the setter `effect.uniforms.elapsedTime` exists because we defined it in `get uniformTypes()`
@@ -703,17 +695,17 @@ varying vec2 v_texCoord;
 varying vec4 v_color;
 
 void main(void) {
-    gl_Position = projection * world * vec4(position, 1.0);
-    gl_PointSize = 1.0;
-    v_texCoord = uv;
-    v_color = color;
+	gl_Position = projection * world * vec4(position, 1.0);
+	gl_PointSize = 1.0;
+	v_texCoord = uv;
+	v_color = color;
 }
-    `;
+`;
 
 // fragment shader code
 const fragmentShader = `
 #ifdef GL_ES
-    precision highp float;
+	precision highp float;
 #endif
 
 uniform sampler2D mainTexture;
@@ -722,48 +714,48 @@ varying vec2 v_texCoord;
 varying vec4 v_color;
 
 void main(void) {
-    gl_FragColor = texture2D(mainTexture, v_texCoord) * v_color;
-    gl_FragColor.rgb *= gl_FragColor.a;
+	gl_FragColor = texture2D(mainTexture, v_texCoord) * v_color;
+	gl_FragColor.rgb *= gl_FragColor.a;
 }
-    `;
+`;
 
 /**
  * Default basic effect to draw 2d sprites.
  */
 class SpritesEffect extends Effect
 {
-    /** @inheritdoc */
-    get vertexCode()
-    {
-        return vertexShader;
-    }
+	/** @inheritdoc */
+	get vertexCode()
+	{
+		return vertexShader;
+	}
 
-    /** @inheritdoc */
-    get fragmentCode()
-    {
-        return fragmentShader;
-    }
+	/** @inheritdoc */
+	get fragmentCode()
+	{
+		return fragmentShader;
+	}
 
-    /** @inheritdoc */
-    get uniformTypes()
-    {
-        return {
-            [Effect.UniformBinds.MainTexture]: { type: Effect.UniformTypes.Texture, bind: Effect.UniformBinds.MainTexture },
-            [Effect.UniformBinds.Projection]: { type: Effect.UniformTypes.Matrix, bind: Effect.UniformBinds.Projection },
-            [Effect.UniformBinds.World]: { type: Effect.UniformTypes.Matrix, bind: Effect.UniformBinds.World },
-            [Effect.UniformBinds.View]: { type: Effect.UniformTypes.Matrix, bind: Effect.UniformBinds.View }
-        };
-    }
+	/** @inheritdoc */
+	get uniformTypes()
+	{
+		return {
+			[Effect.UniformBinds.MainTexture]: { type: Effect.UniformTypes.Texture, bind: Effect.UniformBinds.MainTexture },
+			[Effect.UniformBinds.Projection]: { type: Effect.UniformTypes.Matrix, bind: Effect.UniformBinds.Projection },
+			[Effect.UniformBinds.World]: { type: Effect.UniformTypes.Matrix, bind: Effect.UniformBinds.World },
+			[Effect.UniformBinds.View]: { type: Effect.UniformTypes.Matrix, bind: Effect.UniformBinds.View }
+		};
+	}
 
-    /** @inheritdoc */
-    get attributeTypes()
-    {
-        return {
-            [Effect.AttributeBinds.Position]: { size: 3, type: Effect.AttributeTypes.Float, normalize: false, bind: Effect.AttributeBinds.Position },
-            [Effect.AttributeBinds.TextureCoords]: { size: 2, type: Effect.AttributeTypes.Float, normalize: false, bind: Effect.AttributeBinds.TextureCoords },
-            [Effect.AttributeBinds.Colors]: { size: 4, type: Effect.AttributeTypes.Float, normalize: false, bind: Effect.AttributeBinds.Colors },
-        };
-    }
+	/** @inheritdoc */
+	get attributeTypes()
+	{
+		return {
+			[Effect.AttributeBinds.Position]: { size: 3, type: Effect.AttributeTypes.Float, normalize: false, bind: Effect.AttributeBinds.Position },
+			[Effect.AttributeBinds.TextureCoords]: { size: 2, type: Effect.AttributeTypes.Float, normalize: false, bind: Effect.AttributeBinds.TextureCoords },
+			[Effect.AttributeBinds.Colors]: { size: 4, type: Effect.AttributeTypes.Float, normalize: false, bind: Effect.AttributeBinds.Colors },
+		};
+	}
 }
 ```
 
@@ -816,27 +808,29 @@ Let's take a look at a basic example of using a matrix to move the position of 3
 // create vertices
 const spriteSize = new Shaku.utils.Vector2(spriteTexture.width * 1.5, spriteTexture.height * 1.5);
 const v1 = (new Shaku.gfx.Vertex())
-          .setPosition(new Shaku.utils.Vector3(-spriteSize.x / 2, 0, 0))
-          .setTextureCoords(new Shaku.utils.Vector2(0, 1));
+	.setPosition(new Shaku.utils.Vector3(-spriteSize.x / 2, 0, 0))
+	.setTextureCoords(new Shaku.utils.Vector2(0, 1));
 const v2 = (new Shaku.gfx.Vertex())
-          .setPosition(new Shaku.utils.Vector3(spriteSize.x / 2, 0, 0))
-          .setTextureCoords(new Shaku.utils.Vector2(1, 1));
+	.setPosition(new Shaku.utils.Vector3(spriteSize.x / 2, 0, 0))
+	.setTextureCoords(new Shaku.utils.Vector2(1, 1));
 const v3 = (new Shaku.gfx.Vertex())
-          .setPosition(new Shaku.utils.Vector3(-spriteSize.x / 2, spriteSize.y, 0))
-          .setTextureCoords(new Shaku.utils.Vector2(0, 0));
+	.setPosition(new Shaku.utils.Vector3(-spriteSize.x / 2, spriteSize.y, 0))
+	.setTextureCoords(new Shaku.utils.Vector2(0, 0));
 const v4 = (new Shaku.gfx.Vertex())
-          .setPosition(new Shaku.utils.Vector3(spriteSize.x / 2, spriteSize.y, 0))
-          .setTextureCoords(new Shaku.utils.Vector2(1, 0));
+	.setPosition(new Shaku.utils.Vector3(spriteSize.x / 2, spriteSize.y, 0))
+	.setTextureCoords(new Shaku.utils.Vector2(1, 0));
 
 // create a translation matrix
 const position = new Shaku.utils.Vector3(10, 100, 50);
 const matrix = Shaku.gfx.Matrix.translate(position.x, position.y, position.z);
 
 // transform the vertices with the matrix and draw them in a 3d batch
-const vertices = [Shaku.gfx.Matrix.transformVertex(matrix, v1),
-                  Shaku.gfx.Matrix.transformVertex(matrix, v2),
-                  Shaku.gfx.Matrix.transformVertex(matrix, v3),
-                  Shaku.gfx.Matrix.transformVertex(matrix, v4)];
+const vertices = [
+	Shaku.gfx.Matrix.transformVertex(matrix, v1),
+	Shaku.gfx.Matrix.transformVertex(matrix, v2),
+	Shaku.gfx.Matrix.transformVertex(matrix, v3),
+	Shaku.gfx.Matrix.transformVertex(matrix, v4),
+];
 spritesBatch3d.begin();
 spritesBatch3d.drawVertices(spriteTexture, vertices);
 spritesBatch3d.end();
@@ -862,11 +856,11 @@ To play an audio asset once:
 
 ```js
 // load the sound file
-let sound = await Shaku.assets.loadSound('assets/my_sound_file.ogg');
+const sound = await Shaku.assets.loadSound('assets/my_sound_file.ogg');
 
 // play sound
-let volume = 0.85;
-let pitch = 1;
+const volume = 0.85;
+const pitch = 1;
 Shaku.sfx.play(sound, volume, pitch);
 ```
 
@@ -882,8 +876,8 @@ To create a sound instance:
 
 ```js
 // load sound asset and create instance
-let sound = await Shaku.assets.loadSound('assets/my_sound_file.ogg');
-let soundInstance = Shaku.sfx.createSound(sound);
+const sound = await Shaku.assets.loadSound('assets/my_sound_file.ogg');
+const soundInstance = Shaku.sfx.createSound(sound);
 
 // play the sound
 soundInstance.play();
@@ -915,12 +909,12 @@ For example, the following code will create a mixer that transition from music1 
 
 ```js
 // load two music tracks
-let music1 = await Shaku.assets.loadSound('assets/music1.ogg');
-let music2 = await Shaku.assets.loadSound('assets/music2.ogg');
+const music1 = await Shaku.assets.loadSound('assets/music1.ogg');
+const music2 = await Shaku.assets.loadSound('assets/music2.ogg');
 
 // transition between the tracks
-let overlap = true;
-let mixer = new Shaku.sfx.SoundMixer(Shaku.sfx.createSound(music1), Shaku.sfx.createSound(music2), overlap);
+const overlap = true;
+const mixer = new Shaku.sfx.SoundMixer(Shaku.sfx.createSound(music1), Shaku.sfx.createSound(music2), overlap);
 ```
 
 To run the mixer you then need to call the following inside every step of your game main loop:
@@ -933,19 +927,19 @@ mixer.updateDelta(Shaku.gameTime.delta);
 And the following code will create a mixer to fade music in without fading anything out:
 
 ```js
-let mixer = new Shaku.sfx.SoundMixer(null, Shaku.sfx.createSound(music2), true);
+const mixer = new Shaku.sfx.SoundMixer(null, Shaku.sfx.createSound(music2), true);
 ```
 
 Or, we can just fade music out without fading anything in:
 
 ```js
-let mixer = new Shaku.sfx.SoundMixer(Shaku.sfx.createSound(music1), null, true);
+const mixer = new Shaku.sfx.SoundMixer(Shaku.sfx.createSound(music1), null, true);
 ```
 
 If you want to set the mixer to a specific point in time, you can call `update()` with the desired progress from 0.0 to 1.0:
 
 ```js
-let mixProgress = 0.5; // valid range = 0-1
+const mixProgress = 0.5; // valid range = 0-1
 mixer.update(mixProgress);
 ```
 
@@ -990,7 +984,7 @@ To query keyboard keys you can just use their names with any of the main state q
 
 ```js
 if (Shaku.input.down('left') || Shaku.input.down('a')) {
-  // move player left
+	// move player left
 }
 ```
 
@@ -1003,7 +997,7 @@ To get a mouse button state use the 'mouse_' prefix, followed by the button key 
 
 ```js
 if (Shaku.input.down('mouse_left')) {
-  // mouse left button is down
+	// mouse left button is down
 }
 ```
 
@@ -1013,14 +1007,14 @@ To get mouse position use:
 
 ```js
 // returns a Vector2 instance
-let mousePos = Shaku.input.mousePosition;
+const mousePos = Shaku.input.mousePosition;
 ```
 
 And to get mouse position change from last frame:
 
 ```js
 // returns a Vector2 instance
-let mouseDelta = Shaku.input.mouseDelta;
+const mouseDelta = Shaku.input.mouseDelta;
 ```
 
 **Wait, mouse position is wrong?**
@@ -1061,15 +1055,15 @@ You can get `down`, `pressed`, and `released` state for touch input too, similar
 
 ```js
 if (Shaku.input.down('touch')) {
-  // user is touching the screen
+	// user is touching the screen
 }
 
 if (Shaku.input.released('touch')) {
-  // touch was just released
+	// touch was just released
 }
 
 if (Shaku.input.pressed('touch')) {
-  // touch was just pressed
+	// touch was just pressed
 }
 ```
 
@@ -1094,7 +1088,7 @@ console.log("Default gamepad id: ", Shaku.input.gamepadId());
 And to get a gamepad state object, use:
 
 ```js
-let gamepad = Shaku.input.gamepad(0); // <-- 0 is the index of the gamepad to get, or leave out this param for default gamepad
+const gamepad = Shaku.input.gamepad(0); // <-- 0 is the index of the gamepad to get, or leave out this param for default gamepad
 ```
 
 Every gamepad state object will have the following properties:
@@ -1151,7 +1145,7 @@ For example, the following will trigger when the player either press the arrow u
 
 ```js
 if (Shaku.input.pressed(['gamepad0_up', 'gamepad0_leftStickUp'])) {
-  alert("Move Up!");
+	alert("Move Up!");
 }
 ```
 
@@ -1204,13 +1198,13 @@ This property provide access the asset itself before the promise is resolved, at
 
 ```js
 // myTexture may not be loaded yet!
-let myTexture = Shaku.assets.loadTexture(url).asset;
+const myTexture = Shaku.assets.loadTexture(url).asset;
 ```
 
 Instead of loading it with `await`:
 
 ```js
-let myTexture = await Shaku.assets.loadTexture(url);
+const myTexture = await Shaku.assets.loadTexture(url);
 ```
 
 Or with `then`:
@@ -1223,10 +1217,10 @@ The idea behind the `Promise.asset` property is to make it easier to perform par
 For example, the following code creates a dictionary of assets, and wait for all to load before proceeding:
 
 ```js
-let assets = {
-  tree: Shaku.assets.loadTexture("tree.png").asset,
-  rock: Shaku.assets.loadTexture("rock.png").asset,
-  house: Shaku.assets.loadTexture("house.png").asset
+const assets = {
+	tree: Shaku.assets.loadTexture("tree.png").asset,
+	rock: Shaku.assets.loadTexture("rock.png").asset,
+	house: Shaku.assets.loadTexture("house.png").asset
 }
 await Shaku.assets.waitForAll();
 ```
@@ -1240,7 +1234,7 @@ To check if an asset is loaded and valid, you can use `asset.valid`.
 To load a sound asset:
 
 ```js
-let sound = await Shaku.assets.loadSound(url);
+const sound = await Shaku.assets.loadSound(url);
 ```
 
 To learn more about sound assets, check out the [API docs](docs/assets_sound_asset.md).
@@ -1250,7 +1244,7 @@ To learn more about sound assets, check out the [API docs](docs/assets_sound_ass
 To load a texture asset:
 
 ```js
-let sound = await Shaku.assets.loadTexture(url, params);
+const sound = await Shaku.assets.loadTexture(url, params);
 ```
 
 Params is an *optional* dictionary that accepts the following keys:
@@ -1264,7 +1258,7 @@ To learn more about texture assets, check out the [API docs](docs/assets_texture
 To create a render target (a texture we can render on):
 
 ```js
-let rt = await Shaku.assets.createRenderTarget(name, width, height)
+const rt = await Shaku.assets.createRenderTarget(name, width, height)
 ```
 
 In the above example `name` will be used as `url`, ie to put the loaded render target in cache.
@@ -1276,7 +1270,7 @@ A render target is just a texture asset created via code. To learn more about te
 To load a font texture asset:
 
 ```js
-let fontTexture = await Shaku.assets.loadFontTexture(url, params);
+const fontTexture = await Shaku.assets.loadFontTexture(url, params);
 ```
 
 Params is a *mandatory* dictionary that accepts the following keys:
@@ -1296,7 +1290,7 @@ To learn more about font texture assets, check out the [API docs](docs/assets_te
 To load a json file:
 
 ```js
-let json = await Shaku.assets.loadJson(url);
+const json = await Shaku.assets.loadJson(url);
 console.log(json.data);
 ```
 
@@ -1307,7 +1301,7 @@ To learn more about json assets, check out the [API docs](docs/assets_json_asset
 You can also create a json asset dynamically, and add it to assets cache:
 
 ```js
-let json = await Shaku.assets.createJson(url, data);
+const json = await Shaku.assets.createJson(url, data);
 ```
 
 ### Load Binary File
@@ -1315,7 +1309,7 @@ let json = await Shaku.assets.createJson(url, data);
 To load a binary file:
 
 ```js
-let bin = await Shaku.assets.loadBinary(url);
+const bin = await Shaku.assets.loadBinary(url);
 console.log(bin.data);
 ```
 
@@ -1326,7 +1320,7 @@ To learn more about binary assets, check out the [API docs](docs/assets_binary_a
 You can also create a binary asset dynamically, and add it to assets cache:
 
 ```js
-let bin = await Shaku.assets.createBinary(url, data);
+const bin = await Shaku.assets.createBinary(url, data);
 ```
 
 ### Create a Texture Atlas
@@ -1334,7 +1328,7 @@ let bin = await Shaku.assets.createBinary(url, data);
 Texture Atlas was already covered when talking about the `Gfx` manager. To load multiple textures and generate an atlas from them, call `createTextureAtlas`:
 
 ```js
-let textureAtlas = await createTextureAtlas(name, sources, maxWidth, maxHeight, extraMargins)
+const textureAtlas = await createTextureAtlas(name, sources, maxWidth, maxHeight, extraMargins)
 ```
 
 - **name** is just a unique identifier for the atlas asset.
@@ -1348,7 +1342,7 @@ let textureAtlas = await createTextureAtlas(name, sources, maxWidth, maxHeight, 
 To get an already-loaded asset from cache, you can use:
 
 ```js
-let asset = Shaku.assets.getCached(url);
+const asset = Shaku.assets.getCached(url);
 ```
 
 This method is more convinient and just return the asset immediately, without a promise.
@@ -1411,10 +1405,10 @@ This property is a number used as a bitmap for collision filtering. For example,
 
 ```js
 const CollisionFlags = {
-  Walls: 1,
-  Lava: 1 << 1,
-  Floor: 1 << 2,
-  Enemy: 1 << 3,
+	Walls: 1,
+	Lava: 1 << 1,
+	Floor: 1 << 2,
+	Enemy: 1 << 3,
 }
 ```
 
@@ -1439,8 +1433,8 @@ Every collision world have an internal grid used for the broad phase detection. 
 Lets start by creating a collision world:
 
 ```js
-let gridSize = new Shaku.utils.Vector2(256, 256);
-let world = Shaku.collision.createWorld(gridSize);
+const gridSize = new Shaku.utils.Vector2(256, 256);
+const world = Shaku.collision.createWorld(gridSize);
 ```
 
 #### Adding Shapes
@@ -1449,15 +1443,15 @@ Now lets add 3 shapes to the world:
 
 ```js
 // add point to world
-let point = new Shaku.collision.PointShape(new Shaku.utils.Vector2(125, 65));
+const point = new Shaku.collision.PointShape(new Shaku.utils.Vector2(125, 65));
 world.addShape(point);
 
 // add rectangle to world
-let rect = new Shaku.collision.RectangleShape(new Shaku.utils.Rectangle(45, 75, 100, 50));
+const rect = new Shaku.collision.RectangleShape(new Shaku.utils.Rectangle(45, 75, 100, 50));
 world.addShape(rect);
 
 // add circle to world
-let circle = new Shaku.collision.CircleShape(new Shaku.utils.Circle(new Shaku.utils.Vector2(300, 315), 150));
+const circle = new Shaku.collision.CircleShape(new Shaku.utils.Circle(new Shaku.utils.Vector2(300, 315), 150));
 world.addShape(circle);
 ```
 
@@ -1467,18 +1461,18 @@ To 'pick' shapes that touch a position, you can use the `pick()` method:
 
 ```js
 // shapes will be an array with all shapes the mouse was pointing on
-let shapes = world.pick(Shaku.input.mousePosition);
+const shapes = world.pick(Shaku.input.mousePosition);
 ```
 
 Or with additional parameters:
 
 ```js
-let position = Shaku.input.mousePosition;
-let radius = 10;
-let sortByDistance = false;
-let mask = 0xffffff;
-let predicate = (shape) => { return true; };
-let shapes = world.pick(position, radius, sortByDistance, mask, predicate)
+const position = Shaku.input.mousePosition;
+const radius = 10;
+const sortByDistance = false;
+const mask = 0xffffff;
+const predicate = (shape) => { return true; };
+const shapes = world.pick(position, radius, sortByDistance, mask, predicate)
 ```
 
 - **radius** is radius around the position to pick shapes from.
@@ -1589,7 +1583,7 @@ Let's start with a simple animator to create a heartbeat-like pulse that runs on
 ```js
 // create an animator that will grow 'sprite' to x1.5 of its size, then shrink it back to original size over the course of 0.5 seconds per direction (grow / shrink).
 // smoothDamp means the animation won't be linear, it will be faster at the beginning and slower as we reach the target size
-let heartbeat = (new Shaku.utils.Animator(sprite))
+const heartbeat = (new Shaku.utils.Animator(sprite))
 				.to({'size': sprite.size.mul(1.5)})
 				.reverseBackToStart()
 				.duration(0.5)
@@ -1700,11 +1694,11 @@ Usage example:
 
 ```js
 // create perlin with random seed
-let seed = Math.random(); // use the same seed to get same results
-let perlin = new Shaku.utils.Perlin(seed);
+const seed = Math.random(); // use the same seed to get same results
+const perlin = new Shaku.utils.Perlin(seed);
 
 // get value from x,y position
-let value = perlin.generateSmooth(x / 25, y / 25, 0.15);
+const value = perlin.generateSmooth(x / 25, y / 25, 0.15);
 ```
 
 For more info check out the [API docs](docs/utils_perlin.md).
@@ -1745,52 +1739,54 @@ Lets see an example on using the `PathFinder`:
 // other types = walkable.
 class GridProvider extends Shaku.utils.PathFinder.IGrid
 {
-    constructor(grid)
-    {
-        super();
-        this.grid = grid;
-    }
+	constructor(grid)
+	{
+		super();
+		this.grid = grid;
+	}
 
-    // blocking tiles = type 0, or out of bounds.
-    isBlocked(_from, _to)
-    {
-        return !Boolean(this.getType(_to));
-    }
+	// blocking tiles = type 0, or out of bounds.
+	isBlocked(_from, _to)
+	{
+		return !Boolean(this.getType(_to));
+	}
 
-    // get price: price = tile type
-    getPrice(_index)
-    {
-        return this.getType(_index);
-    }
+	// get price: price = tile type
+	getPrice(_index)
+	{
+		return this.getType(_index);
+	}
 
-    // get type from index.
-    // return 0 (block) for out of bounds.
-    getType(index)
-    {
-        if (!this.grid[index.x]) {
-            return 0;
-        }
-        return this.grid[index.x][index.y] || 0;
-    }
+	// get type from index.
+	// return 0 (block) for out of bounds.
+	getType(index)
+	{
+		if (!this.grid[index.x]) {
+			return 0;
+		}
+		return this.grid[index.x][index.y] || 0;
+	}
 }
 
 // create grid
-let grid = [[1,2,1,1,1,1,1,1,1,1,1,1],
-            [1,2,1,1,1,1,1,1,1,1,1,1],
-            [1,1,1,0,1,1,1,1,1,1,1,1],
-            [1,1,1,0,0,0,1,1,1,1,1,1],
-            [1,1,1,1,1,0,1,1,1,1,1,1],
-            [1,1,1,2,2,0,1,0,0,0,1,1],
-            [1,1,1,2,1,0,1,0,1,1,1,1],
-            [1,1,1,1,1,1,1,0,1,1,1,1],
-            [1,1,0,1,1,1,1,0,1,2,1,1],
-            [1,1,0,1,1,0,0,0,1,2,2,1],
-            [1,1,0,1,1,1,1,1,1,2,2,1],
-            [1,1,0,1,1,1,1,1,1,1,2,1]];
-let gridProvider = new GridProvider(grid);
+const grid = [
+	[1,2,1,1,1,1,1,1,1,1,1,1],
+	[1,2,1,1,1,1,1,1,1,1,1,1],
+	[1,1,1,0,1,1,1,1,1,1,1,1],
+	[1,1,1,0,0,0,1,1,1,1,1,1],
+	[1,1,1,1,1,0,1,1,1,1,1,1],
+	[1,1,1,2,2,0,1,0,0,0,1,1],
+	[1,1,1,2,1,0,1,0,1,1,1,1],
+	[1,1,1,1,1,1,1,0,1,1,1,1],
+	[1,1,0,1,1,1,1,0,1,2,1,1],
+	[1,1,0,1,1,0,0,0,1,2,2,1],
+	[1,1,0,1,1,1,1,1,1,2,2,1],
+	[1,1,0,1,1,1,1,1,1,1,2,1],
+];
+const gridProvider = new GridProvider(grid);
 
 // find path from top-left to bottom-right
-let path = Shaku.utils.PathFinder.findPath(gridProvider, {x:0, y:0}, {x:11, y:11});
+const path = Shaku.utils.PathFinder.findPath(gridProvider, {x:0, y:0}, {x:11, y:11});
 ```
 
 For more info check out the [API docs](docs/utils_path_finder.md).
@@ -1861,7 +1857,7 @@ But since we removed the reliable memory fallback, you should make sure it didn'
 
 ```js
 if (!storage.isValid) {
-    alert("localStorage required!");
+	alert("localStorage required!");
 }
 ```
 
@@ -1873,11 +1869,11 @@ You can add keys prefix to storage instances. Storages with different prefixes w
 
 ```js
 // create players storage (null is to use default adapters)
-let prefix = 'players';
+const prefix = 'players';
 const playersStorage = new Shaku.utils.Storage(null, prefix);
 
 // create npcs storage (null is to use default adapters)
-let otherPrefix = 'npcs';
+const otherPrefix = 'npcs';
 const npcsStorage = new Shaku.utils.Storage(null, otherPrefix);
 
 // we can now use the same keys in both storages, and they won't mix:
@@ -1895,7 +1891,7 @@ To encode keys and value with Base64:
 ```js
 storage.valuesAsBase64 = true;
 storage.keysAsBase64 = true;
-storage.setJson('some_key', {hello: "world"});  // <-- this data will have key and values as base64.
+storage.setJson('some_key', {hello: "world"}); // <-- this data will have key and values as base64.
 ```
 
 With base64 encoding, an entry like this:
@@ -2000,29 +1996,29 @@ You might want to connect *Shaku* to your own server-side logger instead of cons
 ```js
 // set shaku logs
 // logger == winston logger instance
-const shakuLogs = logger.child(...);  // <-- add whatever custom params you need as the ...
+const shakuLogs = logger.child(...); // <-- add whatever custom params you need as the ...
 class ShakuLogDrivers
 {
-    trace(header, msg)
-    {
-        shakuLogs.debug(msg);
-    }
-    debug(header, msg)
-    {
-        shakuLogs.debug(msg);
-    }
-    info(header, msg)
-    {
-        shakuLogs.info(msg);
-    }
-    warn(header, msg)
-    {
-        shakuLogs.warn(msg);
-    }
-    error(header, msg)
-    {
-        shakuLogs.error(msg);
-    }
+	trace(header, msg)
+	{
+		shakuLogs.debug(msg);
+	}
+	debug(header, msg)
+	{
+		shakuLogs.debug(msg);
+	}
+	info(header, msg)
+	{
+		shakuLogs.info(msg);
+	}
+	warn(header, msg)
+	{
+		shakuLogs.warn(msg);
+	}
+	error(header, msg)
+	{
+		shakuLogs.error(msg);
+	}
 }
 Shaku.setLogger(new ShakuLogDrivers());
 ```
@@ -2350,7 +2346,7 @@ We'll need to create a batch and use it like this:
 
 ```js
 // init
-let spritesBatch = new Shaku.gfx.SpriteBatch();
+const spritesBatch = new Shaku.gfx.SpriteBatch();
 
 // render
 spritesBatch.begin();
