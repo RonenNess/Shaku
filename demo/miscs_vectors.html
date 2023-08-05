@@ -1,115 +1,116 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <title>Shaku</title>
-    <meta name="description" content="Shaku - a simple and easy-to-use javascript library for videogame programming.">
-    <meta name="author" content="Ronen Ness">
-    <link href="css/style.css" rel="stylesheet" type="text/css" media="all">
-  </head>
-  <body>
-    <div class="noselect">
-    <button class="view-code-btn" onclick="showSampleCode();">View Code</button> 
-    <h1 class="demo-title">Shaku: Vectors</h1>
-      <p>Some vectors math. <b>Click</b> to set anchor point.</p>
-      <textarea id="results" style="resize:none; width:800px; height:100px; overflow: hidden;" readonly></textarea>
-      
-      <!-- include shaku -->
-      <script src="js/demos.js"></script>
-      <script src="js/shaku.js"></script>
 
-      <!-- demo code -->
-      <script>
-        async function runGame()
-        {
-          // make shaku only listen to gfx canvas
-          Shaku.input.setTargetElement(() => Shaku.gfx.canvas);
+<head>
+	<meta charset="UTF-8">
+	<title>Shaku</title>
+	<meta name="description" content="Shaku - a simple and easy-to-use javascript library for videogame programming.">
+	<meta name="author" content="Ronen Ness">
+	<link href="css/style.css" rel="stylesheet" type="text/css" media="all">
+</head>
 
-          // init shaku
-          await Shaku.init();
+<body>
+	<div class="noselect">
+		<button class="view-code-btn" onclick="showSampleCode();">View Code</button>
+		<h1 class="demo-title">Shaku: Vectors</h1>
+		<p>Some vectors math. <b>Click</b> to set anchor point.</p>
+		<textarea id="results" style="resize:none; width:800px; height:100px; overflow: hidden;" readonly></textarea>
 
-          // add shaku's canvas to document and set resolution to 800x600
-          document.body.appendChild(Shaku.gfx.canvas);
-          Shaku.gfx.setResolution(800, 600, true);
+		<!-- include shaku -->
+		<script src="js/demos.js"></script>
+		<script src="js/shaku.js"></script>
 
-          // shapes batch to draw vectors
-          let shapesBatch = new Shaku.gfx.ShapesBatch();
+		<!-- demo code -->
+		<script>
+			async function runGame() {
+				// make shaku only listen to gfx canvas
+				Shaku.input.setTargetElement(() => Shaku.gfx.canvas);
 
-          // anchor point
-          var anchor = new Shaku.utils.Vector2(400, 300);
+				// init shaku
+				await Shaku.init();
 
-          // do a single main loop step
-          function step() 
-          {  
-            // start new frame and clear screen
-            Shaku.startFrame();
-            Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
+				// add shaku's canvas to document and set resolution to 800x600
+				document.body.appendChild(Shaku.gfx.canvas);
+				Shaku.gfx.setResolution(800, 600, true);
 
-            shapesBatch.begin();
+				// shapes batch to draw vectors
+				let shapesBatch = new Shaku.gfx.ShapesBatch();
 
-            // get target
-            let target = Shaku.input.mousePosition;
+				// anchor point
+				var anchor = new Shaku.utils.Vector2(400, 300);
 
-            // draw line between anchor and mouse position
-            shapesBatch.drawLine(target, anchor, Shaku.utils.Color.red);
+				// do a single main loop step
+				function step() {
+					// start new frame and clear screen
+					Shaku.startFrame();
+					Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
 
-            // draw anchor and target
-            shapesBatch.drawCircle(new Shaku.utils.Circle(target, 10), Shaku.utils.Color.green);
-            shapesBatch.drawCircle(new Shaku.utils.Circle(anchor, 10), Shaku.utils.Color.red);
+					shapesBatch.begin();
 
-            // update anchor
-            if (Shaku.input.down('mouse_left')) {
-              anchor = target;
-            }
+					// get target
+					let target = Shaku.input.mousePosition;
 
-            results.value = `Distance: ${anchor.distanceTo(target)}
+					// draw line between anchor and mouse position
+					shapesBatch.drawLine(target, anchor, Shaku.utils.Color.red);
+
+					// draw anchor and target
+					shapesBatch.drawCircle(new Shaku.utils.Circle(target, 10), Shaku.utils.Color.green);
+					shapesBatch.drawCircle(new Shaku.utils.Circle(anchor, 10), Shaku.utils.Color.red);
+
+					// update anchor
+					if (Shaku.input.down('mouse_left')) {
+						anchor = target;
+					}
+
+					results.value = `Distance: ${anchor.distanceTo(target)}
 Degrees / Radians (-180 - 180): ${anchor.degreesTo(target)} / ${anchor.radiansTo(target)}
 Degrees / Radians (0 - 360): ${anchor.wrappedDegreesTo(target)} / ${anchor.wrappedRadiansTo(target)}
 Direction Vector: ${Shaku.utils.Vector2.fromDegrees(anchor.wrappedDegreesTo(target)).normalizeSelf().mul(100).floor().div(100).string()}
 Dot: ${Shaku.utils.Vector2.dot(anchor, target)}
 Cross: ${Shaku.utils.Vector2.cross(anchor, target)}`;
 
-            // lerping vector
-            let lerp = Shaku.utils.Vector2.lerp(target, anchor, Math.sin(Shaku.gameTime.elapsed) / 2 + 0.5);
-            shapesBatch.drawCircle(new Shaku.utils.Circle(lerp, 5), Shaku.utils.Color.blue);
+					// lerping vector
+					let lerp = Shaku.utils.Vector2.lerp(target, anchor, Math.sin(Shaku.gameTime.elapsed) / 2 + 0.5);
+					shapesBatch.drawCircle(new Shaku.utils.Circle(lerp, 5), Shaku.utils.Color.blue);
 
-            // draw shapes
-            shapesBatch.end();
+					// draw shapes
+					shapesBatch.end();
 
-            // end frame and request next frame
-            Shaku.endFrame();
-            Shaku.requestAnimationFrame(step);
-          }
+					// end frame and request next frame
+					Shaku.endFrame();
+					Shaku.requestAnimationFrame(step);
+				}
 
-          // start main loop
-          step();
-        }
+				// start main loop
+				step();
+			}
 
-        runGame();
-      </script>
+			runGame();
+		</script>
 
-</div>
+	</div>
 
-<!-- code example part -->
-<div id="sample-code-modal" class="modal">
-  <div class="modal__overlay jsOverlay"></div>
-  <div class="modal__container">   
+	<!-- code example part -->
+	<div id="sample-code-modal" class="modal">
+		<div class="modal__overlay jsOverlay"></div>
+		<div class="modal__container">
 
-<p class="noselect">The following shows a very basic vectors example.</i>
-</p>
-<pre><code class="language-js">let v1 = new Shaku.utils.Vector2(15, 52);
+			<p class="noselect">The following shows a very basic vectors example.</i>
+			</p>
+			<pre><code class="language-js">let v1 = new Shaku.utils.Vector2(15, 52);
 let v2 = new Shaku.utils.Vector2(50, 102);
 let distance = v1.distanceTo(v2);
 
 // Vector2 class has a lot of methods! check out the full docs for more!
 </code></pre>
 
-  <button class="modal__close" onclick="closeModal('sample-code-modal')">&#10005;</button>
-</div>
-</div>
+			<button class="modal__close" onclick="closeModal('sample-code-modal')">&#10005;</button>
+		</div>
+	</div>
 
-<link href="prism/prism.css" rel="stylesheet" />
-<script src="prism/prism.js"></script>
+	<link href="prism/prism.css" rel="stylesheet" />
+	<script src="prism/prism.js"></script>
 
-  </body>
+</body>
+
 </html>

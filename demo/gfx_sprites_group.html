@@ -1,195 +1,198 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <title>Shaku</title>
-    <meta name="description" content="Shaku - a simple and easy-to-use javascript library for videogame programming.">
-    <meta name="author" content="Ronen Ness">
-    <link href="css/style.css" rel="stylesheet" type="text/css" media="all">
-  </head>
-  <body>
-    <div class="noselect">
-    <button class="view-code-btn" onclick="showSampleCode();">View Code</button> 
-    <h1 class="demo-title">Shaku Gfx Demo: Sprites Group</h1>
-      <p>This demo uses a Sprites Group to draw a collection of sprites with parent transformations.<br/>
-        This method is useful when you need to group together a bunch of sprites and move, rotate and scale them as a single unit. In this case the sprites we have are tank wheels, body, and turret.</p>
-      <p>Use <b>Arrows</b> or <b>WASD</b> to drive the tank, and <b>Z/X</b> to rotate the turret.<br />
-        Press <b>1-3</b> to change tank body color.<br />
-        <b>Click anywhere</b> to switch turret control from keyboard to mouse (press Z/X again to restore keyboard control).</b></p>
-      <span class="credits">Tank image is from: https://opengameart.org/content/top-down-vehicle <br />
-        Grass image is from: https://opengameart.org/content/10-seamless-grass-textures-that-are-2048-x-2048-grass-1png</span>
 
-      <!-- include shaku -->
-      <script src="js/demos.js"></script>
-      <script src="js/shaku.js"></script>
+<head>
+	<meta charset="UTF-8">
+	<title>Shaku</title>
+	<meta name="description" content="Shaku - a simple and easy-to-use javascript library for videogame programming.">
+	<meta name="author" content="Ronen Ness">
+	<link href="css/style.css" rel="stylesheet" type="text/css" media="all">
+</head>
 
-      <!-- demo code -->
-      <script>
-        async function runDemo()
-        {
-          // make shaku only listen to gfx canvas
-          Shaku.input.setTargetElement(() => Shaku.gfx.canvas);
+<body>
+	<div class="noselect">
+		<button class="view-code-btn" onclick="showSampleCode();">View Code</button>
+		<h1 class="demo-title">Shaku Gfx Demo: Sprites Group</h1>
+		<p>This demo uses a Sprites Group to draw a collection of sprites with parent transformations.<br />
+			This method is useful when you need to group together a bunch of sprites and move, rotate and scale them as
+			a single unit. In this case the sprites we have are tank wheels, body, and turret.</p>
+		<p>Use <b>Arrows</b> or <b>WASD</b> to drive the tank, and <b>Z/X</b> to rotate the turret.<br />
+			Press <b>1-3</b> to change tank body color.<br />
+			<b>Click anywhere</b> to switch turret control from keyboard to mouse (press Z/X again to restore keyboard
+			control).</b>
+		</p>
+		<span class="credits">Tank image is from: https://opengameart.org/content/top-down-vehicle <br />
+			Grass image is from:
+			https://opengameart.org/content/10-seamless-grass-textures-that-are-2048-x-2048-grass-1png</span>
 
-          // init shaku
-          await Shaku.init();
+		<!-- include shaku -->
+		<script src="js/demos.js"></script>
+		<script src="js/shaku.js"></script>
 
-          // screen size
-          let screenX = 800;
-          let screenY = 600;
+		<!-- demo code -->
+		<script>
+			async function runDemo() {
+				// make shaku only listen to gfx canvas
+				Shaku.input.setTargetElement(() => Shaku.gfx.canvas);
 
-          // if true, will point cannon on mouse
-          let pointToCursor = false;
+				// init shaku
+				await Shaku.init();
 
-          // add canvas to document
-          document.body.appendChild(Shaku.gfx.canvas);
-          Shaku.gfx.setResolution(screenX, screenY, true);
+				// screen size
+				let screenX = 800;
+				let screenY = 600;
 
-          // load textures
-          let tankTexture = await Shaku.assets.loadTexture('assets/tank.png');
-          let grassTexture = await Shaku.assets.loadTexture('assets/grass.png');
+				// if true, will point cannon on mouse
+				let pointToCursor = false;
 
-          // create sprites batch
-          let spritesBatch = new Shaku.gfx.SpriteBatch();
+				// add canvas to document
+				document.body.appendChild(Shaku.gfx.canvas);
+				Shaku.gfx.setResolution(screenX, screenY, true);
 
-          // create shapes batch for shadow
-          let shapesBatch = new Shaku.gfx.ShapesBatch();
+				// load textures
+				let tankTexture = await Shaku.assets.loadTexture('assets/tank.png');
+				let grassTexture = await Shaku.assets.loadTexture('assets/grass.png');
 
-          // create sprites group
-          let tank = new Shaku.gfx.SpritesGroup();
-          tank.scale.set(0.65, 0.65);
+				// create sprites batch
+				let spritesBatch = new Shaku.gfx.SpriteBatch();
 
-          // add wheels
-          let wheelsSprite = tank.add(new Shaku.gfx.Sprite(tankTexture));
-          wheelsSprite.sourceRectangle = new Shaku.utils.Rectangle(0, 0, 232, 256);
-          wheelsSprite.size.x = wheelsSprite.sourceRectangle.width;
-          wheelsSprite.size.y = wheelsSprite.sourceRectangle.height;
-          wheelsSprite.rotation = Math.PI / 2;
+				// create shapes batch for shadow
+				let shapesBatch = new Shaku.gfx.ShapesBatch();
 
-          // add base
-          let baseSprite = tank.add(new Shaku.gfx.Sprite(tankTexture));
-          baseSprite.sourceRectangle = new Shaku.utils.Rectangle(232, 0, 170, 256);
-          baseSprite.size.x = baseSprite.sourceRectangle.width;
-          baseSprite.size.y = baseSprite.sourceRectangle.height;
-          baseSprite.rotation = Math.PI / 2;
-          
-          // add cannon
-          let cannonSprite = tank.add(new Shaku.gfx.Sprite(tankTexture));
-          cannonSprite.sourceRectangle = new Shaku.utils.Rectangle(232 + 170, 0, 110, 256);
-          cannonSprite.size.x = cannonSprite.sourceRectangle.width;
-          cannonSprite.size.y = cannonSprite.sourceRectangle.height;
-          cannonSprite.rotation = Math.PI / 2;
+				// create sprites group
+				let tank = new Shaku.gfx.SpritesGroup();
+				tank.scale.set(0.65, 0.65);
 
-          // sprite position
-          tank.position.x = screenX / 2;
-          tank.position.y = screenY / 2;
+				// add wheels
+				let wheelsSprite = tank.add(new Shaku.gfx.Sprite(tankTexture));
+				wheelsSprite.sourceRectangle = new Shaku.utils.Rectangle(0, 0, 232, 256);
+				wheelsSprite.size.x = wheelsSprite.sourceRectangle.width;
+				wheelsSprite.size.y = wheelsSprite.sourceRectangle.height;
+				wheelsSprite.rotation = Math.PI / 2;
 
-          // walk to position, but only if not marked as blocked in the block map
-          function walkTo(newX, newY)
-          {
-            tank.position.x = newX;
-            tank.position.y = newY;
-          }
+				// add base
+				let baseSprite = tank.add(new Shaku.gfx.Sprite(tankTexture));
+				baseSprite.sourceRectangle = new Shaku.utils.Rectangle(232, 0, 170, 256);
+				baseSprite.size.x = baseSprite.sourceRectangle.width;
+				baseSprite.size.y = baseSprite.sourceRectangle.height;
+				baseSprite.rotation = Math.PI / 2;
 
-          // do a main loop step.
-          function step()
-          {
-            // start frame and clear screen
-            Shaku.startFrame();
-            Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
+				// add cannon
+				let cannonSprite = tank.add(new Shaku.gfx.Sprite(tankTexture));
+				cannonSprite.sourceRectangle = new Shaku.utils.Rectangle(232 + 170, 0, 110, 256);
+				cannonSprite.size.x = cannonSprite.sourceRectangle.width;
+				cannonSprite.size.y = cannonSprite.sourceRectangle.height;
+				cannonSprite.rotation = Math.PI / 2;
 
-            // draw background
-            spritesBatch.begin();
-            spritesBatch.drawRectangle(grassTexture, Shaku.gfx.getRenderingRegion());
-            spritesBatch.end();
+				// sprite position
+				tank.position.x = screenX / 2;
+				tank.position.y = screenY / 2;
 
-            // draw shadow
-            shapesBatch.begin();
-            shapesBatch.drawCircle(new Shaku.utils.Circle(tank.position, 120), new Shaku.utils.Color(0,0,0,0.5), 16, Shaku.utils.Color.transparent);
-            shapesBatch.end();
+				// walk to position, but only if not marked as blocked in the block map
+				function walkTo(newX, newY) {
+					tank.position.x = newX;
+					tank.position.y = newY;
+				}
 
-            // draw tank
-            spritesBatch.begin();
-            spritesBatch.drawSpriteGroup(tank);
-            spritesBatch.end();
+				// do a main loop step.
+				function step() {
+					// start frame and clear screen
+					Shaku.startFrame();
+					Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
 
-            // move and rotate tank
-            let driveSpeed = Shaku.gameTime.delta * 200;
-            let moveWheels = false;
-            if (Shaku.input.down('left') || Shaku.input.down('a')) { 
-              tank.rotation -= Shaku.gameTime.delta; 
-              moveWheels = true;
-            }
-            if (Shaku.input.down('right') || Shaku.input.down('d')) { 
-              tank.rotation += Shaku.gameTime.delta; 
-              moveWheels = true;
-            }
-            if (Shaku.input.down('z')) { 
-              cannonSprite.rotation -= Shaku.gameTime.delta; 
-              pointToCursor = false;
-            }
-            if (Shaku.input.down('x')) { 
-              cannonSprite.rotation += Shaku.gameTime.delta; 
-              pointToCursor = false;
-            }
-            if (Shaku.input.down('up') || Shaku.input.down('w')) { 
-              tank.position.addSelf(Shaku.utils.Vector2.fromRadians(tank.rotation).mul(driveSpeed));
-              moveWheels = true;
-            }
-            if (Shaku.input.down('down') || Shaku.input.down('s')) { 
-              tank.position.subSelf(Shaku.utils.Vector2.fromRadians(tank.rotation).mul(driveSpeed));
-              moveWheels = true;
-            }
+					// draw background
+					spritesBatch.begin();
+					spritesBatch.drawRectangle(grassTexture, Shaku.gfx.getRenderingRegion());
+					spritesBatch.end();
 
-            // change colors
-            if (Shaku.input.released('1')) {
-              baseSprite.color = Shaku.utils.Color.white;
-            }
-            if (Shaku.input.released('2')) {
-              baseSprite.color = Shaku.utils.Color.yellow;
-            }
-            if (Shaku.input.released('3')) {
-              baseSprite.color = Shaku.utils.Color.springgreen;
-            }
+					// draw shadow
+					shapesBatch.begin();
+					shapesBatch.drawCircle(new Shaku.utils.Circle(tank.position, 120), new Shaku.utils.Color(0, 0, 0, 0.5), 16, Shaku.utils.Color.transparent);
+					shapesBatch.end();
 
-            // switch to mouse control
-            if (Shaku.input.down('mouse_left')) {
-              pointToCursor = true;
-            }
+					// draw tank
+					spritesBatch.begin();
+					spritesBatch.drawSpriteGroup(tank);
+					spritesBatch.end();
 
-            // rotate cannon using mouse
-            if (pointToCursor) {
-              let targetRotation = Shaku.input.mousePosition.radiansTo(tank.position) - Math.PI / 2 - tank.rotation;
-              cannonSprite.rotation = Shaku.utils.MathHelper.lerpRadians(cannonSprite.rotation, targetRotation, Shaku.gameTime.delta * 5);
-            }
+					// move and rotate tank
+					let driveSpeed = Shaku.gameTime.delta * 200;
+					let moveWheels = false;
+					if (Shaku.input.down('left') || Shaku.input.down('a')) {
+						tank.rotation -= Shaku.gameTime.delta;
+						moveWheels = true;
+					}
+					if (Shaku.input.down('right') || Shaku.input.down('d')) {
+						tank.rotation += Shaku.gameTime.delta;
+						moveWheels = true;
+					}
+					if (Shaku.input.down('z')) {
+						cannonSprite.rotation -= Shaku.gameTime.delta;
+						pointToCursor = false;
+					}
+					if (Shaku.input.down('x')) {
+						cannonSprite.rotation += Shaku.gameTime.delta;
+						pointToCursor = false;
+					}
+					if (Shaku.input.down('up') || Shaku.input.down('w')) {
+						tank.position.addSelf(Shaku.utils.Vector2.fromRadians(tank.rotation).mul(driveSpeed));
+						moveWheels = true;
+					}
+					if (Shaku.input.down('down') || Shaku.input.down('s')) {
+						tank.position.subSelf(Shaku.utils.Vector2.fromRadians(tank.rotation).mul(driveSpeed));
+						moveWheels = true;
+					}
 
-            // do wheels blur while moving
-            baseSprite.sourceRectangle.y = wheelsSprite.sourceRectangle.y = (moveWheels && (Math.floor(Shaku.gameTime.elapsed * 20) % 2 == 0))  ? 256 : 0;
+					// change colors
+					if (Shaku.input.released('1')) {
+						baseSprite.color = Shaku.utils.Color.white;
+					}
+					if (Shaku.input.released('2')) {
+						baseSprite.color = Shaku.utils.Color.yellow;
+					}
+					if (Shaku.input.released('3')) {
+						baseSprite.color = Shaku.utils.Color.springgreen;
+					}
 
-            // end frame and request next frame
-            Shaku.endFrame();
-            Shaku.requestAnimationFrame(step);
-          }
+					// switch to mouse control
+					if (Shaku.input.down('mouse_left')) {
+						pointToCursor = true;
+					}
 
-          // start main loop
-          step();
-        }
+					// rotate cannon using mouse
+					if (pointToCursor) {
+						let targetRotation = Shaku.input.mousePosition.radiansTo(tank.position) - Math.PI / 2 - tank.rotation;
+						cannonSprite.rotation = Shaku.utils.MathHelper.lerpRadians(cannonSprite.rotation, targetRotation, Shaku.gameTime.delta * 5);
+					}
 
-        // start demo
-        runDemo();
+					// do wheels blur while moving
+					baseSprite.sourceRectangle.y = wheelsSprite.sourceRectangle.y = (moveWheels && (Math.floor(Shaku.gameTime.elapsed * 20) % 2 == 0)) ? 256 : 0;
 
-      </script>
+					// end frame and request next frame
+					Shaku.endFrame();
+					Shaku.requestAnimationFrame(step);
+				}
 
-</div>
+				// start main loop
+				step();
+			}
 
-<!-- code example part -->
-<div id="sample-code-modal" class="modal">
-  <div class="modal__overlay jsOverlay"></div>
-  <div class="modal__container">   
+			// start demo
+			runDemo();
 
-<p class="noselect">The following code example show how to use sprites group.</p>
-<pre><code class="language-js">// create sprites batch
+		</script>
+
+	</div>
+
+	<!-- code example part -->
+	<div id="sample-code-modal" class="modal">
+		<div class="modal__overlay jsOverlay"></div>
+		<div class="modal__container">
+
+			<p class="noselect">The following code example show how to use sprites group.</p>
+			<pre><code class="language-js">// create sprites batch
 let spritesBatch = new Shaku.gfx.SpriteBatch();
-  
+
 // load tank's texture asset, which contains wheels, middle and top cannon
 let tankTexture = await Shaku.assets.loadTexture('assets/tank.png');
 
@@ -226,12 +229,13 @@ spritesBatch.begin();
 spritesBatch.drawSpriteGroup(tank);
 spritesBatch.end();</code></pre>
 
-  <button class="modal__close" onclick="closeModal('sample-code-modal')">&#10005;</button>
-</div>
-</div>
+			<button class="modal__close" onclick="closeModal('sample-code-modal')">&#10005;</button>
+		</div>
+	</div>
 
-<link href="prism/prism.css" rel="stylesheet" />
-<script src="prism/prism.js"></script>
+	<link href="prism/prism.css" rel="stylesheet" />
+	<script src="prism/prism.js"></script>
 
-  </body>
+</body>
+
 </html>

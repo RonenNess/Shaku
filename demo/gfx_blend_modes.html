@@ -1,142 +1,141 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <title>Shaku</title>
-    <meta name="description" content="Shaku - a simple and easy-to-use javascript library for videogame programming.">
-    <meta name="author" content="Ronen Ness">
-    <link href="css/style.css" rel="stylesheet" type="text/css" media="all">
-  </head>
-  <body>
-    <div class="noselect">
-    <button class="view-code-btn" onclick="showSampleCode();">View Code</button> 
-    <h1 class="demo-title">Shaku Gfx Demo: Blend Modes</h1>
-      <p>This demo demonstrate how to render with different blend modes.<br />
-      Press <b>Space</b> to toggle background, <b>Z</b> to change textures.</p>
 
-      <!-- include shaku -->
-      <script src="js/demos.js"></script>
-      <script src="js/shaku.js"></script>
+<head>
+	<meta charset="UTF-8">
+	<title>Shaku</title>
+	<meta name="description" content="Shaku - a simple and easy-to-use javascript library for videogame programming.">
+	<meta name="author" content="Ronen Ness">
+	<link href="css/style.css" rel="stylesheet" type="text/css" media="all">
+</head>
 
-      <!-- demo code -->
-      <script>
-        async function runDemo()
-        {
-          // init shaku
-          await Shaku.init();
+<body>
+	<div class="noselect">
+		<button class="view-code-btn" onclick="showSampleCode();">View Code</button>
+		<h1 class="demo-title">Shaku Gfx Demo: Blend Modes</h1>
+		<p>This demo demonstrate how to render with different blend modes.<br />
+			Press <b>Space</b> to toggle background, <b>Z</b> to change textures.</p>
 
-          // show background?
-          let showBackground = false;
-          let textureIndex = 0;
+		<!-- include shaku -->
+		<script src="js/demos.js"></script>
+		<script src="js/shaku.js"></script>
 
-          // screen size
-          let screenX = 900;
-          let screenY = 600;
+		<!-- demo code -->
+		<script>
+			async function runDemo() {
+				// init shaku
+				await Shaku.init();
 
-          // add canvas to document
-          document.body.appendChild(Shaku.gfx.canvas);
-          Shaku.gfx.setResolution(screenX, screenY, true);
+				// show background?
+				let showBackground = false;
+				let textureIndex = 0;
 
-          // load font texture
-          let fontTexture = await Shaku.assets.loadFontTexture('assets/DejaVuSansMono.ttf', {fontName: 'DejaVuSansMono'});
+				// screen size
+				let screenX = 900;
+				let screenY = 600;
 
-          // create text and sprites batch
-          let spritesBatch = new Shaku.gfx.SpriteBatch();
-          let textSpriteBatch = new Shaku.gfx.TextSpriteBatch();
+				// add canvas to document
+				document.body.appendChild(Shaku.gfx.canvas);
+				Shaku.gfx.setResolution(screenX, screenY, true);
 
-          // set outline
-          textSpriteBatch.outlineWeight = 1;
-          textSpriteBatch.outlineColor = Shaku.utils.Color.black;
-          
-          // draw a texture with simple outline
-          function drawTextWithOutline(text, position)
-          {
-            let textGroup = Shaku.gfx.buildText(fontTexture, text, 24, Shaku.utils.Color.black, Shaku.gfx.TextAlignments.Center);
-            textGroup.setColor(Shaku.utils.Color.white);
-            textGroup.position.copy(position);
-            textSpriteBatch.begin();
-            textSpriteBatch.drawText(textGroup);
-            textSpriteBatch.end();
-          }
+				// load font texture
+				let fontTexture = await Shaku.assets.loadFontTexture('assets/DejaVuSansMono.ttf', { fontName: 'DejaVuSansMono' });
 
-          // load textures
-          let texture1 = await Shaku.assets.loadTexture('assets/shaku.png');
-          let texture2 = await Shaku.assets.loadTexture('assets/colors.png');
-          let texture3 = await Shaku.assets.loadTexture('assets/sprite.png');
-          let texture4 = await Shaku.assets.loadTexture('assets/stone_wall.png');
-          let background = await Shaku.assets.loadTexture('assets/level.jpg');
+				// create text and sprites batch
+				let spritesBatch = new Shaku.gfx.SpriteBatch();
+				let textSpriteBatch = new Shaku.gfx.TextSpriteBatch();
 
-          // texture options
-          let textures = [texture1, texture2, texture3, texture4, Shaku.gfx.whiteTexture];
+				// set outline
+				textSpriteBatch.outlineWeight = 1;
+				textSpriteBatch.outlineColor = Shaku.utils.Color.black;
 
-          // do a main loop step.
-          function step() 
-          {  
-            // start frame and clear screen
-            Shaku.startFrame();
-            Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
+				// draw a texture with simple outline
+				function drawTextWithOutline(text, position) {
+					let textGroup = Shaku.gfx.buildText(fontTexture, text, 24, Shaku.utils.Color.black, Shaku.gfx.TextAlignments.Center);
+					textGroup.setColor(Shaku.utils.Color.white);
+					textGroup.position.copy(position);
+					textSpriteBatch.begin();
+					textSpriteBatch.drawText(textGroup);
+					textSpriteBatch.end();
+				}
 
-            // draw background
-            if (showBackground) {
-              spritesBatch.begin();
-              spritesBatch.drawRectangle(background, Shaku.gfx.getRenderingRegion());
-              spritesBatch.end();
-            }
+				// load textures
+				let texture1 = await Shaku.assets.loadTexture('assets/shaku.png');
+				let texture2 = await Shaku.assets.loadTexture('assets/colors.png');
+				let texture3 = await Shaku.assets.loadTexture('assets/sprite.png');
+				let texture4 = await Shaku.assets.loadTexture('assets/stone_wall.png');
+				let background = await Shaku.assets.loadTexture('assets/level.jpg');
 
-            // input
-            if (Shaku.input.pressed('space')) { 
-              showBackground = !showBackground;
-            }
-            if (Shaku.input.pressed('z')) { 
-              textureIndex++;
-              if (!textures[textureIndex]) { textureIndex = 0; }
-            }
-            
-            // draw blend modes
-            let spriteSize = 200;
-            let x = spriteSize / 2;
-            let y = spriteSize / 2;
-            for (let blend in Shaku.gfx.BlendModes) {
+				// texture options
+				let textures = [texture1, texture2, texture3, texture4, Shaku.gfx.whiteTexture];
 
-              // draw sprite with blend mode
-              spritesBatch.begin(Shaku.gfx.BlendModes[blend]);
-              spritesBatch.drawQuad(textures[textureIndex], new Shaku.utils.Vector2(x, y), spriteSize);
-              spritesBatch.end();
+				// do a main loop step.
+				function step() {
+					// start frame and clear screen
+					Shaku.startFrame();
+					Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
 
-              // draw blend mode text
-              drawTextWithOutline(blend, new Shaku.utils.Vector2(x, y - spriteSize / 2 + 18));
+					// draw background
+					if (showBackground) {
+						spritesBatch.begin();
+						spritesBatch.drawRectangle(background, Shaku.gfx.getRenderingRegion());
+						spritesBatch.end();
+					}
 
-              // update position for next sprite
-              x += spriteSize;
-              if (x >= screenX - spriteSize / 2) {
-                x = spriteSize / 2;
-                y += spriteSize;
-              }
-            }
+					// input
+					if (Shaku.input.pressed('space')) {
+						showBackground = !showBackground;
+					}
+					if (Shaku.input.pressed('z')) {
+						textureIndex++;
+						if (!textures[textureIndex]) { textureIndex = 0; }
+					}
 
-            // end frame and request next frame
-            Shaku.endFrame();
-            Shaku.requestAnimationFrame(step);
-          }
+					// draw blend modes
+					let spriteSize = 200;
+					let x = spriteSize / 2;
+					let y = spriteSize / 2;
+					for (let blend in Shaku.gfx.BlendModes) {
 
-          // start main loop
-          step();
-        }
+						// draw sprite with blend mode
+						spritesBatch.begin(Shaku.gfx.BlendModes[blend]);
+						spritesBatch.drawQuad(textures[textureIndex], new Shaku.utils.Vector2(x, y), spriteSize);
+						spritesBatch.end();
 
-        // start demo
-        runDemo();
+						// draw blend mode text
+						drawTextWithOutline(blend, new Shaku.utils.Vector2(x, y - spriteSize / 2 + 18));
 
-      </script>
+						// update position for next sprite
+						x += spriteSize;
+						if (x >= screenX - spriteSize / 2) {
+							x = spriteSize / 2;
+							y += spriteSize;
+						}
+					}
 
-</div>
+					// end frame and request next frame
+					Shaku.endFrame();
+					Shaku.requestAnimationFrame(step);
+				}
 
-<!-- code example part -->
-<div id="sample-code-modal" class="modal">
-  <div class="modal__overlay jsOverlay"></div>
-  <div class="modal__container">   
+				// start main loop
+				step();
+			}
 
-<p class="noselect">The following is a minimal code example to demonstrate different Blend Modes.</p>
-<pre><code class="language-js">// load sprite's texture asset
+			// start demo
+			runDemo();
+
+		</script>
+
+	</div>
+
+	<!-- code example part -->
+	<div id="sample-code-modal" class="modal">
+		<div class="modal__overlay jsOverlay"></div>
+		<div class="modal__container">
+
+			<p class="noselect">The following is a minimal code example to demonstrate different Blend Modes.</p>
+			<pre><code class="language-js">// load sprite's texture asset
 let texture = await Shaku.assets.loadTexture('assets/sprite.png');
 
 // part below goes between startFrame() and endFrame()
@@ -169,12 +168,13 @@ spritesBatch.end();
 
 // there are other blend modes Shaku support, check out Shaku.gfx.BlendModes for more options</code></pre>
 
-  <button class="modal__close" onclick="closeModal('sample-code-modal')">&#10005;</button>
-</div>
-</div>
+			<button class="modal__close" onclick="closeModal('sample-code-modal')">&#10005;</button>
+		</div>
+	</div>
 
-<link href="prism/prism.css" rel="stylesheet" />
-<script src="prism/prism.js"></script>
+	<link href="prism/prism.css" rel="stylesheet" />
+	<script src="prism/prism.js"></script>
 
-  </body>
+</body>
+
 </html>

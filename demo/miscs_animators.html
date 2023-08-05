@@ -1,120 +1,122 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <title>Shaku</title>
-    <meta name="description" content="Shaku - a simple and easy-to-use javascript library for videogame programming.">
-    <meta name="author" content="Ronen Ness">
-    <link href="css/style.css" rel="stylesheet" type="text/css" media="all">
-  </head>
-  <body>
-    <div class="noselect">
-    <button class="view-code-btn" onclick="showSampleCode();">View Code</button> 
-    <h1 class="demo-title">Shaku Miscs Demo: Animators</h1>
-      <p>Animator is a helper class to animate stuff using lerp.<br />
-      It can be color, position, size, and even sound volume. Any property that's either a number or implements a static 'lerp' method can be used.</p>
-      
-      <!-- include shaku -->
-      <script src="js/demos.js"></script>
-      <script src="js/shaku.js"></script>
 
-      <!-- demo code -->
-      <script>
-        async function runGame()
-        {
-          // init shaku
-          await Shaku.init();
+<head>
+	<meta charset="UTF-8">
+	<title>Shaku</title>
+	<meta name="description" content="Shaku - a simple and easy-to-use javascript library for videogame programming.">
+	<meta name="author" content="Ronen Ness">
+	<link href="css/style.css" rel="stylesheet" type="text/css" media="all">
+</head>
 
-          // add shaku's canvas to document and set resolution to 800x600
-          document.body.appendChild(Shaku.gfx.canvas);
-          Shaku.gfx.setResolution(800, 600, true);
+<body>
+	<div class="noselect">
+		<button class="view-code-btn" onclick="showSampleCode();">View Code</button>
+		<h1 class="demo-title">Shaku Miscs Demo: Animators</h1>
+		<p>Animator is a helper class to animate stuff using lerp.<br />
+			It can be color, position, size, and even sound volume. Any property that's either a number or implements a
+			static 'lerp' method can be used.</p>
 
-          // create sprites batch
-          let spritesBatch = new Shaku.gfx.SpriteBatch();
-          let spriteTextBatch = new Shaku.gfx.TextSpriteBatch();
+		<!-- include shaku -->
+		<script src="js/demos.js"></script>
+		<script src="js/shaku.js"></script>
 
-          // load font texture
-          let fontTexture = await Shaku.assets.loadFontTexture('assets/DejaVuSansMono.ttf', {fontName: 'DejaVuSansMono', fontSize: 20});
+		<!-- demo code -->
+		<script>
+			async function runGame() {
+				// init shaku
+				await Shaku.init();
 
-          // load sprite's texture asset
-          let texture = await Shaku.assets.loadTexture('assets/shaku.png');
+				// add shaku's canvas to document and set resolution to 800x600
+				document.body.appendChild(Shaku.gfx.canvas);
+				Shaku.gfx.setResolution(800, 600, true);
 
-          // example 1: simple moving and coloring
-          let text1 = Shaku.gfx.buildText(fontTexture, "Animate position.x and color (to red):", 20, Shaku.utils.Color.white);
-          text1.position.set(40, 40);
-          let sprite1 = new Shaku.gfx.Sprite(texture);
-          sprite1.size.set(100, 100);
-          sprite1.position.set(50, 150);
-          (new Shaku.utils.Animator(sprite1)).repeats(true).to({'position.x': 700, 'color': Shaku.utils.Color.red}).duration(5).play();
+				// create sprites batch
+				let spritesBatch = new Shaku.gfx.SpriteBatch();
+				let spriteTextBatch = new Shaku.gfx.TextSpriteBatch();
 
-          // example 2: two animators activating each other
-          let text2 = Shaku.gfx.buildText(fontTexture, "Animate position.x & size back and forth, smooth damp:", 20, Shaku.utils.Color.white);
-          text2.position.set(40, 240);
-          let sprite2 = new Shaku.gfx.Sprite(texture);
-          sprite2.size.set(100, 100);
-          sprite2.position.set(50, 340);
-          (new Shaku.utils.Animator(sprite2)).repeats(true, true).to({'position.x': 700, 'size': new Shaku.utils.Vector2(150, 150)}).duration(5).smoothDamp(true).play();
+				// load font texture
+				let fontTexture = await Shaku.assets.loadFontTexture('assets/DejaVuSansMono.ttf', { fontName: 'DejaVuSansMono', fontSize: 20 });
 
-          // example 3: heartbeat on click
-          let text3 = Shaku.gfx.buildText(fontTexture, "Press 'A' for heartbeat pulse effect:", 20, Shaku.utils.Color.white);
-          text3.position.set(40, 440);
-          let sprite3 = new Shaku.gfx.Sprite(texture);
-          sprite3.size.set(100, 100);
-          sprite3.position.set(100, 540);
-          let heartbeat = (new Shaku.utils.Animator(sprite3)).to({'size': new Shaku.utils.Vector2(170, 170)}).repeats(1, true).duration(0.5).smoothDamp(true);
+				// load sprite's texture asset
+				let texture = await Shaku.assets.loadTexture('assets/shaku.png');
 
-          // do a single main loop step
-          function step() 
-          {  
-            // start new frame and clear screen
-            Shaku.startFrame();
-            Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
+				// example 1: simple moving and coloring
+				let text1 = Shaku.gfx.buildText(fontTexture, "Animate position.x and color (to red):", 20, Shaku.utils.Color.white);
+				text1.position.set(40, 40);
+				let sprite1 = new Shaku.gfx.Sprite(texture);
+				sprite1.size.set(100, 100);
+				sprite1.position.set(50, 150);
+				(new Shaku.utils.Animator(sprite1)).repeats(true).to({ 'position.x': 700, 'color': Shaku.utils.Color.red }).duration(5).play();
 
-            spritesBatch.begin();
-            spriteTextBatch.begin();
+				// example 2: two animators activating each other
+				let text2 = Shaku.gfx.buildText(fontTexture, "Animate position.x & size back and forth, smooth damp:", 20, Shaku.utils.Color.white);
+				text2.position.set(40, 240);
+				let sprite2 = new Shaku.gfx.Sprite(texture);
+				sprite2.size.set(100, 100);
+				sprite2.position.set(50, 340);
+				(new Shaku.utils.Animator(sprite2)).repeats(true, true).to({ 'position.x': 700, 'size': new Shaku.utils.Vector2(150, 150) }).duration(5).smoothDamp(true).play();
 
-            // draw sprite 1 animations
-            spriteTextBatch.drawText(text1, true);
-            spritesBatch.drawSprite(sprite1);
-            
-            // draw sprite 2 animations
-            spriteTextBatch.drawText(text2, true);
-            spritesBatch.drawSprite(sprite2);
+				// example 3: heartbeat on click
+				let text3 = Shaku.gfx.buildText(fontTexture, "Press 'A' for heartbeat pulse effect:", 20, Shaku.utils.Color.white);
+				text3.position.set(40, 440);
+				let sprite3 = new Shaku.gfx.Sprite(texture);
+				sprite3.size.set(100, 100);
+				sprite3.position.set(100, 540);
+				let heartbeat = (new Shaku.utils.Animator(sprite3)).to({ 'size': new Shaku.utils.Vector2(170, 170) }).repeats(1, true).duration(0.5).smoothDamp(true);
 
-            // draw sprite 3 animations
-            spriteTextBatch.drawText(text3, true);
-            spritesBatch.drawSprite(sprite3);
+				// do a single main loop step
+				function step() {
+					// start new frame and clear screen
+					Shaku.startFrame();
+					Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
 
-            // activate heartbeat animation
-            if (Shaku.input.pressed('a')) {
-              heartbeat.reset().play();
-            }
+					spritesBatch.begin();
+					spriteTextBatch.begin();
 
-            // present text and sprites
-            spriteTextBatch.end();
-            spritesBatch.end();
+					// draw sprite 1 animations
+					spriteTextBatch.drawText(text1, true);
+					spritesBatch.drawSprite(sprite1);
 
-            // end frame and request next frame
-            Shaku.endFrame();
-            Shaku.requestAnimationFrame(step);
-          }
+					// draw sprite 2 animations
+					spriteTextBatch.drawText(text2, true);
+					spritesBatch.drawSprite(sprite2);
 
-          // start main loop
-          step();
-        }
+					// draw sprite 3 animations
+					spriteTextBatch.drawText(text3, true);
+					spritesBatch.drawSprite(sprite3);
 
-        runGame();
-      </script>
+					// activate heartbeat animation
+					if (Shaku.input.pressed('a')) {
+						heartbeat.reset().play();
+					}
 
-</div>
+					// present text and sprites
+					spriteTextBatch.end();
+					spritesBatch.end();
 
-<!-- code example part -->
-<div id="sample-code-modal" class="modal">
-  <div class="modal__overlay jsOverlay"></div>
-  <div class="modal__container">   
+					// end frame and request next frame
+					Shaku.endFrame();
+					Shaku.requestAnimationFrame(step);
+				}
 
-<p class="noselect">The following shows a minimal code example on how to init Shaku and create a main loop.</p>
-<pre><code class="language-js">// create repeating animation that move sprite from position x=0 to x=700 while turning it red, over 5 seconds:
+				// start main loop
+				step();
+			}
+
+			runGame();
+		</script>
+
+	</div>
+
+	<!-- code example part -->
+	<div id="sample-code-modal" class="modal">
+		<div class="modal__overlay jsOverlay"></div>
+		<div class="modal__container">
+
+			<p class="noselect">The following shows a minimal code example on how to init Shaku and create a main loop.
+			</p>
+			<pre><code class="language-js">// create repeating animation that move sprite from position x=0 to x=700 while turning it red, over 5 seconds:
 let sprite1 = new Shaku.gfx.Sprite();
 sprite1.position.set(50, 150);
 (new Shaku.utils.Animator(sprite1)).repeats(true).to({'position.x': 700, 'color': Shaku.utils.Color.red}).duration(5).play();
@@ -133,12 +135,13 @@ function beat() {
   heartbeat.reset().play();
 }</code></pre>
 
-  <button class="modal__close" onclick="closeModal('sample-code-modal')">&#10005;</button>
-</div>
-</div>
+			<button class="modal__close" onclick="closeModal('sample-code-modal')">&#10005;</button>
+		</div>
+	</div>
 
-<link href="prism/prism.css" rel="stylesheet" />
-<script src="prism/prism.js"></script>
+	<link href="prism/prism.css" rel="stylesheet" />
+	<script src="prism/prism.js"></script>
 
-  </body>
+</body>
+
 </html>

@@ -1,104 +1,107 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <title>Shaku</title>
-    <meta name="description" content="Shaku - a simple and easy-to-use javascript library for videogame programming.">
-    <meta name="author" content="Ronen Ness">
-    <link href="css/style.css" rel="stylesheet" type="text/css" media="all">
-  </head>
-  <body>
-    <div style="padding:0.5em" class="noselect">
-      <div id="top-info">
-        <h1 class="demo-title" style="margin-left: 0;">Shaku: Fishy</h1>
-        <p>Based on the Flash game classic <a target="_blank" href="https://newgrounds.fandom.com/wiki/!_Fishy_!">!Fishy!</a>: Eat smaller fish to grow, dodge bigger fish to survive.<br />
-          Use <b>Arrows</b> or <b>WASD</b> to move. Hit <b>R</b> to restart.</p>
-        
-        <!-- include shaku -->
-        <script src="js/demos.js"></script>
-        <script src="js/shaku.js"></script>
 
-        <button style="font-size: 200%;" onclick="runGame(); this.style.display='none'; document.getElementById('loading-msg').style.display='block';">Click To Start!</button>
+<head>
+	<meta charset="UTF-8">
+	<title>Shaku</title>
+	<meta name="description" content="Shaku - a simple and easy-to-use javascript library for videogame programming.">
+	<meta name="author" content="Ronen Ness">
+	<link href="css/style.css" rel="stylesheet" type="text/css" media="all">
+</head>
 
-        <h1 id="loading-msg" style="display: none;">Loading Assets...</h1>
-      </div>
+<body>
+	<div style="padding:0.5em" class="noselect">
+		<div id="top-info">
+			<h1 class="demo-title" style="margin-left: 0;">Shaku: Fishy</h1>
+			<p>Based on the Flash game classic <a target="_blank"
+					href="https://newgrounds.fandom.com/wiki/!_Fishy_!">!Fishy!</a>: Eat smaller fish to grow, dodge
+				bigger fish to survive.<br />
+				Use <b>Arrows</b> or <b>WASD</b> to move. Hit <b>R</b> to restart.</p>
 
-      <!-- demo code -->
-      <script id="main-code">async function runGame()
-{
-  // init shaku
-  await Shaku.init();
+			<!-- include shaku -->
+			<script src="js/demos.js"></script>
+			<script src="js/shaku.js"></script>
 
-  // add shaku's canvas to document
-  document.body.appendChild(Shaku.gfx.canvas);
-    
-  // create bottom text
-  let bottomText = document.createElement('h3');
-  document.body.appendChild(bottomText);
+			<button style="font-size: 200%;"
+				onclick="runGame(); this.style.display='none'; document.getElementById('loading-msg').style.display='block';">Click
+				To Start!</button>
 
-  // hide top info
-  document.getElementById('top-info').style.display = 'none';
+			<h1 id="loading-msg" style="display: none;">Loading Assets...</h1>
+		</div>
 
-  // set canvas size
-  let screenX = 1100;
-  let screenY = 800;
-  Shaku.gfx.setResolution(screenX, screenY, true);
+		<!-- demo code -->
+		<script id="main-code">async function runGame() {
+				// init shaku
+				await Shaku.init();
 
-  // load all assets
-  let assets = {};
-  async function loadAssets() {
+				// add shaku's canvas to document
+				document.body.appendChild(Shaku.gfx.canvas);
 
-    // load font texture
-    Shaku.assets.loadFontTexture('assets/DejaVuSansMono.ttf', {fontName: 'DejaVuSansMono'}).then((asset) => assets.fontTexture = asset);
+				// create bottom text
+				let bottomText = document.createElement('h3');
+				document.body.appendChild(bottomText);
 
-    // load textures into a texture atlas
-    let textureSources = [
-      'assets/fishy/skeleton_icon.png',
-      'assets/fishy/fish_skeleton.png',
-      'assets/fishy/fish.png',
-      'assets/fishy/eye.png',
-      'assets/fishy/bubble.png',
-      'assets/fishy/bones.png',
-    ];
-    Shaku.assets.createTextureAtlas('texture_atlas', textureSources, undefined, undefined, new Shaku.utils.Vector2(12, 12)).then((asset) => {
-      let i = 0;
-      assets.textures = asset;
-      assets.skeletonIcon = asset.getTexture(textureSources[i++]);
-      assets.fishSkeleton = asset.getTexture(textureSources[i++]);
-      assets.fish = asset.getTexture(textureSources[i++]);
-      assets.eye = asset.getTexture(textureSources[i++]);
-      assets.bubble = asset.getTexture(textureSources[i++]);
-      assets.bones = asset.getTexture(textureSources[i++]);
-    });
+				// hide top info
+				document.getElementById('top-info').style.display = 'none';
 
-    // load background texture outside the atlas - due to wave effect
-    assets.background = await Shaku.assets.loadTexture('assets/fishy/background.png');
+				// set canvas size
+				let screenX = 1100;
+				let screenY = 800;
+				Shaku.gfx.setResolution(screenX, screenY, true);
 
-    // load seaweed texture outside the atlas - due to wave effect
-    assets.seaWeed = await Shaku.assets.loadTexture('assets/fishy/seaweed.png');
+				// load all assets
+				let assets = {};
+				async function loadAssets() {
 
-    // load sounds
-    assets.sfx = {};
-    Shaku.assets.loadSound('assets/fishy/fishing.ogg').then((asset) => assets.sfx.music = asset);
-    Shaku.assets.loadSound('assets/fishy/bubble.ogg').then((asset) => assets.sfx.bubble = asset);
-    Shaku.assets.loadSound('assets/fishy/burp.ogg').then((asset) => assets.sfx.burp = asset);
+					// load font texture
+					Shaku.assets.loadFontTexture('assets/DejaVuSansMono.ttf', { fontName: 'DejaVuSansMono' }).then((asset) => assets.fontTexture = asset);
 
-    // wait for all assets to load
-    await Shaku.assets.waitForAll();
-  };
-  await loadAssets();
-  document.getElementById('loading-msg').style.display = 'none';
+					// load textures into a texture atlas
+					let textureSources = [
+						'assets/fishy/skeleton_icon.png',
+						'assets/fishy/fish_skeleton.png',
+						'assets/fishy/fish.png',
+						'assets/fishy/eye.png',
+						'assets/fishy/bubble.png',
+						'assets/fishy/bones.png',
+					];
+					Shaku.assets.createTextureAtlas('texture_atlas', textureSources, undefined, undefined, new Shaku.utils.Vector2(12, 12)).then((asset) => {
+						let i = 0;
+						assets.textures = asset;
+						assets.skeletonIcon = asset.getTexture(textureSources[i++]);
+						assets.fishSkeleton = asset.getTexture(textureSources[i++]);
+						assets.fish = asset.getTexture(textureSources[i++]);
+						assets.eye = asset.getTexture(textureSources[i++]);
+						assets.bubble = asset.getTexture(textureSources[i++]);
+						assets.bones = asset.getTexture(textureSources[i++]);
+					});
 
-  // set everything to smooth scaling
-  Shaku.gfx.defaultTextureFilter = Shaku.gfx.TextureFilterModes.Linear;
+					// load background texture outside the atlas - due to wave effect
+					assets.background = await Shaku.assets.loadTexture('assets/fishy/background.png');
 
-  // create a wavy water effect
-  class WavyWaterEffect extends Shaku.gfx.SpritesEffect
-  {
-    
-    get fragmentCode()
-    {
-      const fragmentShader = `  
+					// load seaweed texture outside the atlas - due to wave effect
+					assets.seaWeed = await Shaku.assets.loadTexture('assets/fishy/seaweed.png');
+
+					// load sounds
+					assets.sfx = {};
+					Shaku.assets.loadSound('assets/fishy/fishing.ogg').then((asset) => assets.sfx.music = asset);
+					Shaku.assets.loadSound('assets/fishy/bubble.ogg').then((asset) => assets.sfx.bubble = asset);
+					Shaku.assets.loadSound('assets/fishy/burp.ogg').then((asset) => assets.sfx.burp = asset);
+
+					// wait for all assets to load
+					await Shaku.assets.waitForAll();
+				};
+				await loadAssets();
+				document.getElementById('loading-msg').style.display = 'none';
+
+				// set everything to smooth scaling
+				Shaku.gfx.defaultTextureFilter = Shaku.gfx.TextureFilterModes.Linear;
+
+				// create a wavy water effect
+				class WavyWaterEffect extends Shaku.gfx.SpritesEffect {
+
+					get fragmentCode() {
+						const fragmentShader = `
         #ifdef GL_ES
             precision highp float;
         #endif
@@ -115,597 +118,552 @@
             gl_FragColor = texture2D(texture, v_texCoord + vec2(offset, 0.0)) * v_color;
             gl_FragColor.rgb *= gl_FragColor.a;
         }
-        `; 
-        return fragmentShader;
-    }
-
-    get uniformTypes()
-    {
-      let ret = super.uniformTypes;
-      ret['elapsedTime'] = { type: Shaku.gfx.Effect.UniformTypes.Float };
-      ret['waveFactor'] = { type: Shaku.gfx.Effect.UniformTypes.Float };
-      return ret;
-    }
-  }
-
-  // create sprites and text batch
-  let spritesBatch = new Shaku.gfx.SpriteBatch();
-  let textSpriteBatch = new Shaku.gfx.TextSpriteBatch();
-
-  // set outline
-  textSpriteBatch.outlineWeight = 1;
-  textSpriteBatch.outlineColor = Shaku.utils.Color.black;
-
-  // create effect for moving water
-  let waterEffect = new WavyWaterEffect();
-
-  // randomize a fish color
-  let fishColors = [];
-  for (let r = 0; r < 4; r++) {
-    for (let g = 0; g < 4; g++) {
-      for (let b = 0; b < 4; b++) {
-        if (r + g + b >= 3) { 
-          fishColors.push(new Shaku.utils.Color(r / 3, g / 3, b / 3));
-        }
-      }
-    }
-  }
-  function randomizeFishColor() {
-    return fishColors[Math.floor(Math.random() * fishColors.length)];
-  }
-
-  // define a fish instance
-  class Fish
-  {
-    constructor()
-    {
-      this._group = new Shaku.gfx.SpritesGroup();
-
-      let fishSource = assets.fish.sourceRectangle;
-      this._body = new Shaku.gfx.Sprite(assets.fish, new Shaku.utils.Rectangle(0, 0, fishSource.width, fishSource.height / 2));
-      this._body.size.set(fishSource.width, fishSource.height / 2);
-      this._body.color = randomizeFishColor();
-      this._group.add(this._body);
-      
-      this._eye = new Shaku.gfx.Sprite(assets.eye); 
-      this._eye.size.copy(assets.eye.sourceRectangle.getSize());
-      this._eye.position.set(265, -40);
-      this._group.add(this._eye);
-
-      this._animFactor = Math.random() * 5;
-      this._timeToSpawnBubble = Math.random();
-
-      this.setSize(1);
-
-      this.position.set(screenX / 2, screenY / 2);
-    }
-
-    doBeatAnimation()
-    {
-      (new Shaku.utils.Animator(this._group)).to({'scale': this._group.scale.mul(1.165)}).repeats(1, true).duration(0.215).smoothDamp(true).play();
-    }
-
-    get isFlipped()
-    {
-      return this._group.scale.x < 0;
-    }
-
-    get movingAnimationSpeed()
-    {
-      return 1;
-    }
-
-    get position()
-    {
-      return this._group.position;
-    }
-
-    set position(val) 
-    {
-      this._group.position = val;
-    }
-
-    setSize(size)
-    {
-      let factoredSize = Math.floor((size / 5) * 100) / 100;
-      this._group.scale.set(factoredSize * (this.isFlipped ? -1 : 1), factoredSize);
-      this._size = size;
-    }
-
-    getSize()
-    {
-      return this._size;
-    }
-
-    getCollisionRect()
-    {
-      let width = Math.abs(this._group.scale.x * assets.fish.sourceRectangle.width * 0.655);
-      let height = this._group.scale.y * assets.fish.sourceRectangle.height * 0.5 * 0.645;
-      return new Shaku.utils.Rectangle(this.position.x - width / 2, this.position.y - height / 2, width, height);
-    }
-
-    updateAndDraw()
-    {
-      // draw and animate
-      spritesBatch.drawSpriteGroup(this._group);
-      this._animFactor += 0.15 * this.movingAnimationSpeed;
-      this._body.sourceRectangle.y = (Math.floor(this._animFactor) % 2) * 512;
-      this._eye.rotation = Math.sin(Shaku.gameTime.elapsed * 50) / 15;
-
-      // spawn bubbles
-      if (this._size > 0.2) {
-        this._timeToSpawnBubble -= Shaku.gameTime.delta;
-        if (this._timeToSpawnBubble < 0) {
-          this._timeToSpawnBubble = 2 + Math.random() * 4;
-          let position = this.position.add({x: this._group.scale.x * assets.fish.width * 0.35, y: 0});
-          game.addBubble(this._size * 30, position);
-        }
-      }
-    }
-
-    get shouldBeRemoved()
-    {
-      return false;
-    }
-  }
-
-  // fish for enemy fish
-  class NpcFish extends Fish
-  {
-    constructor(size)
-    {
-      super();
-
-      this.setSize(size);
-      this.position.y = Math.random() * screenY;
-      let speed = 27.5 + (Math.random() * 120);
-
-      if (Math.random() < 0.5) {
-        this.position.x = -this._group.scale.x * 1024;
-        this._speed = speed;
-      }
-      else {
-        this.position.x = screenX + this._group.scale.x * 1024;
-        this._group.scale.x *= -1;
-        this._speed = -speed;
-      }
-    }
-    
-    get shouldBeRemoved()
-    {
-      return (this._speed > 0 && this.position.x > screenX + this._group.scale.x * this._body.size.x) ||
-             (this._speed < 0 && this.position.x < this._group.scale.x * this._body.size.x);
-    }
-
-    updateAndDraw()
-    {
-      super.updateAndDraw();
-      this.position.x += this._speed * Shaku.gameTime.delta;
-    }
-  }
-
-  // fish for player fish
-  class PlayerFish extends Fish
-  {
-    constructor(size)
-    {
-      super();
-      this.setSize(size);
-      this.position = new Shaku.utils.Vector2(screenX / 2, 0);
-      this.velocity = new Shaku.utils.Vector2(0, 2.5);
-      this._body.color = Shaku.utils.Color.orange;
-      this._moveAcc = 5;
-    }
-    
-    get movingAnimationSpeed()
-    {
-      return Math.min(Math.abs(this.velocity.length() / 17.5), 1.25) * 10;
-    }
-
-    get shouldBeRemoved()
-    {
-      return false;
-    }
-
-    updateAndDraw()
-    {
-      // call base update
-      super.updateAndDraw();
-
-      // move fish
-      this.position.x += this.velocity.x * Shaku.gameTime.delta * 100;
-      this.position.y += this.velocity.y * Shaku.gameTime.delta * 100;
-
-      // keep in screen
-      if (this.position.x < 0) { 
-        this.position.x = 0;
-        if (this.velocity.x < 0) this.velocity.x = 0; 
-      }
-      if (this.position.y < 0) { 
-        this.position.y = 0;
-        if (this.velocity.y < 0) this.velocity.y = 0; 
-      }
-      if (this.position.x > screenX) { 
-        this.position.x = screenX;
-        if (this.velocity.x > 0) this.velocity.x = 0; 
-      }
-      if (this.position.y > screenY) { 
-        this.position.y = screenY;
-        if (this.velocity.y > 0) this.velocity.y = 0; 
-      }
-
-      // do movement
-      let flipLeft = false;
-      let flipRight = false;
-      if (Shaku.input.down('left') || Shaku.input.down('a')) { this.velocity.x -= this._moveAcc * Shaku.gameTime.delta; flipLeft = true; }
-      else if (Shaku.input.down('right') || Shaku.input.down('d')) { this.velocity.x += this._moveAcc * Shaku.gameTime.delta; flipRight = true; }
-      if (Shaku.input.down('up') || Shaku.input.down('w')) { this.velocity.y -= this._moveAcc * Shaku.gameTime.delta; }
-      else if (Shaku.input.down('down') || Shaku.input.down('s')) { this.velocity.y += this._moveAcc * Shaku.gameTime.delta; }
-
-      // flip sprites
-      if (flipLeft) {
-        this._group.scale.x = -Math.abs(this._group.scale.x);
-      }
-      else if (flipRight) {
-        this._group.scale.x = Math.abs(this._group.scale.x);
-      }
-
-      // damp velocity
-      this.velocity = Shaku.utils.Vector2.lerp(this.velocity, Shaku.utils.Vector2.zero(), Shaku.gameTime.delta * 0.75);
-    }
-  }
-
-  // an animated bubble
-  class Bubble
-  {
-    constructor(size, position)
-    {
-      this.position = position;
-      this.size = size;
-      this.animFactor = Math.random() * 3;
-    }
-
-    updateAndDraw()
-    {
-      spritesBatch.drawQuad(assets.bubble.texture, 
-        this.position.add({x: Math.cos(this.animFactor + Shaku.gameTime.elapsed * 5) * this.size * 0.2, y: 0}), 
-        this.size,
-        assets.bubble.sourceRectangle);
-      this.position.y -= this.size * 1.25 * Shaku.gameTime.delta;
-    }
-
-    get shouldBeRemoved()
-    {
-      return this.position.y < -this.size;
-    }
-  }
-
-  // an animated bones
-  class Bones
-  {
-    constructor(size, position, flipX)
-    {
-      this.position = position;
-      this.size = size * 120;
-      this.flipX = flipX;
-      this.animFactor = Math.random() * 3;
-    }
-
-    updateAndDraw()
-    {
-      spritesBatch.drawQuad(assets.fishSkeleton.texture, 
-        this.position.add({x: Math.cos(this.animFactor + Shaku.gameTime.elapsed * 5) * this.size * 0.2, y: 0}), 
-        new Shaku.utils.Vector2(this.size * (this.flipX ? -2 : 2), this.size), assets.fishSkeleton.sourceRectangle);
-      this.position.y += this.size * 1.25 * Shaku.gameTime.delta;
-    }
-
-    get shouldBeRemoved()
-    {
-      return this.position.y > screenY + this.size;
-    }
-  }
-
-  // current game instance
-  class Game
-  {
-    constructor()
-    {
-      // create new game state
-      this.fish = [];
-      this.bubblesAndBones = [];
-      this.score = 0;
-      this.player = new PlayerFish(this.getPlayerSize());
-      this._timeToGenerateFish = 2.5 + Math.random() * 1;
-
-      // start music and start effect
-      Shaku.sfx.stopAll();
-      Shaku.sfx.play(assets.sfx.bubble);
-      this._music = Shaku.sfx.createSound(assets.sfx.music);
-      this._music.loop = true;
-      this._music.volume = 0.215;
-      this._music.preservesPitch = true;
-      this._music.play();
-
-      this._onScoreUpdate();
-
-      // is it game over?
-      this._gameOver = false;
-    }
-
-    stop()
-    {
-      this._music.stop();
-    }
-
-    getPlayerSize()
-    {
-      return (35 + this.score) / 100;
-    }
-
-    addBubble(size, position)
-    {
-      let bubble = new Bubble(size, position);
-      this.bubblesAndBones.push(bubble);
-    }
-
-    addBones(size, position, flipX)
-    {
-      let bones = new Bones(size, position, flipX);
-      this.bubblesAndBones.push(bones);
-    }
-
-    gameOver()
-    {
-      this.addBones(this.player.getSize(), this.player.position, this.player.isFlipped);
-      this._music.stop();
-      this._gameOver = true;
-    }
-
-    get messedUpFactor()
-    {
-      return Math.max(Math.min((this.score - 25) / 500, 1), 0);
-    }
-
-    playerEats(enemy)
-    {
-      this.score += Math.max(enemy.getSize() * 5, 1);
-      this.addBones(enemy.getSize(), enemy.position, enemy.isFlipped);
-      this._onScoreUpdate();
-    }
-
-    _onScoreUpdate()
-    {
-      // set player size and do pulse animation
-      this.player.setSize(this.getPlayerSize());
-      this.player.doBeatAnimation();
-
-      // distort music
-      this._music.playbackRate = 1 - this.messedUpFactor * 0.75;
-      
-      // stop music
-      if (this.score >= 1000) {
-        (new Shaku.utils.Animator(this._music)).to({volume: 0}).duration(10).play();
-      }
-
-      // end of game!
-      if (this.score >= 5000) {
-        bottomText.innerHTML = "I̷͉̩̤̅̌̐ ̵̫̯͑f̴̨͋o̸͔̱͂ū̷̧̫̹̐̿n̵̺͔̔̑̔d̴̻͛ ̴̝̹͂̾̓ä̸̙͈́ ̷͇̱̫͋w̴̝̏̇ä̴̲́̄ͅy̶͎̌ ̶̤͕͊̓o̶̱͑u̵͇̝͂̐̕ţ̵̹͗.̵̪͈͚̇̕ ̵̼̮͚͋̓͛Ị̷̮̗̏ ̵̪́̎a̴̡̩̖̅m̴̘̘̀͠ ̵͓̣̌f̵͍̣̎̔r̴̛͍͙̟ẻ̴̞͕e̶͕̖̒̑̂͜.̸̮͂";
-        this._gameOver = true;
-      }
-      else if (this.score >= 4000) {
-        bottomText.innerHTML = "Š̷̫͐ǒ̴̤̕o̷̡̢͉͛̈́n̴̟̰͑͆̾.̸̯̍.̷͕̝̍͋.̷̭͝.̵͔̯̏̓̍";
-      }
-      else if (this.score >= 2000) {
-        bottomText.innerHTML = "Ṛ̷̢̾ȩ̷̬͘l̴͓̇͆ȩ̷͘à̵̺ŝ̷̝̙e̷̛̛̲ ̷̛̙͝ṃ̴͖̈́̓ḗ̵̦ ̴̟̗̊f̸̯̦́̆r̸̪̺̔̕o̵̭̽m̸̻̫͝ ̷̻̳́̎m̷͔̞͛y̸̯̋ ̸͕̔p̵̙̦̒r̶͓̐ĩ̶̺̦s̴̠̦͆ö̸͎́n̶̏̂͜.̷̰̀͋.̷̪̘̐.̷̹͝.̸̟͑͝";
-      }
-      else if (this.score >= 1000) {
-        bottomText.innerHTML = "M̴̪͛͑ý̴̭́ ̴̲͆̐T̶̗̓͑h̸̲̯̏̎r̵͍̲̅ơ̶̱̍n̸͐̅͜ë̶̮͚̾ ̶̜͊Ő̴̹͝f̶͍͍̒̚ ̶̠̹̋̊F̴̝̕l̸͑͜͝e̷̱̚ͅs̸̨̆͝h̴̗̽͘ ̶̀ͅA̶̢̎͘ẉ̴́͊a̴̟̒̇ḯ̵̡͛ͅt̸̯̿̈s̶̪̙̋.̷̖̂́";
-      }
-      else if (this.score >= 800) {
-        bottomText.innerHTML = "Í̴̻̺ ̷͚̎͜h̴̳͎͆̕ȕ̸͖n̸̮̽͑g̵̯̑e̶͕̠̊̀ṟ̴̐.̶͕̗̕";
-      }
-      else if (this.score >= 700) {
-        bottomText.innerHTML = "M̷̨̕ọ̸̃r̵̦̅é̴͇!̸̘̿ ̵̢̈́M̵̪̓o̵͙͂ŕ̶̗ę̸̆!̸̰̋ ̵̙͝M̴̊ͅö̶͜r̶̦͝e̴̔ͅ!̶͍͋";
-      }
-      else if (this.score >= 600) {
-        bottomText.innerHTML = "I̸ ̵c̶a̵n̴'̵t̷.̶.̶ ̸S̷t̷o̴p̷.̵.̴";
-      }
-      else if (this.score >= 500) {
-        bottomText.innerHTML = "Y̵e̶s̷s̸s̵s̵s̷.̷.̴.̴.̵.̴ ̴";
-      }
-      else if (this.score >= 400) {
-        bottomText.innerHTML = "S̵o̸ ̷m̶u̵c̵h̶ ̷p̵o̶w̸e̴r̸.̵.̴";
-      }
-      else if (this.score >= 300) {
-        bottomText.innerHTML = "I'm Unstoppable.";
-      }
-      else if (this.score >= 250) {
-        bottomText.innerHTML = "I shall inherit the seas. Nay. The WORLD.";
-      }
-      else if (this.score >= 200) {
-        bottomText.innerHTML = "I Grow Stronger.";
-      }
-      else if (this.score >= 180) {
-        bottomText.innerHTML = "I'm starting to like this.";
-      }
-      else if (this.score >= 140) {
-        bottomText.innerHTML = "Maybe I should stop..";
-      }
-      else if (this.score >= 100) {
-        bottomText.innerHTML = "I'm not even hungry anymore.";
-      }
-      else if (this.score >= 70) {
-        bottomText.innerHTML = "I.. I think that's enough..";
-      }
-      else if (this.score >= 50) {
-        bottomText.innerHTML = "That was delicious!";
-      }
-      else if (this.score >= 25) {
-        bottomText.innerHTML = "Hmmm... Yum!";
-      }
-      else {
-        bottomText.innerHTML = "I'm a hungry hungry fishy!";
-      }
-    }
-
-    updateAndDraw()
-    {  
-      // draw background with water effect
-      spritesBatch.begin(undefined, waterEffect);
-      waterEffect.uniforms.elapsedTime(Shaku.gameTime.elapsed);
-      waterEffect.uniforms.waveFactor(1);
-      spritesBatch.drawRectangle(assets.background, Shaku.gfx.getRenderingRegion());
-      spritesBatch.end();
-
-      spritesBatch.begin();
-
-        // draw bones pile
-        spritesBatch.drawQuad(
-          assets.bones, 
-          new Shaku.utils.Vector2(screenX / 2, screenY), 
-          assets.bones.sourceRectangle.getSize(), 
-          undefined, null, 0, new Shaku.utils.Vector2(0.5, this.messedUpFactor * 0.95));
-
-        // update and draw fish
-        for (let i = this.fish.length - 1; i >= 0; --i) {
-
-          let fish = this.fish[i];
-          fish.updateAndDraw();
-
-          if (fish.shouldBeRemoved) {
-            this.fish.splice(i, 1);
-          }
-        }
-
-        // if not game over, do player-related stuff
-        if (!this._gameOver) {
-          this.doPlayerUpdates();
-        }
-
-        // update and draw bubbles and bones
-        for (let i = this.bubblesAndBones.length - 1; i >= 0; --i) {
-          this.bubblesAndBones[i].updateAndDraw();
-          if (this.bubblesAndBones[i].shouldBeRemoved) {
-            this.bubblesAndBones.splice(i, 1);
-          }
-        }
-
-        // generate random fish
-        this._timeToGenerateFish -= Shaku.gameTime.delta;
-        if (this._timeToGenerateFish <= 0 && this.score < 5000) {
-
-          // time for next fish
-          this._timeToGenerateFish = 1 + Math.random() * 2.5;
-          if (Math.random() < 0.35) { this._timeToGenerateFish += Math.random() * 3.25; }
-
-          // create fish
-          let playerSize = this.player.getSize();
-          let size = 0.15 + Math.random() * (playerSize + 1.25);
-          if (Math.random() <= 0.2) { size = 0.1 + Math.random() * playerSize; }
-          else if (Math.random() <= 0.1) { size *= (1 + Math.random() * 1); }
-          size = Math.min(Math.max(size, playerSize / 2), 2.5);
-          let fish = new NpcFish(size);
-          this.fish.push(fish);
-        }
-
-      spritesBatch.end();
-
-      // draw foreground seaweed
-      spritesBatch.begin(undefined, waterEffect);
-        waterEffect.uniforms.elapsedTime(Shaku.gameTime.elapsed + 0.125);
-        waterEffect.uniforms.waveFactor(2);
-        let weedSize = assets.seaWeed.getSize();
-        spritesBatch.drawQuad(assets.seaWeed, new Shaku.utils.Vector2(350, Shaku.gfx.getCanvasSize().y), weedSize.mul(0.775), undefined, null, 0, new Shaku.utils.Vector2(0.5, 1));
-        spritesBatch.drawQuad(assets.seaWeed, new Shaku.utils.Vector2(650, Shaku.gfx.getCanvasSize().y), weedSize, undefined, null, 0, new Shaku.utils.Vector2(0.5, 1));
-        spritesBatch.drawQuad(assets.seaWeed, new Shaku.utils.Vector2(950, Shaku.gfx.getCanvasSize().y), weedSize.mul(0.5), undefined, null, 0, new Shaku.utils.Vector2(0.5, 1));
-      spritesBatch.end();
-
-      // blood effect overlay
-      spritesBatch.begin(Shaku.gfx.BlendModes.Multiply);
-        spritesBatch.drawRectangle(Shaku.gfx.whiteTexture, Shaku.gfx.getRenderingRegion(), undefined, new Shaku.utils.Color(1,0,0,this.messedUpFactor));
-      spritesBatch.end();
-
-      // draw score
-      spritesBatch.begin();
-      textSpriteBatch.begin();
-        spritesBatch.drawQuad(assets.skeletonIcon, new Shaku.utils.Vector2(32, 32), new Shaku.utils.Vector2(48, 48));
-        let scoreText = Shaku.gfx.buildText(assets.fontTexture, "x " + Math.ceil(game.score), 24, Shaku.utils.Color.white, Shaku.gfx.TextAlignments.Left);
-        scoreText.position.set(73, 33);
-        textSpriteBatch.drawText(scoreText);
-      spritesBatch.end();
-      textSpriteBatch.end();
-    }
-
-    doPlayerUpdates()
-    {
-      // update player
-      this.player.updateAndDraw();
-
-      // get player collision rect
-      let playerRect = this.player.getCollisionRect();
-
-      // update and draw fish
-      for (let i = this.fish.length - 1; i >= 0; --i) {
-        
-        let fish = this.fish[i];
-        let fishRect = fish.getCollisionRect();
-
-        if (playerRect.collideRect(fishRect)) 
-        {
-
-          // player eat fish
-          if (this.player.getSize() >= fish.getSize()) {
-            this.fish.splice(i, 1);
-            this.playerEats(fish);
-          }
-          // fish eats player
-          else
-          {
-            this.gameOver();
-          }
-          
-          // bite sound
-          Shaku.sfx.play(assets.sfx.burp, 1, 0.75 + Math.random() * 0.5, false);
-        }
-      }
-    }
-  }
-
-  // create a new game
-  let game = new Game();
-
-  // do a single main loop step
-  function step() 
-  {  
-    // start new frame and clear screen
-    Shaku.startFrame();
-    Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
-
-    // update and draw game
-    // note: if last frame took too long, skip this frame. 
-    // this is useful to avoid glitches when getting back from lost focus.
-    if (Shaku.gameTime.delta < 0.5)
-    {
-      game.updateAndDraw();
-    }
-
-    // restart game
-    if (Shaku.input.pressed('r')) {
-      game.stop();
-      game = new Game();
-    }
-
-    // end frame and request next frame
-    Shaku.endFrame();
-    Shaku.requestAnimationFrame(step);
-  }
-
-  // start main loop
-  step();
-}
-</script>
-
-</div>
-
-  </body>
+        `;
+						return fragmentShader;
+					}
+
+					get uniformTypes() {
+						let ret = super.uniformTypes;
+						ret['elapsedTime'] = { type: Shaku.gfx.Effect.UniformTypes.Float };
+						ret['waveFactor'] = { type: Shaku.gfx.Effect.UniformTypes.Float };
+						return ret;
+					}
+				}
+
+				// create sprites and text batch
+				let spritesBatch = new Shaku.gfx.SpriteBatch();
+				let textSpriteBatch = new Shaku.gfx.TextSpriteBatch();
+
+				// set outline
+				textSpriteBatch.outlineWeight = 1;
+				textSpriteBatch.outlineColor = Shaku.utils.Color.black;
+
+				// create effect for moving water
+				let waterEffect = new WavyWaterEffect();
+
+				// randomize a fish color
+				let fishColors = [];
+				for (let r = 0; r < 4; r++) {
+					for (let g = 0; g < 4; g++) {
+						for (let b = 0; b < 4; b++) {
+							if (r + g + b >= 3) {
+								fishColors.push(new Shaku.utils.Color(r / 3, g / 3, b / 3));
+							}
+						}
+					}
+				}
+				function randomizeFishColor() {
+					return fishColors[Math.floor(Math.random() * fishColors.length)];
+				}
+
+				// define a fish instance
+				class Fish {
+					constructor() {
+						this._group = new Shaku.gfx.SpritesGroup();
+
+						let fishSource = assets.fish.sourceRectangle;
+						this._body = new Shaku.gfx.Sprite(assets.fish, new Shaku.utils.Rectangle(0, 0, fishSource.width, fishSource.height / 2));
+						this._body.size.set(fishSource.width, fishSource.height / 2);
+						this._body.color = randomizeFishColor();
+						this._group.add(this._body);
+
+						this._eye = new Shaku.gfx.Sprite(assets.eye);
+						this._eye.size.copy(assets.eye.sourceRectangle.getSize());
+						this._eye.position.set(265, -40);
+						this._group.add(this._eye);
+
+						this._animFactor = Math.random() * 5;
+						this._timeToSpawnBubble = Math.random();
+
+						this.setSize(1);
+
+						this.position.set(screenX / 2, screenY / 2);
+					}
+
+					doBeatAnimation() {
+						(new Shaku.utils.Animator(this._group)).to({ 'scale': this._group.scale.mul(1.165) }).repeats(1, true).duration(0.215).smoothDamp(true).play();
+					}
+
+					get isFlipped() {
+						return this._group.scale.x < 0;
+					}
+
+					get movingAnimationSpeed() {
+						return 1;
+					}
+
+					get position() {
+						return this._group.position;
+					}
+
+					set position(val) {
+						this._group.position = val;
+					}
+
+					setSize(size) {
+						let factoredSize = Math.floor((size / 5) * 100) / 100;
+						this._group.scale.set(factoredSize * (this.isFlipped ? -1 : 1), factoredSize);
+						this._size = size;
+					}
+
+					getSize() {
+						return this._size;
+					}
+
+					getCollisionRect() {
+						let width = Math.abs(this._group.scale.x * assets.fish.sourceRectangle.width * 0.655);
+						let height = this._group.scale.y * assets.fish.sourceRectangle.height * 0.5 * 0.645;
+						return new Shaku.utils.Rectangle(this.position.x - width / 2, this.position.y - height / 2, width, height);
+					}
+
+					updateAndDraw() {
+						// draw and animate
+						spritesBatch.drawSpriteGroup(this._group);
+						this._animFactor += 0.15 * this.movingAnimationSpeed;
+						this._body.sourceRectangle.y = (Math.floor(this._animFactor) % 2) * 512;
+						this._eye.rotation = Math.sin(Shaku.gameTime.elapsed * 50) / 15;
+
+						// spawn bubbles
+						if (this._size > 0.2) {
+							this._timeToSpawnBubble -= Shaku.gameTime.delta;
+							if (this._timeToSpawnBubble < 0) {
+								this._timeToSpawnBubble = 2 + Math.random() * 4;
+								let position = this.position.add({ x: this._group.scale.x * assets.fish.width * 0.35, y: 0 });
+								game.addBubble(this._size * 30, position);
+							}
+						}
+					}
+
+					get shouldBeRemoved() {
+						return false;
+					}
+				}
+
+				// fish for enemy fish
+				class NpcFish extends Fish {
+					constructor(size) {
+						super();
+
+						this.setSize(size);
+						this.position.y = Math.random() * screenY;
+						let speed = 27.5 + (Math.random() * 120);
+
+						if (Math.random() < 0.5) {
+							this.position.x = -this._group.scale.x * 1024;
+							this._speed = speed;
+						}
+						else {
+							this.position.x = screenX + this._group.scale.x * 1024;
+							this._group.scale.x *= -1;
+							this._speed = -speed;
+						}
+					}
+
+					get shouldBeRemoved() {
+						return (this._speed > 0 && this.position.x > screenX + this._group.scale.x * this._body.size.x) ||
+							(this._speed < 0 && this.position.x < this._group.scale.x * this._body.size.x);
+					}
+
+					updateAndDraw() {
+						super.updateAndDraw();
+						this.position.x += this._speed * Shaku.gameTime.delta;
+					}
+				}
+
+				// fish for player fish
+				class PlayerFish extends Fish {
+					constructor(size) {
+						super();
+						this.setSize(size);
+						this.position = new Shaku.utils.Vector2(screenX / 2, 0);
+						this.velocity = new Shaku.utils.Vector2(0, 2.5);
+						this._body.color = Shaku.utils.Color.orange;
+						this._moveAcc = 5;
+					}
+
+					get movingAnimationSpeed() {
+						return Math.min(Math.abs(this.velocity.length() / 17.5), 1.25) * 10;
+					}
+
+					get shouldBeRemoved() {
+						return false;
+					}
+
+					updateAndDraw() {
+						// call base update
+						super.updateAndDraw();
+
+						// move fish
+						this.position.x += this.velocity.x * Shaku.gameTime.delta * 100;
+						this.position.y += this.velocity.y * Shaku.gameTime.delta * 100;
+
+						// keep in screen
+						if (this.position.x < 0) {
+							this.position.x = 0;
+							if (this.velocity.x < 0) this.velocity.x = 0;
+						}
+						if (this.position.y < 0) {
+							this.position.y = 0;
+							if (this.velocity.y < 0) this.velocity.y = 0;
+						}
+						if (this.position.x > screenX) {
+							this.position.x = screenX;
+							if (this.velocity.x > 0) this.velocity.x = 0;
+						}
+						if (this.position.y > screenY) {
+							this.position.y = screenY;
+							if (this.velocity.y > 0) this.velocity.y = 0;
+						}
+
+						// do movement
+						let flipLeft = false;
+						let flipRight = false;
+						if (Shaku.input.down('left') || Shaku.input.down('a')) { this.velocity.x -= this._moveAcc * Shaku.gameTime.delta; flipLeft = true; }
+						else if (Shaku.input.down('right') || Shaku.input.down('d')) { this.velocity.x += this._moveAcc * Shaku.gameTime.delta; flipRight = true; }
+						if (Shaku.input.down('up') || Shaku.input.down('w')) { this.velocity.y -= this._moveAcc * Shaku.gameTime.delta; }
+						else if (Shaku.input.down('down') || Shaku.input.down('s')) { this.velocity.y += this._moveAcc * Shaku.gameTime.delta; }
+
+						// flip sprites
+						if (flipLeft) {
+							this._group.scale.x = -Math.abs(this._group.scale.x);
+						}
+						else if (flipRight) {
+							this._group.scale.x = Math.abs(this._group.scale.x);
+						}
+
+						// damp velocity
+						this.velocity = Shaku.utils.Vector2.lerp(this.velocity, Shaku.utils.Vector2.zero(), Shaku.gameTime.delta * 0.75);
+					}
+				}
+
+				// an animated bubble
+				class Bubble {
+					constructor(size, position) {
+						this.position = position;
+						this.size = size;
+						this.animFactor = Math.random() * 3;
+					}
+
+					updateAndDraw() {
+						spritesBatch.drawQuad(assets.bubble.texture,
+							this.position.add({ x: Math.cos(this.animFactor + Shaku.gameTime.elapsed * 5) * this.size * 0.2, y: 0 }),
+							this.size,
+							assets.bubble.sourceRectangle);
+						this.position.y -= this.size * 1.25 * Shaku.gameTime.delta;
+					}
+
+					get shouldBeRemoved() {
+						return this.position.y < -this.size;
+					}
+				}
+
+				// an animated bones
+				class Bones {
+					constructor(size, position, flipX) {
+						this.position = position;
+						this.size = size * 120;
+						this.flipX = flipX;
+						this.animFactor = Math.random() * 3;
+					}
+
+					updateAndDraw() {
+						spritesBatch.drawQuad(assets.fishSkeleton.texture,
+							this.position.add({ x: Math.cos(this.animFactor + Shaku.gameTime.elapsed * 5) * this.size * 0.2, y: 0 }),
+							new Shaku.utils.Vector2(this.size * (this.flipX ? -2 : 2), this.size), assets.fishSkeleton.sourceRectangle);
+						this.position.y += this.size * 1.25 * Shaku.gameTime.delta;
+					}
+
+					get shouldBeRemoved() {
+						return this.position.y > screenY + this.size;
+					}
+				}
+
+				// current game instance
+				class Game {
+					constructor() {
+						// create new game state
+						this.fish = [];
+						this.bubblesAndBones = [];
+						this.score = 0;
+						this.player = new PlayerFish(this.getPlayerSize());
+						this._timeToGenerateFish = 2.5 + Math.random() * 1;
+
+						// start music and start effect
+						Shaku.sfx.stopAll();
+						Shaku.sfx.play(assets.sfx.bubble);
+						this._music = Shaku.sfx.createSound(assets.sfx.music);
+						this._music.loop = true;
+						this._music.volume = 0.215;
+						this._music.preservesPitch = true;
+						this._music.play();
+
+						this._onScoreUpdate();
+
+						// is it game over?
+						this._gameOver = false;
+					}
+
+					stop() {
+						this._music.stop();
+					}
+
+					getPlayerSize() {
+						return (35 + this.score) / 100;
+					}
+
+					addBubble(size, position) {
+						let bubble = new Bubble(size, position);
+						this.bubblesAndBones.push(bubble);
+					}
+
+					addBones(size, position, flipX) {
+						let bones = new Bones(size, position, flipX);
+						this.bubblesAndBones.push(bones);
+					}
+
+					gameOver() {
+						this.addBones(this.player.getSize(), this.player.position, this.player.isFlipped);
+						this._music.stop();
+						this._gameOver = true;
+					}
+
+					get messedUpFactor() {
+						return Math.max(Math.min((this.score - 25) / 500, 1), 0);
+					}
+
+					playerEats(enemy) {
+						this.score += Math.max(enemy.getSize() * 5, 1);
+						this.addBones(enemy.getSize(), enemy.position, enemy.isFlipped);
+						this._onScoreUpdate();
+					}
+
+					_onScoreUpdate() {
+						// set player size and do pulse animation
+						this.player.setSize(this.getPlayerSize());
+						this.player.doBeatAnimation();
+
+						// distort music
+						this._music.playbackRate = 1 - this.messedUpFactor * 0.75;
+
+						// stop music
+						if (this.score >= 1000) {
+							(new Shaku.utils.Animator(this._music)).to({ volume: 0 }).duration(10).play();
+						}
+
+						// end of game!
+						if (this.score >= 5000) {
+							bottomText.innerHTML = "I̷͉̩̤̅̌̐ ̵̫̯͑f̴̨͋o̸͔̱͂ū̷̧̫̹̐̿n̵̺͔̔̑̔d̴̻͛ ̴̝̹͂̾̓ä̸̙͈́ ̷͇̱̫͋w̴̝̏̇ä̴̲́̄ͅy̶͎̌ ̶̤͕͊̓o̶̱͑u̵͇̝͂̐̕ţ̵̹͗.̵̪͈͚̇̕ ̵̼̮͚͋̓͛Ị̷̮̗̏ ̵̪́̎a̴̡̩̖̅m̴̘̘̀͠ ̵͓̣̌f̵͍̣̎̔r̴̛͍͙̟ẻ̴̞͕e̶͕̖̒̑̂͜.̸̮͂";
+							this._gameOver = true;
+						}
+						else if (this.score >= 4000) {
+							bottomText.innerHTML = "Š̷̫͐ǒ̴̤̕o̷̡̢͉͛̈́n̴̟̰͑͆̾.̸̯̍.̷͕̝̍͋.̷̭͝.̵͔̯̏̓̍";
+						}
+						else if (this.score >= 2000) {
+							bottomText.innerHTML = "Ṛ̷̢̾ȩ̷̬͘l̴͓̇͆ȩ̷͘à̵̺ŝ̷̝̙e̷̛̛̲ ̷̛̙͝ṃ̴͖̈́̓ḗ̵̦ ̴̟̗̊f̸̯̦́̆r̸̪̺̔̕o̵̭̽m̸̻̫͝ ̷̻̳́̎m̷͔̞͛y̸̯̋ ̸͕̔p̵̙̦̒r̶͓̐ĩ̶̺̦s̴̠̦͆ö̸͎́n̶̏̂͜.̷̰̀͋.̷̪̘̐.̷̹͝.̸̟͑͝";
+						}
+						else if (this.score >= 1000) {
+							bottomText.innerHTML = "M̴̪͛͑ý̴̭́ ̴̲͆̐T̶̗̓͑h̸̲̯̏̎r̵͍̲̅ơ̶̱̍n̸͐̅͜ë̶̮͚̾ ̶̜͊Ő̴̹͝f̶͍͍̒̚ ̶̠̹̋̊F̴̝̕l̸͑͜͝e̷̱̚ͅs̸̨̆͝h̴̗̽͘ ̶̀ͅA̶̢̎͘ẉ̴́͊a̴̟̒̇ḯ̵̡͛ͅt̸̯̿̈s̶̪̙̋.̷̖̂́";
+						}
+						else if (this.score >= 800) {
+							bottomText.innerHTML = "Í̴̻̺ ̷͚̎͜h̴̳͎͆̕ȕ̸͖n̸̮̽͑g̵̯̑e̶͕̠̊̀ṟ̴̐.̶͕̗̕";
+						}
+						else if (this.score >= 700) {
+							bottomText.innerHTML = "M̷̨̕ọ̸̃r̵̦̅é̴͇!̸̘̿ ̵̢̈́M̵̪̓o̵͙͂ŕ̶̗ę̸̆!̸̰̋ ̵̙͝M̴̊ͅö̶͜r̶̦͝e̴̔ͅ!̶͍͋";
+						}
+						else if (this.score >= 600) {
+							bottomText.innerHTML = "I̸ ̵c̶a̵n̴'̵t̷.̶.̶ ̸S̷t̷o̴p̷.̵.̴";
+						}
+						else if (this.score >= 500) {
+							bottomText.innerHTML = "Y̵e̶s̷s̸s̵s̵s̷.̷.̴.̴.̵.̴ ̴";
+						}
+						else if (this.score >= 400) {
+							bottomText.innerHTML = "S̵o̸ ̷m̶u̵c̵h̶ ̷p̵o̶w̸e̴r̸.̵.̴";
+						}
+						else if (this.score >= 300) {
+							bottomText.innerHTML = "I'm Unstoppable.";
+						}
+						else if (this.score >= 250) {
+							bottomText.innerHTML = "I shall inherit the seas. Nay. The WORLD.";
+						}
+						else if (this.score >= 200) {
+							bottomText.innerHTML = "I Grow Stronger.";
+						}
+						else if (this.score >= 180) {
+							bottomText.innerHTML = "I'm starting to like this.";
+						}
+						else if (this.score >= 140) {
+							bottomText.innerHTML = "Maybe I should stop..";
+						}
+						else if (this.score >= 100) {
+							bottomText.innerHTML = "I'm not even hungry anymore.";
+						}
+						else if (this.score >= 70) {
+							bottomText.innerHTML = "I.. I think that's enough..";
+						}
+						else if (this.score >= 50) {
+							bottomText.innerHTML = "That was delicious!";
+						}
+						else if (this.score >= 25) {
+							bottomText.innerHTML = "Hmmm... Yum!";
+						}
+						else {
+							bottomText.innerHTML = "I'm a hungry hungry fishy!";
+						}
+					}
+
+					updateAndDraw() {
+						// draw background with water effect
+						spritesBatch.begin(undefined, waterEffect);
+						waterEffect.uniforms.elapsedTime(Shaku.gameTime.elapsed);
+						waterEffect.uniforms.waveFactor(1);
+						spritesBatch.drawRectangle(assets.background, Shaku.gfx.getRenderingRegion());
+						spritesBatch.end();
+
+						spritesBatch.begin();
+
+						// draw bones pile
+						spritesBatch.drawQuad(
+							assets.bones,
+							new Shaku.utils.Vector2(screenX / 2, screenY),
+							assets.bones.sourceRectangle.getSize(),
+							undefined, null, 0, new Shaku.utils.Vector2(0.5, this.messedUpFactor * 0.95));
+
+						// update and draw fish
+						for (let i = this.fish.length - 1; i >= 0; --i) {
+
+							let fish = this.fish[i];
+							fish.updateAndDraw();
+
+							if (fish.shouldBeRemoved) {
+								this.fish.splice(i, 1);
+							}
+						}
+
+						// if not game over, do player-related stuff
+						if (!this._gameOver) {
+							this.doPlayerUpdates();
+						}
+
+						// update and draw bubbles and bones
+						for (let i = this.bubblesAndBones.length - 1; i >= 0; --i) {
+							this.bubblesAndBones[i].updateAndDraw();
+							if (this.bubblesAndBones[i].shouldBeRemoved) {
+								this.bubblesAndBones.splice(i, 1);
+							}
+						}
+
+						// generate random fish
+						this._timeToGenerateFish -= Shaku.gameTime.delta;
+						if (this._timeToGenerateFish <= 0 && this.score < 5000) {
+
+							// time for next fish
+							this._timeToGenerateFish = 1 + Math.random() * 2.5;
+							if (Math.random() < 0.35) { this._timeToGenerateFish += Math.random() * 3.25; }
+
+							// create fish
+							let playerSize = this.player.getSize();
+							let size = 0.15 + Math.random() * (playerSize + 1.25);
+							if (Math.random() <= 0.2) { size = 0.1 + Math.random() * playerSize; }
+							else if (Math.random() <= 0.1) { size *= (1 + Math.random() * 1); }
+							size = Math.min(Math.max(size, playerSize / 2), 2.5);
+							let fish = new NpcFish(size);
+							this.fish.push(fish);
+						}
+
+						spritesBatch.end();
+
+						// draw foreground seaweed
+						spritesBatch.begin(undefined, waterEffect);
+						waterEffect.uniforms.elapsedTime(Shaku.gameTime.elapsed + 0.125);
+						waterEffect.uniforms.waveFactor(2);
+						let weedSize = assets.seaWeed.getSize();
+						spritesBatch.drawQuad(assets.seaWeed, new Shaku.utils.Vector2(350, Shaku.gfx.getCanvasSize().y), weedSize.mul(0.775), undefined, null, 0, new Shaku.utils.Vector2(0.5, 1));
+						spritesBatch.drawQuad(assets.seaWeed, new Shaku.utils.Vector2(650, Shaku.gfx.getCanvasSize().y), weedSize, undefined, null, 0, new Shaku.utils.Vector2(0.5, 1));
+						spritesBatch.drawQuad(assets.seaWeed, new Shaku.utils.Vector2(950, Shaku.gfx.getCanvasSize().y), weedSize.mul(0.5), undefined, null, 0, new Shaku.utils.Vector2(0.5, 1));
+						spritesBatch.end();
+
+						// blood effect overlay
+						spritesBatch.begin(Shaku.gfx.BlendModes.Multiply);
+						spritesBatch.drawRectangle(Shaku.gfx.whiteTexture, Shaku.gfx.getRenderingRegion(), undefined, new Shaku.utils.Color(1, 0, 0, this.messedUpFactor));
+						spritesBatch.end();
+
+						// draw score
+						spritesBatch.begin();
+						textSpriteBatch.begin();
+						spritesBatch.drawQuad(assets.skeletonIcon, new Shaku.utils.Vector2(32, 32), new Shaku.utils.Vector2(48, 48));
+						let scoreText = Shaku.gfx.buildText(assets.fontTexture, "x " + Math.ceil(game.score), 24, Shaku.utils.Color.white, Shaku.gfx.TextAlignments.Left);
+						scoreText.position.set(73, 33);
+						textSpriteBatch.drawText(scoreText);
+						spritesBatch.end();
+						textSpriteBatch.end();
+					}
+
+					doPlayerUpdates() {
+						// update player
+						this.player.updateAndDraw();
+
+						// get player collision rect
+						let playerRect = this.player.getCollisionRect();
+
+						// update and draw fish
+						for (let i = this.fish.length - 1; i >= 0; --i) {
+
+							let fish = this.fish[i];
+							let fishRect = fish.getCollisionRect();
+
+							if (playerRect.collideRect(fishRect)) {
+
+								// player eat fish
+								if (this.player.getSize() >= fish.getSize()) {
+									this.fish.splice(i, 1);
+									this.playerEats(fish);
+								}
+								// fish eats player
+								else {
+									this.gameOver();
+								}
+
+								// bite sound
+								Shaku.sfx.play(assets.sfx.burp, 1, 0.75 + Math.random() * 0.5, false);
+							}
+						}
+					}
+				}
+
+				// create a new game
+				let game = new Game();
+
+				// do a single main loop step
+				function step() {
+					// start new frame and clear screen
+					Shaku.startFrame();
+					Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
+
+					// update and draw game
+					// note: if last frame took too long, skip this frame.
+					// this is useful to avoid glitches when getting back from lost focus.
+					if (Shaku.gameTime.delta < 0.5) {
+						game.updateAndDraw();
+					}
+
+					// restart game
+					if (Shaku.input.pressed('r')) {
+						game.stop();
+						game = new Game();
+					}
+
+					// end frame and request next frame
+					Shaku.endFrame();
+					Shaku.requestAnimationFrame(step);
+				}
+
+				// start main loop
+				step();
+			}
+		</script>
+
+	</div>
+
+</body>
+
 </html>

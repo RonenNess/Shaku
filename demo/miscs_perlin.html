@@ -1,97 +1,98 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <title>Shaku</title>
-    <meta name="description" content="Shaku - a simple and easy-to-use javascript library for videogame programming.">
-    <meta name="author" content="Ronen Ness">
-    <link href="css/style.css" rel="stylesheet" type="text/css" media="all">
-  </head>
-  <body>
-    <div class="noselect">
 
-    <button class="view-code-btn" onclick="showSampleCode();">View Code</button> 
-    <h1 class="demo-title">Shaku Miscs Demo: Perlin Noise Generator</h1>
-      <p>This demo demonstrate how to use the built-in perlin noise generator. Press <b>Space</b> to randomize noise.</p>
+<head>
+	<meta charset="UTF-8">
+	<title>Shaku</title>
+	<meta name="description" content="Shaku - a simple and easy-to-use javascript library for videogame programming.">
+	<meta name="author" content="Ronen Ness">
+	<link href="css/style.css" rel="stylesheet" type="text/css" media="all">
+</head>
 
-      <!-- include shaku -->
-      <script src="js/demos.js"></script>
-      <script src="js/shaku.js"></script>
+<body>
+	<div class="noselect">
 
-      <!-- demo code -->
-      <script>
-        async function runGame()
-        {
-          // init shaku
-          await Shaku.init();
+		<button class="view-code-btn" onclick="showSampleCode();">View Code</button>
+		<h1 class="demo-title">Shaku Miscs Demo: Perlin Noise Generator</h1>
+		<p>This demo demonstrate how to use the built-in perlin noise generator. Press <b>Space</b> to randomize noise.
+		</p>
 
-          // add shaku's canvas to document and set resolution to 800x600
-          document.body.appendChild(Shaku.gfx.canvas);
-          Shaku.gfx.setResolution(600, 600, true);
+		<!-- include shaku -->
+		<script src="js/demos.js"></script>
+		<script src="js/shaku.js"></script>
 
-          // create shapes batch
-          let shapesBatch = new Shaku.gfx.ShapesBatch();
+		<!-- demo code -->
+		<script>
+			async function runGame() {
+				// init shaku
+				await Shaku.init();
 
-          // perlin seed
-          let seed = Math.random();
-          let needUpdate = true;
+				// add shaku's canvas to document and set resolution to 800x600
+				document.body.appendChild(Shaku.gfx.canvas);
+				Shaku.gfx.setResolution(600, 600, true);
 
-          // do a single main loop step
-          function step() 
-          {
-            // update noise
-            if (needUpdate) {
-              // create perlin noise generator
-              let perlin = new Shaku.utils.Perlin(seed);
+				// create shapes batch
+				let shapesBatch = new Shaku.gfx.ShapesBatch();
 
-              // start new frame and clear screen
-              Shaku.startFrame();
-              Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
+				// perlin seed
+				let seed = Math.random();
+				let needUpdate = true;
 
-              shapesBatch.begin("opaque");
+				// do a single main loop step
+				function step() {
+					// update noise
+					if (needUpdate) {
+						// create perlin noise generator
+						let perlin = new Shaku.utils.Perlin(seed);
 
-              // draw noise
-              for (let x = 0; x < 600; ++x) {
-                for (let y = 0; y < 600; ++y) {
-                  let val = perlin.generateSmooth(x / 25, y / 25, 0.15);
-                  shapesBatch.addPoint(new Shaku.utils.Vector2(x, y), new Shaku.utils.Color(val, val, val, 1));
-                }
-              }
+						// start new frame and clear screen
+						Shaku.startFrame();
+						Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
 
-              shapesBatch.end();
+						shapesBatch.begin("opaque");
 
-              // no longer need update
-              needUpdate = false;
-            }
+						// draw noise
+						for (let x = 0; x < 600; ++x) {
+							for (let y = 0; y < 600; ++y) {
+								let val = perlin.generateSmooth(x / 25, y / 25, 0.15);
+								shapesBatch.addPoint(new Shaku.utils.Vector2(x, y), new Shaku.utils.Color(val, val, val, 1));
+							}
+						}
 
-            // regenerate
-            if (Shaku.input.pressed('space')) {
-              seed = Math.random();
-              needUpdate = true;
-            }
+						shapesBatch.end();
 
-            // end frame and request next frame
-            Shaku.endFrame();
-            Shaku.requestAnimationFrame(step);
-          }
+						// no longer need update
+						needUpdate = false;
+					}
 
-          // do a single step
-          step();
-        }
+					// regenerate
+					if (Shaku.input.pressed('space')) {
+						seed = Math.random();
+						needUpdate = true;
+					}
 
-        runGame();
-      </script>
+					// end frame and request next frame
+					Shaku.endFrame();
+					Shaku.requestAnimationFrame(step);
+				}
 
-    </div>
+				// do a single step
+				step();
+			}
 
-        
-    <!-- code example part -->
-    <div id="sample-code-modal" class="modal">
-      <div class="modal__overlay jsOverlay"></div>
-      <div class="modal__container">   
+			runGame();
+		</script>
 
-    <p class="noselect">The following is a code example on how to load a binary assets.</p>
-    <pre><code class="language-js">// generate array with perlin noise for a 100x100 matrix, using seed '123'
+	</div>
+
+
+	<!-- code example part -->
+	<div id="sample-code-modal" class="modal">
+		<div class="modal__overlay jsOverlay"></div>
+		<div class="modal__container">
+
+			<p class="noselect">The following is a code example on how to load a binary assets.</p>
+			<pre><code class="language-js">// generate array with perlin noise for a 100x100 matrix, using seed '123'
 const seed = 123;
 let perlin = new Shaku.utils.Perlin(seed);
 let noise = [];
@@ -103,12 +104,13 @@ for (let x = 0; x < 100; ++x) {
 }
 </code></pre>
 
-      <button class="modal__close" onclick="closeModal('sample-code-modal')">&#10005;</button>
-    </div>
-    </div>
+			<button class="modal__close" onclick="closeModal('sample-code-modal')">&#10005;</button>
+		</div>
+	</div>
 
-    <link href="prism/prism.css" rel="stylesheet" />
-    <script src="prism/prism.js"></script>  
+	<link href="prism/prism.css" rel="stylesheet" />
+	<script src="prism/prism.js"></script>
 
-  </body>
+</body>
+
 </html>

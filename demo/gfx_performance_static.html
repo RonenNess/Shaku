@@ -1,123 +1,124 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <title>Shaku</title>
-    <meta name="description" content="Shaku - a simple and easy-to-use javascript library for videogame programming.">
-    <meta name="author" content="Ronen Ness">
-    <link href="css/style.css" rel="stylesheet" type="text/css" media="all">
-  </head>
-  <body>
-    <div class="noselect">
-    <h1 class="demo-title" style="margin-left: 0;">Shaku Gfx Demo: Static Performance Test</h1>
-      <p>This demo is a performance test to check the limits of Shaku on your machine, with a static batch that only updates once and redrawn every frame.</p>
 
-      <p id="fps-data"></p>
+<head>
+	<meta charset="UTF-8">
+	<title>Shaku</title>
+	<meta name="description" content="Shaku - a simple and easy-to-use javascript library for videogame programming.">
+	<meta name="author" content="Ronen Ness">
+	<link href="css/style.css" rel="stylesheet" type="text/css" media="all">
+</head>
 
-      <!-- include shaku -->
-      <script src="js/demos.js"></script>
-      <script src="js/shaku.js"></script>
+<body>
+	<div class="noselect">
+		<h1 class="demo-title" style="margin-left: 0;">Shaku Gfx Demo: Static Performance Test</h1>
+		<p>This demo is a performance test to check the limits of Shaku on your machine, with a static batch that only
+			updates once and redrawn every frame.</p>
 
-      <!-- demo code -->
-      <script>
-        async function runDemo()
-        {
-          // init shaku
-          await Shaku.init();
+		<p id="fps-data"></p>
 
-          // screen size
-          let screenX = 1000;
-          let screenY = 800;
+		<!-- include shaku -->
+		<script src="js/demos.js"></script>
+		<script src="js/shaku.js"></script>
 
-          // add canvas to document
-          document.body.appendChild(Shaku.gfx.canvas);
-          Shaku.gfx.setResolution(screenX, screenY, true);
+		<!-- demo code -->
+		<script>
+			async function runDemo() {
+				// init shaku
+				await Shaku.init();
 
-          // load textures
-          let texture = await Shaku.assets.loadTexture('assets/skelly.png');
+				// screen size
+				let screenX = 1000;
+				let screenY = 800;
 
-          // create sprites group
-          let group = new Shaku.gfx.SpritesGroup();
+				// add canvas to document
+				document.body.appendChild(Shaku.gfx.canvas);
+				Shaku.gfx.setResolution(screenX, screenY, true);
 
-          // add a new sprite to group
-          function drawSprite()
-          {
-            // create sprite
-            let sprite = new Shaku.gfx.Sprite(texture);
+				// load textures
+				let texture = await Shaku.assets.loadTexture('assets/skelly.png');
 
-            // random position and set size
-            sprite.position.set(16 + Math.random() * (screenX - 32), 24 + Math.random() * (screenY - 48));
-            sprite.size.set(32, 48);
+				// create sprites group
+				let group = new Shaku.gfx.SpritesGroup();
 
-            // make some with source rect
-            if (Math.random() < 0.5) {
-              sprite.sourceRectangle = new Shaku.utils.Rectangle(0, 0, texture.width, texture.height);
-            }
+				// add a new sprite to group
+				function drawSprite() {
+					// create sprite
+					let sprite = new Shaku.gfx.Sprite(texture);
 
-            // random color
-            if (Math.random() < 0.75) {
-              sprite.color.set(Math.random(), Math.random(), Math.random(), 1);
-            }
+					// random position and set size
+					sprite.position.set(16 + Math.random() * (screenX - 32), 24 + Math.random() * (screenY - 48));
+					sprite.size.set(32, 48);
 
-            // random if should rotate randomly
-            if (Math.random() < 0.25) {
-              sprite.rotationSpeed = (Math.random() - 0.5) * 5;
-            }
+					// make some with source rect
+					if (Math.random() < 0.5) {
+						sprite.sourceRectangle = new Shaku.utils.Rectangle(0, 0, texture.width, texture.height);
+					}
 
-            // randomize velocity
-            sprite.velocity = new Shaku.utils.Vector2(Math.random() * 2 - 1, Math.random() * 2 - 1);
+					// random color
+					if (Math.random() < 0.75) {
+						sprite.color.set(Math.random(), Math.random(), Math.random(), 1);
+					}
 
-            // add to group
-            group.add(sprite);
-          }
+					// random if should rotate randomly
+					if (Math.random() < 0.25) {
+						sprite.rotationSpeed = (Math.random() - 0.5) * 5;
+					}
 
-          // create starting sprites
-          let spritesCount = 250000;
-          for (let i = 0; i < spritesCount; ++i) {
-            drawSprite();
-          }
+					// randomize velocity
+					sprite.velocity = new Shaku.utils.Vector2(Math.random() * 2 - 1, Math.random() * 2 - 1);
 
-          // create a sprites batch
-          let batchSize = spritesCount + 1;
-          let spritesBatch = new Shaku.gfx.SpriteBatch(batchSize, true);
+					// add to group
+					group.add(sprite);
+				}
 
-          // add sprites
-          spritesBatch.begin();
-          spritesBatch.drawSpriteGroup(group);
-          spritesBatch.makeStatic();
-          spritesBatch.endWithoutDraw();
+				// create starting sprites
+				let spritesCount = 250000;
+				for (let i = 0; i < spritesCount; ++i) {
+					drawSprite();
+				}
 
-          // do a main loop step.
-          function step() 
-          {  
-            // start frame and clear screen
-            Shaku.startFrame();
-            Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
+				// create a sprites batch
+				let batchSize = spritesCount + 1;
+				let spritesBatch = new Shaku.gfx.SpriteBatch(batchSize, true);
 
-            // draw sprites batch - we just begin and end since we already have all the vertices set statically (we set preserve buffers = true).
-            // here we can change effect, blend mode, transformations, etc.
-            spritesBatch.begin();
-            spritesBatch.end();
+				// add sprites
+				spritesBatch.begin();
+				spritesBatch.drawSpriteGroup(group);
+				spritesBatch.makeStatic();
+				spritesBatch.endWithoutDraw();
 
-            // end frame and request next frame
-            Shaku.endFrame();
-            Shaku.requestAnimationFrame(step);
-            
-            // update fps and data
-            document.getElementById('fps-data').innerHTML = "FPS: " + Shaku.getFpsCount() + "<br />Sprites: " + group.count + "<br />Avg Frame Time (ms): " + Shaku.getAverageFrameTime() + "<br />Delta Time (ms): " + (Shaku.gameTime.delta * 1000.0) + "<br />Draw Calls: " + Shaku.gfx.drawCallsCount;
-          }
+				// do a main loop step.
+				function step() {
+					// start frame and clear screen
+					Shaku.startFrame();
+					Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
 
-          // start main loop
-          step();
-        }
+					// draw sprites batch - we just begin and end since we already have all the vertices set statically (we set preserve buffers = true).
+					// here we can change effect, blend mode, transformations, etc.
+					spritesBatch.begin();
+					spritesBatch.end();
 
-        // start demo
-        runDemo();
+					// end frame and request next frame
+					Shaku.endFrame();
+					Shaku.requestAnimationFrame(step);
 
-      </script>
+					// update fps and data
+					document.getElementById('fps-data').innerHTML = "FPS: " + Shaku.getFpsCount() + "<br />Sprites: " + group.count + "<br />Avg Frame Time (ms): " + Shaku.getAverageFrameTime() + "<br />Delta Time (ms): " + (Shaku.gameTime.delta * 1000.0) + "<br />Draw Calls: " + Shaku.gfx.drawCallsCount;
+				}
 
-</div>
+				// start main loop
+				step();
+			}
+
+			// start demo
+			runDemo();
+
+		</script>
+
+	</div>
 
 
-  </body>
+</body>
+
 </html>

@@ -1,208 +1,204 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <title>Shaku</title>
-    <meta name="description" content="Shaku - a simple and easy-to-use javascript library for videogame programming.">
-    <meta name="author" content="Ronen Ness">
-    <link href="css/style.css" rel="stylesheet" type="text/css" media="all">
-  </head>
-  <body>
-    <div class="noselect">
-    <button class="view-code-btn" onclick="showSampleCode();">View Code</button> 
-    <h1 class="demo-title">Shaku Miscs Demo: Path Finding</h1>
-      <p>This demo show how to use the built-in PathFinder utility.<br />
-        <b>Click</b> on tiles to change their type and a new path will be calculated few moments after (path displayed as red dots). <br/>
-        <b>Hold Right Mouse Button</b> to paint blocking tiles.<br/>
-        <br /><b>Tile colors:</b> 
-        <ul>
-          <li>Black tiles are blocking.</li>
-          <li style="color:green">Green tiles are cheapest to walk on.</li>
-          <li style="color:purple">Purple tiles slightly more expensive.</li>
-          <li style="color:orange">Orange tiles are expensive to walk on.</li>
-        </ul>
-      </p>
 
-      <div>
-        <input type="checkbox" id="allowDiagonal" name="allowDiagonal" checked>
-        <label for="allowDiagonal">Allow Diagonal</label>
-      </div>
-      <br />
+<head>
+	<meta charset="UTF-8">
+	<title>Shaku</title>
+	<meta name="description" content="Shaku - a simple and easy-to-use javascript library for videogame programming.">
+	<meta name="author" content="Ronen Ness">
+	<link href="css/style.css" rel="stylesheet" type="text/css" media="all">
+</head>
 
-      <!-- include shaku -->
-      <script src="js/demos.js"></script>
-      <script src="js/shaku.js"></script>
+<body>
+	<div class="noselect">
+		<button class="view-code-btn" onclick="showSampleCode();">View Code</button>
+		<h1 class="demo-title">Shaku Miscs Demo: Path Finding</h1>
+		<p>This demo show how to use the built-in PathFinder utility.<br />
+			<b>Click</b> on tiles to change their type and a new path will be calculated few moments after (path
+			displayed as red dots). <br />
+			<b>Hold Right Mouse Button</b> to paint blocking tiles.<br />
+			<br /><b>Tile colors:</b>
+		<ul>
+			<li>Black tiles are blocking.</li>
+			<li style="color:green">Green tiles are cheapest to walk on.</li>
+			<li style="color:purple">Purple tiles slightly more expensive.</li>
+			<li style="color:orange">Orange tiles are expensive to walk on.</li>
+		</ul>
+		</p>
 
-      <!-- demo code -->
-      <script id="main-code">
-        async function runGame()
-        {
-          // make shaku only listen to gfx canvas
-          Shaku.input.setTargetElement(() => Shaku.gfx.canvas);
+		<div>
+			<input type="checkbox" id="allowDiagonal" name="allowDiagonal" checked>
+			<label for="allowDiagonal">Allow Diagonal</label>
+		</div>
+		<br />
 
-          // init shaku
-          await Shaku.init();
+		<!-- include shaku -->
+		<script src="js/demos.js"></script>
+		<script src="js/shaku.js"></script>
 
-          // add shaku's canvas to document and set resolution to 800x600
-          document.body.appendChild(Shaku.gfx.canvas);
-          Shaku.gfx.setResolution(900, 900, true);
+		<!-- demo code -->
+		<script id="main-code">
+			async function runGame() {
+				// make shaku only listen to gfx canvas
+				Shaku.input.setTargetElement(() => Shaku.gfx.canvas);
 
-          // create shapes batch
-          let shapesBatch = new Shaku.gfx.ShapesBatch();
+				// init shaku
+				await Shaku.init();
 
-          // some consts
-          const tilemapSize = 45;
-          const tileSize = 900 / 45;
-          const tileColors = [Shaku.utils.Color.black, Shaku.utils.Color.green, Shaku.utils.Color.purple, Shaku.utils.Color.orange];
+				// add shaku's canvas to document and set resolution to 800x600
+				document.body.appendChild(Shaku.gfx.canvas);
+				Shaku.gfx.setResolution(900, 900, true);
 
-          // create tilemap
-          let tiles = [];
-          for (let i = 0; i < tilemapSize; ++i) {
-            tiles.push([]);
-            for (let j = 0; j < tilemapSize; ++j) {
-              tiles[i].push(1);
-            }
-          }
+				// create shapes batch
+				let shapesBatch = new Shaku.gfx.ShapesBatch();
 
-          // a grid provider that simple use a 2d array of numbers to represent tile types.
-          // tile type 0 = walls / out of bounds.
-          // other types = walkable.
-          class GridProvider extends Shaku.utils.PathFinder.IGrid
-          {
-              constructor(grid)
-              {
-                  super();
-                  this.grid = grid;
-              }
-              
-              // blocking tiles = type 0, or out of bounds.
-              isBlocked(_from, _to)
-              {
-                  return !Boolean(this.getType(_to));
-              }
-          
-              // get price: price = tile type
-              getPrice(_index)
-              {
-                  return this.getType(_index) * 5;
-              }
-              
-              // get type from index.
-              // return 0 (block) for out of bounds.
-              getType(index)
-              {
-                  if (!this.grid[index.x]) {
-                      return 0;
-                  }
-                  return this.grid[index.x][index.y] || 0;
-              }
-          }
-          const gridProvider = new GridProvider(tiles);
+				// some consts
+				const tilemapSize = 45;
+				const tileSize = 900 / 45;
+				const tileColors = [Shaku.utils.Color.black, Shaku.utils.Color.green, Shaku.utils.Color.purple, Shaku.utils.Color.orange];
 
-          // current path
-          let currPath = null;
+				// create tilemap
+				let tiles = [];
+				for (let i = 0; i < tilemapSize; ++i) {
+					tiles.push([]);
+					for (let j = 0; j < tilemapSize; ++j) {
+						tiles[i].push(1);
+					}
+				}
 
-          // changing diagonal will recalculate
-          document.getElementById("allowDiagonal").onclick = () => {
-            currPath = null;
-          }
+				// a grid provider that simple use a 2d array of numbers to represent tile types.
+				// tile type 0 = walls / out of bounds.
+				// other types = walkable.
+				class GridProvider extends Shaku.utils.PathFinder.IGrid {
+					constructor(grid) {
+						super();
+						this.grid = grid;
+					}
 
-          // time to recalc path
-          let recalcPathTimeout = null;
+					// blocking tiles = type 0, or out of bounds.
+					isBlocked(_from, _to) {
+						return !Boolean(this.getType(_to));
+					}
 
-          // do a single main loop step
-          function step() 
-          {  
-            // start new frame and clear screen
-            Shaku.startFrame();
-            Shaku.gfx.clear(Shaku.utils.Color.gray);
+					// get price: price = tile type
+					getPrice(_index) {
+						return this.getType(_index) * 5;
+					}
 
-            shapesBatch.begin("opaque");
+					// get type from index.
+					// return 0 (block) for out of bounds.
+					getType(index) {
+						if (!this.grid[index.x]) {
+							return 0;
+						}
+						return this.grid[index.x][index.y] || 0;
+					}
+				}
+				const gridProvider = new GridProvider(tiles);
 
-            // check if need to calculate a new path
-            if (!currPath) {
-              const allowDiagonal = document.getElementById("allowDiagonal").checked;
-              currPath = Shaku.utils.PathFinder.findPath(gridProvider, {x:4, y:4}, {x:40, y:40}, {allowDiagonal: allowDiagonal}) || [];
-            }
+				// current path
+				let currPath = null;
 
-            // draw the map
-            for (let i = 0; i < 45; ++i) {
-              for (let j = 0; j < 45; ++j) {
-                let type = tiles[i][j];
-                let rect = new Shaku.utils.Rectangle(i * tileSize + 1, j * tileSize + 1, tileSize - 2, tileSize - 2);
-                let color = tileColors[type];
-                shapesBatch.drawRectangle(rect, color);
-              }
-            }
+				// changing diagonal will recalculate
+				document.getElementById("allowDiagonal").onclick = () => {
+					currPath = null;
+				};
 
-            // draw start and end position
-            shapesBatch.drawCircle(new Shaku.utils.Circle(new Shaku.utils.Vector2(tileSize * 4.5, tileSize * 4.5), tileSize / 2), Shaku.utils.Color.red);
-            shapesBatch.drawCircle(new Shaku.utils.Circle(new Shaku.utils.Vector2(tileSize * 40.5, tileSize * 40.5), tileSize / 2), Shaku.utils.Color.red);
+				// time to recalc path
+				let recalcPathTimeout = null;
 
-            // draw path
-            if (currPath) {
-              for (let point of currPath) {
-                let currDot = new Shaku.utils.Circle(new Shaku.utils.Vector2(tileSize * (point.x + 0.5), tileSize * (point.y + 0.5)), tileSize / 3);
-                shapesBatch.drawCircle(currDot, Shaku.utils.Color.red);
-              }
-            }
+				// do a single main loop step
+				function step() {
+					// start new frame and clear screen
+					Shaku.startFrame();
+					Shaku.gfx.clear(Shaku.utils.Color.gray);
 
-            // change tiles
-            if (Shaku.input.released('mouse_left') || Shaku.input.down('mouse_right')) {
+					shapesBatch.begin("opaque");
 
-              // remove current path
-              currPath = [];
+					// check if need to calculate a new path
+					if (!currPath) {
+						const allowDiagonal = document.getElementById("allowDiagonal").checked;
+						currPath = Shaku.utils.PathFinder.findPath(gridProvider, { x: 4, y: 4 }, { x: 40, y: 40 }, { allowDiagonal: allowDiagonal }) || [];
+					}
 
-              // set tile
-              let indexX = Math.floor(Shaku.input.mousePosition.x / tileSize);
-              let indexY = Math.floor(Shaku.input.mousePosition.y / tileSize);
-              if (indexX >= 0 && indexX < tilemapSize && indexY >= 0 && indexY < tilemapSize) {
-              
-                if (Shaku.input.down('mouse_right')) {
-                    tiles[indexX][indexY] = 0;
-                }
-                else {
-                    tiles[indexX][indexY]++;
-                    if (tiles[indexX][indexY] >= tileColors.length) {
-                      tiles[indexX][indexY] = 0;
-                    }
-                }
-              }
+					// draw the map
+					for (let i = 0; i < 45; ++i) {
+						for (let j = 0; j < 45; ++j) {
+							let type = tiles[i][j];
+							let rect = new Shaku.utils.Rectangle(i * tileSize + 1, j * tileSize + 1, tileSize - 2, tileSize - 2);
+							let color = tileColors[type];
+							shapesBatch.drawRectangle(rect, color);
+						}
+					}
 
-              // reset timeout to calc new path
-              if (recalcPathTimeout) {
-                clearTimeout(recalcPathTimeout);
-              }
-              recalcPathTimeout = setTimeout(() => {
-                  currPath = null;
-                  recalcPathTimeout = null;
-              }, 100);
-            }
+					// draw start and end position
+					shapesBatch.drawCircle(new Shaku.utils.Circle(new Shaku.utils.Vector2(tileSize * 4.5, tileSize * 4.5), tileSize / 2), Shaku.utils.Color.red);
+					shapesBatch.drawCircle(new Shaku.utils.Circle(new Shaku.utils.Vector2(tileSize * 40.5, tileSize * 40.5), tileSize / 2), Shaku.utils.Color.red);
 
-            // draw path
-            shapesBatch.end();
+					// draw path
+					if (currPath) {
+						for (let point of currPath) {
+							let currDot = new Shaku.utils.Circle(new Shaku.utils.Vector2(tileSize * (point.x + 0.5), tileSize * (point.y + 0.5)), tileSize / 3);
+							shapesBatch.drawCircle(currDot, Shaku.utils.Color.red);
+						}
+					}
 
-            // end frame and request next frame
-            Shaku.endFrame();
-            Shaku.requestAnimationFrame(step);
-          }
+					// change tiles
+					if (Shaku.input.released('mouse_left') || Shaku.input.down('mouse_right')) {
 
-          // start main loop
-          step();
-        }
+						// remove current path
+						currPath = [];
 
-        runGame();
-      </script>
+						// set tile
+						let indexX = Math.floor(Shaku.input.mousePosition.x / tileSize);
+						let indexY = Math.floor(Shaku.input.mousePosition.y / tileSize);
+						if (indexX >= 0 && indexX < tilemapSize && indexY >= 0 && indexY < tilemapSize) {
 
-</div>
+							if (Shaku.input.down('mouse_right')) {
+								tiles[indexX][indexY] = 0;
+							}
+							else {
+								tiles[indexX][indexY]++;
+								if (tiles[indexX][indexY] >= tileColors.length) {
+									tiles[indexX][indexY] = 0;
+								}
+							}
+						}
 
-<!-- code example part -->
-<div id="sample-code-modal" class="modal">
-  <div class="modal__overlay jsOverlay"></div>
-  <div class="modal__container">   
+						// reset timeout to calc new path
+						if (recalcPathTimeout) {
+							clearTimeout(recalcPathTimeout);
+						}
+						recalcPathTimeout = setTimeout(() => {
+							currPath = null;
+							recalcPathTimeout = null;
+						}, 100);
+					}
 
-<p class="noselect">The following shows a basic path finding example code.</p>
-<pre><code id="code-box" class="language-js">// a grid provider that simple use a 2d array of numbers to represent tile types.
+					// draw path
+					shapesBatch.end();
+
+					// end frame and request next frame
+					Shaku.endFrame();
+					Shaku.requestAnimationFrame(step);
+				}
+
+				// start main loop
+				step();
+			}
+
+			runGame();
+		</script>
+
+	</div>
+
+	<!-- code example part -->
+	<div id="sample-code-modal" class="modal">
+		<div class="modal__overlay jsOverlay"></div>
+		<div class="modal__container">
+
+			<p class="noselect">The following shows a basic path finding example code.</p>
+			<pre><code id="code-box" class="language-js">// a grid provider that simple use a 2d array of numbers to represent tile types.
 // tile type 0 = blocking / out of bounds.
 // other types = walkable, price = type index.
 class GridProvider extends Shaku.utils.PathFinder.IGrid
@@ -212,7 +208,7 @@ class GridProvider extends Shaku.utils.PathFinder.IGrid
     super();
     this.grid = grid;
   }
-  
+
   // blocking tiles = type 0, or out of bounds.
   isBlocked(_from, _to)
   {
@@ -224,7 +220,7 @@ class GridProvider extends Shaku.utils.PathFinder.IGrid
   {
     return this.getType(_index);
   }
-  
+
   // get type from index.
   // return 0 (block) for out of bounds.
   getType(index)
@@ -253,12 +249,13 @@ let gridProvider = new GridProvider(grid);
 
 // find path from top-left to bottom-right
 let path = Shaku.utils.PathFinder.findPath(gridProvider, {x:0, y:0}, {x:11, y:11}, {allowDiagonal: true});</code></pre>
-  <button class="modal__close" onclick="closeModal('sample-code-modal')">&#10005;</button>
-</div>
-</div>
+			<button class="modal__close" onclick="closeModal('sample-code-modal')">&#10005;</button>
+		</div>
+	</div>
 
-<link href="prism/prism.css" rel="stylesheet" />
-<script src="prism/prism.js"></script>
+	<link href="prism/prism.css" rel="stylesheet" />
+	<script src="prism/prism.js"></script>
 
-  </body>
+</body>
+
 </html>

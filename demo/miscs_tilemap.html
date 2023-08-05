@@ -1,255 +1,256 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <title>Shaku</title>
-    <meta name="description" content="Shaku - a simple and easy-to-use javascript library for videogame programming.">
-    <meta name="author" content="Ronen Ness">
-    <link href="css/style.css" rel="stylesheet" type="text/css" media="all">
-  </head>
-  <body>
-    <div class="noselect">
-    <button class="view-code-btn" onclick="showSampleCode();">View Code</button> 
-    <h1 class="demo-title">Shaku Miscs Demo: Tilemap & Camera</h1>
-      <p>This demo implements a simple tilemap editor.<br />
-      Use <b>Arrows</b> or <b>WASD</b> to move camera, <b>Left Mouse Button</b> to set tile, <b>Right Mouse Button</b> to delete tiles, and <b>1-4</b> to select tiles layer. <br />
-      Press <b>Space</b> to toggle viewport test (will render on smaller region).</p>
-      <span class="credits">Tileset texture is from: https://opengameart.org/content/modified-isometric-64x64-outside-tileset</span>
 
-      <!-- include shaku -->
-      <script src="js/demos.js"></script>
-      <script src="js/shaku.js"></script>
+<head>
+	<meta charset="UTF-8">
+	<title>Shaku</title>
+	<meta name="description" content="Shaku - a simple and easy-to-use javascript library for videogame programming.">
+	<meta name="author" content="Ronen Ness">
+	<link href="css/style.css" rel="stylesheet" type="text/css" media="all">
+</head>
 
-      <!-- demo code -->
-      <script id="main-code">
-        async function runGame()
-        {
-          // make shaku only listen to gfx canvas
-          Shaku.input.setTargetElement(() => Shaku.gfx.canvas);
+<body>
+	<div class="noselect">
+		<button class="view-code-btn" onclick="showSampleCode();">View Code</button>
+		<h1 class="demo-title">Shaku Miscs Demo: Tilemap & Camera</h1>
+		<p>This demo implements a simple tilemap editor.<br />
+			Use <b>Arrows</b> or <b>WASD</b> to move camera, <b>Left Mouse Button</b> to set tile, <b>Right Mouse
+				Button</b> to delete tiles, and <b>1-4</b> to select tiles layer. <br />
+			Press <b>Space</b> to toggle viewport test (will render on smaller region).</p>
+		<span class="credits">Tileset texture is from:
+			https://opengameart.org/content/modified-isometric-64x64-outside-tileset</span>
 
-          // init shaku
-          await Shaku.init();
+		<!-- include shaku -->
+		<script src="js/demos.js"></script>
+		<script src="js/shaku.js"></script>
 
-          // add shaku's canvas to document and set resolution to 800x600
-          document.body.appendChild(Shaku.gfx.canvas);
-          Shaku.gfx.setResolution(1400, 1000, true);
+		<!-- demo code -->
+		<script id="main-code">
+			async function runGame() {
+				// make shaku only listen to gfx canvas
+				Shaku.input.setTargetElement(() => Shaku.gfx.canvas);
 
-          // selected tile type
-          let selectedTileType = Shaku.utils.Vector2.zero();
+				// init shaku
+				await Shaku.init();
 
-          // load tilemap's texture asset
-          let texture = await Shaku.assets.loadTexture('assets/iso_terrain.png');
+				// add shaku's canvas to document and set resolution to 800x600
+				document.body.appendChild(Shaku.gfx.canvas);
+				Shaku.gfx.setResolution(1400, 1000, true);
 
-          // camera position
-          let cameraOffset = Shaku.utils.Vector2.zero();
-          let camera = Shaku.gfx.createCamera();
+				// selected tile type
+				let selectedTileType = Shaku.utils.Vector2.zero();
 
-          // tile size and tilemap size
-          const tileSourceSize = new Shaku.utils.Vector2(64, 64);
-          const tileSize = tileSourceSize.mul(2);
-          const tileHeight = tileSize.y / 2;
-          const tilemapOffsetSize = new Shaku.utils.Vector2(tileSize.x - 4, tileSize.y / 4);
-          const tilemapSize = new Shaku.utils.Vector2(150, 150);
-          const tilemapLayers = 4;
+				// load tilemap's texture asset
+				let texture = await Shaku.assets.loadTexture('assets/iso_terrain.png');
 
-          // create spritebatch
-          let spritesBatch = new Shaku.gfx.SpriteBatch();
+				// camera position
+				let cameraOffset = Shaku.utils.Vector2.zero();
+				let camera = Shaku.gfx.createCamera();
 
-          // create tilesmap
-          let tiles = [];
-          for (let layer = 0; layer < tilemapLayers; ++layer)
-          {
-            let currLayer = [];
-            tiles.push(currLayer);
-            for (let i = 0; i < tilemapSize.x; ++i) {
-              currLayer.push([]);
-              for (let j = 0; j < tilemapSize.y; ++j) {
-                currLayer[i][j] = (layer === 0) ? 
-                                    (new Shaku.utils.Vector2(1, 0)) : 
-                                    null;
-              }
-            }
-          }
+				// tile size and tilemap size
+				const tileSourceSize = new Shaku.utils.Vector2(64, 64);
+				const tileSize = tileSourceSize.mul(2);
+				const tileHeight = tileSize.y / 2;
+				const tilemapOffsetSize = new Shaku.utils.Vector2(tileSize.x - 4, tileSize.y / 4);
+				const tilemapSize = new Shaku.utils.Vector2(150, 150);
+				const tilemapLayers = 4;
 
-          // which layer we are currently editing
-          let selectedTileLayer = 0;
+				// create spritebatch
+				let spritesBatch = new Shaku.gfx.SpriteBatch();
 
-          // color to draw different layers
-          const layerColors = [
-            new Shaku.utils.Color(1,1,1,1), 
-            new Shaku.utils.Color(0.9,0.9,0.9,1), 
-            new Shaku.utils.Color(0.8,0.8,0.8,1), 
-            new Shaku.utils.Color(0.7,0.7,0.7,1)
-          ];
+				// create tilesmap
+				let tiles = [];
+				for (let layer = 0; layer < tilemapLayers; ++layer) {
+					let currLayer = [];
+					tiles.push(currLayer);
+					for (let i = 0; i < tilemapSize.x; ++i) {
+						currLayer.push([]);
+						for (let j = 0; j < tilemapSize.y; ++j) {
+							currLayer[i][j] = (layer === 0) ?
+								(new Shaku.utils.Vector2(1, 0)) :
+								null;
+						}
+					}
+				}
 
-          // draw a tile
-          function drawTile(layer, i, j, validate, markMissingTiles)
-          {
-            if (validate && (layer < 0 || layer >= tilemapLayers || i < 0 || i >= tilemapSize.x || j < 0 || j >= tilemapSize.y)) {
-              return;
-            }
+				// which layer we are currently editing
+				let selectedTileLayer = 0;
 
-            let type = tiles[layer][i][j];
-                if (type) {
-                  let offsetX = (j % 2) ? (tilemapOffsetSize.x / 2) : 0;
-                  spritesBatch.drawRectangle(texture, 
-                                    new Shaku.utils.Rectangle(i * tilemapOffsetSize.x + offsetX, j * tilemapOffsetSize.y - (layer * tileHeight), tileSize.x, tileSize.y), 
-                                    new Shaku.utils.Rectangle(type.x * tileSourceSize.x, type.y * tileSourceSize.y, tileSourceSize.x, tileSourceSize.y),
-                                    layerColors[layer]
-                                  );
-                }
-                else if (markMissingTiles) {
-                  let offsetX = (j % 2) ? (tilemapOffsetSize.x / 2) : 0;
-                  spritesBatch.drawRectangle(texture, 
-                                    new Shaku.utils.Rectangle(i * tilemapOffsetSize.x + offsetX, j * tilemapOffsetSize.y - (layer * tileHeight), tileSize.x, tileSize.y), 
-                                    new Shaku.utils.Rectangle(window._selectedTileType * tileSourceSize.x, 0, tileSourceSize.x, tileSourceSize.y),
-                                    Shaku.utils.Color.red
-                                  );
-                }
-          }
-          
-          // do a single main loop step
-          function step() 
-          {  
-            // start new frame and clear screen
-            Shaku.startFrame();
-            Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
+				// color to draw different layers
+				const layerColors = [
+					new Shaku.utils.Color(1, 1, 1, 1),
+					new Shaku.utils.Color(0.9, 0.9, 0.9, 1),
+					new Shaku.utils.Color(0.8, 0.8, 0.8, 1),
+					new Shaku.utils.Color(0.7, 0.7, 0.7, 1)
+				];
 
-            // apply camera
-            camera.orthographicOffset(cameraOffset);
-            Shaku.gfx.applyCamera(camera);
+				// draw a tile
+				function drawTile(layer, i, j, validate, markMissingTiles) {
+					if (validate && (layer < 0 || layer >= tilemapLayers || i < 0 || i >= tilemapSize.x || j < 0 || j >= tilemapSize.y)) {
+						return;
+					}
 
-            spritesBatch.begin();
+					let type = tiles[layer][i][j];
+					if (type) {
+						let offsetX = (j % 2) ? (tilemapOffsetSize.x / 2) : 0;
+						spritesBatch.drawRectangle(texture,
+							new Shaku.utils.Rectangle(i * tilemapOffsetSize.x + offsetX, j * tilemapOffsetSize.y - (layer * tileHeight), tileSize.x, tileSize.y),
+							new Shaku.utils.Rectangle(type.x * tileSourceSize.x, type.y * tileSourceSize.y, tileSourceSize.x, tileSourceSize.y),
+							layerColors[layer]
+						);
+					}
+					else if (markMissingTiles) {
+						let offsetX = (j % 2) ? (tilemapOffsetSize.x / 2) : 0;
+						spritesBatch.drawRectangle(texture,
+							new Shaku.utils.Rectangle(i * tilemapOffsetSize.x + offsetX, j * tilemapOffsetSize.y - (layer * tileHeight), tileSize.x, tileSize.y),
+							new Shaku.utils.Rectangle(window._selectedTileType * tileSourceSize.x, 0, tileSourceSize.x, tileSourceSize.y),
+							Shaku.utils.Color.red
+						);
+					}
+				}
 
-            // draw the map
-            let minI = Math.max(Math.floor(cameraOffset.x / tilemapOffsetSize.x) - 1, 0);
-            let minJ = Math.max(Math.floor(cameraOffset.y / tilemapOffsetSize.y) - 1, 0);
-            let maxI = Math.min(minI + Math.floor(Shaku.gfx.getCanvasSize().x / tilemapOffsetSize.x) + 3, tilemapSize.x);
-            let maxJ = Math.min(minJ + Math.floor(Shaku.gfx.getCanvasSize().y / tilemapOffsetSize.y) + 8, tilemapSize.y);
-            for (let layer = 0; layer < tilemapLayers; ++layer)
-            {
-              for (let j = minJ; j < maxJ; ++j) {
-                  for (let i = minI; i < maxI; ++i) {
-                    drawTile(layer, i, j);
-                }
-              }
-            }
+				// do a single main loop step
+				function step() {
+					// start new frame and clear screen
+					Shaku.startFrame();
+					Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
 
-            spritesBatch.end();
+					// apply camera
+					camera.orthographicOffset(cameraOffset);
+					Shaku.gfx.applyCamera(camera);
 
-            // calc which tile we point on
-            let region = Shaku.gfx.getRenderingRegion();
-            let viewportScale = Shaku.gfx.getCanvasSize().div(region.getSize());
-            let viewportOffset = region.getPosition();
-            let mouseNormalizedPos = Shaku.input.mousePosition.add(cameraOffset).sub(viewportOffset).mul(viewportScale);
-            let selectedTile = Shaku.utils.Vector2.zero(); 
-            selectedTile.y = Math.floor((mouseNormalizedPos.y + (selectedTileLayer * tileHeight)) / tilemapOffsetSize.y);
-            if (selectedTile.y % 2) {
-              selectedTile.x = Math.floor((mouseNormalizedPos.x - (tilemapOffsetSize.x / 2)) / tilemapOffsetSize.x);
-            }
-            else {
-              selectedTile.x = Math.floor(mouseNormalizedPos.x / tilemapOffsetSize.x);
-            }
+					spritesBatch.begin();
 
-            // highlight selected tile
-            spritesBatch.begin('additive');
-              drawTile(selectedTileLayer, selectedTile.x, selectedTile.y, true, true);
-            spritesBatch.end();
+					// draw the map
+					let minI = Math.max(Math.floor(cameraOffset.x / tilemapOffsetSize.x) - 1, 0);
+					let minJ = Math.max(Math.floor(cameraOffset.y / tilemapOffsetSize.y) - 1, 0);
+					let maxI = Math.min(minI + Math.floor(Shaku.gfx.getCanvasSize().x / tilemapOffsetSize.x) + 3, tilemapSize.x);
+					let maxJ = Math.min(minJ + Math.floor(Shaku.gfx.getCanvasSize().y / tilemapOffsetSize.y) + 8, tilemapSize.y);
+					for (let layer = 0; layer < tilemapLayers; ++layer) {
+						for (let j = minJ; j < maxJ; ++j) {
+							for (let i = minI; i < maxI; ++i) {
+								drawTile(layer, i, j);
+							}
+						}
+					}
 
-            // reset camera and viewport for ui
-            Shaku.gfx.resetCamera();
+					spritesBatch.end();
 
-            // set tiles
-            if (Shaku.input.down('mouse_left')) {
-              try
-              {
-                tiles[selectedTileLayer][selectedTile.x][selectedTile.y] = new Shaku.utils.Vector2(window._selectedTileType, 0);
-              }
-              catch (e) {}
-            }
-            if (Shaku.input.down('mouse_right')) {
-              try
-              {
-                tiles[selectedTileLayer][selectedTile.x][selectedTile.y] = null;
-              }
-              catch (e) {}
-            }
+					// calc which tile we point on
+					let region = Shaku.gfx.getRenderingRegion();
+					let viewportScale = Shaku.gfx.getCanvasSize().div(region.getSize());
+					let viewportOffset = region.getPosition();
+					let mouseNormalizedPos = Shaku.input.mousePosition.add(cameraOffset).sub(viewportOffset).mul(viewportScale);
+					let selectedTile = Shaku.utils.Vector2.zero();
+					selectedTile.y = Math.floor((mouseNormalizedPos.y + (selectedTileLayer * tileHeight)) / tilemapOffsetSize.y);
+					if (selectedTile.y % 2) {
+						selectedTile.x = Math.floor((mouseNormalizedPos.x - (tilemapOffsetSize.x / 2)) / tilemapOffsetSize.x);
+					}
+					else {
+						selectedTile.x = Math.floor(mouseNormalizedPos.x / tilemapOffsetSize.x);
+					}
 
-            // camera controls
-            let cameraSpeed = Shaku.gameTime.delta * 500;
-            if (Shaku.input.down(['left', 'a'])) { 
-              cameraOffset.x -= cameraSpeed;
-            }
-            if (Shaku.input.down(['right', 'd'])) { 
-              cameraOffset.x += cameraSpeed;
-            }
-            if (Shaku.input.down(['up', 'w'])) { 
-              cameraOffset.y -= cameraSpeed;
-            }
-            if (Shaku.input.down(['down', 's'])) { 
-              cameraOffset.y += cameraSpeed;
-            }
-            for (let i = 0; i < tilemapLayers; ++i) {
-              if (Shaku.input.down((i + 1).toString())) { 
-                selectedTileLayer = i;
-              }
-            }
+					// highlight selected tile
+					spritesBatch.begin('additive');
+					drawTile(selectedTileLayer, selectedTile.x, selectedTile.y, true, true);
+					spritesBatch.end();
 
-            // toggle viewport
-            if (Shaku.input.pressed('space')) {
-              if (camera.viewport) {
-                camera.viewport = null;
-              }
-              else {
-                camera.viewport = new Shaku.utils.Rectangle(100, 100, Shaku.gfx.getCanvasSize().x - 200, Shaku.gfx.getCanvasSize().y - 200);
-              }
-            }
+					// reset camera and viewport for ui
+					Shaku.gfx.resetCamera();
 
-            // end frame and request next frame
-            Shaku.endFrame();
-            Shaku.requestAnimationFrame(step);
-          }
+					// set tiles
+					if (Shaku.input.down('mouse_left')) {
+						try {
+							tiles[selectedTileLayer][selectedTile.x][selectedTile.y] = new Shaku.utils.Vector2(window._selectedTileType, 0);
+						}
+						catch (e) { }
+					}
+					if (Shaku.input.down('mouse_right')) {
+						try {
+							tiles[selectedTileLayer][selectedTile.x][selectedTile.y] = null;
+						}
+						catch (e) { }
+					}
 
-          // start main loop
-          step();
-        }
+					// camera controls
+					let cameraSpeed = Shaku.gameTime.delta * 500;
+					if (Shaku.input.down(['left', 'a'])) {
+						cameraOffset.x -= cameraSpeed;
+					}
+					if (Shaku.input.down(['right', 'd'])) {
+						cameraOffset.x += cameraSpeed;
+					}
+					if (Shaku.input.down(['up', 'w'])) {
+						cameraOffset.y -= cameraSpeed;
+					}
+					if (Shaku.input.down(['down', 's'])) {
+						cameraOffset.y += cameraSpeed;
+					}
+					for (let i = 0; i < tilemapLayers; ++i) {
+						if (Shaku.input.down((i + 1).toString())) {
+							selectedTileLayer = i;
+						}
+					}
 
-        runGame();
-      </script>
+					// toggle viewport
+					if (Shaku.input.pressed('space')) {
+						if (camera.viewport) {
+							camera.viewport = null;
+						}
+						else {
+							camera.viewport = new Shaku.utils.Rectangle(100, 100, Shaku.gfx.getCanvasSize().x - 200, Shaku.gfx.getCanvasSize().y - 200);
+						}
+					}
 
-  <img class="noselect" draggable="false" id="tile-selection-img" src="assets/iso_terrain.png" style="position:absolute; z-index:1000; background-color: blueviolet;">
-  <div class="noselect" draggable="false" id="tile-selection-mark" style="display:block;width:64px;height:64px;z-index:10005;background-color:red;position: absolute;mix-blend-mode: color-dodge;"></div>
-</div>
+					// end frame and request next frame
+					Shaku.endFrame();
+					Shaku.requestAnimationFrame(step);
+				}
 
-<!-- handle tile type selection -->
-<script>
-  window._selectedTileType = 0;
-  let selectImg = document.getElementById('tile-selection-img');
-  selectImg.onclick = (e) => {
-    let selectionLeft = selectImg.getBoundingClientRect().left;
-    let mouseX = (e.clientX - selectionLeft);
-    window._selectedTileType = Math.floor(mouseX / 64);
-    document.getElementById('tile-selection-mark').style.left = (selectionLeft + window._selectedTileType * 64) + 'px';
-  }
-</script>
+				// start main loop
+				step();
+			}
 
-<!-- code example part -->
-<div id="sample-code-modal" class="modal">
-  <div class="modal__overlay jsOverlay"></div>
-  <div class="modal__container">   
+			runGame();
+		</script>
 
-<p class="noselect">The following shows the full code for this tilemap editor demo.</p>
-<pre><code id="code-box" class="language-js"></code></pre>
-  <button class="modal__close" onclick="closeModal('sample-code-modal')">&#10005;</button>
-</div>
-</div>
+		<img class="noselect" draggable="false" id="tile-selection-img" src="assets/iso_terrain.png"
+			style="position:absolute; z-index:1000; background-color: blueviolet;">
+		<div class="noselect" draggable="false" id="tile-selection-mark"
+			style="display:block;width:64px;height:64px;z-index:10005;background-color:red;position: absolute;mix-blend-mode: color-dodge;">
+		</div>
+	</div>
 
-<link href="prism/prism.css" rel="stylesheet" />
-<script src="prism/prism.js"></script>
+	<!-- handle tile type selection -->
+	<script>
+		window._selectedTileType = 0;
+		let selectImg = document.getElementById('tile-selection-img');
+		selectImg.onclick = (e) => {
+			let selectionLeft = selectImg.getBoundingClientRect().left;
+			let mouseX = (e.clientX - selectionLeft);
+			window._selectedTileType = Math.floor(mouseX / 64);
+			document.getElementById('tile-selection-mark').style.left = (selectionLeft + window._selectedTileType * 64) + 'px';
+		}
+	</script>
 
-<script>
-  document.getElementById('code-box').innerHTML = document.getElementById('main-code').innerHTML;
-</script>
+	<!-- code example part -->
+	<div id="sample-code-modal" class="modal">
+		<div class="modal__overlay jsOverlay"></div>
+		<div class="modal__container">
 
-  </body>
+			<p class="noselect">The following shows the full code for this tilemap editor demo.</p>
+			<pre><code id="code-box" class="language-js"></code></pre>
+			<button class="modal__close" onclick="closeModal('sample-code-modal')">&#10005;</button>
+		</div>
+	</div>
+
+	<link href="prism/prism.css" rel="stylesheet" />
+	<script src="prism/prism.js"></script>
+
+	<script>
+		document.getElementById('code-box').innerHTML = document.getElementById('main-code').innerHTML;
+	</script>
+
+</body>
+
 </html>

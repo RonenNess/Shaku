@@ -1,72 +1,72 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <title>Shaku</title>
-    <meta name="description" content="Shaku - a simple and easy-to-use javascript library for videogame programming.">
-    <meta name="author" content="Ronen Ness">
-    <link href="css/style.css" rel="stylesheet" type="text/css" media="all">
-  </head>
-  <body>
-    <div class="noselect">
-    <button class="view-code-btn" onclick="showSampleCode();">View Code</button> 
-    <h1 class="demo-title">Shaku Input Demo: Gamepad</h1>
 
-      <p>This demo demonstrate how to get gamepad input with Shaku.<br />
-      Note: Gamepads are only recognized in browsers once you press a button.</p>
+<head>
+	<meta charset="UTF-8">
+	<title>Shaku</title>
+	<meta name="description" content="Shaku - a simple and easy-to-use javascript library for videogame programming.">
+	<meta name="author" content="Ronen Ness">
+	<link href="css/style.css" rel="stylesheet" type="text/css" media="all">
+</head>
 
-      <p><b>Main Gamepad (index 0):</b> <span id="main-gamepad-id"></span></p>
-      <div id="gp-data-div"></div>
+<body>
+	<div class="noselect">
+		<button class="view-code-btn" onclick="showSampleCode();">View Code</button>
+		<h1 class="demo-title">Shaku Input Demo: Gamepad</h1>
 
-      <!-- include shaku -->
-      <script src="js/demos.js"></script>
-      <script src="js/shaku.js"></script>
+		<p>This demo demonstrate how to get gamepad input with Shaku.<br />
+			Note: Gamepads are only recognized in browsers once you press a button.</p>
 
-      <!-- demo code -->
-      <script>
+		<p><b>Main Gamepad (index 0):</b> <span id="main-gamepad-id"></span></p>
+		<div id="gp-data-div"></div>
 
-        (function() {
+		<!-- include shaku -->
+		<script src="js/demos.js"></script>
+		<script src="js/shaku.js"></script>
+
+		<!-- demo code -->
+		<script>
+
+			(function() {
 
 
-          // run demo 
-          async function runDemo()
-          {
-            // init shaku
-            await Shaku.init();
+				// run demo
+				async function runDemo() {
+					// init shaku
+					await Shaku.init();
 
-            // add gamepads data divs
-            for (let i = 0; i < 4; ++i) {
-              let html = `<div style="width:20%; display:inline-block; border: 2px solid black; padding:1em">
+					// add gamepads data divs
+					for (let i = 0; i < 4; ++i) {
+						let html = `<div style="width:20%; display:inline-block; border: 2px solid black; padding:1em">
                             <p id="gamepad-gpindex-id"></p>
                             <div id="gamepad-gpindex-mapped"></div>
                           </div>`.replaceAll('gpindex', i);
-              document.getElementById('gp-data-div').innerHTML += html;
-            }
+						document.getElementById('gp-data-div').innerHTML += html;
+					}
 
-            // do a main loop step.
-            function step()
-            {
-              // start frame  
-              Shaku.startFrame();
+					// do a main loop step.
+					function step() {
+						// start frame
+						Shaku.startFrame();
 
-              // show device ids
-              document.getElementById('main-gamepad-id').innerHTML = Shaku.input.gamepadId() || "[Not Connected!]";
+						// show device ids
+						document.getElementById('main-gamepad-id').innerHTML = Shaku.input.gamepadId() || "[Not Connected!]";
 
-              // set all gamepads data
-              for (let i = 0; i < 4; ++i) {
+						// set all gamepads data
+						for (let i = 0; i < 4; ++i) {
 
-                // get gamepad state
-                const gamepad = Shaku.input.gamepad(i);
+							// get gamepad state
+							const gamepad = Shaku.input.gamepad(i);
 
-                // if gamepad connected..
-                if (gamepad) {
+							// if gamepad connected..
+							if (gamepad) {
 
-                  // set id
-                  document.getElementById(`gamepad-${i}-id`).innerHTML = gamepad.id;
-                  
-                  // show mapped data
-                  if (gamepad.isMapped) {
-                    document.getElementById(`gamepad-${i}-mapped`).innerHTML = `
+								// set id
+								document.getElementById(`gamepad-${i}-id`).innerHTML = gamepad.id;
+
+								// show mapped data
+								if (gamepad.isMapped) {
+									document.getElementById(`gamepad-${i}-mapped`).innerHTML = `
                     <p>Left Stick: <br />${gamepad.leftStick.string()}</p>
                     <p>Right Stick: <br />${gamepad.rightStick.string()}</p>
                     <p>Left Buttons: <br />Top: ${gamepad.leftButtons.top} | Left: ${gamepad.leftButtons.left} | Bottom: ${gamepad.leftButtons.bottom} | Right: ${gamepad.leftButtons.right}</p>
@@ -76,44 +76,44 @@
                       </p>
                       <p>That's not all. For more Gamepad input properties, check out the docs..</p>
                     `;
-                  }
-                  // not mapped pad
-                  else {
-                    document.getElementById(`gamepad-${i}-mapped`).innerHTML = "This gamepad does not support standard mapping. You can still query its state but its not shown in this demo. Check out the docs for more info.";
-                  }
-                }
-                // if not connected..
-                else {
-                  document.getElementById(`gamepad-${i}-id`).innerHTML = "[Not Connected!]";
-                }
-              }
-              
-              // end frame and request next frame
-              Shaku.endFrame();
-              Shaku.requestAnimationFrame(step);
-            }
+								}
+								// not mapped pad
+								else {
+									document.getElementById(`gamepad-${i}-mapped`).innerHTML = "This gamepad does not support standard mapping. You can still query its state but its not shown in this demo. Check out the docs for more info.";
+								}
+							}
+							// if not connected..
+							else {
+								document.getElementById(`gamepad-${i}-id`).innerHTML = "[Not Connected!]";
+							}
+						}
 
-            // start main loop
-            step();
-          }
+						// end frame and request next frame
+						Shaku.endFrame();
+						Shaku.requestAnimationFrame(step);
+					}
 
-          // start demo
-          runDemo();
+					// start main loop
+					step();
+				}
 
-        })();
+				// start demo
+				runDemo();
 
-      </script>
-      </div>
+			})();
 
-      
-    
-      <!-- code example part -->
-      <div id="sample-code-modal" class="modal">
-        <div class="modal__overlay jsOverlay"></div>
-        <div class="modal__container">   
+		</script>
+	</div>
 
-      <p class="noselect">The following code shows how to get Gamepad input.</p>
-      <pre><code class="language-js">// everything below goes between startFrame() and endFrame()
+
+
+	<!-- code example part -->
+	<div id="sample-code-modal" class="modal">
+		<div class="modal__overlay jsOverlay"></div>
+		<div class="modal__container">
+
+			<p class="noselect">The following code shows how to get Gamepad input.</p>
+			<pre><code class="language-js">// everything below goes between startFrame() and endFrame()
 const gamepad = Shaku.input.gamepad(0);
 if (gamepad.leftButtons.top) player.moveUp();
 if (gamepad.leftButtons.down) player.moveDown();
@@ -121,14 +121,15 @@ if (gamepad.leftButtons.left) player.moveLeft();
 if (gamepad.leftButtons.right) player.moveRight();
 </code></pre>
 
-        <button class="modal__close" onclick="closeModal('sample-code-modal')">&#10005;</button>
-      </div>
-    </div>
+			<button class="modal__close" onclick="closeModal('sample-code-modal')">&#10005;</button>
+		</div>
+	</div>
 
-      <link href="prism/prism.css" rel="stylesheet" />
-      <script src="prism/prism.js"></script>  
+	<link href="prism/prism.css" rel="stylesheet" />
+	<script src="prism/prism.js"></script>
 
 
 
-  </body>
+</body>
+
 </html>

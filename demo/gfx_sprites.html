@@ -1,165 +1,166 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <title>Shaku</title>
-    <meta name="description" content="Shaku - a simple and easy-to-use javascript library for videogame programming.">
-    <meta name="author" content="Ronen Ness">
-    <link href="css/style.css" rel="stylesheet" type="text/css" media="all">
-  </head>
-  <body>
-    <div class="noselect">
-    <button class="view-code-btn" onclick="showSampleCode();">View Code</button> 
-    <h1 class="demo-title">Shaku Gfx Demo: Sprites</h1>
-      <p>This demo demonstrate how to render basic stuff using Sprites.<br/>
-      Use <b>Arrows</b> or <b>WASD</b> to move the player. Collision detection is very basic so don't expect much from it.</p>
-      
-      <span class="credits">Knight image is from: https://opengameart.org/content/knight-sprite<br />
-        Background image is from: https://lostgarden.home.blog/2006/07/08/more-free-game-graphics/</span>
 
-      <!-- include shaku -->
-      <script src="js/demos.js"></script>
-      <script src="js/shaku.js"></script>
+<head>
+	<meta charset="UTF-8">
+	<title>Shaku</title>
+	<meta name="description" content="Shaku - a simple and easy-to-use javascript library for videogame programming.">
+	<meta name="author" content="Ronen Ness">
+	<link href="css/style.css" rel="stylesheet" type="text/css" media="all">
+</head>
 
-      <!-- demo code -->
-      <script>
-        async function runDemo()
-        {
-          // init shaku
-          await Shaku.init();
+<body>
+	<div class="noselect">
+		<button class="view-code-btn" onclick="showSampleCode();">View Code</button>
+		<h1 class="demo-title">Shaku Gfx Demo: Sprites</h1>
+		<p>This demo demonstrate how to render basic stuff using Sprites.<br />
+			Use <b>Arrows</b> or <b>WASD</b> to move the player. Collision detection is very basic so don't expect much
+			from it.</p>
 
-          // screen size
-          let screenX = 800;
-          let screenY = 600;
+		<span class="credits">Knight image is from: https://opengameart.org/content/knight-sprite<br />
+			Background image is from: https://lostgarden.home.blog/2006/07/08/more-free-game-graphics/</span>
 
-          // add canvas to document
-          document.body.appendChild(Shaku.gfx.canvas);
-          Shaku.gfx.setResolution(screenX, screenY, true);
+		<!-- include shaku -->
+		<script src="js/demos.js"></script>
+		<script src="js/shaku.js"></script>
 
-          // load textures
-          let knight = await Shaku.assets.loadTexture('assets/sprite.png');
-          let level = await Shaku.assets.loadTexture('assets/level.jpg');
-          let levelOverlay = await Shaku.assets.loadTexture('assets/level_overlay.png');
-          let blockMap = await Shaku.assets.loadTexture('assets/level_block.jpg');
+		<!-- demo code -->
+		<script>
+			async function runDemo() {
+				// init shaku
+				await Shaku.init();
 
-          // create sprites batch
-          let spritesBatch = new Shaku.gfx.SpriteBatch();
+				// screen size
+				let screenX = 800;
+				let screenY = 600;
 
-          // create player sprite
-          let playerSprite = new Shaku.gfx.Sprite(knight);
+				// add canvas to document
+				document.body.appendChild(Shaku.gfx.canvas);
+				Shaku.gfx.setResolution(screenX, screenY, true);
 
-          // get the block map pixels data
-          let blockMapPixels = blockMap.getPixelsData();
+				// load textures
+				let knight = await Shaku.assets.loadTexture('assets/sprite.png');
+				let level = await Shaku.assets.loadTexture('assets/level.jpg');
+				let levelOverlay = await Shaku.assets.loadTexture('assets/level_overlay.png');
+				let blockMap = await Shaku.assets.loadTexture('assets/level_block.jpg');
 
-          // for walking animation
-          let walkingAnimation = 0;
+				// create sprites batch
+				let spritesBatch = new Shaku.gfx.SpriteBatch();
 
-          // sprite starting position and player origin at bottom center
-          playerSprite.position.set(100, 250);
-          playerSprite.origin.set(0.5, 0.95);
+				// create player sprite
+				let playerSprite = new Shaku.gfx.Sprite(knight);
 
-          // walk to position, but only if not marked as blocked in the block map
-          function walkTo(newX, newY)
-          {
-            // get position in blockmap
-            let xBlock = Math.floor((newX / screenX) * blockMap.width);
-            let yBlock = Math.floor((newY / screenY) * blockMap.height);
+				// get the block map pixels data
+				let blockMapPixels = blockMap.getPixelsData();
 
-            // out of range?
-            if (xBlock < 0 || xBlock > blockMap.width || yBlock < 0 || yBlock > blockMap.height) {
-              if (xBlock < 0) playerSprite.position.x = 1;
-              if (yBlock < 0) playerSprite.position.y = 1;
-              if (xBlock > blockMap.width) playerSprite.position.x = screenX - 1;
-              if (yBlock > blockMap.height) playerSprite.position.y = screenY - 1;
-              return;
-            }
+				// for walking animation
+				let walkingAnimation = 0;
 
-            // check if blocking
-            for (let i = -1; i <= 1; ++i) {
-              for (let j = -1; j <= 1; ++j) {
-                if (!blockMapPixels[xBlock+i] || !blockMapPixels[xBlock+i][yBlock+j] || blockMapPixels[xBlock+i][yBlock+j].isBlack) {
-                  return;
-                }
-              }
-            }
+				// sprite starting position and player origin at bottom center
+				playerSprite.position.set(100, 250);
+				playerSprite.origin.set(0.5, 0.95);
 
-            // move player
-            playerSprite.position.set(newX, newY);
-          }
+				// walk to position, but only if not marked as blocked in the block map
+				function walkTo(newX, newY) {
+					// get position in blockmap
+					let xBlock = Math.floor((newX / screenX) * blockMap.width);
+					let yBlock = Math.floor((newY / screenY) * blockMap.height);
 
-          // do a main loop step.
-          function step() {
-            
-            Shaku.startFrame();
-            Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
+					// out of range?
+					if (xBlock < 0 || xBlock > blockMap.width || yBlock < 0 || yBlock > blockMap.height) {
+						if (xBlock < 0) playerSprite.position.x = 1;
+						if (yBlock < 0) playerSprite.position.y = 1;
+						if (xBlock > blockMap.width) playerSprite.position.x = screenX - 1;
+						if (yBlock > blockMap.height) playerSprite.position.y = screenY - 1;
+						return;
+					}
 
-            // draw level, player and overlay (mountains that hide player)
-            spritesBatch.begin();
-            spritesBatch.drawRectangle(level, Shaku.gfx.getRenderingRegion());
-            spritesBatch.drawSprite(playerSprite);
-            spritesBatch.drawRectangle(levelOverlay, Shaku.gfx.getRenderingRegion());
-            spritesBatch.end();
+					// check if blocking
+					for (let i = -1; i <= 1; ++i) {
+						for (let j = -1; j <= 1; ++j) {
+							if (!blockMapPixels[xBlock + i] || !blockMapPixels[xBlock + i][yBlock + j] || blockMapPixels[xBlock + i][yBlock + j].isBlack) {
+								return;
+							}
+						}
+					}
 
-            // walking speed and are we walking this frame?
-            let walkSpeed = Shaku.gameTime.delta * 200;
-            let walking = false;
+					// move player
+					playerSprite.position.set(newX, newY);
+				}
 
-            // walk left
-            if (Shaku.input.down('left') || Shaku.input.down('a')) { 
-              walking = true; 
-              walkTo(playerSprite.position.x - walkSpeed, playerSprite.position.y); 
-              playerSprite.size.x = -Math.abs(playerSprite.size.x);
-            }
-            // walk right
-            else if (Shaku.input.down('right') || Shaku.input.down('d')) { 
-              walking = true; 
-              walkTo(playerSprite.position.x + walkSpeed, playerSprite.position.y); 
-              playerSprite.size.x = Math.abs(playerSprite.size.x);
-            }
-            // walk up
-            if (Shaku.input.down('up') || Shaku.input.down('w')) { 
-              walking = true;
-              walkTo(playerSprite.position.x, playerSprite.position.y - walkSpeed); 
-            }
-            // walk down
-            else if (Shaku.input.down('down') || Shaku.input.down('s')) { 
-              walking = true; 
-              walkTo(playerSprite.position.x, playerSprite.position.y + walkSpeed); 
-            }
+				// do a main loop step.
+				function step() {
 
-            // do walking animation
-            if (walking) {
-              walkingAnimation += Shaku.gameTime.delta * 15;
-              playerSprite.rotation = Math.sin(walkingAnimation) / 20;
-            }
+					Shaku.startFrame();
+					Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
 
-            Shaku.endFrame();
-            Shaku.requestAnimationFrame(step);
-          }
-          step();
-        }
+					// draw level, player and overlay (mountains that hide player)
+					spritesBatch.begin();
+					spritesBatch.drawRectangle(level, Shaku.gfx.getRenderingRegion());
+					spritesBatch.drawSprite(playerSprite);
+					spritesBatch.drawRectangle(levelOverlay, Shaku.gfx.getRenderingRegion());
+					spritesBatch.end();
 
-        // start demo
-        runDemo();
+					// walking speed and are we walking this frame?
+					let walkSpeed = Shaku.gameTime.delta * 200;
+					let walking = false;
 
-      </script>
+					// walk left
+					if (Shaku.input.down('left') || Shaku.input.down('a')) {
+						walking = true;
+						walkTo(playerSprite.position.x - walkSpeed, playerSprite.position.y);
+						playerSprite.size.x = -Math.abs(playerSprite.size.x);
+					}
+					// walk right
+					else if (Shaku.input.down('right') || Shaku.input.down('d')) {
+						walking = true;
+						walkTo(playerSprite.position.x + walkSpeed, playerSprite.position.y);
+						playerSprite.size.x = Math.abs(playerSprite.size.x);
+					}
+					// walk up
+					if (Shaku.input.down('up') || Shaku.input.down('w')) {
+						walking = true;
+						walkTo(playerSprite.position.x, playerSprite.position.y - walkSpeed);
+					}
+					// walk down
+					else if (Shaku.input.down('down') || Shaku.input.down('s')) {
+						walking = true;
+						walkTo(playerSprite.position.x, playerSprite.position.y + walkSpeed);
+					}
 
-</div>
+					// do walking animation
+					if (walking) {
+						walkingAnimation += Shaku.gameTime.delta * 15;
+						playerSprite.rotation = Math.sin(walkingAnimation) / 20;
+					}
 
-<!-- code example part -->
-<div id="sample-code-modal" class="modal">
-  <div class="modal__overlay jsOverlay"></div>
-  <div class="modal__container">   
+					Shaku.endFrame();
+					Shaku.requestAnimationFrame(step);
+				}
+				step();
+			}
 
-<p class="noselect">The following code example show how to use sprites.</i>
-</p>
-<pre><code class="language-js">// load sprite's texture asset
+			// start demo
+			runDemo();
+
+		</script>
+
+	</div>
+
+	<!-- code example part -->
+	<div id="sample-code-modal" class="modal">
+		<div class="modal__overlay jsOverlay"></div>
+		<div class="modal__container">
+
+			<p class="noselect">The following code example show how to use sprites.</i>
+			</p>
+			<pre><code class="language-js">// load sprite's texture asset
 let texture = await Shaku.assets.loadTexture('assets/sprite.png');
 
 // create a sprite
 let sprite = new Shaku.gfx.Sprite(texture);
 sprite.position.set(100, 100)
-sprite.rotation = Math.PI; 
+sprite.rotation = Math.PI;
 sprite.color = Shaku.utils.Color.red;
 
 // create a sprites batch
@@ -173,12 +174,13 @@ spritesBatch.begin();
 spritesBatch.drawSprite(sprite);
 spritesBatch.end();</code></pre>
 
-  <button class="modal__close" onclick="closeModal('sample-code-modal')">&#10005;</button>
-</div>
-</div>
+			<button class="modal__close" onclick="closeModal('sample-code-modal')">&#10005;</button>
+		</div>
+	</div>
 
-<link href="prism/prism.css" rel="stylesheet" />
-<script src="prism/prism.js"></script>
+	<link href="prism/prism.css" rel="stylesheet" />
+	<script src="prism/prism.js"></script>
 
-  </body>
+</body>
+
 </html>

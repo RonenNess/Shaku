@@ -1,148 +1,150 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <title>Shaku</title>
-    <meta name="description" content="Shaku - a simple and easy-to-use javascript library for videogame programming.">
-    <meta name="author" content="Ronen Ness">
-    <link href="css/style.css" rel="stylesheet" type="text/css" media="all">
-  </head>
-  <body>
-    <div class="noselect">
-    <button class="view-code-btn" onclick="showSampleCode();">View Code</button> 
-    <h1 class="demo-title">Shaku: Collision Tilemap</h1>
-      <p>This demo demonstrate a special collision shape: tilemap. <br />
-        Tilemaps create an even grid of collision rectangles that you can easily set or unset. Its an easy & efficient way to implement collision for tile-based levels.<br />
-        You can combine other shapes with tilemap shapes in your collision world, and even have multiple tilemaps (note however that tilemaps can't collide with each other).<br />
-        Move the shape with your mouse to test collision, press <b>1-4</b> to replace the shape you control.</p>
-        
-      <p id="stats-show"></p>
-      <p id="show-data" style="color: red;"></p>
 
-      <!-- include shaku -->
-      <script src="js/demos.js"></script>
-      <script src="js/shaku.js"></script>
+<head>
+	<meta charset="UTF-8">
+	<title>Shaku</title>
+	<meta name="description" content="Shaku - a simple and easy-to-use javascript library for videogame programming.">
+	<meta name="author" content="Ronen Ness">
+	<link href="css/style.css" rel="stylesheet" type="text/css" media="all">
+</head>
 
-      <!-- demo code -->
-      <script>
-        async function runGame()
-        {
-          // make shaku only listen to gfx canvas
-          Shaku.input.setTargetElement(() => Shaku.gfx.canvas);
+<body>
+	<div class="noselect">
+		<button class="view-code-btn" onclick="showSampleCode();">View Code</button>
+		<h1 class="demo-title">Shaku: Collision Tilemap</h1>
+		<p>This demo demonstrate a special collision shape: tilemap. <br />
+			Tilemaps create an even grid of collision rectangles that you can easily set or unset. Its an easy &
+			efficient way to implement collision for tile-based levels.<br />
+			You can combine other shapes with tilemap shapes in your collision world, and even have multiple tilemaps
+			(note however that tilemaps can't collide with each other).<br />
+			Move the shape with your mouse to test collision, press <b>1-4</b> to replace the shape you control.</p>
 
-          // init shaku
-          await Shaku.init();
+		<p id="stats-show"></p>
+		<p id="show-data" style="color: red;"></p>
 
-          // add shaku's canvas to document and set resolution to 800x600
-          document.body.appendChild(Shaku.gfx.canvas);
-          Shaku.gfx.setResolution(25 * 64, 25 * 64, true);
+		<!-- include shaku -->
+		<script src="js/demos.js"></script>
+		<script src="js/shaku.js"></script>
 
-          // element to show data
-          let showDataParagraph = document.getElementById("show-data");
+		<!-- demo code -->
+		<script>
+			async function runGame() {
+				// make shaku only listen to gfx canvas
+				Shaku.input.setTargetElement(() => Shaku.gfx.canvas);
 
-          // create collision world
-          let world = Shaku.collision.createWorld(25*64);
+				// init shaku
+				await Shaku.init();
 
-          // shape to use for test
-          let userShapeType = 0;
-          let sizeFactor = 0.2;
+				// add shaku's canvas to document and set resolution to 800x600
+				document.body.appendChild(Shaku.gfx.canvas);
+				Shaku.gfx.setResolution(25 * 64, 25 * 64, true);
 
-          // create the tilemap
-          let offset = new Shaku.utils.Vector2(0, 0);
-          let gridSize = new Shaku.utils.Vector2(25,25);
-          let tileSize = new Shaku.utils.Vector2(64,64);
-          let borderThickness = 32;
-          let tilemap = new Shaku.collision.TilemapShape(offset, gridSize, tileSize, borderThickness);
-          world.addShape(tilemap);
+				// element to show data
+				let showDataParagraph = document.getElementById("show-data");
 
-          // create a maze
-          let maze = [[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[1,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1,0,0,0,1],[1,0,1,0,1,1,1,1,1,0,1,1,1,1,1,0,1,1,1,0,1,0,1,0,1],[1,0,1,0,1,0,0,0,1,0,0,0,0,0,0,0,1,0,1,0,1,0,1,0,1],[1,0,1,0,1,0,1,1,1,1,1,1,1,1,1,1,1,0,1,0,1,1,1,0,1],[1,0,1,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1],[1,0,1,0,1,1,1,0,1,0,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1],[1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,1],[1,1,1,1,1,0,1,1,1,1,1,0,1,0,1,1,1,0,1,0,1,1,1,0,1],[1,0,1,0,0,0,0,0,0,0,0,0,1,0,0,0,1,0,1,0,0,0,1,0,1],[1,0,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,0,1,0,1],[1,0,1,0,1,0,0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,1,0,1],[1,0,1,0,1,0,1,1,1,0,1,1,1,0,1,0,1,1,1,0,1,1,1,0,1],[1,0,1,0,1,0,1,0,1,0,1,0,0,0,1,0,0,0,1,0,0,0,0,0,1],[1,0,1,0,1,0,1,0,1,0,1,1,1,0,1,1,1,0,1,1,1,1,1,0,1],[1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,1],[1,0,1,1,1,1,1,1,1,0,1,0,1,1,1,1,1,1,1,0,1,1,1,1,1],[1,0,1,0,0,0,0,0,1,0,1,0,0,0,0,0,1,0,1,0,1,0,0,0,1],[1,0,1,1,1,0,1,0,1,0,1,1,1,1,1,0,1,0,1,0,1,0,1,1,1],[1,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,1,0,1,0,0,0,1],[1,0,1,0,1,1,1,0,1,1,1,0,1,0,1,0,1,0,1,0,1,1,1,0,1],[1,0,1,0,0,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,0,0,1],[1,0,1,1,1,0,1,1,1,0,1,0,1,1,1,1,1,0,1,1,1,1,1,0,1],[1,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1],[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]]
-          for (let i = 0; i < maze.length; ++i) {
-            for (let j = 0; j < maze[i].length; ++j) {
-              if (maze[i][j]) {
-                tilemap.setTile(new Shaku.utils.Vector2(i, j), true);
-              }
-            }
-          }
+				// create collision world
+				let world = Shaku.collision.createWorld(25 * 64);
 
-          // do a single main loop step
-          function step() 
-          {  
-            // reset stats
-            world.resetStats();
+				// shape to use for test
+				let userShapeType = 0;
+				let sizeFactor = 0.2;
 
-            // start new frame and clear screen
-            Shaku.startFrame();
-            Shaku.gfx.clear(Shaku.utils.Color.aliceblue);
+				// create the tilemap
+				let offset = new Shaku.utils.Vector2(0, 0);
+				let gridSize = new Shaku.utils.Vector2(25, 25);
+				let tileSize = new Shaku.utils.Vector2(64, 64);
+				let borderThickness = 32;
+				let tilemap = new Shaku.collision.TilemapShape(offset, gridSize, tileSize, borderThickness);
+				world.addShape(tilemap);
 
-            // debug draw world
-            world.debugDraw(null, null, 1);
+				// create a maze
+				let maze = [[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1], [1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1], [1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1], [1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1], [1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1], [1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1], [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1], [1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1], [1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1], [1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1], [1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1], [1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1], [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1], [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1], [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1], [1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1], [1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1], [1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1], [1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1], [1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1], [1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1], [1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1], [1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1], [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]];
+				for (let i = 0; i < maze.length; ++i) {
+					for (let j = 0; j < maze[i].length; ++j) {
+						if (maze[i][j]) {
+							tilemap.setTile(new Shaku.utils.Vector2(i, j), true);
+						}
+					}
+				}
 
-            // create current collision shape to test
-            let mouse = Shaku.input.mousePosition;
-            var shapeToTest;
-            switch (userShapeType)
-            {
-              case 0:
-                shapeToTest = new Shaku.collision.RectangleShape(new Shaku.utils.Rectangle(mouse.x - 60 * sizeFactor, mouse.y - 60 * sizeFactor, 120 * sizeFactor, 120 * sizeFactor));
-                break;
-              
-              case 1:
-                shapeToTest = new Shaku.collision.CircleShape(new Shaku.utils.Circle(mouse, 100 * sizeFactor));
-                break;
-              
-              case 2:
-                shapeToTest = new Shaku.collision.PointShape(mouse);
-                break;
-                              
-              case 3:
-                let second = mouse.add(85*sizeFactor, -35*sizeFactor);
-                shapeToTest = new Shaku.collision.LinesShape([
-                  new Shaku.utils.Line(mouse, second),
-                  new Shaku.utils.Line(second, second.add(65*sizeFactor, 75*sizeFactor))
-                ]);
-                break;
-            }
+				// do a single main loop step
+				function step() {
+					// reset stats
+					world.resetStats();
 
-            // test collision with tilemap
-            let collision = world.testCollision(shapeToTest);
-            showDataParagraph.innerHTML = collision ? "Collide with tilemap!" : "Not collision.";
-            showDataParagraph.style.color = collision ? "red" : "green";
-            tilemap.setDebugColor(collision ? Shaku.utils.Color.red : null);
-            shapeToTest.setDebugColor(Shaku.utils.Color.red);
-            shapeToTest.debugDraw(1, world.getOrCreateDebugDrawBatch());
+					// start new frame and clear screen
+					Shaku.startFrame();
+					Shaku.gfx.clear(Shaku.utils.Color.aliceblue);
 
-            // control the shape the user drags
-            if (Shaku.input.down('1')) { userShapeType = 0; }
-            if (Shaku.input.down('2')) { userShapeType = 1; }
-            if (Shaku.input.down('3')) { userShapeType = 2; }
-            if (Shaku.input.down('4')) { userShapeType = 3; }
+					// debug draw world
+					world.debugDraw(null, null, 1);
 
-            // show stats
-            document.getElementById("stats-show").innerHTML = JSON.stringify(world.stats);
+					// create current collision shape to test
+					let mouse = Shaku.input.mousePosition;
+					var shapeToTest;
+					switch (userShapeType) {
+						case 0:
+							shapeToTest = new Shaku.collision.RectangleShape(new Shaku.utils.Rectangle(mouse.x - 60 * sizeFactor, mouse.y - 60 * sizeFactor, 120 * sizeFactor, 120 * sizeFactor));
+							break;
 
-            // end frame and request next frame
-            Shaku.endFrame();
-            Shaku.requestAnimationFrame(step);
-          }
+						case 1:
+							shapeToTest = new Shaku.collision.CircleShape(new Shaku.utils.Circle(mouse, 100 * sizeFactor));
+							break;
 
-          // start main loop
-          step();
-        }
+						case 2:
+							shapeToTest = new Shaku.collision.PointShape(mouse);
+							break;
 
-        runGame();
-      </script>
+						case 3:
+							let second = mouse.add(85 * sizeFactor, -35 * sizeFactor);
+							shapeToTest = new Shaku.collision.LinesShape([
+								new Shaku.utils.Line(mouse, second),
+								new Shaku.utils.Line(second, second.add(65 * sizeFactor, 75 * sizeFactor))
+							]);
+							break;
+					}
 
-</div>
+					// test collision with tilemap
+					let collision = world.testCollision(shapeToTest);
+					showDataParagraph.innerHTML = collision ? "Collide with tilemap!" : "Not collision.";
+					showDataParagraph.style.color = collision ? "red" : "green";
+					tilemap.setDebugColor(collision ? Shaku.utils.Color.red : null);
+					shapeToTest.setDebugColor(Shaku.utils.Color.red);
+					shapeToTest.debugDraw(1, world.getOrCreateDebugDrawBatch());
 
-<!-- code example part -->
-<div id="sample-code-modal" class="modal">
-  <div class="modal__overlay jsOverlay"></div>
-  <div class="modal__container">   
+					// control the shape the user drags
+					if (Shaku.input.down('1')) { userShapeType = 0; }
+					if (Shaku.input.down('2')) { userShapeType = 1; }
+					if (Shaku.input.down('3')) { userShapeType = 2; }
+					if (Shaku.input.down('4')) { userShapeType = 3; }
 
-<p class="noselect">The following shows a code example to create a collision tilemap and set it to a maze.</i>
-</p>
-<pre><code class="language-js">// create collision tilemap
+					// show stats
+					document.getElementById("stats-show").innerHTML = JSON.stringify(world.stats);
+
+					// end frame and request next frame
+					Shaku.endFrame();
+					Shaku.requestAnimationFrame(step);
+				}
+
+				// start main loop
+				step();
+			}
+
+			runGame();
+		</script>
+
+	</div>
+
+	<!-- code example part -->
+	<div id="sample-code-modal" class="modal">
+		<div class="modal__overlay jsOverlay"></div>
+		<div class="modal__container">
+
+			<p class="noselect">The following shows a code example to create a collision tilemap and set it to a
+				maze.</i>
+			</p>
+			<pre><code class="language-js">// create collision tilemap
 let offset = new Shaku.utils.Vector2(0, 0);
 let gridSize = new Shaku.utils.Vector2(25,25);
 let tileSize = new Shaku.utils.Vector2(64,64);
@@ -160,12 +162,13 @@ for (let i = 0; i < maze.length; ++i) {
   }
 }</code></pre>
 
-  <button class="modal__close" onclick="closeModal('sample-code-modal')">&#10005;</button>
-</div>
-</div>
+			<button class="modal__close" onclick="closeModal('sample-code-modal')">&#10005;</button>
+		</div>
+	</div>
 
-<link href="prism/prism.css" rel="stylesheet" />
-<script src="prism/prism.js"></script>
+	<link href="prism/prism.css" rel="stylesheet" />
+	<script src="prism/prism.js"></script>
 
-  </body>
+</body>
+
 </html>
