@@ -1,6 +1,6 @@
 // import some utilities
 
-import MathHelper from "./math_helper";
+import { MathHelper } from "./math_helper";
 
 const lerp = MathHelper.lerp;
 
@@ -9,7 +9,7 @@ function fade(t: number): number {
 	return t * t * t * (t * (t * 6 - 15) + 10);
 }
 
-class Grad {
+export class Grad {
 	public x: number;
 	public y: number;
 	public z: number;
@@ -45,7 +45,7 @@ const p = [151, 160, 137, 91, 90, 15,
  * Based on code from noisejs by Stefan Gustavson.
  * https://github.com/josephg/noisejs/blob/master/perlin.js
  */
-export default class Perlin {
+export class Perlin {
 	private _perm: number[];
 	private _gradP: Grad[];
 

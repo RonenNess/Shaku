@@ -2,7 +2,7 @@
  * A loadable asset base class.
  * All asset types inherit from this.
  */
-export default abstract class Asset {
+export abstract class Asset {
 	private _url: string;
 	private _waitingCallbacks: ((asset: Asset) => void)[] | null;
 

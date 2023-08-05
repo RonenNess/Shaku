@@ -1,11 +1,11 @@
-import Effect from "./effect";
+import { Effect } from "./effect";
 import fragmentShader from "./shaders/msdf_font.frag";
 import vertexShader from "./shaders/msdf_font.vert";
 
 /**
  * Default effect to draw MSDF font textures.
  */
-class MsdfFontEffect extends Effect {
+export class MsdfFontEffect extends Effect {
 	/** @inheritdoc */
 	get vertexCode() {
 		return vertexShader;
@@ -36,4 +36,3 @@ class MsdfFontEffect extends Effect {
 }
 
 // export the basic shader
-export default MsdfFontEffect;

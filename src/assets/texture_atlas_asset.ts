@@ -1,9 +1,7 @@
-import * as Utils from "../utils";
-import { Rectangle } from "../utils";
-import Vector2 from "../utils/vector2";
-import Asset from "./asset";
-import TextureAsset from "./texture_asset";
-import TextureInAtlasAsset from "./texture_in_atlas_asset";
+import { Rectangle, Vector2 } from "../utils";
+import { Asset } from "./asset";
+import { TextureAsset } from "./texture_asset";
+import { TextureInAtlasAsset } from "./texture_in_atlas_asset";
 
 // the webgl context to use
 var gl = null;
@@ -11,9 +9,11 @@ var gl = null;
 /**
  * A texture atlas we can build at runtime to combine together multiple textures.
  */
-export default class TextureAtlasAsset extends Asset {
+export class TextureAtlasAsset extends Asset {
+	private __textures: TextureAsset[];
+
 	/** @inheritdoc */
-	constructor(url) {
+	public constructor(url) {
 		super(url);
 		this.__textures = [];
 		this.__sources = {};
@@ -46,7 +46,7 @@ export default class TextureAtlasAsset extends Asset {
 		extraMargins = extraMargins;
 
 		// build atlas
-		return new Promise(async (resolve, reject) => {
+		return new Promise<void>(async (resolve, reject) => {
 
 			// make sure all sources are valid loaded images
 			sources = await loadAllSources(sources);

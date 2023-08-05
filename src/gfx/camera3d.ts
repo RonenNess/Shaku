@@ -1,18 +1,15 @@
-import Frustum from "../utils/frustum";
-import Matrix from "../utils/matrix";
-import Vector2 from "../utils/vector2";
-import Vector3 from "../utils/vector3";
-import Camera from "./camera";
+import { Frustum, Matrix, Vector2, Vector3 } from "../utils";
+import { Camera } from "./camera";
 
 /**
  * Implements a 3d Camera object.
  */
-class Camera3D extends Camera {
+export class Camera3D extends Camera {
 	/**
 	 * Create the camera.
 	 * @param {Gfx} gfx The gfx manager instance.
 	 */
-	constructor(gfx) {
+	public constructor(gfx) {
 		super(gfx);
 
 		/**
@@ -142,4 +139,3 @@ class Camera3D extends Camera {
 }
 
 // export the camera object
-export default Camera3D;

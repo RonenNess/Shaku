@@ -1,28 +1,19 @@
-import _logger from "../../logger";
-import { Rectangle } from "../../utils";
-import Matrix from "../../utils/matrix";
-import Vector2 from "../../utils/vector2";
-import Vector3 from "../../utils/vector3";
-import Vertex from "../vertex";
-import DrawBatch from "./draw_batch";
+import { LoggerModule, Matrix, Rectangle, Vector2, Vector3 } from "../../utils";
+import { Vertex } from "../vertex";
+import { DrawBatch } from "./draw_batch";
 
-const _loggggger = _logger.getLogger("gfx - sprite - batch"); // TODO
-
-
-
-
-
+const _loggggger = LoggerModule.getLogger("gfx - sprite - batch"); // TODO
 
 /**
  * Colored shapes renderer.
  * Responsible to drawing a batch of basic geometric shapes with as little draw calls as possible.
  */
-class ShapesBatch extends DrawBatch {
+export class ShapesBatch extends DrawBatch {
 	/**
 	 * Create the sprites batch.
 	 * @param {Number=} batchPolygonsCount Internal buffers size, in polygons count (polygon = 3 vertices). Bigger value = faster rendering but more RAM.
 	 */
-	constructor(batchPolygonsCount) {
+	public constructor(batchPolygonsCount) {
 		// init draw batch
 		super();
 
@@ -560,6 +551,3 @@ const topLeft = new Vector2(0, 0);
 const topRight = new Vector2(0, 0);
 const bottomLeft = new Vector2(0, 0);
 const bottomRight = new Vector2(0, 0);
-
-// export the shapes batch class
-export default ShapesBatch;

@@ -1,13 +1,11 @@
-import ShapesBatch from "../../gfx/draw_batches/shapes_batch";
-import Color from "../../utils/color";
-import Rectangle from "../../utils/rectangle";
-import Vector2 from "../../utils/vector2";
-import CollisionWorld from "../collision_world";
+import { ShapesBatch } from "../../gfx";
+import { Color, Rectangle, Vector2 } from "../../utils";
+import { CollisionWorld } from "../collision_world";
 
 /**
  * Collision shape base class.
  */
-export default abstract class CollisionShape {
+export abstract class CollisionShape {
 	private _world: CollisionWorld | null;
 	private _worldRange: Rectangle | null;
 	private _debugColor: Color | null;

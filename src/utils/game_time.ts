@@ -1,7 +1,7 @@
 /**
  * Class to hold current game time, both elapse and delta from last frame.
  */
-export default class GameTime {
+export class GameTime {
 	public timestamp: number;
 	public deltaTime: { milliseconds: number; seconds: number; };
 	public elapsedTime: { milliseconds: number; seconds: number; };

@@ -1,19 +1,16 @@
-import TextureAssetBase from "../assets/texture_asset_base";
-import Color from "../utils/color";
-import Rectangle from "../utils/rectangle";
-import Vector2 from "../utils/vector2";
-import Vector3 from "../utils/vector3";
+import { TextureAssetBase } from "../assets";
+import { Color, Rectangle, Vector2, Vector3 } from "../utils";
 
 /**
  * Sprite class.
  */
-class Sprite {
+export class Sprite {
 	/**
 	 * Create the sprite object.
 	 * @param {TextureAssetBase} texture Sprite texture.
 	 * @param {Rectangle=} sourceRectangle Optional source rectangle.
 	 */
-	constructor(texture, sourceRectangle) {
+	public constructor(texture, sourceRectangle) {
 		/**
 		 * Sprite's texture.
 		 * @name Sprite#texture
@@ -206,4 +203,3 @@ class Sprite {
 }
 
 // export the sprite class.
-export default Sprite;

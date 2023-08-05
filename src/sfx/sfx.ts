@@ -1,13 +1,9 @@
-import SoundAsset from "../assets/sound_asset";
-import _logger from "../logger";
-import IManager from "../manager";
-import SoundInstance from "./sound_instance";
-import SoundMixer from "./sound_mixer";
+import { SoundAsset } from "../assets";
+import { IManager, LoggerModule } from "../utils";
+import { SoundInstance } from "./sound_instance";
+import { SoundMixer } from "./sound_mixer";
 
-const _loggggger = _logger.getLogger("sfx"); // TODO
-
-
-
+const _loggggger = LoggerModule.getLogger("sfx"); // TODO
 
 /**
  * Sfx manager.
@@ -15,11 +11,11 @@ const _loggggger = _logger.getLogger("sfx"); // TODO
  *
  * To access the Sfx manager use `Shaku.sfx`.
  */
-class Sfx implements IManager {
+export class Sfx implements IManager {
 	/**
 	 * Create the manager.
 	 */
-	constructor() {
+	public constructor() {
 		this._playingSounds = null;
 	}
 
@@ -152,4 +148,4 @@ class Sfx implements IManager {
 }
 
 // export main object
-export default new Sfx();
+export const sfx = new Sfx();

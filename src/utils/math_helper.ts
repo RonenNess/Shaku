@@ -1,4 +1,4 @@
-import Vector3 from "./vector3";
+import { Vector3 } from "./shapes";
 
 // for radians / degrees conversion
 const _toRadsFactor = (Math.PI / 180);
@@ -7,7 +7,7 @@ const _toDegreesFactor = (180 / Math.PI);
 /**
  * Implement some math utilities functions.
  */
-export default class MathHelper {
+export class MathHelper {
 
 	/**
 	 * PI * 2 value.

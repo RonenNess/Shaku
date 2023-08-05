@@ -1,15 +1,8 @@
-import _logger from "../logger";
-import IManager from "../manager";
-import Vector2 from "../utils/vector2";
-import Gamepad from "./gamepad";
-import { KeyboardKey, KeyboardKeys, MouseButton, MouseButtons } from "./key_codes";
+import { IManager, LoggerModule, Vector2 } from "../utils";
+import { Gamepad } from "./gamepad";
+import { KeyboardKeys, MouseButtons } from "./key_codes";
 
-const _loggggger = _logger.getLogger("input"); // TODO
-
-
-
-
-
+const _loggggger = LoggerModule.getLogger("input"); // TODO
 
 // get timestamp
 function timestamp() {
@@ -25,11 +18,11 @@ const _touchKeyCode = "touch";
  *
  * To access the Input manager use `Shaku.input`.
  */
-class Input implements IManager {
+export class Input implements IManager {
 	/**
 	 * Create the manager.
 	 */
-	constructor() {
+	public constructor() {
 
 		// callbacks and target we listen to input on
 		this._callbacks = null;
@@ -570,7 +563,7 @@ class Input implements IManager {
 
 	/**
 	 * Get if mouse button was pressed this frame.
-	 * @param {MouseButton} button Button code (defults to MouseButtons.left).
+	 * @param {MouseButtons} button Button code (defults to MouseButtons.left).
 	 * @returns {Boolean} True if mouse button is currently down, but was up in previous frame.
 	 */
 	mousePressed(button = 0) {
@@ -580,7 +573,7 @@ class Input implements IManager {
 
 	/**
 	 * Get if mouse button is currently pressed.
-	 * @param {MouseButton} button Button code (defults to MouseButtons.left).
+	 * @param {MouseButtons} button Button code (defults to MouseButtons.left).
 	 * @returns {Boolean} true if mouse button is currently down, false otherwise.
 	 */
 	mouseDown(button = 0) {
@@ -590,7 +583,7 @@ class Input implements IManager {
 
 	/**
 	 * Get if mouse button is currently not down.
-	 * @param {MouseButton} button Button code (defults to MouseButtons.left).
+	 * @param {MouseButtons} button Button code (defults to MouseButtons.left).
 	 * @returns {Boolean} true if mouse button is currently up, false otherwise.
 	 */
 	mouseUp(button = 0) {
@@ -600,7 +593,7 @@ class Input implements IManager {
 
 	/**
 	 * Get if mouse button was released in current frame.
-	 * @param {MouseButton} button Button code (defults to MouseButtons.left).
+	 * @param {MouseButtons} button Button code (defults to MouseButtons.left).
 	 * @returns {Boolean} True if mouse was down last frame, but released in current frame.
 	 */
 	mouseReleased(button = 0) {
@@ -610,7 +603,7 @@ class Input implements IManager {
 
 	/**
 	 * Get if keyboard key is currently pressed down.
-	 * @param {KeyboardKey} key Keyboard key code.
+	 * @param {KeyboardKeys} key Keyboard key code.
 	 * @returns {boolean} True if keyboard key is currently down, false otherwise.
 	 */
 	keyDown(key) {
@@ -620,7 +613,7 @@ class Input implements IManager {
 
 	/**
 	 * Get if keyboard key is currently not down.
-	 * @param {KeyboardKey} key Keyboard key code.
+	 * @param {KeyboardKeys} key Keyboard key code.
 	 * @returns {Boolean} True if keyboard key is currently up, false otherwise.
 	 */
 	keyUp(key) {
@@ -630,7 +623,7 @@ class Input implements IManager {
 
 	/**
 	 * Get if a keyboard button was released in current frame.
-	 * @param {KeyboardKey} button Keyboard key code.
+	 * @param {KeyboardKeys} button Keyboard key code.
 	 * @returns {Boolean} True if key was down last frame, but released in current frame.
 	 */
 	keyReleased(key) {
@@ -640,7 +633,7 @@ class Input implements IManager {
 
 	/**
 	 * Get if keyboard key was pressed this frame.
-	 * @param {KeyboardKey} key Keyboard key code.
+	 * @param {KeyboardKeys} key Keyboard key code.
 	 * @returns {Boolean} True if key is currently down, but was up in previous frame.
 	 */
 	keyPressed(key) {
@@ -765,8 +758,8 @@ class Input implements IManager {
 		}
 
 		// if not start with "mouse", treat it as a keyboard key
-		const keyboardKey = this.KeyboardKeys[code];
-		if(keyboardKey === undefined) {
+		const KeyboardKeys = this.KeyboardKeys[code];
+		if(KeyboardKeys === undefined) {
 			throw new Error("Unknown keyboard key: " + code);
 		}
 		return keyboardCheck.call(this, this.KeyboardKeys[code]);
@@ -1237,4 +1230,4 @@ class Input implements IManager {
 }
 
 // export main object
-export default new Input();
+export const input = new Input();

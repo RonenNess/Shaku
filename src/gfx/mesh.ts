@@ -3,7 +3,7 @@ import { Color } from "../utils";
 /**
  * Class to hold a mesh.
  */
-class Mesh {
+export class Mesh {
 	/**
 	 * Create the mesh object.
 	 * @param {WebGLBuffer} positions vertices positions buffer.
@@ -12,7 +12,7 @@ class Mesh {
 	 * @param {WebGLBuffer} indices indices buffer.
 	 * @param {Number} indicesCount how many indices we have.
 	 */
-	constructor(positions, textureCoords, colorsBuffer, indices, indicesCount) {
+	public constructor(positions, textureCoords, colorsBuffer, indices, indicesCount) {
 		this.positions = positions;
 		this.textureCoords = textureCoords;
 		this.colors = colorsBuffer;
@@ -44,4 +44,3 @@ class Mesh {
 }
 
 // export the mesh class.
-export default Mesh;

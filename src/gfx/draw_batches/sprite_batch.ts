@@ -1,24 +1,15 @@
-import TextureAssetBase from "../../assets/texture_asset_base";
-import _logger from "../../logger";
-import { Rectangle } from "../../utils";
-import Vector2 from "../../utils/vector2";
-import Vector3 from "../../utils/vector3";
-import DrawBatch from "./draw_batch";
-import SpriteBatchBase from "./sprite_batch_base";
+import { TextureAssetBase } from "../../assets";
+import { LoggerModule, Rectangle, Vector2, Vector3 } from "../../utils";
+import { DrawBatch } from "./draw_batch";
+import { SpriteBatchBase } from "./sprite_batch_base";
 
-const _loggggger = _logger.getLogger("gfx - sprite - batch"); // TODO
-
-
-
-
-
-
+const _loggggger = LoggerModule.getLogger("gfx - sprite - batch"); // TODO
 
 /**
  * Sprite batch renderer.
  * Responsible to drawing a batch of sprites with as little draw calls as possible.
  */
-class SpriteBatch extends SpriteBatchBase {
+export class SpriteBatch extends SpriteBatchBase {
 	/**
 	 * Create the sprites batch.
 	 * @param {Number=} batchSpritesCount Internal buffers size, in sprites count (sprite = 4 vertices). Bigger value = faster rendering but more RAM.
@@ -27,7 +18,7 @@ class SpriteBatch extends SpriteBatchBase {
 	 * @param {Boolean=} enableBinormals If true (not default) will support vertex binormals.
 	 * @param {Boolean=} enableTangents If true (not default) will support vertex tangents.
 	 */
-	constructor(batchSpritesCount, enableVertexColor, enableNormals, enableBinormals, enableTangents) {
+	public constructor(batchSpritesCount, enableVertexColor, enableNormals, enableBinormals, enableTangents) {
 		// init draw batch
 		super(batchSpritesCount, enableVertexColor, enableNormals, enableBinormals, enableTangents);
 	}
@@ -200,4 +191,3 @@ class SpriteBatch extends SpriteBatchBase {
 }
 
 // export the sprite batch class
-export default SpriteBatch;

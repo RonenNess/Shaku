@@ -1,9 +1,9 @@
-import MathHelper from "./math_helper";
+import { MathHelper } from "../math_helper";
 
 /**
  * A Vector object for 3d positions.
  */
-export default class Vector3 {
+export class Vector3 {
 
 	/**
 	 * Vector with 0,0,0 values as a frozen shared object.
@@ -58,7 +58,6 @@ export default class Vector3 {
 	 * Be careful not to try and change it.
 	 */
 	public static readonly backReadonly = new Vector3(0, 0, -1);
-
 
 	public x: number;
 	public y: number;

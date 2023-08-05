@@ -1,15 +1,7 @@
-import Effect from "./effect";
-import MsdfFontEffect from "./msdf_font";
-import ShapesEffect from "./shapes";
-import SpritesEffect from "./sprites";
-import SpritesEffectNoVertexColor from "./sprites_no_vertex_color";
-import SpritesWithOutlineEffect from "./sprites_with_outline";
-
-export {
-	Effect,
-	MsdfFontEffect,
-	ShapesEffect,
-	SpritesEffect,
-	SpritesEffectNoVertexColor,
-	SpritesWithOutlineEffect
-};
+export * from "./effect";
+export * from "./msdf_font";
+export * from "./shapes";
+export * from "./sprites";
+export * from "./sprites_3d";
+export * from "./sprites_no_vertex_color";
+export * from "./sprites_with_outline";

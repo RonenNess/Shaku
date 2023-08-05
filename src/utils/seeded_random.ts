@@ -1,7 +1,7 @@
 /**
  * Class to generate random numbers with seed.
  */
-export default class SeededRandom {
+export class SeededRandom {
 	public seed: number;
 
 	/**

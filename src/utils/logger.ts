@@ -8,7 +8,7 @@ var _application = "Shaku";
  * A logger manager.
  * By default writes logs to console.
  */
-class Logger {
+export class Logger {
 	private _nameHeader: string;
 	private _throwErrors: boolean;
 
@@ -76,7 +76,7 @@ class Logger {
  * Null logger drivers to silent logs.
  * @private
  */
-class NullDrivers {
+export class NullDrivers {
 	/**
 	 * @private
 	 */
@@ -105,7 +105,7 @@ const _cachedLoggers: Record<string, unknown> = {};
 /**
  * The Logger module is a small object to get loggers and control the underlying logger drivers.
  */
-const LoggerModule = {
+export const LoggerModule = {
 
 	/**
 	 * Get a logger object for a given logger name.
@@ -142,6 +142,3 @@ const LoggerModule = {
 		return this;
 	},
 };
-
-// export the logger module object.
-export default LoggerModule;

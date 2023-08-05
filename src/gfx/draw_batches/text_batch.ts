@@ -1,26 +1,20 @@
-import _logger from "../../logger";
-import { Color } from "../../utils";
-import SpritesGroup from "../sprites_group";
-import DrawBatch from "./draw_batch";
-import SpriteBatchBase from "./sprite_batch_base";
+import { Color, LoggerModule } from "../../utils";
+import { SpritesGroup } from "../sprites_group";
+import { DrawBatch } from "./draw_batch";
+import { SpriteBatchBase } from "./sprite_batch_base";
 
-const _loggggger = _logger.getLogger("gfx - effect"); // TODO
-
-
-
-
-
+const _loggggger = LoggerModule.getLogger("gfx - effect"); // TODO
 
 /**
  * Text sprite batch renderer.
  * Responsible to drawing a batch of characters sprites.
  */
-class TextSpriteBatch extends SpriteBatchBase {
+export class TextSpriteBatch extends SpriteBatchBase {
 	/**
 	 * Create the text sprites batch.
 	 * @param {Number=} batchSpritesCount Internal buffers size, in sprites count (sprite = 4 vertices). Bigger value = faster rendering but more RAM.
 	 */
-	constructor(batchSpritesCount) {
+	public constructor(batchSpritesCount) {
 		super(batchSpritesCount, true);
 
 		/**
@@ -118,4 +112,3 @@ class TextSpriteBatch extends SpriteBatchBase {
 }
 
 // export the text sprite batch class
-export default TextSpriteBatch;

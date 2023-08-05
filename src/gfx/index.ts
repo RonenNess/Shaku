@@ -1,3 +1,14 @@
-import * as gfx from "./gfx";
-
-export default gfx;
+export * from "./blend_modes";
+export * from "./camera";
+export * from "./camera3d";
+export * from "./draw_batches";
+export * from "./effects";
+export * from "./gfx";
+export * from "./mesh";
+export * from "./mesh_generator";
+export * from "./sprite";
+export * from "./sprites_group";
+export * from "./text_alignments";
+export * from "./texture_filter_modes";
+export * from "./texture_wrap_modes";
+export * from "./vertex";

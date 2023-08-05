@@ -1,11 +1,9 @@
-import Color from "../utils/color";
-import Vector2 from "../utils/vector2";
-import Vector3 from "../utils/vector3";
+import { Color, Vector2, Vector3 } from "../utils";
 
 /**
  * A vertex we can push to sprite batch.
  */
-class Vertex {
+export class Vertex {
 	/**
 	 * Create the vertex data.
 	 * @param {Vector2|Vector3} position Vertex position.
@@ -13,7 +11,7 @@ class Vertex {
 	 * @param {Color} color Vertex color (undefined will default to white).
 	 * @param {Vector3} normal Vertex normal.
 	 */
-	constructor(position, textureCoord, color, normal) {
+	public constructor(position, textureCoord, color, normal) {
 		this.position = position || Vector2.zero();
 		this.textureCoord = textureCoord || Vector2.zero();
 		this.color = color || Color.white;
@@ -88,4 +86,3 @@ class Vertex {
 }
 
 // export the vertex class
-export default Vertex;

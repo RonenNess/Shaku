@@ -1,16 +1,14 @@
-import Matrix from "../utils/matrix";
-import Rectangle from "../utils/rectangle";
-import Vector2 from "../utils/vector2";
+import { Matrix, Rectangle, Vector2 } from "../utils";
 
 /**
  * Implements a Camera object.
  */
-class Camera {
+export class Camera {
 	/**
 	 * Create the camera.
 	 * @param {Gfx} gfx The gfx manager instance.
 	 */
-	constructor(gfx) {
+	public constructor(gfx) {
 		this.__region = null;
 		this.__gfx = gfx;
 		this.__viewport = null;
@@ -71,4 +69,3 @@ class Camera {
 }
 
 // export the camera object
-export default Camera;

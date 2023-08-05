@@ -1,13 +1,11 @@
-import ShapesBatch from "../../gfx/draw_batches/shapes_batch";
-import Circle from "../../utils/circle";
-import Rectangle from "../../utils/rectangle";
-import Vector2 from "../../utils/vector2";
-import CollisionShape from "./shape";
+import { ShapesBatch } from "../../gfx";
+import { Circle, Rectangle, Vector2 } from "../../utils";
+import { CollisionShape } from "./shape";
 
 /**
  * Collision point class.
  */
-export default class PointShape extends CollisionShape {
+export class PointShape extends CollisionShape {
 	private _position: Vector2;
 	private _boundingBox: Rectangle;
 

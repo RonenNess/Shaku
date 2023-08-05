@@ -1,9 +1,9 @@
-import SoundInstance from "./sound_instance";
+import { SoundInstance } from "./sound_instance";
 
 /**
  * A utility class to mix between two sounds.
  */
-class SoundMixer {
+export class SoundMixer {
 	/**
 	 * Create the sound mixer.
 	 * @param {SoundInstance} sound1 Sound to mix from. Can be null to just fade in.
@@ -11,7 +11,7 @@ class SoundMixer {
 	 * @param {Boolean} allowOverlapping If true (default), will mix while overlapping sounds.
 	 *                                   If false, will first finish first sound before begining next.
 	 */
-	constructor(sound1, sound2, allowOverlapping) {
+	public constructor(sound1, sound2, allowOverlapping) {
 		this._sound1 = sound1;
 		this._sound2 = sound2;
 		this.fromSoundVolume = this._sound1 ? this._sound1.volume : 0;
@@ -107,4 +107,3 @@ class SoundMixer {
 }
 
 // export the sound mixer
-export default SoundMixer;

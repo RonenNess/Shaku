@@ -1,59 +1,18 @@
-import FontTextureAsset from "../assets/font_texture_asset";
-import TextureAsset from "../assets/texture_asset";
-import TextureAtlasAsset from "../assets/texture_atlas_asset";
-import _logger from "../logger";
-import IManager from "../manager";
-import Circle from "../utils/circle";
-import Color from "../utils/color";
-import Matrix from "../utils/matrix";
-import Rectangle from "../utils/rectangle";
-import Vector2 from "../utils/vector2";
+import { FontTextureAsset, TextureAsset, TextureAtlasAsset } from "../assets";
+import { Circle, Color, IManager, LoggerModule, Matrix, Rectangle, Vector2 } from "../utils";
 import { BlendModes } from "./blend_modes";
-import Camera from "./camera";
-import Camera3D from "./camera3d";
-import DrawBatch from "./draw_batches/draw_batch";
-import LinesBatch from "./draw_batches/lines_batch";
-import ShapesBatch from "./draw_batches/shapes_batch";
-import SpriteBatch from "./draw_batches/sprite_batch";
-import SpriteBatch3D from "./draw_batches/sprite_batch_3d";
-import TextSpriteBatch from "./draw_batches/text_batch";
-import { Effect, MsdfFontEffect, ShapesEffect, SpritesEffect, SpritesEffectNoVertexColor, SpritesWithOutlineEffect } from "./effects";
-import Sprites3dEffect from "./effects/sprites_3d";
-import Sprite from "./sprite";
-import SpritesGroup from "./sprites_group";
+import { Camera } from "./camera";
+import { Camera3D } from "./camera3d";
+import { DrawBatch, LinesBatch, ShapesBatch, SpriteBatch, SpriteBatch3D, TextSpriteBatch } from "./draw_batches";
+import { Effect, MsdfFontEffect, ShapesEffect, Sprites3dEffect, SpritesEffect, SpritesEffectNoVertexColor, SpritesWithOutlineEffect } from "./effects";
+import { Sprite } from "./sprite";
+import { SpritesGroup } from "./sprites_group";
 import { TextAlignment, TextAlignments } from "./text_alignments";
 import { TextureFilterModes } from "./texture_filter_modes";
 import { TextureWrapModes } from "./texture_wrap_modes";
-import Vertex from "./vertex";
+import { Vertex } from "./vertex";
 
-const _loggggger = _logger.getLogger("gfx"); // TODO
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+const _loggggger = LoggerModule.getLogger("gfx"); // TODO
 
 let _gl = null;
 let _initSettings = { antialias: true, alpha: true, depth: false, premultipliedAlpha: true, desynchronized: false };
@@ -77,11 +36,11 @@ let _webglVersion = 0;
  *
  * To access the Graphics manager you use `Shaku.gfx`.
  */
-class Gfx implements IManager {
+export class Gfx implements IManager {
 	/**
 	 * Create the manager.
 	 */
-	constructor() {
+	public constructor() {
 
 		/**
 		 * A dictionary containing all built-in effect instances.
@@ -966,8 +925,8 @@ class Gfx implements IManager {
  * Internal Gfx stuff that should not be used or exposed externally.
  * @private
  */
-class GfxInternal {
-	constructor(gfx) {
+export class GfxInternal {
+	public constructor(gfx) {
 		this._gfx = gfx;
 	}
 
@@ -1168,4 +1127,4 @@ class GfxInternal {
 }
 
 // export main object
-export default new Gfx();
+export const gfx = new Gfx();

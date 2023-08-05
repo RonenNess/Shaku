@@ -1,20 +1,18 @@
-import _logger from "../../logger";
-import Matrix from "../../utils/matrix";
+import { LoggerModule, Matrix } from "../../utils";
 import { BlendModes } from "../blend_modes";
 import { Effect } from "../effects";
 import { BuffersUsage } from "./buffers_usage";
 
-const _loggggger = _logger.getLogger("gfx - draw - batch"); // TODO
-
+const _loggggger = LoggerModule.getLogger("gfx - draw - batch"); // TODO
 
 /**
  * Base class for a drawing batch, used to draw a collection of sprites or shapes.
  */
-class DrawBatch {
+export class DrawBatch {
 	/**
 	 * Create the draw batch.
 	 */
-	constructor() {
+	public constructor() {
 		// set default usage mode
 		this.setBuffersUsage(BuffersUsage.STREAM_DRAW);
 
@@ -283,4 +281,3 @@ class DrawBatch {
 DrawBatch._gfx = null;
 
 // export the draw batch class
-export default DrawBatch;

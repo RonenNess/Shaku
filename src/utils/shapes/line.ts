@@ -1,9 +1,9 @@
-import Vector2 from "./vector2";
+import { Vector2 } from "./vector2";
 
 /**
  * Implement a simple 2d Line.
  */
-export default class Line {
+export class Line {
 	public from: Vector2;
 	public to: Vector2;
 

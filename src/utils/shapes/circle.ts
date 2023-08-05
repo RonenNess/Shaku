@@ -1,10 +1,10 @@
-import MathHelper from "./math_helper";
-import Vector2 from "./vector2";
+import { MathHelper } from "../math_helper";
+import { Vector2 } from "./vector2";
 
 /**
  * Implement a simple 2d Circle.
  */
-export default class Circle {
+export class Circle {
 	public center: Vector2;
 	public radius: number;
 

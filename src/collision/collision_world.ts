@@ -1,39 +1,22 @@
-import gfx from "./../gfx";
-import ShapesBatch from "../gfx/draw_batches/shapes_batch";
-import _logger from "../logger";
-import Circle from "../utils/circle";
-import Color from "../utils/color";
-import Rectangle from "../utils/rectangle";
-import Vector2 from "../utils/vector2";
-import CollisionResolver from "./resolver";
-import CollisionTestResult from "./result";
-import CircleShape from "./shapes/circle";
-import PointShape from "./shapes/point";
-import CollisionShape from "./shapes/shape";
+import { ShapesBatch, gfx } from "../gfx";
+import { Circle, Color, LoggerModule, Rectangle, Vector2 } from "../utils";
+import { CollisionResolver } from "./resolver";
+import { CollisionTestResult } from "./result";
+import { CircleShape, CollisionShape, PointShape } from "./shapes";
 
-const _loggggger = _logger.getLogger("collision"); // TODO
-
-
-
-
-
-
-
-
-
-
+const _loggggger = LoggerModule.getLogger("collision"); // TODO
 
 /**
  * A collision world is a set of collision shapes that interact with each other.
  * You can use different collision worlds to represent different levels or different parts of your game world.
  */
-class CollisionWorld {
+export class CollisionWorld {
 	/**
 	 * Create the collision world.
 	 * @param {CollisionResolver} resolver Collision resolver to use for this world.
 	 * @param {Number|Vector2} gridCellSize For optimize collision testing, the collision world is divided into a collision grid. This param determine the grid cell size.
 	 */
-	constructor(resolver, gridCellSize) {
+	public constructor(resolver, gridCellSize) {
 		/**
 		 * Collision resolver used in this collision world.
 		 * By default, will inherit the collision manager default resolver.
@@ -598,6 +581,3 @@ function sortByDistanceResults(sourceShape, options) {
 		(a.second.getCenter().distanceTo(sourceCenter) - a.second._getRadius()) -
 		(b.second.getCenter().distanceTo(sourceCenter) - b.second._getRadius()));
 }
-
-// export collision world
-export default CollisionWorld;

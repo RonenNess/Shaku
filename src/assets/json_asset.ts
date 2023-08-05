@@ -1,10 +1,10 @@
-import Asset from "./asset";
+import { Asset } from "./asset";
 
 /**
  * A loadable json asset.
  * This asset type loads JSON from a remote file.
  */
-export default class JsonAsset extends Asset {
+export class JsonAsset extends Asset {
 	private _data: unknown | null;
 
 	/** @inheritdoc */

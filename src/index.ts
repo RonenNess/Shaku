@@ -1,3 +1,11 @@
-import Shaku from "./shaku";
+export * from "./assets";
+export * from "./collision";
+export * from "./gfx";
+export * from "./input";
+export * from "./sfx";
+export * from "./shaku";
+export * from "./utils";
 
-export { Shaku };
+import { shaku } from "./shaku";
+
+export default shaku;

@@ -1,13 +1,13 @@
-import Box from "./box";
-import Matrix from "./matrix";
-import Plane from "./plane";
-import Sphere from "./sphere";
-import Vector3 from "./vector3";
+import { Matrix } from "../matrix";
+import { Box } from "./box";
+import { Plane } from "./plane";
+import { Sphere } from "./sphere";
+import { Vector3 } from "./vector3";
 
 /**
  * Implement a 3D Frustum shape.
  */
-export default class Frustum {
+export class Frustum {
 	public planes: Plane[];
 
 	/**

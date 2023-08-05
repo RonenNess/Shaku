@@ -1,11 +1,11 @@
-import DrawBatch from "./draw_batch";
-import SpriteBatch from "./sprite_batch";
+import { DrawBatch } from "./draw_batch";
+import { SpriteBatch } from "./sprite_batch";
 
 /**
  * 3D Sprites batch renderer.
  * Responsible to drawing 3D quads with textures on them.
  */
-class SpriteBatch3D extends SpriteBatch {
+export class SpriteBatch3D extends SpriteBatch {
 	/**
 	 * Create the 3d sprites batch.
 	 * @param {Number=} batchSpritesCount Internal buffers size, in sprites count (sprite = 4 vertices). Bigger value = faster rendering but more RAM.
@@ -13,7 +13,7 @@ class SpriteBatch3D extends SpriteBatch {
 	 * @param {Boolean=} enableBinormals If true (not default) will support vertex binormals.
 	 * @param {Boolean=} enableTangents If true (not default) will support vertex tangents.
 	 */
-	constructor(batchSpritesCount, enableNormals, enableBinormals, enableTangents) {
+	public constructor(batchSpritesCount, enableNormals, enableBinormals, enableTangents) {
 		super(batchSpritesCount, true, enableNormals, enableBinormals, enableTangents);
 		this.__camera = this.#_gfx.createCamera3D();
 		this.setPerspectiveCamera();
@@ -93,4 +93,3 @@ class SpriteBatch3D extends SpriteBatch {
 }
 
 // export the sprite batch class
-export default SpriteBatch3D;

@@ -1,15 +1,12 @@
-import ShapesBatch from "../../gfx/draw_batches/shapes_batch";
-import { Vector2 } from "../../utils";
-import Circle from "../../utils/circle";
-import Line from "../../utils/line";
-import Rectangle from "../../utils/rectangle";
-import CollisionShape from "./shape";
+import { ShapesBatch } from "../../gfx";
+import { Circle, Line, Rectangle, Vector2 } from "../../utils";
+import { CollisionShape } from "./shape";
 
 /**
  * Collision lines class.
  * This shape is made of one line or more.
  */
-export default class LinesShape extends CollisionShape {
+export class LinesShape extends CollisionShape {
 	private _lines: Line[];
 	private _circle: Circle;
 	private _boundingBox: Rectangle;

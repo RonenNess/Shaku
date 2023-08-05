@@ -1,15 +1,15 @@
-import Vector2 from "../utils/vector2";
+import { Vector2 } from "../utils";
 
 /**
  * Gamepad data object.
  * This object represents a snapshot of a gamepad state, it does not update automatically.
  */
-class Gamepad {
+export class Gamepad {
 	/**
 	 * Create gamepad state object.
 	 * @param {*} gp Browser gamepad state object.
 	 */
-	constructor(gp) {
+	public constructor(gp) {
 		/**
 		 * Gamepad Id.
 		 * @name Gamepad#id
@@ -149,7 +149,7 @@ class Gamepad {
 /**
  * Buttons cluster container - 4 buttons.
  */
-class FourButtonsCluster {
+export class FourButtonsCluster {
 	/**
 	 * Create the cluster states.
 	 * @param {Boolean} bottom Bottom button state.
@@ -157,7 +157,7 @@ class FourButtonsCluster {
 	 * @param {Boolean} left Left button state.
 	 * @param {Boolean} top Top button state.
 	 */
-	constructor(bottom, right, left, top) {
+	public constructor(bottom, right, left, top) {
 		this.bottom = Boolean(bottom);
 		this.right = Boolean(right);
 		this.left = Boolean(left);
@@ -168,14 +168,14 @@ class FourButtonsCluster {
 /**
  * Buttons cluster container - 3 buttons.
  */
-class ThreeButtonsCluster {
+export class ThreeButtonsCluster {
 	/**
 	 * Create the cluster states.
 	 * @param {Boolean} left Left button state.
 	 * @param {Boolean} right Right button state.
 	 * @param {Boolean} center Center button state.
 	 */
-	constructor(left, right, center) {
+	public constructor(left, right, center) {
 		this.left = Boolean(left);
 		this.right = Boolean(right);
 		this.center = Boolean(center);
@@ -185,11 +185,11 @@ class ThreeButtonsCluster {
 /**
  * Front buttons.
  */
-class FrontButtons {
+export class FrontButtons {
 	/**
 	 * Create the cluster states.
 	 */
-	constructor(topLeft, topRight, bottomLeft, bottomRight) {
+	public constructor(topLeft, topRight, bottomLeft, bottomRight) {
 		this.topLeft = Boolean(topLeft);
 		this.topRight = Boolean(topRight);
 		this.bottomLeft = Boolean(bottomLeft);
@@ -209,4 +209,3 @@ function _gamepadButtonPressed(b) {
 }
 
 // export the gamepad data
-export default Gamepad;

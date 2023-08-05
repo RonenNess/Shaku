@@ -1,14 +1,14 @@
-import Asset from "./asset";
+import { Asset } from "./asset";
 
 /**
  * A loadable binary data asset.
  * This asset type loads array of bytes from a remote file.
  */
-export default class BinaryAsset extends Asset {
+export class BinaryAsset extends Asset {
 	private _data: Uint8Array | null;
 
 	/** @inheritdoc */
-	constructor(url: string) {
+	public constructor(url: string) {
 		super(url);
 		this._data = null;
 	}

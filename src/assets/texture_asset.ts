@@ -1,10 +1,7 @@
-import _logger from "../logger";
-import Color from "../utils/color";
-import TextureAssetBase from "./texture_asset_base";
+import { Color, LoggerModule } from "../utils";
+import { TextureAssetBase } from "./texture_asset_base";
 
-const _loggggger = _logger.getLogger("assets"); // TODO
-
-
+const _loggggger = LoggerModule.getLogger("assets"); // TODO
 
 // the webgl context to use
 var gl: WebGLRenderingContext | null = null;
@@ -13,12 +10,13 @@ var gl: WebGLRenderingContext | null = null;
  * A loadable texture asset.
  * This asset type loads an image from URL or source, and turn it into a texture.
  */
-export default class TextureAsset extends TextureAssetBase {
+export class TextureAsset extends TextureAssetBase {
 	private _image: unknown | null;
-	private _width: number;
 	private _height: number;
 	private _texture: WebGLTexture | null;
 	private _ctxForPixelData: CanvasRenderingContext2D | null;
+
+	public _width: number;
 
 	/** @inheritdoc */
 	public constructor(url: string) {
@@ -99,7 +97,7 @@ export default class TextureAsset extends TextureAssetBase {
 		gl.bindTexture(gl.TEXTURE_2D, targetTexture);
 
 		// calculate format
-		var _format = gl.RGBA;
+		var _format: number = gl.RGBA;
 		if(channels !== undefined) {
 			switch(channels) {
 				case 1:
@@ -147,7 +145,7 @@ export default class TextureAsset extends TextureAssetBase {
 	 * @param image Image to create texture from. Image must be loaded!
 	 * @param params Optional additional params. See load() for details.
 	 */
-	public fromImage(image: TextureAsset, params: unknown): void {
+	public fromImage(image: TextureAsset, params?: unknown): void {
 		if(image.width === 0) {
 			throw new Error("Image to build texture from must be loaded and have valid size!");
 		}
@@ -274,7 +272,7 @@ export default class TextureAsset extends TextureAssetBase {
 		// get pixel data
 		let ctx = this._ctxForPixelData;
 		ctx.drawImage(this._image, x, y, 1, 1, 0, 0, 1, 1);
-		let pixelData = ctx.getImageData(0, 0, 1, 1).data;
+		let pixelData = ctx.getImageData(0, 0, 1, 1).data as [number, number, number, number];
 		return Color.fromBytesArray(pixelData);
 	}
 

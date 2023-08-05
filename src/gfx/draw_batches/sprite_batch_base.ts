@@ -1,12 +1,10 @@
-import { Rectangle } from "../../utils";
-import Matrix from "../../utils/matrix";
-import Vector2 from "../../utils/vector2";
-import DrawBatch from "./draw_batch";
+import { Matrix, Rectangle, Vector2 } from "../../utils";
+import { DrawBatch } from "./draw_batch";
 
 /**
  * Base class for sprite-based rendering, ie vertices with textures.
  */
-class SpriteBatchBase extends DrawBatch {
+export class SpriteBatchBase extends DrawBatch {
 	/**
 	 * Create the sprites batch.
 	 * @param {Number=} batchSpritesCount Internal buffers size, in sprites count (sprite = 4 vertices). Bigger value = faster rendering but more RAM.
@@ -15,7 +13,7 @@ class SpriteBatchBase extends DrawBatch {
 	 * @param {Boolean=} enableBinormals If true (not default) will support vertex binormals.
 	 * @param {Boolean=} enableTangents If true (not default) will support vertex tangents.
 	 */
-	constructor(batchSpritesCount, enableVertexColor, enableNormals, enableBinormals, enableTangents) {
+	public constructor(batchSpritesCount, enableVertexColor, enableNormals, enableBinormals, enableTangents) {
 		// init draw batch
 		super();
 
@@ -637,4 +635,3 @@ const bottomLeft = new Vector2(0, 0);
 const bottomRight = new Vector2(0, 0);
 
 // export the sprite batch base class
-export default SpriteBatchBase;

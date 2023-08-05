@@ -1,7 +1,5 @@
-
-
 // export the main methods
-const CollisionsImp = {
+export const CollisionsImp = {
 
 	/**
 	 * Test collision between two points.
@@ -149,6 +147,3 @@ const CollisionsImp = {
 		return collide;
 	},
 };
-
-// export the collisions implementation
-export default CollisionsImp;

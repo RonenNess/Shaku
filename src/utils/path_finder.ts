@@ -1,10 +1,9 @@
-import Vector2 from "./vector2";
-import Vector3 from "./vector3";
+import { Vector2, Vector3 } from "./shapes";
 
 /**
  * Interface for a supported grid.
  */
-interface IGrid {
+export interface IGrid {
 	/**
 	 * Check if a given tile is blocked from a given neihbor.
 	 * @param _from Source tile index.
@@ -29,7 +28,7 @@ interface IGrid {
 /**
  * A path node.
  */
-class Node {
+export class Node {
 	public position: Vector2 | Vector3;
 	public gCost: number;
 	public hCost: number;
@@ -214,9 +213,6 @@ function getDistance(pa, pb) {
  *  1. Implement a `IGrid` instance that returns if a grid node is blocking and what's the price to cross it.
  *  2. Call findPath() with your grid to find a path between start and end points.
  */
-const PathFinder = {
+export const PathFinder = {
 	findPath: findPath, // TODO: had to remove IGrid since it has been turned into an interface
 };
-
-// export the path finder object
-export default PathFinder;

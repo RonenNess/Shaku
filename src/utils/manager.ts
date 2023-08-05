@@ -2,10 +2,9 @@
  * Interface for any manager.
  * Manager = manages a domain in Shaku, such as gfx (graphics), sfx (sounds), input, etc.
  */
-export default interface IManager {
+export interface IManager {
 	/**
 	 * Initialize the manager.
-	 * @returns {Promise} Promise to resolve when initialization is done.
 	 */
 	setup(): Promise<void>;
 

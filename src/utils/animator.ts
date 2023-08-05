@@ -5,12 +5,12 @@ const _autoAnimators = [];
  * Usage example:
  * (new Animator(sprite)).from({"position.x": 0}).to({"position.x": 100}).duration(1).play();
  */
-class Animator {
+export class Animator {
 	/**
 	 * Create the animator.
 	 * @param {*} target Any object you want to animate.
 	 */
-	constructor(target) {
+	public constructor(target) {
 		this._target = target;
 		this._fromValues = {};
 		this._toValues = {};
@@ -321,4 +321,3 @@ function lerp(start, end, amt) {
 }
 
 // export the animator class.
-export default Animator;

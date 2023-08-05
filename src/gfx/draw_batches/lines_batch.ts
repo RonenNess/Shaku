@@ -1,28 +1,19 @@
-import _logger from "../../logger";
-import { Rectangle } from "../../utils";
-import Matrix from "../../utils/matrix";
-import Vector2 from "../../utils/vector2";
-import Vector3 from "../../utils/vector3";
-import Vertex from "../vertex";
-import DrawBatch from "./draw_batch";
+import { LoggerModule, Matrix, Rectangle, Vector2, Vector3 } from "../../utils";
+import { Vertex } from "../vertex";
+import { DrawBatch } from "./draw_batch";
 
-const _loggggger = _logger.getLogger("gfx - sprite - batch"); // TODO
-
-
-
-
-
+const _loggggger = LoggerModule.getLogger("gfx - sprite - batch"); // TODO
 
 /**
  * Colored lines renderer.
  * Responsible to drawing a batch of line segments or strips.
  */
-class LinesBatch extends DrawBatch {
+export class LinesBatch extends DrawBatch {
 	/**
 	 * Create the sprites batch.
 	 * @param {Number=} lineSegmentsCount Internal buffers size, in line segments count (line segment = 3 vertices). Bigger value = faster rendering but more RAM.
 	 */
-	constructor(lineSegmentsCount) {
+	public constructor(lineSegmentsCount) {
 		// init draw batch
 		super();
 
@@ -568,4 +559,3 @@ const bottomLeft = new Vector2(0, 0);
 const bottomRight = new Vector2(0, 0);
 
 // export the shapes batch class
-export default LinesBatch;

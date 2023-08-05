@@ -1,26 +1,10 @@
-import _logger from "../logger";
-import IManager from "../manager";
-import Vector2 from "../utils/vector2";
-import CollisionWorld from "./collision_world";
-import CollisionResolver from "./resolver";
-import ResolverImp from "./resolvers_imp";
-import CircleShape from "./shapes/circle";
-import LinesShape from "./shapes/lines";
-import PointShape from "./shapes/point";
-import RectangleShape from "./shapes/rectangle";
-import TilemapShape from "./shapes/tilemap";
+import { IManager, LoggerModule, Vector2 } from "../utils";
+import { CollisionWorld } from "./collision_world";
+import { CollisionResolver } from "./resolver";
+import { CollisionsImp as ResolverImp } from "./resolvers_imp";
+import { CircleShape, LinesShape, PointShape, RectangleShape, TilemapShape } from "./shapes";
 
-const _loggggger = _logger.getLogger("collision"); // TODO
-
-
-
-
-
-
-
-
-
-
+const _loggggger = LoggerModule.getLogger("collision"); // TODO
 
 /**
  * Collision is the collision manager.
@@ -29,11 +13,11 @@ const _loggggger = _logger.getLogger("collision"); // TODO
  *
  * To access the Collision manager you use `Shaku.collision`.
  */
-class Collision implements IManager {
+export class Collision implements IManager {
 	/**
 	 * Create the manager.
 	 */
-	constructor() {
+	public constructor() {
 		/**
 		 * The collision resolver we use to detect collision between different shapes.
 		 * You can use this object directly without creating a collision world, if you just need to test collision between shapes.
@@ -139,4 +123,4 @@ class Collision implements IManager {
 }
 
 // export main object
-export default new Collision();
+export const collision = new Collision();

@@ -1,14 +1,14 @@
-import Mesh from "./mesh";
+import { Mesh } from "./mesh";
 
 /**
  * Utility class to generate meshes.
  * @private
  */
-class MeshGenerator {
+export class MeshGenerator {
 	/**
 	 * Create the mesh generator.
 	 */
-	constructor(gl) {
+	public constructor(gl) {
 		this._gl = gl;
 	}
 
@@ -62,4 +62,3 @@ class MeshGenerator {
 }
 
 // export the meshes generator.
-export default MeshGenerator;

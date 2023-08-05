@@ -1,11 +1,11 @@
-import Effect from "./effect";
+import { Effect } from "./effect";
 import fragmentShader from "./shaders/sprites_no_vertex_color.frag";
 import vertexShader from "./shaders/sprites_no_vertex_color.vert";
 
 /**
  * Default basic effect to draw 2d sprites without vertex color.
  */
-class SpritesEffectNoVertexColor extends Effect {
+export class SpritesEffectNoVertexColor extends Effect {
 	/** @inheritdoc */
 	get vertexCode() {
 		return vertexShader;
@@ -36,4 +36,3 @@ class SpritesEffectNoVertexColor extends Effect {
 }
 
 // export the basic shader
-export default SpritesEffectNoVertexColor;

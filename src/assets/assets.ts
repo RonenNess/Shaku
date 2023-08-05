@@ -1,24 +1,12 @@
-import SoundAsset from "../assets/sound_asset";
-import _logger from "../logger";
-import IManager from "../manager";
-import Vector2 from "../utils/vector2";
-import Asset from "./asset";
-import BinaryAsset from "./binary_asset";
-import FontTextureAsset from "./font_texture_asset";
-import JsonAsset from "./json_asset";
-import MsdfFontTextureAsset from "./msdf_font_texture_asset";
-import TextureAsset from "./texture_asset";
-import { default as TextureAtlas, default as TextureAtlasAsset } from "./texture_atlas_asset";
-
-// add a "isXXX" property to all util objects, for faster alternative to "instanceof" checks.
-// for example this will generate a "isVector3" that will be true for all Vector3 instances.
-SoundAsset.prototype.isSoundAsset = true;
-BinaryAsset.prototype.isBinaryAsset = true;
-JsonAsset.prototype.isJsonAsset = true;
-TextureAsset.prototype.isTextureAsset = true;
-FontTextureAsset.prototype.isFontTextureAsset = true;
-MsdfFontTextureAsset.prototype.isMsdfFontTextureAsset = true;
-TextureAtlasAsset.prototype.isTextureAtlasAsset = true;
+import { IManager, Vector2 } from "../utils";
+import { Asset } from "./asset";
+import { BinaryAsset } from "./binary_asset";
+import { FontTextureAsset } from "./font_texture_asset";
+import { JsonAsset } from "./json_asset";
+import { MsdfFontTextureAsset } from "./msdf_font_texture_asset";
+import { SoundAsset } from "./sound_asset";
+import { TextureAsset } from "./texture_asset";
+import { TextureAtlasAsset } from "./texture_atlas_asset";
 
 /**
  * Assets manager class.
@@ -27,7 +15,7 @@ TextureAtlasAsset.prototype.isTextureAtlasAsset = true;
  *
  * To access the Assets manager you use `Shaku.assets`.
  */
-class Assets implements IManager {
+export class Assets implements IManager {
 	private _loaded: Record<string, Asset> | null;
 	private _waitingAssets: Set<string>;
 	private _failedAssets: Set<string>;
@@ -497,4 +485,4 @@ function generateRandomAssetName() {
 }
 
 // export assets manager
-export default new Assets();
+export const assets = new Assets();

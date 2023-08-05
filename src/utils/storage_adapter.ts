@@ -53,7 +53,7 @@ export interface StorageAdapter {
 /**
  * Implement simple memory storage adapter.
  */
-class StorageAdapterMemory implements StorageAdapter {
+export class StorageAdapterMemory implements StorageAdapter {
 	private _data: Record<string, string>;
 
 	/**
@@ -117,12 +117,10 @@ class StorageAdapterMemory implements StorageAdapter {
 	}
 }
 
-StorageAdapter.memory = StorageAdapterMemory;
-
 /**
  * Implement simple localstorage storage adapter.
  */
-class StorageAdapterLocalStorage implements StorageAdapter {
+export class StorageAdapterLocalStorage implements StorageAdapter {
 	/**
 	 * @inheritdoc
 	 */
@@ -182,12 +180,11 @@ class StorageAdapterLocalStorage implements StorageAdapter {
 		}
 	}
 }
-StorageAdapter.localStorage = StorageAdapterLocalStorage;
 
 /**
  * Implement simple sessionStorage storage adapter.
  */
-class StorageAdapterSessionStorage implements StorageAdapter {
+export class StorageAdapterSessionStorage implements StorageAdapter {
 	/**
 	 * @inheritdoc
 	 */
@@ -247,4 +244,9 @@ class StorageAdapterSessionStorage implements StorageAdapter {
 		}
 	}
 }
-StorageAdapter.sessionStorage = StorageAdapterSessionStorage;
+
+export const StorageAdapter = {
+	memory: StorageAdapterMemory,
+	localStorage: StorageAdapterLocalStorage,
+	sessionStorage: StorageAdapterSessionStorage,
+};

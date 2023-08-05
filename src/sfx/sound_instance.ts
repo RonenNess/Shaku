@@ -1,17 +1,17 @@
-import _logger from "../logger";
+import { LoggerModule } from "../utils";
 
-const _loggggger = _logger.getLogger("sfx"); // TODO
+const _loggggger = LoggerModule.getLogger("sfx"); // TODO
 
 /**
  * A sound effect instance you can play and stop.
  */
-class SoundInstance {
+export class SoundInstance {
 	/**
 	* Create a sound instance.
 	* @param {Sfx} sfxManager Sfx manager instance.
 	* @param {String} url Sound URL or source.
 	*/
-	constructor(sfxManager, url) {
+	public constructor(sfxManager, url) {
 		if(!url) {
 			_logger.error("Sound type can't be null or invalid!");
 			throw new Error("Invalid sound type to play in SoundInstance!");
@@ -234,4 +234,3 @@ class SoundInstance {
 SoundInstance._masterVolume = 1;
 
 // export main object
-export default SoundInstance;

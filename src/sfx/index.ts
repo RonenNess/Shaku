@@ -1,3 +1,3 @@
-import * as sfx from "./sfx";
-
-export default sfx;
+export * from "./sfx";
+export * from "./sound_instance";
+export * from "./sound_mixer";

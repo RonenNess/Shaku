@@ -1,11 +1,11 @@
 import fragmentShader from "./shaders/sprites_3d.frag";
 import vertexShader from "./shaders/sprites_3d.vert";
-import SpritesEffect from "./sprites";
+import { SpritesEffect } from "./sprites";
 
 /**
  * Default basic effect to draw 2d sprites.
  */
-class Sprites3dEffect extends SpritesEffect {
+export class Sprites3dEffect extends SpritesEffect {
 	/**
 	 * @inheritdoc
 	 */
@@ -32,4 +32,3 @@ class Sprites3dEffect extends SpritesEffect {
 }
 
 // export the basic shader
-export default Sprites3dEffect;

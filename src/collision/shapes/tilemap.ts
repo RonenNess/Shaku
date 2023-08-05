@@ -1,15 +1,14 @@
-import ShapesBatch from "../../gfx/draw_batches/shapes_batch";
-import Rectangle from "../../utils/rectangle";
-import Vector2 from "../../utils/vector2";
-import RectangleShape from "./rectangle";
-import CollisionShape from "./shape";
+import { ShapesBatch } from "../../gfx";
+import { Rectangle, Vector2 } from "../../utils";
+import { RectangleShape } from "./rectangle";
+import { CollisionShape } from "./shape";
 
 /**
  * Collision tilemap class.
  * A collision tilemap shape is a grid of equal-sized cells that can either block or not (+ have collision flags).
  * Its the most efficient (both memory and CPU) way to implement grid based / tilemap collision.
  */
-export default class TilemapShape extends CollisionShape {
+export class TilemapShape extends CollisionShape {
 	private _offset: Vector2;
 	private _intBoundingRect: Rectangle;
 	private _boundingRect: Rectangle;

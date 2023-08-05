@@ -1,9 +1,9 @@
-import { type StorageAdapter } from "./storage_adapter";
+import { StorageAdapter } from "./storage_adapter";
 
 /**
  * A thin wrapper layer around storage utility.
  */
-export default class Storage {
+export class Storage {
 	private _adapter: StorageAdapter | null;
 	private _keysPrefix: string;
 	public valuesAsBase64: boolean;

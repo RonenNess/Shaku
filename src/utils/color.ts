@@ -1,10 +1,10 @@
-import MathHelper from "./math_helper";
+import { MathHelper } from "./math_helper";
 
 /**
  * Implement a color.
  * All color components are expected to be in 0.0 - 1.0 range (and not 0-255).
  */
-export default class Color {
+export class Color {
 	private _r: number;
 	private _g: number;
 	private _b: number;
@@ -281,8 +281,8 @@ export default class Color {
 	 * @returns Newly created color.
 	 */
 	public static fromBytesArray(bytes: [number, number, number, number]): Color;
-	public static fromBytesArray(bytes: number[], offset?: number): Color;
-	public static fromBytesArray(bytes: [number, number, number, number] | number[], offset?: number): Color {
+	public static fromBytesArray(bytes: number[] | Uint8ClampedArray, offset?: number): Color;
+	public static fromBytesArray(bytes: [number, number, number, number] | number[] | Uint8ClampedArray, offset?: number): Color {
 		offset = offset || 0;
 		return new Color(bytes[offset] / 255, bytes[offset + 1] / 255, bytes[offset + 2] / 255, (bytes[offset + 3] !== undefined) ? (bytes[offset + 3] / 255) : 1);
 	}

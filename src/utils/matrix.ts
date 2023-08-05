@@ -1,13 +1,12 @@
-import Vertex from "../gfx/vertex";
-import Vector2 from "./vector2";
-import Vector3 from "./vector3";
+import { Vertex } from "../gfx";
+import { Vector2, Vector3 } from "./shapes";
 
 const EPSILON = Number.EPSILON;
 
 /**
  * Implements a matrix.
  */
-export default class Matrix {
+export class Matrix {
 	public static readonly identity = new Matrix([
 		1, 0, 0, 0,
 		0, 1, 0, 0,

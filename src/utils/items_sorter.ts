@@ -1,10 +1,9 @@
-import Rectangle from "./rectangle";
-import Vector2 from "./vector2";
+import { Rectangle, Vector2 } from "./shapes";
 
 /**
  * Utility class to arrange rectangles in minimal region.
  */
-export default class ItemsSorter {
+export class ItemsSorter {
 	/**
 	 * Efficiently arrange rectangles into a minimal size area.
 	 * Based on code from here:

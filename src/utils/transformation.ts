@@ -1,7 +1,7 @@
-import MathHelper from "./math_helper";
-import Matrix from "./matrix";
-import TransformModes from "./transform_modes";
-import Vector2 from "./vector2";
+import { MathHelper } from "./math_helper";
+import { Matrix } from "./matrix";
+import { Vector2 } from "./shapes";
+import { TransformModes } from "./transform_modes";
 
 // some default values
 const _defaults = {
@@ -28,7 +28,7 @@ const _defaults = {
  * const combined = Shaku.utils.Transformation.combine(transform, worldTransform);
  * const matrix = combined.asMatrix();
  */
-export default class Transformation {
+export class Transformation {
 	private _position: Vector2;
 	private _positionMode: TransformModes;
 	private _scale: Vector2;

@@ -1,7 +1,7 @@
 /**
  * Different ways we can combine local transformations with parent transformations.
  */
-enum TransformModes {
+export enum TransformModes {
 	/**
 	 * The vector or scalar will be relative to the entity's parent transformations, and the local axis will be rotated by the parent's rotation.
 	 * For example, if we have an entity that renders a blue ball and a child entity that renders a red ball with offset of {100,0}, when we rotate the parent blue ball, the red ball will rotate around it, keeping a distance of 100 pixels.
@@ -20,5 +20,3 @@ enum TransformModes {
 	 */
 	ABSOLUTE = "absolute",
 }
-
-export default TransformModes;

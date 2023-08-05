@@ -1,9 +1,9 @@
-import MathHelper from "./math_helper";
+import { MathHelper } from "../math_helper";
 
 /**
  * A simple Vector object for 2d positions.
  */
-export default class Vector2 {
+export class Vector2 {
 	/**
 	 * Vector with 0,0 values as a frozen shared object.
 	 * Be careful not to try and change it.

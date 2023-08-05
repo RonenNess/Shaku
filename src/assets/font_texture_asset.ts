@@ -1,13 +1,12 @@
-import Rectangle from "../utils/rectangle";
-import Vector2 from "../utils/vector2";
-import Asset from "./asset";
-import TextureAsset from "./texture_asset";
+import { Rectangle, Vector2 } from "../utils";
+import { Asset } from "./asset";
+import { TextureAsset } from "./texture_asset";
 
 /**
  * A font texture asset, dynamically generated from loaded font and canvas.
  * This asset type creates an atlas of all the font's characters as textures, so we can later render them as sprites.
  */
-export default class FontTextureAsset extends Asset {
+export class FontTextureAsset extends Asset {
 	/**
 	 * default ascii characters to generate font textures for
 	 */
@@ -292,7 +291,6 @@ export default class FontTextureAsset extends Asset {
 		this._lineHeight = 0;
 	}
 }
-
 
 // return the closest power-of-two value to a given number
 function makePowerTwo(val: number): number {

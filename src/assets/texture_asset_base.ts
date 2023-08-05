@@ -1,12 +1,11 @@
-import { TextureFilterModes } from "../gfx/texture_filter_modes";
-import { TextureWrapModes } from "../gfx/texture_wrap_modes";
-import Vector2 from "../utils/vector2";
-import Asset from "./asset";
+import { TextureFilterModes, TextureWrapModes } from "../gfx";
+import { Vector2 } from "../utils";
+import { Asset } from "./asset";
 
 /**
  * Base type for all texture asset types.
  */
-export default abstract class TextureAssetBase extends Asset {
+export abstract class TextureAssetBase extends Asset {
 	private _filter: TextureFilterModes | null;
 	private _wrapMode: TextureWrapModes | null;
 

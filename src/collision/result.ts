@@ -1,17 +1,17 @@
-import Vector2 from "../utils/vector2";
-import CollisionShape from "./shapes/shape";
+import { Vector2 } from "../utils";
+import { CollisionShape } from "./shapes";
 
 /**
  * Collision detection result.
  */
-class CollisionTestResult {
+export class CollisionTestResult {
 	/**
 	 * Create the collision result.
 	 * @param {Vector2} position Optional collision position.
 	 * @param {CollisionShape} first First shape in the collision check.
 	 * @param {CollisionShape} second Second shape in the collision check.
 	 */
-	constructor(position, first, second) {
+	public constructor(position, first, second) {
 		/**
 		 * Collision position, only relevant when there's a single touching point.
 		 * For shapes with multiple touching points, this will be null.
@@ -35,6 +35,3 @@ class CollisionTestResult {
 		this.second = second;
 	}
 }
-
-// export collision shape class
-export default CollisionTestResult;

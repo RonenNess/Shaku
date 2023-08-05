@@ -1,11 +1,11 @@
-import Effect from "./effect";
+import { Effect } from "./effect";
 import fragmentShader from "./shaders/sprites_with_outline.frag";
 import vertexShader from "./shaders/sprites_with_outline.vert";
 
 /**
  * Default basic effect to draw 2d sprites with outline.
  */
-class SpritesWithOutlineEffect extends Effect {
+export class SpritesWithOutlineEffect extends Effect {
 	/** @inheritdoc */
 	get vertexCode() {
 		return vertexShader;
@@ -41,4 +41,3 @@ class SpritesWithOutlineEffect extends Effect {
 }
 
 // export the basic shader
-export default SpritesWithOutlineEffect;

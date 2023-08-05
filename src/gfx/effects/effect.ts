@@ -1,18 +1,9 @@
-import TextureAssetBase from "../../assets/texture_asset_base";
-import _logger from "../../logger";
-import Color from "../../utils/color";
-import Matrix from "../../utils/matrix";
-import Vector2 from "../../utils/vector2";
+import { TextureAssetBase } from "../../assets";
+import { Color, LoggerModule, Matrix, Vector2 } from "../../utils";
 import { TextureFilterModes } from "../texture_filter_modes";
 import { TextureWrapMode, TextureWrapModes } from "../texture_wrap_modes";
 
-const _loggggger = _logger.getLogger("gfx - effect"); // TODO
-
-
-
-
-
-
+const _loggggger = LoggerModule.getLogger("gfx - effect"); // TODO
 
 // currently applied effect
 let _currEffect = null;
@@ -24,11 +15,11 @@ let _depthFuncs = null;
  * Effect base class.
  * An effect = vertex shader + fragment shader + uniforms & attributes + setup code.
  */
-class Effect {
+export class Effect {
 	/**
 	 * Create the effect.
 	 */
-	constructor() {
+	public constructor() {
 		this.#_build(Effect._gfx._internal.gl);
 	}
 
@@ -740,6 +731,3 @@ function _setTextureWrapMode(gl, wrapX, wrapY) {
 
 // will be set by the gfx manager
 Effect._gfx = null;
-
-// export the effect class.
-export default Effect;

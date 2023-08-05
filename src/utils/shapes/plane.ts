@@ -1,11 +1,11 @@
-import Line from "./line";
-import Sphere from "./sphere";
-import Vector3 from "./vector3";
+import { Line } from "./line";
+import { Sphere } from "./sphere";
+import { Vector3 } from "./vector3";
 
 /**
  * A plane in 3D space.
  */
-export default class Plane {
+export class Plane {
 	public normal: Vector3;
 	public constant: number;
 

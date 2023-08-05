@@ -1,18 +1,16 @@
-import Color from "../utils/color";
-import Matrix from "../utils/matrix";
-import Vector2 from "../utils/vector2";
-import Sprite from "./sprite";
+import { Color, Matrix, Vector2 } from "../utils";
+import { Sprite } from "./sprite";
 
 /**
  * Sprites group class.
  * This object is a container to hold sprites collection + parent transformations.
  * You need SpritesGroup to use batched rendering.
  */
-class SpritesGroup {
+export class SpritesGroup {
 	/**
 	 * Create the group object.
 	 */
-	constructor() {
+	public constructor() {
 		this._sprites = [];
 		this.rotation = 0;
 		this.position = new Vector2(0, 0);
@@ -115,4 +113,3 @@ class SpritesGroup {
 }
 
 // export the sprites group class.
-export default SpritesGroup;

@@ -1,19 +1,17 @@
-import _logger from "../logger";
-import CollisionTestResult from "./result";
-import CollisionShape from "./shapes/shape";
+import { LoggerModule } from "../utils";
+import { CollisionTestResult } from "./result";
+import { CollisionShape } from "./shapes";
 
-const _loggggger = _logger.getLogger("collision"); // TODO
-
-
+const _loggggger = LoggerModule.getLogger("collision"); // TODO
 
 /**
  * The collision resolver is responsible to implement collision detection between pair of shapes of same or different types.
  */
-class CollisionResolver {
+export class CollisionResolver {
 	/**
 	 * Create the resolver.
 	 */
-	constructor() {
+	public constructor() {
 		this._handlers = {};
 	}
 
@@ -104,6 +102,3 @@ class CollisionResolver {
 		return null;
 	}
 }
-
-// export the collision resolver
-export default CollisionResolver;

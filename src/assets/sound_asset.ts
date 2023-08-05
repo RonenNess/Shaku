@@ -1,10 +1,10 @@
-import Asset from "./asset";
+import { Asset } from "./asset";
 
 /**
  * A loadable sound asset.
  * This is the asset type you use to play sounds.
  */
-export default class SoundAsset extends Asset {
+export class SoundAsset extends Asset {
 	private _valid: boolean;
 
 	/** @inheritdoc */

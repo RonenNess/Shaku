@@ -1,12 +1,12 @@
-import Box from "./box";
-import MathHelper from "./math_helper";
-import Plane from "./plane";
-import Vector3 from "./vector3";
+import { MathHelper } from "../math_helper";
+import { Box } from "./box";
+import { Plane } from "./plane";
+import { Vector3 } from "./vector3";
 
 /**
  * A 3D sphere.
  */
-export default class Sphere {
+export class Sphere {
 	public center: Vector3;
 	public radius: number;
 
@@ -66,7 +66,7 @@ export default class Sphere {
 	public toDict(minimized?: false): { center: ReturnType<Vector3["toDict"]>, radius: number; };
 	public toDict(minimized?: boolean): Partial<{ center: ReturnType<Vector3["toDict"]>, radius: number; }> {
 		if(minimized) {
-			const ret = {};
+			const ret: Partial<{ center: ReturnType<Vector3["toDict"]>, radius: number; }> = {};
 			if(this.radius) { ret.radius = this.radius; }
 			if(this.center.x || this.center.y) { ret.center = this.center.toDict(true); }
 			return ret;

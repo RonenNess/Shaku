@@ -1,12 +1,12 @@
-import Circle from "./circle";
-import Line from "./line";
-import MathHelper from "./math_helper";
-import Vector2 from "./vector2";
+import { MathHelper } from "../math_helper";
+import { Circle } from "./circle";
+import { Line } from "./line";
+import { Vector2 } from "./vector2";
 
 /**
  * Implement a simple 2d Rectangle.
  */
-export default class Rectangle {
+export class Rectangle {
 	public x: number;
 	public y: number;
 	public width: number;

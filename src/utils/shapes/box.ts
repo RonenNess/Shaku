@@ -1,11 +1,11 @@
-import Plane from "./plane";
-import Sphere from "./sphere";
-import Vector3 from "./vector3";
+import { Plane } from "./plane";
+import { Sphere } from "./sphere";
+import { Vector3 } from "./vector3";
 
 /**
  * A 3D box shape.
  */
-export default class Box {
+export class Box {
 	public min: Vector3;
 	public max: Vector3;
 

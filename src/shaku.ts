@@ -1,12 +1,9 @@
-import assets from "./assets";
-import collision from "./collision";
-import _gfx from "./gfx";
-import _input from "./input";
-import logger from "./logger";
-import IManager from "./manager";
-import _sfx from "./sfx";
-import * as utils from "./utils";
-import GameTime from "./utils/game_time";
+import { assets } from "./assets";
+import { collision } from "./collision";
+import { gfx as _gfx } from "./gfx";
+import { input as _input } from "./input";
+import { sfx as _sfx } from "./sfx";
+import { GameTime, IManager, LoggerModule, utils } from "./utils";
 
 const isBrowser: boolean = typeof window !== "undefined";
 
@@ -14,7 +11,7 @@ const sfx = isBrowser ? _sfx : null;
 const gfx = isBrowser ? _gfx : null;
 const input = isBrowser ? _input : null;
 
-const _logger = logger.getLogger("shaku");
+const _logger = LoggerModule.getLogger("shaku");
 
 // is shaku in silent mode
 var _isSilent: boolean = false;
@@ -49,7 +46,7 @@ const version = "2.2.5";
  * Shaku's main object.
  * This object wraps the entire lib namespace, and this is what you use to access all managers and manage your main loop.
 */
-class Shaku {
+export class Shaku {
 	/**
 	 * Different utilities and framework objects, like vectors, rectangles, colors, etc.
 	 */
@@ -363,9 +360,9 @@ class Shaku {
 	 * @returns {Logger} Logger instance.
 	 */
 	public getLogger(name: string): Logger {
-		return logger.getLogger(name);
+		return LoggerModule.getLogger(name);
 	}
 };
 
 // return the main Shaku object.
-export default new Shaku();
+export const shaku = new Shaku();

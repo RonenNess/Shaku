@@ -63,13 +63,13 @@ function transferPolyfill(source, dest) {
 /**
  * A float 32 array that grows automatically.
  */
-class DynamicArray {
+export class DynamicArray {
 	/**
 	 * Create the array.
 	 * @param {Number} startSize Starting size.
 	 * @param {*} type Array type (defaults to Float32Array).
 	 */
-	constructor(startSize, type) {
+	public constructor(startSize, type) {
 		this.type = type || Float32Array;
 		this.buffer = new this.type(startSize);
 		this.index = 0;
@@ -101,4 +101,3 @@ class DynamicArray {
 }
 
 // export the dynamic float32 array.
-export default DynamicArray;

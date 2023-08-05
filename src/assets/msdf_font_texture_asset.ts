@@ -1,15 +1,14 @@
-import { TextureFilterModes } from "../gfx/texture_filter_modes";
-import Rectangle from "../utils/rectangle";
-import Vector2 from "../utils/vector2";
-import FontTextureAsset from "./font_texture_asset";
-import JsonAsset from "./json_asset";
-import TextureAsset from "./texture_asset";
+import { TextureFilterModes } from "../gfx";
+import { Rectangle, Vector2 } from "../utils";
+import { FontTextureAsset } from "./font_texture_asset";
+import { JsonAsset } from "./json_asset";
+import { TextureAsset } from "./texture_asset";
 
 /**
  * A MSDF font texture asset, from a pregenerated msdf texture atlas (from msdf-bmfont-xml, for example).
  * This asset uses a signed distance field atlas to render characters as sprites at high res.
  */
-export default class MsdfFontTextureAsset extends FontTextureAsset {
+export class MsdfFontTextureAsset extends FontTextureAsset {
 	private _positionOffsets: Record<string, Vector2> | null;
 	private _xAdvances: Record<string, number> | null;
 	private _placeholderChar: string;

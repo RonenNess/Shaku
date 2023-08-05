@@ -1,11 +1,11 @@
-import Box from "./box";
-import Sphere from "./sphere";
-import Vector3 from "./vector3";
+import { Box } from "./box";
+import { Sphere } from "./sphere";
+import { Vector3 } from "./vector3";
 
 /**
  * A 3D ray.
  */
-export default class Ray {
+export class Ray {
 	public origin: Vector3;
 	public direction: Vector3;
 
