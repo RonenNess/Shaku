@@ -16,7 +16,7 @@ import Rectangle from './rectangle';
 import SeededRandom from './seeded_random';
 import Sphere from './sphere';
 import Storage from './storage';
-import StorageAdapter from './storage_adapter';
+import { StorageAdapter } from './storage_adapter';
 import TransformationModes from './transform_modes';
 import Transformation from './transformation';
 import Vector2 from './vector2';
@@ -39,7 +39,6 @@ const Utils = {
 	SeededRandom,
 	Perlin,
 	Storage,
-	StorageAdapter,
 	PathFinder,
 	Transformation,
 	TransformationModes,
@@ -79,10 +78,9 @@ export {
 	Rectangle,
 	SeededRandom,
 	Sphere,
-	Storage,
-	StorageAdapter,
-	Transformation,
+	Storage, Transformation,
 	TransformationModes,
 	Vector2,
-	Vector3
+	Vector3,
+	type StorageAdapter
 };

@@ -60,7 +60,9 @@ export default class Circle {
 	 * @param minimized If true, will not include keys that their values are 0. You can use fromDict on minimized dicts.
 	 * @returns Dictionary with {center, radius}.
 	 */
-	public toDict(minimized: boolean): { center: Vector2, radius: number; } {
+	public toDict(minimized: true): Partial<{ center: ReturnType<Vector2["toDict"]>, radius: number; }>;
+	public toDict(minimized?: false): { center: ReturnType<Vector2["toDict"]>, radius: number; };
+	public toDict(minimized?: boolean): Partial<{ center: ReturnType<Vector2["toDict"]>, radius: number; }> {
 		if(minimized) {
 			const ret = {};
 			if(this.radius) { ret.radius = this.radius; }

@@ -39,7 +39,9 @@ export default class Line {
 	 * @param minimized If true, will not include keys that their values are 0. You can use fromDict on minimized dicts.
 	 * @returns Dictionary with {from, to}.
 	 */
-	public toDict(minimized: boolean): { from: Vector2, to: Vector2; } {
+	public toDict(minimized: true): Partial<{ from: ReturnType<Vector2["toDict"]>, to: ReturnType<Vector2["toDict"]>; }>;
+	public toDict(minimized?: false): { from: ReturnType<Vector2["toDict"]>, to: ReturnType<Vector2["toDict"]>; };
+	public toDict(minimized?: boolean): Partial<{ from: ReturnType<Vector2["toDict"]>, to: ReturnType<Vector2["toDict"]>; }> {
 		if(minimized) {
 			const ret = {};
 			if(this.from.x || this.from.y) { ret.from = this.from.toDict(true); }

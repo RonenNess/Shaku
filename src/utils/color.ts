@@ -207,8 +207,8 @@ export default class Color {
 	 * @returns Dictionary with {r,g,b,a}
 	 */
 	public toDict(minimized: true): Partial<{ r: number, g: number, b: number, a: number; }>;
-	public toDict(minimized: false): { r: number, g: number, b: number, a: number; };
-	public toDict(minimized: boolean): Partial<{ r: number, g: number, b: number, a: number; }> {
+	public toDict(minimized?: false): { r: number, g: number, b: number, a: number; };
+	public toDict(minimized?: boolean): Partial<{ r: number, g: number, b: number, a: number; }> {
 		if(minimized) {
 			const ret = {};
 			if(this.r !== 1) { ret.r = this.r; }

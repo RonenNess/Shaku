@@ -629,8 +629,8 @@ export default class Vector3 {
 	 * @returns Dictionary with {x,y,z}
 	 */
 	public toDict(minimized: true): Partial<{ x: number, y: number, z: number; }>;
-	public toDict(minimized: false): { x: number, y: number, z: number; };
-	public toDict(minimized: boolean): Partial<{ x: number, y: number, z: number; }> {
+	public toDict(minimized?: false): { x: number, y: number, z: number; };
+	public toDict(minimized?: boolean): Partial<{ x: number, y: number, z: number; }> {
 		if(minimized) {
 			const ret = {};
 			if(this.x) { ret.x = this.x; }

@@ -1,4 +1,5 @@
 // import some utilities
+
 import MathHelper from "./math_helper";
 
 const lerp = MathHelper.lerp;
@@ -52,7 +53,7 @@ export default class Perlin {
 	 * Create the perlin noise generator.
 	 * @param seed Seed for perlin noise, or undefined for random.
 	 */
-	constructor(seed?: number) {
+	public constructor(seed?: number) {
 		if(seed === undefined) { seed = Math.random(); }
 		this.seed(seed);
 	}
