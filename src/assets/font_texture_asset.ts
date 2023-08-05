@@ -8,8 +8,20 @@ import TextureAsset from "./texture_asset";
  * This asset type creates an atlas of all the font's characters as textures, so we can later render them as sprites.
  */
 export default class FontTextureAsset extends Asset {
+	/**
+	 * default ascii characters to generate font textures for
+	 */
+	public static readonly defaultCharactersSet = " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~ ¡¢£¤¥¦§¨©ª«¬­®¯°±²³´µ¶·¸¹º»¼½¾";
+
+	private _fontName: string | null;
+	private _fontSize: number | null;
+	private _placeholderChar: string | null;
+	private _sourceRects: Rectangle[] | null;
+	private _texture: TextureAsset | null;
+	private _lineHeight: number;
+
 	/** @inheritdoc */
-	constructor(url) {
+	public constructor(url: string) {
 		super(url);
 		this._fontName = null;
 		this._fontSize = null;
@@ -22,53 +34,63 @@ export default class FontTextureAsset extends Asset {
 	/**
 	 * Get line height.
 	 */
-	get lineHeight() {
+	public get lineHeight() {
 		return this._lineHeight;
 	}
 
 	/**
 	 * Get font name.
 	 */
-	get fontName() {
+	public get fontName() {
 		return this._fontName;
 	}
 
 	/**
 	 * Get font size.
 	 */
-	get fontSize() {
+	public get fontSize() {
 		return this._fontSize;
 	}
 
 	/**
 	 * Get placeholder character.
 	 */
-	get placeholderCharacter() {
+	public get placeholderCharacter() {
 		return this._placeholderChar;
 	}
 
 	/**
 	 * Get the texture.
 	 */
-	get texture() {
+	public get texture() {
 		return this._texture;
 	}
 
 	/**
 	 * Generate the font texture from a font found in given URL.
 	 * @param {*} params Additional params. Possible values are:
-	 *                      - fontName: mandatory font name. on some browsers if the font name does not match the font you actually load via the URL, it will not be loaded properly.
-	 *                      - missingCharPlaceholder (default='?'): character to use for missing characters.
-	 *                      - smoothFont (default=true): if true, will set font to smooth mode.
-	 *                      - fontSize (default=52): font size in texture. larget font size will take more memory, but allow for sharper text rendering in larger scales.
-	 *                      - enforceTexturePowerOfTwo (default=true): if true, will force texture size to be power of two.
-	 *                      - maxTextureWidth (default=1024): max texture width.
-	 *                      - charactersSet (default=FontTextureAsset.defaultCharactersSet): which characters to set in the texture.
-	 *                      - extraPadding (default=0,0): Optional extra padding to add around characters in texture.
-	 *                      - sourceRectOffsetAdjustment (default=0,0): Optional extra offset in characters source rectangles. Use this for fonts that are too low / height and bleed into other characters source rectangles.
-	 * @returns {Promise} Promise to resolve when fully loaded.
+	 *  - fontName: mandatory font name. on some browsers if the font name does not match the font you actually load via the URL, it will not be loaded properly.
+	 *  - missingCharPlaceholder (default='?'): character to use for missing characters.
+	 *  - smoothFont (default=true): if true, will set font to smooth mode.
+	 *  - fontSize (default=52): font size in texture. larget font size will take more memory, but allow for sharper text rendering in larger scales.
+	 *  - enforceTexturePowerOfTwo (default=true): if true, will force texture size to be power of two.
+	 *  - maxTextureWidth (default=1024): max texture width.
+	 *  - charactersSet (default=FontTextureAsset.defaultCharactersSet): which characters to set in the texture.
+	 *  - extraPadding (default=0,0): Optional extra padding to add around characters in texture.
+	 *  - sourceRectOffsetAdjustment (default=0,0): Optional extra offset in characters source rectangles. Use this for fonts that are too low / height and bleed into other characters source rectangles.
+	 * @returns Promise to resolve when fully loaded.
 	 */
-	load(params) {
+	public load(params: {
+		fontName: string;
+		missingCharPlaceholder?: string;
+		smoothFont?: boolean;
+		fontSize?: number;
+		enforceTexturePowerOfTwo?: boolean;
+		maxTextureWidth?: number;
+		charactersSet?: string;
+		extraPadding?: Vector2;
+		sourceRectOffsetAdjustment?: Vector2;
+	}): Promise<void> {
 		return new Promise(async (resolve, reject) => {
 
 			if(!params || !params.fontName) {
@@ -205,62 +227,62 @@ export default class FontTextureAsset extends Asset {
 
 	/**
 	 * Get texture width.
-	 * @returns {Number} Texture width.
+	 * @returns Texture width.
 	 */
-	get width() {
+	public get width(): number {
 		return this._texture._width;
 	}
 
 	/**
 	 * Get texture height.
-	 * @returns {Number} Texture height.
+	 * @returns Texture height.
 	 */
-	get height() {
+	public get height(): number {
 		return this._texture._height;
 	}
 
 	/**
 	 * Get texture size as a vector.
-	 * @returns {Vector2} Texture size.
+	 * @returns Texture size.
 	 */
-	getSize() {
+	public getSize(): Vector2 {
 		return this._texture.getSize();
 	}
 
 	/** @inheritdoc */
-	get valid() {
+	public get valid(): boolean {
 		return Boolean(this._texture);
 	}
 
 	/**
 	 * Get the source rectangle for a given character in texture.
-	 * @param {Character} character Character to get source rect for.
-	 * @returns {Rectangle} Source rectangle for character.
+	 * @param character Character to get source rect for.
+	 * @returns Source rectangle for character.
 	 */
-	getSourceRect(character) {
+	public getSourceRect(character: string): Rectangle {
 		return this._sourceRects[character] || this._sourceRects[this.placeholderCharacter];
 	}
 
 	/**
 	 * When drawing the character, get the offset to add to the cursor.
-	 * @param {Character} character Character to get the offset for.
-	 * @returns {Vector2} Offset to add to the cursor before drawing the character.
+	 * @param character Character to get the offset for.
+	 * @returns Offset to add to the cursor before drawing the character.
 	 */
-	getPositionOffset(character) {
+	public getPositionOffset(character: string): Vector2 {
 		return Vector2.zero();
 	}
 
 	/**
 	 * Get how much to advance the cursor when drawing this character.
-	 * @param {Character} character Character to get the advance for.
-	 * @returns {Number} Distance to move the cursor after drawing the character.
+	 * @param character Character to get the advance for.
+	 * @returns Distance to move the cursor after drawing the character.
 	 */
-	getXAdvance(character) {
+	public getXAdvance(character: string): number {
 		return this.getSourceRect(character).width;
 	}
 
 	/** @inheritdoc */
-	destroy() {
+	public destroy(): void {
 		if(this._texture) this._texture.destroy();
 		this._fontName = null;
 		this._fontSize = null;
@@ -271,11 +293,9 @@ export default class FontTextureAsset extends Asset {
 	}
 }
 
-// default ascii characters to generate font textures for
-FontTextureAsset.defaultCharactersSet = " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~ ¡¢£¤¥¦§¨©ª«¬­®¯°±²³´µ¶·¸¹º»¼½¾";
 
 // return the closest power-of-two value to a given number
-function makePowerTwo(val) {
+function makePowerTwo(val: number): number {
 	let ret = 2;
 	while(ret < val) {
 		if(ret >= val) { return ret; }
@@ -287,7 +307,7 @@ function makePowerTwo(val) {
 /**
  * Measure font's actual height.
  */
-function measureTextHeight(fontFamily, fontSize, char, extraHeight) {
+function measureTextHeight(fontFamily: string, fontSize: number, char?: string, extraHeight?: number): number {
 	let text = document.createElement('pre');
 	text.style.fontFamily = fontFamily;
 	text.style.fontSize = fontSize + "px";
@@ -298,12 +318,12 @@ function measureTextHeight(fontFamily, fontSize, char, extraHeight) {
 	let result = text.getBoundingClientRect().height + (extraHeight || 0);
 	document.body.removeChild(text);
 	return Math.ceil(result);
-};
+}
 
 /**
  * Measure font's actual width.
  */
-function measureTextWidth(fontFamily, fontSize, char, extraWidth) {
+function measureTextWidth(fontFamily: string, fontSize: number, char?: string, extraWidth?: number): number {
 	// special case to ignore \r and \n when measuring text width
 	if(char === '\n' || char === '\r') { return 0; }
 
@@ -317,4 +337,4 @@ function measureTextWidth(fontFamily, fontSize, char, extraWidth) {
 		result = Math.max(result, context.measureText(text[i]).width + (extraWidth || 0));
 	}
 	return Math.ceil(result);
-};
+}

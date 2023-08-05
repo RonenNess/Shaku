@@ -7,15 +7,21 @@ const _loggggger = _logger.getLogger("assets"); // TODO
 
 
 // the webgl context to use
-var gl = null;
+var gl: WebGLRenderingContext | null = null;
 
 /**
  * A loadable texture asset.
  * This asset type loads an image from URL or source, and turn it into a texture.
  */
 export default class TextureAsset extends TextureAssetBase {
+	private _image: unknown | null;
+	private _width: number;
+	private _height: number;
+	private _texture: WebGLTexture | null;
+	private _ctxForPixelData: CanvasRenderingContext2D | null;
+
 	/** @inheritdoc */
-	constructor(url) {
+	public constructor(url: string) {
 		super(url);
 		this._image = null;
 		this._width = 0;
@@ -28,20 +34,20 @@ export default class TextureAsset extends TextureAssetBase {
 	 * Set the WebGL context.
 	 * @private
 	 */
-	static _setWebGl(_gl) {
+	private static _setWebGl(_gl: WebGLRenderingContext): void {
 		gl = _gl;
 	}
 
 	/**
 	 * Load the texture from it's image URL.
-	 * @param {*} params Optional additional params. Possible values are:
-	 *                      - generateMipMaps (default=false): if true, will generate mipmaps for this texture.
-	 *                      - crossOrigin (default=undefined): if set, will set the crossOrigin property with this value.
-	 *                      - flipY (default=false): if true, will flip texture on Y axis.
-	 *                      - premultiplyAlpha (default=false): if true, will load texture with premultiply alpha flag set.
-	 * @returns {Promise} Promise to resolve when fully loaded.
+	 * @param params Optional additional params. Possible values are:
+	 *  - generateMipMaps (default=false): if true, will generate mipmaps for this texture.
+	 *  - crossOrigin (default=undefined): if set, will set the crossOrigin property with this value.
+	 *  - flipY (default=false): if true, will flip texture on Y axis.
+	 *  - premultiplyAlpha (default=false): if true, will load texture with premultiply alpha flag set.
+	 * @returns Promise to resolve when fully loaded.
 	 */
-	load(params) {
+	public load(params?: { generateMipMaps?: boolean, crossOrigin?: boolean | undefined, flipY?: boolean, premultiplyAlpha?: boolean; }): Promise<void> {
 		// default params
 		params = params || {};
 
@@ -81,7 +87,7 @@ export default class TextureAsset extends TextureAssetBase {
 	 * @param {Number} height Texture height.
 	 * @param {Number} channels Texture channels count. Defaults to 4 (RGBA).
 	 */
-	createRenderTarget(width, height, channels) {
+	public createRenderTarget(width: number, height: number, channels?: number): void {
 		// reset flags
 		gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
 		gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
@@ -138,10 +144,10 @@ export default class TextureAsset extends TextureAssetBase {
 	/**
 	 * Create texture from loaded image instance.
 	 * @see TextureAsset.load for params.
-	 * @param {Image} image Image to create texture from. Image must be loaded!
-	 * @param {*} params Optional additional params. See load() for details.
+	 * @param image Image to create texture from. Image must be loaded!
+	 * @param params Optional additional params. See load() for details.
 	 */
-	fromImage(image, params) {
+	public fromImage(image: TextureAsset, params: unknown): void {
 		if(image.width === 0) {
 			throw new Error("Image to build texture from must be loaded and have valid size!");
 		}
@@ -199,11 +205,11 @@ export default class TextureAsset extends TextureAssetBase {
 	/**
 	 * Create the texture from an image.
 	 * @see TextureAsset.load for params.
-	 * @param {Image|String} source Image or Image source URL to create texture from.
-	 * @param {*} params Optional additional params. See load() for details.
-	 * @returns {Promise} Promise to resolve when asset is ready.
+	 * @param source Image or Image source URL to create texture from.
+	 * @param params Optional additional params. See load() for details.
+	 * @returns Promise to resolve when asset is ready.
 	 */
-	create(source, params) {
+	public create(source: TextureAsset | string, params: unknown): Promise<void> {
 		return new Promise(async (resolve, reject) => {
 
 			if(typeof source === "string") {

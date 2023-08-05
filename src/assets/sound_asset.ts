@@ -5,8 +5,10 @@ import Asset from "./asset";
  * This is the asset type you use to play sounds.
  */
 export default class SoundAsset extends Asset {
+	private _valid: boolean;
+
 	/** @inheritdoc */
-	constructor(url) {
+	public constructor(url: string) {
 		super(url);
 		this._valid = false;
 	}
@@ -15,9 +17,9 @@ export default class SoundAsset extends Asset {
 	 * Load the sound asset from its URL.
 	 * Note that loading sounds isn't actually necessary to play sounds, this method merely pre-load the asset (so first time we play
 	 * the sound would be immediate and not delayed) and validate the data is valid.
-	 * @returns {Promise} Promise to resolve when fully loaded.
+	 * @returns Promise to resolve when fully loaded.
 	 */
-	load() {
+	public load(): Promise<void> {
 		// for audio files we force preload and validation of the audio file.
 		// note: we can't use the Audio object as it won't work without page interaction.
 		return new Promise((resolve, reject) => {
@@ -45,12 +47,12 @@ export default class SoundAsset extends Asset {
 	}
 
 	/** @inheritdoc */
-	get valid() {
+	public get valid(): boolean {
 		return this._valid;
 	}
 
 	/** @inheritdoc */
-	destroy() {
+	public destroy(): void {
 		this._valid = false;
 	}
 }

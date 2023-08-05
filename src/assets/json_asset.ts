@@ -5,8 +5,10 @@ import Asset from "./asset";
  * This asset type loads JSON from a remote file.
  */
 export default class JsonAsset extends Asset {
+	private _data: unknown | null;
+
 	/** @inheritdoc */
-	constructor(url) {
+	public constructor(url: string) {
 		super(url);
 		this._data = null;
 	}
@@ -15,7 +17,7 @@ export default class JsonAsset extends Asset {
 	 * Load the JSON data from the asset URL.
 	 * @returns {Promise} Promise to resolve when fully loaded.
 	 */
-	load() {
+	public load(): Promise<void> {
 		return new Promise((resolve, reject) => {
 
 			var request = new XMLHttpRequest();
@@ -53,10 +55,10 @@ export default class JsonAsset extends Asset {
 
 	/**
 	 * Create the JSON data asset from object or string.
-	 * @param {Object|String} source Data to create asset from.
-	 * @returns {Promise} Promise to resolve when asset is ready.
+	 * @param source Data to create asset from.
+	 * @returns Promise to resolve when asset is ready.
 	 */
-	create(source) {
+	public create(source: unknown | string): Promise<void> {
 		return new Promise((resolve, reject) => {
 
 			// make sure data is a valid json + clone it
@@ -86,19 +88,19 @@ export default class JsonAsset extends Asset {
 
 	/**
 	 * Get json data.
-	 * @returns {*} Data as dictionary.
+	 * @returns Data as dictionary.
 	 */
-	get data() {
+	public get data(): unknown {
 		return this._data;
 	}
 
 	/** @inheritdoc */
-	get valid() {
+	public get valid(): boolean {
 		return Boolean(this._data);
 	}
 
 	/** @inheritdoc */
-	destroy() {
+	public destroy(): void {
 		this._data = null;
 	}
 }

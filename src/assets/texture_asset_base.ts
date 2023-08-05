@@ -1,15 +1,17 @@
-import { TextureFilterMode } from "../gfx/texture_filter_modes";
+import { TextureFilterModes } from "../gfx/texture_filter_modes";
+import { TextureWrapModes } from "../gfx/texture_wrap_modes";
 import Vector2 from "../utils/vector2";
 import Asset from "./asset";
-
-import { TextureWrapMode } from "../gfx/texture_wrap_modes";
 
 /**
  * Base type for all texture asset types.
  */
-export default class TextureAssetBase extends Asset {
+export default abstract class TextureAssetBase extends Asset {
+	private _filter: TextureFilterModes | null;
+	private _wrapMode: TextureWrapModes | null;
+
 	/** @inheritdoc */
-	constructor(url) {
+	public constructor(url: string) {
 		super(url);
 		this._filter = null;
 		this._wrapMode = null;
@@ -17,35 +19,31 @@ export default class TextureAssetBase extends Asset {
 
 	/**
 	 * Get texture magnifying filter, or null to use default.
-	 * @see Shaku.gfx.TextureFilterModes
 	 */
-	get filter() {
+	public get filter(): TextureFilterModes | null {
 		return this._filter;
 	}
 
 	/**
 	 * Set texture magnifying filter.
-	 * @see Shaku.gfx.TextureFilterModes
-	 * @param {TextureFilterMode} value Filter mode to use or null to use default.
+	 * @param value Filter mode to use or null to use default.
 	 */
-	set filter(value) {
+	public set filter(value: TextureFilterModes | null) {
 		this._filter = value;
 	}
 
 	/**
 	 * Get texture wrapping mode, or null to use default.
-	 * @see Shaku.gfx.TextureWrapModes
 	 */
-	get wrapMode() {
+	public get wrapMode(): TextureWrapModes | null {
 		return this._wrapMode;
 	}
 
 	/**
 	 * Set texture wrapping mode.
-	 * @see Shaku.gfx.TextureWrapModes
-	 * @param {TextureWrapMode} value Wrapping mode to use or null to use default.
+	 * @param value Wrapping mode to use or null to use default.
 	 */
-	set wrapMode(value) {
+	public set wrapMode(value: TextureWrapModes | null) {
 		this._wrapMode = value;
 	}
 
@@ -53,38 +51,30 @@ export default class TextureAssetBase extends Asset {
 	 * Get raw image.
 	 * @returns {Image} Image instance.
 	 */
-	get image() {
-		throw new Error("Not Implemented!");
-	}
+	public abstract get image(): unknown;
 
 	/**
 	 * Get texture width.
-	 * @returns {Number} Texture width.
+	 * @returns Texture width.
 	 */
-	get width() {
-		throw new Error("Not Implemented!");
-	}
+	public abstract get width(): number;
 
 	/**
 	 * Get texture height.
-	 * @returns {Number} Texture height.
+	 * @returns Texture height.
 	 */
-	get height() {
-		throw new Error("Not Implemented!");
-	}
+	public abstract get height(): number;
 
 	/**
 	 * Get texture size as a vector.
-	 * @returns {Vector2} Texture size.
+	 * @returns Texture size.
 	 */
-	getSize() {
+	public getSize(): Vector2 {
 		return new Vector2(this.width, this.height);
 	}
 
 	/**
 	 * Get texture instance for WebGL.
 	 */
-	get _glTexture() {
-		throw new Error("Not Implemented!");
-	}
+	protected abstract get _glTexture(): unknown;
 }

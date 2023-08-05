@@ -10,8 +10,20 @@ import TextureAsset from "./texture_asset";
  * This asset uses a signed distance field atlas to render characters as sprites at high res.
  */
 export default class MsdfFontTextureAsset extends FontTextureAsset {
+	private _positionOffsets: Vector2[] | null;
+	private _xAdvances: number[] | null;
+	private _placeholderChar: string;
+	private _fontName: string;
+	private _fontSize: number;
+	private _lineHeight: number;
+	private _sourceRects: unknown;
+	private _positionOffsets: Record<string, Vector2> | null;
+	private _xAdvances: Record<string, number> | null;
+	private _kernings: unknown | null;
+	private _texture: TextureAsset | null;
+
 	/** @inheritdoc */
-	constructor(url) {
+	public constructor(url: string) {
 		super(url);
 		this._positionOffsets = null;
 		this._xAdvances = null;
@@ -19,14 +31,14 @@ export default class MsdfFontTextureAsset extends FontTextureAsset {
 
 	/**
 	 * Generate the font metadata and texture from the given URL.
-	 * @param {*} params Additional params. Possible values are:
-	 *                      - jsonUrl: mandatory url for the font's json metadata (generated via msdf-bmfont-xml, for example)
-	 *                      - textureUrl: mandatory url for the font's texture atlas (generated via msdf-bmfont-xml, for example)
-	 *                      - missingCharPlaceholder (default='?'): character to use for missing characters.
+	 * @param params Additional params. Possible values are:
+	 * - jsonUrl: mandatory url for the font's json metadata (generated via msdf-bmfont-xml, for example)
+	 * - textureUrl: mandatory url for the font's texture atlas (generated via msdf-bmfont-xml, for example)
+	 * - missingCharPlaceholder (default='?'): character to use for missing characters.
 	 *
-	 * @returns {Promise} Promise to resolve when fully loaded.
+	 * @returns Promise to resolve when fully loaded.
 	 */
-	load(params) {
+	public load(params: { jsonUrl: string; textureUrl: string; missingCharPlaceholder?: string; }): Promise<void> {
 		return new Promise(async (resolve, reject) => {
 
 			if(!params || !params.jsonUrl || !params.textureUrl) {
@@ -37,29 +49,29 @@ export default class MsdfFontTextureAsset extends FontTextureAsset {
 			// TODO: infer textureUrl from json contents
 			// TODO: infer jsonUrl from url
 
-			let atlas_json = new JsonAsset(params.jsonUrl);
-			let atlas_texture = new TextureAsset(params.textureUrl);
-			await Promise.all([atlas_json.load(), atlas_texture.load()]);
+			let atlasJson = new JsonAsset(params.jsonUrl);
+			let atlasTexture = new TextureAsset(params.textureUrl);
+			await Promise.all([atlasJson.load(), atlasTexture.load()]);
 
-			let atlas_metadata = atlas_json.data;
-			atlas_texture.filter = TextureFilterModes.LINEAR;
+			let atlasMetadata = atlasJson.data;
+			atlasTexture.filter = TextureFilterModes.LINEAR;
 
-			if(atlas_metadata.common.pages > 1) {
+			if(atlasMetadata.common.pages > 1) {
 				throw new Error("Can't use MSDF font with several pages");
 			}
 
 			// set default missing char placeholder + store it
 			this._placeholderChar = (params.missingCharPlaceholder || '?')[0];
 
-			if(!atlas_metadata.info.charset.includes(this._placeholderChar)) {
+			if(!atlasMetadata.info.charset.includes(this._placeholderChar)) {
 				throw new Error("The atlas' charset doesn't include the given placeholder character");
 			}
 
-			this._fontName = atlas_metadata.info.face;
-			this._fontSize = atlas_metadata.info.size;
+			this._fontName = atlasMetadata.info.face;
+			this._fontSize = atlasMetadata.info.size;
 
 			// set line height
-			this._lineHeight = atlas_metadata.common.lineHeight;
+			this._lineHeight = atlasMetadata.common.lineHeight;
 
 			// dictionaries to store per-character data
 			this._sourceRects = {};
@@ -67,7 +79,7 @@ export default class MsdfFontTextureAsset extends FontTextureAsset {
 			this._xAdvances = {};
 			this._kernings = {};
 
-			for(const charData of atlas_metadata.chars) {
+			for(const charData of atlasMetadata.chars) {
 				let currChar = charData.char;
 
 				let sourceRect = new Rectangle(charData.x, charData.y, charData.width, charData.height);
@@ -79,7 +91,7 @@ export default class MsdfFontTextureAsset extends FontTextureAsset {
 				this._xAdvances[currChar] = charData.xadvance;
 			}
 
-			this._texture = atlas_texture;
+			this._texture = atlasTexture;
 			this._notifyReady();
 			resolve();
 		});
@@ -87,40 +99,40 @@ export default class MsdfFontTextureAsset extends FontTextureAsset {
 
 	/**
 	 * Get texture width.
-	 * @returns {Number} Texture width.
+	 * @returns Texture width.
 	 */
-	get width() {
+	public get width(): number {
 		return this._texture._width;
 	}
 
 	/**
 	 * Get texture height.
-	 * @returns {Number} Texture height.
+	 * @returns Texture height.
 	 */
-	get height() {
+	public get height(): number {
 		return this._texture._height;
 	}
 
 	/**
 	 * Get texture size as a vector.
-	 * @returns {Vector2} Texture size.
+	 * @returns Texture size.
 	 */
-	getSize() {
+	public getSize(): Vector2 {
 		return this._texture.getSize();
 	}
 
 	/** @inheritdoc */
-	getPositionOffset(character) {
+	public getPositionOffset(character: string): Vector2 {
 		return this._positionOffsets[character] || this._positionOffsets[this.placeholderCharacter];
 	}
 
 	/** @inheritdoc */
-	getXAdvance(character) {
+	public getXAdvance(character: string): number {
 		return this._xAdvances[character] || this._xAdvances[this.placeholderCharacter];
 	}
 
 	/** @inheritdoc */
-	destroy() {
+	public destroy(): void {
 		super.destroy();
 		this._positionOffsets = null;
 		this._xAdvances = null;
