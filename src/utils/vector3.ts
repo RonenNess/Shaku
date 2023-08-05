@@ -10,17 +10,17 @@ class Vector3 {
 	 * @param {number} y Vector Y.
 	 * @param {number} z Vector Z.
 	 */
-	constructor(x = 0, y = 0, z = 0) {
-		this.x = x;
-		this.y = y;
-		this.z = z;
-	}
+	constructor(
+		public x: number = 0,
+		public y: number = 0,
+		public z: number = 0,
+	) { }
 
 	/**
 	 * Clone the vector.
 	 * @returns {Vector3} cloned vector.
 	 */
-	clone() {
+	clone(): Vector3 {
 		return new Vector3(this.x, this.y, this.z);
 	}
 
@@ -31,7 +31,7 @@ class Vector3 {
 	 * @param {Number} z Z component.
 	 * @returns {Vector3} this.
 	 */
-	set(x, y, z) {
+	set(x: number, y: number, z: number): Vector3 {
 		this.x = x;
 		this.y = y;
 		this.z = z;
@@ -42,7 +42,7 @@ class Vector3 {
 	 * Copy values from other vector into self.
 	 * @returns {Vector3} this.
 	 */
-	copy(other) {
+	copy(other: Vector3): Vector3 {
 		this.x = other.x;
 		this.y = other.y;
 		this.z = other.z;
@@ -54,8 +54,8 @@ class Vector3 {
 	 * @param {Number|Vector3} Other Vector3 or number to add to all components.
 	 * @returns {Vector3} result vector.
 	 */
-	add(other) {
-		if(typeof other === 'number') {
+	add(other: number | Vector3): Vector3 {
+		if (typeof other === 'number') {
 			return new Vector3(
 				this.x + other,
 				this.y + (arguments[1] === undefined ? other : arguments[1]),
@@ -70,8 +70,8 @@ class Vector3 {
 	 * @param {Number|Vector3} Other Vector3 or number to sub from all components.
 	 * @returns {Vector3} result vector.
 	 */
-	sub(other) {
-		if(typeof other === 'number') {
+	sub(other: number | Vector3): Vector3 {
+		if (typeof other === 'number') {
 			return new Vector3(
 				this.x - other,
 				this.y - (arguments[1] === undefined ? other : arguments[1]),
@@ -86,8 +86,8 @@ class Vector3 {
 	 * @param {Number|Vector3} Other Vector3 or number to divide by all components.
 	 * @returns {Vector3} result vector.
 	 */
-	div(other) {
-		if(typeof other === 'number') {
+	div(other: number | Vector3): Vector3 {
+		if (typeof other === 'number') {
 			return new Vector3(
 				this.x / other,
 				this.y / (arguments[1] === undefined ? other : arguments[1]),
@@ -102,8 +102,8 @@ class Vector3 {
 	 * @param {Number|Vector3} Other Vector3 or number to multiply with all components.
 	 * @returns {Vector3} result vector.
 	 */
-	mul(other) {
-		if(typeof other === 'number') {
+	mul(other: number | Vector3): Vector3 {
+		if (typeof other === 'number') {
 			return new Vector3(
 				this.x * other,
 				this.y * (arguments[1] === undefined ? other : arguments[1]),
@@ -117,7 +117,7 @@ class Vector3 {
 	 * Return a round copy of this vector.
 	 * @returns {Vector3} result vector.
 	 */
-	round() {
+	round(): Vector3 {
 		return new Vector3(Math.round(this.x), Math.round(this.y), Math.round(this.z));
 	}
 
@@ -125,7 +125,7 @@ class Vector3 {
 	 * Return a floored copy of this vector.
 	 * @returns {Vector3} result vector.
 	 */
-	floor() {
+	floor(): Vector3 {
 		return new Vector3(Math.floor(this.x), Math.floor(this.y), Math.floor(this.z));
 	}
 
@@ -133,7 +133,7 @@ class Vector3 {
 	 * Return a ceiled copy of this vector.
 	 * @returns {Vector3} result vector.
 	 */
-	ceil() {
+	ceil(): Vector3 {
 		return new Vector3(Math.ceil(this.x), Math.ceil(this.y), Math.ceil(this.z));
 	}
 
@@ -141,8 +141,8 @@ class Vector3 {
 	 * Return a normalized copy of this vector.
 	 * @returns {Vector3} result vector.
 	 */
-	normalized() {
-		if((this.x == 0) && (this.y == 0) && (this.z == 0)) { return Vector3.zero; }
+	normalized(): Vector3 {
+		if ((this.x == 0) && (this.y == 0) && (this.z == 0)) { return Vector3.zero(); }
 		let mag = this.length();
 		return new Vector3(this.x / mag, this.y / mag, this.z / mag);
 	}
@@ -152,8 +152,8 @@ class Vector3 {
 	 * @param {Number|Vector3} Other Vector or number to add.
 	 * @returns {Vector3} this.
 	 */
-	addSelf(other) {
-		if(typeof other === 'number') {
+	addSelf(other: number | Vector3): Vector3 {
+		if (typeof other === 'number') {
 			this.x += other;
 			this.y += (arguments[1] === undefined ? other : arguments[1]);
 			this.z += (arguments[2] === undefined ? other : arguments[2]);
@@ -171,8 +171,8 @@ class Vector3 {
 	 * @param {Number|Vector3} Other Vector or number to substract.
 	 * @returns {Vector3} this.
 	 */
-	subSelf(other) {
-		if(typeof other === 'number') {
+	subSelf(other: number | Vector3): Vector3 {
+		if (typeof other === 'number') {
 			this.x -= other;
 			this.y -= (arguments[1] === undefined ? other : arguments[1]);
 			this.z -= (arguments[2] === undefined ? other : arguments[2]);
@@ -190,8 +190,8 @@ class Vector3 {
 	 * @param {Number|Vector3} Other Vector or number to divide by.
 	 * @returns {Vector3} this.
 	 */
-	divSelf(other) {
-		if(typeof other === 'number') {
+	divSelf(other: number | Vector3): Vector3 {
+		if (typeof other === 'number') {
 			this.x /= other;
 			this.y /= (arguments[1] === undefined ? other : arguments[1]);
 			this.z /= (arguments[2] === undefined ? other : arguments[2]);
@@ -209,8 +209,8 @@ class Vector3 {
 	 * @param {Number|Vector3} Other Vector or number to multiply by.
 	 * @returns {Vector3} this.
 	 */
-	mulSelf(other) {
-		if(typeof other === 'number') {
+	mulSelf(other: number | Vector3): Vector3 {
+		if (typeof other === 'number') {
 			this.x *= other;
 			this.y *= (arguments[1] === undefined ? other : arguments[1]);
 			this.z *= (arguments[2] === undefined ? other : arguments[2]);
@@ -227,7 +227,7 @@ class Vector3 {
 	 * Round self.
 	 * @returns {Vector3} this.
 	 */
-	roundSelf() {
+	roundSelf(): Vector3 {
 		this.x = Math.round(this.x);
 		this.y = Math.round(this.y);
 		this.z = Math.round(this.z);
@@ -238,7 +238,7 @@ class Vector3 {
 	 * Floor self.
 	 * @returns {Vector3} this.
 	 */
-	floorSelf() {
+	floorSelf(): Vector3 {
 		this.x = Math.floor(this.x);
 		this.y = Math.floor(this.y);
 		this.z = Math.floor(this.z);
@@ -249,7 +249,7 @@ class Vector3 {
 	 * Ceil self.
 	 * @returns {Vector3} this.
 	 */
-	ceilSelf() {
+	ceilSelf(): Vector3 {
 		this.x = Math.ceil(this.x);
 		this.y = Math.ceil(this.y);
 		this.z = Math.ceil(this.z);
@@ -260,8 +260,8 @@ class Vector3 {
 	 * Return a normalized copy of this vector.
 	 * @returns {Vector3} this.
 	 */
-	normalizeSelf() {
-		if(this.x == 0 && this.y == 0 && this.z == 0) { return this; }
+	normalizeSelf(): Vector3 {
+		if (this.x == 0 && this.y == 0 && this.z == 0) { return this; }
 		let mag = this.length();
 		this.x /= mag;
 		this.y /= mag;
@@ -274,7 +274,7 @@ class Vector3 {
 	 * @param {Vector3} other Other vector to compare to.
 	 * @returns {Boolean} if vectors are equal.
 	 */
-	equals(other) {
+	equals(other: Vector3): boolean {
 		return ((this === other) ||
 			((other.constructor === this.constructor) &&
 				this.x === other.x && this.y === other.y && this.z === other.z)
@@ -287,7 +287,7 @@ class Vector3 {
 	 * @param {Number} threshold Distance threshold to consider as equal. Defaults to 1.
 	 * @returns {Boolean} if vectors are equal.
 	 */
-	approximate(other, threshold) {
+	approximate(other: this, threshold: number): boolean {
 		threshold = threshold || 1;
 		return (
 			(this === other) ||
@@ -301,7 +301,7 @@ class Vector3 {
 	 * Return vector length (aka magnitude).
 	 * @returns {Number} Vector length.
 	 */
-	length() {
+	length(): number {
 		return Math.sqrt((this.x * this.x) + (this.y * this.y) + (this.z * this.z));
 	}
 
@@ -309,7 +309,7 @@ class Vector3 {
 	 * Return a copy of this vector multiplied by a factor.
 	 * @returns {Vector3} result vector.
 	 */
-	scaled(fac) {
+	scaled(fac: number): Vector3 {
 		return new Vector3(this.x * fac, this.y * fac, this.z * fac);
 	}
 
@@ -317,7 +317,7 @@ class Vector3 {
 	 * Get vector with 0,0,0 values.
 	 * @returns {Vector3} result vector.
 	 */
-	static zero() {
+	static zero(): Vector3 {
 		return new Vector3(0, 0, 0);
 	}
 
@@ -325,7 +325,7 @@ class Vector3 {
 	 * Get vector with 1,1,1 values.
 	 * @returns {Vector3} result vector.
 	 */
-	static one() {
+	static one(): Vector3 {
 		return new Vector3(1, 1, 1);
 	}
 
@@ -333,7 +333,7 @@ class Vector3 {
 	 * Get vector with 0.5,0.5 values.
 	 * @returns {Vector3} result vector.
 	 */
-	static half() {
+	static half(): Vector3 {
 		return new Vector3(0.5, 0.5, 0.5);
 	}
 
@@ -341,7 +341,7 @@ class Vector3 {
 	 * Get vector with -1,0,0 values.
 	 * @returns {Vector3} result vector.
 	 */
-	static left() {
+	static left(): Vector3 {
 		return new Vector3(-1, 0, 0);
 	}
 
@@ -349,7 +349,7 @@ class Vector3 {
 	 * Get vector with 1,0,0 values.
 	 * @returns {Vector3} result vector.
 	 */
-	static right() {
+	static right(): Vector3 {
 		return new Vector3(1, 0, 0);
 	}
 
@@ -357,7 +357,7 @@ class Vector3 {
 	 * Get vector with 0,-1,0 values.
 	 * @returns {Vector3} result vector.
 	 */
-	static up() {
+	static up(): Vector3 {
 		return new Vector3(0, 1, 0);
 	}
 
@@ -365,7 +365,7 @@ class Vector3 {
 	 * Get vector with 0,1,0 values.
 	 * @returns {Vector3} result vector.
 	 */
-	static down() {
+	static down(): Vector3 {
 		return new Vector3(0, -1, 0);
 	}
 
@@ -373,7 +373,7 @@ class Vector3 {
 	 * Get vector with 0,0,1 values.
 	 * @returns {Vector3} result vector.
 	 */
-	static front() {
+	static front(): Vector3 {
 		return new Vector3(0, 0, 1);
 	}
 
@@ -381,7 +381,7 @@ class Vector3 {
 	 * Get vector with 0,0,-1 values.
 	 * @returns {Vector3} result vector.
 	 */
-	static back() {
+	static back(): Vector3 {
 		return new Vector3(0, 0, -1);
 	}
 
@@ -390,7 +390,7 @@ class Vector3 {
 	 * @param {Vector3} other Other vector.
 	 * @returns {Number} Distance between vectors.
 	 */
-	distanceTo(other) {
+	distanceTo(other: Vector3): number {
 		return Vector3.distance(this, other);
 	}
 
@@ -399,7 +399,7 @@ class Vector3 {
 	 * @param {Vector3} other Other vector.
 	 * @returns {Number} Distance between vectors.
 	 */
-	distanceToSquared(other) {
+	distanceToSquared(other: Vector3): number {
 		const dx = this.x - other.x, dy = this.y - other.y, dz = this.z - other.z;
 		return dx * dx + dy * dy + dz * dz;
 	}
@@ -410,7 +410,7 @@ class Vector3 {
 	 * @param {Vector3} max Max vector.
 	 * @returns {Vector3} Clamped vector.
 	 */
-	clamp(min, max) {
+	clamp(min: Vector3, max: Vector3): Vector3 {
 		return this.clone().clampSelf(min, max);
 	}
 
@@ -420,7 +420,7 @@ class Vector3 {
 	 * @param {Vector3} max Max vector.
 	 * @returns {Vector3} Self.
 	 */
-	clampSelf(min, max) {
+	clampSelf(min: Vector3, max: Vector3): Vector3 {
 		this.x = Math.max(min.x, Math.min(max.x, this.x));
 		this.y = Math.max(min.y, Math.min(max.y, this.y));
 		this.z = Math.max(min.z, Math.min(max.z, this.z));
@@ -432,7 +432,7 @@ class Vector3 {
 	 * @param {Vector3} other Vector to calculate dot with.
 	 * @returns {Number} Dot product value.
 	 */
-	dot(other) {
+	dot(other: Vector3): number {
 		return this.x * other.x + this.y * other.y + this.z * other.z;
 	}
 
@@ -443,7 +443,7 @@ class Vector3 {
 	 * @param {Number} a Lerp factor (0.0 - 1.0).
 	 * @returns {Vector3} result vector.
 	 */
-	static lerp(p1, p2, a) {
+	static lerp(p1: Vector3, p2: Vector3, a: number): Vector3 {
 		let lerpScalar = MathHelper.lerp;
 		return new Vector3(lerpScalar(p1.x, p2.x, a), lerpScalar(p1.y, p2.y, a), lerpScalar(p1.z, p2.z, a));
 	}
@@ -454,7 +454,7 @@ class Vector3 {
 	 * @param {Vector3} p2 Second vector.
 	 * @returns {Number} Distance between vectors.
 	 */
-	static distance(p1, p2) {
+	static distance(p1: Vector3, p2: Vector3): number {
 		let a = p1.x - p2.x;
 		let b = p1.y - p2.y;
 		let c = p1.z - p2.z;
@@ -467,7 +467,7 @@ class Vector3 {
 	 * @param {Vector3} p2 Second vector.
 	 * @returns {Vector3} Crossed vector.
 	 */
-	static crossVector(p1, p2) {
+	static crossVector(p1: Vector3, p2: Vector3): Vector3 {
 		const ax = p1.x, ay = p1.y, az = p1.z;
 		const bx = p2.x, by = p2.y, bz = p2.z;
 
@@ -483,7 +483,7 @@ class Vector3 {
 	 * @param {Vector3} v Vector to min with.
 	 * @returns {Vector3} Self.
 	 */
-	minSelf(v) {
+	minSelf(v: Vector3): Vector3 {
 		this.x = Math.min(this.x, v.x);
 		this.y = Math.min(this.y, v.y);
 		this.z = Math.min(this.z, v.z);
@@ -495,7 +495,7 @@ class Vector3 {
 	 * @param {Vector3} v Vector to max with.
 	 * @returns {Vector3} Self.
 	 */
-	maxSelf(v) {
+	maxSelf(v: Vector3): Vector3 {
 		this.x = Math.max(this.x, v.x);
 		this.y = Math.max(this.y, v.y);
 		this.z = Math.max(this.z, v.z);
@@ -507,8 +507,8 @@ class Vector3 {
 	 * @param {Vector3} v Vector to min with.
 	 * @returns {Vector3} Result vector.
 	 */
-	min(v) {
-		this.clone().minSelf(v);
+	min(v: Vector3): Vector3 {
+		return this.clone().minSelf(v);
 	}
 
 	/**
@@ -516,8 +516,8 @@ class Vector3 {
 	 * @param {Vector3} v Vector to max with.
 	 * @returns {Vector3} Result vector.
 	 */
-	max(v) {
-		this.clone().maxSelf(v);
+	max(v: Vector3): Vector3 {
+		return this.clone().maxSelf(v);
 	}
 
 	/**
@@ -532,7 +532,7 @@ class Vector3 {
 	 * @param {String} str String to parse.
 	 * @returns {Vector3} Parsed vector.
 	 */
-	static parse(str) {
+	static parse(str: string): Vector3 {
 		let parts = str.split(',');
 		return new Vector3(parseFloat(parts[0].trim()), parseFloat(parts[1].trim()), parseFloat(parts[2].trim()));
 	}
@@ -541,7 +541,7 @@ class Vector3 {
 	 * Convert to array of numbers.
 	 * @returns {Array<Number>} Vector components as array.
 	 */
-	toArray() {
+	toArray(): Array<number> {
 		return [this.x, this.y, this.z];
 	}
 
@@ -550,7 +550,7 @@ class Vector3 {
 	 * @param {Array<Number>} arr Array of numbers to create vector from.
 	 * @returns {Vector3} Vector instance.
 	 */
-	static fromArray(arr) {
+	static fromArray(arr: (number | undefined)[]): Vector3 {
 		return new Vector3(arr[0], arr[1], arr[2]);
 	}
 
@@ -559,7 +559,7 @@ class Vector3 {
 	 * @param {*} data Dictionary with {x,y,z}.
 	 * @returns {Vector3} Newly created vector.
 	 */
-	static fromDict(data) {
+	static fromDict(data: Vector3): Vector3 {
 		return new Vector3(data.x || 0, data.y || 0, data.z || 0);
 	}
 
@@ -568,79 +568,80 @@ class Vector3 {
 	 * @param {Boolean} minimized If true, will not include keys that their values are 0. You can use fromDict on minimized dicts.
 	 * @returns {*} Dictionary with {x,y,z}
 	 */
-	toDict(minimized) {
-		if(minimized) {
-			const ret = {};
-			if(this.x) { ret.x = this.x; }
-			if(this.y) { ret.y = this.y; }
-			if(this.z) { ret.z = this.z; }
+	toDict(minimized: boolean = false): { x?: number, y?: number, z?: number } {
+		if (minimized) {
+			const ret: Record<string, number> = {};
+			if (this.x) { ret.x = this.x; }
+			if (this.y) { ret.y = this.y; }
+			if (this.z) { ret.z = this.z; }
 			return ret;
 		}
 		return { x: this.x, y: this.y, z: this.z };
 	}
+
+	/**
+	* Vector with 0,0,0 values as a frozen shared object.
+	* Be careful not to try and change it.
+	*/
+	static zeroReadonly = new Vector3(0, 0, 0);
+
+	/**
+	 * Vector with 1,1,1 values as a frozen shared object.
+	 * Be careful not to try and change it.
+	 */
+	static oneReadonly = new Vector3(1, 1, 1);
+
+	/**
+	 * Vector with 0.5,0.5,0.5 values as a frozen shared object.
+	 * Be careful not to try and change it.
+	 */
+	static halfReadonly = new Vector3(0.5, 0.5, 0.5);
+
+	/**
+	 * Vector with -1,0,0 values as a frozen shared object.
+	 * Be careful not to try and change it.
+	 */
+	static leftReadonly = new Vector3(-1, 0, 0);
+
+	/**
+	 * Vector with 1,0,0 values as a frozen shared object.
+	 * Be careful not to try and change it.
+	 */
+	static rightReadonly = new Vector3(1, 0, 0);
+
+	/**
+	 * Vector with 0,-1,0 values as a frozen shared object.
+	 * Be careful not to try and change it.
+	 */
+	static upReadonly = new Vector3(0, 1, 0);
+
+	/**
+	 * Vector with 0,1,0 values as a frozen shared object.
+	 * Be careful not to try and change it.
+	 */
+	static downReadonly = new Vector3(0, -1, 0);
+
+	/**
+	 * Vector with 0,0,1 values as a frozen shared object.
+	 * Be careful not to try and change it.
+	 */
+	static frontReadonly = new Vector3(0, 0, 1);
+
+	/**
+	 * Vector with 0,0,-1 values as a frozen shared object.
+	 * Be careful not to try and change it.
+	 */
+	static backReadonly = new Vector3(0, 0, -1);
 }
 
-/**
- * Vector with 0,0,0 values as a frozen shared object.
- * Be careful not to try and change it.
- */
-Vector3.zeroReadonly = new Vector3(0, 0, 0);
 Object.freeze(Vector3.zeroReadonly);
-
-/**
- * Vector with 1,1,1 values as a frozen shared object.
- * Be careful not to try and change it.
- */
-Vector3.oneReadonly = new Vector3(1, 1, 1);
 Object.freeze(Vector3.oneReadonly);
-
-/**
- * Vector with 0.5,0.5,0.5 values as a frozen shared object.
- * Be careful not to try and change it.
- */
-Vector3.halfReadonly = new Vector3(0.5, 0.5, 0.5);
 Object.freeze(Vector3.halfReadonly);
-
-/**
- * Vector with -1,0,0 values as a frozen shared object.
- * Be careful not to try and change it.
- */
-Vector3.leftReadonly = new Vector3(-1, 0, 0);
 Object.freeze(Vector3.leftReadonly);
-
-/**
- * Vector with 1,0,0 values as a frozen shared object.
- * Be careful not to try and change it.
- */
-Vector3.rightReadonly = new Vector3(1, 0, 0);
 Object.freeze(Vector3.rightReadonly);
-
-/**
- * Vector with 0,-1,0 values as a frozen shared object.
- * Be careful not to try and change it.
- */
-Vector3.upReadonly = new Vector3(0, 1, 0);
-Object.freeze(Vector3.upReadonly);
-
-/**
- * Vector with 0,1,0 values as a frozen shared object.
- * Be careful not to try and change it.
- */
-Vector3.downReadonly = new Vector3(0, -1, 0);
-Object.freeze(Vector3.downReadonly);
-
-/**
- * Vector with 0,0,1 values as a frozen shared object.
- * Be careful not to try and change it.
- */
-Vector3.frontReadonly = new Vector3(0, 0, 1);
 Object.freeze(Vector3.frontReadonly);
-
-/**
- * Vector with 0,0,-1 values as a frozen shared object.
- * Be careful not to try and change it.
- */
-Vector3.backReadonly = new Vector3(0, 0, -1);
+Object.freeze(Vector3.upReadonly);
+Object.freeze(Vector3.downReadonly);
 Object.freeze(Vector3.backReadonly);
 
 // export vector object
