@@ -215,8 +215,7 @@ function getDistance(pa, pb) {
  *  2. Call findPath() with your grid to find a path between start and end points.
  */
 const PathFinder = {
-	findPath: findPath,
-	IGrid: IGrid
+	findPath: findPath, // TODO: had to remove IGrid since it has been turned into an interface
 };
 
 // export the path finder object

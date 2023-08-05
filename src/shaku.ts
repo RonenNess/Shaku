@@ -1,43 +1,46 @@
-const isBrowser = typeof window !== "undefined";
-
 import assets from "./assets";
 import collision from "./collision";
+import _gfx from "./gfx";
+import _input from "./input";
 import logger from "./logger";
 import IManager from "./manager";
+import _sfx from "./sfx";
 import * as utils from "./utils";
 import GameTime from "./utils/game_time";
 
-const sfx = isBrowser ? require("./sfx") : null;
-const gfx = isBrowser ? require("./gfx") : null;
-const input = isBrowser ? require("./input") : null;
+const isBrowser: boolean = typeof window !== "undefined";
+
+const sfx = isBrowser ? _sfx : null;
+const gfx = isBrowser ? _gfx : null;
+const input = isBrowser ? _input : null;
 
 const _logger = logger.getLogger("shaku");
 
 // is shaku in silent mode
-var _isSilent = false;
+var _isSilent: boolean = false;
 
 // manager state and gametime
-let _usedManagers = null;
+let _usedManagers: IManager[] | null = null;
 let _prevUpdateTime = null;
 
 // current game time
-let _gameTime = null;
+let _gameTime: GameTime | null = null;
 
 // to measure fps
-let _currFpsCounter = 0;
-let _countSecond = 0;
-let _currFps = 0;
+let _currFpsCounter: number = 0;
+let _countSecond: number = 0;
+let _currFps: number = 0;
 
 // to measure time it takes for frames to finish
-let _startFrameTime = 0;
-let _frameTimeMeasuresCount = 0;
-let _totalFrameTimes = 0;
+let _startFrameTime: number = 0;
+let _frameTimeMeasuresCount: number = 0;
+let _totalFrameTimes: number = 0;
 
 // are managers currently in "started" mode?
-let _managersStarted = false;
+let _managersStarted: boolean = false;
 
 // were we previously paused?
-let _wasPaused = false;
+let _wasPaused: boolean = false;
 
 // current version
 const version = "2.2.5";
@@ -48,83 +51,75 @@ const version = "2.2.5";
 */
 class Shaku {
 	/**
+	 * Different utilities and framework objects, like vectors, rectangles, colors, etc.
+	 */
+	public utils: typeof utils;
+
+	/**
+	 * Sound effects and music manager.
+	 */
+	public sfx: typeof sfx;
+
+	/**
+	 * Graphics manager.
+	 */
+	public gfx: typeof gfx;
+
+	/**
+	 * Input manager.
+	 */
+	public input: typeof input;
+
+	/**
+	 * Assets manager.
+	 * @name Shaku#assets
+	 */
+	public assets: typeof assets;
+
+	/**
+	 * Collision detection manager.
+	 */
+	public collision: typeof collision;
+
+	/**
+	 * If true, will pause the updates and drawing calls when window is not focused.
+	 * Will also not update elapsed time.
+	 */
+	public pauseWhenNotFocused: boolean;
+
+	/**
+	 * Set to true to completely pause Shaku (will skip updates, drawing, and time counting).
+	 */
+	public pause: boolean;
+
+	/**
+	 * Set to true to pause just the game time.
+	 * This will not pause real-life time. If you need real-life time stop please use the Python package.
+	 */
+	public pauseGameTime: boolean;
+
+	/**
 	 * Create the Shaku main object.
 	 */
-	constructor() {
-		/**
-		 * Different utilities and framework objects, like vectors, rectangles, colors, etc.
-		 * @name Shaku#utils
-		 * @type {Utils}
-		 */
+	public constructor() {
 		this.utils = utils;
-
-		/**
-		 * Sound effects and music manager.
-		 * @name Shaku#sfx
-		 * @type {Sfx}
-		 */
 		this.sfx = sfx;
-
-		/**
-		 * Graphics manager.
-		 * @name Shaku#gfx
-		 * @type {Gfx}
-		 */
 		this.gfx = gfx;
-
-		/**
-		 * Input manager.
-		 * @name Shaku#input
-		 * @type {Input}
-		 */
 		this.input = input;
-
-		/**
-		 * Assets manager.
-		 * @name Shaku#assets
-		 * @type {Assets}
-		 */
 		this.assets = assets;
-
-		/**
-		 * Collision detection manager.
-		 * @name Shaku#collision
-		 * @type {Collision}
-		 */
 		this.collision = collision;
-
-		/**
-		 * If true, will pause the updates and drawing calls when window is not focused.
-		 * Will also not update elapsed time.
-		 * @name Shaku#pauseWhenNotFocused
-		 * @type {Boolean}
-		 */
 		this.pauseWhenNotFocused = false;
-
-		/**
-		 * Set to true to completely pause Shaku (will skip updates, drawing, and time counting).
-		 * @name Shaku#pause
-		 * @type {Boolean}
-		 */
 		this.pause = false;
-
-		/**
-		 * Set to true to pause just the game time.
-		 * This will not pause real-life time. If you need real-life time stop please use the Python package.
-		 * @name Shaku#pauseGameTime
-		 * @type {Boolean}
-		 */
 		this.pauseGameTime = false;
 	}
 
 	/**
 	 * Method to select managers to use + initialize them.
-	 * @param {Array<IManager>=} managers Array with list of managers to use or null to use all.
-	 * @returns {Promise} promise to resolve when finish initialization.
+	 * @param managers Array with list of managers to use or null to use all.
+	 * @returns promise to resolve when finish initialization.
 	 */
-	async init(managers) {
+	public async init(managers?: IManager[] | null): Promise<void> {
 		return new Promise(async (resolve, reject) => {
-
 			// welcome message
 			if(!_isSilent) {
 				console.log(`%c\u{1F9D9} Shaku ${version}\n%c Game dev lib by Ronen Ness`, "color:orange; font-size: 18pt", "color:grey; font-size: 8pt");
@@ -158,7 +153,7 @@ class Shaku {
 	/**
 	 * Destroy all managers
 	 */
-	destroy() {
+	public destroy(): void {
 		// sanity
 		if(!_usedManagers) {
 			throw new Error("Not initialized!");
@@ -172,16 +167,16 @@ class Shaku {
 
 	/**
 	 * Get if the Shaku is currently paused, either because the "paused" property is set, or because the document is not focused.
-	 * @returns {Boolean} True if currently paused for any reason.
+	 * @returns True if currently paused for any reason.
 	 */
-	isCurrentlyPaused() {
+	public isCurrentlyPaused(): boolean {
 		return this.pause || (this.pauseWhenNotFocused && !document.hasFocus());
 	}
 
 	/**
 	 * Start frame (update all managers).
 	 */
-	startFrame() {
+	public startFrame(): void {
 		// if paused, skip
 		if(this.isCurrentlyPaused()) {
 			if(this.input) {
@@ -227,7 +222,7 @@ class Shaku {
 	/**
 	 * End frame (update all managers).
 	 */
-	endFrame() {
+	public endFrame(): void {
 		// update managers
 		if(_managersStarted) {
 			for(let i = 0; i < _usedManagers.length; ++i) {
@@ -257,7 +252,7 @@ class Shaku {
 	 * Measure FPS and averege update times.
 	 * @private
 	 */
-	#_updateFpsAndTimeStats() {
+	#_updateFpsAndTimeStats(): void {
 		// update fps count and second counter
 		_currFpsCounter++;
 		_countSecond += _gameTime.delta;
@@ -286,7 +281,7 @@ class Shaku {
 	 * Make Shaku run in silent mode, without logs.
 	 * You can call this before init.
 	 */
-	silent() {
+	public silent(): void {
 		_isSilent = true;
 		logger.silent();
 	}
@@ -294,66 +289,64 @@ class Shaku {
 	/**
 	 * Set logger to throw an error every time a log message with severity higher than warning is written.
 	 * You can call this before init.
-	 * @param {Boolean} enable Set to true to throw error on warnings.
+	 * @param enable Set to true to throw error on warnings.
 	 */
-	throwErrorOnWarnings(enable) {
-		if(enable === undefined) { throw Error("Must provide a value!"); }
+	public throwErrorOnWarnings(enable: boolean): void {
+		if(enable === undefined) { throw new Error("Must provide a value!"); }
 		logger.throwErrorOnWarnings(enable);
 	}
 
 	/**
 	 * Get current frame game time.
 	 * Only valid between startFrame() and endFrame().
-	 * @returns {GameTime} Current frame's gametime.
+	 * @returns Current frame's gametime.
 	 */
-	get gameTime() {
+	public get gameTime(): GameTime {
 		return _gameTime;
 	}
 
 	/**
 	 * Get Shaku's version.
-	 * @returns {String} Shaku's version.
+	 * @returns Shaku's version.
 	 */
-	get version() { return version; }
+	public get version(): string {
+		return version;
+	}
 
 	/**
 	 * Return current FPS count.
 	 * Note: will return 0 until at least one second have passed.
-	 * @returns {Number} FPS count.
+	 * @returns FPS count.
 	 */
-	getFpsCount() {
+	public getFpsCount(): number {
 		return _currFps;
 	}
 
 	/**
 	 * Get how long on average it takes to complete a game frame.
-	 * @returns {Number} Average time, in milliseconds, it takes to complete a game frame.
+	 * @returns Average time, in milliseconds, it takes to complete a game frame.
 	 */
-	getAverageFrameTime() {
+	public getAverageFrameTime(): number {
 		if(_frameTimeMeasuresCount === 0) { return 0; }
 		return _totalFrameTimes / _frameTimeMeasuresCount;
 	}
 
 	/**
 	 * Request animation frame with fallbacks.
-	 * @param {Function} callback Method to invoke in next animation frame.
-	 * @returns {Number} Handle for cancellation.
+	 * @param callback Method to invoke in next animation frame.
+	 * @returns Handle for cancellation.
 	 */
-	requestAnimationFrame(callback) {
+	public requestAnimationFrame(callback: () => void): number {
 		if(window.requestAnimationFrame) return window.requestAnimationFrame(callback);
-		else if(window.mozRequestAnimationFrame) return window.mozRequestAnimationFrame(callback);
-		else if(window.webkitRequestAnimationFrame) return window.webkitRequestAnimationFrame(callback);
-		else if(window.msRequestAnimationFrame) return window.msRequestAnimationFrame(callback);
 		else return setTimeout(callback, 1000 / 60);
 	}
 
 	/**
 	 * Cancel animation frame with fallbacks.
-	 * @param {Number} id Request handle.
+	 * @param id Request handle.
 	 */
-	cancelAnimationFrame(id) {
+	public cancelAnimationFrame(id: number): void {
 		if(window.cancelAnimationFrame) return window.cancelAnimationFrame(id);
-		else if(window.mozCancelAnimationFrame) return window.mozCancelAnimationFrame(id);
 		else clearTimeout(id);
 	}
 
@@ -361,7 +354,7 @@ class Shaku {
 	 * Set the logger writer class (will replace the default console output).
 	 * @param {*} loggerHandler New logger handler (must implement trace, debug, info, warn, error methods).
 	 */
-	setLogger(loggerHandler) {
+	public setLogger(loggerHandler) {
 		logger.setDrivers(loggerHandler);
 	}
 
@@ -369,7 +362,7 @@ class Shaku {
 	 * Get / create a custom logger.
 	 * @returns {Logger} Logger instance.
 	 */
-	getLogger(name) {
+	public getLogger(name: string): Logger {
 		return logger.getLogger(name);
 	}
 };

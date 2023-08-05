@@ -140,7 +140,7 @@ const LoggerModule = {
 	setApplicationName: function(name) {
 		_application = name;
 		return this;
-	}
+	},
 };
 
 // export the logger module object.

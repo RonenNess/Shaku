@@ -1,3 +1,3 @@
 import Shaku from "./shaku";
 
-export default Shaku;
+export { Shaku };
