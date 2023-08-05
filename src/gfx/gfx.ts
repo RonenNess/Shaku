@@ -1058,7 +1058,7 @@ class GfxInternal {
 	}
 
 	setTextureFilter(filter) {
-		if(!TextureFilterModes._values.has(filter)) { throw new Error("Invalid texture filter mode! Please pick a value from "TextureFilterModes"."); }
+		if(!TextureFilterModes._values.has(filter)) { throw new Error("Invalid texture filter mode! Please pick a value from 'TextureFilterModes'."); }
 		let glMode = _gl[filter];
 		_gl.texParameteri(_gl.TEXTURE_2D, _gl.TEXTURE_MIN_FILTER, glMode);
 		_gl.texParameteri(_gl.TEXTURE_2D, _gl.TEXTURE_MAG_FILTER, glMode);
@@ -1066,8 +1066,8 @@ class GfxInternal {
 
 	setTextureWrapMode(wrapX, wrapY) {
 		if(wrapY === undefined) { wrapY = wrapX; }
-		if(!TextureWrapModes._values.has(wrapX)) { throw new Error("Invalid texture wrap mode! Please pick a value from "TextureWrapModes"."); }
-		if(!TextureWrapModes._values.has(wrapY)) { throw new Error("Invalid texture wrap mode! Please pick a value from "TextureWrapModes"."); }
+		if(!TextureWrapModes._values.has(wrapX)) { throw new Error("Invalid texture wrap mode! Please pick a value from 'TextureWrapModes'."); }
+		if(!TextureWrapModes._values.has(wrapY)) { throw new Error("Invalid texture wrap mode! Please pick a value from 'TextureWrapModes'."); }
 		_gl.texParameteri(_gl.TEXTURE_2D, _gl.TEXTURE_WRAP_S, _gl[wrapX]);
 		_gl.texParameteri(_gl.TEXTURE_2D, _gl.TEXTURE_WRAP_T, _gl[wrapY]);
 	}

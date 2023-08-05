@@ -94,7 +94,7 @@ export default class FontTextureAsset extends Asset {
 		return new Promise(async (resolve, reject) => {
 
 			if(!params || !params.fontName) {
-				return reject("When loading font texture you must provide params with a "fontName" value!");
+				return reject("When loading font texture you must provide params with a 'fontName' value!");
 			}
 
 			// set default missing char placeholder + store it

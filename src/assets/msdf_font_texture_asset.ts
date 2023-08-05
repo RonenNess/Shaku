@@ -10,15 +10,13 @@ import TextureAsset from "./texture_asset";
  * This asset uses a signed distance field atlas to render characters as sprites at high res.
  */
 export default class MsdfFontTextureAsset extends FontTextureAsset {
-	private _positionOffsets: Vector2[] | null;
-	private _xAdvances: number[] | null;
+	private _positionOffsets: Record<string, Vector2> | null;
+	private _xAdvances: Record<string, number> | null;
 	private _placeholderChar: string;
 	private _fontName: string;
 	private _fontSize: number;
 	private _lineHeight: number;
 	private _sourceRects: unknown;
-	private _positionOffsets: Record<string, Vector2> | null;
-	private _xAdvances: Record<string, number> | null;
 	private _kernings: unknown | null;
 	private _texture: TextureAsset | null;
 
@@ -42,7 +40,7 @@ export default class MsdfFontTextureAsset extends FontTextureAsset {
 		return new Promise(async (resolve, reject) => {
 
 			if(!params || !params.jsonUrl || !params.textureUrl) {
-				return reject("When loading an msdf font you must provide params with a "jsonUrl" and a "textureUrl"!");
+				return reject("When loading an msdf font you must provide params with a 'jsonUrl' and a 'textureUrl'!");
 			}
 
 			// TODO: allow atlas with multiple textures
