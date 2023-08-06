@@ -7,7 +7,9 @@ import { Asset } from "./asset";
 export class JsonAsset extends Asset {
 	private _data: unknown | null;
 
-	/** @inheritdoc */
+	/**
+	 * @inheritdoc
+	 */
 	public constructor(url: string) {
 		super(url);
 		this._data = null;
@@ -15,7 +17,7 @@ export class JsonAsset extends Asset {
 
 	/**
 	 * Load the JSON data from the asset URL.
-	 * @returns {Promise} Promise to resolve when fully loaded.
+	 * @returns Promise to resolve when fully loaded.
 	 */
 	public load(): Promise<void> {
 		return new Promise((resolve, reject) => {
@@ -94,12 +96,16 @@ export class JsonAsset extends Asset {
 		return this._data;
 	}
 
-	/** @inheritdoc */
+	/**
+	 * @inheritdoc
+	 */
 	public get valid(): boolean {
 		return Boolean(this._data);
 	}
 
-	/** @inheritdoc */
+	/**
+	 * @inheritdoc
+	 */
 	public destroy(): void {
 		this._data = null;
 	}

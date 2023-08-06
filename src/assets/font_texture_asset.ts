@@ -19,7 +19,9 @@ export class FontTextureAsset extends Asset {
 	private _texture: TextureAsset | null;
 	private _lineHeight: number;
 
-	/** @inheritdoc */
+	/**
+	 * @inheritdoc
+	 */
 	public constructor(url: string) {
 		super(url);
 		this._fontName = null;
@@ -248,7 +250,9 @@ export class FontTextureAsset extends Asset {
 		return this._texture.getSize();
 	}
 
-	/** @inheritdoc */
+	/**
+	 * @inheritdoc
+	 */
 	public get valid(): boolean {
 		return Boolean(this._texture);
 	}
@@ -280,7 +284,9 @@ export class FontTextureAsset extends Asset {
 		return this.getSourceRect(character).width;
 	}
 
-	/** @inheritdoc */
+	/**
+	 * @inheritdoc
+	 */
 	public destroy(): void {
 		if(this._texture) this._texture.destroy();
 		this._fontName = null;

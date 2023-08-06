@@ -7,7 +7,9 @@ import { Asset } from "./asset";
 export class BinaryAsset extends Asset {
 	private _data: Uint8Array | null;
 
-	/** @inheritdoc */
+	/**
+	 * @inheritdoc
+	 */
 	public constructor(url: string) {
 		super(url);
 		this._data = null;
@@ -63,12 +65,16 @@ export class BinaryAsset extends Asset {
 		});
 	}
 
-	/** @inheritdoc */
+	/**
+	 * @inheritdoc
+	 */
 	public get valid(): boolean {
 		return Boolean(this._data);
 	}
 
-	/** @inheritdoc */
+	/**
+	 * @inheritdoc
+	 */
 	public destroy() {
 		this._data = null;
 	}

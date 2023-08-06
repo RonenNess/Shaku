@@ -6,17 +6,23 @@ import vertexShader from "./shaders/sprites_with_outline.vert";
  * Default basic effect to draw 2d sprites with outline.
  */
 export class SpritesWithOutlineEffect extends Effect {
-	/** @inheritdoc */
+	/**
+	 * @inheritdoc
+	 */
 	get vertexCode() {
 		return vertexShader;
 	}
 
-	/** @inheritdoc */
+	/**
+	 * @inheritdoc
+	 */
 	get fragmentCode() {
 		return fragmentShader;
 	}
 
-	/** @inheritdoc */
+	/**
+	 * @inheritdoc
+	 */
 	get uniformTypes() {
 		return {
 			[Effect.UniformBinds.MainTexture]: { type: Effect.UniformTypes.Texture, bind: Effect.UniformBinds.MainTexture },
@@ -30,7 +36,9 @@ export class SpritesWithOutlineEffect extends Effect {
 		};
 	}
 
-	/** @inheritdoc */
+	/**
+	 * @inheritdoc
+	 */
 	get attributeTypes() {
 		return {
 			[Effect.AttributeBinds.Position]: { size: 3, type: Effect.AttributeTypes.Float, normalize: false, bind: Effect.AttributeBinds.Position },

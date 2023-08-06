@@ -6,17 +6,23 @@ import vertexShader from "./shaders/shapes.vert";
  * Default basic effect to draw 2d shapes.
  */
 export class ShapesEffect extends Effect {
-	/** @inheritdoc */
+	/**
+	 * @inheritdoc
+	 */
 	get vertexCode() {
 		return vertexShader;
 	}
 
-	/** @inheritdoc */
+	/**
+	 * @inheritdoc
+	 */
 	get fragmentCode() {
 		return fragmentShader;
 	}
 
-	/** @inheritdoc */
+	/**
+	 * @inheritdoc
+	 */
 	get uniformTypes() {
 		return {
 			[Effect.UniformBinds.Projection]: { type: Effect.UniformTypes.Matrix, bind: Effect.UniformBinds.Projection },
@@ -25,7 +31,9 @@ export class ShapesEffect extends Effect {
 		};
 	}
 
-	/** @inheritdoc */
+	/**
+	 * @inheritdoc
+	 */
 	get attributeTypes() {
 		return {
 			[Effect.AttributeBinds.Position]: { size: 3, type: Effect.AttributeTypes.Float, normalize: false, bind: Effect.AttributeBinds.Position },

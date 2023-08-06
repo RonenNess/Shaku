@@ -7,7 +7,9 @@ import { Asset } from "./asset";
 export class SoundAsset extends Asset {
 	private _valid: boolean;
 
-	/** @inheritdoc */
+	/**
+	 * @inheritdoc
+	 */
 	public constructor(url: string) {
 		super(url);
 		this._valid = false;
@@ -46,12 +48,16 @@ export class SoundAsset extends Asset {
 		});
 	}
 
-	/** @inheritdoc */
+	/**
+	 * @inheritdoc
+	 */
 	public get valid(): boolean {
 		return this._valid;
 	}
 
-	/** @inheritdoc */
+	/**
+	 * @inheritdoc
+	 */
 	public destroy(): void {
 		this._valid = false;
 	}

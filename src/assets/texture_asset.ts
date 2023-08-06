@@ -18,7 +18,9 @@ export class TextureAsset extends TextureAssetBase {
 
 	public _width: number;
 
-	/** @inheritdoc */
+	/**
+	 * @inheritdoc
+	 */
 	public constructor(url: string) {
 		super(url);
 		this._image = null;
@@ -81,9 +83,9 @@ export class TextureAsset extends TextureAssetBase {
 
 	/**
 	 * Create this texture as an empty render target.
-	 * @param {Number} width Texture width.
-	 * @param {Number} height Texture height.
-	 * @param {Number} channels Texture channels count. Defaults to 4 (RGBA).
+	 * @param width Texture width.
+	 * @param height Texture height.
+	 * @param channels Texture channels count. Defaults to 4 (RGBA).
 	 */
 	public createRenderTarget(width: number, height: number, channels?: number): void {
 		// reset flags
@@ -229,34 +231,42 @@ export class TextureAsset extends TextureAssetBase {
 		});
 	}
 
-	/** @inheritdoc */
-	get image() {
+	/**
+	 * @inheritdoc
+	 */
+	public get image(): unknown {
 		return this._image;
 	}
 
-	/** @inheritdoc */
-	get width() {
+	/**
+	 * @inheritdoc
+	 */
+	public get width(): number {
 		return this._width;
 	}
 
-	/** @inheritdoc */
-	get height() {
+	/**
+	 * @inheritdoc
+	 */
+	public get height(): number {
 		return this._height;
 	}
 
-	/** @inheritdoc */
-	get _glTexture() {
+	/**
+	 * @inheritdoc
+	 */
+	private get _glTexture(): WebGLTexture {
 		return this._texture;
 	}
 
 	/**
 	 * Get pixel color from image.
 	 * Note: this method is quite slow, if you need to perform multiple queries consider using `getPixelsData()` once to get all pixels data instead.
-	 * @param {Number} x Pixel X value.
-	 * @param {Number} y Pixel Y value.
-	 * @returns {Color} Pixel color.
+	 * @param x Pixel X value.
+	 * @param y Pixel Y value.
+	 * @returns Pixel color.
 	 */
-	getPixel(x, y) {
+	public getPixel(x: number, y: number): Color {
 		if(!this._image) {
 			throw new Error("'getPixel()' only works on textures loaded from image!");
 		}
@@ -278,13 +288,13 @@ export class TextureAsset extends TextureAssetBase {
 
 	/**
 	 * Get a 2D array with pixel colors.
-	 * @param {Number=} x Offset X in texture to get. Defaults to 0.
-	 * @param {Number=} y Offset Y in texture to get. Defaults to 0.
-	 * @param {Number=} width How many pixels to get on X axis. Defaults to texture width - x.
-	 * @param {Number=} height How many pixels to get on Y axis. Defaults to texture height - y.
-	 * @returns {Array<Array<Color>>} A 2D array with all texture pixel colors.
+	 * @param x Offset X in texture to get. Defaults to 0.
+	 * @param y Offset Y in texture to get. Defaults to 0.
+	 * @param width How many pixels to get on X axis. Defaults to texture width - x.
+	 * @param height How many pixels to get on Y axis. Defaults to texture height - y.
+	 * @returns A 2D array with all texture pixel colors.
 	 */
-	getPixelsData(x, y, width, height) {
+	public getPixelsData(x?: number, y?: number, width?: number, height?: number): Color[][] {
 		if(!this._image) {
 			throw new Error("'getPixel()' only works on textures loaded from image!");
 		}
@@ -322,13 +332,17 @@ export class TextureAsset extends TextureAssetBase {
 		return ret;
 	}
 
-	/** @inheritdoc */
-	get valid() {
+	/**
+	 * @inheritdoc
+	 */
+	public get valid(): boolean {
 		return Boolean(this._texture);
 	}
 
-	/** @inheritdoc */
-	destroy() {
+	/**
+	 * @inheritdoc
+	 */
+	public destroy(): void {
 		gl.deleteTexture(this._texture);
 		this._image = null;
 		this._width = this._height = 0;
@@ -338,6 +352,6 @@ export class TextureAsset extends TextureAssetBase {
 }
 
 // check if value is a power of 2
-function isPowerOf2(value) {
+function isPowerOf2(value: number): boolean {
 	return (value & (value - 1)) == 0;
 }

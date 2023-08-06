@@ -6,17 +6,23 @@ import vertexShader from "./shaders/sprites.vert";
  * Default basic effect to draw 2d sprites.
  */
 export class SpritesEffect extends Effect {
-	/** @inheritdoc */
+	/**
+	 * @inheritdoc
+	 */
 	get vertexCode() {
 		return vertexShader;
 	}
 
-	/** @inheritdoc */
+	/**
+	 * @inheritdoc
+	 */
 	get fragmentCode() {
 		return fragmentShader;
 	}
 
-	/** @inheritdoc */
+	/**
+	 * @inheritdoc
+	 */
 	get uniformTypes() {
 		return {
 			[Effect.UniformBinds.MainTexture]: { type: Effect.UniformTypes.Texture, bind: Effect.UniformBinds.MainTexture },
@@ -26,7 +32,9 @@ export class SpritesEffect extends Effect {
 		};
 	}
 
-	/** @inheritdoc */
+	/**
+	 * @inheritdoc
+	 */
 	get attributeTypes() {
 		return {
 			[Effect.AttributeBinds.Position]: { size: 3, type: Effect.AttributeTypes.Float, normalize: false, bind: Effect.AttributeBinds.Position },

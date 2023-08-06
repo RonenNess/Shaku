@@ -6,17 +6,23 @@ import vertexShader from "./shaders/msdf_font.vert";
  * Default effect to draw MSDF font textures.
  */
 export class MsdfFontEffect extends Effect {
-	/** @inheritdoc */
+	/**
+	 * @inheritdoc
+	 */
 	get vertexCode() {
 		return vertexShader;
 	}
 
-	/** @inheritdoc */
+	/**
+	 * @inheritdoc
+	 */
 	get fragmentCode() {
 		return fragmentShader;
 	}
 
-	/** @inheritdoc */
+	/**
+	 * @inheritdoc
+	 */
 	get uniformTypes() {
 		return {
 			[Effect.UniformBinds.MainTexture]: { type: Effect.UniformTypes.Texture, bind: Effect.UniformBinds.MainTexture },
@@ -25,7 +31,9 @@ export class MsdfFontEffect extends Effect {
 		};
 	}
 
-	/** @inheritdoc */
+	/**
+	 * @inheritdoc
+	 */
 	get attributeTypes() {
 		return {
 			[Effect.AttributeBinds.Position]: { size: 3, type: Effect.AttributeTypes.Float, normalize: false, bind: Effect.AttributeBinds.Position },

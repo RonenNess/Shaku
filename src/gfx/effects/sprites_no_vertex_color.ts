@@ -6,17 +6,23 @@ import vertexShader from "./shaders/sprites_no_vertex_color.vert";
  * Default basic effect to draw 2d sprites without vertex color.
  */
 export class SpritesEffectNoVertexColor extends Effect {
-	/** @inheritdoc */
+	/**
+	 * @inheritdoc
+	 */
 	get vertexCode() {
 		return vertexShader;
 	}
 
-	/** @inheritdoc */
+	/**
+	 * @inheritdoc
+	 */
 	get fragmentCode() {
 		return fragmentShader;
 	}
 
-	/** @inheritdoc */
+	/**
+	 * @inheritdoc
+	 */
 	get uniformTypes() {
 		return {
 			[Effect.UniformBinds.MainTexture]: { type: Effect.UniformTypes.Texture, bind: Effect.UniformBinds.MainTexture },
@@ -26,7 +32,9 @@ export class SpritesEffectNoVertexColor extends Effect {
 		};
 	}
 
-	/** @inheritdoc */
+	/**
+	 * @inheritdoc
+	 */
 	get attributeTypes() {
 		return {
 			[Effect.AttributeBinds.Position]: { size: 3, type: Effect.AttributeTypes.Float, normalize: false, bind: Effect.AttributeBinds.Position },

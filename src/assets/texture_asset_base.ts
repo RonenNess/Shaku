@@ -9,7 +9,9 @@ export abstract class TextureAssetBase extends Asset {
 	private _filter: TextureFilterModes | null;
 	private _wrapMode: TextureWrapModes | null;
 
-	/** @inheritdoc */
+	/**
+	 * @inheritdoc
+	 */
 	public constructor(url: string) {
 		super(url);
 		this._filter = null;

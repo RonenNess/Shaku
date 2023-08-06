@@ -19,7 +19,9 @@ export class MsdfFontTextureAsset extends FontTextureAsset {
 	private _kernings: unknown | null;
 	private _texture: TextureAsset | null;
 
-	/** @inheritdoc */
+	/**
+	 * @inheritdoc
+	 */
 	public constructor(url: string) {
 		super(url);
 		this._positionOffsets = null;
@@ -118,17 +120,23 @@ export class MsdfFontTextureAsset extends FontTextureAsset {
 		return this._texture.getSize();
 	}
 
-	/** @inheritdoc */
+	/**
+	 * @inheritdoc
+	 */
 	public getPositionOffset(character: string): Vector2 {
 		return this._positionOffsets[character] || this._positionOffsets[this.placeholderCharacter];
 	}
 
-	/** @inheritdoc */
+	/**
+	 * @inheritdoc
+	 */
 	public getXAdvance(character: string): number {
 		return this._xAdvances[character] || this._xAdvances[this.placeholderCharacter];
 	}
 
-	/** @inheritdoc */
+	/**
+	 * @inheritdoc
+	 */
 	public destroy(): void {
 		super.destroy();
 		this._positionOffsets = null;
