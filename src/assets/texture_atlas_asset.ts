@@ -1,4 +1,4 @@
-import { Rectangle, Vector2 } from "../utils";
+import { ItemsSorter, Rectangle, Vector2 } from "../utils";
 import { Asset } from "./asset";
 import { TextureAsset } from "./texture_asset";
 import { TextureInAtlasAsset } from "./texture_in_atlas_asset";
@@ -11,9 +11,12 @@ var gl = null;
  */
 export class TextureAtlasAsset extends Asset {
 	private __textures: TextureAsset[];
+	private __sources: Record<string, TextureInAtlasAsset>;
 
-	/** @inheritdoc */
-	public constructor(url) {
+	/**
+	 * @inheritdoc
+	 */
+	public constructor(url: string) {
 		super(url);
 		this.__textures = [];
 		this.__sources = {};
@@ -23,7 +26,7 @@ export class TextureAtlasAsset extends Asset {
 	 * Set the WebGL context.
 	 * @private
 	 */
-	static _setWebGl(_gl) {
+	private static _setWebGl(_gl: WebGLRenderingContext): void {
 		gl = _gl;
 	}
 
@@ -31,12 +34,12 @@ export class TextureAtlasAsset extends Asset {
 	 * Build the texture atlas.
 	 * @private
 	 * @param {Array<string>|Array<Image>} sources Source URLs or images to load into texture. If array of Images, should also contain an "__origin_url" property under them for asset key.
-	 * @param {Number=} maxWidth Optional texture atlas width limit.
-	 * @param {Number=} maxHeight Optional texture atlas height limit.
-	 * @param {Vector2=} extraMargins Extra pixels to add between textures.
-	 * @returns {Promise} Promise to resolve when done.
+	 * @param maxWidth Optional texture atlas width limit.
+	 * @param maxHeight Optional texture atlas height limit.
+	 * @param extraMargins Extra pixels to add between textures.
+	 * @returns Promise to resolve when done.
 	 */
-	async _build(sources, maxWidth, maxHeight, extraMargins) {
+	private async _build(sources: string[] | unknown[], maxWidth?: number, maxHeight?: number, extraMargins?: number): Promise<void> {
 		// sanity
 		if(this.__textures.length) {
 			throw new Error("Texture Atlas already built!");
@@ -106,28 +109,32 @@ export class TextureAtlasAsset extends Asset {
 
 	/**
 	 * Get a list with all textures in atlas.
-	 * @returns {Array<TextureAsset>} Textures in atlas.
+	 * @returns Textures in atlas.
 	 */
-	get textures() {
+	public get textures(): TextureAsset[] {
 		return this.__textures.slice(0);
 	}
 
 	/**
 	 * Get texture asset and source rectangle for a desired image URL.
-	 * @param {String} url URL to fetch texture and source from. Can be full URL, relative URL, or absolute URL starting from /.
-	 * @returns {TextureInAtlasAsset} Texture in atlas asset, or null if not found.
+	 * @param url URL to fetch texture and source from. Can be full URL, relative URL, or absolute URL starting from /.
+	 * @returns Texture in atlas asset, or null if not found.
 	 */
-	getTexture(url) {
+	public getTexture(url: string): TextureAtlasAsset | null {
 		return this.__sources[url] || null;
 	}
 
-	/** @inheritdoc */
-	get valid() {
+	/**
+	 * @inheritdoc
+	 */
+	public get valid(): boolean {
 		return Boolean(this.__textures.length);
 	}
 
-	/** @inheritdoc */
-	destroy() {
+	/**
+	 * @inheritdoc
+	 */
+	public destroy(): void {
 		for(let texture of this.__textures) {
 			texture.destroy();
 		}
@@ -140,17 +147,17 @@ export class TextureAtlasAsset extends Asset {
  * Efficiently arrange textures into minimal size area with maximum efficiency.
  * @private
  * @param {Array<Image>} sourceImages Array of images to pack.
- * @param {Number=} maxAtlasWidth Max width for result area.
- * @param {Number=} maxAtlasHeight Max height for result area.
- * @param {Vector2=} extraMargins Extra pixels to add between textures.
+ * @param maxAtlasWidth Max width for result area.
+ * @param maxAtlasHeight Max height for result area.
+ * @param extraMargins Extra pixels to add between textures.
  */
-function arrangeTextures(sourceImages, maxAtlasWidth, maxAtlasHeight, extraMargins) {
+function arrangeTextures(sourceImages: unknown[], maxAtlasWidth?: number, maxAtlasHeight?: number, extraMargins?: Vector2) {
 	// default max width and height
 	maxAtlasWidth = maxAtlasWidth || gl.MAX_TEXTURE_SIZE;
 	maxAtlasHeight = maxAtlasHeight || gl.MAX_TEXTURE_SIZE;
 
 	// use the sorter algorithm
-	let result = Utils.ItemsSorter.arrangeRectangles(sourceImages, (width) => {
+	let result = ItemsSorter.arrangeRectangles(sourceImages, (width: number) => {
 
 		// make width a power of 2
 		let power = 1;
@@ -189,7 +196,7 @@ function arrangeTextures(sourceImages, maxAtlasWidth, maxAtlasHeight, extraMargi
  * Load an image and return a promise.
  * @private
  */
-function loadImage(path) {
+function loadImage(path: string): Promise<HTMLImageElement> {
 	return new Promise((resolve, reject) => {
 		const img = new Image();
 		img.crossOrigin = "Anonymous"; // to avoid CORS if used with Canvas
@@ -208,7 +215,7 @@ function loadImage(path) {
  * Convert list of sources that are either Image instances or URL strings to fully loaded Image instances.
  * Wait for image loading if needed.
  */
-async function loadAllSources(sources) {
+async function loadAllSources(sources: (string | HTMLImageElement)[]) {
 	return new Promise(async (resolve, reject) => {
 
 		// make sure all sources are image instances

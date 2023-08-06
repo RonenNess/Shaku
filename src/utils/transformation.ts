@@ -545,13 +545,13 @@ function combineVector(childValue, parentValue, parent, mode) {
 
 /**
  * Combine child vector value with parent using a transformation mode and multiplication.
- * @param {Vector2} childValue Child value.
- * @param {Vector2} parentValue Parent value.
- * @param {Transformation} parent Parent transformations.
- * @param {TransformModes} mode Transformation mode.
- * @returns {Vector2} Combined value.
+ * @param childValue Child value.
+ * @param parentValue Parent value.
+ * @param parent Parent transformations.
+ * @param mode Transformation mode.
+ * @returns Combined value.
  */
-function combineVectorMul(childValue, parentValue, parent, mode) {
+function combineVectorMul(childValue: Vector2, parentValue: Vector2, parent: Transformation, mode: TransformModes): Vector2 {
 	switch(mode) {
 		case TransformModes.ABSOLUTE:
 			return childValue.clone();

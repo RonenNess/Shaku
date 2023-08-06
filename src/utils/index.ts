@@ -34,8 +34,8 @@ import {
 	SeededRandom,
 	Sphere,
 	Storage,
-	Transformation,
 	TransformModes,
+	Transformation,
 	Vector2,
 	Vector3,
 } from ".";
