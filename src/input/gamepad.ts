@@ -5,6 +5,22 @@ import { Vector2 } from "../utils";
  * This object represents a snapshot of a gamepad state, it does not update automatically.
  */
 export class Gamepad {
+	public id: string;
+	public axis1: Vector2;
+	public axis2: Vector2;
+	public mapping: string;
+	public isMapped: boolean;
+	public leftStick: Vector2;
+	public rightStick: Vector2;
+	public leftStickPressed: boolean;
+	public rightStickPressed: boolean;
+	public rightButtons: FourButtonsCluster;
+	public leftButtons: FourButtonsCluster;
+	public centerButtons: ThreeButtonsCluster;
+	public frontButtons: FrontButtons;
+
+	private _buttonsDown: any[];
+
 	/**
 	 * Create gamepad state object.
 	 * @param {*} gp Browser gamepad state object.
@@ -130,18 +146,18 @@ export class Gamepad {
 
 	/**
 	 * Get button state (if pressed down) by index.
-	 * @param {Number} index Button index to check.
-	 * @returns {Boolean} True if pressed, false otherwise.
+	 * @param index Button index to check.
+	 * @returns True if pressed, false otherwise.
 	 */
-	button(index) {
+	public button(index: number): boolean {
 		return this._buttonsDown[index];
 	}
 
 	/**
 	 * Get buttons count.
-	 * @returns {Number} Buttons count.
+	 * @returns Buttons count.
 	 */
-	get buttonsCount() {
+	public get buttonsCount(): number {
 		return this._buttonsDown.length;
 	}
 }
@@ -150,14 +166,19 @@ export class Gamepad {
  * Buttons cluster container - 4 buttons.
  */
 export class FourButtonsCluster {
+	public bottom: boolean;
+	public right: boolean;
+	public left: boolean;
+	public top: boolean;
+
 	/**
 	 * Create the cluster states.
-	 * @param {Boolean} bottom Bottom button state.
-	 * @param {Boolean} right Right button state.
-	 * @param {Boolean} left Left button state.
-	 * @param {Boolean} top Top button state.
+	 * @param bottom Bottom button state.
+	 * @param right Right button state.
+	 * @param left Left button state.
+	 * @param top Top button state.
 	 */
-	public constructor(bottom, right, left, top) {
+	public constructor(bottom: boolean, right: boolean, left: boolean, top: boolean) {
 		this.bottom = Boolean(bottom);
 		this.right = Boolean(right);
 		this.left = Boolean(left);
@@ -169,13 +190,17 @@ export class FourButtonsCluster {
  * Buttons cluster container - 3 buttons.
  */
 export class ThreeButtonsCluster {
+	public left: boolean;
+	public right: boolean;
+	public center: boolean;
+
 	/**
 	 * Create the cluster states.
-	 * @param {Boolean} left Left button state.
-	 * @param {Boolean} right Right button state.
-	 * @param {Boolean} center Center button state.
+	 * @param left Left button state.
+	 * @param right Right button state.
+	 * @param center Center button state.
 	 */
-	public constructor(left, right, center) {
+	public constructor(left: boolean, right: boolean, center: boolean) {
 		this.left = Boolean(left);
 		this.right = Boolean(right);
 		this.center = Boolean(center);
@@ -186,10 +211,15 @@ export class ThreeButtonsCluster {
  * Front buttons.
  */
 export class FrontButtons {
+	public topLeft: boolean;
+	public topRight: boolean;
+	public bottomLeft: boolean;
+	public bottomRight: boolean;
+
 	/**
 	 * Create the cluster states.
 	 */
-	public constructor(topLeft, topRight, bottomLeft, bottomRight) {
+	public constructor(topLeft: boolean, topRight: boolean, bottomLeft: boolean, bottomRight: boolean) {
 		this.topLeft = Boolean(topLeft);
 		this.topRight = Boolean(topRight);
 		this.bottomLeft = Boolean(bottomLeft);
@@ -201,11 +231,9 @@ export class FrontButtons {
  * Get if a gamepad button is currently pressed.
  * @prviate
  */
-function _gamepadButtonPressed(b) {
+function _gamepadButtonPressed(b: { pressed: boolean; } | number): boolean {
 	if(typeof b === "object") {
 		return b.pressed;
 	}
 	return b === 1.0;
 }
-
-// export the gamepad data
