@@ -212,7 +212,7 @@ export class Assets implements IManager {
 	 * Get / load asset of given type, and return a promise to be resolved when ready.
 	 * @private
 	 */
-	#_loadAssetType<T extends Asset>(url: string, typeClass: { new(url: string): T; }, params: unknown) {
+	#_loadAssetType<T extends Asset>(url: string, typeClass: { new(url: string): T; }, params?: unknown): Promise<T> {
 		// normalize URL
 		url = this.#_wrapUrl(url);
 
@@ -245,7 +245,7 @@ export class Assets implements IManager {
 	 * Create and init asset of given class type.
 	 * @private
 	 */
-	#_createAsset<T>(name: string, classType: { new(...args: unknown[]): T; }, initMethod: (clazz: T) => Promise<void>, needWait: boolean) {
+	#_createAsset<T>(name: string, classType: { new(...args: unknown[]): T; }, initMethod: (clazz: T) => Promise<void>, needWait?: boolean): Promise<T> {
 		// create asset
 		name = this.#_wrapUrl(name);
 		var _asset = new classType(name || generateRandomAssetName());
@@ -279,9 +279,9 @@ export class Assets implements IManager {
 	 * @example
 	 * let sound = await Shaku.assets.loadSound("assets/my_sound.ogg");
 	 * @param url Asset URL.
-	 * @returns {Promise<SoundAsset>} promise to resolve with asset instance, when loaded. You can access the loading asset with `.asset` on the promise.
+	 * @returns promise to resolve with asset instance, when loaded. You can access the loading asset with `.asset` on the promise.
 	 */
-	public loadSound(url: string) {
+	public loadSound(url: string): Promise<SoundAsset> {
 		return this.#_loadAssetType(url, SoundAsset, undefined);
 	}
 
@@ -289,11 +289,11 @@ export class Assets implements IManager {
 	 * Load a texture asset. If already loaded, will use cache.
 	 * @example
 	 * let texture = await Shaku.assets.loadTexture("assets/my_texture.png", {generateMipMaps: false});
-	 * @param {String} url Asset URL.
-	 * @param {*=} params Optional params dictionary. See TextureAsset.load() for more details.
-	 * @returns {Promise<TextureAsset>} promise to resolve with asset instance, when loaded. You can access the loading asset with `.asset` on the promise.
+	 * @param url Asset URL.
+	 * @param params Optional params dictionary. See TextureAsset.load() for more details.
+	 * @returns promise to resolve with asset instance, when loaded. You can access the loading asset with `.asset` on the promise.
 	 */
-	loadTexture(url, params) {
+	public loadTexture(url: string, params?: unknown): Promise<TextureAsset> {
 		return this.#_loadAssetType(url, TextureAsset, params);
 	}
 
@@ -303,13 +303,13 @@ export class Assets implements IManager {
 	 * let width = 512;
 	 * let height = 512;
 	 * let renderTarget = await Shaku.assets.createRenderTarget("optional_render_target_asset_id", width, height);
-	 * @param {String | null} name Asset name (matched to URLs when using cache). If null, will not add to cache.
-	 * @param {Number} width Texture width.
-	 * @param {Number} height Texture height.
-	 * @param {Number=} channels Texture channels count. Defaults to 4 (RGBA).
-	 * @returns {Promise<TextureAsset>} promise to resolve with asset instance, when loaded. You can access the loading asset with `.asset` on the promise.
+	 * @param name Asset name (matched to URLs when using cache). If null, will not add to cache.
+	 * @param width Texture width.
+	 * @param height Texture height.
+	 * @param channels Texture channels count. Defaults to 4 (RGBA).
+	 * @returns promise to resolve with asset instance, when loaded. You can access the loading asset with `.asset` on the promise.
 	 */
-	createRenderTarget(name, width, height, channels) {
+	public createRenderTarget(name: string | null, width: number, height: number, channels?: number): Promise<TextureAsset> {
 		// make sure we have valid size
 		if(!width || !height) {
 			throw new Error("Missing or invalid size!");
@@ -323,14 +323,14 @@ export class Assets implements IManager {
 
 	/**
 	 * Create a texture atlas asset.
-	 * @param {String | null} name Asset name (matched to URLs when using cache). If null, will not add to cache.
-	 * @param {Array<String>} sources List of URLs to load textures from.
-	 * @param {Number=} maxWidth Optional atlas textures max width.
-	 * @param {Number=} maxHeight Optional atlas textures max height.
-	 * @param {Vector2=} extraMargins Optional extra empty pixels to add between textures in atlas.
-	 * @returns {Promise<TextureAtlas>} Promise to resolve with asset instance, when loaded. You can access the loading asset with `.asset` on the promise.
+	 * @param name Asset name (matched to URLs when using cache). If null, will not add to cache.
+	 * @param sources List of URLs to load textures from.
+	 * @param maxWidth Optional atlas textures max width.
+	 * @param maxHeight Optional atlas textures max height.
+	 * @param extraMargins Optional extra empty pixels to add between textures in atlas.
+	 * @returns Promise to resolve with asset instance, when loaded. You can access the loading asset with `.asset` on the promise.
 	 */
-	createTextureAtlas(name, sources, maxWidth, maxHeight, extraMargins) {
+	public createTextureAtlas(name: string | null, sources: [string, ...string[]], maxWidth?: number, maxHeight?: number, extraMargins?: Vector2) {
 		// make sure we have valid size
 		if(!sources || !sources.length) {
 			throw new Error("Missing or invalid sources!");
@@ -354,11 +354,11 @@ export class Assets implements IManager {
 	 * Load a font texture asset. If already loaded, will use cache.
 	 * @example
 	 * let fontTexture = await Shaku.assets.loadFontTexture("assets/DejaVuSansMono.ttf", {fontName: "DejaVuSansMono"});
-	 * @param {String} url Asset URL.
-	 * @param {*} params Optional params dictionary. See FontTextureAsset.load() for more details.
-	 * @returns {Promise<FontTextureAsset>} promise to resolve with asset instance, when loaded. You can access the loading asset with `.asset` on the promise.
+	 * @param url Asset URL.
+	 * @param params Optional params dictionary. See FontTextureAsset.load() for more details.
+	 * @returns promise to resolve with asset instance, when loaded. You can access the loading asset with `.asset` on the promise.
 	 */
-	loadFontTexture(url, params) {
+	public loadFontTexture(url: string, params?: unknown): Promise<FontTextureAsset> {
 		return this.#_loadAssetType(url, FontTextureAsset, params);
 	}
 
@@ -366,11 +366,11 @@ export class Assets implements IManager {
 	 * Load a MSDF font texture asset. If already loaded, will use cache.
 	 * @example
 	 * let fontTexture = await Shaku.assets.loadMsdfFontTexture("DejaVuSansMono.font", {jsonUrl: "assets/DejaVuSansMono.json", textureUrl: "assets/DejaVuSansMono.png"});
-	 * @param {String} url Asset URL.
-	 * @param {*=} params Optional params dictionary. See MsdfFontTextureAsset.load() for more details.
-	 * @returns {Promise<MsdfFontTextureAsset>} promise to resolve with asset instance, when loaded. You can access the loading asset with `.asset` on the promise.
+	 * @param url Asset URL.
+	 * @param params Optional params dictionary. See MsdfFontTextureAsset.load() for more details.
+	 * @returns promise to resolve with asset instance, when loaded. You can access the loading asset with `.asset` on the promise.
 	 */
-	loadMsdfFontTexture(url, params) {
+	public loadMsdfFontTexture(url: string, params?: unknown): Promise<MsdfFontTextureAsset> {
 		return this.#_loadAssetType(url, MsdfFontTextureAsset, params);
 	}
 
@@ -379,10 +379,10 @@ export class Assets implements IManager {
 	 * @example
 	 * let jsonData = await Shaku.assets.loadJson("assets/my_json_data.json");
 	 * console.log(jsonData.data);
-	 * @param {String} url Asset URL.
-	 * @returns {Promise<JsonAsset>} promise to resolve with asset instance, when loaded. You can access the loading asset with `.asset` on the promise.
+	 * @param url Asset URL.
+	 * @returns promise to resolve with asset instance, when loaded. You can access the loading asset with `.asset` on the promise.
 	 */
-	loadJson(url) {
+	public loadJson(url: string): Promise<JsonAsset> {
 		return this.#_loadAssetType(url, JsonAsset);
 	}
 
@@ -391,14 +391,14 @@ export class Assets implements IManager {
 	 * @example
 	 * let jsonData = await Shaku.assets.createJson("optional_json_data_id", {"foo": "bar"});
 	 * // you can now load this asset from anywhere in your code using "optional_json_data_id" as url
-	 * @param {String} name Asset name (matched to URLs when using cache). If null, will not add to cache.
-	 * @param {Object|String} data Optional starting data.
-	 * @returns {Promise<JsonAsset>} promise to resolve with asset instance, when ready. You can access the loading asset with `.asset` on the promise.
+	 * @param name Asset name (matched to URLs when using cache). If null, will not add to cache.
+	 * @param data Optional starting data.
+	 * @returns promise to resolve with asset instance, when ready. You can access the loading asset with `.asset` on the promise.
 	 */
-	createJson(name, data) {
+	public createJson(name: string, data?: object | string): Promise<JsonAsset> {
 		// make sure we have valid data
 		if(!data) {
-			return reject("Missing or invalid data!");
+			throw new Error("Missing or invalid data!");
 		}
 
 		// create asset and return promise
@@ -412,10 +412,10 @@ export class Assets implements IManager {
 	 * @example
 	 * let binData = await Shaku.assets.loadBinary("assets/my_bin_data.dat");
 	 * console.log(binData.data);
-	 * @param {String} url Asset URL.
-	 * @returns {Promise<BinaryAsset>} promise to resolve with asset instance, when loaded. You can access the loading asset with `.asset` on the promise.
+	 * @param url Asset URL.
+	 * @returns promise to resolve with asset instance, when loaded. You can access the loading asset with `.asset` on the promise.
 	 */
-	loadBinary(url) {
+	public loadBinary(url: string): Promise<BinaryAsset> {
 		return this.#_loadAssetType(url, BinaryAsset);
 	}
 
@@ -424,14 +424,14 @@ export class Assets implements IManager {
 	 * @example
 	 * let binData = await Shaku.assets.createBinary("optional_bin_data_id", [1,2,3,4]);
 	 * // you can now load this asset from anywhere in your code using "optional_bin_data_id" as url
-	 * @param {String} name Asset name (matched to URLs when using cache). If null, will not add to cache.
-	 * @param {Array<Number>|Uint8Array} data Binary data to set.
-	 * @returns {Promise<BinaryAsset>} promise to resolve with asset instance, when ready. You can access the loading asset with `.asset` on the promise.
+	 * @param name Asset name (matched to URLs when using cache). If null, will not add to cache.
+	 * @param data Binary data to set.
+	 * @returns promise to resolve with asset instance, when ready. You can access the loading asset with `.asset` on the promise.
 	 */
-	createBinary(name, data) {
+	public createBinary(name: string | null, data: number[] | Uint8Array): Promise<BinaryAsset> {
 		// make sure we have valid data
 		if(!data) {
-			return reject("Missing or invalid data!");
+			throw new Error("Missing or invalid data!");
 		}
 
 		// create asset and return promise
@@ -446,7 +446,7 @@ export class Assets implements IManager {
 	 * Shaku.assets.free("my_asset_url");
 	 * @param {String} url Asset URL to free.
 	 */
-	free(url) {
+	public free(url: string): void {
 		url = this.#_wrapUrl(url);
 		let asset = this._loaded[url];
 		if(asset) {
@@ -460,7 +460,7 @@ export class Assets implements IManager {
 	 * @example
 	 * Shaku.assets.clearCache();
 	 */
-	clearCache() {
+	public clearCache(): void {
 		for(let key in this._loaded) {
 			this._loaded[key].destroy();
 		}
@@ -473,14 +473,14 @@ export class Assets implements IManager {
 	 * @inheritdoc
 	 * @private
 	 */
-	destroy() {
+	public async destroy(): Promise<void> {
 		this.clearCache();
 	}
 }
 
 // generate a random asset URL, for when creating assets that are outside of cache.
-var _nextRandomAssetId = 0;
-function generateRandomAssetName() {
+var _nextRandomAssetId: number = 0;
+function generateRandomAssetName(): string {
 	return "_runtime_asset_" + (_nextRandomAssetId++) + "_";
 }
 
