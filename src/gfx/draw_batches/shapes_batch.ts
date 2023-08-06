@@ -1,4 +1,5 @@
-import { LoggerModule, Matrix, Rectangle, Vector2, Vector3 } from "../../utils";
+import { ShapesEffect } from "..";
+import { Circle, Color, LoggerModule, Matrix, Rectangle, Vector2, Vector3 } from "../../utils";
 import { Vertex } from "../vertex";
 import { DrawBatch } from "./draw_batch";
 
@@ -9,11 +10,26 @@ const _loggggger = LoggerModule.getLogger("gfx - sprite - batch"); // TODO
  * Responsible to drawing a batch of basic geometric shapes with as little draw calls as possible.
  */
 export class ShapesBatch extends DrawBatch {
+	public onOverflow: (() => void) | null;
+	public snapPixels: boolean;
+
+	private __maxPolyCount: number;
+	private __polyCount: number;
+	private __dirty: boolean;
+	private _buffers: {
+		positionBuffer: unknown;
+		positionArray: Float32Array;
+		colorsBuffer: unknown;
+		colorsArray: Float32Array;
+		indexBuffer: unknown;
+	} | null;
+	private __indicesType: unknown;
+
 	/**
 	 * Create the sprites batch.
 	 * @param {Number=} batchPolygonsCount Internal buffers size, in polygons count (polygon = 3 vertices). Bigger value = faster rendering but more RAM.
 	 */
-	public constructor(batchPolygonsCount) {
+	public constructor(batchPolygonsCount?: number) {
 		// init draw batch
 		super();
 
@@ -57,7 +73,7 @@ export class ShapesBatch extends DrawBatch {
 	 * Get the gfx manager.
 	 * @private
 	 */
-	get #_gfx() {
+	get #_gfx(): unknown {
 		return DrawBatch._gfx;
 	}
 
@@ -65,7 +81,7 @@ export class ShapesBatch extends DrawBatch {
 	 * Get the web gl instance.
 	 * @private
 	 */
-	get #_gl() {
+	get #_gl(): unknown {
 		return DrawBatch._gfx._internal.gl;
 	}
 
@@ -73,7 +89,7 @@ export class ShapesBatch extends DrawBatch {
 	 * Build the dynamic buffers.
 	 * @private
 	 */
-	#_createBuffers(batchPolygonsCount) {
+	#_createBuffers(batchPolygonsCount: number): void {
 		let gl = this.#_gl;
 
 		// dynamic buffers, used for batch rendering
@@ -122,7 +138,7 @@ export class ShapesBatch extends DrawBatch {
 	/**
 	 * @inheritdoc
 	 */
-	clear() {
+	public clear(): void {
 		super.clear();
 		this._buffers.positionArray._index = 0;
 		this._buffers.colorsArray._index = 0;
@@ -133,7 +149,7 @@ export class ShapesBatch extends DrawBatch {
 	/**
 	 * @inheritdoc
 	 */
-	destroy() {
+	public destroy(): void {
 		let gl = this.#_gl;
 		if(this._buffers) {
 			if(this._buffers.positionBuffer) gl.deleteBuffer(this._buffers.positionBuffer);
@@ -145,26 +161,26 @@ export class ShapesBatch extends DrawBatch {
 	/**
 	 * @inheritdoc
 	 */
-	get isDestroyed() {
+	public get isDestroyed(): boolean {
 		return Boolean(this._buffers) === false;
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	get defaultEffect() {
+	public get defaultEffect(): ShapesEffect {
 		return this.#_gfx.builtinEffects.Shapes;
 	}
 
 	/**
 	 * Draw a line between two points.
 	 * This method actually uses a rectangle internally, which is less efficient than using a proper LinesBatch, but have the advantage of supporting width.
-	 * @param {Vector2} fromPoint Starting position.
-	 * @param {Vector2} toPoint Ending position.
-	 * @param {Color} color Line color.
-	 * @param {Number=} width Line width.
+	 * @param fromPoint Starting position.
+	 * @param toPoint Ending position.
+	 * @param color Line color.
+	 * @param width Line width.
 	 */
-	drawLine(fromPoint, toPoint, color, width) {
+	public drawLine(fromPoint: Vector2, toPoint: Vector2, color: Color, width?: number): void {
 		width = width || 1;
 		length = fromPoint.distanceTo(toPoint);
 		let rotation = Vector2.radiansBetween(fromPoint, toPoint);
@@ -175,9 +191,9 @@ export class ShapesBatch extends DrawBatch {
 
 	/**
 	 * Push vertices to drawing batch.
-	 * @param {Array<Vertex>} vertices Vertices to push. Vertices count must be dividable by 3 to keep the batch consistent of polygons.
+	 * @param vertices Vertices to push. Vertices count must be dividable by 3 to keep the batch consistent of polygons.
 	 */
-	drawVertices(vertices) {
+	public drawVertices(vertices: Vertex[]): void {
 		// sanity
 		this.__validateDrawing(true);
 
@@ -226,36 +242,40 @@ export class ShapesBatch extends DrawBatch {
 
 	/**
 	 * Add a rectangle to draw.
-	 * @param {Vector2|Vector3} position Drawing position (at origin). If vector3 is provided, will pass z value to the shader code position attribute.
-	 * @param {Vector2|Vector3|Number} size Drawing size. If vector3 is provided, will pass z value to the shader code position attribute for the bottom vertices, as position.z + size.z.
-	 * @param {Color|Array<Color>|undefined=} color Rectangle color, or undefined to not change color. If array is set, will assign each color to different vertex, starting from top-left.
-	 * @param {Number=} rotation Rotate rectangle.
-	 * @param {Vector2=} origin Drawing origin. This will be the point at "position" and rotation origin.
-	 * @param {Vector2=} skew Skew the drawing corners on X and Y axis, around the origin point.
+	 * @param position Drawing position (at origin). If vector3 is provided, will pass z value to the shader code position attribute.
+	 * @param size Drawing size. If vector3 is provided, will pass z value to the shader code position attribute for the bottom vertices, as position.z + size.z.
+	 * @param color Rectangle color, or undefined to not change color. If array is set, will assign each color to different vertex, starting from top-left.
+	 * @param rotation Rotate rectangle.
+	 * @param origin Drawing origin. This will be the point at "position" and rotation origin.
+	 * @param skew Skew the drawing corners on X and Y axis, around the origin point.
 	 */
-	drawQuad(position, size, color, rotation, origin, skew) {
+	public drawQuad(position: Vector2 | Vector3, size: Vector2 | Vector3 | number, color?: Color | Color[] | undefined, rotation?: number, origin?: Vector2, skew?: Vector2): void {
 		let sprite = this.#_gfx.Sprite.build(null, position, size, undefined, color, rotation, origin, skew);
 		this.#_addRect(sprite);
 	}
 
 	/**
 	 * Adds a 1x1 point.
-	 * @param {Vector2|Vector3} position Point position.
-	 * @param {Color} color Point color.
+	 * @param position Point position.
+	 * @param color Point color.
 	 */
-	addPoint(position, color) {
-		this.drawVertices([new Vertex(position, null, color), new Vertex(position.add(2, 0), null, color), new Vertex(position.add(0, 2), null, color)]);
+	public addPoint(position: Vector2 | Vector3, color: Color): void {
+		this.drawVertices([
+			new Vertex(position, null, color),
+			new Vertex(position.add(2, 0), null, color),
+			new Vertex(position.add(0, 2), null, color),
+		]);
 	}
 
 	/**
 	 * Add a rectangle that covers a given destination rectangle.
-	 * @param {Rectangle|Vector2} destRect Destination rectangle to draw on. If vector is provided, will draw from 0,0 with vector as size.
-	 * @param {Color|Array<Color>|undefined=} color Rectangle color, or undefined to not change color. If array is set, will assign each color to different vertex, starting from top-left.
-	 * @param {Number=} rotation Rotate rectangle.
-	 * @param {Vector2=} origin Drawing origin. This will be the point at "position" and rotation origin.
+	 * @param destRect Destination rectangle to draw on. If vector is provided, will draw from 0,0 with vector as size.
+	 * @param color Rectangle color, or undefined to not change color. If array is set, will assign each color to different vertex, starting from top-left.
+	 * @param rotation Rotate rectangle.
+	 * @param origin Drawing origin. This will be the point at "position" and rotation origin.
 	 */
-	drawRectangle(destRect, color, rotation, origin) {
-		if((destRect.isVector2) || (destRect.isVector3)) {
+	public drawRectangle(destRect: Rectangle | Vector2, color?: Color | Color[] | undefined, rotation?: number, origin?: Vector2): void {
+		if((destRect instanceof Vector2) || (destRect instanceof Vector3)) {
 			destRect = new Rectangle(0, 0, destRect.x, destRect.y);
 		}
 		let position = origin ? destRect.getPosition().addSelf(size.mul(origin)) : destRect.getCenter();
@@ -266,14 +286,14 @@ export class ShapesBatch extends DrawBatch {
 
 	/**
 	 * Draw a colored circle.
-	 * @param {Circle} circle Circle to draw.
-	 * @param {Color} color Circle fill color.
-	 * @param {Number=} segmentsCount How many segments to build the circle from (more segments = smoother circle).
-	 * @param {Color=} outsideColor If provided, will create a gradient-colored circle and this value will be the outter side color.
-	 * @param {Number|Vector2=} ratio If procided, will scale the circle on X and Y axis to turn it into an oval. If a number is provided, will use this number to scale Y axis.
-	 * @param {Number=} rotation If provided will rotate the oval / circle.
+	 * @param circle Circle to draw.
+	 * @param color Circle fill color.
+	 * @param segmentsCount How many segments to build the circle from (more segments = smoother circle).
+	 * @param outsideColor If provided, will create a gradient-colored circle and this value will be the outter side color.
+	 * @param ratio If procided, will scale the circle on X and Y axis to turn it into an oval. If a number is provided, will use this number to scale Y axis.
+	 * @param rotation If provided will rotate the oval / circle.
 	 */
-	drawCircle(circle, color, segmentsCount, outsideColor, ratio, rotation) {
+	public drawCircle(circle: Circle, color: Color, segmentsCount?: number, outsideColor?: Color, ratio?: number | Vector2, rotation?: number): void {
 		// sanity
 		this.__validateDrawing(true);
 
@@ -340,7 +360,7 @@ export class ShapesBatch extends DrawBatch {
 	 * Add a rectangle from sprite data.
 	 * @private
 	 */
-	#_addRect(sprite, transform) {
+	#_addRect(sprite: unknown, transform: unknown) {
 		// sanity
 		this.__validateDrawing(true);
 
@@ -442,25 +462,25 @@ export class ShapesBatch extends DrawBatch {
 
 	/**
 	 * Get how many polygons are currently in batch.
-	 * @returns {Number} Polygons in batch count.
+	 * @returns Polygons in batch count.
 	 */
-	get polygonsInBatch() {
+	public get polygonsInBatch(): number {
 		return this.__polyCount;
 	}
 
 	/**
 	 * Get how many polygons this sprite batch can contain.
-	 * @returns {Number} Max polygons count.
+	 * @returns Max polygons count.
 	 */
-	get maxPolygonsCount() {
+	public get maxPolygonsCount(): number {
 		return this.__maxPolyCount;
 	}
 
 	/**
 	 * Check if this batch is full.
-	 * @returns {Boolean} True if batch is full.
+	 * @returns True if batch is full.
 	 */
-	get isFull() {
+	public get isFull(): boolean {
 		return this.__polyCount >= this.__maxPolyCount;
 	}
 
@@ -468,7 +488,7 @@ export class ShapesBatch extends DrawBatch {
 	 * Called when the batch becomes full while drawing and there's no handler.
 	 * @private
 	 */
-	_handleFullBuffer() {
+	private _handleFullBuffer(): void {
 		// invoke on-overflow callback
 		if(this.onOverflow) {
 			this.onOverflow();
@@ -483,7 +503,7 @@ export class ShapesBatch extends DrawBatch {
 	 * @inheritdoc
 	 * @private
 	 */
-	_drawBatch() {
+	private _drawBatch(): void {
 		// get default effect
 		let effect = this.__currDrawingParams.effect;
 
@@ -547,7 +567,7 @@ export class ShapesBatch extends DrawBatch {
 }
 
 // used for vertices calculations
-const topLeft = new Vector2(0, 0);
-const topRight = new Vector2(0, 0);
-const bottomLeft = new Vector2(0, 0);
-const bottomRight = new Vector2(0, 0);
+const topLeft: Vector2 = new Vector2(0, 0);
+const topRight: Vector2 = new Vector2(0, 0);
+const bottomLeft: Vector2 = new Vector2(0, 0);
+const bottomRight: Vector2 = new Vector2(0, 0);
