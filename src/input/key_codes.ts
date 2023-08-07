@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-magic-numbers */
+
 /**
  * Define mouse button codes.
  */
@@ -5,7 +7,7 @@ export enum MouseButtons {
 	LEFT = 0,
 	MIDDLE = 1,
 	RIGHT = 2,
-};
+}
 
 /**
  * Define all keyboard key codes.
@@ -112,4 +114,4 @@ export enum KeyboardKeys {
 	BACK_SLASH = 220,
 	CLOSE_BRACKET = 221,
 	SINGLE_QUOTE = 222,
-};
+}

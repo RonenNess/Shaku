@@ -5,12 +5,12 @@ import { KeyboardKeys, MouseButtons } from "./key_codes";
 const _loggggger = LoggerModule.getLogger("input"); // TODO
 
 // get timestamp
-function timestamp() {
+function timestamp(): number {
 	return (new Date()).getTime();
 }
 
 // touch key code
-const _touchKeyCode = "touch";
+const _touchKeyCode: string = "touch";
 
 /**
  * Input manager.
@@ -20,6 +20,124 @@ const _touchKeyCode = "touch";
  */
 export class Input implements IManager {
 	/**
+	 * If true, will prevent default input events by calling preventDefault().
+	 */
+	public preventDefaults: boolean;
+
+	/**
+	 * By default, when holding wheel button down browsers will turn into special page scroll mode and will not emit mouse move events.
+	 * if this property is set to true (default), the Input manager will prevent this behavior, so we could still get mouse delta while mouse wheel is held down.
+	 */
+	public disableMouseWheelAutomaticScrolling: boolean;
+
+	/**
+	 * If true (default), will disable the context menu (what typically opens when you right click the page).
+	 */
+	public disableContextMenu: boolean;
+
+	/**
+	 * If true (default), will treat touch events (touch start / touch end / touch move) as if the user clicked and moved a mouse.
+	 */
+	public delegateTouchInputToMouse: boolean;
+
+	/**
+	 * If true (default), will delegate events from mapped gamepads to custom keys.
+	 * This will add the following codes to all basic query methods (down, pressed, released, doublePressed, doubleReleased):
+	 * - gamepadX_top: state of arrow keys top key (left buttons).
+	 * - gamepadX_bottom: state of arrow keys bottom key (left buttons).
+	 * - gamepadX_left: state of arrow keys left key (left buttons).
+	 * - gamepadX_right: state of arrow keys right key (left buttons).
+	 * - gamepadX_leftStickUp: true if left stick points directly up.
+	 * - gamepadX_leftStickDown: true if left stick points directly down.
+	 * - gamepadX_leftStickLeft: true if left stick points directly left.
+	 * - gamepadX_leftStickRight: true if left stick points directly right.
+	 * - gamepadX_rightStickUp: true if right stick points directly up.
+	 * - gamepadX_rightStickDown: true if right stick points directly down.
+	 * - gamepadX_rightStickLeft: true if right stick points directly left.
+	 * - gamepadX_rightStickRight: true if right stick points directly right.
+	 * - gamepadX_a: state of A key (from right buttons).
+	 * - gamepadX_b: state of B key (from right buttons).
+	 * - gamepadX_x: state of X key (from right buttons).
+	 * - gamepadX_y: state of Y key (from right buttons).
+	 * - gamepadX_frontTopLeft: state of the front top-left button.
+	 * - gamepadX_frontTopRight: state of the front top-right button.
+	 * - gamepadX_frontBottomLeft: state of the front bottom-left button.
+	 * - gamepadX_frontBottomRight: state of the front bottom-right button.
+	 * Where X in `gamepad` is the gamepad index: gamepad0, gamepad1, gamepad2..
+	 */
+	public delegateGamepadInputToKeys: boolean;
+
+	/**
+	 * Default time, in milliseconds, to consider two consecutive key presses as a double-press.
+	 */
+	public defaultDoublePressInterval: number;
+
+	/**
+	 * If true (default), will reset all states if the window loses focus.
+	 */
+	public resetOnFocusLoss: boolean;
+
+	private _callbacks: {
+		"mousedown": (event: Event) => void,
+		"mouseup": (event: Event) => void,
+		"mousemove": (event: Event) => void,
+		"keydown": (event: Event) => void,
+		"keyup": (event: Event) => void,
+		"blur": (event: Event) => void,
+		"wheel": (event: Event) => void,
+		"touchstart": (event: Event) => void,
+		"touchend": (event: Event) => void,
+		"touchmove": (event: Event) => void,
+		"contextmenu": (event: Event) => void,
+	} | null;
+	private _targetElement: Element | Window;
+	private _defaultGamepad: Gamepad | null;
+
+	private _defaultGamepadIndex: number;
+
+	private _mousePos: Vector2;
+	private _mouseState: Record<MouseButtons, unknown>;
+	private _mouseWheel: number;
+	private _mousePrevPos?: Vector2;
+	private _touchPosition: Vector2;
+
+	private _isTouching: boolean;
+	private _touchStarted: boolean;
+	private _touchEnded: boolean;
+	private _keyboardState: Record<KeyboardKeys, unknown>;
+	private _keyboardPrevState: Record<unknown, unknown>;
+	private _keyboardPressed: Record<KeyboardKeys, unknown>;
+	private _keyboardReleased: Record<KeyboardKeys, unknown>;
+	private _mousePressed: Record<MouseButtons, unknown>;
+	private _mouseReleased: Record<MouseButtons, unknown>;
+
+	private _customStates: Record<string, boolean>;
+	private _customPressed: Record<string, boolean>;
+	private _customReleased: Record<string, boolean>;
+	private _lastCustomReleasedTime: Record<string, number>;
+	private _lastCustomPressedTime: Record<string, number>;
+	private _prevLastCustomReleasedTime: Record<string, number>;
+	private _prevLastCustomPressedTime: Record<string, number>;
+
+	private _lastMouseReleasedTime: Record<string, number>;
+	private _lastKeyReleasedTime: Record<string, number>;
+	private _lastTouchReleasedTime: number;
+	private _lastMousePressedTime: Record<string, number>;
+	private _lastKeyPressedTime: Record<string, number>;
+	private _lastTouchPressedTime: number;
+	private _prevLastMouseReleasedTime: Record<string, number>;
+	private _prevLastKeyReleasedTime: Record<string, number>;
+	private _prevLastTouchReleasedTime: number;
+	private _prevLastMousePressedTime: Record<string, number>;
+	private _prevLastKeyPressedTime: Record<string, number>;
+	private _prevLastTouchPressedTime: number;
+
+	private _gamepadsData: Gamepad[];
+	private _queriedGamepadStates: Record<number, unknown>;
+
+	private _customKeys: Set<string>;
+
+	/**
 	 * Create the manager.
 	 */
 	public constructor() {
@@ -28,76 +146,12 @@ export class Input implements IManager {
 		this._callbacks = null;
 		this._targetElement = window;
 
-		/**
-		 * If true, will prevent default input events by calling preventDefault().
-		 * @name Input#preventDefaults
-		 * @type {Boolean}
-		 */
 		this.preventDefaults = false;
-
-		/**
-		 * By default, when holding wheel button down browsers will turn into special page scroll mode and will not emit mouse move events.
-		 * if this property is set to true (default), the Input manager will prevent this behavior, so we could still get mouse delta while mouse wheel is held down.
-		 * @name Input#disableMouseWheelAutomaticScrolling
-		 * @type {Boolean}
-		 */
 		this.disableMouseWheelAutomaticScrolling = true;
-
-		/**
-		 * If true (default), will disable the context menu (what typically opens when you right click the page).
-		 * @name Input#disableContextMenu
-		 * @type {Boolean}
-		 */
 		this.disableContextMenu = true;
-
-		/**
-		 * If true (default), will treat touch events (touch start / touch end / touch move) as if the user clicked and moved a mouse.
-		 * @name Input#delegateTouchInputToMouse
-		 * @type {Boolean}
-		 */
 		this.delegateTouchInputToMouse = true;
-
-		/**
-		 * If true (default), will delegate events from mapped gamepads to custom keys.
-		 * This will add the following codes to all basic query methods (down, pressed, released, doublePressed, doubleReleased):
-		 * - gamepadX_top: state of arrow keys top key (left buttons).
-		 * - gamepadX_bottom: state of arrow keys bottom key (left buttons).
-		 * - gamepadX_left: state of arrow keys left key (left buttons).
-		 * - gamepadX_right: state of arrow keys right key (left buttons).
-		 * - gamepadX_leftStickUp: true if left stick points directly up.
-		 * - gamepadX_leftStickDown: true if left stick points directly down.
-		 * - gamepadX_leftStickLeft: true if left stick points directly left.
-		 * - gamepadX_leftStickRight: true if left stick points directly right.
-		 * - gamepadX_rightStickUp: true if right stick points directly up.
-		 * - gamepadX_rightStickDown: true if right stick points directly down.
-		 * - gamepadX_rightStickLeft: true if right stick points directly left.
-		 * - gamepadX_rightStickRight: true if right stick points directly right.
-		 * - gamepadX_a: state of A key (from right buttons).
-		 * - gamepadX_b: state of B key (from right buttons).
-		 * - gamepadX_x: state of X key (from right buttons).
-		 * - gamepadX_y: state of Y key (from right buttons).
-		 * - gamepadX_frontTopLeft: state of the front top-left button.
-		 * - gamepadX_frontTopRight: state of the front top-right button.
-		 * - gamepadX_frontBottomLeft: state of the front bottom-left button.
-		 * - gamepadX_frontBottomRight: state of the front bottom-right button.
-		 * Where X in `gamepad` is the gamepad index: gamepad0, gamepad1, gamepad2..
-		 * @name Input#delegateGamepadInputToKeys
-		 * @type {Boolean}
-		 */
 		this.delegateGamepadInputToKeys = true;
-
-		/**
-		 * If true (default), will reset all states if the window loses focus.
-		 * @name Input#resetOnFocusLoss
-		 * @type {Boolean}
-		 */
 		this.resetOnFocusLoss = true;
-
-		/**
-		 * Default time, in milliseconds, to consider two consecutive key presses as a double-press.
-		 * @name Input#defaultDoublePressInterval
-		 * @type {Number}
-		 */
 		this.defaultDoublePressInterval = 250;
 
 		// set base state members
@@ -108,7 +162,7 @@ export class Input implements IManager {
 	 * Get the Mouse Buttons enum.
 	 * @see MouseButtons
 	 */
-	get MouseButtons() {
+	public get MouseButtons(): typeof MouseButtons {
 		return MouseButtons;
 	}
 
@@ -116,15 +170,15 @@ export class Input implements IManager {
 	 * Get the Keyboard Buttons enum.
 	 * @see KeyboardKeys
 	 */
-	get KeyboardKeys() {
+	public get KeyboardKeys(): typeof KeyboardKeys {
 		return KeyboardKeys;
 	}
 
 	/**
 	 * Return the string code to use in order to get touch events.
-	 * @returns {String} Key code to use for touch events.
+	 * @returns Key code to use for touch events.
 	 */
-	get TouchKeyCode() {
+	public get TouchKeyCode(): string {
 		return _touchKeyCode;
 	}
 
@@ -132,8 +186,8 @@ export class Input implements IManager {
 	 * @inheritdoc
 	 * @private
 	 **/
-	setup() {
-		return new Promise((resolve, reject) => {
+	private setup(): Promise<void> {
+		return new Promise<void>((resolve, reject) => {
 
 			_logger.info("Setup input manager..");
 
@@ -198,7 +252,7 @@ export class Input implements IManager {
 	 * @inheritdoc
 	 * @private
 	 **/
-	startFrame() {
+	private async startFrame(): Promise<void> {
 		// query gamepads
 		const prevGamepadData = this._gamepadsData || [];
 		const prevDefaultGamepadId = (this._defaultGamepad || { id: "null" }).id;
@@ -300,7 +354,7 @@ export class Input implements IManager {
 	 * @inheritdoc
 	 * @private
 	 **/
-	destroy() {
+	private async destroy(): Promise<void> {
 		// unregister all callbacks
 		if(this._callbacks) {
 			let element = this._targetElement;
@@ -327,17 +381,17 @@ export class Input implements IManager {
 	 * Shaku.input.setTargetElement(() => Shaku.gfx.canvas);
 	 * @param {Element | elementCallback} element Element to attach input to.
 	 */
-	setTargetElement(element) {
+	public setTargetElement(element: Element | unknown): void {
 		if(this._callbacks) { throw new Error("'setTargetElement() must be called before initializing the input manager!"); }
 		this._targetElement = element;
 	}
 
 	/**
 	 * Reset all internal data and states.
-	 * @param {Boolean=} keepMousePosition If true, will not reset mouse position.
+	 * @param keepMousePosition If true, will not reset mouse position.
 	 * @private
 	 */
-	#_resetAll(keepMousePosition) {
+	#_resetAll(keepMousePosition?: boolean) {
 		// mouse states
 		if(!keepMousePosition) {
 			this._mousePos = new Vector2();
@@ -396,10 +450,10 @@ export class Input implements IManager {
 	/**
 	 * Get Gamepad current states, or null if not connected.
 	 * Note: this object does not update itself, you'll need to query it again every frame.
-	 * @param {Number=} index Gamepad index or undefined for first connected device.
-	 * @returns {Gamepad} Gamepad current state.
+	 * @param index Gamepad index or undefined for first connected device.
+	 * @returns Gamepad current state.
 	 */
-	gamepad(index) {
+	public gamepad(index?: number): Gamepad {
 		// default index
 		if(index === null || index === undefined) {
 			index = this._defaultGamepadIndex;
@@ -421,18 +475,18 @@ export class Input implements IManager {
 
 	/**
 	 * Get gamepad id, or null if not connected to this slot.
-	 * @param {Number=} index Gamepad index or undefined for first connected device.
+	 * @param index Gamepad index or undefined for first connected device.
 	 * @returns Gamepad id or null.
 	 */
-	gamepadId(index) {
+	public gamepadId(index?: number): string | null {
 		return this.gamepadIds()[index || 0] || null;
 	}
 
 	/**
 	 * Return a list with connected devices ids.
-	 * @returns {Array<String>} List of connected devices ids.
+	 * @returns List of connected devices ids.
 	 */
-	gamepadIds() {
+	public gamepadIds(): string[] {
 		let ret = [];
 		for(let gp of this._gamepadsData) {
 			if(gp) { ret.push(gp.id); }
@@ -443,33 +497,33 @@ export class Input implements IManager {
 	/**
 	 * Get touch screen touching position.
 	 * Note: if not currently touching, will return last known position.
-	 * @returns {Vector2} Touch position.
+	 * @returns Touch position.
 	 */
-	get touchPosition() {
+	public get touchPosition(): Vector2 {
 		return this._touchPosition.clone();
 	}
 
 	/**
 	 * Get if currently touching a touch screen.
-	 * @returns {Boolean} True if currently touching the screen.
+	 * @returns True if currently touching the screen.
 	 */
-	get touching() {
+	public get touching(): boolean {
 		return this._isTouching;
 	}
 
 	/**
 	 * Get if started touching a touch screen in current frame.
-	 * @returns {Boolean} True if started touching the screen now.
+	 * @returns True if started touching the screen now.
 	 */
-	get touchStarted() {
+	public get touchStarted(): boolean {
 		return this._touchStarted;
 	}
 
 	/**
 	 * Get if stopped touching a touch screen in current frame.
-	 * @returns {Boolean} True if stopped touching the screen now.
+	 * @returns True if stopped touching the screen now.
 	 */
-	get touchEnded() {
+	public get touchEnded(): boolean {
 		return this._touchEnded;
 	}
 
@@ -481,7 +535,7 @@ export class Input implements IManager {
 	 * @param {String} code Code to set state for.
 	 * @param {Boolean|null} value Current value to set, or null to remove custom key.
 	 */
-	setCustomState(code, value) {
+	public setCustomState(code: string, value: boolean | null) {
 		// remove custom value
 		if(value === null) {
 			this._customKeys.delete(code);
@@ -525,25 +579,25 @@ export class Input implements IManager {
 
 	/**
 	 * Get mouse position.
-	 * @returns {Vector2} Mouse position.
+	 * @returns Mouse position.
 	 */
-	get mousePosition() {
+	public get mousePosition(): Vector2 {
 		return this._mousePos.clone();
 	}
 
 	/**
 	 * Get mouse previous position (before the last endFrame() call).
-	 * @returns {Vector2} Mouse position in previous frame.
+	 * @returns Mouse position in previous frame.
 	 */
-	get prevMousePosition() {
+	public get prevMousePosition(): Vector2 {
 		return (this._mousePrevPos || this._mousePos).clone();
 	}
 
 	/**
 	 * Get mouse movement since last endFrame() call.
-	 * @returns {Vector2} Mouse change since last frame.
+	 * @returns Mouse change since last frame.
 	 */
-	get mouseDelta() {
+	public get mouseDelta(): Vector2 {
 		// no previous position? return 0,0.
 		if(!this._mousePrevPos) {
 			return Vector2.zero();
@@ -555,129 +609,129 @@ export class Input implements IManager {
 
 	/**
 	 * Get if mouse is currently moving.
-	 * @returns {Boolean} True if mouse moved since last frame, false otherwise.
+	 * @returns True if mouse moved since last frame, false otherwise.
 	 */
-	get mouseMoving() {
+	public get mouseMoving(): boolean {
 		return (this._mousePrevPos && !this._mousePrevPos.equals(this._mousePos));
 	}
 
 	/**
 	 * Get if mouse button was pressed this frame.
-	 * @param {MouseButtons} button Button code (defults to MouseButtons.left).
-	 * @returns {Boolean} True if mouse button is currently down, but was up in previous frame.
+	 * @param button Button code (defults to MouseButtons.left).
+	 * @returns True if mouse button is currently down, but was up in previous frame.
 	 */
-	mousePressed(button = 0) {
+	public mousePressed(button = MouseButtons.LEFT): boolean {
 		if(button === undefined) throw new Error("Invalid button code!");
 		return Boolean(this._mousePressed[button]);
 	}
 
 	/**
 	 * Get if mouse button is currently pressed.
-	 * @param {MouseButtons} button Button code (defults to MouseButtons.left).
-	 * @returns {Boolean} true if mouse button is currently down, false otherwise.
+	 * @param button Button code (defults to MouseButtons.left).
+	 * @returns true if mouse button is currently down, false otherwise.
 	 */
-	mouseDown(button = 0) {
+	public mouseDown(button = MouseButtons.LEFT): boolean {
 		if(button === undefined) throw new Error("Invalid button code!");
 		return Boolean(this._mouseState[button]);
 	}
 
 	/**
 	 * Get if mouse button is currently not down.
-	 * @param {MouseButtons} button Button code (defults to MouseButtons.left).
-	 * @returns {Boolean} true if mouse button is currently up, false otherwise.
+	 * @param button Button code (defults to MouseButtons.left).
+	 * @returns true if mouse button is currently up, false otherwise.
 	 */
-	mouseUp(button = 0) {
+	public mouseUp(button = MouseButtons.LEFT): boolean {
 		if(button === undefined) throw new Error("Invalid button code!");
 		return Boolean(!this.mouseDown(button));
 	}
 
 	/**
 	 * Get if mouse button was released in current frame.
-	 * @param {MouseButtons} button Button code (defults to MouseButtons.left).
-	 * @returns {Boolean} True if mouse was down last frame, but released in current frame.
+	 * @param button Button code (defults to MouseButtons.left).
+	 * @returns True if mouse was down last frame, but released in current frame.
 	 */
-	mouseReleased(button = 0) {
+	public mouseReleased(button = MouseButtons.LEFT): boolean {
 		if(button === undefined) throw new Error("Invalid button code!");
 		return Boolean(this._mouseReleased[button]);
 	}
 
 	/**
 	 * Get if keyboard key is currently pressed down.
-	 * @param {KeyboardKeys} key Keyboard key code.
-	 * @returns {boolean} True if keyboard key is currently down, false otherwise.
+	 * @param key Keyboard key code.
+	 * @returns True if keyboard key is currently down, false otherwise.
 	 */
-	keyDown(key) {
+	public keyDown(key: KeyboardKeys): boolean {
 		if(key === undefined) throw new Error("Invalid key code!");
 		return Boolean(this._keyboardState[key]);
 	}
 
 	/**
 	 * Get if keyboard key is currently not down.
-	 * @param {KeyboardKeys} key Keyboard key code.
-	 * @returns {Boolean} True if keyboard key is currently up, false otherwise.
+	 * @param key Keyboard key code.
+	 * @returns True if keyboard key is currently up, false otherwise.
 	 */
-	keyUp(key) {
+	public keyUp(key: KeyboardKeys): boolean {
 		if(key === undefined) throw new Error("Invalid key code!");
 		return Boolean(!this.keyDown(key));
 	}
 
 	/**
 	 * Get if a keyboard button was released in current frame.
-	 * @param {KeyboardKeys} button Keyboard key code.
-	 * @returns {Boolean} True if key was down last frame, but released in current frame.
+	 * @param button Keyboard key code.
+	 * @returns True if key was down last frame, but released in current frame.
 	 */
-	keyReleased(key) {
+	public keyReleased(key: KeyboardKeys): boolean {
 		if(key === undefined) throw new Error("Invalid key code!");
 		return Boolean(this._keyboardReleased[key]);
 	}
 
 	/**
 	 * Get if keyboard key was pressed this frame.
-	 * @param {KeyboardKeys} key Keyboard key code.
-	 * @returns {Boolean} True if key is currently down, but was up in previous frame.
+	 * @param key Keyboard key code.
+	 * @returns True if key is currently down, but was up in previous frame.
 	 */
-	keyPressed(key) {
+	public keyPressed(key: KeyboardKeys): boolean {
 		if(key === undefined) throw new Error("Invalid key code!");
 		return Boolean(this._keyboardPressed[key]);
 	}
 
 	/**
 	 * Get if any of the shift keys are currently down.
-	 * @returns {Boolean} True if there's a shift key pressed down.
+	 * @returns True if there's a shift key pressed down.
 	 */
-	get shiftDown() {
+	public get shiftDown(): boolean {
 		return Boolean(this.keyDown(this.KeyboardKeys.SHIFT));
 	}
 
 	/**
 	 * Get if any of the Ctrl keys are currently down.
-	 * @returns {Boolean} True if there's a Ctrl key pressed down.
+	 * @returns True if there's a Ctrl key pressed down.
 	 */
-	get ctrlDown() {
+	public get ctrlDown(): boolean {
 		return Boolean(this.keyDown(this.KeyboardKeys.CTRL));
 	}
 
 	/**
 	 * Get if any of the Alt keys are currently down.
-	 * @returns {Boolean} True if there's an Alt key pressed down.
+	 * @returns True if there's an Alt key pressed down.
 	 */
-	get altDown() {
+	public get altDown(): boolean {
 		return Boolean(this.keyDown(this.KeyboardKeys.ALT));
 	}
 
 	/**
 	 * Get if any keyboard key was pressed this frame.
-	 * @returns {Boolean} True if any key was pressed down this frame.
+	 * @returns True if any key was pressed down this frame.
 	 */
-	get anyKeyPressed() {
+	public get anyKeyPressed(): boolean {
 		return Object.keys(this._keyboardPressed).length !== 0;
 	}
 
 	/**
 	 * Get if any keyboard key is currently down.
-	 * @returns {Boolean} True if there's a key pressed down.
+	 * @returns True if there's a key pressed down.
 	 */
-	get anyKeyDown() {
+	public get anyKeyDown(): boolean {
 		for(var key in this._keyboardState) {
 			if(this._keyboardState[key]) {
 				return true;
@@ -688,17 +742,17 @@ export class Input implements IManager {
 
 	/**
 	 * Get if any mouse button was pressed this frame.
-	 * @returns {Boolean} True if any of the mouse buttons were pressed this frame.
+	 * @returns True if any of the mouse buttons were pressed this frame.
 	 */
-	get anyMouseButtonPressed() {
+	public get anyMouseButtonPressed(): boolean {
 		return Object.keys(this._mousePressed).length !== 0;
 	}
 
 	/**
 	 * Get if any mouse button is down.
-	 * @returns {Boolean} True if any of the mouse buttons are pressed.
+	 * @returns True if any of the mouse buttons are pressed.
 	 */
-	get anyMouseButtonDown() {
+	public get anyMouseButtonDown(): boolean {
 		for(var key in this._mouseState) {
 			if(this._mouseState[key]) {
 				return true;
@@ -720,7 +774,7 @@ export class Input implements IManager {
 	 * @param {*} touchValue Value to use to return value if its a touch code.
 	 * @param {*} customValues Dictionary to check for custom values injected via setCustomState().
 	 */
-	#_getValueWithCode(code, mouseCheck, keyboardCheck, touchValue, customValues) {
+	#_getValueWithCode<T>(code: string, mouseCheck: () => T, keyboardCheck: () => T, touchValue: T, customValues: Record<unknown, unknown>): T {
 		// make sure code is string
 		code = String(code);
 
@@ -769,15 +823,15 @@ export class Input implements IManager {
 	 * Return if a mouse or keyboard button is currently down.
 	 * @example
 	 * if (Shaku.input.down(["mouse_left", "touch", "space"])) { alert("mouse, touch screen or space are pressed!"); }
-	 * @param {string|Array<String>} code Keyboard, touch or mouse code. Can be array of codes to test any of them.
-	 *                          For mouse buttons: set code to "mouse_left", "mouse_right" or "mouse_middle".
-	 *                          For keyboard buttons: use one of the keys of KeyboardKeys (for example "a", "alt", "up_arrow", etc..).
-	 *                          For touch screen: set code to "touch".
-	 *                          For numbers (0-9): you can use the number itself.
-	 *                          Note: if you inject any custom state via `setCustomState()`, you can use its code here too.
-	 * @returns {Boolean} True if key or mouse button are down.
+	 * @param code Keyboard, touch or mouse code. Can be array of codes to test any of them.
+	 * For mouse buttons: set code to "mouse_left", "mouse_right" or "mouse_middle".
+	 * For keyboard buttons: use one of the keys of KeyboardKeys (for example "a", "alt", "up_arrow", etc..).
+	 * For touch screen: set code to "touch".
+	 * For numbers (0-9): you can use the number itself.
+	 * Note: if you inject any custom state via `setCustomState()`, you can use its code here too.
+	 * @returns True if key or mouse button are down.
 	 */
-	down(code) {
+	public down(code: string | string[]): boolean {
 		if(!Array.isArray(code)) { code = [code]; }
 		for(let c of code) {
 			if(Boolean(this.#_getValueWithCode(c, this.mouseDown, this.keyDown, this.touching, this._customStates))) {
@@ -791,15 +845,15 @@ export class Input implements IManager {
 	 * Return if a mouse or keyboard button was released in this frame.
 	 * @example
 	 * if (Shaku.input.released(["mouse_left", "touch", "space"])) { alert("mouse, touch screen or space were released!"); }
-	 * @param {string|Array<String>} code Keyboard, touch, gamepad or mouse button code. Can be array of codes to test any of them.
-	 *                          For mouse buttons: set code to "mouse_left", "mouse_right" or "mouse_middle".
-	 *                          For keyboard buttons: use one of the keys of KeyboardKeys (for example "a", "alt", "up_arrow", etc..).
-	 *                          For touch screen: set code to "touch".
-	 *                          For numbers (0-9): you can use the number itself.
-	 *                          Note: if you inject any custom state via `setCustomState()`, you can use its code here too.
-	 * @returns {Boolean} True if key or mouse button were down in previous frame, and released this frame.
+	 * @param code Keyboard, touch, gamepad or mouse button code. Can be array of codes to test any of them.
+	 * For mouse buttons: set code to "mouse_left", "mouse_right" or "mouse_middle".
+	 * For keyboard buttons: use one of the keys of KeyboardKeys (for example "a", "alt", "up_arrow", etc..).
+	 * For touch screen: set code to "touch".
+	 * For numbers (0-9): you can use the number itself.
+	 * Note: if you inject any custom state via `setCustomState()`, you can use its code here too.
+	 * @returns True if key or mouse button were down in previous frame, and released this frame.
 	 */
-	released(code) {
+	public released(code: string | string[]): boolean {
 		if(!Array.isArray(code)) { code = [code]; }
 		for(let c of code) {
 			if(Boolean(this.#_getValueWithCode(c, this.mouseReleased, this.keyReleased, this.touchEnded, this._customReleased))) {
@@ -821,7 +875,7 @@ export class Input implements IManager {
 	 *                          Note: if you inject any custom state via `setCustomState()`, you can use its code here too.
 	 * @returns {Boolean} True if key or mouse button where up in previous frame, and pressed this frame.
 	 */
-	pressed(code) {
+	public pressed(code) {
 		if(!Array.isArray(code)) { code = [code]; }
 		for(let c of code) {
 			if(Boolean(this.#_getValueWithCode(c, this.mousePressed, this.keyPressed, this.touchStarted, this._customPressed))) {
