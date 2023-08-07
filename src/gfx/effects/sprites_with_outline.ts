@@ -25,14 +25,14 @@ export class SpritesWithOutlineEffect extends Effect {
 	 */
 	get uniformTypes() {
 		return {
-			[Effect.UniformBinds.MainTexture]: { type: Effect.UniformTypes.Texture, bind: Effect.UniformBinds.MainTexture },
-			[Effect.UniformBinds.Projection]: { type: Effect.UniformTypes.Matrix, bind: Effect.UniformBinds.Projection },
-			[Effect.UniformBinds.World]: { type: Effect.UniformTypes.Matrix, bind: Effect.UniformBinds.World },
-			[Effect.UniformBinds.View]: { type: Effect.UniformTypes.Matrix, bind: Effect.UniformBinds.View },
-			[Effect.UniformBinds.OutlineColor]: { type: Effect.UniformTypes.Color, bind: Effect.UniformBinds.OutlineColor },
-			[Effect.UniformBinds.TextureWidth]: { type: Effect.UniformTypes.Float, bind: Effect.UniformBinds.TextureWidth },
-			[Effect.UniformBinds.TextureHeight]: { type: Effect.UniformTypes.Float, bind: Effect.UniformBinds.TextureHeight },
-			[Effect.UniformBinds.OutlineWeight]: { type: Effect.UniformTypes.Float, bind: Effect.UniformBinds.OutlineWeight },
+			[Effect.UniformBinds.MainTexture]: { type: Effect.UniformTypes.TEXTURE, bind: Effect.UniformBinds.MainTexture },
+			[Effect.UniformBinds.Projection]: { type: Effect.UniformTypes.MATRIX, bind: Effect.UniformBinds.Projection },
+			[Effect.UniformBinds.World]: { type: Effect.UniformTypes.MATRIX, bind: Effect.UniformBinds.World },
+			[Effect.UniformBinds.View]: { type: Effect.UniformTypes.MATRIX, bind: Effect.UniformBinds.View },
+			[Effect.UniformBinds.OutlineColor]: { type: Effect.UniformTypes.COLOR, bind: Effect.UniformBinds.OutlineColor },
+			[Effect.UniformBinds.TextureWidth]: { type: Effect.UniformTypes.FLOAT, bind: Effect.UniformBinds.TextureWidth },
+			[Effect.UniformBinds.TextureHeight]: { type: Effect.UniformTypes.FLOAT, bind: Effect.UniformBinds.TextureHeight },
+			[Effect.UniformBinds.OutlineWeight]: { type: Effect.UniformTypes.FLOAT, bind: Effect.UniformBinds.OutlineWeight },
 		};
 	}
 

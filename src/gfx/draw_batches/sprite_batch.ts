@@ -3,7 +3,7 @@ import { LoggerModule, Rectangle, Vector2, Vector3 } from "../../utils";
 import { DrawBatch } from "./draw_batch";
 import { SpriteBatchBase } from "./sprite_batch_base";
 
-const _loggggger = LoggerModule.getLogger("gfx - sprite - batch"); // TODO
+const _logger = LoggerModule.getLogger("gfx - sprite - batch"); // TODO
 
 /**
  * Sprite batch renderer.
@@ -59,7 +59,7 @@ export class SpriteBatch extends SpriteBatchBase {
 		this._updateTexture(texture);
 
 		// sanity check
-		if((vertices.length % 4) !== 0) {
+		if ((vertices.length % 4) !== 0) {
 			_logger.warn("Tried to push vertices that are not multiplication of 4!");
 			return;
 		}
@@ -72,9 +72,9 @@ export class SpriteBatch extends SpriteBatchBase {
 		let normals = this._buffers.normalsArray;
 		let binormals = this._buffers.binormalsArray;
 		let tangents = this._buffers.tangentsArray;
-		for(let vertex of vertices) {
+		for (let vertex of vertices) {
 			// push color
-			if(this.__currDrawingParams.hasVertexColor) {
+			if (this.__currDrawingParams.hasVertexColor) {
 				colors[colors._index++] = (vertex.color.r || 0);
 				colors[colors._index++] = (vertex.color.g || 0);
 				colors[colors._index++] = (vertex.color.b || 0);
@@ -82,8 +82,8 @@ export class SpriteBatch extends SpriteBatchBase {
 			}
 
 			// push normals
-			if(normals) {
-				if(vertex.normal) {
+			if (normals) {
+				if (vertex.normal) {
 					normals[normals._index++] = vertex.normal.x;
 					normals[normals._index++] = vertex.normal.y;
 					normals[normals._index++] = vertex.normal.z;
@@ -94,8 +94,8 @@ export class SpriteBatch extends SpriteBatchBase {
 			}
 
 			// push binormals
-			if(binormals) {
-				if(vertex.binormal) {
+			if (binormals) {
+				if (vertex.binormal) {
 					binormals[binormals._index++] = vertex.binormal.x;
 					binormals[binormals._index++] = vertex.binormal.y;
 					binormals[binormals._index++] = vertex.binormal.z;
@@ -106,8 +106,8 @@ export class SpriteBatch extends SpriteBatchBase {
 			}
 
 			// push tangents
-			if(tangents) {
-				if(vertex.tangent) {
+			if (tangents) {
+				if (vertex.tangent) {
 					tangents[tangents._index++] = vertex.tangent.x;
 					tangents[tangents._index++] = vertex.tangent.y;
 					tangents[tangents._index++] = vertex.tangent.z;
@@ -127,12 +127,12 @@ export class SpriteBatch extends SpriteBatchBase {
 			positions[positions._index++] = (vertex.position.z || 0);
 
 			// every 4 vertices..
-			if(i++ === 3) {
+			if (i++ === 3) {
 				// update quads count
 				this.__quadsCount++;
 
 				// check if full
-				if(this.__quadsCount >= this.__maxQuadsCount) {
+				if (this.__quadsCount >= this.__maxQuadsCount) {
 					this._handleFullBuffer();
 				}
 
@@ -180,7 +180,7 @@ export class SpriteBatch extends SpriteBatchBase {
 	 * @param {Vector2=} origin Drawing origin. This will be the point at "position" and rotation origin.
 	 */
 	drawRectangle(texture, destRect, sourceRect, color, origin) {
-		if((destRect.isVector2) || (destRect.isVector3)) {
+		if ((destRect.isVector2) || (destRect.isVector3)) {
 			destRect = new Rectangle(0, 0, destRect.x, destRect.y);
 		}
 		let position = origin ? destRect.getPosition().addSelf(size.mul(origin)) : destRect.getCenter();

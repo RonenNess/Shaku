@@ -3,7 +3,7 @@ import { Circle, Color, LoggerModule, Matrix, Rectangle, Vector2, Vector3 } from
 import { Vertex } from "../vertex";
 import { DrawBatch } from "./draw_batch";
 
-const _loggggger = LoggerModule.getLogger("gfx - sprite - batch"); // TODO
+const _logger = LoggerModule.getLogger("gfx - sprite - batch"); // TODO
 
 /**
  * Colored shapes renderer.
@@ -107,11 +107,11 @@ export class ShapesBatch extends DrawBatch {
 		// create the indices buffer
 		let maxIndex = (batchPolygonsCount * 3);
 		let indicesArrayType;
-		if(maxIndex <= 256) {
+		if (maxIndex <= 256) {
 			indicesArrayType = Uint8Array;
 			this.__indicesType = gl.UNSIGNED_BYTE;
 		}
-		if(maxIndex <= 65535) {
+		if (maxIndex <= 65535) {
 			indicesArrayType = Uint16Array;
 			this.__indicesType = gl.UNSIGNED_SHORT;
 		}
@@ -120,7 +120,7 @@ export class ShapesBatch extends DrawBatch {
 			this.__indicesType = gl.UNSIGNED_INT;
 		}
 		let indices = new indicesArrayType(batchPolygonsCount * 3); // 3 = number of indices per sprite
-		for(let i = 0; i < indices.length; i++) {
+		for (let i = 0; i < indices.length; i++) {
 
 			indices[i] = i;
 		}
@@ -129,7 +129,7 @@ export class ShapesBatch extends DrawBatch {
 
 		// extand buffers functionality
 		function extendBuffer(buff) {
-			if(buff) { buff._index = 0; }
+			if (buff) { buff._index = 0; }
 		}
 		extendBuffer(this._buffers.positionArray);
 		extendBuffer(this._buffers.colorsArray);
@@ -151,9 +151,9 @@ export class ShapesBatch extends DrawBatch {
 	 */
 	public destroy(): void {
 		let gl = this.#_gl;
-		if(this._buffers) {
-			if(this._buffers.positionBuffer) gl.deleteBuffer(this._buffers.positionBuffer);
-			if(this._buffers.colorsBuffer) gl.deleteBuffer(this._buffers.colorsBuffer);
+		if (this._buffers) {
+			if (this._buffers.positionBuffer) gl.deleteBuffer(this._buffers.positionBuffer);
+			if (this._buffers.colorsBuffer) gl.deleteBuffer(this._buffers.colorsBuffer);
 		}
 		this._buffers = null;
 	}
@@ -198,7 +198,7 @@ export class ShapesBatch extends DrawBatch {
 		this.__validateDrawing(true);
 
 		// sanity check
-		if((vertices.length % 3) !== 0) {
+		if ((vertices.length % 3) !== 0) {
 			_logger.warn("Tried to push vertices that are not multiplication of 3!");
 			return;
 		}
@@ -207,9 +207,9 @@ export class ShapesBatch extends DrawBatch {
 		let i = 0;
 		let colors = this._buffers.colorsArray;
 		let positions = this._buffers.positionArray;
-		for(let vertex of vertices) {
+		for (let vertex of vertices) {
 			// push color
-			if(this.__currDrawingParams.hasVertexColor) {
+			if (this.__currDrawingParams.hasVertexColor) {
 				colors[colors._index++] = (vertex.color.r || 0);
 				colors[colors._index++] = (vertex.color.g || 0);
 				colors[colors._index++] = (vertex.color.b || 0);
@@ -222,12 +222,12 @@ export class ShapesBatch extends DrawBatch {
 			positions[positions._index++] = (vertex.position.z || 0);
 
 			// every 3 vertices..
-			if(i++ === 2) {
+			if (i++ === 2) {
 				// update quads count
 				this.__polyCount++;
 
 				// check if full
-				if(this.__polyCount >= this.__maxPolyCount) {
+				if (this.__polyCount >= this.__maxPolyCount) {
 					this._handleFullBuffer();
 				}
 
@@ -275,7 +275,7 @@ export class ShapesBatch extends DrawBatch {
 	 * @param origin Drawing origin. This will be the point at "position" and rotation origin.
 	 */
 	public drawRectangle(destRect: Rectangle | Vector2, color?: Color | Color[] | undefined, rotation?: number, origin?: Vector2): void {
-		if((destRect instanceof Vector2) || (destRect instanceof Vector3)) {
+		if ((destRect instanceof Vector2) || (destRect instanceof Vector3)) {
 			destRect = new Rectangle(0, 0, destRect.x, destRect.y);
 		}
 		let position = origin ? destRect.getPosition().addSelf(size.mul(origin)) : destRect.getCenter();
@@ -298,32 +298,32 @@ export class ShapesBatch extends DrawBatch {
 		this.__validateDrawing(true);
 
 		// defaults segments count
-		if(segmentsCount === undefined) {
+		if (segmentsCount === undefined) {
 			segmentsCount = 24;
 		}
-		else if(segmentsCount < 2) {
+		else if (segmentsCount < 2) {
 			return;
 		}
 
 		// default outside color
-		if(!outsideColor) {
+		if (!outsideColor) {
 			outsideColor = color;
 		}
 
 		// default ratio
-		if(!ratio) {
+		if (!ratio) {
 			ratio = Vector2.oneReadonly;
 		}
-		else if(typeof ratio === "number") {
+		else if (typeof ratio === "number") {
 			ratio = new Vector2(1, ratio);
 		}
 
 		// for rotation
 		let rotateVec;
-		if(rotation) {
+		if (rotation) {
 			let cos = Math.cos(rotation);
 			let sin = Math.sin(rotation);
-			rotateVec = function(vector) {
+			rotateVec = function (vector) {
 				let x = (vector.x * cos - vector.y * sin);
 				let y = (vector.x * sin + vector.y * cos);
 				vector.x = x;
@@ -338,15 +338,15 @@ export class ShapesBatch extends DrawBatch {
 			(circle.radius * Math.cos(0)) * ratio.x,
 			(circle.radius * Math.sin(0)) * ratio.y
 		);
-		if(rotateVec) { rotateVec(prevPoint); }
+		if (rotateVec) { rotateVec(prevPoint); }
 
 		// generate list of vertices to draw the circle
-		for(let i = 1; i <= segmentsCount; i++) {
+		for (let i = 1; i <= segmentsCount; i++) {
 			let newPoint = new Vector2(
 				(circle.radius * Math.cos(i * segmentStep)) * ratio.x,
 				(circle.radius * Math.sin(i * segmentStep)) * ratio.y
 			);
-			if(rotateVec) { rotateVec(newPoint); }
+			if (rotateVec) { rotateVec(newPoint); }
 			this.drawVertices([
 				new Vertex(circle.center, null, color),
 				new Vertex(prevPoint.add(circle.center), null, outsideColor),
@@ -385,9 +385,9 @@ export class ShapesBatch extends DrawBatch {
 			let axisAlined = true;
 
 			// apply skew
-			if(sprite.skew) {
+			if (sprite.skew) {
 				// skew on x axis
-				if(sprite.skew.x) {
+				if (sprite.skew.x) {
 					topLeft.x += sprite.skew.x * sprite.origin.y;
 					topRight.x += sprite.skew.x * sprite.origin.y;
 					bottomLeft.x -= sprite.skew.x * (1 - sprite.origin.y);
@@ -395,7 +395,7 @@ export class ShapesBatch extends DrawBatch {
 					axisAlined = false;
 				}
 				// skew on y axis
-				if(sprite.skew.y) {
+				if (sprite.skew.y) {
 					topLeft.y += sprite.skew.y * sprite.origin.x;
 					bottomLeft.y += sprite.skew.y * sprite.origin.x;
 					topRight.y -= sprite.skew.y * (1 - sprite.origin.x);
@@ -405,7 +405,7 @@ export class ShapesBatch extends DrawBatch {
 			}
 
 			// apply rotation
-			if(sprite.rotation) {
+			if (sprite.rotation) {
 				let cos = Math.cos(sprite.rotation);
 				let sin = Math.sin(sprite.rotation);
 				function rotateVec(vector) {
@@ -432,7 +432,7 @@ export class ShapesBatch extends DrawBatch {
 			bottomRight.y += sprite.position.y;
 
 			// apply transform
-			if(transform && !transform.isIdentity) {
+			if (transform && !transform.isIdentity) {
 				topLeft.copy((topLeft.z !== undefined) ? Matrix.transformVector3(transform, topLeft) : Matrix.transformVector2(transform, topLeft));
 				topRight.copy((topRight.z !== undefined) ? Matrix.transformVector3(transform, topRight) : Matrix.transformVector2(transform, topRight));
 				bottomLeft.copy((bottomLeft.z !== undefined) ? Matrix.transformVector3(transform, bottomLeft) : Matrix.transformVector2(transform, bottomLeft));
@@ -440,7 +440,7 @@ export class ShapesBatch extends DrawBatch {
 			}
 
 			// snap pixels
-			if(this.snapPixels) {
+			if (this.snapPixels) {
 				topLeft.floorSelf();
 				topRight.floorSelf();
 				bottomLeft.floorSelf();
@@ -490,7 +490,7 @@ export class ShapesBatch extends DrawBatch {
 	 */
 	private _handleFullBuffer(): void {
 		// invoke on-overflow callback
-		if(this.onOverflow) {
+		if (this.onOverflow) {
 			this.onOverflow();
 		}
 
@@ -523,7 +523,7 @@ export class ShapesBatch extends DrawBatch {
 		let _currPolyCount = this.polygonsInBatch;
 
 		// nothing to draw? skip
-		if(_currPolyCount === 0) {
+		if (_currPolyCount === 0) {
 			return;
 		}
 
@@ -532,16 +532,16 @@ export class ShapesBatch extends DrawBatch {
 
 		// copy position buffer
 		effect.setPositionsAttribute(positionBuffer, true);
-		if(needBuffersCopy) {
+		if (needBuffersCopy) {
 			gl.bufferData(gl.ARRAY_BUFFER,
 				positionArray,
 				this.__buffersUsage, 0, _currPolyCount * 3 * 3);
 		}
 
 		// copy color buffer
-		if(this.__currDrawingParams.hasVertexColor && colorsBuffer) {
+		if (this.__currDrawingParams.hasVertexColor && colorsBuffer) {
 			effect.setColorsAttribute(colorsBuffer, true);
-			if(needBuffersCopy && colorsArray) {
+			if (needBuffersCopy && colorsArray) {
 				gl.bufferData(gl.ARRAY_BUFFER,
 					colorsArray,
 					this.__buffersUsage, 0, _currPolyCount * 3 * 4);
@@ -560,7 +560,7 @@ export class ShapesBatch extends DrawBatch {
 		this.__dirty = false;
 
 		// if static, free arrays we no longer need them
-		if(this.__staticBuffers) {
+		if (this.__staticBuffers) {
 			this._buffers.positionArray = this._buffers.colorsArray = null;
 		}
 	}
