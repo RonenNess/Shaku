@@ -3,7 +3,7 @@ import { IManager, LoggerModule } from "../utils";
 import { SoundInstance } from "./sound_instance";
 import { SoundMixer } from "./sound_mixer";
 
-const _loggggger = LoggerModule.getLogger("sfx"); // TODO
+const _logger = LoggerModule.getLogger("sfx"); // TODO
 
 /**
  * Sfx manager.
@@ -38,8 +38,8 @@ export class Sfx implements IManager {
 	startFrame() {
 		// remove any sound no longer playing
 		let playingSounds = Array.from(this._playingSounds);
-		for(let sound of playingSounds) {
-			if(!sound.isPlaying) {
+		for (let sound of playingSounds) {
+			if (!sound.isPlaying) {
 				this._playingSounds.delete(sound);
 			}
 		}
@@ -84,8 +84,8 @@ export class Sfx implements IManager {
 	play(soundAsset, volume, playbackRate, preservesPitch) {
 		let sound = this.createSound(soundAsset);
 		sound.volume = volume !== undefined ? volume : 1;
-		if(playbackRate !== undefined) { sound.playbackRate = playbackRate; }
-		if(preservesPitch !== undefined) { sound.preservesPitch = preservesPitch; }
+		if (playbackRate !== undefined) { sound.playbackRate = playbackRate; }
+		if (preservesPitch !== undefined) { sound.preservesPitch = preservesPitch; }
 		let ret = sound.play();
 		sound.disposeWhenDone();
 		return ret;
@@ -98,7 +98,7 @@ export class Sfx implements IManager {
 	 */
 	stopAll() {
 		let playingSounds = Array.from(this._playingSounds);
-		for(let sound of playingSounds) {
+		for (let sound of playingSounds) {
 			sound.stop();
 		}
 		this._playingSounds = new Set();
@@ -122,7 +122,7 @@ export class Sfx implements IManager {
 	 * @returns {SoundInstance} Newly created sound instance.
 	 */
 	createSound(sound) {
-		if(!(sound.isSoundAsset)) { throw new Error("Sound type must be an instance of SoundAsset!"); }
+		if (!(sound.isSoundAsset)) { throw new Error("Sound type must be an instance of SoundAsset!"); }
 		var ret = new SoundInstance(this, sound.url);
 		return ret;
 	}

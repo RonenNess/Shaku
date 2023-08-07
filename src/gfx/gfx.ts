@@ -12,7 +12,7 @@ import { TextureFilterModes } from "./texture_filter_modes";
 import { TextureWrapModes } from "./texture_wrap_modes";
 import { Vertex } from "./vertex";
 
-const _loggggger = LoggerModule.getLogger("gfx"); // TODO
+const _logger = LoggerModule.getLogger("gfx"); // TODO
 
 let _gl = null;
 let _initSettings = { antialias: true, alpha: true, depth: false, premultipliedAlpha: true, desynchronized: false };
@@ -112,8 +112,8 @@ export class Gfx implements IManager {
 	 * @param {Dictionary} flags WebGL init flags to set.
 	 */
 	setContextAttributes(flags) {
-		if(_gl) { throw new Error("Can't call setContextAttributes() after gfx was initialized!"); }
-		for(let key in flags) {
+		if (_gl) { throw new Error("Can't call setContextAttributes() after gfx was initialized!"); }
+		for (let key in flags) {
 			_initSettings[key] = flags[key];
 		}
 	}
@@ -126,7 +126,7 @@ export class Gfx implements IManager {
 	 * @param {HTMLCanvasElement} element Canvas element to initialize on.
 	 */
 	setCanvas(element) {
-		if(_gl) { throw new Error("Can't call setCanvas() after gfx was initialized!"); }
+		if (_gl) { throw new Error("Can't call setCanvas() after gfx was initialized!"); }
 		_canvas = element;
 	}
 
@@ -287,7 +287,7 @@ export class Gfx implements IManager {
 	 */
 	createCamera(withViewport) {
 		let ret = new Camera(this);
-		if(withViewport) {
+		if (withViewport) {
 			ret.viewport = this.getRenderingRegion();
 		}
 		return ret;
@@ -300,7 +300,7 @@ export class Gfx implements IManager {
 	 */
 	createCamera3D(withViewport) {
 		let ret = new Camera3D(this);
-		if(withViewport) {
+		if (withViewport) {
 			ret.viewport = this.getRenderingRegion();
 		}
 		return ret;
@@ -330,7 +330,7 @@ export class Gfx implements IManager {
 		let height = 0;
 
 		// parent
-		if(limitToParent) {
+		if (limitToParent) {
 			let parent = _canvas.parentElement;
 			width = parent.clientWidth - _canvas.offsetLeft;
 			height = parent.clientHeight - _canvas.offsetTop;
@@ -344,13 +344,13 @@ export class Gfx implements IManager {
 		}
 
 		// make sure even numbers
-		if(!allowOddNumbers) {
-			if(width % 2 !== 0) { width++; }
-			if(height % 2 !== 0) { height++; }
+		if (!allowOddNumbers) {
+			if (width % 2 !== 0) { width++; }
+			if (height % 2 !== 0) { height++; }
 		}
 
 		// if changed, set resolution
-		if((_canvas.width !== width) || (_canvas.height !== height)) {
+		if ((_canvas.width !== width) || (_canvas.height !== height)) {
 			this.setResolution(width, height, true);
 		}
 	}
@@ -377,17 +377,17 @@ export class Gfx implements IManager {
 		this.#_resetCachedRenderingRegion();
 
 		// if texture is null, remove any render target
-		if(texture === null) {
+		if (texture === null) {
 			_renderTarget = null;
 			_gl.bindFramebuffer(_gl.FRAMEBUFFER, null);
-			if(!keepCamera) {
+			if (!keepCamera) {
 				this.resetCamera();
 			}
 			return;
 		}
 
 		// convert texture to array
-		if(!Array.isArray(texture)) {
+		if (!Array.isArray(texture)) {
 			texture = [texture];
 		}
 
@@ -396,14 +396,14 @@ export class Gfx implements IManager {
 
 		// set render targets
 		var drawBuffers = [];
-		for(let index = 0; index < texture.length; ++index) {
+		for (let index = 0; index < texture.length; ++index) {
 
 			// attach the texture as the first color attachment
 			const attachmentPoint = _gl["COLOR_ATTACHMENT" + index];
 			_gl.framebufferTexture2D(_gl.FRAMEBUFFER, attachmentPoint, _gl.TEXTURE_2D, texture[index]._glTexture, 0);
 
 			// index 0 is the "main" render target
-			if(index === 0) {
+			if (index === 0) {
 				_renderTarget = texture[index];
 			}
 
@@ -418,7 +418,7 @@ export class Gfx implements IManager {
 		//_gl.bindFramebuffer(_gl.FRAMEBUFFER, null);
 
 		// reset camera
-		if(!keepCamera) {
+		if (!keepCamera) {
 			this.resetCamera();
 		}
 	}
@@ -436,11 +436,11 @@ export class Gfx implements IManager {
 		_canvas.width = width;
 		_canvas.height = height;
 
-		if(width % 2 !== 0 || height % 2 !== 0) {
+		if (width % 2 !== 0 || height % 2 !== 0) {
 			_logger.warn("Resolution to set is not even numbers; This might cause minor artefacts when using texture atlases. Consider using even numbers instead.");
 		}
 
-		if(updateCanvasStyle) {
+		if (updateCanvasStyle) {
 			_canvas.style.width = width + "px";
 			_canvas.style.height = height + "px";
 		}
@@ -472,7 +472,7 @@ export class Gfx implements IManager {
 		_projection = camera.projection.clone();
 
 		// update effect
-		if(_activeEffect) {
+		if (_activeEffect) {
 			_activeEffect.setProjectionMatrix(_projection);
 		}
 
@@ -535,7 +535,7 @@ export class Gfx implements IManager {
 			_logger.info("Setup gfx manager..");
 
 			// if no canvas is set, create one
-			if(!_canvas) {
+			if (!_canvas) {
 				_canvas = document.createElement("canvas");
 			}
 
@@ -544,14 +544,14 @@ export class Gfx implements IManager {
 			_webglVersion = 2;
 
 			// no webgl2? try webgl1
-			if(!_gl) {
+			if (!_gl) {
 				_logger.warn("Failed to init WebGL2, attempt fallback to WebGL1.");
 				_gl = _canvas.getContext("webgl", _initSettings);
 				_webglVersion = 1;
 			}
 
 			// no webgl at all??
-			if(!_gl) {
+			if (!_gl) {
 				_webglVersion = 0;
 				_logger.error("Can't get WebGL context!");
 				return reject("Failed to get WebGL context from canvas!");
@@ -614,12 +614,12 @@ export class Gfx implements IManager {
 	 */
 	buildText(fontTexture, text, fontSize, color, alignment, offset, marginFactor) {
 		// make sure text is a string
-		if(typeof text !== "string") {
+		if (typeof text !== "string") {
 			text = "" + text;
 		}
 
 		// sanity
-		if(!fontTexture || !fontTexture.valid) {
+		if (!fontTexture || !fontTexture.valid) {
 			throw new Error("Font texture is invalid!");
 		}
 
@@ -649,7 +649,7 @@ export class Gfx implements IManager {
 		function breakLine() {
 			// add offset to update based on alignment
 			let offsetX = 0;
-			switch(alignment) {
+			switch (alignment) {
 
 				case TextAlignments.RIGHT:
 					offsetX = -lineWidth;
@@ -662,8 +662,8 @@ export class Gfx implements IManager {
 			}
 
 			// if we need to shift characters for alignment, do it
-			if(offsetX != 0) {
-				for(let i = 0; i < currentLineSprites.length; ++i) {
+			if (offsetX != 0) {
+				for (let i = 0; i < currentLineSprites.length; ++i) {
 					currentLineSprites[i].position.x += offsetX;
 				}
 			}
@@ -679,13 +679,13 @@ export class Gfx implements IManager {
 
 		// create group to return and build sprites
 		let ret = new SpritesGroup();
-		for(let i = 0; i < text.length; ++i) {
+		for (let i = 0; i < text.length; ++i) {
 			// get character and source rect
 			let character = text[i];
 			let sourceRect = fontTexture.getSourceRect(character);
 
 			// special case - break line
-			if(character === "\n") {
+			if (character === "\n") {
 				breakLine();
 				continue;
 			}
@@ -694,26 +694,26 @@ export class Gfx implements IManager {
 			let size = new Vector2(sourceRect.width * scale, sourceRect.height * scale);
 
 			// create sprite (unless its space)
-			if(character !== " ") {
+			if (character !== " ") {
 
 				// create sprite and add to group
 				let sprite = new Sprite(fontTexture);
 				sprite.sourceRectangle = sourceRect;
 				sprite.size = size;
 				let positionOffset = fontTexture.getPositionOffset(character);
-				if(fontTexture.isMsdfFontTextureAsset) {
+				if (fontTexture.isMsdfFontTextureAsset) {
 					sprite.position.copy(position).addSelf(positionOffset.mul(scale * 0.5));
 				}
 				else {
 					sprite.position.copy(position).addSelf(positionOffset.mul(scale));
 				}
 				sprite.origin.set(0.5, 0.5);
-				if(color.isColor) {
+				if (color.isColor) {
 					sprite.color.copy(color);
 				}
 				else {
 					sprite.color = [];
-					for(let col of color) {
+					for (let col of color) {
 						sprite.color.push(col.clone());
 					}
 				}
@@ -737,7 +737,7 @@ export class Gfx implements IManager {
 		breakLine();
 
 		// set position
-		if(offset) {
+		if (offset) {
 			ret.position.set(offset.x, offset.y);
 		}
 
@@ -767,16 +767,16 @@ export class Gfx implements IManager {
 	inScreen(shape) {
 		let region = this.#_getRenderingRegionInternal();
 
-		if(shape.isCircle) {
+		if (shape.isCircle) {
 			return region.collideCircle(shape);
 		}
-		else if(shape.isVector2) {
+		else if (shape.isVector2) {
 			return region.containsVector(shape);
 		}
-		else if(shape.isRectangle) {
+		else if (shape.isRectangle) {
 			return region.collideRect(shape);
 		}
-		else if(shape.isLine) {
+		else if (shape.isLine) {
 			return region.collideLine(shape);
 		}
 		else {
@@ -960,12 +960,12 @@ export class GfxInternal {
 
 	useEffect(effect, overrideFlags) {
 		// if null, use default
-		if(effect === null) {
+		if (effect === null) {
 			effect = this._gfx.builtinEffects.Sprites;
 		}
 
 		// same effect? skip
-		if((_activeEffect === effect) && (_activeEffectFlags === overrideFlags)) {
+		if ((_activeEffect === effect) && (_activeEffectFlags === overrideFlags)) {
 			return;
 		}
 
@@ -975,30 +975,30 @@ export class GfxInternal {
 		_activeEffectFlags = overrideFlags;
 
 		// set projection matrix
-		if(_projection) {
+		if (_projection) {
 			_activeEffect.setProjectionMatrix(_projection);
 		}
 	}
 
 	getRenderingRegionInternal(includeOffset) {
 		// cached with offset
-		if(includeOffset && _cachedRenderingRegion.withOffset) {
+		if (includeOffset && _cachedRenderingRegion.withOffset) {
 			return _cachedRenderingRegion.withOffset;
 		}
 
 		// cached without offset
-		if(!includeOffset && _cachedRenderingRegion.withoutOffset) {
+		if (!includeOffset && _cachedRenderingRegion.withoutOffset) {
 			return _cachedRenderingRegion.withoutOffset;
 		}
 
 		// if we got viewport..
-		if(this._gfx._viewport) {
+		if (this._gfx._viewport) {
 
 			// get region from viewport
 			let ret = this._gfx._viewport.clone();
 
 			// if without offset, remove it
-			if(includeOffset === false) {
+			if (includeOffset === false) {
 				ret.x = ret.y = 0;
 				_cachedRenderingRegion.withoutOffset = ret;
 				return ret;
@@ -1017,33 +1017,33 @@ export class GfxInternal {
 	}
 
 	setTextureFilter(filter) {
-		if(!TextureFilterModes._values.has(filter)) { throw new Error("Invalid texture filter mode! Please pick a value from 'TextureFilterModes'."); }
+		if (!Object.values(TextureFilterModes).includes(filter)) { throw new Error("Invalid texture filter mode! Please pick a value from 'TextureFilterModes'."); }
 		let glMode = _gl[filter];
 		_gl.texParameteri(_gl.TEXTURE_2D, _gl.TEXTURE_MIN_FILTER, glMode);
 		_gl.texParameteri(_gl.TEXTURE_2D, _gl.TEXTURE_MAG_FILTER, glMode);
 	}
 
 	setTextureWrapMode(wrapX, wrapY) {
-		if(wrapY === undefined) { wrapY = wrapX; }
-		if(!TextureWrapModes._values.has(wrapX)) { throw new Error("Invalid texture wrap mode! Please pick a value from 'TextureWrapModes'."); }
-		if(!TextureWrapModes._values.has(wrapY)) { throw new Error("Invalid texture wrap mode! Please pick a value from 'TextureWrapModes'."); }
+		if (wrapY === undefined) { wrapY = wrapX; }
+		if (!Object.values(TextureWrapModes).includes(wrapX)) { throw new Error("Invalid texture wrap mode! Please pick a value from 'TextureWrapModes'."); }
+		if (!Object.values(TextureWrapModes).includes(wrapY)) { throw new Error("Invalid texture wrap mode! Please pick a value from 'TextureWrapModes'."); }
 		_gl.texParameteri(_gl.TEXTURE_2D, _gl.TEXTURE_WRAP_S, _gl[wrapX]);
 		_gl.texParameteri(_gl.TEXTURE_2D, _gl.TEXTURE_WRAP_T, _gl[wrapY]);
 	}
 
 	setActiveTexture(texture) {
-		if(_activeEffect.setTexture(texture)) {
+		if (_activeEffect.setTexture(texture)) {
 			this.setTextureFilter(texture.filter || this._gfx.defaultTextureFilter);
 			this.setTextureWrapMode(texture.wrapMode || this._gfx.defaultTextureWrapMode);
 		}
 	}
 
 	setBlendMode(blendMode) {
-		if(_lastBlendMode !== blendMode) {
+		if (_lastBlendMode !== blendMode) {
 
 			// get gl context and set defaults
 			var gl = _gl;
-			switch(blendMode) {
+			switch (blendMode) {
 				case BlendModes.ALPHA_BLEND:
 					gl.enable(gl.BLEND);
 					gl.blendEquation(gl.FUNC_ADD);
@@ -1088,7 +1088,7 @@ export class GfxInternal {
 
 				case BlendModes.OBERLAY:
 					gl.enable(gl.BLEND);
-					if(gl.MAX) {
+					if (gl.MAX) {
 						gl.blendEquation(gl.MAX);
 						gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
 					} else {

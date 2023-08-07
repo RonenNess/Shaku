@@ -1,6 +1,6 @@
 import { LoggerModule } from "../utils";
 
-const _loggggger = LoggerModule.getLogger("sfx"); // TODO
+const _logger = LoggerModule.getLogger("sfx"); // TODO
 
 /**
  * A sound effect instance you can play and stop.
@@ -12,7 +12,7 @@ export class SoundInstance {
 	* @param {String} url Sound URL or source.
 	*/
 	public constructor(sfxManager, url) {
-		if(!url) {
+		if (!url) {
 			_logger.error("Sound type can't be null or invalid!");
 			throw new Error("Invalid sound type to play in SoundInstance!");
 		}
@@ -37,11 +37,11 @@ export class SoundInstance {
 	 * "Blocked attempt to create a WebMediaPlayer" exception.
 	 */
 	dispose() {
-		if(this._audio) {
+		if (this._audio) {
 			try {
 				this._audio.pause();
 				this._audio.remove();
-			} catch(e) { _logger.warn(`Error while disposing sound instance: ${e}.`); }
+			} catch (e) { _logger.warn(`Error while disposing sound instance: ${e}.`); }
 			this._audio.src = "";
 			this._audio.srcObject = null;
 		}
@@ -53,8 +53,8 @@ export class SoundInstance {
 	* @returns {Promise} Promise to return when sound start playing.
 	*/
 	play() {
-		if(!this._audio) { throw new Error("Sound instance was already disposed!"); }
-		if(this.playing) { return; }
+		if (!this._audio) { throw new Error("Sound instance was already disposed!"); }
+		if (this.playing) { return; }
 		let promise = this._audio.play();
 		this._sfx._playingSounds.add(this);
 		return promise;
@@ -65,7 +65,7 @@ export class SoundInstance {
 	* @returns {Number} Playback rate.
 	*/
 	get playbackRate() {
-		if(!this._audio) { return 0; }
+		if (!this._audio) { return 0; }
 		return this._audio.playbackRate;
 	}
 
@@ -74,9 +74,9 @@ export class SoundInstance {
 	* @param {Number} val Playback value to set.
 	*/
 	set playbackRate(val) {
-		if(!this._audio) { return 0; }
-		if(val < 0.1) { _logger.error("playbackRate value set is too low, value was capped to 0.1."); }
-		if(val > 10) { _logger.error("playbackRate value set is too high, value was capped to 10."); }
+		if (!this._audio) { return 0; }
+		if (val < 0.1) { _logger.error("playbackRate value set is too low, value was capped to 0.1."); }
+		if (val > 10) { _logger.error("playbackRate value set is too high, value was capped to 10."); }
 		this._audio.playbackRate = val;
 		return val;
 	}
@@ -86,7 +86,7 @@ export class SoundInstance {
 	* @returns {Boolean} Preserve pitch state of the sound instance.
 	*/
 	get preservesPitch() {
-		if(!this._audio) { return false; }
+		if (!this._audio) { return false; }
 		return Boolean(this._audio.preservesPitch || this._audio.mozPreservesPitch);
 	}
 
@@ -95,7 +95,7 @@ export class SoundInstance {
 	* @param {Boolean} val New preserve pitch value to set.
 	*/
 	set preservesPitch(val) {
-		if(!this._audio) { return false; }
+		if (!this._audio) { return false; }
 		return this._audio.preservesPitch = this._audio.mozPreservesPitch = Boolean(val);
 	}
 
@@ -103,7 +103,7 @@ export class SoundInstance {
 	* Pause the sound.
 	*/
 	pause() {
-		if(!this._audio) { throw new Error("Sound instance was already disposed!"); }
+		if (!this._audio) { throw new Error("Sound instance was already disposed!"); }
 		this._audio.pause();
 	}
 
@@ -112,7 +112,7 @@ export class SoundInstance {
 	* @returns {Promise} Promise to return when sound start playing.
 	*/
 	replay() {
-		if(!this._audio) { throw new Error("Sound instance was already disposed!"); }
+		if (!this._audio) { throw new Error("Sound instance was already disposed!"); }
 		this.stop();
 		return this.play();
 	}
@@ -122,13 +122,13 @@ export class SoundInstance {
 	* @returns {Boolean} True if successfully stopped sound, false otherwise.
 	*/
 	stop() {
-		if(!this._audio) { throw new Error("Sound instance was already disposed!"); }
+		if (!this._audio) { throw new Error("Sound instance was already disposed!"); }
 		try {
 			this.pause();
 			this.currentTime = 0;
 			return true;
 		}
-		catch(e) {
+		catch (e) {
 			return false;
 		}
 	}
@@ -138,7 +138,7 @@ export class SoundInstance {
 	* @returns {Boolean} If this sound should play in loop.
 	*/
 	get loop() {
-		if(!this._audio) { return false; }
+		if (!this._audio) { return false; }
 		return this._audio.loop;
 	}
 
@@ -147,7 +147,7 @@ export class SoundInstance {
 	* @param {Boolean} value If this sound should play in loop.
 	*/
 	set loop(value) {
-		if(!this._audio) { return false; }
+		if (!this._audio) { return false; }
 		this._audio.loop = value;
 		return this._audio.loop;
 	}
@@ -157,7 +157,7 @@ export class SoundInstance {
 	* @returns {Number} Sound effect volume.
 	*/
 	get volume() {
-		if(!this._audio) { return 0; }
+		if (!this._audio) { return 0; }
 		return this._volume;
 	}
 
@@ -166,11 +166,11 @@ export class SoundInstance {
 	* @param {Number} value Sound effect volume to set.
 	*/
 	set volume(value) {
-		if(!this._audio) { return 0; }
+		if (!this._audio) { return 0; }
 		this._volume = value;
 		var volume = (value * SoundInstance._masterVolume);
-		if(volume < 0) { volume = 0; }
-		if(volume > 1) { volume = 1; }
+		if (volume < 0) { volume = 0; }
+		if (volume > 1) { volume = 1; }
 		this._audio.volume = volume;
 		return this._volume;
 	}
@@ -180,7 +180,7 @@ export class SoundInstance {
 	* @returns {Number} Current time in playing sound.
 	*/
 	get currentTime() {
-		if(!this._audio) { return 0; }
+		if (!this._audio) { return 0; }
 		return this._audio.currentTime;
 	}
 
@@ -189,7 +189,7 @@ export class SoundInstance {
 	* @param {Number} value Set current playing time in sound track.
 	*/
 	set currentTime(value) {
-		if(!this._audio) { return 0; }
+		if (!this._audio) { return 0; }
 		return this._audio.currentTime = value;
 	}
 
@@ -198,7 +198,7 @@ export class SoundInstance {
 	* @returns {Number} Sound duration in seconds.
 	*/
 	get duration() {
-		if(!this._audio) { return 0; }
+		if (!this._audio) { return 0; }
 		return this._audio.duration;
 	}
 
@@ -207,7 +207,7 @@ export class SoundInstance {
 	* @returns {Boolean} True if sound is currently paused.
 	*/
 	get paused() {
-		if(!this._audio) { return false; }
+		if (!this._audio) { return false; }
 		return this._audio.paused;
 	}
 
@@ -216,7 +216,7 @@ export class SoundInstance {
 	* @returns {Boolean} True if sound is currently playing.
 	*/
 	get playing() {
-		if(!this._audio) { return false; }
+		if (!this._audio) { return false; }
 		return !this.paused && !this.finished;
 	}
 
@@ -225,7 +225,7 @@ export class SoundInstance {
 	* @returns {Boolean} True if sound reached the end and didn't loop.
 	*/
 	get finished() {
-		if(!this._audio) { return false; }
+		if (!this._audio) { return false; }
 		return this._audio.ended;
 	}
 }

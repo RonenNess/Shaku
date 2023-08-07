@@ -4,7 +4,7 @@ import { CollisionResolver } from "./resolver";
 import { CollisionsImp as ResolverImp } from "./resolvers_imp";
 import { CircleShape, LinesShape, PointShape, RectangleShape, TilemapShape } from "./shapes";
 
-const _loggggger = LoggerModule.getLogger("collision"); // TODO
+const _logger = LoggerModule.getLogger("collision"); // TODO
 
 /**
  * Collision is the collision manager.

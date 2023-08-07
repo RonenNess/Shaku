@@ -1,4 +1,4 @@
-import { IManager, Vector2 } from "../utils";
+import { IManager, LoggerModule, Vector2 } from "../utils";
 import { Asset } from "./asset";
 import { BinaryAsset } from "./binary_asset";
 import { FontTextureAsset } from "./font_texture_asset";
@@ -7,6 +7,8 @@ import { MsdfFontTextureAsset } from "./msdf_font_texture_asset";
 import { SoundAsset } from "./sound_asset";
 import { TextureAsset } from "./texture_asset";
 import { TextureAtlasAsset } from "./texture_atlas_asset";
+
+const _logger = LoggerModule.getLogger("gfx"); // TODO
 
 /**
  * Assets manager class.
