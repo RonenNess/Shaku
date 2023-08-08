@@ -812,11 +812,13 @@ export class Input implements IManager {
 		}
 
 		// if not start with "mouse", treat it as a keyboard key
-		const KeyboardKeys = this.KeyboardKeys[code];
-		if(KeyboardKeys === undefined) {
+		const keyboardKey = this.KeyboardKeys[code];
+		if (keyboardKey === undefined) {
 			throw new Error("Unknown keyboard key: " + code);
 		}
-		return keyboardCheck.call(this, this.KeyboardKeys[code]);
+		// TODO: investigate, the commented line was the original line but it doesn't work
+		// return keyboardCheck.call(this, keyboardKey);
+		return keyboardCheck.call(this, code);
 	}
 
 	/**
