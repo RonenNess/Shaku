@@ -1,8 +1,8 @@
-import { LoggerModule } from "../utils";
+import { LoggerFactory } from "../utils";
 import { CollisionTestResult } from "./result";
 import { CollisionShape } from "./shapes";
 
-const _logger = LoggerModule.getLogger("collision"); // TODO
+const _logger = LoggerFactory.getLogger("collision"); // TODO
 
 /**
  * The collision resolver is responsible to implement collision detection between pair of shapes of same or different types.
@@ -32,12 +32,12 @@ export class CollisionResolver {
 	 */
 	setHandler(firstShapeId, secondShapeId, handler) {
 		// register handler
-		if (!this._handlers[firstShapeId]) { this._handlers[firstShapeId] = {}; }
+		if(!this._handlers[firstShapeId]) { this._handlers[firstShapeId] = {}; }
 		this._handlers[firstShapeId][secondShapeId] = handler;
 
 		// register reverse order handler
-		if (firstShapeId !== secondShapeId) {
-			if (!this._handlers[secondShapeId]) { this._handlers[secondShapeId] = {}; }
+		if(firstShapeId !== secondShapeId) {
+			if(!this._handlers[secondShapeId]) { this._handlers[secondShapeId] = {}; }
 			this._handlers[secondShapeId][firstShapeId] = (f, s) => { return handler(s, f); };
 		}
 	}
@@ -62,7 +62,7 @@ export class CollisionResolver {
 	 */
 	testWithHandler(first, second, handler) {
 		// missing handler?
-		if (!handler) {
+		if(!handler) {
 			_logger.warn(`Missing collision handler for shapes "${first.shapeId}" and "${second.shapeId}".`);
 			return null;
 		}
@@ -71,7 +71,7 @@ export class CollisionResolver {
 		let result = handler(first, second);
 
 		// collision
-		if (result) {
+		if(result) {
 			let position = (result.isVector2) ? result : null;
 			return new CollisionTestResult(position, first, second);
 		}
@@ -96,7 +96,7 @@ export class CollisionResolver {
 	 */
 	#_getCollisionMethod(first, second) {
 		let handlersFrom = this._handlers[first.shapeId];
-		if (handlersFrom) {
+		if(handlersFrom) {
 			return handlersFrom[second.shapeId] || null;
 		}
 		return null;

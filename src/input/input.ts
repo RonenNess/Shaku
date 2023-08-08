@@ -1,8 +1,8 @@
-import { IManager, LoggerModule, Vector2 } from "../utils";
+import { IManager, LoggerFactory, Vector2 } from "../utils";
 import { Gamepad } from "./gamepad";
 import { KeyboardKeys, MouseButtons } from "./key_codes";
 
-const _logger = LoggerModule.getLogger("input"); // TODO
+const _logger = LoggerFactory.getLogger("input"); // TODO
 
 // get timestamp
 function timestamp(): number {

@@ -1,9 +1,9 @@
 import { TextureAssetBase } from "../../assets";
-import { Color, LoggerModule, Matrix, Vector2 } from "../../utils";
+import { Color, LoggerFactory, Matrix, Vector2 } from "../../utils";
 import { TextureFilterModes } from "../texture_filter_modes";
 import { TextureWrapMode, TextureWrapModes } from "../texture_wrap_modes";
 
-const _logger = LoggerModule.getLogger("gfx - effect"); // TODO
+const _logger = LoggerFactory.getLogger("gfx - effect"); // TODO
 
 // currently applied effect
 let _currEffect = null;
@@ -138,7 +138,7 @@ export class Effect {
 		gl.linkProgram(program);
 
 		// check for errors
-		if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+		if(!gl.getProgramParameter(program, gl.LINK_STATUS)) {
 			_logger.error("Error linking shader program:");
 			_logger.error(gl.getProgramInfoLog(program));
 			throw new Error("Failed to link shader program.");
@@ -159,27 +159,27 @@ export class Effect {
 		this._pendingAttributeValues = {};
 
 		// initialize uniform setters
-		for (let uniform in this.uniformTypes) {
+		for(let uniform in this.uniformTypes) {
 
 			// get uniform location
 			let uniformLocation = this._gl.getUniformLocation(this._program, uniform);
-			if (uniformLocation === -1) {
+			if(uniformLocation === -1) {
 				_logger.error("Could not find uniform: " + uniform);
 				throw new Error(`Uniform named "${uniform}" was not found in shader code!`);
 			}
 
 			// get gl setter method
 			let uniformData = this.uniformTypes[uniform];
-			if (!Object.values(UniformTypes).includes(uniformData.type)) {
+			if(!Object.values(UniformTypes).includes(uniformData.type)) {
 				_logger.error("Uniform has invalid type: " + uniformData.type);
 				throw new Error(`Uniform "${uniform}" have illegal value type "${uniformData.type}"!`);
 			}
 
 			// build setter method for matrices
-			if (uniformData.type === UniformTypes.MATRIX) {
-				(function (_this, name, location, method) {
+			if(uniformData.type === UniformTypes.MATRIX) {
+				(function(_this, name, location, method) {
 					_this.uniforms[name] = (mat) => {
-						if (_currEffect !== _this) {
+						if(_currEffect !== _this) {
 							_this._pendingUniformValues[name] = [mat];
 							return;
 						}
@@ -188,10 +188,10 @@ export class Effect {
 				})(this, uniform, uniformLocation, uniformData.type);
 			}
 			// build setter method for textures
-			else if (uniformData.type === UniformTypes.TEXTURE) {
-				(function (_this, name, location, method) {
+			else if(uniformData.type === UniformTypes.TEXTURE) {
+				(function(_this, name, location, method) {
 					_this.uniforms[name] = (texture, index) => {
-						if (_currEffect !== _this) {
+						if(_currEffect !== _this) {
 							_this._pendingUniformValues[name] = [texture, index];
 							return;
 						}
@@ -201,20 +201,20 @@ export class Effect {
 						_this._gl.activeTexture(textureCode);
 						_this._gl.bindTexture(_this._gl.TEXTURE_2D, glTexture);
 						_this._gl.uniform1i(location, (index || 0));
-						if (texture.filter) { _setTextureFilter(_this._gl, texture.filter); }
-						if (texture.wrapMode) { _setTextureWrapMode(_this._gl, texture.wrapMode); }
+						if(texture.filter) { _setTextureFilter(_this._gl, texture.filter); }
+						if(texture.wrapMode) { _setTextureWrapMode(_this._gl, texture.wrapMode); }
 					};
 				})(this, uniform, uniformLocation, uniformData.type);
 			}
 			// build setter method for colors
-			else if (uniformData.type === UniformTypes.COLOR) {
-				(function (_this, name, location, method) {
+			else if(uniformData.type === UniformTypes.COLOR) {
+				(function(_this, name, location, method) {
 					_this.uniforms[name] = (v1, v2, v3, v4) => {
-						if (_currEffect !== _this) {
+						if(_currEffect !== _this) {
 							_this._pendingUniformValues[name] = [v1, v2, v3, v4];
 							return;
 						}
-						if (v1.isColor) {
+						if(v1.isColor) {
 							_this._gl[method](location, v1.floatArray);
 						}
 						else {
@@ -225,9 +225,9 @@ export class Effect {
 			}
 			// build setter method for other types
 			else {
-				(function (_this, name, location, method) {
+				(function(_this, name, location, method) {
 					_this.uniforms[name] = (v1, v2, v3, v4) => {
-						if (_currEffect !== _this) {
+						if(_currEffect !== _this) {
 							_this._pendingUniformValues[name] = [v1, v2, v3, v4];
 							return;
 						}
@@ -238,7 +238,7 @@ export class Effect {
 
 			// set binding
 			let bindTo = uniformData.bind;
-			if (bindTo) {
+			if(bindTo) {
 				this._uniformBinds[bindTo] = uniform;
 			}
 		}
@@ -250,11 +250,11 @@ export class Effect {
 		this._attributeBinds = {};
 
 		// get attribute locations
-		for (let attr in this.attributeTypes) {
+		for(let attr in this.attributeTypes) {
 
 			// get attribute location
 			let attributeLocation = this._gl.getAttribLocation(this._program, attr);
-			if (attributeLocation === -1) {
+			if(attributeLocation === -1) {
 				_logger.error("Could not find attribute: " + attr);
 				throw new Error(`Attribute named "${attr}" was not found in shader code!`);
 			}
@@ -263,15 +263,15 @@ export class Effect {
 			let attributeData = this.attributeTypes[attr];
 
 			// build setter method
-			(function (_this, name, location, data) {
+			(function(_this, name, location, data) {
 				_this.attributes[name] = (buffer) => {
 
-					if (_currEffect !== _this) {
+					if(_currEffect !== _this) {
 						_this._pendingAttributeValues[name] = [buffer];
 						return;
 					}
 
-					if (buffer) {
+					if(buffer) {
 						_this._gl.bindBuffer(_this._gl.ARRAY_BUFFER, buffer);
 						_this._gl.vertexAttribPointer(location, data.size, _this._gl[data.type] || _this._gl.FLOAT, data.normalize || false, data.stride || 0, data.offset || 0);
 						_this._gl.enableVertexAttribArray(location);
@@ -284,7 +284,7 @@ export class Effect {
 
 			// set binding
 			let bindTo = attributeData.bind;
-			if (bindTo) {
+			if(bindTo) {
 				this._attributeBinds[bindTo] = attr;
 			}
 		}
@@ -334,14 +334,14 @@ export class Effect {
 
 		// enable / disable some features
 		overrideFlags = overrideFlags || {};
-		if ((overrideFlags.enableDepthTest !== undefined) ? overrideFlags.enableDepthTest : this.enableDepthTest) { this._gl.enable(this._gl.DEPTH_TEST); } else { this._gl.disable(this._gl.DEPTH_TEST); }
-		if ((overrideFlags.enableFaceCulling !== undefined) ? overrideFlags.enableFaceCulling : this.enableFaceCulling) { this._gl.enable(this._gl.CULL_FACE); } else { this._gl.disable(this._gl.CULL_FACE); }
-		if ((overrideFlags.enableStencilTest !== undefined) ? overrideFlags.enableStencilTest : this.enableStencilTest) { this._gl.enable(this._gl.STENCIL_TEST); } else { this._gl.disable(this._gl.STENCIL_TEST); }
-		if ((overrideFlags.enableDithering !== undefined) ? overrideFlags.enableDithering : this.enableDithering) { this._gl.enable(this._gl.DITHER); } else { this._gl.disable(this._gl.DITHER); }
+		if((overrideFlags.enableDepthTest !== undefined) ? overrideFlags.enableDepthTest : this.enableDepthTest) { this._gl.enable(this._gl.DEPTH_TEST); } else { this._gl.disable(this._gl.DEPTH_TEST); }
+		if((overrideFlags.enableFaceCulling !== undefined) ? overrideFlags.enableFaceCulling : this.enableFaceCulling) { this._gl.enable(this._gl.CULL_FACE); } else { this._gl.disable(this._gl.CULL_FACE); }
+		if((overrideFlags.enableStencilTest !== undefined) ? overrideFlags.enableStencilTest : this.enableStencilTest) { this._gl.enable(this._gl.STENCIL_TEST); } else { this._gl.disable(this._gl.STENCIL_TEST); }
+		if((overrideFlags.enableDithering !== undefined) ? overrideFlags.enableDithering : this.enableDithering) { this._gl.enable(this._gl.DITHER); } else { this._gl.disable(this._gl.DITHER); }
 
 		// set polygon offset
 		const polygonOffset = (overrideFlags.polygonOffset !== undefined) ? overrideFlags.polygonOffset : this.polygonOffset;
-		if (polygonOffset) {
+		if(polygonOffset) {
 			this._gl.enable(this._gl.POLYGON_OFFSET_FILL);
 			this._gl.polygonOffset(polygonOffset.factor || 0, polygonOffset.units || 0);
 		}
@@ -357,13 +357,13 @@ export class Effect {
 		_currEffect = this;
 
 		// set pending uniforms that were set while this effect was not active
-		for (let key in this._pendingUniformValues) {
+		for(let key in this._pendingUniformValues) {
 			this.uniforms[key](...this._pendingUniformValues[key]);
 		}
 		this._pendingUniformValues = {};
 
 		// set pending attributes that were set while this effect was not active
-		for (let key in this._pendingAttributeValues) {
+		for(let key in this._pendingAttributeValues) {
 			this.attributes[key](...this._pendingAttributeValues[key]);
 		}
 		this._pendingAttributeValues = {};
@@ -379,7 +379,7 @@ export class Effect {
 	 */
 	getBoundUniform(bindKey) {
 		let key = this._uniformBinds[bindKey];
-		if (key) {
+		if(key) {
 			return this.uniforms[key] || null;
 		}
 		return null;
@@ -450,7 +450,7 @@ export class Effect {
 	 * @returns {*} Depth func options: {Never, Less, Equal, LessEqual, Greater, GreaterEqual, Always, NotEqual}.
 	 */
 	static get DepthFuncs() {
-		if (!_depthFuncs) {
+		if(!_depthFuncs) {
 			const gl = Effect._gfx._internal.gl;
 			_depthFuncs = {
 				Never: gl.NEVER,
@@ -475,7 +475,7 @@ export class Effect {
 	 */
 	setTexture(texture) {
 		// already using this texture? skip
-		if (texture === this._cachedValues.texture) {
+		if(texture === this._cachedValues.texture) {
 			return false;
 		}
 
@@ -483,7 +483,7 @@ export class Effect {
 		let uniform = this.getBoundUniform(Effect.UniformBinds.MainTexture);
 
 		// set texture
-		if (uniform) {
+		if(uniform) {
 
 			// set texture value
 			this._cachedValues.texture = texture;
@@ -494,9 +494,9 @@ export class Effect {
 
 			// set texture size
 			let textWidth = this.getBoundUniform(Effect.UniformBinds.TextureWidth);
-			if (textWidth) { textWidth(texture.width); }
+			if(textWidth) { textWidth(texture.width); }
 			let textHeight = this.getBoundUniform(Effect.UniformBinds.TextureHeight);
-			if (textHeight) { textHeight(texture.height); }
+			if(textHeight) { textHeight(texture.height); }
 
 			// success
 			return true;
@@ -513,8 +513,8 @@ export class Effect {
 	 */
 	setColor(color) {
 		let uniform = this.getBoundUniform(Effect.UniformBinds.Color);
-		if (uniform) {
-			if (color.equals(this._cachedValues.color)) { return; }
+		if(uniform) {
+			if(color.equals(this._cachedValues.color)) { return; }
 			this._cachedValues.color = color.clone();
 			uniform(color.floatArray);
 		}
@@ -527,8 +527,8 @@ export class Effect {
 	 */
 	setProjectionMatrix(matrix) {
 		let uniform = this.getBoundUniform(Effect.UniformBinds.Projection);
-		if (uniform) {
-			if (matrix.equals(this._cachedValues.projection)) { return; }
+		if(uniform) {
+			if(matrix.equals(this._cachedValues.projection)) { return; }
 			this._cachedValues.projection = matrix.clone();
 			uniform(matrix.values);
 		}
@@ -541,7 +541,7 @@ export class Effect {
 	 */
 	setWorldMatrix(matrix) {
 		let uniform = this.getBoundUniform(Effect.UniformBinds.World);
-		if (uniform) {
+		if(uniform) {
 			uniform(matrix.values);
 		}
 	}
@@ -553,7 +553,7 @@ export class Effect {
 	 */
 	setViewMatrix(matrix) {
 		let uniform = this.getBoundUniform(Effect.UniformBinds.View);
-		if (uniform) {
+		if(uniform) {
 			uniform(matrix.values);
 		}
 	}
@@ -566,10 +566,10 @@ export class Effect {
 	 */
 	setOutline(weight, color) {
 		let weightUniform = this.getBoundUniform(Effect.UniformBinds.OutlineWeight);
-		if (weightUniform) { weightUniform(weight); }
+		if(weightUniform) { weightUniform(weight); }
 
 		let colorUniform = this.getBoundUniform(Effect.UniformBinds.OutlineColor);
-		if (colorUniform) { colorUniform(color); }
+		if(colorUniform) { colorUniform(color); }
 	}
 
 	/**
@@ -579,7 +579,7 @@ export class Effect {
 	 */
 	setUvNormalizationFactor(factor) {
 		uniform = this.getBoundUniform(Effect.UniformBinds.UvNormalizationFactor);
-		if (uniform) {
+		if(uniform) {
 			uniform(factor.x, factor.y);
 		}
 	}
@@ -592,8 +592,8 @@ export class Effect {
 	 */
 	setPositionsAttribute(buffer, forceSetBuffer) {
 		let attr = this._attributeBinds[Effect.AttributeBinds.Position];
-		if (attr) {
-			if (!forceSetBuffer && buffer === this._cachedValues.positions) { return; }
+		if(attr) {
+			if(!forceSetBuffer && buffer === this._cachedValues.positions) { return; }
 			this._cachedValues.positions = buffer;
 			this.attributes[attr](buffer);
 		}
@@ -607,8 +607,8 @@ export class Effect {
 	 */
 	setTextureCoordsAttribute(buffer, forceSetBuffer) {
 		let attr = this._attributeBinds[Effect.AttributeBinds.TextureCoords];
-		if (attr) {
-			if (!forceSetBuffer && buffer === this._cachedValues.coords) { return; }
+		if(attr) {
+			if(!forceSetBuffer && buffer === this._cachedValues.coords) { return; }
 			this._cachedValues.coords = buffer;
 			this.attributes[attr](buffer);
 		}
@@ -630,8 +630,8 @@ export class Effect {
 	 */
 	setColorsAttribute(buffer, forceSetBuffer) {
 		let attr = this._attributeBinds[Effect.AttributeBinds.Colors];
-		if (attr) {
-			if (!forceSetBuffer && buffer === this._cachedValues.colors) { return; }
+		if(attr) {
+			if(!forceSetBuffer && buffer === this._cachedValues.colors) { return; }
 			this._cachedValues.colors = buffer;
 			this.attributes[attr](buffer);
 		}
@@ -645,8 +645,8 @@ export class Effect {
 	 */
 	setNormalsAttribute(buffer, forceSetBuffer) {
 		let attr = this._attributeBinds[Effect.AttributeBinds.Normals];
-		if (attr) {
-			if (!forceSetBuffer && buffer === this._cachedValues.normals) { return; }
+		if(attr) {
+			if(!forceSetBuffer && buffer === this._cachedValues.normals) { return; }
 			this._cachedValues.normals = buffer;
 			this.attributes[attr](buffer);
 		}
@@ -660,8 +660,8 @@ export class Effect {
 	 */
 	setBinormalsAttribute(buffer, forceSetBuffer) {
 		let attr = this._attributeBinds[Effect.AttributeBinds.Binormals];
-		if (attr) {
-			if (!forceSetBuffer && buffer === this._cachedValues.binormals) { return; }
+		if(attr) {
+			if(!forceSetBuffer && buffer === this._cachedValues.binormals) { return; }
 			this._cachedValues.binormals = buffer;
 			this.attributes[attr](buffer);
 		}
@@ -675,8 +675,8 @@ export class Effect {
 	 */
 	setTangentsAttribute(buffer, forceSetBuffer) {
 		let attr = this._attributeBinds[Effect.AttributeBinds.Tangents];
-		if (attr) {
-			if (!forceSetBuffer && buffer === this._cachedValues.tangents) { return; }
+		if(attr) {
+			if(!forceSetBuffer && buffer === this._cachedValues.tangents) { return; }
 			this._cachedValues.tangents = buffer;
 			this.attributes[attr](buffer);
 		}
@@ -693,7 +693,7 @@ function compileShader(effectClass, gl, code, type) {
 	gl.shaderSource(shader, code);
 	gl.compileShader(shader);
 
-	if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+	if(!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
 		_logger.error(`Error compiling ${type === gl.VERTEX_SHADER ? "vertex" : "fragment"} shader for effect "${effectClass.name}":`);
 		_logger.error(gl.getShaderInfoLog(shader));
 		throw new Error("Failed to compile a shader.");
@@ -708,7 +708,7 @@ function compileShader(effectClass, gl, code, type) {
  * @param {TextureFilterModes} filter Texture filter to set.
  */
 function _setTextureFilter(gl, filter) {
-	if (!Object.values(TextureFilterModes).includes(filter)) { throw new Error(`Invalid texture filter mode! Please pick a value from "TextureFilterModes".`); }
+	if(!Object.values(TextureFilterModes).includes(filter)) { throw new Error(`Invalid texture filter mode! Please pick a value from "TextureFilterModes".`); }
 	let glMode = gl[filter];
 	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, glMode);
 	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, glMode);
@@ -721,9 +721,9 @@ function _setTextureFilter(gl, filter) {
  * @param {TextureWrapMode} wrapY Wrap mode on Y axis.
  */
 function _setTextureWrapMode(gl, wrapX, wrapY) {
-	if (wrapY === undefined) { wrapY = wrapX; }
-	if (!Object.values(TextureWrapModes).includes(wrapX)) { throw new Error("Invalid texture wrap mode! Please pick a value from 'TextureWrapModes'."); }
-	if (!Object.values(TextureWrapModes).includes(wrapY)) { throw new Error("Invalid texture wrap mode! Please pick a value from 'TextureWrapModes'."); }
+	if(wrapY === undefined) { wrapY = wrapX; }
+	if(!Object.values(TextureWrapModes).includes(wrapX)) { throw new Error("Invalid texture wrap mode! Please pick a value from 'TextureWrapModes'."); }
+	if(!Object.values(TextureWrapModes).includes(wrapY)) { throw new Error("Invalid texture wrap mode! Please pick a value from 'TextureWrapModes'."); }
 	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl[wrapX]);
 	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl[wrapY]);
 }

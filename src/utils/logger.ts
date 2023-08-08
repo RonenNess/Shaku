@@ -105,40 +105,42 @@ const _cachedLoggers: Record<string, unknown> = {};
 /**
  * The Logger module is a small object to get loggers and control the underlying logger drivers.
  */
-export const LoggerModule = {
+export class LoggerFactory {
+
+	private constructor() { }
 
 	/**
 	 * Get a logger object for a given logger name.
 	 * @param name Logger name.
 	 * @returns Logger to use.
 	 */
-	getLogger: function(name: string): Logger {
+	public static getLogger(name: string): Logger {
 		if(!_cachedLoggers[name]) {
 			_cachedLoggers[name] = new Logger(name);
 		}
 		return _cachedLoggers[name];
-	},
+	}
 
 	/**
 	 * Silent the logger.
 	 */
-	silent: function() {
+	public static silent(): void {
 		_drivers = new NullDrivers();
-	},
+	}
 
 	/**
 	 * Set log drivers that implement trace, debug, info, warn and error that all loggers will use.
 	 */
-	setDrivers: function(drivers) {
+	public static setDrivers(drivers): void {
 		_drivers = drivers;
-	},
+	}
 
 	/**
 	 * Set logger application name.
 	 * @param {String} name Set application name to replace the "Shaku" in the headers.
 	 */
-	setApplicationName: function(name) {
+	public static setApplicationName(name: string): typeof LoggerFactory {
 		_application = name;
 		return this;
-	},
-};
+	}
+}

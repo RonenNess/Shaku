@@ -3,7 +3,7 @@ import { collision } from "./collision";
 import { gfx as _gfx } from "./gfx";
 import { input as _input } from "./input";
 import { sfx as _sfx } from "./sfx";
-import { GameTime, IManager, LoggerModule, utils } from "./utils";
+import { GameTime, IManager, LoggerFactory, utils } from "./utils";
 
 const isBrowser: boolean = typeof window !== "undefined";
 
@@ -11,7 +11,7 @@ const sfx = isBrowser ? _sfx : null;
 const gfx = isBrowser ? _gfx : null;
 const input = isBrowser ? _input : null;
 
-const _logger = LoggerModule.getLogger("shaku");
+const _logger = LoggerFactory.getLogger("shaku");
 
 // is shaku in silent mode
 var _isSilent: boolean = false;
@@ -360,7 +360,7 @@ export class Shaku {
 	 * @returns {Logger} Logger instance.
 	 */
 	public getLogger(name: string): Logger {
-		return LoggerModule.getLogger(name);
+		return LoggerFactory.getLogger(name);
 	}
 };
 

@@ -1,9 +1,9 @@
-import { Color, LoggerModule } from "../../utils";
+import { Color, LoggerFactory } from "../../utils";
 import { SpritesGroup } from "../sprites_group";
 import { DrawBatch } from "./draw_batch";
 import { SpriteBatchBase } from "./sprite_batch_base";
 
-const _logger = LoggerModule.getLogger("gfx - effect"); // TODO
+const _logger = LoggerFactory.getLogger("gfx - effect"); // TODO
 
 /**
  * Text sprite batch renderer.
@@ -86,12 +86,12 @@ export class TextSpriteBatch extends SpriteBatchBase {
 		let texture = this.__currDrawingParams.texture;
 
 		// sanity for msdf font
-		if (this.msdfFont && !(texture.isMsdfFontTextureAsset)) {
+		if(this.msdfFont && !(texture.isMsdfFontTextureAsset)) {
 			_logger.warn("Trying to render an MSDF font but using an asset that isn't an instance of 'MsdfFontTextureAsset'!");
 		}
 
 		// sanity for none msdf font
-		if (!this.msdfFont && !(texture.isFontTextureAsset)) {
+		if(!this.msdfFont && !(texture.isFontTextureAsset)) {
 			_logger.warn("Trying to render text sprites but using an asset that isn't an instance of 'FontTextureAsset'!");
 		}
 
@@ -99,7 +99,7 @@ export class TextSpriteBatch extends SpriteBatchBase {
 		let effect = this.__currDrawingParams.effect || this.defaultEffect;
 
 		// setup outline
-		if (this.outlineWeight) {
+		if(this.outlineWeight) {
 			effect.setOutline(this.outlineWeight, this.outlineColor);
 		}
 

@@ -1,10 +1,10 @@
 import { ShapesBatch, gfx } from "../gfx";
-import { Circle, Color, LoggerModule, Rectangle, Vector2 } from "../utils";
+import { Circle, Color, LoggerFactory, Rectangle, Vector2 } from "../utils";
 import { CollisionResolver } from "./resolver";
 import { CollisionTestResult } from "./result";
 import { CircleShape, CollisionShape, PointShape } from "./shapes";
 
-const _logger = LoggerModule.getLogger("collision"); // TODO
+const _logger = LoggerFactory.getLogger("collision"); // TODO
 
 /**
  * A collision world is a set of collision shapes that interact with each other.
@@ -24,8 +24,8 @@ export class CollisionWorld {
 		this.resolver = resolver;
 
 		// set grid cell size
-		if (typeof gridCellSize === "undefined") { gridCellSize = new Vector2(512, 512); }
-		else if (typeof gridCellSize === "number") { gridCellSize = new Vector2(gridCellSize, gridCellSize); }
+		if(typeof gridCellSize === "undefined") { gridCellSize = new Vector2(512, 512); }
+		else if(typeof gridCellSize === "number") { gridCellSize = new Vector2(gridCellSize, gridCellSize); }
 		else { gridCellSize = gridCellSize.clone(); }
 		this._gridCellSize = gridCellSize;
 
@@ -80,10 +80,10 @@ export class CollisionWorld {
 	 */
 	#_performUpdates() {
 		// delete empty grid cells
-		if (this._cellsToDelete.size > 0) {
+		if(this._cellsToDelete.size > 0) {
 			this._stats.deletedGridCells += this._cellsToDelete.size;
-			for (let key of this._cellsToDelete) {
-				if (this._grid[key] && this._grid[key].size === 0) {
+			for(let key of this._cellsToDelete) {
+				if(this._grid[key] && this._grid[key].size === 0) {
 					delete this._grid[key];
 				}
 			}
@@ -91,8 +91,8 @@ export class CollisionWorld {
 		}
 
 		// update all shapes
-		if (this._shapesToUpdate.size > 0) {
-			for (let shape of this._shapesToUpdate) {
+		if(this._shapesToUpdate.size > 0) {
+			for(let shape of this._shapesToUpdate) {
 				this.#_updateShape(shape);
 			}
 			this._shapesToUpdate.clear();
@@ -106,7 +106,7 @@ export class CollisionWorld {
 	#_getCell(i, j) {
 		let key = i + "," + j;
 		let ret = this._grid[key];
-		if (!ret) {
+		if(!ret) {
 			this._stats.createdGridCells++;
 			this._grid[key] = ret = new Set();
 		}
@@ -119,7 +119,7 @@ export class CollisionWorld {
 	 */
 	#_updateShape(shape) {
 		// sanity - if no longer in this collision world, skip
-		if (shape._world !== this) {
+		if(shape._world !== this) {
 			return;
 		}
 
@@ -134,9 +134,9 @@ export class CollisionWorld {
 		let maxy = Math.ceil(bb.bottom / this._gridCellSize.y);
 
 		// change existing grid cells
-		if (shape._worldRange) {
+		if(shape._worldRange) {
 			// range is the same? skip
-			if (shape._worldRange[0] === minx &&
+			if(shape._worldRange[0] === minx &&
 				shape._worldRange[1] === miny &&
 				shape._worldRange[2] === maxx &&
 				shape._worldRange[3] === maxy) {
@@ -150,20 +150,20 @@ export class CollisionWorld {
 			let omaxy = shape._worldRange[3];
 
 			// first remove from old chunks we don't need
-			for (let i = ominx; i < omaxx; ++i) {
-				for (let j = ominy; j < omaxy; ++j) {
+			for(let i = ominx; i < omaxx; ++i) {
+				for(let j = ominy; j < omaxy; ++j) {
 
 					// if also in new range, don't remove
-					if (i >= minx && i < maxx && j >= miny && j < maxy) {
+					if(i >= minx && i < maxx && j >= miny && j < maxy) {
 						continue;
 					}
 
 					// remove from cell
 					let key = i + "," + j;
 					let currSet = this._grid[key];
-					if (currSet) {
+					if(currSet) {
 						currSet.delete(shape);
-						if (currSet.size === 0) {
+						if(currSet.size === 0) {
 							this._cellsToDelete.add(key);
 						}
 					}
@@ -171,11 +171,11 @@ export class CollisionWorld {
 			}
 
 			// now add to new cells
-			for (let i = minx; i < maxx; ++i) {
-				for (let j = miny; j < maxy; ++j) {
+			for(let i = minx; i < maxx; ++i) {
+				for(let j = miny; j < maxy; ++j) {
 
 					// if was in old range, don't add
-					if (i >= ominx && i < omaxx && j >= ominy && j < omaxy) {
+					if(i >= ominx && i < omaxx && j >= ominy && j < omaxy) {
 						continue;
 					}
 
@@ -188,8 +188,8 @@ export class CollisionWorld {
 		// first-time adding to grid
 		else {
 			this._stats.addedShapes++;
-			for (let i = minx; i < maxx; ++i) {
-				for (let j = miny; j < maxy; ++j) {
+			for(let i = minx; i < maxx; ++i) {
+				for(let j = miny; j < maxy; ++j) {
 					let currSet = this.#_getCell(i, j);
 					currSet.add(shape);
 				}
@@ -213,11 +213,11 @@ export class CollisionWorld {
 	 * @param {Function} callback Callback to invoke on all shapes. Return false to break iteration.
 	 */
 	iterateShapes(callback) {
-		for (let key in this._grid) {
+		for(let key in this._grid) {
 			let cell = this._grid[key];
-			if (cell) {
-				for (let shape of cell) {
-					if (callback(shape) === false) {
+			if(cell) {
+				for(let shape of cell) {
+					if(callback(shape) === false) {
 						return;
 					}
 				}
@@ -246,24 +246,24 @@ export class CollisionWorld {
 	 */
 	removeShape(shape) {
 		// sanity
-		if (shape._world !== this) {
+		if(shape._world !== this) {
 			_logger.warn("Shape to remove is not in this collision world!");
 			return;
 		}
 
 		// remove from grid
-		if (shape._worldRange) {
+		if(shape._worldRange) {
 			let minx = shape._worldRange[0];
 			let miny = shape._worldRange[1];
 			let maxx = shape._worldRange[2];
 			let maxy = shape._worldRange[3];
-			for (let i = minx; i < maxx; ++i) {
-				for (let j = miny; j < maxy; ++j) {
+			for(let i = minx; i < maxx; ++i) {
+				for(let j = miny; j < maxy; ++j) {
 					let key = i + "," + j;
 					let currSet = this._grid[key];
-					if (currSet) {
+					if(currSet) {
 						currSet.delete(shape);
-						if (currSet.size === 0) {
+						if(currSet.size === 0) {
 							this._cellsToDelete.add(key);
 						}
 					}
@@ -302,30 +302,30 @@ export class CollisionWorld {
 		let checked = new Set();
 
 		// iterate options
-		for (let i = minx; i < maxx; ++i) {
-			for (let j = miny; j < maxy; ++j) {
+		for(let i = minx; i < maxx; ++i) {
+			for(let j = miny; j < maxy; ++j) {
 
 				// get current grid chunk
 				let key = i + "," + j;
 				let currSet = this._grid[key];
 
 				// iterate shapes in grid chunk
-				if (currSet) {
-					for (let other of currSet) {
+				if(currSet) {
+					for(let other of currSet) {
 
 						// check collision flags
-						if (mask && ((other.collisionFlags & mask) === 0)) {
+						if(mask && ((other.collisionFlags & mask) === 0)) {
 							continue;
 						}
 
 						// skip if checked
-						if (checked.has(other)) {
+						if(checked.has(other)) {
 							continue;
 						}
 						checked.add(other);
 
 						// skip self
-						if (other === shape) {
+						if(other === shape) {
 							continue;
 						}
 
@@ -333,7 +333,7 @@ export class CollisionWorld {
 						this._stats.broadPhaseShapesChecksPrePredicate++;
 
 						// use predicate
-						if (predicate && !predicate(other)) {
+						if(predicate && !predicate(other)) {
 							continue;
 						}
 
@@ -344,7 +344,7 @@ export class CollisionWorld {
 						let proceedLoop = Boolean(handler(other));
 
 						// break loop
-						if (!proceedLoop) {
+						if(!proceedLoop) {
 							return;
 						}
 					}
@@ -369,7 +369,7 @@ export class CollisionWorld {
 		var result = null;
 
 		// hard case - single result, sorted by distance
-		if (sortByDistance) {
+		if(sortByDistance) {
 			// build options array
 			var options = [];
 			this.#_iterateBroadPhase(sourceShape, (other) => {
@@ -382,10 +382,10 @@ export class CollisionWorld {
 
 			// check collision sorted
 			var handlers = this.resolver.getHandlers(sourceShape);
-			for (let other of options) {
+			for(let other of options) {
 				this._stats.collisionChecks++;
 				result = this.resolver.testWithHandler(sourceShape, other, handlers[other.shapeId]);
-				if (result) {
+				if(result) {
 					this._stats.collisionMatches++;
 					break;
 				}
@@ -400,7 +400,7 @@ export class CollisionWorld {
 				// test collision and continue iterating if we don't have a result
 				this._stats.collisionChecks++;
 				result = this.resolver.testWithHandler(sourceShape, other, handlers[other.shapeId]);
-				if (result) { this._stats.collisionMatches++; }
+				if(result) { this._stats.collisionMatches++; }
 				return !result;
 
 			}, mask, predicate);
@@ -429,10 +429,10 @@ export class CollisionWorld {
 		this.#_iterateBroadPhase(sourceShape, (other) => {
 			this._stats.collisionChecks++;
 			let result = this.resolver.testWithHandler(sourceShape, other, handlers[other.shapeId]);
-			if (result) {
+			if(result) {
 				this._stats.collisionMatches++;
 				ret.push(result);
-				if (intermediateProcessor && intermediateProcessor(result) === false) {
+				if(intermediateProcessor && intermediateProcessor(result) === false) {
 					return false;
 				}
 			}
@@ -440,7 +440,7 @@ export class CollisionWorld {
 		}, mask, predicate);
 
 		// sort by distance
-		if (sortByDistance) {
+		if(sortByDistance) {
 			sortByDistanceResults(sourceShape, ret);
 		}
 
@@ -478,7 +478,7 @@ export class CollisionWorld {
 	 * @returns {ShapesBatch} Shapes batch instance used to debug-draw collision world.
 	 */
 	getOrCreateDebugDrawBatch() {
-		if (!this.__debugDrawBatch) {
+		if(!this.__debugDrawBatch) {
 			this.setDebugDrawBatch(new gfx.ShapesBatch());
 		}
 		return this.__debugDrawBatch;
@@ -502,17 +502,17 @@ export class CollisionWorld {
 		this.#_performUpdates();
 
 		// default grid colors
-		if (!gridColor) {
+		if(!gridColor) {
 			gridColor = Color.black;
 			gridColor.a *= 0.75;
 		}
-		if (!gridHighlitColor) {
+		if(!gridHighlitColor) {
 			gridHighlitColor = Color.red;
 			gridHighlitColor.a *= 0.75;
 		}
 
 		// default opacity
-		if (opacity === undefined) {
+		if(opacity === undefined) {
 			opacity = 0.5;
 		}
 
@@ -529,8 +529,8 @@ export class CollisionWorld {
 		let miny = Math.floor(bb.top / this._gridCellSize.y);
 		let maxx = minx + Math.ceil(bb.width / this._gridCellSize.x);
 		let maxy = miny + Math.ceil(bb.height / this._gridCellSize.y);
-		for (let i = minx; i <= maxx; ++i) {
-			for (let j = miny; j <= maxy; ++j) {
+		for(let i = minx; i <= maxx; ++i) {
+			for(let j = miny; j <= maxy; ++j) {
 
 				// get current cell
 				let cell = this._grid[i + "," + j];
@@ -543,9 +543,9 @@ export class CollisionWorld {
 				shapesBatch.drawRectangle(cellRect2, color);
 
 				// draw shapes in grid
-				if (cell) {
-					for (let shape of cell) {
-						if (renderedShapes.has(shape)) {
+				if(cell) {
+					for(let shape of cell) {
+						if(renderedShapes.has(shape)) {
 							continue;
 						}
 						renderedShapes.add(shape);

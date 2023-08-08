@@ -1,7 +1,7 @@
-import { Color, LoggerModule } from "../utils";
+import { Color, LoggerFactory } from "../utils";
 import { TextureAssetBase } from "./texture_asset_base";
 
-const _logger = LoggerModule.getLogger("assets"); // TODO
+const _logger = LoggerFactory.getLogger("assets"); // TODO
 
 // the webgl context to use
 var gl: WebGLRenderingContext | null = null;
@@ -53,13 +53,13 @@ export class TextureAsset extends TextureAssetBase {
 
 		return new Promise((resolve, reject) => {
 
-			if (!gl) {
+			if(!gl) {
 				return reject("Can't load textures before initializing gfx manager!");
 			}
 
 			// create image to load
 			const image = new Image();
-			if (params.crossOrigin !== undefined) {
+			if(params.crossOrigin !== undefined) {
 				image.crossOrigin = params.crossOrigin;
 			}
 			image.onload = async () => {
@@ -68,7 +68,7 @@ export class TextureAsset extends TextureAssetBase {
 					this._notifyReady();
 					resolve();
 				}
-				catch (e) {
+				catch(e) {
 					reject(e);
 				}
 			};
@@ -100,8 +100,8 @@ export class TextureAsset extends TextureAssetBase {
 
 		// calculate format
 		var _format: number = gl.RGBA;
-		if (channels !== undefined) {
-			switch (channels) {
+		if(channels !== undefined) {
+			switch(channels) {
 				case 1:
 					_format = gl.LUMINANCE;
 					break;
@@ -148,11 +148,11 @@ export class TextureAsset extends TextureAssetBase {
 	 * @param params Optional additional params. See load() for details.
 	 */
 	public fromImage(image: TextureAsset, params?: unknown): void {
-		if (image.width === 0) {
+		if(image.width === 0) {
 			throw new Error("Image to build texture from must be loaded and have valid size!");
 		}
 
-		if (this.valid) {
+		if(this.valid) {
 			throw new Error("Texture asset is already initialized!");
 		}
 
@@ -185,8 +185,8 @@ export class TextureAsset extends TextureAssetBase {
 		// WebGL1 has different requirements for power of 2 images
 		// vs non power of 2 images so check if the image is a
 		// power of 2 in both dimensions.
-		if (params.generateMipMaps) {
-			if (isPowerOf2(image.width) && isPowerOf2(image.height)) {
+		if(params.generateMipMaps) {
+			if(isPowerOf2(image.width) && isPowerOf2(image.height)) {
 				_logger.warn("Tried to generate MipMaps for a texture with size that is *not* a power of two. This might not work as expected.");
 			}
 			gl.generateMipmap(gl.TEXTURE_2D);
@@ -212,14 +212,14 @@ export class TextureAsset extends TextureAssetBase {
 	public create(source: TextureAsset | string, params: unknown): Promise<void> {
 		return new Promise(async (resolve, reject) => {
 
-			if (typeof source === "string") {
+			if(typeof source === "string") {
 				let img = new Image();
 				img.onload = () => {
 					this.fromImage(source, params);
 					this._notifyReady();
 					resolve();
 				};
-				if (params.crossOrigin !== undefined) {
+				if(params.crossOrigin !== undefined) {
 					img.crossOrigin = params.crossOrigin;
 				}
 				img.src = source;
@@ -267,12 +267,12 @@ export class TextureAsset extends TextureAssetBase {
 	 * @returns Pixel color.
 	 */
 	public getPixel(x: number, y: number): Color {
-		if (!this._image) {
+		if(!this._image) {
 			throw new Error("'getPixel()' only works on textures loaded from image!");
 		}
 
 		// build internal canvas and context to get pixel data
-		if (!this._ctxForPixelData) {
+		if(!this._ctxForPixelData) {
 			let canvas = document.createElement("canvas");
 			canvas.width = 1;
 			canvas.height = 1;
@@ -295,7 +295,7 @@ export class TextureAsset extends TextureAssetBase {
 	 * @returns A 2D array with all texture pixel colors.
 	 */
 	public getPixelsData(x?: number, y?: number, width?: number, height?: number): Color[][] {
-		if (!this._image) {
+		if(!this._image) {
 			throw new Error("'getPixel()' only works on textures loaded from image!");
 		}
 
@@ -308,7 +308,7 @@ export class TextureAsset extends TextureAssetBase {
 		height = height || (this.height - y);
 
 		// build internal canvas and context to get pixel data
-		if (!this._ctxForPixelData) {
+		if(!this._ctxForPixelData) {
 			let canvas = document.createElement("canvas");
 			canvas.width = width;
 			canvas.height = height;
@@ -322,10 +322,10 @@ export class TextureAsset extends TextureAssetBase {
 
 		//  convert to colors
 		let ret = [];
-		for (let i = 0; i < width; ++i) {
+		for(let i = 0; i < width; ++i) {
 			let currRow = [];
 			ret.push(currRow);
-			for (let j = 0; j < height; ++j) {
+			for(let j = 0; j < height; ++j) {
 				currRow.push(Color.fromBytesArray(pixelData, i * 4 + (j * 4 * width)));
 			}
 		}

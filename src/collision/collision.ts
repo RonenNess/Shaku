@@ -1,10 +1,10 @@
-import { IManager, LoggerModule, Vector2 } from "../utils";
+import { IManager, LoggerFactory, Vector2 } from "../utils";
 import { CollisionWorld } from "./collision_world";
 import { CollisionResolver } from "./resolver";
 import { CollisionsImp as ResolverImp } from "./resolvers_imp";
 import { CircleShape, LinesShape, PointShape, RectangleShape, TilemapShape } from "./shapes";
 
-const _logger = LoggerModule.getLogger("collision"); // TODO
+const _logger = LoggerFactory.getLogger("collision"); // TODO
 
 /**
  * Collision is the collision manager.

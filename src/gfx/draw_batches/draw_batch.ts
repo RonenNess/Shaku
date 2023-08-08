@@ -1,9 +1,9 @@
-import { LoggerModule, Matrix } from "../../utils";
+import { LoggerFactory, Matrix } from "../../utils";
 import { BlendModes } from "../blend_modes";
 import { Effect } from "../effects";
 import { BuffersUsage } from "./buffers_usage";
 
-const _logger = LoggerModule.getLogger("gfx - draw - batch"); // TODO
+const _logger = LoggerFactory.getLogger("gfx - draw - batch"); // TODO
 
 /**
  * Base class for a drawing batch, used to draw a collection of sprites or shapes.
@@ -35,7 +35,7 @@ export class DrawBatch {
 	 */
 	makeStatic() {
 		this.__validateBatch();
-		if (!this.isDrawing) { throw new Error("Must call 'makeStatic()' between 'begin()' and 'end()'."); }
+		if(!this.isDrawing) { throw new Error("Must call 'makeStatic()' between 'begin()' and 'end()'."); }
 		this.setBuffersUsage(this.BuffersUsage.STATIC_DRAW);
 		this.__staticBuffers = true;
 	}
@@ -75,7 +75,7 @@ export class DrawBatch {
 	 * @private
 	 */
 	__validateBatch() {
-		if (this.isDestroyed) {
+		if(this.isDestroyed) {
 			throw new Error("Can't perform this action after the batch was destroyed!");
 		}
 	}
@@ -88,7 +88,7 @@ export class DrawBatch {
 	 * @param {BuffersUsage} usage Buffers usage.
 	 */
 	setBuffersUsage(usage) {
-		switch (usage) {
+		switch(usage) {
 			case BuffersUsage.DYNAMIC_DRAW:
 				this.__buffersUsage = DrawBatch._gfx._internal.gl.DYNAMIC_DRAW;
 				break;
@@ -122,10 +122,10 @@ export class DrawBatch {
 	 * @private
 	 */
 	__validateDrawing(validateNotStatic) {
-		if (!this.isDrawing) {
+		if(!this.isDrawing) {
 			throw new Error("Can't perform this action without calling 'begin()' first!");
 		}
-		if (validateNotStatic && this.__staticBuffers) {
+		if(validateNotStatic && this.__staticBuffers) {
 			throw new Error("Can't perform this action after batch has turned static!");
 		}
 	}
@@ -140,7 +140,7 @@ export class DrawBatch {
 	 */
 	public begin(blendMode?: BlendModes, effect?: Effect, transform?: Matrix, overrideEffectFlags?: { enableDepthTest?: boolean, enableFaceCulling?: boolean, enableStencilTest?: boolean, enableDithering?: boolean; }) {
 		// sanity - not already drawing
-		if (this.isDrawing) {
+		if(this.isDrawing) {
 			throw new Error("Can't call Drawing Batch 'begin' twice without calling 'end()' first!");
 		}
 
@@ -176,7 +176,7 @@ export class DrawBatch {
 		this.__validateDrawing(false);
 
 		// clear buffers and drawing params
-		if (!this.__staticBuffers) {
+		if(!this.__staticBuffers) {
 			this.clear();
 			this.__currDrawingParams = null;
 		}
@@ -197,7 +197,7 @@ export class DrawBatch {
 		this._drawBatch();
 
 		// clear buffers and drawing params
-		if (!this.__staticBuffers) {
+		if(!this.__staticBuffers) {
 			this.clear();
 			this.__currDrawingParams = null;
 		}
@@ -218,7 +218,7 @@ export class DrawBatch {
 	 * Called internally if "preserveBuffers" is not true.
 	 */
 	clear() {
-		if (this.__staticBuffers) {
+		if(this.__staticBuffers) {
 			throw new Error("Can't clear batch after it was turned static. You can only destroy it.");
 		}
 	}
