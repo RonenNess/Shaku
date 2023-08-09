@@ -5,23 +5,25 @@ import { Mesh } from "./mesh";
  * @private
  */
 export class MeshGenerator {
+	private gl: WebGLRenderingContext;
+
 	/**
 	 * Create the mesh generator.
 	 */
-	public constructor(gl) {
-		this._gl = gl;
+	public constructor(gl: WebGLRenderingContext) {
+		this.gl = gl;
 	}
 
 	/**
 	 * Generate and return a textured quad.
-	 * @returns {Mesh} Quad mesh.
+	 * @returns Quad mesh.
 	 */
-	quad() {
-		const gl = this._gl;
+	public quad(): Mesh {
+		const gl = this.gl;
 
 		const positionBuffer = gl.createBuffer();
 		gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-		let x = 0.5; // <- 0.5 so total size would be 1x1
+		const x = 0.5; // <- 0.5 so total size would be 1x1
 		const positions = [
 			-x, -x, 0,
 			x, -x, 0,
@@ -60,5 +62,3 @@ export class MeshGenerator {
 		return new Mesh(positionBuffer, textureCoordBuffer, colorsBuffer, indexBuffer, indices.length);
 	}
 }
-
-// export the meshes generator.
