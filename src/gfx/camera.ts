@@ -1,70 +1,80 @@
 import { Matrix, Rectangle, Vector2 } from "../utils";
+import { Gfx } from "./gfx";
 
 /**
  * Implements a Camera object.
  */
 export class Camera {
+	private static DEFAULT_NEAR = -1;
+	private static DEFAULT_FAR = 400;
+
+	private region: Rectangle | null;
+	private gfx: Gfx;
+	private _viewport: Rectangle | null;
+
+	/**
+	 * Camera projection matrix.
+	 * You can set it manually, or use "orthographicOffset" / "orthographic" / "perspective" helper functions.
+	 */
+	protected projection: Matrix | null;
+
 	/**
 	 * Create the camera.
-	 * @param {Gfx} gfx The gfx manager instance.
+	 * @param gfx The gfx manager instance.
 	 */
-	public constructor(gfx) {
-		this.__region = null;
-		this.__gfx = gfx;
-		this.__viewport = null;
+	public constructor(gfx: Gfx) {
+		this.region = null;
+		this.gfx = gfx;
+		this._viewport = null;
 		this.orthographic();
 	}
 
 	/**
 	 * Get camera's viewport (drawing region to set when using this camera).
-	 * @returns {Rectangle} Camera's viewport as rectangle.
+	 * @returns Camera's viewport as rectangle.
 	 */
-	get viewport() {
-		return this.__viewport;
+	public get viewport(): Rectangle {
+		return this._viewport;
 	}
 
 	/**
 	 * Set camera's viewport.
-	 * @param {Rectangle} viewport New viewport to set or null to not use any viewport when using this camera.
+	 * @param viewport New viewport to set or null to not use any viewport when using this camera.
 	 */
-	set viewport(viewport) {
-		this.__viewport = viewport;
-		return viewport;
+	public set viewport(viewport: Rectangle | null) {
+		this._viewport = viewport;
 	}
 
 	/**
 	 * Get the region this camera covers.
-	 * @returns {Rectangle} region this camera covers.
+	 * @returns region this camera covers.
 	 */
-	getRegion() {
-		return this.__region.clone();
+	public getRegion(): Rectangle {
+		return this.region.clone();
 	}
 
 	/**
 	 * Make this camera an orthographic camera with offset.
-	 * @param {Vector2} offset Camera offset (top-left corner).
-	 * @param {Boolean} ignoreViewportSize If true, will take the entire canvas size for calculation and ignore the viewport size, if set.
-	 * @param {Number} near Near clipping plane.
-	 * @param {Number} far Far clipping plane.
+	 * @param offset Camera offset (top-left corner).
+	 * @param ignoreViewportSize If true, will take the entire canvas size for calculation and ignore the viewport size, if set.
+	 * @param near Near clipping plane.
+	 * @param far Far clipping plane.
 	 */
-	orthographicOffset(offset, ignoreViewportSize, near, far) {
-		let renderingSize = (ignoreViewportSize || !this.viewport) ? this.__gfx.getCanvasSize() : this.viewport.getSize();
+	public orthographicOffset(offset: Vector2, ignoreViewportSize?: boolean, near?: number, far?: number): void {
+		let renderingSize = (ignoreViewportSize || !this._viewport) ? this.gfx.getCanvasSize() : this._viewport.getSize();
 		let region = new Rectangle(offset.x, offset.y, renderingSize.x, renderingSize.y);
 		this.orthographic(region, near, far);
 	}
 
 	/**
 	 * Make this camera an orthographic camera.
-	 * @param {Rectangle} region Camera left, top, bottom and right. If not set, will take entire canvas.
-	 * @param {Number} near Near clipping plane.
-	 * @param {Number} far Far clipping plane.
+	 * @param region Camera left, top, bottom and right. If not set, will take entire canvas.
+	 * @param near Near clipping plane.
+	 * @param far Far clipping plane.
 	 */
-	orthographic(region, near, far) {
-		if(region === undefined) {
-			region = this.__gfx._internal.getRenderingRegionInternal();
-		}
-		this.__region = region;
-		this.projection = Matrix.createOrthographic(region.left, region.right, region.bottom, region.top, near || -1, far || 400);
+	public orthographic(region: Rectangle = this.gfx._internal.getRenderingRegionInternal(), near = Camera.DEFAULT_NEAR, far = Camera.DEFAULT_FAR): void {
+		this.region = region;
+		this.projection = Matrix.createOrthographic(region.left, region.right, region.bottom, region.top, near, far);
 	}
 }
 

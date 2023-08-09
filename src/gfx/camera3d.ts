@@ -1,40 +1,45 @@
 import { Frustum, Matrix, Vector2, Vector3 } from "../utils";
 import { Camera } from "./camera";
+import { Gfx } from "./gfx";
 
 /**
  * Implements a 3d Camera object.
  */
 export class Camera3D extends Camera {
+	private static DEFAULT_LOOK_AT = new Vector3(0, 5, -10);
+	private static DEFAULT_LOOK_AT_EYES = new Vector3(0, 0, -500);
+	private static DEFAULT_LOOK_AT_TARGET = Vector3.zeroReadonly;
+	private static DEFAULT_PERPSECTIVE_FOV = Math.PI / 2;
+	private static DEFAULT_PERPSECTIVE_ASPECT_RATIO = 1 / 1;
+	private static DEFAULT_PERSPECTIVE_NEAR = 0.1;
+	private static DEFAULT_PERSPECTIVE_FAR = 1000;
+
+	/**
+	 * Camera view matrix.
+	 * You can set it manually, or use "setViewLookat" helper function.
+	 */
+	private view: Matrix | null;
+
 	/**
 	 * Create the camera.
-	 * @param {Gfx} gfx The gfx manager instance.
+	 * @param gfx The gfx manager instance.
 	 */
-	public constructor(gfx) {
+	public constructor(gfx: Gfx) {
 		super(gfx);
-
-		/**
-		 * Camera projection matrix.
-		 * You can set it manually, or use "orthographicOffset" / "orthographic" / "perspective" helper functions.
-		 */
 		this.projection = null;
-
-		/**
-		 * Camera view matrix.
-		 * You can set it manually, or use "setViewLookat" helper function.
-		 */
 		this.view = null;
 
 		// build perspective camera by default
 		this.perspective();
-		this.setViewLookat(new Vector3(0, 5, -10), Vector3.zero());
+		this.setViewLookat(Camera3D.DEFAULT_LOOK_AT, Vector3.zero());
 	}
 
 	/**
 	 * Calc and return the currently-visible view frustum, based on active camera.
-	 * @returns {Frustum} Visible frustum.
+	 * @returns Visible frustum.
 	 */
-	calcVisibleFrustum() {
-		if(!this.projection || !this.view) { throw new Error("You must set both projection and view matrices to calculate visible frustum!"); }
+	public calcVisibleFrustum(): Frustum {
+		if(!this.projection || !this.view) throw new Error("You must set both projection and view matrices to calculate visible frustum!");
 		const frustum = new Frustum();
 		frustum.setFromProjectionMatrix(Matrix.multiply(this.projection, this.view));
 		return frustum;
@@ -42,67 +47,75 @@ export class Camera3D extends Camera {
 
 	/**
 	 * Set camera view matrix from source position and lookat.
-	 * @param {Vector3=} eyePosition Camera source position.
-	 * @param {Vector3=} lookAt Camera look-at target.
+	 * @param eyePosition Camera source position.
+	 * @param lookAt Camera look-at target.
 	 */
-	setViewLookat(eyePosition, lookAt) {
-		this.view = Matrix.createLookAt(eyePosition || new Vector3(0, 0, -500), lookAt || Vector3.zeroReadonly, Vector3.upReadonly);
+	public setViewLookat(
+		eyePosition = Camera3D.DEFAULT_LOOK_AT_EYES,
+		lookAt = Camera3D.DEFAULT_LOOK_AT_TARGET
+	): void {
+		this.view = Matrix.createLookAt(eyePosition, lookAt, Vector3.upReadonly);
 	}
 
 	/**
 	 * Get 3d direction vector of this camera.
-	 * @returns {Vector3} 3D direction vector.
+	 * @returns 3D direction vector.
 	 */
-	getDirection() {
+	public getDirection(): Vector3 {
 		const e = this.view.values;
 		return new Vector3(- e[8], - e[9], - e[10]).normalizeSelf();
 	}
 
 	/**
 	 * Get view projection matrix.
-	 * @returns {Matrix} View-projection matrix.
+	 * @returns View-projection matrix.
 	 */
-	getViewProjection() {
+	public getViewProjection(): Matrix {
 		return Matrix.multiply(this.view, this.projection);
 	}
 
 	/**
 	 * Get projection view matrix.
-	 * @returns {Matrix} Projection-view matrix.
+	 * @returns Projection-view matrix.
 	 */
-	getProjectionView() {
+	public getProjectionView(): Matrix {
 		return Matrix.multiply(this.projection, this.view);
 	}
 
 	/**
 	 * Make this camera a perspective camera.
-	 * @param {*} fieldOfView Field of view angle in radians.
-	 * @param {*} aspectRatio Aspect ratio.
-	 * @param {*} near Near clipping plane.
-	 * @param {*} far Far clipping plane.
+	 * @param fieldOfView Field of view angle in radians.
+	 * @param aspectRatio Aspect ratio.
+	 * @param near Near clipping plane.
+	 * @param far Far clipping plane.
 	 */
-	perspective(fieldOfView, aspectRatio, near, far) {
-		this.projection = Matrix.createPerspective(fieldOfView || (Math.PI / 2), aspectRatio || 1, near || 0.1, far || 1000);
+	public perspective(
+		fieldOfView = Camera3D.DEFAULT_PERPSECTIVE_FOV,
+		aspectRatio = Camera3D.DEFAULT_PERPSECTIVE_ASPECT_RATIO,
+		near = Camera3D.DEFAULT_PERSPECTIVE_NEAR,
+		far = Camera3D.DEFAULT_PERSPECTIVE_FAR
+	): void {
+		this.projection = Matrix.createPerspective(fieldOfView, aspectRatio, near, far);
 	}
 
 	/**
 	 * Unproject a 2d vector into 3D space.
 	 * You can use this method to get the 3D direction the user points on with the mouse.
-	 * @param {Vector2} point Vector to unproject.
-	 * @param {Number} zDistance Distance from camera to locate the 3D point at (0 = near plane, 1 = far plane).
-	 * @returns {Vector3} Unprojected point in 3D space.
+	 * @param point Vector to unproject.
+	 * @param zDistance Distance from camera to locate the 3D point at (0 = near plane, 1 = far plane).
+	 * @returns Unprojected point in 3D space.
 	 */
-	unproject(point, zDistance = 0) {
-		function project(out, vec, m) {
-			var x = vec[0],
-				y = vec[1],
-				z = vec[2],
-				a00 = m[0], a01 = m[1], a02 = m[2], a03 = m[3],
-				a10 = m[4], a11 = m[5], a12 = m[6], a13 = m[7],
-				a20 = m[8], a21 = m[9], a22 = m[10], a23 = m[11],
-				a30 = m[12], a31 = m[13], a32 = m[14], a33 = m[15];
+	public unproject(point: Vector2, zDistance = 0): Vector3 {
+		function project<O extends [number, number, number, ...number[]]>(out: O, vec: [number, number, number], m: number[]): O {
+			const [x, y, z] = vec;
+			const [
+				a00, a01, a02, a03,
+				a10, a11, a12, a13,
+				a20, a21, a22, a23,
+				a30, a31, a32, a33,
+			] = m;
 
-			var lw = 1 / (x * a03 + y * a13 + z * a23 + a33);
+			const lw = 1 / (x * a03 + y * a13 + z * a23 + a33);
 
 			out[0] = (x * a00 + y * a10 + z * a20 + a30) * lw;
 			out[1] = (x * a01 + y * a11 + z * a21 + a31) * lw;
@@ -110,15 +123,9 @@ export class Camera3D extends Camera {
 			return out;
 		}
 
-		function unproject(out, vec, viewport, invProjectionView) {
-			var viewX = viewport[0],
-				viewY = viewport[1],
-				viewWidth = viewport[2],
-				viewHeight = viewport[3];
-
-			var x = vec[0],
-				y = vec[1],
-				z = vec[2];
+		function unproject(out: number[], vec: [number, number, number], viewport: [number, number, number, number], invProjectionView: Matrix) {
+			const [viewX, viewY, viewWidth, viewHeight] = viewport;
+			let [x, y, z] = vec;
 
 			x = x - viewX;
 			y = viewHeight - y - 1;
@@ -127,15 +134,13 @@ export class Camera3D extends Camera {
 			out[0] = (2 * x) / viewWidth - 1;
 			out[1] = (2 * y) / viewHeight - 1;
 			out[2] = 2 * z - 1;
-			return project(out, out, invProjectionView.values);
+			return project(out as [number, number, number], out as [number, number, number], invProjectionView.values);
 		}
 
-		const out = [];
+		const out: number[] = [];
 		const projInverted = this.getProjectionView().inverted();
-		const viewport = this.viewport || Shaku.gfx.getRenderingRegion();
+		const viewport = this.viewport || this.gfx.getRenderingRegion();
 		unproject(out, [point.x, point.y, zDistance], [viewport.x, viewport.y, viewport.width, viewport.height], projInverted);
 		return new Vector3(out[0], out[1], out[2]);
 	}
 }
-
-// export the camera object
