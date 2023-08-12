@@ -174,6 +174,9 @@ export class Shaku {
 	 * Start frame (update all managers).
 	 */
 	public startFrame(): void {
+		// sanity
+		if(!_usedManagers) throw new Error("Not initialized!");
+
 		// if paused, skip
 		if(this.isCurrentlyPaused()) {
 			if(this.input) {
@@ -220,6 +223,9 @@ export class Shaku {
 	 * End frame (update all managers).
 	 */
 	public endFrame(): void {
+		// sanity
+		if(!_usedManagers) throw new Error("Not initialized!");
+
 		// update managers
 		if(_managersStarted) {
 			for(let i = 0; i < _usedManagers.length; ++i) {
