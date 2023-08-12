@@ -1,5 +1,6 @@
+import { SpritesGroup, Vertex } from "..";
 import { TextureAssetBase } from "../../assets";
-import { LoggerFactory, Rectangle, Vector2, Vector3 } from "../../utils";
+import { Color, LoggerFactory, Rectangle, Vector2, Vector3 } from "../../utils";
 import { DrawBatch } from "./draw_batch";
 import { SpriteBatchBase } from "./sprite_batch_base";
 
@@ -18,7 +19,7 @@ export class SpriteBatch extends SpriteBatchBase {
 	 * @param {Boolean=} enableBinormals If true (not default) will support vertex binormals.
 	 * @param {Boolean=} enableTangents If true (not default) will support vertex tangents.
 	 */
-	public constructor(batchSpritesCount, enableVertexColor, enableNormals, enableBinormals, enableTangents) {
+	public constructor(batchSpritesCount?: number, enableVertexColor?: boolean, enableNormals?: boolean, enableBinormals?: boolean, enableTangents?: boolean) {
 		// init draw batch
 		super(batchSpritesCount, enableVertexColor, enableNormals, enableBinormals, enableTangents);
 	}
@@ -51,7 +52,7 @@ export class SpriteBatch extends SpriteBatchBase {
 	 * @param {TextureAssetBase} texture Texture to draw.
 	 * @param {Array<Vertex>} vertices Vertices to push. Vertices count must be dividable by 4 to keep the batch consistent of quads.
 	 */
-	drawVertices(texture, vertices) {
+	drawVertices(texture: TextureAssetBase, vertices: Vertex[]) {
 		// sanity
 		this.__validateDrawing(true);
 
@@ -156,7 +157,7 @@ export class SpriteBatch extends SpriteBatchBase {
 	 * @param {Vector2=} origin Drawing origin. This will be the point at "position" and rotation origin.
 	 * @param {Vector2=} skew Skew the drawing corners on X and Y axis, around the origin point.
 	 */
-	drawQuad(texture, position, size, sourceRectangle, color, rotation, origin, skew) {
+	drawQuad(texture: TextureAssetBase, position: Vector2 | Vector3, size: Vector2 | Vector3 | number, sourceRectangle?: Rectangle, color?: Color | Color[], rotation? : number, origin?: Vector2, skew?: Vector2) {
 		let sprite = this.#_gfx.Sprite.build(texture, position, size, sourceRectangle, color, rotation, origin, skew);
 		this.drawSprite(sprite);
 	}
@@ -166,7 +167,7 @@ export class SpriteBatch extends SpriteBatchBase {
 	 * @param {SpritesGroup} group Sprite group to draw.
 	 * @param {Boolean=} cullOutOfScreen If true, will cull sprites that are not visible in currently set rendering region.
 	 */
-	drawSpriteGroup(group, cullOutOfScreen) {
+	drawSpriteGroup(group: SpritesGroup, cullOutOfScreen?: boolean) {
 		let transform = group.getTransform();
 		this.drawSprite(group._sprites, transform, cullOutOfScreen);
 	}
@@ -179,7 +180,7 @@ export class SpriteBatch extends SpriteBatchBase {
 	 * @param {Color|Array<Color>|undefined} color Tint color, or undefined to not change color. If array is set, will assign each color to different vertex, starting from top-left.
 	 * @param {Vector2=} origin Drawing origin. This will be the point at "position" and rotation origin.
 	 */
-	drawRectangle(texture, destRect, sourceRect, color, origin) {
+	drawRectangle(texture: TextureAssetBase, destRect: Rectangle | Vector2, sourceRect?: Rectangle, color?: Color | Color[], origin?: Vector2) {
 		if((destRect.isVector2) || (destRect.isVector3)) {
 			destRect = new Rectangle(0, 0, destRect.x, destRect.y);
 		}
@@ -189,5 +190,3 @@ export class SpriteBatch extends SpriteBatchBase {
 		this.drawQuad(texture, position, size, sourceRect, color);
 	}
 }
-
-// export the sprite batch class
