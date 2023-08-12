@@ -305,6 +305,7 @@ export class Shaku {
 	 * @returns Current frame's gametime.
 	 */
 	public get gameTime(): GameTime {
+		if (_gameTime === null) throw new Error("gameTime() is only valid between startFrame() and endFrame()");
 		return _gameTime;
 	}
 
