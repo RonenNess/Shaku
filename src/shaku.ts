@@ -3,7 +3,7 @@ import { collision } from "./collision";
 import { gfx as _gfx } from "./gfx";
 import { input as _input } from "./input";
 import { sfx as _sfx } from "./sfx";
-import { GameTime, IManager, LoggerFactory, utils } from "./utils";
+import { GameTime, IManager, Logger, LoggerFactory, utils } from "./utils";
 
 const isBrowser: boolean = typeof window !== "undefined";
 
@@ -286,7 +286,7 @@ export class Shaku {
 	 */
 	public silent(): void {
 		_isSilent = true;
-		logger.silent();
+		LoggerFactory.silent();
 	}
 
 	/**
@@ -296,7 +296,7 @@ export class Shaku {
 	 */
 	public throwErrorOnWarnings(enable: boolean): void {
 		if(enable === undefined) { throw new Error("Must provide a value!"); }
-		logger.throwErrorOnWarnings(enable);
+		_logger.throwErrorOnWarnings(enable);
 	}
 
 	/**
@@ -358,7 +358,7 @@ export class Shaku {
 	 * @param {*} loggerHandler New logger handler (must implement trace, debug, info, warn, error methods).
 	 */
 	public setLogger(loggerHandler) {
-		logger.setDrivers(loggerHandler);
+		LoggerFactory.setDrivers(loggerHandler);
 	}
 
 	/**
