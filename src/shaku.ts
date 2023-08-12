@@ -258,7 +258,7 @@ export class Shaku {
 	#_updateFpsAndTimeStats(): void {
 		// update fps count and second counter
 		_currFpsCounter++;
-		_countSecond += _gameTime.delta;
+		_countSecond += _gameTime!.delta; // only called from inside a "if (_gameTime) {}" block, so we can use ! safely.
 
 		// a second passed:
 		if(_countSecond >= 1) {

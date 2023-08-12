@@ -5,7 +5,7 @@ export class GameTime {
 	public timestamp: number;
 	public deltaTime: { milliseconds: number; seconds: number; };
 	public elapsedTime: { milliseconds: number; seconds: number; };
-	public delta: number | null;
+	public delta: number;
 	public elapsed: number;
 	public rawTimestamp: number;
 
@@ -39,7 +39,7 @@ export class GameTime {
 		/**
 		 * Delta time, in seconds, since last frame.
 		 */
-		this.delta = this.deltaTime ? this.deltaTime.seconds : null;
+		this.delta = this.deltaTime.seconds;
 
 		/**
 		 * Total time, in seconds, since Shaku was initialized.
