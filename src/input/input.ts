@@ -184,6 +184,7 @@ export class Input implements IManager {
 
 	/**
 	 * @inheritdoc
+	 * @private
 	 **/
 	public setup(): Promise<void> {
 		return new Promise<void>((resolve, reject) => {
@@ -350,6 +351,7 @@ export class Input implements IManager {
 
 	/**
 	 * @inheritdoc
+	 * @private
 	 **/
 	public destroy(): void {
 		// unregister all callbacks
@@ -1003,6 +1005,7 @@ export class Input implements IManager {
 
 	/**
 	 * @inheritdoc
+	 * @private
 	 **/
 	public endFrame() {
 		// set mouse previous position and clear mouse move cache

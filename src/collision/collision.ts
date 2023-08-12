@@ -27,6 +27,7 @@ export class Collision implements IManager {
 
 	/**
 	 * @inheritdoc
+	 * @private
 	 **/
 	public setup(): Promise<void> {
 		return new Promise((resolve, reject) => {
@@ -101,18 +102,21 @@ export class Collision implements IManager {
 
 	/**
 	 * @inheritdoc
+	 * @private
 	 **/
 	public startFrame() {
 	}
 
 	/**
 	 * @inheritdoc
+	 * @private
 	 **/
 	public endFrame() {
 	}
 
 	/**
 	 * @inheritdoc
+	 * @private
 	 **/
 	public destroy() {
 	}

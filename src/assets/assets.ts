@@ -114,6 +114,7 @@ export class Assets implements IManager {
 
 	/**
 	 * @inheritdoc
+	 * @private                
 	 */
 	public setup(): Promise<void> {
 		return new Promise((resolve, reject) => {
@@ -125,12 +126,14 @@ export class Assets implements IManager {
 
 	/**
 	 * @inheritdoc
+	 * @private                
 	 */
 	public startFrame() {
 	}
 
 	/**
 	 * @inheritdoc
+	 * @private
 	 */
 	public endFrame() {
 	}
@@ -472,7 +475,7 @@ export class Assets implements IManager {
 	 * @inheritdoc
 	 * @private
 	 */
-	public async destroy(): Promise<void> {
+	public destroy(): void {
 		this.clearCache();
 	}
 }

@@ -527,6 +527,7 @@ export class Gfx implements IManager {
 
 	/**
 	 * @inheritdoc
+	 * @private
 	 */
 	public setup(): Promise<void> {
 		return new Promise(async (resolve, reject) => {
@@ -891,6 +892,7 @@ export class Gfx implements IManager {
 
 	/**
 	 * @inheritdoc
+	 * @private
 	 */
 	public startFrame() {
 		// reset some states
@@ -905,12 +907,14 @@ export class Gfx implements IManager {
 
 	/**
 	 * @inheritdoc
+	 * @private
 	 */
 	public endFrame() {
 	}
 
 	/**
 	 * @inheritdoc
+	 * @private
 	 */
 	public destroy() {
 		_logger.warn("Cleaning up WebGL is not supported yet!");

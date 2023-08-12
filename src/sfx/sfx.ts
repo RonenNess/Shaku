@@ -33,6 +33,7 @@ export class Sfx implements IManager {
 
 	/**
 	 * @inheritdoc
+	 * @private
 	 **/
 	public startFrame() {
 		// remove any sound no longer playing
@@ -46,12 +47,14 @@ export class Sfx implements IManager {
 
 	/**
 	 * @inheritdoc
+	 * @private
 	 **/
 	public endFrame() {
 	}
 
 	/**
 	 * @inheritdoc
+	 * @private
 	 **/
 	public destroy() {
 		this.stopAll();
