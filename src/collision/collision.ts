@@ -27,9 +27,8 @@ export class Collision implements IManager {
 
 	/**
 	 * @inheritdoc
-	 * @private
 	 **/
-	setup() {
+	public setup(): Promise<void> {
 		return new Promise((resolve, reject) => {
 			_logger.info("Setup collision manager..");
 
@@ -102,23 +101,20 @@ export class Collision implements IManager {
 
 	/**
 	 * @inheritdoc
-	 * @private
 	 **/
-	startFrame() {
+	public startFrame() {
 	}
 
 	/**
 	 * @inheritdoc
-	 * @private
 	 **/
-	endFrame() {
+	public endFrame() {
 	}
 
 	/**
 	 * @inheritdoc
-	 * @private
 	 **/
-	destroy() {
+	public destroy() {
 	}
 }
 

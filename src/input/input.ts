@@ -184,9 +184,8 @@ export class Input implements IManager {
 
 	/**
 	 * @inheritdoc
-	 * @private
 	 **/
-	private setup(): Promise<void> {
+	public setup(): Promise<void> {
 		return new Promise<void>((resolve, reject) => {
 
 			_logger.info("Setup input manager..");
@@ -250,9 +249,8 @@ export class Input implements IManager {
 
 	/**
 	 * @inheritdoc
-	 * @private
 	 **/
-	private async startFrame(): Promise<void> {
+	public startFrame(): void {
 		// query gamepads
 		const prevGamepadData = this._gamepadsData || [];
 		const prevDefaultGamepadId = (this._defaultGamepad || { id: "null" }).id;
@@ -352,9 +350,8 @@ export class Input implements IManager {
 
 	/**
 	 * @inheritdoc
-	 * @private
 	 **/
-	private async destroy(): Promise<void> {
+	public destroy(): void {
 		// unregister all callbacks
 		if(this._callbacks) {
 			let element = this._targetElement;
@@ -1006,9 +1003,8 @@ export class Input implements IManager {
 
 	/**
 	 * @inheritdoc
-	 * @private
 	 **/
-	endFrame() {
+	public endFrame() {
 		// set mouse previous position and clear mouse move cache
 		this._mousePrevPos = this._mousePos.clone();
 

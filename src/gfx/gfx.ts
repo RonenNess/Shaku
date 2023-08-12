@@ -527,9 +527,8 @@ export class Gfx implements IManager {
 
 	/**
 	 * @inheritdoc
-	 * @private
 	 */
-	setup() {
+	public setup(): Promise<void> {
 		return new Promise(async (resolve, reject) => {
 
 			_logger.info("Setup gfx manager..");
@@ -892,9 +891,8 @@ export class Gfx implements IManager {
 
 	/**
 	 * @inheritdoc
-	 * @private
 	 */
-	startFrame() {
+	public startFrame() {
 		// reset some states
 		_lastBlendMode = null;
 		_drawCallsCount = 0;
@@ -907,16 +905,14 @@ export class Gfx implements IManager {
 
 	/**
 	 * @inheritdoc
-	 * @private
 	 */
-	endFrame() {
+	public endFrame() {
 	}
 
 	/**
 	 * @inheritdoc
-	 * @private
 	 */
-	destroy() {
+	public destroy() {
 		_logger.warn("Cleaning up WebGL is not supported yet!");
 	}
 }

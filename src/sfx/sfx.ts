@@ -23,7 +23,7 @@ export class Sfx implements IManager {
 	 * @inheritdoc
 	 * @private
 	 **/
-	setup() {
+	setup(): Promise<void> {
 		return new Promise((resolve, reject) => {
 			_logger.info("Setup sfx manager..");
 			this._playingSounds = new Set();
@@ -33,9 +33,8 @@ export class Sfx implements IManager {
 
 	/**
 	 * @inheritdoc
-	 * @private
 	 **/
-	startFrame() {
+	public startFrame() {
 		// remove any sound no longer playing
 		let playingSounds = Array.from(this._playingSounds);
 		for(let sound of playingSounds) {
@@ -47,16 +46,14 @@ export class Sfx implements IManager {
 
 	/**
 	 * @inheritdoc
-	 * @private
 	 **/
-	endFrame() {
+	public endFrame() {
 	}
 
 	/**
 	 * @inheritdoc
-	 * @private
 	 **/
-	destroy() {
+	public destroy() {
 		this.stopAll();
 		this.cleanup();
 	}

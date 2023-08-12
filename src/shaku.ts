@@ -130,7 +130,7 @@ export class Shaku {
 			GameTime.reset();
 
 			// setup used managers
-			_usedManagers = managers || (isBrowser ? [assets, sfx, gfx, input, collision] : [assets, collision]);
+			_usedManagers = managers || (isBrowser ? [assets, sfx!, gfx!, input!, collision] : [assets, collision]);
 
 			// init all managers
 			for(let i = 0; i < _usedManagers.length; ++i) {

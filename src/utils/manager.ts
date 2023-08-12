@@ -11,15 +11,15 @@ export interface IManager {
 	/**
 	 * Called every update at the begining of the frame.
 	 */
-	startFrame(): Promise<void>;
+	startFrame(): void;
 
 	/**
 	 * Called every update at the end of the frame.
 	 */
-	endFrame(): Promise<void>;
+	endFrame(): void;
 
 	/**
 	 * Destroy the manager.
 	 */
-	destroy(): Promise<void>;
+	destroy(): void;
 }

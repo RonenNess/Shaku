@@ -114,9 +114,8 @@ export class Assets implements IManager {
 
 	/**
 	 * @inheritdoc
-	 * @private
 	 */
-	public setup() {
+	public setup(): Promise<void> {
 		return new Promise((resolve, reject) => {
 			_logger.info("Setup assets manager..");
 			this._loaded = {};
@@ -126,14 +125,12 @@ export class Assets implements IManager {
 
 	/**
 	 * @inheritdoc
-	 * @private
 	 */
 	public startFrame() {
 	}
 
 	/**
 	 * @inheritdoc
-	 * @private
 	 */
 	public endFrame() {
 	}
