@@ -78,17 +78,17 @@ export class Input implements IManager {
 	public resetOnFocusLoss: boolean;
 
 	private _callbacks: {
-		"mousedown": (event: Event) => void,
-		"mouseup": (event: Event) => void,
-		"mousemove": (event: Event) => void,
-		"keydown": (event: Event) => void,
-		"keyup": (event: Event) => void,
-		"blur": (event: Event) => void,
-		"wheel": (event: Event) => void,
-		"touchstart": (event: Event) => void,
-		"touchend": (event: Event) => void,
-		"touchmove": (event: Event) => void,
-		"contextmenu": (event: Event) => void,
+		"mousedown": (event: MouseEvent) => void,
+		"mouseup": (event: MouseEvent) => void,
+		"mousemove": (event: MouseEvent) => void,
+		"keydown": (event: KeyboardEvent) => void,
+		"keyup": (event: KeyboardEvent) => void,
+		"blur": (event: FocusEvent) => void,
+		"wheel": (event: WheelEvent) => void,
+		"touchstart": (event: TouchEvent) => void,
+		"touchend": (event: TouchEvent) => void,
+		"touchmove": (event: TouchEvent) => void,
+		"contextmenu": (event: MouseEvent) => void,
 	} | null;
 	private _targetElement: HTMLElement | Window | (() => HTMLElement);
 	private _defaultGamepad!: globalThis.Gamepad | null;
@@ -233,7 +233,7 @@ export class Input implements IManager {
 
 			// register all callbacks
 			for(var event in this._callbacks) {
-				element.addEventListener(event, this._callbacks[event as keyof typeof this._callbacks], false);
+				element.addEventListener(event, this._callbacks[event as keyof typeof this._callbacks] as (ev: Event) => void, false);
 			}
 
 			// if we have a specific element, still capture mouse release outside of it
@@ -355,10 +355,10 @@ export class Input implements IManager {
 	public destroy(): void {
 		// unregister all callbacks
 		if(this._callbacks) {
-			let element = this._targetElement;
+			let element = this._targetElement as (HTMLElement | Window);
 
 			for(var event in this._callbacks) {
-				element.removeEventListener(event, this._callbacks[event]);
+				element.removeEventListener(event, this._callbacks[event as keyof typeof this._callbacks] as (ev: Event) => void);
 			}
 
 			if(element !== window) {
@@ -377,9 +377,9 @@ export class Input implements IManager {
 	 * // the following will use whatever canvas the gfx manager uses as input element.
 	 * // this means mouse offset will also be relative to this element.
 	 * Shaku.input.setTargetElement(() => Shaku.gfx.canvas);
-	 * @param {Element | elementCallback} element Element to attach input to.
+	 * @param {HTMLElement | elementCallback} element Element to attach input to.
 	 */
-	public setTargetElement(element: Element | unknown): void {
+	public setTargetElement(element: HTMLElement | (() => HTMLElement)): void {
 		if(this._callbacks) { throw new Error("'setTargetElement() must be called before initializing the input manager!"); }
 		this._targetElement = element;
 	}
@@ -614,7 +614,7 @@ export class Input implements IManager {
 	 * @returns True if mouse moved since last frame, false otherwise.
 	 */
 	public get mouseMoving(): boolean {
-		return (this._mousePrevPos && !this._mousePrevPos.equals(this._mousePos));
+		return (this._mousePrevPos && !this._mousePrevPos.equals(this._mousePos)) || false;
 	}
 
 	/**
@@ -1034,16 +1034,16 @@ export class Input implements IManager {
 	 * Get keyboard key code from event.
 	 * @private
 	 */
-	#_getKeyboardKeyCode(event) {
+	#_getKeyboardKeyCode(event: KeyboardEvent) {
 		event = this._getEvent(event);
-		return event.keyCode !== undefined ? event.keyCode : event.key.charCodeAt(0);
+		return event.code !== undefined ? event.code : event.key.charCodeAt(0);
 	}
 
 	/**
 	 * Called when window loses focus - clear all input states to prevent keys getting stuck.
 	 * @private
 	 */
-	_onBlur(event) {
+	_onBlur(event: FocusEvent) {
 		if(this.resetOnFocusLoss) {
 			this.#_resetAll(true);
 		}
@@ -1054,16 +1054,16 @@ export class Input implements IManager {
 	 * @private
 	 * @param {*} event Event data from browser.
 	 */
-	_onMouseWheel(event) {
+	_onMouseWheel(event: WheelEvent) {
 		this._mouseWheel = event.deltaY;
 	}
-
+	
 	/**
 	 * Handle keyboard down event.
 	 * @private
 	 * @param {*} event Event data from browser.
-	 */
-	_onKeyDown(event) {
+	*/
+	_onKeyDown(event: KeyboardEvent) {
 		var keycode = this.#_getKeyboardKeyCode(event);
 		if(!this._keyboardState[keycode]) {
 			this._keyboardPressed[keycode] = true;
@@ -1078,7 +1078,7 @@ export class Input implements IManager {
 	 * @private
 	 * @param {*} event Event data from browser.
 	 */
-	_onKeyUp(event) {
+	_onKeyUp(event: KeyboardEvent) {
 		var keycode = this.#_getKeyboardKeyCode(event) || 0;
 		this._keyboardState[keycode] = false;
 		this._keyboardReleased[keycode] = true;
@@ -1092,7 +1092,7 @@ export class Input implements IManager {
 	 * @param {*} event Event data from browser.
 	 * @returns {Vector2} Position x,y or null if couldn't extract touch position.
 	 */
-	_getTouchEventPosition(event) {
+	_getTouchEventPosition(event: TouchEvent) {
 		var touches = event.changedTouches || event.touches;
 		if(touches && touches.length) {
 			var touch = touches[0];
@@ -1108,7 +1108,7 @@ export class Input implements IManager {
 	 * @private
 	 * @param {*} event Event data from browser.
 	 */
-	_onTouchStart(event) {
+	_onTouchStart(event: TouchEvent) {
 		// update position
 		let position = this._getTouchEventPosition(event);
 		if(position) {
@@ -1138,7 +1138,7 @@ export class Input implements IManager {
 	 * @private
 	 * @param {*} event Event data from browser.
 	 */
-	_onTouchEnd(event) {
+	_onTouchEnd(event: TouchEvent) {
 		// update position
 		let position = this._getTouchEventPosition(event);
 		if(position) {
@@ -1169,7 +1169,7 @@ export class Input implements IManager {
 	 * @private
 	 * @param {*} event Event data from browser.
 	 */
-	_onTouchMove(event) {
+	_onTouchMove(event: TouchEvent) {
 		// update position
 		let position = this._getTouchEventPosition(event);
 		if(position) {
@@ -1190,7 +1190,7 @@ export class Input implements IManager {
 	 * @private
 	 * @param {*} event Event data from browser.
 	 */
-	_onMouseDown(event) {
+	_onMouseDown(event: MouseEvent) {
 		event = this._getEvent(event);
 		if(this.disableMouseWheelAutomaticScrolling && (event.button === this.MouseButtons.MIDDLE)) {
 			event.preventDefault();
@@ -1203,7 +1203,7 @@ export class Input implements IManager {
 	 * @private
 	 * @param {*} event Event data from browser.
 	 */
-	_onMouseUp(event) {
+	_onMouseUp(event: MouseEvent) {
 		event = this._getEvent(event);
 		this._mouseButtonUp(event.button);
 	}
@@ -1237,7 +1237,7 @@ export class Input implements IManager {
 	 * @private
 	 * @param {*} event Event data from browser.
 	 */
-	_onMouseMove(event) {
+	_onMouseMove(event: MouseEvent) {
 		// get event in a cross-browser way
 		event = this._getEvent(event);
 
@@ -1269,7 +1269,7 @@ export class Input implements IManager {
 	 * @private
 	 */
 	_normalizeMousePos() {
-		if(this._targetElement && this._targetElement.getBoundingClientRect) {
+		if(this._targetElement && this._targetElement instanceof HTMLElement) {
 			var rect = this._targetElement.getBoundingClientRect();
 			this._mousePos.x -= rect.left;
 			this._mousePos.y -= rect.top;
@@ -1282,7 +1282,7 @@ export class Input implements IManager {
 	 * This is for older browsers support.
 	 * @private
 	 */
-	_getEvent(event) {
+	_getEvent<T extends Event>(event: T): T {
 		return event || window.event;
 	}
 }
