@@ -91,49 +91,48 @@ export class Input implements IManager {
 		"contextmenu": (event: Event) => void,
 	} | null;
 	private _targetElement: Element | Window;
-	private _defaultGamepad: Gamepad | null;
+	private _defaultGamepad!: Gamepad | null;
 
-	private _defaultGamepadIndex: number;
+	private _defaultGamepadIndex!: number;
 
-	private _mousePos: Vector2;
-	private _mouseState: Record<MouseButtons, unknown>;
-	private _mouseWheel: number;
+	private _mousePos!: Vector2;
+	private _mouseState!: Record<MouseButtons, boolean>;
+	private _mouseWheel!: number;
 	private _mousePrevPos?: Vector2;
-	private _touchPosition: Vector2;
+	private _touchPosition!: Vector2;
 
-	private _isTouching: boolean;
-	private _touchStarted: boolean;
-	private _touchEnded: boolean;
-	private _keyboardState: Record<KeyboardKeys, unknown>;
-	private _keyboardPrevState: Record<unknown, unknown>;
-	private _keyboardPressed: Record<KeyboardKeys, unknown>;
-	private _keyboardReleased: Record<KeyboardKeys, unknown>;
-	private _mousePressed: Record<MouseButtons, unknown>;
-	private _mouseReleased: Record<MouseButtons, unknown>;
+	private _isTouching!: boolean;
+	private _touchStarted!: boolean;
+	private _touchEnded!: boolean;
+	private _keyboardState!: Partial<Record<KeyboardKeys, boolean>>;
+	private _keyboardPressed!: Partial<Record<KeyboardKeys, boolean>>;
+	private _keyboardReleased!: Partial<Record<KeyboardKeys, boolean>>;
+	private _mousePressed!: Partial<Record<KeyboardKeys, boolean>>;
+	private _mouseReleased!: Partial<Record<KeyboardKeys, boolean>>;
 
-	private _customStates: Record<string, boolean>;
-	private _customPressed: Record<string, boolean>;
-	private _customReleased: Record<string, boolean>;
-	private _lastCustomReleasedTime: Record<string, number>;
-	private _lastCustomPressedTime: Record<string, number>;
-	private _prevLastCustomReleasedTime: Record<string, number>;
-	private _prevLastCustomPressedTime: Record<string, number>;
+	private _customStates!: Record<string, boolean>;
+	private _customPressed!: Record<string, boolean>;
+	private _customReleased!: Record<string, boolean>;
+	private _lastCustomReleasedTime!: Record<string, number>;
+	private _lastCustomPressedTime!: Record<string, number>;
+	private _prevLastCustomReleasedTime!: Record<string, number>;
+	private _prevLastCustomPressedTime!: Record<string, number>;
 
-	private _lastMouseReleasedTime: Record<string, number>;
-	private _lastKeyReleasedTime: Record<string, number>;
-	private _lastTouchReleasedTime: number;
-	private _lastMousePressedTime: Record<string, number>;
-	private _lastKeyPressedTime: Record<string, number>;
-	private _lastTouchPressedTime: number;
-	private _prevLastMouseReleasedTime: Record<string, number>;
-	private _prevLastKeyReleasedTime: Record<string, number>;
-	private _prevLastTouchReleasedTime: number;
-	private _prevLastMousePressedTime: Record<string, number>;
-	private _prevLastKeyPressedTime: Record<string, number>;
-	private _prevLastTouchPressedTime: number;
+	private _lastMouseReleasedTime!: Record<string, number>;
+	private _lastKeyReleasedTime!: Record<string, number>;
+	private _lastTouchReleasedTime!: number;
+	private _lastMousePressedTime!: Record<string, number>;
+	private _lastKeyPressedTime!: Record<string, number>;
+	private _lastTouchPressedTime!: number;
+	private _prevLastMouseReleasedTime!: Record<string, number>;
+	private _prevLastKeyReleasedTime!: Record<string, number>;
+	private _prevLastTouchReleasedTime!: number;
+	private _prevLastMousePressedTime!: Record<string, number>;
+	private _prevLastKeyPressedTime!: Record<string, number>;
+	private _prevLastTouchPressedTime!: number;
 
-	private _gamepadsData: Gamepad[];
-	private _queriedGamepadStates: Record<number, unknown>;
+	private _gamepadsData!: Gamepad[];
+	private _queriedGamepadStates!: Record<number, Gamepad>;
 
 	private _customKeys: Set<string>;
 
@@ -153,6 +152,9 @@ export class Input implements IManager {
 		this.delegateGamepadInputToKeys = true;
 		this.resetOnFocusLoss = true;
 		this.defaultDoublePressInterval = 250;
+
+		// custom keys set
+		this._customKeys = new Set();
 
 		// set base state members
 		this.#_resetAll();
@@ -227,7 +229,7 @@ export class Input implements IManager {
 			};
 
 			// reset all data to init initial state
-			this.#_resetAll();
+			this.#_resetAll(false);
 
 			// register all callbacks
 			for(var event in this._callbacks) {
@@ -239,9 +241,6 @@ export class Input implements IManager {
 				window.addEventListener("mouseup", this._callbacks["mouseup"], false);
 				window.addEventListener("touchend", this._callbacks["touchend"], false);
 			}
-
-			// custom keys set
-			this._customKeys = new Set();
 
 			// ready!
 			resolve();
@@ -396,7 +395,11 @@ export class Input implements IManager {
 			this._mousePos = new Vector2();
 			this._mousePrevPos = new Vector2();
 		}
-		this._mouseState = {};
+		this._mouseState = {
+			[MouseButtons.LEFT]: false,
+			[MouseButtons.RIGHT]: false,
+			[MouseButtons.MIDDLE]: false,
+		};
 		this._mouseWheel = 0;
 
 		// touching states
@@ -409,7 +412,6 @@ export class Input implements IManager {
 
 		// keyboard keys
 		this._keyboardState = {};
-		this._keyboardPrevState = {};
 
 		// reset pressed / release events
 		this._keyboardPressed = {};
@@ -442,6 +444,7 @@ export class Input implements IManager {
 
 		// currently connected gamepads data
 		this._defaultGamepad = null;
+		this._defaultGamepadIndex = 0;
 		this._gamepadsData = [];
 		this._queriedGamepadStates = {};
 	}
