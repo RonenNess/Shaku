@@ -96,7 +96,7 @@ export class Input implements IManager {
 	private _defaultGamepadIndex!: number;
 
 	private _mousePos!: Vector2;
-	private _mouseState!: Record<MouseButtons, boolean>;
+	private _mouseState!: Map<MouseButtons, boolean>;
 	private _mouseWheel!: number;
 	private _mousePrevPos?: Vector2;
 	private _touchPosition!: Vector2;
@@ -104,31 +104,31 @@ export class Input implements IManager {
 	private _isTouching!: boolean;
 	private _touchStarted!: boolean;
 	private _touchEnded!: boolean;
-	private _keyboardState!: Partial<Record<KeyboardKeys, boolean>>;
-	private _keyboardPressed!: Partial<Record<KeyboardKeys, boolean>>;
-	private _keyboardReleased!: Partial<Record<KeyboardKeys, boolean>>;
-	private _mousePressed!: Partial<Record<MouseButtons, boolean>>;
-	private _mouseReleased!: Partial<Record<MouseButtons, boolean>>;
+	private _keyboardState!: Map<KeyboardKeys, boolean>;
+	private _keyboardPressed!: Map<KeyboardKeys, boolean>;
+	private _keyboardReleased!: Map<KeyboardKeys, boolean>;
+	private _mousePressed!: Map<MouseButtons, boolean>;
+	private _mouseReleased!: Map<MouseButtons, boolean>;
 
-	private _customStates!: Record<string, boolean>;
-	private _customPressed!: Record<string, boolean>;
-	private _customReleased!: Record<string, boolean>;
-	private _lastCustomReleasedTime!: Record<string, number>;
-	private _lastCustomPressedTime!: Record<string, number>;
-	private _prevLastCustomReleasedTime!: Record<string, number>;
-	private _prevLastCustomPressedTime!: Record<string, number>;
+	private _customStates!: Map<string, boolean>;
+	private _customPressed!: Map<string, boolean>;
+	private _customReleased!: Map<string, boolean>;
+	private _lastCustomReleasedTime!: Map<string, number>;
+	private _lastCustomPressedTime!: Map<string, number>;
+	private _prevLastCustomReleasedTime!: Map<string, number>;
+	private _prevLastCustomPressedTime!: Map<string, number>;
 
-	private _lastMouseReleasedTime!: Record<string, number>;
-	private _lastKeyReleasedTime!: Record<string, number>;
+	private _lastMouseReleasedTime!: Map<string, number>;
+	private _lastKeyReleasedTime!: Map<string, number>;
 	private _lastTouchReleasedTime!: number;
-	private _lastMousePressedTime!: Record<string, number>;
-	private _lastKeyPressedTime!: Record<string, number>;
+	private _lastMousePressedTime!: Map<string, number>;
+	private _lastKeyPressedTime!: Map<string, number>;
 	private _lastTouchPressedTime!: number;
-	private _prevLastMouseReleasedTime!: Record<string, number>;
-	private _prevLastKeyReleasedTime!: Record<string, number>;
+	private _prevLastMouseReleasedTime!: Map<string, number>;
+	private _prevLastKeyReleasedTime!: Map<string, number>;
 	private _prevLastTouchReleasedTime!: number;
-	private _prevLastMousePressedTime!: Record<string, number>;
-	private _prevLastKeyPressedTime!: Record<string, number>;
+	private _prevLastMousePressedTime!: Map<string, number>;
+	private _prevLastKeyPressedTime!: Map<string, number>;
 	private _prevLastTouchPressedTime!: number;
 
 	private _gamepadsData!: (globalThis.Gamepad | null)[];
@@ -395,11 +395,7 @@ export class Input implements IManager {
 			this._mousePos = new Vector2();
 			this._mousePrevPos = new Vector2();
 		}
-		this._mouseState = {
-			[MouseButtons.LEFT]: false,
-			[MouseButtons.RIGHT]: false,
-			[MouseButtons.MIDDLE]: false,
-		};
+		this._mouseState = new Map();
 		this._mouseWheel = 0;
 
 		// touching states
@@ -411,35 +407,35 @@ export class Input implements IManager {
 		this._touchEnded = false;
 
 		// keyboard keys
-		this._keyboardState = {};
+		this._keyboardState = new Map();
 
 		// reset pressed / release events
-		this._keyboardPressed = {};
-		this._keyboardReleased = {};
-		this._mousePressed = {};
-		this._mouseReleased = {};
+		this._keyboardPressed = new Map();
+		this._keyboardReleased = new Map();
+		this._mousePressed = new Map();
+		this._mouseReleased = new Map();
 
 		// for custom states
-		this._customStates = {};
-		this._customPressed = {};
-		this._customReleased = {};
-		this._lastCustomReleasedTime = {};
-		this._lastCustomPressedTime = {};
-		this._prevLastCustomReleasedTime = {};
-		this._prevLastCustomPressedTime = {};
+		this._customStates = new Map();
+		this._customPressed = new Map();
+		this._customReleased = new Map();
+		this._lastCustomReleasedTime = new Map();
+		this._lastCustomPressedTime = new Map();
+		this._prevLastCustomReleasedTime = new Map();
+		this._prevLastCustomPressedTime = new Map();
 
 		// for last release time and to count double click / double pressed events
-		this._lastMouseReleasedTime = {};
-		this._lastKeyReleasedTime = {};
+		this._lastMouseReleasedTime = new Map();
+		this._lastKeyReleasedTime = new Map();
 		this._lastTouchReleasedTime = 0;
-		this._lastMousePressedTime = {};
-		this._lastKeyPressedTime = {};
+		this._lastMousePressedTime = new Map();
+		this._lastKeyPressedTime = new Map();
 		this._lastTouchPressedTime = 0;
-		this._prevLastMouseReleasedTime = {};
-		this._prevLastKeyReleasedTime = {};
+		this._prevLastMouseReleasedTime = new Map();
+		this._prevLastKeyReleasedTime = new Map();
 		this._prevLastTouchReleasedTime = 0;
-		this._prevLastMousePressedTime = {};
-		this._prevLastKeyPressedTime = {};
+		this._prevLastMousePressedTime = new Map();
+		this._prevLastKeyPressedTime = new Map();
 		this._prevLastTouchPressedTime = 0;
 
 		// currently connected gamepads data
@@ -541,9 +537,9 @@ export class Input implements IManager {
 		// remove custom value
 		if(value === null) {
 			this._customKeys.delete(code);
-			delete this._customPressed[code];
-			delete this._customReleased[code];
-			delete this._customStates[code];
+			this._customPressed.delete(code);
+			this._customReleased.delete(code);
+			this._customStates.delete(code);
 			return;
 		}
 		// update custom codes
@@ -553,29 +549,29 @@ export class Input implements IManager {
 
 		// set state
 		value = Boolean(value);
-		const prev = Boolean(this._customStates[code]);
-		this._customStates[code] = value;
+		const prev = Boolean(this._customStates.get(code));
+		this._customStates.set(code, value);
 
 		// set defaults
-		if(this._customPressed[code] === undefined) {
-			this._customPressed[code] = false;
+		if(this._customPressed.get(code) === undefined) {
+			this._customPressed.set(code, false);
 		}
-		if(this._customReleased[code] === undefined) {
-			this._customReleased[code] = false;
+		if(this._customReleased.get(code) === undefined) {
+			this._customReleased.set(code, false);
 		}
 
 		// pressed now?
 		if(!prev && value) {
-			this._customPressed[code] = true;
-			this._prevLastCustomPressedTime[code] = this._lastCustomPressedTime[code];
-			this._lastCustomPressedTime[code] = timestamp();
+			this._customPressed.set(code, true);
+			this._prevLastCustomPressedTime.set(code, this._lastCustomPressedTime.get(code));
+			this._lastCustomPressedTime.set(code, timestamp());
 		}
 
 		// released now?
 		if(prev && !value) {
-			this._customReleased[code] = true;
-			this._prevLastCustomReleasedTime[code] = this._lastCustomReleasedTime[code];
-			this._lastCustomReleasedTime[code] = timestamp();
+			this._customReleased.set(code, true);
+			this._prevLastCustomReleasedTime.set(code, this._lastCustomReleasedTime.get(code));
+			this._lastCustomReleasedTime.set(code, timestamp());
 		}
 	}
 
@@ -624,7 +620,7 @@ export class Input implements IManager {
 	 */
 	public mousePressed(button = MouseButtons.LEFT): boolean {
 		if(button === undefined) throw new Error("Invalid button code!");
-		return Boolean(this._mousePressed[button]);
+		return Boolean(this._mousePressed.get(button));
 	}
 
 	/**
@@ -634,7 +630,7 @@ export class Input implements IManager {
 	 */
 	public mouseDown(button = MouseButtons.LEFT): boolean {
 		if(button === undefined) throw new Error("Invalid button code!");
-		return Boolean(this._mouseState[button]);
+		return Boolean(this._mouseState.get(button));
 	}
 
 	/**
@@ -654,7 +650,7 @@ export class Input implements IManager {
 	 */
 	public mouseReleased(button = MouseButtons.LEFT): boolean {
 		if(button === undefined) throw new Error("Invalid button code!");
-		return Boolean(this._mouseReleased[button]);
+		return Boolean(this._mouseReleased.get(button));
 	}
 
 	/**
@@ -664,7 +660,8 @@ export class Input implements IManager {
 	 */
 	public keyDown(key: KeyboardKeys): boolean {
 		if(key === undefined) throw new Error("Invalid key code!");
-		return Boolean(this._keyboardState[key]);
+		// TODO IMPORTANT: key is never a KeyboardKey, instead it's a string
+		return Boolean(this._keyboardState.get(key));
 	}
 
 	/**
@@ -684,7 +681,7 @@ export class Input implements IManager {
 	 */
 	public keyReleased(key: KeyboardKeys): boolean {
 		if(key === undefined) throw new Error("Invalid key code!");
-		return Boolean(this._keyboardReleased[key]);
+		return Boolean(this._keyboardReleased.get(key));
 	}
 
 	/**
@@ -694,7 +691,7 @@ export class Input implements IManager {
 	 */
 	public keyPressed(key: KeyboardKeys): boolean {
 		if(key === undefined) throw new Error("Invalid key code!");
-		return Boolean(this._keyboardPressed[key]);
+		return Boolean(this._keyboardPressed.get(key));
 	}
 
 	/**
@@ -734,10 +731,8 @@ export class Input implements IManager {
 	 * @returns True if there's a key pressed down.
 	 */
 	public get anyKeyDown(): boolean {
-		for(var key in this._keyboardState) {
-			if(this._keyboardState[key]) {
-				return true;
-			}
+		for (const [_key, pressed] of this._keyboardState) {
+			if (pressed) return true;	
 		}
 		return false;
 	}
@@ -755,10 +750,8 @@ export class Input implements IManager {
 	 * @returns True if any of the mouse buttons are pressed.
 	 */
 	public get anyMouseButtonDown(): boolean {
-		for(var key in this._mouseState) {
-			if(this._mouseState[key]) {
-				return true;
-			}
+		for (const [button, pressed] of this._mouseState) {
+			if (pressed) return true;	
 		}
 		return false;
 	}
@@ -903,7 +896,7 @@ export class Input implements IManager {
 	 */
 	lastReleaseTime(code) {
 		if(Array.isArray(code)) { throw new Error("Array not supported in 'lastReleaseTime'!"); }
-		return this.#_getValueWithCode(code, (c) => this._lastMouseReleasedTime[c], (c) => this._lastKeyReleasedTime[c], this._lastTouchReleasedTime, this._prevLastCustomReleasedTime) || 0;
+		return this.#_getValueWithCode(code, (c) => this._lastMouseReleasedTime.get(c), (c) => this._lastKeyReleasedTime.get(c), this._lastTouchReleasedTime, this._prevLastCustomReleasedTime) || 0;
 	}
 
 	/**
@@ -920,7 +913,7 @@ export class Input implements IManager {
 	 */
 	lastPressTime(code) {
 		if(Array.isArray(code)) { throw new Error("Array not supported in 'lastPressTime'!"); }
-		return this.#_getValueWithCode(code, (c) => this._lastMousePressedTime[c], (c) => this._lastKeyPressedTime[c], this._lastTouchPressedTime, this._prevLastCustomPressedTime) || 0;
+		return this.#_getValueWithCode(code, (c) => this._lastMousePressedTime.get(c), (c) => this._lastKeyPressedTime.get(c), this._lastTouchPressedTime, this._prevLastCustomPressedTime) || 0;
 	}
 
 	/**
@@ -947,7 +940,7 @@ export class Input implements IManager {
 		if(!Array.isArray(code)) { code = [code]; }
 		for(let c of code) {
 			if(this.pressed(c)) {
-				let currKeyTime = this.#_getValueWithCode(c, (c) => this._prevLastMousePressedTime[c], (c) => this._prevLastKeyPressedTime[c], this._prevLastTouchPressedTime, this._prevLastCustomPressedTime);
+				let currKeyTime = this.#_getValueWithCode(c, (c) => this._prevLastMousePressedTime.get(c), (c) => this._prevLastKeyPressedTime.get(c), this._prevLastTouchPressedTime, this._prevLastCustomPressedTime);
 				if(currTime - currKeyTime <= maxInterval) {
 					return true;
 				}
@@ -980,7 +973,7 @@ export class Input implements IManager {
 		if(!Array.isArray(code)) { code = [code]; }
 		for(let c of code) {
 			if(this.released(c)) {
-				let currKeyTime = this.#_getValueWithCode(c, (c) => this._prevLastMousePressedTime[c], (c) => this._prevLastKeyPressedTime[c], this._prevLastTouchPressedTime, this._prevLastCustomPressedTime);
+				let currKeyTime = this.#_getValueWithCode(c, (c) => this._prevLastMousePressedTime.get(c), (c) => this._prevLastKeyPressedTime.get(c), this._prevLastTouchPressedTime, this._prevLastCustomPressedTime);
 				if(currTime - currKeyTime <= maxInterval) {
 					return true;
 				}
@@ -1015,12 +1008,12 @@ export class Input implements IManager {
 		this._mousePrevPos = this._mousePos.clone();
 
 		// reset pressed / release events
-		this._keyboardPressed = {};
-		this._keyboardReleased = {};
-		this._mousePressed = {};
-		this._mouseReleased = {};
-		this._customPressed = {};
-		this._customReleased = {};
+		this._keyboardPressed = new Map();
+		this._keyboardReleased = new Map();
+		this._mousePressed = new Map();
+		this._mouseReleased = new Map();
+		this._customPressed = new Map();
+		this._customReleased = new Map();
 
 		// reset touch start / end states
 		this._touchStarted = false;
@@ -1066,12 +1059,12 @@ export class Input implements IManager {
 	*/
 	_onKeyDown(event: KeyboardEvent) {
 		var keycode = this.#_getKeyboardKeyCode(event);
-		if(!this._keyboardState[keycode]) {
-			this._keyboardPressed[keycode] = true;
-			this._prevLastKeyPressedTime[keycode] = this._lastKeyPressedTime[keycode];
-			this._lastKeyPressedTime[keycode] = timestamp();
+		if(!this._keyboardState.get(keycode)) {
+			this._keyboardPressed.set(keycode, true);
+			this._prevLastKeyPressedTime.set(keycode, this._lastKeyPressedTime.get(keycode));
+			this._lastKeyPressedTime.set(keycode, timestamp());
 		}
-		this._keyboardState[keycode] = true;
+		this._keyboardState.set(keycode, true);
 	}
 
 	/**
@@ -1081,10 +1074,10 @@ export class Input implements IManager {
 	 */
 	_onKeyUp(event: KeyboardEvent) {
 		var keycode = this.#_getKeyboardKeyCode(event) || 0;
-		this._keyboardState[keycode] = false;
-		this._keyboardReleased[keycode] = true;
-		this._prevLastKeyReleasedTime[keycode] = this._lastKeyReleasedTime[keycode];
-		this._lastKeyReleasedTime[keycode] = timestamp();
+		this._keyboardState.set(keycode, false);
+		this._keyboardReleased.set(keycode, true);
+		this._prevLastKeyReleasedTime.set(keycode, this._lastKeyReleasedTime.get(keycode));
+		this._lastKeyReleasedTime.set(keycode, timestamp());
 	}
 
 	/**
@@ -1214,11 +1207,11 @@ export class Input implements IManager {
 	 * @private
 	 * @param {*} button Button pressed.
 	 */
-	_mouseButtonDown(button) {
-		this._mouseState[button] = true;
-		this._mousePressed[button] = true;
-		this._prevLastMousePressedTime[button] = this._lastMousePressedTime[button];
-		this._lastMousePressedTime[button] = timestamp();
+	_mouseButtonDown(button: MouseButtons) {
+		this._mouseState.set(button, true);
+		this._mousePressed.set(button, true);
+		this._prevLastMousePressedTime.set(button, this._lastMousePressedTime.get(button));
+		this._lastMousePressedTime.set(button, timestamp());
 	}
 
 	/**
@@ -1226,11 +1219,11 @@ export class Input implements IManager {
 	 * @private
 	 * @param {*} button Button released.
 	 */
-	_mouseButtonUp(button) {
-		this._mouseState[button] = false;
-		this._mouseReleased[button] = true;
-		this._prevLastMouseReleasedTime[button] = this._lastMouseReleasedTime[button];
-		this._lastMouseReleasedTime[button] = timestamp();
+	_mouseButtonUp(button: MouseButtons) {
+		this._mouseState.set(button, false);
+		this._mouseReleased.set(button, true);
+		this._prevLastMouseReleasedTime.set(button, this._lastMouseReleasedTime.get(button));
+		this._lastMouseReleasedTime.set(button, timestamp());
 	}
 
 	/**
