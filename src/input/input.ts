@@ -1036,7 +1036,8 @@ export class Input implements IManager {
 	 */
 	#_getKeyboardKeyCode(event: KeyboardEvent) {
 		event = this._getEvent(event);
-		return event.code !== undefined ? event.code : event.key.charCodeAt(0);
+		// TODO: stop using numerical keyCode and use modern .code
+		return event.keyCode !== undefined ? event.keyCode : event.key.charCodeAt(0);
 	}
 
 	/**
