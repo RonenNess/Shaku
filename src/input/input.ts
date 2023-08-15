@@ -12,6 +12,9 @@ function timestamp(): number {
 // touch key code
 const _touchKeyCode: string = "touch";
 
+/** All the ways a user can specify an input */
+type InputCode = KeyboardKeys | MouseButtons | string;
+
 /**
  * Input manager.
  * Used to recieve input from keyboard and mouse.
@@ -118,17 +121,17 @@ export class Input implements IManager {
 	private _prevLastCustomReleasedTime!: Map<string, number>;
 	private _prevLastCustomPressedTime!: Map<string, number>;
 
-	private _lastMouseReleasedTime!: Map<string, number>;
-	private _lastKeyReleasedTime!: Map<string, number>;
+	private _lastMouseReleasedTime!: Map<MouseButtons, number>;
+	private _lastKeyReleasedTime!: Map<KeyboardKeys, number>;
 	private _lastTouchReleasedTime!: number;
-	private _lastMousePressedTime!: Map<string, number>;
-	private _lastKeyPressedTime!: Map<string, number>;
+	private _lastMousePressedTime!: Map<MouseButtons, number>;
+	private _lastKeyPressedTime!: Map<KeyboardKeys, number>;
 	private _lastTouchPressedTime!: number;
-	private _prevLastMouseReleasedTime!: Map<string, number>;
-	private _prevLastKeyReleasedTime!: Map<string, number>;
+	private _prevLastMouseReleasedTime!: Map<MouseButtons, number>;
+	private _prevLastKeyReleasedTime!: Map<KeyboardKeys, number>;
 	private _prevLastTouchReleasedTime!: number;
-	private _prevLastMousePressedTime!: Map<string, number>;
-	private _prevLastKeyPressedTime!: Map<string, number>;
+	private _prevLastMousePressedTime!: Map<MouseButtons, number>;
+	private _prevLastKeyPressedTime!: Map<KeyboardKeys, number>;
 	private _prevLastTouchPressedTime!: number;
 
 	private _gamepadsData!: (globalThis.Gamepad | null)[];
@@ -756,10 +759,39 @@ export class Input implements IManager {
 		return false;
 	}
 
+	mouseButtonFromCode(code: InputCode): MouseButtons | null {
+		if (typeof code === "string") {
+			code = code.toUpperCase();
+			if(code.indexOf("MOUSE_") === 0) {
+				// get mouse code name
+				const codename = code.split("_")[1];
+				if (codename in MouseButtons) {
+					return MouseButtons[codename as keyof typeof MouseButtons];
+				}
+				throw new Error("Unknown mouse button: " + code);
+			}
+		} else if (code in MouseButtons) {
+			return code as MouseButtons;
+		}
+		return null;
+	}
+
+	keyboardKeyFromCode(code: InputCode): KeyboardKeys | null {
+		if (typeof code === "string") {
+			code = code.toUpperCase();
+			if (code in KeyboardKeys) {
+				return KeyboardKeys[code as keyof typeof KeyboardKeys];
+			}
+		} else if (code in KeyboardKeys) {
+			return code as KeyboardKeys;
+		}
+		return null;
+	}
+
 	/**
 	 * Return if a mouse or keyboard state in a generic way. Used internally.
 	 * @private
-	 * @param {string} code Keyboard, mouse or touch code.
+	 * @param {InputCode} code Keyboard, mouse or touch code.
 	 *                          For mouse buttons: mouse_left, mouse_right or mouse_middle.
 	 *                          For keyboard buttons: use one of the keys of KeyboardKeys (for example "a", "alt", "up_arrow", etc..).
 	 *                          For touch: just use "touch" as code.
@@ -769,51 +801,41 @@ export class Input implements IManager {
 	 * @param {*} touchValue Value to use to return value if its a touch code.
 	 * @param {*} customValues Dictionary to check for custom values injected via setCustomState().
 	 */
-	#_getValueWithCode<T>(code: string, mouseCheck: () => T, keyboardCheck: () => T, touchValue: T, customValues: Record<unknown, unknown>): T {
-		// make sure code is string
-		code = String(code);
-
+	#_getValueWithCode<T>(code: InputCode, mouseCheck: (k: MouseButtons) => T, keyboardCheck: (k: KeyboardKeys) => T, touchValue: T, customValues: Map<string, T>): T | false {
 		// check for custom values
-		const customVal = customValues[code];
-		if(customVal !== undefined) {
-			return customVal;
-		}
-		if(this._customKeys.has(code)) {
-			return false;
-		}
+		if (typeof code === "string") {
+			const customVal = customValues.get(code);
+			if(customVal !== undefined) {
+				return customVal;
+			}
+			if(this._customKeys.has(code)) {
+				return false;
+			}
+			
+			// if its "touch" its for touch events
+			if(code === _touchKeyCode) {
+				return touchValue;
+			}
 
-		// if its "touch" its for touch events
-		if(code === _touchKeyCode) {
-			return touchValue;
+			// if its just a number, add the "n" prefix
+			if(!isNaN(parseInt(code)) && code.length === 1) {
+				code = "n" + code;
+			}
 		}
 
 		// if starts with "mouse" its for mouse button events
-		if(code.indexOf("mouse_") === 0) {
-
-			// get mouse code name
-			const codename = code.split("_")[1];
-			const mouseKey = this.MouseButtons[codename];
-			if(mouseKey === undefined) {
-				throw new Error("Unknown mouse button: " + code);
-			}
-
+		let mouseKey = this.mouseButtonFromCode(code);
+		if(mouseKey !== null) {
 			// return if mouse down
 			return mouseCheck.call(this, mouseKey);
 		}
 
-		// if its just a number, add the "n" prefix
-		if(!isNaN(parseInt(code)) && code.length === 1) {
-			code = "n" + code;
-		}
-
 		// if not start with "mouse", treat it as a keyboard key
-		const keyboardKey = this.KeyboardKeys[code];
-		if (keyboardKey === undefined) {
+		const keyboardKey = this.keyboardKeyFromCode(code);
+		if (keyboardKey === null) {
 			throw new Error("Unknown keyboard key: " + code);
 		}
-		// TODO: investigate, the commented line was the original line but it doesn't work
-		// return keyboardCheck.call(this, keyboardKey);
-		return keyboardCheck.call(this, code);
+		return keyboardCheck.call(this, keyboardKey);
 	}
 
 	/**
@@ -828,7 +850,7 @@ export class Input implements IManager {
 	 * Note: if you inject any custom state via `setCustomState()`, you can use its code here too.
 	 * @returns True if key or mouse button are down.
 	 */
-	public down(code: string | string[]): boolean {
+	public down(code: InputCode | InputCode[]): boolean {
 		if(!Array.isArray(code)) { code = [code]; }
 		for(let c of code) {
 			if(Boolean(this.#_getValueWithCode(c, this.mouseDown, this.keyDown, this.touching, this._customStates))) {
@@ -850,7 +872,7 @@ export class Input implements IManager {
 	 * Note: if you inject any custom state via `setCustomState()`, you can use its code here too.
 	 * @returns True if key or mouse button were down in previous frame, and released this frame.
 	 */
-	public released(code: string | string[]): boolean {
+	public released(code: InputCode | InputCode[]): boolean {
 		if(!Array.isArray(code)) { code = [code]; }
 		for(let c of code) {
 			if(Boolean(this.#_getValueWithCode(c, this.mouseReleased, this.keyReleased, this.touchEnded, this._customReleased))) {
@@ -864,7 +886,7 @@ export class Input implements IManager {
 	 * Return if a mouse or keyboard button was pressed in this frame.
 	 * @example
 	 * if (Shaku.input.pressed(["mouse_left", "touch", "space"])) { alert("mouse, touch screen or space were pressed!"); }
-	 * @param {string|Array<String>} code Keyboard, touch, gamepad or mouse button code. Can be array of codes to test any of them.
+	 * @param {InputCode|Array<InputCode>} code Keyboard, touch, gamepad or mouse button code. Can be array of codes to test any of them.
 	 *                          For mouse buttons: set code to "mouse_left", "mouse_right" or "mouse_middle".
 	 *                          For keyboard buttons: use one of the keys of KeyboardKeys (for example "a", "alt", "up_arrow", etc..).
 	 *                          For touch screen: set code to "touch".
@@ -872,7 +894,7 @@ export class Input implements IManager {
 	 *                          Note: if you inject any custom state via `setCustomState()`, you can use its code here too.
 	 * @returns {Boolean} True if key or mouse button where up in previous frame, and pressed this frame.
 	 */
-	public pressed(code) {
+	public pressed(code: InputCode | InputCode[]) {
 		if(!Array.isArray(code)) { code = [code]; }
 		for(let c of code) {
 			if(Boolean(this.#_getValueWithCode(c, this.mousePressed, this.keyPressed, this.touchStarted, this._customPressed))) {
@@ -886,7 +908,7 @@ export class Input implements IManager {
 	 * Return timestamp, in milliseconds, of the last time this key code was released.
 	 * @example
 	 * let lastReleaseTime = Shaku.input.lastReleaseTime("mouse_left");
-	 * @param {string} code Keyboard, touch, gamepad or mouse button code.
+	 * @param {InputCode} code Keyboard, touch, gamepad or mouse button code.
 	 *                          For mouse buttons: set code to "mouse_left", "mouse_right" or "mouse_middle".
 	 *                          For keyboard buttons: use one of the keys of KeyboardKeys (for example "a", "alt", "up_arrow", etc..).
 	 *                          For touch screen: set code to "touch".
@@ -894,7 +916,7 @@ export class Input implements IManager {
 	 *                          Note: if you inject any custom state via `setCustomState()`, you can use its code here too.
 	 * @returns {Number} Timestamp of last key release, or 0 if was never released.
 	 */
-	lastReleaseTime(code) {
+	lastReleaseTime(code: InputCode) {
 		if(Array.isArray(code)) { throw new Error("Array not supported in 'lastReleaseTime'!"); }
 		return this.#_getValueWithCode(code, (c) => this._lastMouseReleasedTime.get(c), (c) => this._lastKeyReleasedTime.get(c), this._lastTouchReleasedTime, this._prevLastCustomReleasedTime) || 0;
 	}
@@ -903,7 +925,7 @@ export class Input implements IManager {
 	 * Return timestamp, in milliseconds, of the last time this key code was pressed.
 	 * @example
 	 * let lastPressTime = Shaku.input.lastPressTime("mouse_left");
-	 * @param {string} code Keyboard, touch, gamepad or mouse button code.
+	 * @param {InputCode} code Keyboard, touch, gamepad or mouse button code.
 	 *                          For mouse buttons: set code to "mouse_left", "mouse_right" or "mouse_middle".
 	 *                          For keyboard buttons: use one of the keys of KeyboardKeys (for example "a", "alt", "up_arrow", etc..).
 	 *                          For touch screen: set code to "touch".
@@ -911,7 +933,7 @@ export class Input implements IManager {
 	 *                          Note: if you inject any custom state via `setCustomState()`, you can use its code here too.
 	 * @returns {Number} Timestamp of last key press, or 0 if was never pressed.
 	 */
-	lastPressTime(code) {
+	lastPressTime(code: InputCode) {
 		if(Array.isArray(code)) { throw new Error("Array not supported in 'lastPressTime'!"); }
 		return this.#_getValueWithCode(code, (c) => this._lastMousePressedTime.get(c), (c) => this._lastKeyPressedTime.get(c), this._lastTouchPressedTime, this._prevLastCustomPressedTime) || 0;
 	}
@@ -920,7 +942,7 @@ export class Input implements IManager {
 	 * Return if a key was double-pressed.
 	 * @example
 	 * let doublePressed = Shaku.input.doublePressed(["mouse_left", "touch", "space"]);
-	 * @param {string|Array<string>} code Keyboard, touch, gamepad or mouse button code. Can be array of codes to test any of them.
+	 * @param {InputCode|Array<InputCode>} code Keyboard, touch, gamepad or mouse button code. Can be array of codes to test any of them.
 	 *                          For mouse buttons: set code to "mouse_left", "mouse_right" or "mouse_middle".
 	 *                          For keyboard buttons: use one of the keys of KeyboardKeys (for example "a", "alt", "up_arrow", etc..).
 	 *                          For touch screen: set code to "touch".
@@ -929,7 +951,7 @@ export class Input implements IManager {
 	 * @param {Number} maxInterval Max interval time, in milliseconds, to consider it a double-press. Defaults to `defaultDoublePressInterval`.
 	 * @returns {Boolean} True if one or more key codes double-pressed, false otherwise.
 	 */
-	doublePressed(code, maxInterval) {
+	doublePressed(code: InputCode | InputCode[], maxInterval?: number) {
 		// default interval
 		maxInterval = maxInterval || this.defaultDoublePressInterval;
 
@@ -953,7 +975,7 @@ export class Input implements IManager {
 	 * Return if a key was double-released.
 	 * @example
 	 * let doubleReleased = Shaku.input.doubleReleased(["mouse_left", "touch", "space"]);
-	 * @param {string|Array<string>} code Keyboard, touch, gamepad or mouse button code. Can be array of codes to test any of them.
+	 * @param {InputCode|Array<InputCode>} code Keyboard, touch, gamepad or mouse button code. Can be array of codes to test any of them.
 	 *                          For mouse buttons: set code to "mouse_left", "mouse_right" or "mouse_middle".
 	 *                          For keyboard buttons: use one of the keys of KeyboardKeys (for example "a", "alt", "up_arrow", etc..).
 	 *                          For touch screen: set code to "touch".
@@ -962,7 +984,7 @@ export class Input implements IManager {
 	 * @param {Number} maxInterval Max interval time, in milliseconds, to consider it a double-release. Defaults to `defaultDoublePressInterval`.
 	 * @returns {Boolean} True if one or more key codes double-released, false otherwise.
 	 */
-	doubleReleased(code, maxInterval) {
+	doubleReleased(code: InputCode | InputCode[], maxInterval: number) {
 		// default interval
 		maxInterval = maxInterval || this.defaultDoublePressInterval;
 
