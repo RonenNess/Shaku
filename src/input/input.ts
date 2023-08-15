@@ -90,8 +90,8 @@ export class Input implements IManager {
 		"touchmove": (event: Event) => void,
 		"contextmenu": (event: Event) => void,
 	} | null;
-	private _targetElement: Element | Window;
-	private _defaultGamepad!: Gamepad | null;
+	private _targetElement: HTMLElement | Window | (() => HTMLElement);
+	private _defaultGamepad!: globalThis.Gamepad | null;
 
 	private _defaultGamepadIndex!: number;
 
@@ -107,8 +107,8 @@ export class Input implements IManager {
 	private _keyboardState!: Partial<Record<KeyboardKeys, boolean>>;
 	private _keyboardPressed!: Partial<Record<KeyboardKeys, boolean>>;
 	private _keyboardReleased!: Partial<Record<KeyboardKeys, boolean>>;
-	private _mousePressed!: Partial<Record<KeyboardKeys, boolean>>;
-	private _mouseReleased!: Partial<Record<KeyboardKeys, boolean>>;
+	private _mousePressed!: Partial<Record<MouseButtons, boolean>>;
+	private _mouseReleased!: Partial<Record<MouseButtons, boolean>>;
 
 	private _customStates!: Record<string, boolean>;
 	private _customPressed!: Record<string, boolean>;
@@ -131,7 +131,7 @@ export class Input implements IManager {
 	private _prevLastKeyPressedTime!: Record<string, number>;
 	private _prevLastTouchPressedTime!: number;
 
-	private _gamepadsData!: Gamepad[];
+	private _gamepadsData!: (globalThis.Gamepad | null)[];
 	private _queriedGamepadStates!: Record<number, Gamepad>;
 
 	private _customKeys: Set<string>;
@@ -205,7 +205,7 @@ export class Input implements IManager {
 			let element = this._targetElement;
 
 			// to make sure keyboard input would work if provided with canvas entity
-			if(element.tabIndex === -1 || element.tabIndex === undefined) {
+			if((element instanceof HTMLCanvasElement) && (element.tabIndex === -1 || element.tabIndex === undefined)) {
 				element.tabIndex = 1000;
 			}
 
@@ -215,16 +215,16 @@ export class Input implements IManager {
 			// set all the events to listen to
 			var _this = this;
 			this._callbacks = {
-				"mousedown": function(event) { _this._onMouseDown(event); if(this.preventDefaults) event.preventDefault(); },
-				"mouseup": function(event) { _this._onMouseUp(event); if(this.preventDefaults) event.preventDefault(); },
-				"mousemove": function(event) { _this._onMouseMove(event); if(this.preventDefaults) event.preventDefault(); },
-				"keydown": function(event) { _this._onKeyDown(event); if(this.preventDefaults) event.preventDefault(); },
-				"keyup": function(event) { _this._onKeyUp(event); if(this.preventDefaults) event.preventDefault(); },
-				"blur": function(event) { _this._onBlur(event); if(this.preventDefaults) event.preventDefault(); },
-				"wheel": function(event) { _this._onMouseWheel(event); if(this.preventDefaults) event.preventDefault(); },
-				"touchstart": function(event) { _this._onTouchStart(event); if(this.preventDefaults) event.preventDefault(); },
-				"touchend": function(event) { _this._onTouchEnd(event); if(this.preventDefaults) event.preventDefault(); },
-				"touchmove": function(event) { _this._onTouchMove(event); if(this.preventDefaults) event.preventDefault(); },
+				"mousedown": function(event) { _this._onMouseDown(event); if(_this.preventDefaults) event.preventDefault(); },
+				"mouseup": function(event) { _this._onMouseUp(event); if(_this.preventDefaults) event.preventDefault(); },
+				"mousemove": function(event) { _this._onMouseMove(event); if(_this.preventDefaults) event.preventDefault(); },
+				"keydown": function(event) { _this._onKeyDown(event); if(_this.preventDefaults) event.preventDefault(); },
+				"keyup": function(event) { _this._onKeyUp(event); if(_this.preventDefaults) event.preventDefault(); },
+				"blur": function(event) { _this._onBlur(event); if(_this.preventDefaults) event.preventDefault(); },
+				"wheel": function(event) { _this._onMouseWheel(event); if(_this.preventDefaults) event.preventDefault(); },
+				"touchstart": function(event) { _this._onTouchStart(event); if(_this.preventDefaults) event.preventDefault(); },
+				"touchend": function(event) { _this._onTouchEnd(event); if(_this.preventDefaults) event.preventDefault(); },
+				"touchmove": function(event) { _this._onTouchMove(event); if(_this.preventDefaults) event.preventDefault(); },
 				"contextmenu": function(event) { if(_this.disableContextMenu) { event.preventDefault(); } },
 			};
 
@@ -233,7 +233,7 @@ export class Input implements IManager {
 
 			// register all callbacks
 			for(var event in this._callbacks) {
-				element.addEventListener(event, this._callbacks[event], false);
+				element.addEventListener(event, this._callbacks[event as keyof typeof this._callbacks], false);
 			}
 
 			// if we have a specific element, still capture mouse release outside of it
@@ -455,7 +455,7 @@ export class Input implements IManager {
 	 * @param index Gamepad index or undefined for first connected device.
 	 * @returns Gamepad current state.
 	 */
-	public gamepad(index?: number): Gamepad {
+	public gamepad(index?: number): Gamepad | null {
 		// default index
 		if(index === null || index === undefined) {
 			index = this._defaultGamepadIndex;

@@ -25,7 +25,7 @@ export class Gamepad {
 	 * Create gamepad state object.
 	 * @param {*} gp Browser gamepad state object.
 	 */
-	public constructor(gp) {
+	public constructor(gp: globalThis.Gamepad) {
 		/**
 		 * Gamepad Id.
 		 * @name Gamepad#id
