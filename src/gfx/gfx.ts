@@ -7,7 +7,7 @@ import { DrawBatch, LinesBatch, ShapesBatch, SpriteBatch, SpriteBatch3D, TextSpr
 import { Effect, MsdfFontEffect, ShapesEffect, Sprites3dEffect, SpritesEffect, SpritesEffectNoVertexColor, SpritesWithOutlineEffect } from "./effects";
 import { Sprite } from "./sprite";
 import { SpritesGroup } from "./sprites_group";
-import { TextAlignment, TextAlignments } from "./text_alignments";
+import { TextAlignments } from "./text_alignments";
 import { TextureFilterModes } from "./texture_filter_modes";
 import { TextureWrapModes } from "./texture_wrap_modes";
 import { Vertex } from "./vertex";
@@ -38,42 +38,38 @@ let _webglVersion = 0;
  */
 export class Gfx implements IManager {
 	/**
+	 * A dictionary containing all built-in effect instances.
+	 */
+	public builtinEffects: Partial<Record<unknown, Effect>>;
+
+	/**
+	 * Default texture filter to use when no texture filter is set.
+	 */
+	public defaultTextureFilter: TextureFilterModes;
+
+	/**
+	 * Default wrap modes to use when no wrap mode is set.
+	 */
+	public defaultTextureWrapMode: TextureWrapModes;
+
+	/**
+	 * A 1x1 white texture.
+	 */
+	public whiteTexture: TextureAsset | null;
+
+	/**
+	 * Provide access to Gfx internal stuff.
+	 */
+	private _internal: GfxInternal;
+
+	/**
 	 * Create the manager.
 	 */
 	public constructor() {
-
-		/**
-		 * A dictionary containing all built-in effect instances.
-		 * @type {Dictionary}
-		 * @name Gfx#builtinEffects
-		 */
 		this.builtinEffects = {};
-
-		/**
-		 * Default texture filter to use when no texture filter is set.
-		 * @type {TextureFilterModes}
-		 * @name Gfx#defaultTextureFilter
-		 */
 		this.defaultTextureFilter = TextureFilterModes.NEAREST;
-
-		/**
-		 * Default wrap modes to use when no wrap mode is set.
-		 * @type {TextureWrapModes}
-		 * @name Gfx#TextureWrapModes
-		 */
 		this.defaultTextureWrapMode = TextureWrapModes.CLAMP;
-
-		/**
-		 * A 1x1 white texture.
-		 * @type {TextureAsset}
-		 * @name Gfx#whiteTexture
-		 */
 		this.whiteTexture = null;
-
-		/**
-		 * Provide access to Gfx internal stuff.
-		 * @private
-		 */
 		this._internal = new GfxInternal(this);
 
 		// set self for effect and draw batch
@@ -83,9 +79,9 @@ export class Gfx implements IManager {
 
 	/**
 	 * Get the init WebGL version.
-	 * @returns {Number} WebGL version number.
+	 * @returns WebGL version number.
 	 */
-	get webglVersion() {
+	public get webglVersion(): number {
 		return _webglVersion;
 	}
 
@@ -396,7 +392,7 @@ export class Gfx implements IManager {
 
 		// set render targets
 		var drawBuffers = [];
-		for(const index = 0; index < texture.length; ++index) {
+		for(let index = 0; index < texture.length; ++index) {
 
 			// attach the texture as the first color attachment
 			const attachmentPoint = _gl["COLOR_ATTACHMENT" + index];
@@ -980,7 +976,7 @@ export class GfxInternal {
 		}
 	}
 
-	getRenderingRegionInternal(includeOffset) {
+	getRenderingRegionInternal(includeOffset?: boolean) {
 		// cached with offset
 		if(includeOffset && _cachedRenderingRegion.withOffset) {
 			return _cachedRenderingRegion.withOffset;
@@ -1072,7 +1068,7 @@ export class GfxInternal {
 					gl.blendFuncSeparate(gl.ONE, gl.ONE_MINUS_SRC_COLOR, gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
 					break;
 
-				case BlendModes.SUBSTRACT:
+				case BlendModes.SUBTRACT:
 					gl.enable(gl.BLEND);
 					gl.blendEquation(gl.FUNC_ADD);
 					gl.blendFuncSeparate(gl.ONE, gl.ONE, gl.ONE, gl.ONE);
@@ -1126,5 +1122,4 @@ export class GfxInternal {
 	}
 }
 
-// export main object
 export const gfx = new Gfx();

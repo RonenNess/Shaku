@@ -122,5 +122,4 @@ export class Collision implements IManager {
 	}
 }
 
-// export main object
 export const collision = new Collision();

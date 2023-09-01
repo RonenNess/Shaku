@@ -91,5 +91,3 @@ export class SpriteBatch3D extends SpriteBatch {
 		if(this.__camera) { this.#_gfx.applyCamera(this.__camera); }
 	}
 }
-
-// export the sprite batch class

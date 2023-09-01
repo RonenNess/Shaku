@@ -95,9 +95,7 @@ export class Vector2 {
 	 * @returns result vector.
 	 */
 	public add(other: number | Vector2): Vector2 {
-		if(typeof other === "number") {
-			return new Vector2(this.x + other, this.y + (arguments[1] === undefined ? other : arguments[1]));
-		}
+		if(typeof other === "number") return new Vector2(this.x + other, this.y + (arguments[1] === undefined ? other : arguments[1]));
 		return new Vector2(this.x + other.x, this.y + other.y);
 	}
 
@@ -107,9 +105,7 @@ export class Vector2 {
 	 * @returns result vector.
 	 */
 	public sub(other: number | Vector2): Vector2 {
-		if(typeof other === "number") {
-			return new Vector2(this.x - other, this.y - (arguments[1] === undefined ? other : arguments[1]));
-		}
+		if(typeof other === "number") return new Vector2(this.x - other, this.y - (arguments[1] === undefined ? other : arguments[1]));
 		return new Vector2(this.x - other.x, this.y - other.y);
 	}
 
@@ -119,9 +115,7 @@ export class Vector2 {
 	 * @returns result vector.
 	 */
 	public div(other: number | Vector2): Vector2 {
-		if(typeof other === "number") {
-			return new Vector2(this.x / other, this.y / (arguments[1] === undefined ? other : arguments[1]));
-		}
+		if(typeof other === "number") return new Vector2(this.x / other, this.y / (arguments[1] === undefined ? other : arguments[1]));
 		return new Vector2(this.x / other.x, this.y / other.y);
 	}
 
@@ -131,9 +125,7 @@ export class Vector2 {
 	 * @returns result vector.
 	 */
 	public mul(other: number | Vector2): Vector2 {
-		if(typeof other === "number") {
-			return new Vector2(this.x * other, this.y * (arguments[1] === undefined ? other : arguments[1]));
-		}
+		if(typeof other === "number") return new Vector2(this.x * other, this.y * (arguments[1] === undefined ? other : arguments[1]));
 		return new Vector2(this.x * other.x, this.y * other.y);
 	}
 
@@ -206,8 +198,8 @@ export class Vector2 {
 	 * @returns result vector.
 	 */
 	public normalized(): Vector2 {
-		if(this.x == 0 && this.y == 0) { return Vector2.zero(); }
-		let mag = this.length();
+		if(this.x === 0 && this.y === 0) return Vector2.zero();
+		const mag = this.length();
 		return new Vector2(this.x / mag, this.y / mag);
 	}
 
@@ -248,15 +240,14 @@ export class Vector2 {
 
 	/**
 	 * Sub other vector values from self.
-	 * @param other Vector or number to substract.
+	 * @param other Vector or number to subtract.
 	 * @returns this.
 	 */
 	public subSelf(other: number | Vector2): Vector2 {
 		if(typeof other === "number") {
 			this.x -= other;
 			this.y -= (arguments[1] === undefined ? other : arguments[1]);
-		}
-		else {
+		} else {
 			this.x -= other.x;
 			this.y -= other.y;
 		}
@@ -272,8 +263,7 @@ export class Vector2 {
 		if(typeof other === "number") {
 			this.x /= other;
 			this.y /= (arguments[1] === undefined ? other : arguments[1]);
-		}
-		else {
+		} else {
 			this.x /= other.x;
 			this.y /= other.y;
 		}
@@ -289,8 +279,7 @@ export class Vector2 {
 		if(typeof other === "number") {
 			this.x *= other;
 			this.y *= (arguments[1] === undefined ? other : arguments[1]);
-		}
-		else {
+		} else {
 			this.x *= other.x;
 			this.y *= other.y;
 		}
@@ -332,8 +321,8 @@ export class Vector2 {
 	 * @returns this.
 	 */
 	public normalizeSelf(): Vector2 {
-		if(this.x == 0 && this.y == 0) { return this; }
-		let mag = this.length();
+		if(this.x === 0 && this.y === 0) return this;
+		const mag = this.length();
 		this.x /= mag;
 		this.y /= mag;
 		return this;
@@ -345,7 +334,10 @@ export class Vector2 {
 	 * @returns if vectors are equal.
 	 */
 	public equals(other: Vector2): boolean {
-		return ((this === other) || ((other.constructor === this.constructor) && this.x === other.x && this.y === other.y));
+		return ((this === other)
+			|| ((other.constructor === this.constructor)
+				&& this.x === other.x
+				&& this.y === other.y));
 	}
 
 	/**
@@ -356,9 +348,8 @@ export class Vector2 {
 	 */
 	public approximate(other: Vector2, threshold: number): boolean {
 		threshold = threshold || 1;
-		return ((this === other) ||
-			(
-				(Math.abs(this.x - other.x) <= threshold) &&
+		return ((this === other)
+			|| ((Math.abs(this.x - other.x) <= threshold) &&
 				(Math.abs(this.y - other.y) <= threshold))
 		);
 	}
@@ -537,7 +528,7 @@ export class Vector2 {
 	 * @returns result vector.
 	 */
 	public static fromDegrees(degrees: number): Vector2 {
-		let rads = degrees * (Math.PI / 180);
+		const rads = degrees * (Math.PI / 180);
 		return new Vector2(Math.cos(rads), Math.sin(rads));
 	}
 
@@ -558,7 +549,7 @@ export class Vector2 {
 	 * @returns result vector.
 	 */
 	public static lerp(p1: Vector2, p2: Vector2, a: number): Vector2 {
-		let lerpScalar = MathHelper.lerp;
+		const lerpScalar = MathHelper.lerp.bind(Vector2);
 		return new Vector2(lerpScalar(p1.x, p2.x, a), lerpScalar(p1.y, p2.y, a));
 	}
 
@@ -570,8 +561,8 @@ export class Vector2 {
 	 * @returns Angle between vectors in degrees.
 	 */
 	public static degreesBetween(p1: Vector2, p2: Vector2): number {
-		let deltaY = p2.y - p1.y,
-			deltaX = p2.x - p1.x;
+		const deltaY = p2.y - p1.y;
+		const deltaX = p2.x - p1.x;
 		return Math.atan2(deltaY, deltaX) * (180 / Math.PI);
 	}
 
@@ -594,7 +585,7 @@ export class Vector2 {
 	 * @returns Angle between vectors in degrees.
 	 */
 	public static wrappedDegreesBetween(p1: Vector2, p2: Vector2): number {
-		let temp = p2.sub(p1);
+		const temp = p2.sub(p1);
 		return temp.getDegrees();
 	}
 
@@ -603,8 +594,8 @@ export class Vector2 {
 	 * @returns Vector angle in degrees.
 	 */
 	public getDegrees(): number {
-		var angle = Math.atan2(this.y, this.x);
-		var degrees = 180 * angle / Math.PI;
+		const angle = Math.atan2(this.y, this.x);
+		const degrees = 180 * angle / Math.PI;
 		return (360 + Math.round(degrees)) % 360;
 	}
 
@@ -613,7 +604,7 @@ export class Vector2 {
 	 * @returns Vector angle in degrees.
 	 */
 	public getRadians(): number {
-		var angle = Math.atan2(this.y, this.x);
+		const angle = Math.atan2(this.y, this.x);
 		return angle;
 	}
 
@@ -626,7 +617,7 @@ export class Vector2 {
 	 */
 	public static wrappedRadiansBetween(p1: Vector2, p2: Vector2): number {
 		return MathHelper.toRadians(Vector2.wrappedDegreesBetween(p1, p2));
-	};
+	}
 
 	/**
 	 * Calculate distance between two vectors.
@@ -635,8 +626,8 @@ export class Vector2 {
 	 * @returns Distance between vectors.
 	 */
 	public static distance(p1: Vector2, p2: Vector2): number {
-		let a = p1.x - p2.x;
-		let b = p1.y - p2.y;
+		const a = p1.x - p2.x;
+		const b = p1.y - p2.y;
 		return Math.sqrt(a * a + b * b);
 	}
 
@@ -673,8 +664,11 @@ export class Vector2 {
 	 * @returns Parsed vector.
 	 */
 	public static parse(str: `${number},${number}`): Vector2 {
-		let parts = str.split(",");
-		return new Vector2(parseFloat(parts[0].trim()), parseFloat(parts[1].trim()));
+		const parts = str.split(",");
+		const [x, y] = parts
+			.map(p => p.trim())
+			.map(parseFloat);
+		return new Vector2(x, y);
 	}
 
 	/**
@@ -711,13 +705,11 @@ export class Vector2 {
 	public toDict(minimized: true): Partial<SerializedVector2>;
 	public toDict(minimized?: false): SerializedVector2;
 	public toDict(minimized?: boolean): Partial<SerializedVector2> {
-		if(minimized) {
-			const ret: Partial<SerializedVector2> = {};
-			if(this.x) ret.x = this.x;
-			if(this.y) ret.y = this.y;
-			return ret;
-		}
-		return { x: this.x, y: this.y };
+		if(!minimized) return { x: this.x, y: this.y };
+		const ret: Partial<SerializedVector2> = {};
+		if(this.x) ret.x = this.x;
+		if(this.y) ret.y = this.y;
+		return ret;
 	}
 }
 

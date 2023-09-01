@@ -43,5 +43,3 @@ export class SpritesEffect extends Effect {
 		};
 	}
 }
-
-// export the basic shader

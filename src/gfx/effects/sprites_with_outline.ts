@@ -47,5 +47,3 @@ export class SpritesWithOutlineEffect extends Effect {
 		};
 	}
 }
-
-// export the basic shader

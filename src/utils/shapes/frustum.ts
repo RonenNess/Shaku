@@ -51,9 +51,7 @@ export class Frustum {
 	 */
 	public copy(frustum: Frustum): Frustum {
 		const planes = this.planes;
-		for(let i = 0; i < 6; i++) {
-			planes[i].copy(frustum.planes[i]);
-		}
+		for(let i = 0; i < 6; i++) planes[i].copy(frustum.planes[i]);
 		return this;
 	}
 
@@ -91,9 +89,7 @@ export class Frustum {
 		const negRadius = - sphere.radius;
 		for(let i = 0; i < 6; i++) {
 			const distance = planes[i].distanceToPoint(center);
-			if(distance < negRadius) {
-				return false;
-			}
+			if(distance < negRadius) return false;
 		}
 		return true;
 	}
@@ -113,9 +109,7 @@ export class Frustum {
 			_vector.y = plane.normal.y > 0 ? box.max.y : box.min.y;
 			_vector.z = plane.normal.z > 0 ? box.max.z : box.min.z;
 
-			if(plane.distanceToPoint(_vector) < 0) {
-				return false;
-			}
+			if(plane.distanceToPoint(_vector) < 0) return false;
 		}
 		return true;
 	}
@@ -128,9 +122,7 @@ export class Frustum {
 	public containsPoint(point: Vector3): boolean {
 		const planes = this.planes;
 		for(let i = 0; i < 6; i++) {
-			if(planes[i].distanceToPoint(point) < 0) {
-				return false;
-			}
+			if(planes[i].distanceToPoint(point) < 0) return false;
 		}
 		return true;
 	}

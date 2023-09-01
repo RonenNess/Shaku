@@ -105,5 +105,3 @@ export class SoundMixer {
 		}
 	}
 }
-
-// export the sound mixer

@@ -1,3 +1,4 @@
+import { Gfx } from "..";
 import { LoggerFactory, Matrix } from "../../utils";
 import { BlendModes } from "../blend_modes";
 import { Effect } from "../effects";
@@ -9,6 +10,8 @@ const _logger = LoggerFactory.getLogger("gfx - draw - batch"); // TODO
  * Base class for a drawing batch, used to draw a collection of sprites or shapes.
  */
 export class DrawBatch {
+	public static _gfx: Gfx;
+
 	/**
 	 * Create the draw batch.
 	 */
@@ -279,5 +282,3 @@ export class DrawBatch {
 
 // will be set by the Gfx manager during init
 DrawBatch._gfx = null;
-
-// export the draw batch class

@@ -20,8 +20,8 @@ export class Rectangle {
 	 * @param height Rect height.
 	 */
 	public constructor(x: number, y: number, width: number, height: number) {
-		this.x = x || 0;
-		this.y = y || 0;
+		this.x = x ?? 0;
+		this.y = y ?? 0;
 		this.width = width;
 		this.height = height;
 	}
@@ -173,8 +173,8 @@ export class Rectangle {
 	 * @return if rectangles collide.
 	 */
 	public collideRect(other: Rectangle): boolean {
-		let r1 = this;
-		let r2 = other;
+		const r1 = this;
+		const r2 = other;
 		return !(r2.left >= r1.right ||
 			r2.right <= r1.left ||
 			r2.top >= r1.bottom ||
@@ -188,27 +188,17 @@ export class Rectangle {
 	 */
 	public collideLine(line: Line): boolean {
 		// first check if rectangle contains any of the line points
-		if(this.containsVector(line.from) || this.containsVector(line.to)) {
-			return true;
-		}
+		if(this.containsVector(line.from) || this.containsVector(line.to)) return true;
 
 		// now check intersection with the rectangle lines
-		let topLeft = this.getTopLeft();
-		let topRight = this.getTopRight();
-		let bottomLeft = this.getBottomLeft();
-		let bottomRight = this.getBottomRight();
-		if(line.collideLine(new Line(topLeft, topRight))) {
-			return true;
-		}
-		if(line.collideLine(new Line(topLeft, bottomLeft))) {
-			return true;
-		}
-		if(line.collideLine(new Line(topRight, bottomRight))) {
-			return true;
-		}
-		if(line.collideLine(new Line(bottomLeft, bottomRight))) {
-			return true;
-		}
+		const topLeft = this.getTopLeft();
+		const topRight = this.getTopRight();
+		const bottomLeft = this.getBottomLeft();
+		const bottomRight = this.getBottomRight();
+		if(line.collideLine(new Line(topLeft, topRight))) return true;
+		if(line.collideLine(new Line(topLeft, bottomLeft))) return true;
+		if(line.collideLine(new Line(topRight, bottomRight))) return true;
+		if(line.collideLine(new Line(bottomLeft, bottomRight))) return true;
 
 		// no collision
 		return false;
@@ -221,43 +211,34 @@ export class Rectangle {
 	 */
 	public collideCircle(circle: Circle): boolean {
 		// get center and radius
-		let center = circle.center;
-		let radius = circle.radius;
+		const center = circle.center;
+		const radius = circle.radius;
 
 		// first check if circle center is inside the rectangle - easy case
-		let rect = this;
-		if(rect.containsVector(center)) {
-			return true;
-		}
+		const rect = this;
+		if(rect.containsVector(center)) return true;
 
 		// get rectangle center
-		let rectCenter = rect.getCenter();
+		const rectCenter = rect.getCenter();
 
 		// get corners
-		let topLeft = rect.getTopLeft();
-		let topRight = rect.getTopRight();
-		let bottomRight = rect.getBottomRight();
-		let bottomLeft = rect.getBottomLeft();
+		const topLeft = rect.getTopLeft();
+		const topRight = rect.getTopRight();
+		const bottomRight = rect.getBottomRight();
+		const bottomLeft = rect.getBottomLeft();
 
 		// create a list of lines to check (in the rectangle) based on circle position to rect center
-		let lines = [];
-		if(rectCenter.x > center.x) {
-			lines.push([topLeft, bottomLeft]);
-		} else {
-			lines.push([topRight, bottomRight]);
-		}
-		if(rectCenter.y > center.y) {
-			lines.push([topLeft, topRight]);
-		} else {
-			lines.push([bottomLeft, bottomRight]);
-		}
+		const lines = [];
+		if(rectCenter.x > center.x) lines.push([topLeft, bottomLeft]);
+		else lines.push([topRight, bottomRight]);
+
+		if(rectCenter.y > center.y) lines.push([topLeft, topRight]);
+		else lines.push([bottomLeft, bottomRight]);
 
 		// now check intersection between circle and each of the rectangle lines
 		for(let i = 0; i < lines.length; ++i) {
-			let disToLine = pointLineDistance(center, lines[i][0], lines[i][1]);
-			if(disToLine <= radius) {
-				return true;
-			}
+			const disToLine = pointLineDistance(center, lines[i][0], lines[i][1]);
+			if(disToLine <= radius) return true;
 		}
 
 		// no collision..
@@ -269,8 +250,8 @@ export class Rectangle {
 	 * @returns Bounding circle.
 	 */
 	public getBoundingCircle(): Circle {
-		let center = this.getCenter();
-		let radius = center.distanceTo(this.getTopLeft());
+		const center = this.getCenter();
+		const radius = center.distanceTo(this.getTopLeft());
 		return new Circle(center, radius);
 	}
 
@@ -301,9 +282,7 @@ export class Rectangle {
 	 * @returns resized rectangle.
 	 */
 	public resize(amount: number | Vector2): Rectangle {
-		if(typeof amount === "number") {
-			amount = new Vector2(amount, amount);
-		}
+		if(typeof amount === "number") amount = new Vector2(amount, amount);
 		return new Rectangle(this.x - amount.x / 2, this.y - amount.y / 2, this.width + amount.x, this.height + amount.y);
 	}
 
@@ -312,9 +291,13 @@ export class Rectangle {
 	 * @param other Other rectangle to compare to.
 	 */
 	public equals(other: Rectangle): boolean {
-		return (this === other) ||
-			(other && (other.constructor === this.constructor) &&
-				(this.x == other.x) && (this.y == other.y) && (this.width == other.width) && (this.height == other.height));
+		return (this === other)
+			|| (other
+				&& (other.constructor === this.constructor)
+				&& (this.x === other.x)
+				&& (this.y === other.y)
+				&& (this.width === other.width)
+				&& (this.height === other.height));
 	}
 
 	/**
@@ -325,7 +308,7 @@ export class Rectangle {
 	 * @returns result rectangle.
 	 */
 	public static lerp(p1: Rectangle, p2: Rectangle, a: number): Rectangle {
-		let lerpScalar = MathHelper.lerp;
+		const lerpScalar = MathHelper.lerp.bind(Rectangle);
 		return new Rectangle(lerpScalar(p1.x, p2.x, a),
 			lerpScalar(p1.y, p2.y, a),
 			lerpScalar(p1.width, p2.width, a),
@@ -350,15 +333,14 @@ export class Rectangle {
 	public toDict(minimized: true): Partial<SerializedRectangle>;
 	public toDict(minimized: false): SerializedRectangle;
 	public toDict(minimized: boolean): Partial<SerializedRectangle> {
-		if(minimized) {
-			const ret: Partial<SerializedRectangle> = {};
-			if(this.x) ret.x = this.x;
-			if(this.y) ret.y = this.y;
-			if(this.width) ret.width = this.width;
-			if(this.height) ret.height = this.height;
-			return ret;
-		}
-		return { x: this.x, y: this.y, width: this.width, height: this.height };
+		if(!minimized) return { x: this.x, y: this.y, width: this.width, height: this.height };
+
+		const ret: Partial<SerializedRectangle> = {};
+		if(this.x) ret.x = this.x;
+		if(this.y) ret.y = this.y;
+		if(this.width) ret.width = this.width;
+		if(this.height) ret.height = this.height;
+		return ret;
 	}
 }
 
@@ -375,40 +357,36 @@ export interface SerializedRectangle {
  */
 function pointLineDistance(p1: Vector2, l1: Line, l2: Line) {
 
-	let x = p1.x;
-	let y = p1.y;
-	let x1 = l1.x;
-	let y1 = l1.y;
-	let x2 = l2.x;
-	let y2 = l2.y;
+	const x = p1.x;
+	const y = p1.y;
+	const x1 = l1.x;
+	const y1 = l1.y;
+	const x2 = l2.x;
+	const y2 = l2.y;
 
-	var A = x - x1;
-	var B = y - y1;
-	var C = x2 - x1;
-	var D = y2 - y1;
+	const A = x - x1;
+	const B = y - y1;
+	const C = x2 - x1;
+	const D = y2 - y1;
 
-	var dot = A * C + B * D;
-	var len_sq = C * C + D * D;
-	var param = -1;
-	if(len_sq != 0) //in case of 0 length line
-		param = dot / len_sq;
+	const dot = A * C + B * D;
+	const len_sq = C * C + D * D;
+	let param = -1;
+	if(len_sq !== 0) param = dot / len_sq; // in case of 0 length line
 
-	var xx, yy;
-
+	let xx, yy;
 	if(param < 0) {
 		xx = x1;
 		yy = y1;
-	}
-	else if(param > 1) {
+	} else if(param > 1) {
 		xx = x2;
 		yy = y2;
-	}
-	else {
+	} else {
 		xx = x1 + param * C;
 		yy = y1 + param * D;
 	}
 
-	var dx = x - xx;
-	var dy = y - yy;
+	const dx = x - xx;
+	const dy = y - yy;
 	return Math.sqrt(dx * dx + dy * dy);
 }

@@ -633,5 +633,3 @@ const topLeft = new Vector2(0, 0);
 const topRight = new Vector2(0, 0);
 const bottomLeft = new Vector2(0, 0);
 const bottomRight = new Vector2(0, 0);
-
-// export the sprite batch base class

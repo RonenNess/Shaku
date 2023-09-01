@@ -147,5 +147,4 @@ export class Sfx implements IManager {
 	}
 }
 
-// export main object
 export const sfx = new Sfx();

@@ -110,5 +110,3 @@ export class TextSpriteBatch extends SpriteBatchBase {
 		this.__currDrawingParams.texture = prevFontTexture;
 	}
 }
-
-// export the text sprite batch class

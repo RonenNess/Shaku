@@ -6,11 +6,11 @@ export enum BlendModes {
 	OPAQUE = "opaque",
 	ADDITIVE = "additive",
 	MULTIPLY = "multiply",
-	SUBSTRACT = "subtract",
+	SUBTRACT = "subtract",
 	SCREEN = "screen",
-	OBERLAY = "overlay",
+	OVERLAY = "overlay",
 	INVERT = "invert",
 	DARKEN = "darken",
 	DEST_IN = "dest-in",
 	DEST_OUT = "dest-out",
-};
+}

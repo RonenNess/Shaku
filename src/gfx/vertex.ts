@@ -84,5 +84,3 @@ export class Vertex {
 		return this;
 	}
 }
-
-// export the vertex class

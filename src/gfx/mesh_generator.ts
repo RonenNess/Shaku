@@ -26,9 +26,9 @@ export class MeshGenerator {
 		const x = 0.5; // <- 0.5 so total size would be 1x1
 		const positions = [
 			-x, -x, 0,
-			x, -x, 0,
-			-x, x, 0,
-			x, x, 0,
+			+x, -x, 0,
+			-x, +x, 0,
+			+x, +x, 0,
 		];
 		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
 
@@ -54,9 +54,7 @@ export class MeshGenerator {
 
 		const indexBuffer = gl.createBuffer();
 		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
-		const indices = [
-			0, 1, 3, 2
-		];
+		const indices = [0, 1, 3, 2];
 		gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW);
 
 		return new Mesh(positionBuffer, textureCoordBuffer, colorsBuffer, indexBuffer, indices.length);

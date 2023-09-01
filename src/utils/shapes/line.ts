@@ -58,10 +58,10 @@ export class Line {
 	 * @returns if point is contained within the circle.
 	 */
 	public containsVector(p: Vector2, threshold: number): boolean {
-		let A = this.from;
-		let B = this.to;
-		let distance = Vector2.distance;
-		if(threshold === undefined) { threshold = 0.5; }
+		const A = this.from;
+		const B = this.to;
+		const distance = Vector2.distance;
+		if(threshold === undefined) threshold = 0.5;
 		return Math.abs((distance(A, p) + distance(B, p)) - distance(A, B)) <= threshold;
 	}
 
@@ -71,24 +71,20 @@ export class Line {
 	 * @returns True if lines collide, false otherwise.
 	 */
 	public collideLine(other: Line): boolean {
-		let p0 = this.from;
-		let p1 = this.to;
-		let p2 = other.from;
-		let p3 = other.to;
+		const p0 = this.from;
+		const p1 = this.to;
+		const p2 = other.from;
+		const p3 = other.to;
 
-		if(p0.equals(p2) || p0.equals(p3) || p1.equals(p2) || p1.equals(p3)) {
-			return true;
-		}
+		if(p0.equals(p2) || p0.equals(p3) || p1.equals(p2) || p1.equals(p3)) return true;
 
-		let s1_x, s1_y, s2_x, s2_y;
-		s1_x = p1.x - p0.x;
-		s1_y = p1.y - p0.y;
-		s2_x = p3.x - p2.x;
-		s2_y = p3.y - p2.y;
+		const s1_x = p1.x - p0.x;
+		const s1_y = p1.y - p0.y;
+		const s2_x = p3.x - p2.x;
+		const s2_y = p3.y - p2.y;
 
-		let s, t;
-		s = (-s1_y * (p0.x - p2.x) + s1_x * (p0.y - p2.y)) / (-s2_x * s1_y + s1_x * s2_y);
-		t = (s2_x * (p0.y - p2.y) - s2_y * (p0.x - p2.x)) / (-s2_x * s1_y + s1_x * s2_y);
+		const s = (-s1_y * (p0.x - p2.x) + s1_x * (p0.y - p2.y)) / (-s2_x * s1_y + s1_x * s2_y);
+		const t = (s2_x * (p0.y - p2.y) - s2_y * (p0.x - p2.x)) / (-s2_x * s1_y + s1_x * s2_y);
 
 		return (s >= 0 && s <= 1 && t >= 0 && t <= 1);
 	}
@@ -99,39 +95,36 @@ export class Line {
 	 * @returns Shortest distance between line and vector.
 	 */
 	public distanceToVector(v: Vector2): number {
-		let x1 = this.from.x;
-		let x2 = this.to.x;
-		let y1 = this.from.y;
-		let y2 = this.to.y;
+		const x1 = this.from.x;
+		const x2 = this.to.x;
+		const y1 = this.from.y;
+		const y2 = this.to.y;
 
-		var A = v.x - x1;
-		var B = v.y - y1;
-		var C = x2 - x1;
-		var D = y2 - y1;
+		const A = v.x - x1;
+		const B = v.y - y1;
+		const C = x2 - x1;
+		const D = y2 - y1;
 
-		var dot = A * C + B * D;
-		var len_sq = C * C + D * D;
-		var param = -1;
-		if(len_sq != 0) //in case of 0 length line
-			param = dot / len_sq;
+		const dot = A * C + B * D;
+		const len_sq = C * C + D * D;
+		let param = -1;
+		if(len_sq !== 0) param = dot / len_sq; //in case of 0 length line
 
-		var xx, yy;
+		let xx, yy;
 
 		if(param < 0) {
 			xx = x1;
 			yy = y1;
-		}
-		else if(param > 1) {
+		} else if(param > 1) {
 			xx = x2;
 			yy = y2;
-		}
-		else {
+		} else {
 			xx = x1 + param * C;
 			yy = y1 + param * D;
 		}
 
-		var dx = v.x - xx;
-		var dy = v.y - yy;
+		const dx = v.x - xx;
+		const dy = v.y - yy;
 		return Math.sqrt(dx * dx + dy * dy);
 	}
 

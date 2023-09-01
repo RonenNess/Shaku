@@ -129,7 +129,7 @@
 				module.exports = Asset;
 
 				/***/
-}),
+			}),
 
 /***/ 7148:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
@@ -644,7 +644,7 @@
 				module.exports = new Assets();
 
 				/***/
-}),
+			}),
 
 /***/ 3603:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
@@ -758,7 +758,7 @@
 				module.exports = BinaryAsset;
 
 				/***/
-}),
+			}),
 
 /***/ 167:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
@@ -1103,7 +1103,7 @@
 				module.exports = FontTextureAsset;
 
 				/***/
-}),
+			}),
 
 /***/ 7817:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
@@ -1124,7 +1124,7 @@
 				module.exports = __webpack_require__(7148);
 
 				/***/
-}),
+			}),
 
 /***/ 7058:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
@@ -1253,7 +1253,7 @@
 				module.exports = JsonAsset;
 
 				/***/
-}),
+			}),
 
 /***/ 1252:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
@@ -1406,7 +1406,7 @@
 				module.exports = MsdfFontTextureAsset;
 
 				/***/
-}),
+			}),
 
 /***/ 499:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
@@ -1488,7 +1488,7 @@
 				module.exports = SoundAsset;
 
 				/***/
-}),
+			}),
 
 /***/ 2262:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
@@ -1848,7 +1848,7 @@
 				module.exports = TextureAsset;
 
 				/***/
-}),
+			}),
 
 /***/ 4397:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
@@ -1962,7 +1962,7 @@
 				module.exports = TextureAssetBase;
 
 				/***/
-}),
+			}),
 
 /***/ 2493:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
@@ -2245,7 +2245,7 @@
 				module.exports = TextureAtlasAsset;
 
 				/***/
-}),
+			}),
 
 /***/ 8609:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
@@ -2355,7 +2355,7 @@
 				module.exports = TextureInAtlasAsset;
 
 				/***/
-}),
+			}),
 
 /***/ 4843:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
@@ -2508,7 +2508,7 @@
 				module.exports = new Collision();
 
 				/***/
-}),
+			}),
 
 /***/ 2433:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
@@ -3120,7 +3120,7 @@
 				module.exports = CollisionWorld;
 
 				/***/
-}),
+			}),
 
 /***/ 6740:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
@@ -3141,7 +3141,7 @@
 				module.exports = __webpack_require__(4843);
 
 				/***/
-}),
+			}),
 
 /***/ 5528:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
@@ -3268,7 +3268,7 @@
 				module.exports = CollisionResolver;
 
 				/***/
-}),
+			}),
 
 /***/ 1596:
 /***/ ((module) => {
@@ -3443,7 +3443,7 @@
 				module.exports = CollisionsImp;
 
 				/***/
-}),
+			}),
 
 /***/ 6323:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
@@ -3504,7 +3504,7 @@
 				module.exports = CollisionTestResult;
 
 				/***/
-}),
+			}),
 
 /***/ 9481:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
@@ -3599,7 +3599,7 @@
 				module.exports = CircleShape;
 
 				/***/
-}),
+			}),
 
 /***/ 6527:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
@@ -3726,7 +3726,7 @@
 				module.exports = LinesShape;
 
 				/***/
-}),
+			}),
 
 /***/ 1282:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
@@ -3830,7 +3830,7 @@
 				module.exports = PointShape;
 
 				/***/
-}),
+			}),
 
 /***/ 4153:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
@@ -3924,7 +3924,7 @@
 				module.exports = RectangleShape;
 
 				/***/
-}),
+			}),
 
 /***/ 9135:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
@@ -4118,7 +4118,7 @@
 				module.exports = CollisionShape;
 
 				/***/
-}),
+			}),
 
 /***/ 6601:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
@@ -4298,7 +4298,7 @@
 				module.exports = TilemapShape;
 
 				/***/
-}),
+			}),
 
 /***/ 3223:
 /***/ ((module) => {
@@ -4347,7 +4347,7 @@
 				module.exports = { BlendModes: BlendModes };
 
 				/***/
-}),
+			}),
 
 /***/ 2726:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
@@ -4444,7 +4444,7 @@
 				module.exports = Camera;
 
 				/***/
-}),
+			}),
 
 /***/ 8871:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
@@ -4609,7 +4609,7 @@
 				module.exports = Camera3D;
 
 				/***/
-}),
+			}),
 
 /***/ 8117:
 /***/ ((module) => {
@@ -4651,7 +4651,7 @@
 				module.exports = { BuffersUsage: BuffersUsage };
 
 				/***/
-}),
+			}),
 
 /***/ 2069:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
@@ -4953,7 +4953,7 @@
 				module.exports = DrawBatch;
 
 				/***/
-}),
+			}),
 
 /***/ 8333:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
@@ -5538,7 +5538,7 @@
 				module.exports = LinesBatch;
 
 				/***/
-}),
+			}),
 
 /***/ 1772:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
@@ -6117,7 +6117,7 @@
 				module.exports = ShapesBatch;
 
 				/***/
-}),
+			}),
 
 /***/ 962:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
@@ -6334,7 +6334,7 @@
 				module.exports = SpriteBatch;
 
 				/***/
-}),
+			}),
 
 /***/ 7561:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
@@ -6453,7 +6453,7 @@
 				module.exports = SpriteBatch3D;
 
 				/***/
-}),
+			}),
 
 /***/ 6195:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
@@ -7115,7 +7115,7 @@
 				module.exports = SpriteBatchBase;
 
 				/***/
-}),
+			}),
 
 /***/ 985:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
@@ -7254,7 +7254,7 @@
 				module.exports = TextSpriteBatch;
 
 				/***/
-}),
+			}),
 
 /***/ 8986:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
@@ -8025,7 +8025,7 @@
 				module.exports = Effect;
 
 				/***/
-}),
+			}),
 
 /***/ 3020:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
@@ -8054,7 +8054,7 @@
 				};
 
 				/***/
-}),
+			}),
 
 /***/ 9069:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
@@ -8156,7 +8156,7 @@ void main(void) {
 				module.exports = MsdfFontEffect;
 
 				/***/
-}),
+			}),
 
 /***/ 1205:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
@@ -8244,7 +8244,7 @@ void main(void) {
 				module.exports = ShapesEffect;
 
 				/***/
-}),
+			}),
 
 /***/ 1414:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
@@ -8340,7 +8340,7 @@ void main(void) {
 				module.exports = SpritesEffect;
 
 				/***/
-}),
+			}),
 
 /***/ 7090:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
@@ -8430,7 +8430,7 @@ void main(void) {
 				module.exports = Sprites3dEffect;
 
 				/***/
-}),
+			}),
 
 /***/ 4481:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
@@ -8520,7 +8520,7 @@ void main(void) {
 				module.exports = SpritesEffectNoVertexColor;
 
 				/***/
-}),
+			}),
 
 /***/ 1484:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
@@ -8643,7 +8643,7 @@ void main(void) {
 				module.exports = SpritesWithOutlineEffect;
 
 				/***/
-}),
+			}),
 
 /***/ 4672:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
@@ -9808,7 +9808,7 @@ void main(void) {
 				module.exports = new Gfx();
 
 				/***/
-}),
+			}),
 
 /***/ 7565:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
@@ -9829,7 +9829,7 @@ void main(void) {
 				module.exports = __webpack_require__(4672);
 
 				/***/
-}),
+			}),
 
 /***/ 6565:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
@@ -10060,7 +10060,7 @@ void main(void) {
 				module.exports = Sprite;
 
 				/***/
-}),
+			}),
 
 /***/ 1036:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
@@ -10200,7 +10200,7 @@ void main(void) {
 				module.exports = SpritesGroup;
 
 				/***/
-}),
+			}),
 
 /***/ 8684:
 /***/ ((module) => {
@@ -10248,7 +10248,7 @@ void main(void) {
 				module.exports = { TextAlignments: TextAlignments };
 
 				/***/
-}),
+			}),
 
 /***/ 5387:
 /***/ ((module) => {
@@ -10293,7 +10293,7 @@ void main(void) {
 
 
 				/***/
-}),
+			}),
 
 /***/ 2464:
 /***/ ((module) => {
@@ -10334,7 +10334,7 @@ void main(void) {
 				module.exports = { TextureWrapModes: TextureWrapModes };
 
 				/***/
-}),
+			}),
 
 /***/ 4288:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
@@ -10446,7 +10446,7 @@ void main(void) {
 				module.exports = Vertex;
 
 				/***/
-}),
+			}),
 
 /***/ 8138:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
@@ -10468,7 +10468,7 @@ void main(void) {
 				module.exports = __webpack_require__.g.Shaku;
 
 				/***/
-}),
+			}),
 
 /***/ 791:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
@@ -10706,7 +10706,7 @@ void main(void) {
 				module.exports = Gamepad;
 
 				/***/
-}),
+			}),
 
 /***/ 8734:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
@@ -10727,7 +10727,7 @@ void main(void) {
 				module.exports = __webpack_require__(9896);
 
 				/***/
-}),
+			}),
 
 /***/ 9896:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
@@ -11984,7 +11984,7 @@ void main(void) {
 				module.exports = new Input();
 
 				/***/
-}),
+			}),
 
 /***/ 4871:
 /***/ ((module) => {
@@ -12131,7 +12131,7 @@ void main(void) {
 				module.exports = { KeyboardKeys: KeyboardKeys, MouseButtons: MouseButtons };
 
 				/***/
-}),
+			}),
 
 /***/ 5259:
 /***/ ((module) => {
@@ -12295,7 +12295,7 @@ void main(void) {
 				module.exports = LoggerModule;
 
 				/***/
-}),
+			}),
 
 /***/ 9563:
 /***/ ((module) => {
@@ -12354,7 +12354,7 @@ void main(void) {
 				module.exports = IManager;
 
 				/***/
-}),
+			}),
 
 /***/ 6871:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
@@ -12375,7 +12375,7 @@ void main(void) {
 				module.exports = __webpack_require__(4939);
 
 				/***/
-}),
+			}),
 
 /***/ 4939:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
@@ -12547,7 +12547,7 @@ void main(void) {
 				module.exports = new Sfx();
 
 				/***/
-}),
+			}),
 
 /***/ 7244:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
@@ -12805,7 +12805,7 @@ void main(void) {
 				module.exports = SoundInstance;
 
 				/***/
-}),
+			}),
 
 /***/ 8383:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
@@ -12936,7 +12936,7 @@ void main(void) {
 				module.exports = SoundMixer;
 
 				/***/
-}),
+			}),
 
 /***/ 6954:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
@@ -13333,7 +13333,7 @@ void main(void) {
 				module.exports = new Shaku();
 
 				/***/
-}),
+			}),
 
 /***/ 4882:
 /***/ ((module) => {
@@ -13680,7 +13680,7 @@ void main(void) {
 				module.exports = Animator;
 
 				/***/
-}),
+			}),
 
 /***/ 5891:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
@@ -14035,7 +14035,7 @@ void main(void) {
 				module.exports = Box;
 
 				/***/
-}),
+			}),
 
 /***/ 9668:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
@@ -14141,7 +14141,7 @@ void main(void) {
 				module.exports = Circle;
 
 				/***/
-}),
+			}),
 
 /***/ 9327:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
@@ -14573,7 +14573,7 @@ void main(void) {
 				module.exports = Color;
 
 				/***/
-}),
+			}),
 
 /***/ 4353:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
@@ -14742,7 +14742,7 @@ void main(void) {
 				module.exports = Frustum;
 
 				/***/
-}),
+			}),
 
 /***/ 4742:
 /***/ ((module) => {
@@ -14894,7 +14894,7 @@ void main(void) {
 				module.exports = GameTime;
 
 				/***/
-}),
+			}),
 
 /***/ 3624:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
@@ -14955,7 +14955,7 @@ void main(void) {
 				module.exports = Utils;
 
 				/***/
-}),
+			}),
 
 /***/ 321:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
@@ -15128,7 +15128,7 @@ void main(void) {
 				module.exports = ItemsSorter;
 
 				/***/
-}),
+			}),
 
 /***/ 1708:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
@@ -15306,7 +15306,7 @@ void main(void) {
 				module.exports = Line;
 
 				/***/
-}),
+			}),
 
 /***/ 9646:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
@@ -15535,7 +15535,7 @@ void main(void) {
 				module.exports = MathHelper;
 
 				/***/
-}),
+			}),
 
 /***/ 5529:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
@@ -16066,7 +16066,7 @@ void main(void) {
 				module.exports = Matrix;
 
 				/***/
-}),
+			}),
 
 /***/ 2791:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
@@ -16303,7 +16303,7 @@ void main(void) {
 				module.exports = PathFinder;
 
 				/***/
-}),
+			}),
 
 /***/ 4476:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
@@ -16479,7 +16479,7 @@ void main(void) {
 				module.exports = Perlin;
 
 				/***/
-}),
+			}),
 
 /***/ 5597:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
@@ -16676,7 +16676,7 @@ void main(void) {
 				module.exports = Plane;
 
 				/***/
-}),
+			}),
 
 /***/ 4493:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
@@ -16883,7 +16883,7 @@ void main(void) {
 				module.exports = Ray;
 
 				/***/
-}),
+			}),
 
 /***/ 4731:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
@@ -17310,7 +17310,7 @@ void main(void) {
 				module.exports = Rectangle;
 
 				/***/
-}),
+			}),
 
 /***/ 7212:
 /***/ ((module) => {
@@ -17379,7 +17379,7 @@ void main(void) {
 				module.exports = SeededRandom;
 
 				/***/
-}),
+			}),
 
 /***/ 7517:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
@@ -17503,7 +17503,7 @@ void main(void) {
 				module.exports = Sphere;
 
 				/***/
-}),
+			}),
 
 /***/ 7274:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
@@ -17735,7 +17735,7 @@ void main(void) {
 				module.exports = Storage;
 
 				/***/
-}),
+			}),
 
 /***/ 6553:
 /***/ ((module) => {
@@ -18025,7 +18025,7 @@ void main(void) {
 				module.exports = StorageAdapter;
 
 				/***/
-}),
+			}),
 
 /***/ 6347:
 /***/ ((module) => {
@@ -18073,7 +18073,7 @@ void main(void) {
 				module.exports = TransformModes;
 
 				/***/
-}),
+			}),
 
 /***/ 1910:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
@@ -18657,7 +18657,7 @@ void main(void) {
 				module.exports = Transformation;
 
 				/***/
-}),
+			}),
 
 /***/ 2544:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
@@ -18881,7 +18881,7 @@ void main(void) {
 
 					/**
 					 * Sub other vector values from self.
-					 * @param {Number|Vector2} Other Vector or number to substract.
+					 * @param {Number|Vector2} Other Vector or number to subtract.
 					 * @returns {Vector2} this.
 					 */
 					subSelf(other) {
@@ -19406,7 +19406,7 @@ void main(void) {
 				module.exports = Vector2;
 
 				/***/
-}),
+			}),
 
 /***/ 8329:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
@@ -19595,7 +19595,7 @@ void main(void) {
 
 					/**
 					 * Sub other vector values from self.
-					 * @param {Number|Vector3} Other Vector or number to substract.
+					 * @param {Number|Vector3} Other Vector or number to subtract.
 					 * @returns {Vector3} this.
 					 */
 					subSelf(other) {
@@ -20074,10 +20074,10 @@ void main(void) {
 				module.exports = Vector3;
 
 				/***/
-})
+			})
 
 		/******/
-});
+	});
 /************************************************************************/
 /******/ 	// The module cache
 /******/ 	var __webpack_module_cache__ = {};
@@ -20089,14 +20089,14 @@ void main(void) {
 /******/ 		if (cachedModule !== undefined) {
 /******/ 			return cachedModule.exports;
 			/******/
-}
+		}
 /******/ 		// Create a new module (and put it into the cache)
 /******/ 		var module = __webpack_module_cache__[moduleId] = {
 /******/ 			// no module.id needed
 /******/ 			// no module.loaded needed
 /******/ 			exports: {}
 			/******/
-};
+		};
 /******/
 /******/ 		// Execute the module function
 /******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
@@ -20104,7 +20104,7 @@ void main(void) {
 /******/ 		// Return the exports of the module
 /******/ 		return module.exports;
 		/******/
-}
+	}
 /******/
 /************************************************************************/
 /******/ 	/* webpack/runtime/global */
@@ -20114,14 +20114,14 @@ void main(void) {
 /******/ 			try {
 /******/ 				return this || new Function('return this')();
 				/******/
-} catch (e) {
+			} catch (e) {
 /******/ 				if (typeof window === 'object') return window;
 				/******/
-}
+			}
 			/******/
-})();
+		})();
 		/******/
-})();
+	})();
 /******/
 /************************************************************************/
 /******/

@@ -4,18 +4,27 @@ import { Color } from "../utils";
  * Class to hold a mesh.
  */
 export class Mesh {
+
+	public positions: WebGLBuffer;
+	public textureCoords: WebGLBuffer;
+	public colors: WebGLBuffer;
+	public indices: WebGLBuffer;
+	public indicesCount: number;
+
+	private __color: Color;
+
 	/**
 	 * Create the mesh object.
-	 * @param {WebGLBuffer} positions vertices positions buffer.
-	 * @param {WebGLBuffer} textureCoords vertices texture coords buffer.
-	 * @param {WebGLBuffer} colorss vertices colors buffer.
-	 * @param {WebGLBuffer} indices indices buffer.
-	 * @param {Number} indicesCount how many indices we have.
+	 * @param vertices positions buffer.
+	 * @param vertices texture coords buffer.
+	 * @param vertices colors buffer.
+	 * @param indices buffer.
+	 * @param how many indices we have.
 	 */
-	public constructor(positions, textureCoords, colorsBuffer, indices, indicesCount) {
+	public constructor(positions: WebGLBuffer, textureCoords: WebGLBuffer, colors: WebGLBuffer, indices: WebGLBuffer, indicesCount: number) {
 		this.positions = positions;
 		this.textureCoords = textureCoords;
-		this.colors = colorsBuffer;
+		this.colors = colors;
 		this.indices = indices;
 		this.indicesCount = indicesCount;
 		this.__color = new Color(-1, -1, -1, -1);
@@ -24,11 +33,11 @@ export class Mesh {
 
 	/**
 	 * Override the colors buffer, if possible.
-	 * @param {WebGl} gl WebGL context.
-	 * @param {Color} color Color to set.
+	 * @param gl WebGL context.
+	 * @param color Color to set.
 	 */
-	overrideColors(gl, color) {
-		if(color.equals(this.__color)) { return; }
+	public overrideColors(gl: WebGLRenderingContext, color: Color): void {
+		if(color.equals(this.__color)) return;
 		this.__color.copy(color);
 
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.colors);
@@ -42,5 +51,3 @@ export class Mesh {
 		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.DYNAMIC_DRAW);
 	}
 }
-
-// export the mesh class.

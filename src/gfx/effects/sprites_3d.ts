@@ -30,5 +30,3 @@ export class Sprites3dEffect extends SpritesEffect {
 		return fragmentShader;
 	}
 }
-
-// export the basic shader

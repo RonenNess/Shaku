@@ -114,14 +114,12 @@ export class Vector3 {
 	 * @returns result vector.
 	 */
 	public add(other: number | Vector3): Vector3 {
-		if(typeof other === "number") {
-			return new Vector3(
-				this.x + other,
-				this.y + (arguments[1] === undefined ? other : arguments[1]),
-				this.z + (arguments[2] === undefined ? other : arguments[2])
-			);
-		}
-		return new Vector3(this.x + other.x, this.y + other.y, this.z + other.z);
+		if(typeof other !== "number") return new Vector3(this.x + other.x, this.y + other.y, this.z + other.z);
+		return new Vector3(
+			this.x + other,
+			this.y + (arguments[1] ?? other),
+			this.z + (arguments[2] ?? other),
+		);
 	}
 
 	/**
@@ -130,14 +128,12 @@ export class Vector3 {
 	 * @returns result vector.
 	 */
 	public sub(other: number | Vector3): Vector3 {
-		if(typeof other === "number") {
-			return new Vector3(
-				this.x - other,
-				this.y - (arguments[1] === undefined ? other : arguments[1]),
-				this.z - (arguments[2] === undefined ? other : arguments[2])
-			);
-		}
-		return new Vector3(this.x - other.x, this.y - other.y, this.z - other.z);
+		if(typeof other !== "number") return new Vector3(this.x - other.x, this.y - other.y, this.z - other.z);
+		return new Vector3(
+			this.x - other,
+			this.y - (arguments[1] ?? other),
+			this.z - (arguments[2] ?? other),
+		);
 	}
 
 	/**
@@ -146,14 +142,12 @@ export class Vector3 {
 	 * @returns result vector.
 	 */
 	public div(other: number | Vector3): Vector3 {
-		if(typeof other === "number") {
-			return new Vector3(
-				this.x / other,
-				this.y / (arguments[1] === undefined ? other : arguments[1]),
-				this.z / (arguments[2] === undefined ? other : arguments[2])
-			);
-		}
-		return new Vector3(this.x / other.x, this.y / other.y, this.z / other.z);
+		if(typeof other !== "number") return new Vector3(this.x / other.x, this.y / other.y, this.z / other.z);
+		return new Vector3(
+			this.x / other,
+			this.y / (arguments[1] ?? other),
+			this.z / (arguments[2] ?? other),
+		);
 	}
 
 	/**
@@ -162,14 +156,12 @@ export class Vector3 {
 	 * @returns result vector.
 	 */
 	public mul(other: number | Vector3): Vector3 {
-		if(typeof other === "number") {
-			return new Vector3(
-				this.x * other,
-				this.y * (arguments[1] === undefined ? other : arguments[1]),
-				this.z * (arguments[2] === undefined ? other : arguments[2])
-			);
-		}
-		return new Vector3(this.x * other.x, this.y * other.y, this.z * other.z);
+		if(typeof other !== "number") return new Vector3(this.x * other.x, this.y * other.y, this.z * other.z);
+		return new Vector3(
+			this.x * other,
+			this.y * (arguments[1] ?? other),
+			this.z * (arguments[2] ?? other),
+		);
 	}
 
 	/**
@@ -201,8 +193,8 @@ export class Vector3 {
 	 * @returns result vector.
 	 */
 	public normalized(): Vector3 {
-		if((this.x == 0) && (this.y == 0) && (this.z == 0)) { return Vector3.zero; }
-		let mag = this.length();
+		if((this.x === 0) && (this.y === 0) && (this.z === 0)) return Vector3.zero();
+		const mag = this.length();
 		return new Vector3(this.x / mag, this.y / mag, this.z / mag);
 	}
 
@@ -214,10 +206,9 @@ export class Vector3 {
 	public addSelf(other: number | Vector3): Vector3 {
 		if(typeof other === "number") {
 			this.x += other;
-			this.y += (arguments[1] === undefined ? other : arguments[1]);
-			this.z += (arguments[2] === undefined ? other : arguments[2]);
-		}
-		else {
+			this.y += (arguments[1] ?? other);
+			this.z += (arguments[2] ?? other);
+		} else {
 			this.x += other.x;
 			this.y += other.y;
 			this.z += other.z;
@@ -227,16 +218,15 @@ export class Vector3 {
 
 	/**
 	 * Sub other vector values from self.
-	 * @param other Vector or number to substract.
+	 * @param other Vector or number to subtract.
 	 * @returns this.
 	 */
 	public subSelf(other: number | Vector3): Vector3 {
 		if(typeof other === "number") {
 			this.x -= other;
-			this.y -= (arguments[1] === undefined ? other : arguments[1]);
-			this.z -= (arguments[2] === undefined ? other : arguments[2]);
-		}
-		else {
+			this.y -= (arguments[1] ?? other);
+			this.z -= (arguments[2] ?? other);
+		} else {
 			this.x -= other.x;
 			this.y -= other.y;
 			this.z -= other.z;
@@ -252,10 +242,9 @@ export class Vector3 {
 	public divSelf(other: number | Vector3): Vector3 {
 		if(typeof other === "number") {
 			this.x /= other;
-			this.y /= (arguments[1] === undefined ? other : arguments[1]);
-			this.z /= (arguments[2] === undefined ? other : arguments[2]);
-		}
-		else {
+			this.y /= (arguments[1] ?? other);
+			this.z /= (arguments[2] ?? other);
+		} else {
 			this.x /= other.x;
 			this.y /= other.y;
 			this.z /= other.z;
@@ -271,10 +260,9 @@ export class Vector3 {
 	public mulSelf(other: number | Vector3): Vector3 {
 		if(typeof other === "number") {
 			this.x *= other;
-			this.y *= (arguments[1] === undefined ? other : arguments[1]);
-			this.z *= (arguments[2] === undefined ? other : arguments[2]);
-		}
-		else {
+			this.y *= (arguments[1] ?? other);
+			this.z *= (arguments[2] ?? other);
+		} else {
 			this.x *= other.x;
 			this.y *= other.y;
 			this.z *= other.z;
@@ -320,8 +308,8 @@ export class Vector3 {
 	 * @returns this.
 	 */
 	public normalizeSelf(): Vector3 {
-		if(this.x == 0 && this.y == 0 && this.z == 0) { return this; }
-		let mag = this.length();
+		if(this.x === 0 && this.y === 0 && this.z === 0) return this;
+		const mag = this.length();
 		this.x /= mag;
 		this.y /= mag;
 		this.z /= mag;
@@ -334,9 +322,11 @@ export class Vector3 {
 	 * @returns if vectors are equal.
 	 */
 	public equals(other: Vector3): boolean {
-		return ((this === other) ||
-			((other.constructor === this.constructor) &&
-				this.x === other.x && this.y === other.y && this.z === other.z)
+		return ((this === other)
+			|| ((other.constructor === this.constructor)
+				&& this.x === other.x
+				&& this.y === other.y
+				&& this.z === other.z)
 		);
 	}
 
@@ -346,11 +336,9 @@ export class Vector3 {
 	 * @param threshold Distance threshold to consider as equal. Defaults to 1.
 	 * @returns if vectors are equal.
 	 */
-	public approximate(other: Vector3, threshold: number): boolean {
-		threshold = threshold || 1;
-		return (
-			(this === other) ||
-			((Math.abs(this.x - other.x) <= threshold) &&
+	public approximate(other: Vector3, threshold = 1): boolean {
+		return ((this === other)
+			|| ((Math.abs(this.x - other.x) <= threshold) &&
 				(Math.abs(this.y - other.y) <= threshold) &&
 				(Math.abs(this.z - other.z) <= threshold))
 		);
@@ -503,7 +491,7 @@ export class Vector3 {
 	 * @returns result vector.
 	 */
 	public static lerp(p1: Vector3, p2: Vector3, a: number): Vector3 {
-		let lerpScalar = MathHelper.lerp;
+		const lerpScalar = MathHelper.lerp.bind(Vector3);
 		return new Vector3(lerpScalar(p1.x, p2.x, a), lerpScalar(p1.y, p2.y, a), lerpScalar(p1.z, p2.z, a));
 	}
 
@@ -514,9 +502,9 @@ export class Vector3 {
 	 * @returns Distance between vectors.
 	 */
 	public static distance(p1: Vector3, p2: Vector3): number {
-		let a = p1.x - p2.x;
-		let b = p1.y - p2.y;
-		let c = p1.z - p2.z;
+		const a = p1.x - p2.x;
+		const b = p1.y - p2.y;
+		const c = p1.z - p2.z;
 		return Math.sqrt(a * a + b * b + c * c);
 	}
 
@@ -530,9 +518,9 @@ export class Vector3 {
 		const ax = p1.x, ay = p1.y, az = p1.z;
 		const bx = p2.x, by = p2.y, bz = p2.z;
 
-		let x = ay * bz - az * by;
-		let y = az * bx - ax * bz;
-		let z = ax * by - ay * bx;
+		const x = ay * bz - az * by;
+		const y = az * bx - ax * bz;
+		const z = ax * by - ay * bx;
 
 		return new Vector3(x, y, z);
 	}
@@ -591,9 +579,12 @@ export class Vector3 {
 	 * @param str String to parse.
 	 * @returns Parsed vector.
 	 */
-	public static parse(str: string): Vector3 {
-		let parts = str.split(",");
-		return new Vector3(parseFloat(parts[0].trim()), parseFloat(parts[1].trim()), parseFloat(parts[2].trim()));
+	public static parse(str: `${number},${number},${number}`): Vector3 {
+		const [x, y, z] = str
+			.split(",")
+			.map(p => p.trim())
+			.map(parseFloat);
+		return new Vector3(x, y, z);
 	}
 
 	/**

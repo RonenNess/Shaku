@@ -1303,5 +1303,4 @@ export class Input implements IManager {
 	}
 }
 
-// export main object
 export const input = new Input();

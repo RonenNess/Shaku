@@ -111,5 +111,3 @@ export class SpritesGroup {
 		return this._sprites.length;
 	}
 }
-
-// export the sprites group class.

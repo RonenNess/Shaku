@@ -42,5 +42,3 @@ export class SpritesEffectNoVertexColor extends Effect {
 		};
 	}
 }
-
-// export the basic shader

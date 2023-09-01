@@ -1,16 +1,21 @@
 {
 	"cSpell.words": [
+		"binormal",
+		"binormals",
 		"firefox",
 		"gamedev",
 		"gamepad",
 		"gamepads",
 		"inheritdoc",
+		"lerp",
+		"Lerp",
 		"perlin",
 		"Perlin",
 		"Ronen Ness",
 		"shaku",
 		"Shaku",
 		"spritebatch",
+		"spritesheet",
 		"webgl"
 	]
 }

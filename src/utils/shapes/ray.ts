@@ -21,8 +21,8 @@ export class Ray {
 
 	/**
 	 * Set the ray components.
-	 * @paramorigin Ray origin point.
-	 * @paramdirection Ray 3d direction.
+	 * @param origin Ray origin point.
+	 * @param direction Ray 3d direction.
 	 * @returns Self.
 	 */
 	public set(origin: Vector3, direction: Vector3): Ray {
@@ -77,9 +77,7 @@ export class Ray {
 		const directionDistance = point.sub(this.origin).dot(this.direction);
 
 		// point behind the ray
-		if(directionDistance < 0) {
-			return this.origin.distanceToSquared(point);
-		}
+		if(directionDistance < 0) return this.origin.distanceToSquared(point);
 
 		const v = this.origin.add(this.direction.mul(directionDistance));
 		return v.distanceToSquared(point);
@@ -100,7 +98,7 @@ export class Ray {
 	 * @returns True if collide with box, false otherwise.
 	 */
 	public collideBox(box: Box): boolean {
-		return Boolean(this.findColliionPointWithBox(box));
+		return Boolean(this.findCollisionPointWithBox(box));
 	}
 
 	/**
@@ -108,38 +106,30 @@ export class Ray {
 	 * @param box Box to get collision with.
 	 * @returns Collision point or null.
 	 */
-	public findColliionPointWithBox(box: Box): Vector3 | null {
+	public findCollisionPointWithBox(box: Box): Vector3 | null {
 
 		let tmin, tmax, tymin, tymax, tzmin, tzmax;
 
-		const invdirx = 1 / this.direction.x,
-			invdiry = 1 / this.direction.y,
-			invdirz = 1 / this.direction.z;
+		const invdirx = 1 / this.direction.x;
+		const invdiry = 1 / this.direction.y;
+		const invdirz = 1 / this.direction.z;
 
 		const origin = this.origin;
 
 		if(invdirx >= 0) {
-
 			tmin = (box.min.x - origin.x) * invdirx;
 			tmax = (box.max.x - origin.x) * invdirx;
-
 		} else {
-
 			tmin = (box.max.x - origin.x) * invdirx;
 			tmax = (box.min.x - origin.x) * invdirx;
-
 		}
 
 		if(invdiry >= 0) {
-
 			tymin = (box.min.y - origin.y) * invdiry;
 			tymax = (box.max.y - origin.y) * invdiry;
-
 		} else {
-
 			tymin = (box.max.y - origin.y) * invdiry;
 			tymax = (box.min.y - origin.y) * invdiry;
-
 		}
 
 		if((tmin > tymax) || (tymin > tmax)) return null;
@@ -149,15 +139,11 @@ export class Ray {
 		if(tymax < tmax || isNaN(tmax)) tmax = tymax;
 
 		if(invdirz >= 0) {
-
 			tzmin = (box.min.z - origin.z) * invdirz;
 			tzmax = (box.max.z - origin.z) * invdirz;
-
 		} else {
-
 			tzmin = (box.max.z - origin.z) * invdirz;
 			tzmax = (box.min.z - origin.z) * invdirz;
-
 		}
 
 		if((tmin > tzmax) || (tzmin > tmax)) return null;
@@ -168,9 +154,7 @@ export class Ray {
 
 		//return point closest to the ray (positive side)
 
-		if(tmax < 0) {
-			return null;
-		}
+		if(tmax < 0) return null;
 
 		// return position
 		return this.at(tmin >= 0 ? tmin : tmax);

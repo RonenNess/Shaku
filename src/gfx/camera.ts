@@ -77,5 +77,3 @@ export class Camera {
 		this.projection = Matrix.createOrthographic(region.left, region.right, region.bottom, region.top, near, far);
 	}
 }
-
-// export the camera object

@@ -486,5 +486,4 @@ function generateRandomAssetName(): string {
 	return "_runtime_asset_" + (_nextRandomAssetId++) + "_";
 }
 
-// export assets manager
 export const assets = new Assets();

@@ -43,9 +43,11 @@ export class Sphere {
 	 * @returns True if spheres are equal, false otherwise.
 	 */
 	public equals(other: Sphere): boolean {
-		return (other === this) ||
-			(other && (other.constructor === this.constructor) &&
-				this.center.equals(other.center) && (this.radius == other.radius));
+		return (other === this)
+			|| (other
+				&& (other.constructor === this.constructor)
+				&& this.center.equals(other.center)
+				&& (this.radius == other.radius));
 	}
 
 	/**
@@ -100,7 +102,7 @@ export class Sphere {
 	 * @returns result sphere.
 	 */
 	public static lerp(p1: Sphere, p2: Sphere, a: number): Sphere {
-		let lerpScalar = MathHelper.lerp;
+		const lerpScalar = MathHelper.lerp.bind(Sphere);
 		return new Sphere(Vector3.lerp(p1.center, p2.center, a), lerpScalar(p1.radius, p2.radius, a));
 	}
 }

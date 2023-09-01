@@ -41,5 +41,3 @@ export class ShapesEffect extends Effect {
 		};
 	}
 }
-
-// export the basic shader

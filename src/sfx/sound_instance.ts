@@ -232,5 +232,3 @@ export class SoundInstance {
 
 // master volume
 SoundInstance._masterVolume = 1;
-
-// export main object

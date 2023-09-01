@@ -42,5 +42,3 @@ export class MsdfFontEffect extends Effect {
 		};
 	}
 }
-
-// export the basic shader

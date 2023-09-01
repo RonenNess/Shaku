@@ -99,5 +99,3 @@ export class DynamicArray {
 		this.buffer[this.index++] = value;
 	}
 }
-
-// export the dynamic float32 array.
