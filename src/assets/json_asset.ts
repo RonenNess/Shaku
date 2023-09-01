@@ -22,7 +22,7 @@ export class JsonAsset extends Asset {
 	public load(): Promise<void> {
 		return new Promise((resolve, reject) => {
 
-			let request = new XMLHttpRequest();
+			const request = new XMLHttpRequest();
 			request.open("GET", this.url, true);
 			request.responseType = "json";
 

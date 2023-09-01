@@ -68,9 +68,9 @@ export class TilemapShape extends CollisionShape {
 	 * @param collisionFlags Optional collision flag to set for this tile.
 	 */
 	public setTile(index: Vector2, haveCollision: boolean, collisionFlags?: number): void {
-		let key = this._indexToKey(index);
+		const key = this._indexToKey(index);
 		if(haveCollision) {
-			let rect = this._tiles[key] || new RectangleShape(
+			const rect = this._tiles[key] || new RectangleShape(
 				new Rectangle(
 					this._offset.x + index.x * this._tileSize.x,
 					this._offset.y + index.y * this._tileSize.y,
@@ -93,8 +93,8 @@ export class TilemapShape extends CollisionShape {
 	 * @returns Collision shape at this position, or null if not set.
 	 */
 	public getTileAt(position: Vector2): RectangleShape | null {
-		let index = new Vector2(Math.floor(position.x / this._tileSize.x), Math.floor(position.y / this._tileSize.y));
-		let key = index.x + "," + index.y;
+		const index = new Vector2(Math.floor(position.x / this._tileSize.x), Math.floor(position.y / this._tileSize.y));
+		const key = index.x + "," + index.y;
 		return this._tiles[key] || null;
 	}
 
@@ -104,14 +104,14 @@ export class TilemapShape extends CollisionShape {
 	 * @param {Function} callback Method to invoke for every tile. Return false to break iteration.
 	 */
 	public iterateTilesAtRegion(region: Rectangle, callback: (tile: RectangleShape) => boolean): void {
-		let topLeft = region.getTopLeft();
-		let bottomRight = region.getBottomRight();
-		let startIndex = new Vector2(Math.floor(topLeft.x / this._tileSize.x), Math.floor(topLeft.y / this._tileSize.y));
-		let endIndex = new Vector2(Math.floor(bottomRight.x / this._tileSize.x), Math.floor(bottomRight.y / this._tileSize.y));
+		const topLeft = region.getTopLeft();
+		const bottomRight = region.getBottomRight();
+		const startIndex = new Vector2(Math.floor(topLeft.x / this._tileSize.x), Math.floor(topLeft.y / this._tileSize.y));
+		const endIndex = new Vector2(Math.floor(bottomRight.x / this._tileSize.x), Math.floor(bottomRight.y / this._tileSize.y));
 		for(let i = startIndex.x; i <= endIndex.x; ++i) {
 			for(let j = startIndex.y; j <= endIndex.y; ++j) {
-				let key = i + "," + j;
-				let tile = this._tiles[key];
+				const key = i + "," + j;
+				const tile = this._tiles[key];
 				if(tile && (callback(tile) === false)) {
 					return;
 				}
@@ -125,7 +125,7 @@ export class TilemapShape extends CollisionShape {
 	 * @returns Array with rectangle shapes or empty if none found.
 	 */
 	public getTilesAtRegion(region: Rectangle): RectangleShape[] {
-		let ret: RectangleShape[] = [];
+		const ret: RectangleShape[] = [];
 		this.iterateTilesAtRegion(region, (tile) => { ret.push(tile); });
 		return ret;
 	}
@@ -157,7 +157,7 @@ export class TilemapShape extends CollisionShape {
 	public debugDraw(opacity = 1, shapesBatch: ShapesBatch) {
 		if(opacity === undefined) { opacity = 1; }
 		for(const key in this._tiles) {
-			let tile = this._tiles[key];
+			const tile = this._tiles[key];
 			tile.setDebugColor(this._forceDebugColor);
 			tile.debugDraw(opacity, shapesBatch);
 		}

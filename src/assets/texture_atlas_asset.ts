@@ -62,27 +62,27 @@ export class TextureAtlasAsset extends Asset {
 			while(sources && sources.length) {
 
 				// arrange textures
-				let arranged = arrangeTextures(sources, maxWidth, maxHeight, extraMargins);
+				const arranged = arrangeTextures(sources, maxWidth, maxHeight, extraMargins);
 
 				// build the texture atlas!
-				let atlasTexture = new TextureAsset(`_atlas_${this.url}_${this.__textures.length}`);
+				const atlasTexture = new TextureAsset(`_atlas_${this.url}_${this.__textures.length}`);
 
 				// first create a canvas and get its 2d context
-				let canvas = document.createElement("canvas");
+				const canvas = document.createElement("canvas");
 				canvas.width = arranged.width;
 				canvas.height = arranged.height;
-				let ctx = canvas.getContext("2d");
+				const ctx = canvas.getContext("2d");
 
 				// now draw the sources and fill the sources dictionary
 				let textureInAtlasIndex = 0;
 				for(const imageData of arranged.rectangles) {
 					ctx.drawImage(imageData.source, imageData.x, imageData.y);
-					let url = imageData.source.src;
-					let originUrl = imageData.source.__origin_url;
-					let relativeUrl = url.substr(location.origin.length);
-					let internalUrl = atlasTexture.url + "_" + (textureInAtlasIndex++).toString() + "_" + url.replaceAll("/", "_").replaceAll(":", "");
-					let sourceRectangle = new Rectangle(imageData.x, imageData.y, imageData.width, imageData.height);
-					let textureInAtlas = new TextureInAtlasAsset(internalUrl, atlasTexture, sourceRectangle, this);
+					const url = imageData.source.src;
+					const originUrl = imageData.source.__origin_url;
+					const relativeUrl = url.substr(location.origin.length);
+					const internalUrl = atlasTexture.url + "_" + (textureInAtlasIndex++).toString() + "_" + url.replaceAll("/", "_").replaceAll(":", "");
+					const sourceRectangle = new Rectangle(imageData.x, imageData.y, imageData.width, imageData.height);
+					const textureInAtlas = new TextureInAtlasAsset(internalUrl, atlasTexture, sourceRectangle, this);
 					this.__sources[url] = this.__sources[relativeUrl] = this.__sources[relativeUrl.substr(1)] = textureInAtlas;
 					if(originUrl) {
 						this.__sources[originUrl] = this.__sources[url];
@@ -90,8 +90,8 @@ export class TextureAtlasAsset extends Asset {
 				}
 
 				// convert to texture
-				let atlasSrcUrl = canvas.toDataURL();
-				let atlasImage = await loadImage(atlasSrcUrl);
+				const atlasSrcUrl = canvas.toDataURL();
+				const atlasImage = await loadImage(atlasSrcUrl);
 				atlasTexture.fromImage(atlasImage);
 
 				// push to textures list
@@ -157,7 +157,7 @@ function arrangeTextures(sourceImages: unknown[], maxAtlasWidth?: number, maxAtl
 	maxAtlasHeight = maxAtlasHeight || gl.MAX_TEXTURE_SIZE;
 
 	// use the sorter algorithm
-	let result = ItemsSorter.arrangeRectangles(sourceImages, (width: number) => {
+	const result = ItemsSorter.arrangeRectangles(sourceImages, (width: number) => {
 
 		// make width a power of 2
 		let power = 1;
@@ -180,7 +180,7 @@ function arrangeTextures(sourceImages: unknown[], maxAtlasWidth?: number, maxAtl
 		// remove all textures that are outside limits
 		result.leftovers = [];
 		for(let i = result.rectangles.length - 1; i >= 0; --i) {
-			let currRect = result.rectangles[i];
+			const currRect = result.rectangles[i];
 			if(currRect.y + currRect.height > maxAtlasHeight) {
 				result.rectangles.splice(i, 1);
 				result.leftovers.push(currRect.source);
@@ -219,12 +219,12 @@ async function loadAllSources(sources: (string | HTMLImageElement)[]) {
 	return new Promise(async (resolve, reject) => {
 
 		// make sure all sources are image instances
-		let waitFor = [];
-		let images = [];
+		const waitFor = [];
+		const images = [];
 		for(let i = 0; i < sources.length; ++i) {
 
 			// get current image / source
-			let curr = sources[i];
+			const curr = sources[i];
 
 			// if its source url:
 			if(typeof curr === "string") {

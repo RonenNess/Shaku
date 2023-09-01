@@ -60,7 +60,7 @@ export class Animator {
 		for(const key in this._toValues) {
 
 			// get key as parts and to-value
-			let keyParts = this._toValues[key].keyParts;
+			const keyParts = this._toValues[key].keyParts;
 			let toValue = this._toValues[key].value;
 
 			// get from value
@@ -85,7 +85,7 @@ export class Animator {
 			}
 
 			// get lerp factor
-			let a = (this._smoothDamp && this._progress < 1) ? (this._progress * (1 + 1 - this._progress)) : this._progress;
+			const a = (this._smoothDamp && this._progress < 1) ? (this._progress * (1 + 1 - this._progress)) : this._progress;
 
 			// calculate new value
 			let newValue = null;
@@ -143,7 +143,7 @@ export class Animator {
 
 		// set value for path with parts
 		function index(obj, i) { return obj[i]; }
-		let parent = keyParts.slice(0, keyParts.length - 1).reduce(index, this._target);
+		const parent = keyParts.slice(0, keyParts.length - 1).reduce(index, this._target);
 		parent[keyParts[keyParts.length - 1]] = value;
 	}
 
@@ -236,8 +236,8 @@ export class Animator {
 	 * Flip between the "from" and the "to" states.
 	 */
 	flipFromAndTo() {
-		let newFrom = {};
-		let newTo = {};
+		const newFrom = {};
+		const newTo = {};
 
 		if(!this._originalFrom) { this._originalFrom = this._fromValues; }
 		if(!this._originalTo) { this._originalTo = this._toValues; }

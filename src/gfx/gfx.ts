@@ -15,7 +15,7 @@ import { Vertex } from "./vertex";
 const _logger = LoggerFactory.getLogger("gfx"); // TODO
 
 let _gl = null;
-let _initSettings = { antialias: true, alpha: true, depth: false, premultipliedAlpha: true, desynchronized: false };
+const _initSettings = { antialias: true, alpha: true, depth: false, premultipliedAlpha: true, desynchronized: false };
 let _canvas = null;
 let _lastBlendMode = null;
 let _activeEffect = null;
@@ -27,7 +27,7 @@ let _renderTarget = null;
 let _drawCallsCount = 0;
 let _drawQuadsCount = 0;
 let _drawShapePolygonsCount = 0;
-let _cachedRenderingRegion = {};
+const _cachedRenderingRegion = {};
 let _webglVersion = 0;
 
 /**
@@ -282,7 +282,7 @@ export class Gfx implements IManager {
 	 * @returns {Camera} New camera object.
 	 */
 	createCamera(withViewport) {
-		let ret = new Camera(this);
+		const ret = new Camera(this);
 		if(withViewport) {
 			ret.viewport = this.getRenderingRegion();
 		}
@@ -295,7 +295,7 @@ export class Gfx implements IManager {
 	 * @returns {Camera3D} New camera object.
 	 */
 	createCamera3D(withViewport) {
-		let ret = new Camera3D(this);
+		const ret = new Camera3D(this);
 		if(withViewport) {
 			ret.viewport = this.getRenderingRegion();
 		}
@@ -308,7 +308,7 @@ export class Gfx implements IManager {
 	 * @returns {Camera} Camera instance.
 	 */
 	setCameraOrthographic(offset) {
-		let camera = this.createCamera();
+		const camera = this.createCamera();
 		camera.orthographicOffset(offset);
 		this.applyCamera(camera);
 		return camera;
@@ -327,7 +327,7 @@ export class Gfx implements IManager {
 
 		// parent
 		if(limitToParent) {
-			let parent = _canvas.parentElement;
+			const parent = _canvas.parentElement;
 			width = parent.clientWidth - _canvas.offsetLeft;
 			height = parent.clientHeight - _canvas.offsetTop;
 		}
@@ -391,7 +391,7 @@ export class Gfx implements IManager {
 		_gl.bindFramebuffer(_gl.FRAMEBUFFER, _fb);
 
 		// set render targets
-		let drawBuffers = [];
+		const drawBuffers = [];
 		for(let index = 0; index < texture.length; ++index) {
 
 			// attach the texture as the first color attachment
@@ -450,7 +450,7 @@ export class Gfx implements IManager {
 	 */
 	resetCamera() {
 		_camera = this.createCamera();
-		let size = this.getRenderingSize();
+		const size = this.getRenderingSize();
 		_camera.orthographic(new Rectangle(0, 0, size.x, size.y));
 		this.applyCamera(_camera);
 	}
@@ -463,7 +463,7 @@ export class Gfx implements IManager {
 	applyCamera(camera) {
 		// set viewport and projection
 		this._viewport = camera.viewport;
-		let viewport = this.#_getRenderingRegionInternal(true);
+		const viewport = this.#_getRenderingRegionInternal(true);
 		_gl.viewport(viewport.x, viewport.y, viewport.width, viewport.height);
 		_projection = camera.projection.clone();
 
@@ -509,7 +509,7 @@ export class Gfx implements IManager {
 	 * @returns {Vector2} rendering size.
 	 */
 	getRenderingSize() {
-		let region = this.#_getRenderingRegionInternal();
+		const region = this.#_getRenderingRegionInternal();
 		return region.getSize();
 	}
 
@@ -569,7 +569,7 @@ export class Gfx implements IManager {
 			_fb = _gl.createFramebuffer();
 
 			// create a useful single white pixel texture
-			let whitePixelImage = new Image();
+			const whitePixelImage = new Image();
 			whitePixelImage.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+ip1sAAAAASUVORK5CYII=";
 			await new Promise((resolve, reject) => { whitePixelImage.onload = resolve; });
 			this.whiteTexture = new TextureAsset("__runtime_white_pixel__");
@@ -632,10 +632,10 @@ export class Gfx implements IManager {
 		marginFactor = marginFactor || Vector2.one();
 
 		// get character scale factor
-		let scale = fontSize / fontTexture.fontSize;
+		const scale = fontSize / fontTexture.fontSize;
 
 		// current character offset
-		let position = new Vector2(0, 0);
+		const position = new Vector2(0, 0);
 
 		// current line characters and width
 		let currentLineSprites = [];
@@ -674,11 +674,11 @@ export class Gfx implements IManager {
 		}
 
 		// create group to return and build sprites
-		let ret = new SpritesGroup();
+		const ret = new SpritesGroup();
 		for(let i = 0; i < text.length; ++i) {
 			// get character and source rect
-			let character = text[i];
-			let sourceRect = fontTexture.getSourceRect(character);
+			const character = text[i];
+			const sourceRect = fontTexture.getSourceRect(character);
 
 			// special case - break line
 			if(character === "\n") {
@@ -687,16 +687,16 @@ export class Gfx implements IManager {
 			}
 
 			// calculate character size
-			let size = new Vector2(sourceRect.width * scale, sourceRect.height * scale);
+			const size = new Vector2(sourceRect.width * scale, sourceRect.height * scale);
 
 			// create sprite (unless its space)
 			if(character !== " ") {
 
 				// create sprite and add to group
-				let sprite = new Sprite(fontTexture);
+				const sprite = new Sprite(fontTexture);
 				sprite.sourceRectangle = sourceRect;
 				sprite.size = size;
-				let positionOffset = fontTexture.getPositionOffset(character);
+				const positionOffset = fontTexture.getPositionOffset(character);
 				if(fontTexture.isMsdfFontTextureAsset) {
 					sprite.position.copy(position).addSelf(positionOffset.mul(scale * 0.5));
 				}
@@ -720,7 +720,7 @@ export class Gfx implements IManager {
 				currentLineSprites.push(sprite);
 			}
 
-			let moveCursorAmount = fontTexture.getXAdvance(character) * scale * marginFactor.x;
+			const moveCursorAmount = fontTexture.getXAdvance(character) * scale * marginFactor.x;
 
 			// update current line width
 			lineWidth += moveCursorAmount;
@@ -745,10 +745,10 @@ export class Gfx implements IManager {
 	 * Make the renderer canvas centered.
 	 */
 	centerCanvas() {
-		let canvas = _canvas;
-		let parent = canvas.parentElement;
-		let pwidth = Math.min(parent.clientWidth, window.innerWidth);
-		let pheight = Math.min(parent.clientHeight, window.innerHeight);
+		const canvas = _canvas;
+		const parent = canvas.parentElement;
+		const pwidth = Math.min(parent.clientWidth, window.innerWidth);
+		const pheight = Math.min(parent.clientHeight, window.innerHeight);
 		canvas.style.left = Math.round(pwidth / 2 - canvas.clientWidth / 2) + "px";
 		canvas.style.top = Math.round(pheight / 2 - canvas.clientHeight / 2) + "px";
 		canvas.style.display = "block";
@@ -761,7 +761,7 @@ export class Gfx implements IManager {
 	 * @returns {Boolean} True if given shape is in visible region.
 	 */
 	inScreen(shape) {
-		let region = this.#_getRenderingRegionInternal();
+		const region = this.#_getRenderingRegionInternal();
 
 		if(shape.isCircle) {
 			return region.collideCircle(shape);
@@ -786,9 +786,9 @@ export class Gfx implements IManager {
 	 * @param {Boolean} useCanvasSize If true, will always use cancas size when calculating center. If false and render target is set, will use render target's size.
 	 */
 	centerCamera(position, useCanvasSize) {
-		let renderSize = useCanvasSize ? this.getCanvasSize() : this.getRenderingSize();
-		let halfScreenSize = renderSize.mul(0.5);
-		let centeredPos = position.sub(halfScreenSize);
+		const renderSize = useCanvasSize ? this.getCanvasSize() : this.getRenderingSize();
+		const halfScreenSize = renderSize.mul(0.5);
+		const centeredPos = position.sub(halfScreenSize);
 		this.setCameraOrthographic(centeredPos);
 	}
 
@@ -991,7 +991,7 @@ export class GfxInternal {
 		if(this._gfx._viewport) {
 
 			// get region from viewport
-			let ret = this._gfx._viewport.clone();
+			const ret = this._gfx._viewport.clone();
 
 			// if without offset, remove it
 			if(includeOffset === false) {
@@ -1007,14 +1007,14 @@ export class GfxInternal {
 		}
 
 		// if we don't have viewport..
-		let ret = new Rectangle(0, 0, (_renderTarget || _canvas).width, (_renderTarget || _canvas).height);
+		const ret = new Rectangle(0, 0, (_renderTarget || _canvas).width, (_renderTarget || _canvas).height);
 		_cachedRenderingRegion.withoutOffset = _cachedRenderingRegion.withOffset = ret;
 		return ret;
 	}
 
 	setTextureFilter(filter) {
 		if(!Object.values(TextureFilterModes).includes(filter)) { throw new Error("Invalid texture filter mode! Please pick a value from 'TextureFilterModes'."); }
-		let glMode = _gl[filter];
+		const glMode = _gl[filter];
 		_gl.texParameteri(_gl.TEXTURE_2D, _gl.TEXTURE_MIN_FILTER, glMode);
 		_gl.texParameteri(_gl.TEXTURE_2D, _gl.TEXTURE_MAG_FILTER, glMode);
 	}
@@ -1038,7 +1038,7 @@ export class GfxInternal {
 		if(_lastBlendMode !== blendMode) {
 
 			// get gl context and set defaults
-			let gl = _gl;
+			const gl = _gl;
 			switch(blendMode) {
 				case BlendModes.ALPHA_BLEND:
 					gl.enable(gl.BLEND);

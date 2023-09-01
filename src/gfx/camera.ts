@@ -61,8 +61,8 @@ export class Camera {
 	 * @param far Far clipping plane.
 	 */
 	public orthographicOffset(offset: Vector2, ignoreViewportSize?: boolean, near?: number, far?: number): void {
-		let renderingSize = (ignoreViewportSize || !this._viewport) ? this.gfx.getCanvasSize() : this._viewport.getSize();
-		let region = new Rectangle(offset.x, offset.y, renderingSize.x, renderingSize.y);
+		const renderingSize = (ignoreViewportSize || !this._viewport) ? this.gfx.getCanvasSize() : this._viewport.getSize();
+		const region = new Rectangle(offset.x, offset.y, renderingSize.x, renderingSize.y);
 		this.orthographic(region, near, far);
 	}
 

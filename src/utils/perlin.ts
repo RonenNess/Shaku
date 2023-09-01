@@ -75,9 +75,9 @@ export class Perlin {
 		}
 
 		// create perm, gradP and grad3 arrays
-		let perm = new Array(512);
-		let gradP = new Array(512);
-		let grad3 = [new Grad(1, 1, 0), new Grad(-1, 1, 0), new Grad(1, -1, 0), new Grad(-1, -1, 0),
+		const perm = new Array(512);
+		const gradP = new Array(512);
+		const grad3 = [new Grad(1, 1, 0), new Grad(-1, 1, 0), new Grad(1, -1, 0), new Grad(-1, -1, 0),
 		new Grad(1, 0, 1), new Grad(-1, 0, 1), new Grad(1, 0, -1), new Grad(-1, 0, -1),
 		new Grad(0, 1, 1), new Grad(0, -1, 1), new Grad(0, 1, -1), new Grad(0, -1, -1)];
 
@@ -111,10 +111,10 @@ export class Perlin {
 		if(blurDistance === undefined) {
 			blurDistance = 0.25;
 		}
-		let a = this.generate(x - blurDistance, y - blurDistance, contrast);
-		let b = this.generate(x + blurDistance, y + blurDistance, contrast);
-		let c = this.generate(x - blurDistance, y + blurDistance, contrast);
-		let d = this.generate(x + blurDistance, y - blurDistance, contrast);
+		const a = this.generate(x - blurDistance, y - blurDistance, contrast);
+		const b = this.generate(x + blurDistance, y + blurDistance, contrast);
+		const c = this.generate(x - blurDistance, y + blurDistance, contrast);
+		const d = this.generate(x + blurDistance, y - blurDistance, contrast);
 		return (a + b + c + d) / 4;
 	}
 
@@ -132,8 +132,8 @@ export class Perlin {
 		}
 
 		// store new params
-		let perm = this._perm;
-		let gradP = this._gradP;
+		const perm = this._perm;
+		const gradP = this._gradP;
 
 		// find unit grid cell containing point
 		let X = Math.floor(x), Y = Math.floor(y);
@@ -145,13 +145,13 @@ export class Perlin {
 		X = X & 255; Y = Y & 255;
 
 		// calculate noise contributions from each of the four corners
-		let n00 = gradP[X + perm[Y]].dot2(x, y) * contrast;
-		let n01 = gradP[X + perm[Y + 1]].dot2(x, y - 1) * contrast;
-		let n10 = gradP[X + 1 + perm[Y]].dot2(x - 1, y) * contrast;
-		let n11 = gradP[X + 1 + perm[Y + 1]].dot2(x - 1, y - 1) * contrast;
+		const n00 = gradP[X + perm[Y]].dot2(x, y) * contrast;
+		const n01 = gradP[X + perm[Y + 1]].dot2(x, y - 1) * contrast;
+		const n10 = gradP[X + 1 + perm[Y]].dot2(x - 1, y) * contrast;
+		const n11 = gradP[X + 1 + perm[Y + 1]].dot2(x - 1, y - 1) * contrast;
 
 		// compute the fade curve value for x
-		let u = fade(x);
+		const u = fade(x);
 
 		// interpolate the four results
 		return Math.min(lerp(

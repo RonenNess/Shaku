@@ -48,11 +48,11 @@ export class MsdfFontTextureAsset extends FontTextureAsset {
 			// TODO: infer textureUrl from json contents
 			// TODO: infer jsonUrl from url
 
-			let atlasJson = new JsonAsset(params.jsonUrl);
-			let atlasTexture = new TextureAsset(params.textureUrl);
+			const atlasJson = new JsonAsset(params.jsonUrl);
+			const atlasTexture = new TextureAsset(params.textureUrl);
 			await Promise.all([atlasJson.load(), atlasTexture.load()]);
 
-			let atlasMetadata = atlasJson.data;
+			const atlasMetadata = atlasJson.data;
 			atlasTexture.filter = TextureFilterModes.LINEAR;
 
 			if(atlasMetadata.common.pages > 1) {
@@ -79,9 +79,9 @@ export class MsdfFontTextureAsset extends FontTextureAsset {
 			this._kernings = {};
 
 			for(const charData of atlasMetadata.chars) {
-				let currChar = charData.char;
+				const currChar = charData.char;
 
-				let sourceRect = new Rectangle(charData.x, charData.y, charData.width, charData.height);
+				const sourceRect = new Rectangle(charData.x, charData.y, charData.width, charData.height);
 				this._sourceRects[currChar] = sourceRect;
 				this._positionOffsets[currChar] = new Vector2(
 					charData.xoffset,

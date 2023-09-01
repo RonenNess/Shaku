@@ -205,7 +205,7 @@ export class Input implements IManager {
 			}
 
 			// get element to attach to
-			let element = this._targetElement;
+			const element = this._targetElement;
 
 			// to make sure keyboard input would work if provided with canvas entity
 			if((element instanceof HTMLCanvasElement) && (element.tabIndex === -1 || element.tabIndex === undefined)) {
@@ -216,7 +216,7 @@ export class Input implements IManager {
 			window.setTimeout(() => element.focus(), 0);
 
 			// set all the events to listen to
-			let _this = this;
+			const _this = this;
 			this._callbacks = {
 				"mousedown": function(event) { _this._onMouseDown(event); if(_this.preventDefaults) event.preventDefault(); },
 				"mouseup": function(event) { _this._onMouseUp(event); if(_this.preventDefaults) event.preventDefault(); },
@@ -235,7 +235,7 @@ export class Input implements IManager {
 			this.#_resetAll(false);
 
 			// register all callbacks
-			for(let event in this._callbacks) {
+			for(const event in this._callbacks) {
 				element.addEventListener(event, this._callbacks[event as keyof typeof this._callbacks] as (ev: Event) => void, false);
 			}
 
@@ -263,8 +263,8 @@ export class Input implements IManager {
 		this._defaultGamepad = null;
 		let i = 0;
 		for(const gp of this._gamepadsData) {
-			let newId = (gp || { id: "null" }).id;
-			let prevId = (prevGamepadData[i] || { id: "null" }).id;
+			const newId = (gp || { id: "null" }).id;
+			const prevId = (prevGamepadData[i] || { id: "null" }).id;
 			if(newId !== prevId) {
 				if(newId !== "null") {
 					_logger.info(`Gamepad ${i} connected: ${newId}.`);
@@ -358,9 +358,9 @@ export class Input implements IManager {
 	public destroy(): void {
 		// unregister all callbacks
 		if(this._callbacks) {
-			let element = this._targetElement as (HTMLElement | Window);
+			const element = this._targetElement as (HTMLElement | Window);
 
-			for(let event in this._callbacks) {
+			for(const event in this._callbacks) {
 				element.removeEventListener(event, this._callbacks[event as keyof typeof this._callbacks] as (ev: Event) => void);
 			}
 
@@ -488,7 +488,7 @@ export class Input implements IManager {
 	 * @returns List of connected devices ids.
 	 */
 	public gamepadIds(): string[] {
-		let ret = [];
+		const ret = [];
 		for(const gp of this._gamepadsData) {
 			if(gp) { ret.push(gp.id); }
 		}
@@ -824,7 +824,7 @@ export class Input implements IManager {
 		}
 
 		// if starts with "mouse" its for mouse button events
-		let mouseKey = this.mouseButtonFromCode(code);
+		const mouseKey = this.mouseButtonFromCode(code);
 		if(mouseKey !== null) {
 			// return if mouse down
 			return mouseCheck.call(this, mouseKey);
@@ -956,13 +956,13 @@ export class Input implements IManager {
 		maxInterval = maxInterval || this.defaultDoublePressInterval;
 
 		// current timestamp
-		let currTime = timestamp();
+		const currTime = timestamp();
 
 		// check all keys
 		if(!Array.isArray(code)) { code = [code]; }
 		for(const c of code) {
 			if(this.pressed(c)) {
-				let currKeyTime = this.#_getValueWithCode(c, (c) => this._prevLastMousePressedTime.get(c), (c) => this._prevLastKeyPressedTime.get(c), this._prevLastTouchPressedTime, this._prevLastCustomPressedTime);
+				const currKeyTime = this.#_getValueWithCode(c, (c) => this._prevLastMousePressedTime.get(c), (c) => this._prevLastKeyPressedTime.get(c), this._prevLastTouchPressedTime, this._prevLastCustomPressedTime);
 				if(currTime - currKeyTime <= maxInterval) {
 					return true;
 				}
@@ -989,13 +989,13 @@ export class Input implements IManager {
 		maxInterval = maxInterval || this.defaultDoublePressInterval;
 
 		// current timestamp
-		let currTime = timestamp();
+		const currTime = timestamp();
 
 		// check all keys
 		if(!Array.isArray(code)) { code = [code]; }
 		for(const c of code) {
 			if(this.released(c)) {
-				let currKeyTime = this.#_getValueWithCode(c, (c) => this._prevLastMousePressedTime.get(c), (c) => this._prevLastKeyPressedTime.get(c), this._prevLastTouchPressedTime, this._prevLastCustomPressedTime);
+				const currKeyTime = this.#_getValueWithCode(c, (c) => this._prevLastMousePressedTime.get(c), (c) => this._prevLastKeyPressedTime.get(c), this._prevLastTouchPressedTime, this._prevLastCustomPressedTime);
 				if(currTime - currKeyTime <= maxInterval) {
 					return true;
 				}
@@ -1080,7 +1080,7 @@ export class Input implements IManager {
 	 * @param {*} event Event data from browser.
 	*/
 	_onKeyDown(event: KeyboardEvent) {
-		let keycode = this.#_getKeyboardKeyCode(event);
+		const keycode = this.#_getKeyboardKeyCode(event);
 		if(!this._keyboardState.get(keycode)) {
 			this._keyboardPressed.set(keycode, true);
 			this._prevLastKeyPressedTime.set(keycode, this._lastKeyPressedTime.get(keycode));
@@ -1095,7 +1095,7 @@ export class Input implements IManager {
 	 * @param {*} event Event data from browser.
 	 */
 	_onKeyUp(event: KeyboardEvent) {
-		let keycode = this.#_getKeyboardKeyCode(event) || 0;
+		const keycode = this.#_getKeyboardKeyCode(event) || 0;
 		this._keyboardState.set(keycode, false);
 		this._keyboardReleased.set(keycode, true);
 		this._prevLastKeyReleasedTime.set(keycode, this._lastKeyReleasedTime.get(keycode));
@@ -1109,11 +1109,11 @@ export class Input implements IManager {
 	 * @returns {Vector2} Position x,y or null if couldn't extract touch position.
 	 */
 	_getTouchEventPosition(event: TouchEvent) {
-		let touches = event.changedTouches || event.touches;
+		const touches = event.changedTouches || event.touches;
 		if(touches && touches.length) {
-			let touch = touches[0];
-			let x = touch.pageX || touch.offsetX || touch.clientX;
-			let y = touch.pageY || touch.offsetY || touch.clientY;
+			const touch = touches[0];
+			const x = touch.pageX || touch.offsetX || touch.clientX;
+			const y = touch.pageY || touch.offsetY || touch.clientY;
 			return new Vector2(x, y);
 		}
 		return null;
@@ -1126,7 +1126,7 @@ export class Input implements IManager {
 	 */
 	_onTouchStart(event: TouchEvent) {
 		// update position
-		let position = this._getTouchEventPosition(event);
+		const position = this._getTouchEventPosition(event);
 		if(position) {
 			if(this.delegateTouchInputToMouse) {
 				this._mousePos.x = position.x;
@@ -1156,7 +1156,7 @@ export class Input implements IManager {
 	 */
 	_onTouchEnd(event: TouchEvent) {
 		// update position
-		let position = this._getTouchEventPosition(event);
+		const position = this._getTouchEventPosition(event);
 		if(position) {
 			this._touchPosition.copy(position);
 			if(this.delegateTouchInputToMouse) {
@@ -1187,7 +1187,7 @@ export class Input implements IManager {
 	 */
 	_onTouchMove(event: TouchEvent) {
 		// update position
-		let position = this._getTouchEventPosition(event);
+		const position = this._getTouchEventPosition(event);
 		if(position) {
 			this._touchPosition.copy(position);
 			if(this.delegateTouchInputToMouse) {
@@ -1286,7 +1286,7 @@ export class Input implements IManager {
 	 */
 	_normalizeMousePos() {
 		if(this._targetElement && this._targetElement instanceof HTMLElement) {
-			let rect = this._targetElement.getBoundingClientRect();
+			const rect = this._targetElement.getBoundingClientRect();
 			this._mousePos.x -= rect.left;
 			this._mousePos.y -= rect.top;
 		}

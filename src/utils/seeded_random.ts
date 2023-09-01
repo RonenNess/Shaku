@@ -22,7 +22,7 @@ export class SeededRandom {
 	public random(min?: number, max?: number): number {
 		// generate next value
 		this.seed = (this.seed * 9301 + 49297) % 233280;
-		let rnd = this.seed / 233280;
+		const rnd = this.seed / 233280;
 
 		// got min and max?
 		if(min && max) {

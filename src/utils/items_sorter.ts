@@ -36,7 +36,7 @@ export class ItemsSorter {
 		extraMargins = extraMargins || Vector2.zeroReadonly;
 
 		// normalize rectangles / vectors
-		let normalizedRects = [];
+		const normalizedRects = [];
 		for(const rect of rectangles) {
 			normalizedRects.push({
 				width: ((rect.width !== undefined) ? rect.width : rect.x) + extraMargins.x,

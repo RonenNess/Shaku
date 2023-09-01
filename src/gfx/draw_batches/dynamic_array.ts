@@ -19,10 +19,10 @@ function transferPolyfill(source, dest) {
 	if(dest.byteLength >= source.byteLength) {
 		let nextOffset = 0;
 		let leftBytes = source.byteLength;
-		let wordSizes = [8, 4, 2, 1];
+		const wordSizes = [8, 4, 2, 1];
 		wordSizes.forEach(function(_wordSize_) {
 			if(leftBytes => _wordSize_) {
-				let done = transferWith(_wordSize_, source, dest, nextOffset, leftBytes);
+				const done = transferWith(_wordSize_, source, dest, nextOffset, leftBytes);
 				nextOffset = done.nextOffset;
 				leftBytes = done.leftBytes;
 			}
@@ -48,8 +48,8 @@ function transferPolyfill(source, dest) {
 				ViewClass = Uint8Array;
 				break;
 		}
-		let view_source = new ViewClass(source, nextOffset, Math.trunc(leftBytes / wordSize));
-		let view_dest = new ViewClass(dest, nextOffset, Math.trunc(leftBytes / wordSize));
+		const view_source = new ViewClass(source, nextOffset, Math.trunc(leftBytes / wordSize));
+		const view_dest = new ViewClass(dest, nextOffset, Math.trunc(leftBytes / wordSize));
 		for(let i = 0; i < view_dest.length; i++) {
 			view_dest[i] = view_source[i];
 		}
@@ -92,7 +92,7 @@ export class DynamicArray {
 	 */
 	push(value) {
 		if(this.index >= this.buffer.length) {
-			let newBuffer = new this.type(this.buffer.length * 2);
+			const newBuffer = new this.type(this.buffer.length * 2);
 			transferPolyfill(this.buffer, newBuffer);
 			this.buffer = newBuffer;
 		}

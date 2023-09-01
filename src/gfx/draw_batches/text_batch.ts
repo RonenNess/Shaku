@@ -73,7 +73,7 @@ export class TextSpriteBatch extends SpriteBatchBase {
 	 * @param {Boolean} cullOutOfScreen If true, will cull out sprites that are not visible in screen.
 	 */
 	drawText(textGroup, cullOutOfScreen) {
-		let transform = textGroup.getTransform();
+		const transform = textGroup.getTransform();
 		this.drawSprite(textGroup._sprites, transform, cullOutOfScreen);
 	}
 
@@ -83,7 +83,7 @@ export class TextSpriteBatch extends SpriteBatchBase {
 	 */
 	_drawBatch() {
 		// extract texture
-		let texture = this.__currDrawingParams.texture;
+		const texture = this.__currDrawingParams.texture;
 
 		// sanity for msdf font
 		if(this.msdfFont && !(texture.isMsdfFontTextureAsset)) {
@@ -96,7 +96,7 @@ export class TextSpriteBatch extends SpriteBatchBase {
 		}
 
 		// set default effect and blend mode
-		let effect = this.__currDrawingParams.effect || this.defaultEffect;
+		const effect = this.__currDrawingParams.effect || this.defaultEffect;
 
 		// setup outline
 		if(this.outlineWeight) {
@@ -104,7 +104,7 @@ export class TextSpriteBatch extends SpriteBatchBase {
 		}
 
 		// extract font texture and set in sprite batch before calling internal draw
-		let prevFontTexture = this.__currDrawingParams.texture;
+		const prevFontTexture = this.__currDrawingParams.texture;
 		this.__currDrawingParams.texture = texture.texture;
 		super._drawBatch();
 		this.__currDrawingParams.texture = prevFontTexture;

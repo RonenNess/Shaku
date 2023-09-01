@@ -48,7 +48,7 @@ export class MathHelper {
 	 * @returns Result number.
 	 */
 	public static roundToMultiple(numToRound: number, multiple: number): number {
-		let isPositive = (numToRound >= 0);
+		const isPositive = (numToRound >= 0);
 		return ((numToRound + isPositive * (multiple - 1)) / multiple) * multiple;
 	}
 
@@ -77,8 +77,8 @@ export class MathHelper {
 	* @returns Shortest distance between radians.
 	*/
 	public static radiansDistanceSigned(a1: number, a2: number): number {
-		let max = Math.PI * 2;
-		let da = (a2 - a1) % max;
+		const max = Math.PI * 2;
+		const da = (a2 - a1) % max;
 		return 2 * da % max - da;
 	}
 
@@ -99,9 +99,9 @@ export class MathHelper {
 	* @returns Shortest distance between angles.
 	*/
 	public static degreesDistanceSigned(a1: number, a2: number): number {
-		let a1r = a1 * _toRadsFactor;
-		let a2r = a2 * _toRadsFactor;
-		let ret = this.radiansDistanceSigned(a1r, a2r);
+		const a1r = a1 * _toRadsFactor;
+		const a2r = a2 * _toRadsFactor;
+		const ret = this.radiansDistanceSigned(a1r, a2r);
 		return ret * _toDegreesFactor;
 	}
 
@@ -112,9 +112,9 @@ export class MathHelper {
 	* @returns Shortest distance between angles.
 	*/
 	public static degreesDistance(a1: number, a2: number): number {
-		let a1r = a1 * _toRadsFactor;
-		let a2r = a2 * _toRadsFactor;
-		let ret = this.radiansDistance(a1r, a2r);
+		const a1r = a1 * _toRadsFactor;
+		const a2r = a2 * _toRadsFactor;
+		const ret = this.radiansDistance(a1r, a2r);
 		return ret * _toDegreesFactor;
 	}
 
@@ -151,7 +151,7 @@ export class MathHelper {
 		a2 = this.toRadians(a2);
 
 		// lerp
-		let ret = this.lerpRadians(a1, a2, alpha);
+		const ret = this.lerpRadians(a1, a2, alpha);
 
 		// convert back to degrees and return
 		return this.wrapDegrees(this.toDegrees(ret));
@@ -187,11 +187,11 @@ export class MathHelper {
 	 */
 	public static calculateNormal(v1: Vector3, v2: Vector3, v3: Vector3): Vector3 {
 		// create vectors between the points
-		let _a = v2.sub(v1);
-		let _b = v3.sub(v1);
+		const _a = v2.sub(v1);
+		const _b = v3.sub(v1);
 
 		// calculate normal
-		let surfaceNormal = new Vector3(0, 0, 0);
+		const surfaceNormal = new Vector3(0, 0, 0);
 		surfaceNormal.x = (_a.y * _b.z) - (_a.z - _b.y);
 		surfaceNormal.y = - ((_b.z * _a.x) - (_b.x * _a.z));
 		surfaceNormal.z = (_a.x * _b.y) - (_a.y * _b.x);

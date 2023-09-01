@@ -89,7 +89,7 @@ export class SpriteBatchBase extends DrawBatch {
 	 * @inheritdoc
 	 */
 	destroy() {
-		let gl = this.#_gl;
+		const gl = this.#_gl;
 		if(this._buffers) {
 			if(this._buffers.positionBuffer) gl.deleteBuffer(this._buffers.positionBuffer);
 			if(this._buffers.colorsBuffer) gl.deleteBuffer(this._buffers.colorsBuffer);
@@ -113,7 +113,7 @@ export class SpriteBatchBase extends DrawBatch {
 	 * @private
 	 */
 	#_createBuffers(batchSpritesCount, enableVertexColor, enableNormals, enableBinormals, enableTangents) {
-		let gl = this.#_gl;
+		const gl = this.#_gl;
 
 		// default enable vertex color
 		if(enableVertexColor === undefined) { enableVertexColor = true; }
@@ -143,7 +143,7 @@ export class SpriteBatchBase extends DrawBatch {
 		};
 
 		// create the indices buffer
-		let maxIndex = (batchSpritesCount * 4);
+		const maxIndex = (batchSpritesCount * 4);
 		let indicesArrayType;
 		if(maxIndex <= 256) {
 			indicesArrayType = Uint8Array;
@@ -157,7 +157,7 @@ export class SpriteBatchBase extends DrawBatch {
 			indicesArrayType = Uint32Array;
 			this.__indicesType = gl.UNSIGNED_INT;
 		}
-		let indices = new indicesArrayType(batchSpritesCount * 6); // 6 = number of indices per sprite
+		const indices = new indicesArrayType(batchSpritesCount * 6); // 6 = number of indices per sprite
 		let inc = 0;
 		for(let i = 0; i < indices.length; i += 6) {
 
@@ -251,8 +251,8 @@ export class SpriteBatchBase extends DrawBatch {
 		this.__dirty = true;
 
 		// get colors and uvs array
-		let colors = this._buffers.colorsArray;
-		let uvs = this._buffers.textureArray;
+		const colors = this._buffers.colorsArray;
+		const uvs = this._buffers.textureArray;
 
 		// get screen region for culling
 		const screenRegion = (cullOutOfScreen || (this.cullOutOfScreen && (cullOutOfScreen === undefined))) ? this.#_gfx._internal.getRenderingRegionInternal() : null;
@@ -273,7 +273,7 @@ export class SpriteBatchBase extends DrawBatch {
 				if(Array.isArray(sprite.color)) {
 					let lastColor = sprite.color[0];
 					for(let x = 0; x < 4; ++x) {
-						let curr = (sprite.color[x] || lastColor);
+						const curr = (sprite.color[x] || lastColor);
 						colors[colors._index++] = curr.r;
 						colors[colors._index++] = curr.g;
 						colors[colors._index++] = curr.b;
@@ -283,7 +283,7 @@ export class SpriteBatchBase extends DrawBatch {
 				}
 				// single color
 				else {
-					let curr = sprite.color;
+					const curr = sprite.color;
 					for(let x = 0; x < 4; ++x) {
 						colors[colors._index++] = curr.r;
 						colors[colors._index++] = curr.g;
@@ -295,18 +295,18 @@ export class SpriteBatchBase extends DrawBatch {
 			}
 
 			// get source rectangle
-			let sourceRect = sprite.sourceRectangle;
+			const sourceRect = sprite.sourceRectangle;
 			let textureSourceRect = sprite.texture.sourceRectangle;
 
 			// if got source rectangle, set it
 			if(sourceRect) {
 				textureSourceRect = textureSourceRect || { x: 0, y: 0, width: 0, height: 0 };
-				let twidth = sprite.texture.width;
-				let theight = sprite.texture.height;
-				let left = (sourceRect.left + textureSourceRect.x) / twidth;
-				let right = (sourceRect.right + textureSourceRect.x) / twidth;
-				let top = (sourceRect.top + textureSourceRect.y) / theight;
-				let bottom = (sourceRect.bottom + textureSourceRect.y) / theight;
+				const twidth = sprite.texture.width;
+				const theight = sprite.texture.height;
+				const left = (sourceRect.left + textureSourceRect.x) / twidth;
+				const right = (sourceRect.right + textureSourceRect.x) / twidth;
+				const top = (sourceRect.top + textureSourceRect.y) / theight;
+				const bottom = (sourceRect.bottom + textureSourceRect.y) / theight;
 				uvs[uvs._index++] = (left); uvs[uvs._index++] = (top);
 				uvs[uvs._index++] = (right); uvs[uvs._index++] = (top);
 				uvs[uvs._index++] = (left); uvs[uvs._index++] = (bottom);
@@ -314,13 +314,13 @@ export class SpriteBatchBase extends DrawBatch {
 			}
 			// if got source rectangle from texture (texture atlas without source rect), set it
 			else if(textureSourceRect) {
-				let normalized = sprite.texture.sourceRectangleNormalized;
-				let twidth = sprite.texture.width;
-				let theight = sprite.texture.height;
-				let left = normalized.left || (textureSourceRect.left) / twidth;
-				let right = normalized.right || (textureSourceRect.right) / twidth;
-				let top = normalized.top || (textureSourceRect.top) / theight;
-				let bottom = normalized.bottom || (textureSourceRect.bottom) / theight;
+				const normalized = sprite.texture.sourceRectangleNormalized;
+				const twidth = sprite.texture.width;
+				const theight = sprite.texture.height;
+				const left = normalized.left || (textureSourceRect.left) / twidth;
+				const right = normalized.right || (textureSourceRect.right) / twidth;
+				const top = normalized.top || (textureSourceRect.top) / theight;
+				const bottom = normalized.bottom || (textureSourceRect.bottom) / theight;
 				uvs[uvs._index++] = (left); uvs[uvs._index++] = (top);
 				uvs[uvs._index++] = (right); uvs[uvs._index++] = (top);
 				uvs[uvs._index++] = (left); uvs[uvs._index++] = (bottom);
@@ -335,10 +335,10 @@ export class SpriteBatchBase extends DrawBatch {
 			}
 
 			// calculate vertices positions
-			let sizeX = sprite.size.x;
-			let sizeY = sprite.size.y;
-			let left = -sizeX * sprite.origin.x;
-			let top = -sizeY * sprite.origin.y;
+			const sizeX = sprite.size.x;
+			const sizeY = sprite.size.y;
+			const left = -sizeX * sprite.origin.x;
+			const top = -sizeY * sprite.origin.y;
 
 			// calculate corners
 			topLeft.x = left; topLeft.y = top;
@@ -371,11 +371,11 @@ export class SpriteBatchBase extends DrawBatch {
 
 			// apply rotation
 			if(sprite.rotation) {
-				let cos = Math.cos(sprite.rotation);
-				let sin = Math.sin(sprite.rotation);
+				const cos = Math.cos(sprite.rotation);
+				const sin = Math.sin(sprite.rotation);
 				function rotateVec(vector) {
-					let x = (vector.x * cos - vector.y * sin);
-					let y = (vector.x * sin + vector.y * cos);
+					const x = (vector.x * cos - vector.y * sin);
+					const y = (vector.x * sin + vector.y * cos);
 					vector.x = x;
 					vector.y = y;
 				}
@@ -406,7 +406,7 @@ export class SpriteBatchBase extends DrawBatch {
 
 			// cull out-of-screen sprites
 			if(screenRegion) {
-				let destRect = axisAlined ?
+				const destRect = axisAlined ?
 					new Rectangle(topLeft.x, topLeft.y, bottomRight.x - topLeft.x, bottomRight.y - topLeft.y) :
 					Rectangle.fromPoints([topLeft, topRight, bottomLeft, bottomRight]);
 
@@ -424,18 +424,18 @@ export class SpriteBatchBase extends DrawBatch {
 			}
 
 			// optional z position
-			let z = sprite.position.z || 0;
-			let zDepth = z + sprite.size.z || 0;
+			const z = sprite.position.z || 0;
+			const zDepth = z + sprite.size.z || 0;
 
 			// update positions buffer
-			let positions = this._buffers.positionArray;
+			const positions = this._buffers.positionArray;
 			positions[positions._index++] = topLeft.x; positions[positions._index++] = topLeft.y; positions[positions._index++] = z;
 			positions[positions._index++] = topRight.x; positions[positions._index++] = topRight.y; positions[positions._index++] = z;
 			positions[positions._index++] = bottomLeft.x; positions[positions._index++] = bottomLeft.y; positions[positions._index++] = zDepth;
 			positions[positions._index++] = bottomRight.x; positions[positions._index++] = bottomRight.y; positions[positions._index++] = zDepth;
 
 			// update normals buffer
-			let normals = this._buffers.normalsArray;
+			const normals = this._buffers.normalsArray;
 			if(normals) {
 				normals[normals._index++] = 0;
 				normals[normals._index++] = 0;
@@ -443,7 +443,7 @@ export class SpriteBatchBase extends DrawBatch {
 			}
 
 			// update default binormals buffer
-			let binormals = this._buffers.binormalsArray;
+			const binormals = this._buffers.binormalsArray;
 			if(binormals) {
 				binormals[binormals._index++] = 1;
 				binormals[binormals._index++] = 0;
@@ -451,7 +451,7 @@ export class SpriteBatchBase extends DrawBatch {
 			}
 
 			// update default tangents buffer
-			let tangents = this._buffers.tangentsArray;
+			const tangents = this._buffers.tangentsArray;
 			if(tangents) {
 				tangents[tangents._index++] = 0;
 				tangents[tangents._index++] = 1;
@@ -510,8 +510,8 @@ export class SpriteBatchBase extends DrawBatch {
 	 */
 	_drawBatch() {
 		// get texture and effect
-		let texture = this.__currDrawingParams.texture;
-		let effect = this.__currDrawingParams.effect;
+		const texture = this.__currDrawingParams.texture;
+		const effect = this.__currDrawingParams.effect;
 
 		// texture not loaded yet? skip
 		if(!texture || !texture.valid) {
@@ -519,10 +519,10 @@ export class SpriteBatchBase extends DrawBatch {
 		}
 
 		// should copy buffers
-		let needBuffersCopy = this.__dirty;
+		const needBuffersCopy = this.__dirty;
 
 		// calculate current batch quads count
-		let _currBatchCount = this.quadsInBatch;
+		const _currBatchCount = this.quadsInBatch;
 
 		// nothing to draw? skip
 		if(_currBatchCount === 0) {
@@ -535,21 +535,21 @@ export class SpriteBatchBase extends DrawBatch {
 		}
 
 		// get some fields we'll need
-		let gl = this.#_gl;
-		let gfx = this.#_gfx;
-		let positionArray = this._buffers.positionArray;
-		let textureArray = this._buffers.textureArray;
-		let colorsArray = this.__currDrawingParams.hasVertexColor ? this._buffers.colorsArray : null;
-		let normalsArray = this._buffers.normalsArray;
-		let binormalsArray = this._buffers.binormalsArray;
-		let tangentsArray = this._buffers.tangentsArray;
-		let positionBuffer = this._buffers.positionBuffer;
-		let textureCoordBuffer = this._buffers.textureCoordBuffer;
-		let colorsBuffer = this._buffers.colorsBuffer;
-		let normalsBuffer = this._buffers.normalsBuffer;
-		let binormalsBuffer = this._buffers.binormalsBuffer;
-		let tangentsBuffer = this._buffers.tangentsBuffer;
-		let indexBuffer = this._buffers.indexBuffer;
+		const gl = this.#_gl;
+		const gfx = this.#_gfx;
+		const positionArray = this._buffers.positionArray;
+		const textureArray = this._buffers.textureArray;
+		const colorsArray = this.__currDrawingParams.hasVertexColor ? this._buffers.colorsArray : null;
+		const normalsArray = this._buffers.normalsArray;
+		const binormalsArray = this._buffers.binormalsArray;
+		const tangentsArray = this._buffers.tangentsArray;
+		const positionBuffer = this._buffers.positionBuffer;
+		const textureCoordBuffer = this._buffers.textureCoordBuffer;
+		const colorsBuffer = this._buffers.colorsBuffer;
+		const normalsBuffer = this._buffers.normalsBuffer;
+		const binormalsBuffer = this._buffers.binormalsBuffer;
+		const tangentsBuffer = this._buffers.tangentsBuffer;
+		const indexBuffer = this._buffers.indexBuffer;
 
 		// call base method to set effect and draw params
 		super._drawBatch();

@@ -63,10 +63,10 @@ export class CircleShape extends CollisionShape {
 	 */
 	public debugDraw(opacity = 1, shapesBatch: ShapesBatch): void {
 		if(opacity === undefined) { opacity = 1; }
-		let color = this._getDebugColor();
+		const color = this._getDebugColor();
 		color.a *= opacity;
 		shapesBatch = this._getDebugDrawBatch(shapesBatch);
-		let needToBegin = !shapesBatch.isDrawing;
+		const needToBegin = !shapesBatch.isDrawing;
 		if(needToBegin) { shapesBatch.begin(); }
 		shapesBatch.drawCircle(this._circle, color, 14);
 		if(needToBegin) { shapesBatch.end(); }

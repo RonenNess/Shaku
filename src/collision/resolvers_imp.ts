@@ -39,7 +39,7 @@ export const CollisionsImp = {
 	 */
 	pointTilemap: function(v1, tm) {
 		if(tm._intBoundingRect.containsVector(v1._position)) {
-			let tile = tm.getTileAt(v1._position);
+			const tile = tm.getTileAt(v1._position);
 			return tile ? CollisionsImp.pointRectangle(v1, tile) : false;
 		}
 		if(tm._borderThickness && tm._boundingRect.containsVector(v1._position)) {

@@ -64,7 +64,7 @@ export class Node {
  * @returns List of tiles to traverse.
  */
 function findPath<P extends Vector2 | Vector3>(grid: IGrid, startPos: P, targetPos: P, options: { maxIterations?: number, ignorePrices?: boolean, allowDiagonal?: boolean; } = {}): P[] {
-	let ret = _ImpFindPath(grid, startPos, targetPos, options);
+	const ret = _ImpFindPath(grid, startPos, targetPos, options);
 	return ret;
 }
 
@@ -77,35 +77,35 @@ function _ImpFindPath<P extends Vector2 | Vector3>(grid: IGrid, startPos: P, tar
 	const allowDiagonal = options.allowDiagonal;
 
 	// get / create node
-	let nodesCache = {};
+	const nodesCache = {};
 	function getOrCreateNode(position) {
 
 		// get from cache
-		let key = (position.x + "," + position.y);
+		const key = (position.x + "," + position.y);
 		if(nodesCache[key]) {
 			return nodesCache[key];
 		}
 
 		// create new
-		let ret = new Node(position);
+		const ret = new Node(position);
 		nodesCache[key] = ret;
 		return ret;
 	}
 
 	// create start and target node
-	let startNode = getOrCreateNode(startPos);
-	let targetNode = getOrCreateNode(targetPos);
+	const startNode = getOrCreateNode(startPos);
+	const targetNode = getOrCreateNode(targetPos);
 
 	// tiles we may still travel to
-	let openSet = [];
+	const openSet = [];
 	openSet.push(startNode);
 
 	// tiles we were blocked at
-	let closedSet = new Set();
+	const closedSet = new Set();
 
 	// remove from array by value
 	function removeFromArray(arr, val) {
-		let index = arr.indexOf(val);
+		const index = arr.indexOf(val);
 		if(index !== -1) {
 			arr.splice(index, 1);
 		}
@@ -135,12 +135,12 @@ function _ImpFindPath<P extends Vector2 | Vector3>(grid: IGrid, startPos: P, tar
 
 		// did we reach target? :D
 		if(currentNode == targetNode) {
-			let finalPath = retracePath(startNode, targetNode);
+			const finalPath = retracePath(startNode, targetNode);
 			return finalPath;
 		}
 
 		// get neighbor tiles
-		let neighbors = [];
+		const neighbors = [];
 		for(let nx = -1; nx <= 1; nx++) {
 			for(let ny = -1; ny <= 1; ny++) {
 				if(nx === 0 && ny === 0) { continue; }
@@ -157,11 +157,11 @@ function _ImpFindPath<P extends Vector2 | Vector3>(grid: IGrid, startPos: P, tar
 			}
 
 			// calc const and price to walk there
-			let price = (options.ignorePrices) ? 1 : grid.getPrice(neighbor.position);
-			let currStepCost = currentNode.gCost + getDistance(currentNode, neighbor) * price;
+			const price = (options.ignorePrices) ? 1 : grid.getPrice(neighbor.position);
+			const currStepCost = currentNode.gCost + getDistance(currentNode, neighbor) * price;
 
 			// update node price and add to open set
-			let isInOpenSet = (openSet.indexOf(neighbor) !== -1);
+			const isInOpenSet = (openSet.indexOf(neighbor) !== -1);
 			if(!isInOpenSet || (currStepCost < neighbor.gCost)) {
 				// update node price and parent
 				neighbor.gCost = currStepCost;
@@ -186,7 +186,7 @@ function _ImpFindPath<P extends Vector2 | Vector3>(grid: IGrid, startPos: P, tar
  * @private
  */
 function retracePath(startNode: Node, endNode: Node) {
-	let path = [];
+	const path = [];
 	let currentNode = endNode;
 
 	while(currentNode !== startNode) {
@@ -202,8 +202,8 @@ function retracePath(startNode: Node, endNode: Node) {
  * This method is quick and dirty and takes diagonal into consideration.
  */
 function getDistance(pa, pb) {
-	let dx = (pa.position.x - pb.position.x);
-	let dy = (pa.position.y - pb.position.y);
+	const dx = (pa.position.x - pb.position.x);
+	const dy = (pa.position.y - pb.position.y);
 	return Math.sqrt(dx * dx + dy * dy);
 }
 

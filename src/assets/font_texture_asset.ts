@@ -102,13 +102,13 @@ export class FontTextureAsset extends Asset {
 			this._placeholderChar = (params.missingCharPlaceholder || "?")[0];
 
 			// set smoothing mode
-			let smooth = params.smoothFont === undefined ? true : params.smoothFont;
+			const smooth = params.smoothFont === undefined ? true : params.smoothFont;
 
 			// set extra margins
-			let extraPadding = params.extraPadding || { x: 0, y: 0 };
+			const extraPadding = params.extraPadding || { x: 0, y: 0 };
 
 			// set max texture size
-			let maxTextureWidth = params.maxTextureWidth || 1024;
+			const maxTextureWidth = params.maxTextureWidth || 1024;
 
 			// default chars set
 			let charsSet = params.charactersSet || FontTextureAsset.defaultCharactersSet;
@@ -119,28 +119,28 @@ export class FontTextureAsset extends Asset {
 			}
 
 			// load font
-			let fontFace = new FontFace(params.fontName, `url(${this.url})`);
+			const fontFace = new FontFace(params.fontName, `url(${this.url})`);
 			await fontFace.load();
 			document.fonts.add(fontFace);
 
 			// store font name and size
 			this._fontName = params.fontName;
 			this._fontSize = params.fontSize || 52;
-			let margin = { x: 10, y: 5 };
+			const margin = { x: 10, y: 5 };
 
 			// measure font height
-			let fontFullName = this.fontSize.toString() + "px " + this.fontName;
-			let fontHeight = measureTextHeight(this.fontName, this.fontSize, undefined, extraPadding.y);
-			let fontWidth = measureTextWidth(this.fontName, this.fontSize, undefined, extraPadding.x);
+			const fontFullName = this.fontSize.toString() + "px " + this.fontName;
+			const fontHeight = measureTextHeight(this.fontName, this.fontSize, undefined, extraPadding.y);
+			const fontWidth = measureTextWidth(this.fontName, this.fontSize, undefined, extraPadding.x);
 
 			// set line height
 			this._lineHeight = fontHeight;
 
 			// calc estimated size of a single character in texture
-			let estimatedCharSizeInTexture = new Vector2(fontWidth + margin.x * 2, fontHeight + margin.y * 2);
+			const estimatedCharSizeInTexture = new Vector2(fontWidth + margin.x * 2, fontHeight + margin.y * 2);
 
 			// calc texture size
-			let charsPerRow = Math.floor(maxTextureWidth / estimatedCharSizeInTexture.x);
+			const charsPerRow = Math.floor(maxTextureWidth / estimatedCharSizeInTexture.x);
 			let textureWidth = Math.min(charsSet.length * estimatedCharSizeInTexture.x, maxTextureWidth);
 			let textureHeight = Math.ceil(charsSet.length / charsPerRow) * (estimatedCharSizeInTexture.y);
 
@@ -154,7 +154,7 @@ export class FontTextureAsset extends Asset {
 			this._sourceRects = {};
 
 			// create a canvas to generate the texture on
-			let canvas = document.createElement("canvas");
+			const canvas = document.createElement("canvas");
 			canvas.width = textureWidth;
 			canvas.height = textureHeight;
 			if(!smooth) {
@@ -162,7 +162,7 @@ export class FontTextureAsset extends Asset {
 				canvas.style.fontSmooth = "never";
 				canvas.style.textRendering = "geometricPrecision";
 			}
-			let ctx = canvas.getContext("2d");
+			const ctx = canvas.getContext("2d");
 			ctx.textBaseline = "bottom";
 
 			// set font and white color
@@ -175,8 +175,8 @@ export class FontTextureAsset extends Asset {
 			for(let i = 0; i < charsSet.length; ++i) {
 
 				// get actual width of current character
-				let currChar = charsSet[i];
-				let currCharWidth = Math.ceil(ctx.measureText(currChar).width + extraPadding.x);
+				const currChar = charsSet[i];
+				const currCharWidth = Math.ceil(ctx.measureText(currChar).width + extraPadding.x);
 
 				// check if need to break line down in texture
 				if(x + currCharWidth > textureWidth) {
@@ -186,7 +186,7 @@ export class FontTextureAsset extends Asset {
 
 				// calc source rect
 				const offsetAdjustment = params.sourceRectOffsetAdjustment || { x: 0, y: 0 };
-				let sourceRect = new Rectangle(x + offsetAdjustment.x, y + offsetAdjustment.y, currCharWidth, fontHeight);
+				const sourceRect = new Rectangle(x + offsetAdjustment.x, y + offsetAdjustment.y, currCharWidth, fontHeight);
 				this._sourceRects[currChar] = sourceRect;
 
 				// draw character
@@ -198,8 +198,8 @@ export class FontTextureAsset extends Asset {
 
 			// do threshold effect
 			if(!smooth) {
-				let imageData = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
-				let data = imageData.data;
+				const imageData = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
+				const data = imageData.data;
 				for(let i = 0; i < data.length; i += 4) {
 					if(data[i + 3] > 0 && (data[i + 3] < 255 || data[i] < 255 || data[i + 1] < 255 || data[i + 2] < 255)) {
 						data[i + 3] = 0;
@@ -209,12 +209,12 @@ export class FontTextureAsset extends Asset {
 			}
 
 			// convert canvas to image
-			let img = new Image();
+			const img = new Image();
 			img.src = canvas.toDataURL("image/png");
 			img.onload = () => {
 
 				// convert image to texture
-				let texture = new TextureAsset(this.url + "__font-texture");
+				const texture = new TextureAsset(this.url + "__font-texture");
 				texture.fromImage(img);
 
 				// success!
@@ -312,14 +312,14 @@ function makePowerTwo(val: number): number {
  * Measure font's actual height.
  */
 function measureTextHeight(fontFamily: string, fontSize: number, char?: string, extraHeight?: number): number {
-	let text = document.createElement("pre");
+	const text = document.createElement("pre");
 	text.style.fontFamily = fontFamily;
 	text.style.fontSize = fontSize + "px";
 	text.style.paddingBottom = text.style.paddingLeft = text.style.paddingTop = text.style.paddingRight = "0px";
 	text.style.marginBottom = text.style.marginLeft = text.style.marginTop = text.style.marginRight = "0px";
 	text.textContent = char || "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 ";
 	document.body.appendChild(text);
-	let result = text.getBoundingClientRect().height + (extraHeight || 0);
+	const result = text.getBoundingClientRect().height + (extraHeight || 0);
 	document.body.removeChild(text);
 	return Math.ceil(result);
 }
@@ -332,11 +332,11 @@ function measureTextWidth(fontFamily: string, fontSize: number, char?: string, e
 	if(char === "\n" || char === "\r") { return 0; }
 
 	// measure character width
-	let canvas = document.createElement("canvas");
-	let context = canvas.getContext("2d");
+	const canvas = document.createElement("canvas");
+	const context = canvas.getContext("2d");
 	context.font = fontSize.toString() + "px " + fontFamily;
 	let result = 0;
-	let text = char || "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 ";
+	const text = char || "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 ";
 	for(let i = 0; i < text.length; ++i) {
 		result = Math.max(result, context.measureText(text[i]).width + (extraWidth || 0));
 	}

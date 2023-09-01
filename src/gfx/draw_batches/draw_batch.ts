@@ -152,7 +152,7 @@ export class DrawBatch {
 
 		// we might still have values in this.__currDrawingParams if "preserve buffers" is true.
 		// if so, we extract last texture from it
-		let lastTexture = this.__currDrawingParams ? (this.__currDrawingParams.texture || null) : null;
+		const lastTexture = this.__currDrawingParams ? (this.__currDrawingParams.texture || null) : null;
 
 		// set new drawing params
 		effect = effect || this.defaultEffect;
@@ -251,10 +251,10 @@ export class DrawBatch {
 		this.__validateDrawing(false);
 
 		// get default effect
-		let effect = this.__currDrawingParams.effect;
+		const effect = this.__currDrawingParams.effect;
 
 		// get the gfx manager
-		let gfx = DrawBatch._gfx;
+		const gfx = DrawBatch._gfx;
 
 		// set effect
 		gfx._internal.useEffect(effect, this.__currDrawingParams.overrideEffectFlags);

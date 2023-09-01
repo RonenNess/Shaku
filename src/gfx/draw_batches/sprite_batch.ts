@@ -67,12 +67,12 @@ export class SpriteBatch extends SpriteBatchBase {
 
 		// push vertices
 		let i = 0;
-		let colors = this._buffers.colorsArray;
-		let uvs = this._buffers.textureArray;
-		let positions = this._buffers.positionArray;
-		let normals = this._buffers.normalsArray;
-		let binormals = this._buffers.binormalsArray;
-		let tangents = this._buffers.tangentsArray;
+		const colors = this._buffers.colorsArray;
+		const uvs = this._buffers.textureArray;
+		const positions = this._buffers.positionArray;
+		const normals = this._buffers.normalsArray;
+		const binormals = this._buffers.binormalsArray;
+		const tangents = this._buffers.tangentsArray;
 		for(const vertex of vertices) {
 			// push color
 			if(this.__currDrawingParams.hasVertexColor) {
@@ -158,7 +158,7 @@ export class SpriteBatch extends SpriteBatchBase {
 	 * @param {Vector2=} skew Skew the drawing corners on X and Y axis, around the origin point.
 	 */
 	drawQuad(texture: TextureAssetBase, position: Vector2 | Vector3, size: Vector2 | Vector3 | number, sourceRectangle?: Rectangle, color?: Color | Color[], rotation?: number, origin?: Vector2, skew?: Vector2) {
-		let sprite = this.#_gfx.Sprite.build(texture, position, size, sourceRectangle, color, rotation, origin, skew);
+		const sprite = this.#_gfx.Sprite.build(texture, position, size, sourceRectangle, color, rotation, origin, skew);
 		this.drawSprite(sprite);
 	}
 
@@ -168,7 +168,7 @@ export class SpriteBatch extends SpriteBatchBase {
 	 * @param {Boolean=} cullOutOfScreen If true, will cull sprites that are not visible in currently set rendering region.
 	 */
 	drawSpriteGroup(group: SpritesGroup, cullOutOfScreen?: boolean) {
-		let transform = group.getTransform();
+		const transform = group.getTransform();
 		this.drawSprite(group._sprites, transform, cullOutOfScreen);
 	}
 
@@ -184,9 +184,9 @@ export class SpriteBatch extends SpriteBatchBase {
 		if((destRect.isVector2) || (destRect.isVector3)) {
 			destRect = new Rectangle(0, 0, destRect.x, destRect.y);
 		}
-		let position = origin ? destRect.getPosition().addSelf(size.mul(origin)) : destRect.getCenter();
+		const position = origin ? destRect.getPosition().addSelf(size.mul(origin)) : destRect.getCenter();
 		origin = origin || Vector2.halfReadonly;
-		let size = destRect.getSize();
+		const size = destRect.getSize();
 		this.drawQuad(texture, position, size, sourceRect, color);
 	}
 }

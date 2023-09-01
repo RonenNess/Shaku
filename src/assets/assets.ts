@@ -90,7 +90,7 @@ export class Assets implements IManager {
 			_logger.debug("Waiting for all assets..");
 
 			// check if all assets are loaded or if there are errors
-			let checkAssets = () => {
+			const checkAssets = () => {
 
 				// got errors?
 				if(this._failedAssets.size !== 0) {
@@ -146,7 +146,7 @@ export class Assets implements IManager {
 	 * @returns Loaded asset or null if not found.
 	 */
 	#_getFromCache(url: string, type: unknown) {
-		let cached = this._loaded[url] || null;
+		const cached = this._loaded[url] || null;
 		if(cached && type) {
 			if(!(cached instanceof type)) {
 				throw new Error(`Asset with URL "${url}" is already loaded, but has unexpected type (expecting ${type})!`);
@@ -163,8 +163,8 @@ export class Assets implements IManager {
 	 */
 	async #_loadAndCacheAsset(newAsset: Asset, params: unknown) {
 		// extract url and typename, and add to cache
-		let url = newAsset.url;
-		let typeName = newAsset.constructor.name;
+		const url = newAsset.url;
+		const typeName = newAsset.constructor.name;
 		this._loaded[url] = newAsset;
 		this._waitingAssets.add(url);
 
@@ -250,7 +250,7 @@ export class Assets implements IManager {
 	#_createAsset<T>(name: string, classType: { new(...args: unknown[]): T; }, initMethod: (clazz: T) => Promise<void>, needWait?: boolean): Promise<T> {
 		// create asset
 		name = this.#_wrapUrl(name);
-		let _asset = new classType(name || generateRandomAssetName());
+		const _asset = new classType(name || generateRandomAssetName());
 
 		// if this asset need waiting
 		if(needWait) {
@@ -258,7 +258,7 @@ export class Assets implements IManager {
 		}
 
 		// generate render target in async
-		let promise = new Promise(async (resolve, reject) => {
+		const promise = new Promise(async (resolve, reject) => {
 
 			// make sure not in cache
 			if(name && this._loaded[name]) { return reject(`Asset of type "${classType.name}" to create with URL "${name}" already exist in cache!`); }
@@ -450,7 +450,7 @@ export class Assets implements IManager {
 	 */
 	public free(url: string): void {
 		url = this.#_wrapUrl(url);
-		let asset = this._loaded[url];
+		const asset = this._loaded[url];
 		if(asset) {
 			asset.destroy();
 			delete this._loaded[url];

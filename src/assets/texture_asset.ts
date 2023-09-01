@@ -213,7 +213,7 @@ export class TextureAsset extends TextureAssetBase {
 		return new Promise(async (resolve, reject) => {
 
 			if(typeof source === "string") {
-				let img = new Image();
+				const img = new Image();
 				img.onload = () => {
 					this.fromImage(source, params);
 					this._notifyReady();
@@ -273,16 +273,16 @@ export class TextureAsset extends TextureAssetBase {
 
 		// build internal canvas and context to get pixel data
 		if(!this._ctxForPixelData) {
-			let canvas = document.createElement("canvas");
+			const canvas = document.createElement("canvas");
 			canvas.width = 1;
 			canvas.height = 1;
 			this._ctxForPixelData = canvas.getContext("2d");
 		}
 
 		// get pixel data
-		let ctx = this._ctxForPixelData;
+		const ctx = this._ctxForPixelData;
 		ctx.drawImage(this._image, x, y, 1, 1, 0, 0, 1, 1);
-		let pixelData = ctx.getImageData(0, 0, 1, 1).data as [number, number, number, number];
+		const pixelData = ctx.getImageData(0, 0, 1, 1).data as [number, number, number, number];
 		return Color.fromBytesArray(pixelData);
 	}
 
@@ -309,21 +309,21 @@ export class TextureAsset extends TextureAssetBase {
 
 		// build internal canvas and context to get pixel data
 		if(!this._ctxForPixelData) {
-			let canvas = document.createElement("canvas");
+			const canvas = document.createElement("canvas");
 			canvas.width = width;
 			canvas.height = height;
 			this._ctxForPixelData = canvas.getContext("2d");
 		}
 
 		// get pixel data
-		let ctx = this._ctxForPixelData;
+		const ctx = this._ctxForPixelData;
 		ctx.drawImage(this._image, x, y, width, height, 0, 0, width, height);
-		let pixelData = ctx.getImageData(x, y, width, height).data;
+		const pixelData = ctx.getImageData(x, y, width, height).data;
 
 		//  convert to colors
-		let ret = [];
+		const ret = [];
 		for(let i = 0; i < width; ++i) {
-			let currRow = [];
+			const currRow = [];
 			ret.push(currRow);
 			for(let j = 0; j < height; ++j) {
 				currRow.push(Color.fromBytesArray(pixelData, i * 4 + (j * 4 * width)));

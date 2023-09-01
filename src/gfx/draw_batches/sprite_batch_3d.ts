@@ -36,7 +36,7 @@ export class SpriteBatch3D extends SpriteBatch {
 	 * @param {Number=} zFar Z far plane.
 	 */
 	setPerspectiveCamera(fieldOfView, aspectRatio, zNear, zFar) {
-		let camera = this.__camera;
+		const camera = this.__camera;
 		fieldOfView = fieldOfView || ((45 * Math.PI) / 180);
 		aspectRatio = aspectRatio || (this.#_gfx.getRenderingSize().x / this.#_gfx.getRenderingSize().y);
 		zNear = zNear || 0.1;

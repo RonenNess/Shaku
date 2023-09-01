@@ -41,7 +41,7 @@ export class SpritesGroup {
 	 */
 	getTransform() {
 
-		let matrices = [];
+		const matrices = [];
 
 		// add position
 		if((this.position.x !== 0) || (this.position.y !== 0)) {

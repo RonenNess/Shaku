@@ -37,7 +37,7 @@ export class Sfx implements IManager {
 	 **/
 	public startFrame() {
 		// remove any sound no longer playing
-		let playingSounds = Array.from(this._playingSounds);
+		const playingSounds = Array.from(this._playingSounds);
 		for(const sound of playingSounds) {
 			if(!sound.isPlaying) {
 				this._playingSounds.delete(sound);
@@ -82,11 +82,11 @@ export class Sfx implements IManager {
 	 * @returns {Promise} Promise to resolve when sound starts playing.
 	 */
 	play(soundAsset, volume, playbackRate, preservesPitch) {
-		let sound = this.createSound(soundAsset);
+		const sound = this.createSound(soundAsset);
 		sound.volume = volume !== undefined ? volume : 1;
 		if(playbackRate !== undefined) { sound.playbackRate = playbackRate; }
 		if(preservesPitch !== undefined) { sound.preservesPitch = preservesPitch; }
-		let ret = sound.play();
+		const ret = sound.play();
 		sound.disposeWhenDone();
 		return ret;
 	}
@@ -97,7 +97,7 @@ export class Sfx implements IManager {
 	 * Shaku.sfx.stopAll();
 	 */
 	stopAll() {
-		let playingSounds = Array.from(this._playingSounds);
+		const playingSounds = Array.from(this._playingSounds);
 		for(const sound of playingSounds) {
 			sound.stop();
 		}
@@ -123,7 +123,7 @@ export class Sfx implements IManager {
 	 */
 	createSound(sound) {
 		if(!(sound.isSoundAsset)) { throw new Error("Sound type must be an instance of SoundAsset!"); }
-		let ret = new SoundInstance(this, sound.url);
+		const ret = new SoundInstance(this, sound.url);
 		return ret;
 	}
 

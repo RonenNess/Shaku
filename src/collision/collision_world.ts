@@ -126,11 +126,11 @@ export class CollisionWorld {
 		this._stats.updatedShapes++;
 
 		// get new range
-		let bb = shape._getBoundingBox();
-		let minx = Math.floor(bb.left / this._gridCellSize.x);
-		let miny = Math.floor(bb.top / this._gridCellSize.y);
-		let maxx = Math.ceil(bb.right / this._gridCellSize.x);
-		let maxy = Math.ceil(bb.bottom / this._gridCellSize.y);
+		const bb = shape._getBoundingBox();
+		const minx = Math.floor(bb.left / this._gridCellSize.x);
+		const miny = Math.floor(bb.top / this._gridCellSize.y);
+		const maxx = Math.ceil(bb.right / this._gridCellSize.x);
+		const maxy = Math.ceil(bb.bottom / this._gridCellSize.y);
 
 		// change existing grid cells
 		if(shape._worldRange) {
@@ -143,10 +143,10 @@ export class CollisionWorld {
 			}
 
 			// get old range
-			let ominx = shape._worldRange[0];
-			let ominy = shape._worldRange[1];
-			let omaxx = shape._worldRange[2];
-			let omaxy = shape._worldRange[3];
+			const ominx = shape._worldRange[0];
+			const ominy = shape._worldRange[1];
+			const omaxx = shape._worldRange[2];
+			const omaxy = shape._worldRange[3];
 
 			// first remove from old chunks we don't need
 			for(let i = ominx; i < omaxx; ++i) {
@@ -158,8 +158,8 @@ export class CollisionWorld {
 					}
 
 					// remove from cell
-					let key = i + "," + j;
-					let currSet = this._grid[key];
+					const key = i + "," + j;
+					const currSet = this._grid[key];
 					if(currSet) {
 						currSet.delete(shape);
 						if(currSet.size === 0) {
@@ -179,7 +179,7 @@ export class CollisionWorld {
 					}
 
 					// add to new cell
-					let currSet = this.#_getCell(i, j);
+					const currSet = this.#_getCell(i, j);
 					currSet.add(shape);
 				}
 			}
@@ -189,7 +189,7 @@ export class CollisionWorld {
 			this._stats.addedShapes++;
 			for(let i = minx; i < maxx; ++i) {
 				for(let j = miny; j < maxy; ++j) {
-					let currSet = this.#_getCell(i, j);
+					const currSet = this.#_getCell(i, j);
 					currSet.add(shape);
 				}
 			}
@@ -251,14 +251,14 @@ export class CollisionWorld {
 
 		// remove from grid
 		if(shape._worldRange) {
-			let minx = shape._worldRange[0];
-			let miny = shape._worldRange[1];
-			let maxx = shape._worldRange[2];
-			let maxy = shape._worldRange[3];
+			const minx = shape._worldRange[0];
+			const miny = shape._worldRange[1];
+			const maxx = shape._worldRange[2];
+			const maxy = shape._worldRange[3];
 			for(let i = minx; i < maxx; ++i) {
 				for(let j = miny; j < maxy; ++j) {
-					let key = i + "," + j;
-					let currSet = this._grid[key];
+					const key = i + "," + j;
+					const currSet = this._grid[key];
 					if(currSet) {
 						currSet.delete(shape);
 						if(currSet.size === 0) {
@@ -287,25 +287,25 @@ export class CollisionWorld {
 	 */
 	#_iterateBroadPhase(shape: CollisionShape, handler: (shape: CollisionShape) => boolean, mask: number, predicate: (shape: CollisionShape) => boolean): void {
 		// get grid range
-		let bb = shape._getBoundingBox();
-		let minx = Math.floor(bb.left / this._gridCellSize.x);
-		let miny = Math.floor(bb.top / this._gridCellSize.y);
-		let maxx = Math.ceil(bb.right / this._gridCellSize.x);
-		let maxy = Math.ceil(bb.bottom / this._gridCellSize.y);
+		const bb = shape._getBoundingBox();
+		const minx = Math.floor(bb.left / this._gridCellSize.x);
+		const miny = Math.floor(bb.top / this._gridCellSize.y);
+		const maxx = Math.ceil(bb.right / this._gridCellSize.x);
+		const maxy = Math.ceil(bb.bottom / this._gridCellSize.y);
 
 		// update stats
 		this._stats.broadPhaseCalls++;
 
 		// shapes we checked
-		let checked = new Set();
+		const checked = new Set();
 
 		// iterate options
 		for(let i = minx; i < maxx; ++i) {
 			for(let j = miny; j < maxy; ++j) {
 
 				// get current grid chunk
-				let key = i + "," + j;
-				let currSet = this._grid[key];
+				const key = i + "," + j;
+				const currSet = this._grid[key];
 
 				// iterate shapes in grid chunk
 				if(currSet) {
@@ -339,7 +339,7 @@ export class CollisionWorld {
 						this._stats.broadPhaseShapesChecksPostPredicate++;
 
 						// invoke handler on shape
-						let proceedLoop = Boolean(handler(other));
+						const proceedLoop = Boolean(handler(other));
 
 						// break loop
 						if(!proceedLoop) {
@@ -379,7 +379,7 @@ export class CollisionWorld {
 			sortByDistanceShapes(sourceShape, options);
 
 			// check collision sorted
-			let handlers = this.resolver.getHandlers(sourceShape);
+			const handlers = this.resolver.getHandlers(sourceShape);
 			for(const other of options) {
 				this._stats.collisionChecks++;
 				result = this.resolver.testWithHandler(sourceShape, other, handlers[other.shapeId]);
@@ -392,7 +392,7 @@ export class CollisionWorld {
 		// easy case - single result, not sorted
 		else {
 			// iterate possible shapes and test collision
-			let handlers = this.resolver.getHandlers(sourceShape);
+			const handlers = this.resolver.getHandlers(sourceShape);
 			this.#_iterateBroadPhase(sourceShape, (other) => {
 
 				// test collision and continue iterating if we don't have a result
@@ -423,10 +423,10 @@ export class CollisionWorld {
 
 		// get collisions
 		const ret: CollisionTestResult[] = [];
-		let handlers = this.resolver.getHandlers(sourceShape);
+		const handlers = this.resolver.getHandlers(sourceShape);
 		this.#_iterateBroadPhase(sourceShape, (other) => {
 			this._stats.collisionChecks++;
-			let result = this.resolver.testWithHandler(sourceShape, other, handlers[other.shapeId]);
+			const result = this.resolver.testWithHandler(sourceShape, other, handlers[other.shapeId]);
 			if(!result) return true;
 
 			this._stats.collisionMatches++;
@@ -485,7 +485,7 @@ export class CollisionWorld {
 	 */
 	public debugDraw(gridColor?: Color, gridHighlitColor?: Color, opacity?: number, camera?: Camera): void {
 		// if we don't have a debug-draw batch, create it
-		let shapesBatch = this.getOrCreateDebugDrawBatch();
+		const shapesBatch = this.getOrCreateDebugDrawBatch();
 
 		// begin drawing
 		shapesBatch.begin();

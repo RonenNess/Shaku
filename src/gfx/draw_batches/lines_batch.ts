@@ -81,7 +81,7 @@ export class LinesBatch extends DrawBatch {
 	 * @private
 	 */
 	#_createBuffers(batchPolygonsCount) {
-		let gl = this.#_gl;
+		const gl = this.#_gl;
 
 		// dynamic buffers, used for batch rendering
 		this._buffers = {
@@ -96,7 +96,7 @@ export class LinesBatch extends DrawBatch {
 		};
 
 		// create the indices buffer
-		let maxIndex = (batchPolygonsCount * 3);
+		const maxIndex = (batchPolygonsCount * 3);
 		let indicesArrayType;
 		if(maxIndex <= 256) {
 			indicesArrayType = Uint8Array;
@@ -110,7 +110,7 @@ export class LinesBatch extends DrawBatch {
 			indicesArrayType = Uint32Array;
 			this.__indicesType = gl.UNSIGNED_INT;
 		}
-		let indices = new indicesArrayType(batchPolygonsCount * 3); // 3 = number of indices per sprite
+		const indices = new indicesArrayType(batchPolygonsCount * 3); // 3 = number of indices per sprite
 		for(let i = 0; i < indices.length; i++) {
 
 			indices[i] = i;
@@ -141,7 +141,7 @@ export class LinesBatch extends DrawBatch {
 	 * @inheritdoc
 	 */
 	destroy() {
-		let gl = this.#_gl;
+		const gl = this.#_gl;
 		if(this._buffers) {
 			if(this._buffers.positionBuffer) gl.deleteBuffer(this._buffers.positionBuffer);
 			if(this._buffers.colorsBuffer) gl.deleteBuffer(this._buffers.colorsBuffer);
@@ -179,8 +179,8 @@ export class LinesBatch extends DrawBatch {
 
 		// push vertices
 		let i = 0;
-		let colors = this._buffers.colorsArray;
-		let positions = this._buffers.positionArray;
+		const colors = this._buffers.colorsArray;
+		const positions = this._buffers.positionArray;
 		for(const vertex of vertices) {
 			// push color
 			if(this.__currDrawingParams.hasVertexColor) {
@@ -224,7 +224,7 @@ export class LinesBatch extends DrawBatch {
 	 * @param {Vector2=} skew Skew the drawing corners on X and Y axis, around the origin point.
 	 */
 	drawQuad(position, size, color, rotation, origin, skew) {
-		let sprite = this.#_gfx.Sprite.build(null, position, size, undefined, color, rotation, origin, skew);
+		const sprite = this.#_gfx.Sprite.build(null, position, size, undefined, color, rotation, origin, skew);
 		this.#_addRect(sprite);
 	}
 
@@ -274,11 +274,11 @@ export class LinesBatch extends DrawBatch {
 		// for rotation
 		let rotateVec;
 		if(rotation) {
-			let cos = Math.cos(rotation);
-			let sin = Math.sin(rotation);
+			const cos = Math.cos(rotation);
+			const sin = Math.sin(rotation);
 			rotateVec = function(vector) {
-				let x = (vector.x * cos - vector.y * sin);
-				let y = (vector.x * sin + vector.y * cos);
+				const x = (vector.x * cos - vector.y * sin);
+				const y = (vector.x * sin + vector.y * cos);
 				vector.x = x;
 				vector.y = y;
 				return vector;
@@ -296,7 +296,7 @@ export class LinesBatch extends DrawBatch {
 		// generate list of vertices to draw the circle
 		for(let i = 1; i <= segmentsCount; i++) {
 			// calculate new point
-			let newPoint = new Vector2(
+			const newPoint = new Vector2(
 				(circle.radius * Math.cos(i * segmentStep)) * ratio.x,
 				(circle.radius * Math.sin(i * segmentStep)) * ratio.y
 			);
@@ -338,10 +338,10 @@ export class LinesBatch extends DrawBatch {
 		// add rectangle from sprite data
 		{
 			// calculate vertices positions
-			let sizeX = sprite.size.x;
-			let sizeY = sprite.size.y;
-			let left = -sizeX * sprite.origin.x;
-			let top = -sizeY * sprite.origin.y;
+			const sizeX = sprite.size.x;
+			const sizeY = sprite.size.y;
+			const left = -sizeX * sprite.origin.x;
+			const top = -sizeY * sprite.origin.y;
 
 			// calculate corners
 			topLeft.x = left; topLeft.y = top;
@@ -374,11 +374,11 @@ export class LinesBatch extends DrawBatch {
 
 			// apply rotation
 			if(sprite.rotation) {
-				let cos = Math.cos(sprite.rotation);
-				let sin = Math.sin(sprite.rotation);
+				const cos = Math.cos(sprite.rotation);
+				const sin = Math.sin(sprite.rotation);
 				function rotateVec(vector) {
-					let x = (vector.x * cos - vector.y * sin);
-					let y = (vector.x * sin + vector.y * cos);
+					const x = (vector.x * cos - vector.y * sin);
+					const y = (vector.x * sin + vector.y * cos);
 					vector.x = x;
 					vector.y = y;
 				}
@@ -491,16 +491,16 @@ export class LinesBatch extends DrawBatch {
 		let effect = this.__currDrawingParams.effect;
 
 		// get some members
-		let gl = this.#_gl;
-		let gfx = this.#_gfx;
-		let positionArray = this._buffers.positionArray;
-		let colorsArray = this.__currDrawingParams.hasVertexColor ? this._buffers.colorsArray : null;
-		let positionBuffer = this._buffers.positionBuffer;
-		let colorsBuffer = this._buffers.colorsBuffer;
-		let indexBuffer = this._buffers.indexBuffer;
+		const gl = this.#_gl;
+		const gfx = this.#_gfx;
+		const positionArray = this._buffers.positionArray;
+		const colorsArray = this.__currDrawingParams.hasVertexColor ? this._buffers.colorsArray : null;
+		const positionBuffer = this._buffers.positionBuffer;
+		const colorsBuffer = this._buffers.colorsBuffer;
+		const indexBuffer = this._buffers.indexBuffer;
 
 		// should copy buffers
-		let needBuffersCopy = this.__dirty;
+		const needBuffersCopy = this.__dirty;
 
 		// nothing to draw? skip
 		if(positionArray._index <= 1) {

@@ -60,7 +60,7 @@ export class Matrix {
 	 * @returns Cloned matrix.
 	 */
 	public clone(): Matrix {
-		let ret = new Matrix(this.values, true);
+		const ret = new Matrix(this.values, true);
 		return ret;
 	}
 
@@ -188,8 +188,8 @@ export class Matrix {
 	 * @returns a new matrix with result.
 	 */
 	public static createPerspective(fieldOfViewInRadians: number, aspectRatio: number, near: number, far: number): Matrix {
-		let f = 1.0 / Math.tan(fieldOfViewInRadians / 2);
-		let rangeInv = 1 / (near - far);
+		const f = 1.0 / Math.tan(fieldOfViewInRadians / 2);
+		const rangeInv = 1 / (near - far);
 
 		return new Matrix([
 			f / aspectRatio, 0, 0, 0,
@@ -230,8 +230,8 @@ export class Matrix {
 	 * @returns a new matrix with result.
 	 */
 	public static createRotationX(a: number): Matrix {
-		let sin = Math.sin;
-		let cos = Math.cos;
+		const sin = Math.sin;
+		const cos = Math.cos;
 		return new Matrix([
 			1, 0, 0, 0,
 			0, cos(a), -sin(a), 0,
@@ -245,8 +245,8 @@ export class Matrix {
 	 * @returns a new matrix with result.
 	 */
 	public static createRotationY(a: number): Matrix {
-		let sin = Math.sin;
-		let cos = Math.cos;
+		const sin = Math.sin;
+		const cos = Math.cos;
 		return new Matrix([
 			cos(a), 0, sin(a), 0,
 			0, 1, 0, 0,
@@ -260,8 +260,8 @@ export class Matrix {
 	 * @returns a new matrix with result.
 	 */
 	public static createRotationZ(a: number): Matrix {
-		let sin = Math.sin;
-		let cos = Math.cos;
+		const sin = Math.sin;
+		const cos = Math.cos;
 		return new Matrix([
 			cos(a), -sin(a), 0, 0,
 			sin(a), cos(a), 0, 0,
@@ -276,16 +276,16 @@ export class Matrix {
 	 */
 	public static multiply(matrixA: Matrix, matrixB: Matrix): Matrix {
 		// Slice the second matrix up into rows
-		let row0 = [matrixB.values[0], matrixB.values[1], matrixB.values[2], matrixB.values[3]];
-		let row1 = [matrixB.values[4], matrixB.values[5], matrixB.values[6], matrixB.values[7]];
-		let row2 = [matrixB.values[8], matrixB.values[9], matrixB.values[10], matrixB.values[11]];
-		let row3 = [matrixB.values[12], matrixB.values[13], matrixB.values[14], matrixB.values[15]];
+		const row0 = [matrixB.values[0], matrixB.values[1], matrixB.values[2], matrixB.values[3]];
+		const row1 = [matrixB.values[4], matrixB.values[5], matrixB.values[6], matrixB.values[7]];
+		const row2 = [matrixB.values[8], matrixB.values[9], matrixB.values[10], matrixB.values[11]];
+		const row3 = [matrixB.values[12], matrixB.values[13], matrixB.values[14], matrixB.values[15]];
 
 		// Multiply each row by matrixA
-		let result0 = multiplyMatrixAndPoint(matrixA.values, row0);
-		let result1 = multiplyMatrixAndPoint(matrixA.values, row1);
-		let result2 = multiplyMatrixAndPoint(matrixA.values, row2);
-		let result3 = multiplyMatrixAndPoint(matrixA.values, row3);
+		const result0 = multiplyMatrixAndPoint(matrixA.values, row0);
+		const result1 = multiplyMatrixAndPoint(matrixA.values, row1);
+		const result2 = multiplyMatrixAndPoint(matrixA.values, row2);
+		const result3 = multiplyMatrixAndPoint(matrixA.values, row3);
 
 		// Turn the result rows back into a single matrix
 		return new Matrix([
@@ -389,16 +389,16 @@ export class Matrix {
 	 */
 	public static multiplyIntoFirst(matrixA: Matrix, matrixB: Matrix): Matrix {
 		// Slice the second matrix up into rows
-		let row0 = [matrixB.values[0], matrixB.values[1], matrixB.values[2], matrixB.values[3]];
-		let row1 = [matrixB.values[4], matrixB.values[5], matrixB.values[6], matrixB.values[7]];
-		let row2 = [matrixB.values[8], matrixB.values[9], matrixB.values[10], matrixB.values[11]];
-		let row3 = [matrixB.values[12], matrixB.values[13], matrixB.values[14], matrixB.values[15]];
+		const row0 = [matrixB.values[0], matrixB.values[1], matrixB.values[2], matrixB.values[3]];
+		const row1 = [matrixB.values[4], matrixB.values[5], matrixB.values[6], matrixB.values[7]];
+		const row2 = [matrixB.values[8], matrixB.values[9], matrixB.values[10], matrixB.values[11]];
+		const row3 = [matrixB.values[12], matrixB.values[13], matrixB.values[14], matrixB.values[15]];
 
 		// Multiply each row by matrixA
-		let result0 = multiplyMatrixAndPoint(matrixA.values, row0);
-		let result1 = multiplyMatrixAndPoint(matrixA.values, row1);
-		let result2 = multiplyMatrixAndPoint(matrixA.values, row2);
-		let result3 = multiplyMatrixAndPoint(matrixA.values, row3);
+		const result0 = multiplyMatrixAndPoint(matrixA.values, row0);
+		const result1 = multiplyMatrixAndPoint(matrixA.values, row1);
+		const result2 = multiplyMatrixAndPoint(matrixA.values, row2);
+		const result3 = multiplyMatrixAndPoint(matrixA.values, row3);
 
 		// Turn the result rows back into a single matrix
 		matrixA.set(
@@ -484,28 +484,28 @@ export class Matrix {
  */
 function multiplyMatrixAndPoint(matrix: number[], point: [number, number, number, number]): [number, number, number, number] {
 	// Give a simple variable name to each part of the matrix, a column and row number
-	let c0r0 = matrix[0], c1r0 = matrix[1], c2r0 = matrix[2], c3r0 = matrix[3];
-	let c0r1 = matrix[4], c1r1 = matrix[5], c2r1 = matrix[6], c3r1 = matrix[7];
-	let c0r2 = matrix[8], c1r2 = matrix[9], c2r2 = matrix[10], c3r2 = matrix[11];
-	let c0r3 = matrix[12], c1r3 = matrix[13], c2r3 = matrix[14], c3r3 = matrix[15];
+	const c0r0 = matrix[0], c1r0 = matrix[1], c2r0 = matrix[2], c3r0 = matrix[3];
+	const c0r1 = matrix[4], c1r1 = matrix[5], c2r1 = matrix[6], c3r1 = matrix[7];
+	const c0r2 = matrix[8], c1r2 = matrix[9], c2r2 = matrix[10], c3r2 = matrix[11];
+	const c0r3 = matrix[12], c1r3 = matrix[13], c2r3 = matrix[14], c3r3 = matrix[15];
 
 	// Now set some simple names for the point
-	let x = point[0];
-	let y = point[1];
-	let z = point[2];
-	let w = point[3];
+	const x = point[0];
+	const y = point[1];
+	const z = point[2];
+	const w = point[3];
 
 	// Multiply the point against each part of the 1st column, then add together
-	let resultX = (x * c0r0) + (y * c0r1) + (z * c0r2) + (w * c0r3);
+	const resultX = (x * c0r0) + (y * c0r1) + (z * c0r2) + (w * c0r3);
 
 	// Multiply the point against each part of the 2nd column, then add together
-	let resultY = (x * c1r0) + (y * c1r1) + (z * c1r2) + (w * c1r3);
+	const resultY = (x * c1r0) + (y * c1r1) + (z * c1r2) + (w * c1r3);
 
 	// Multiply the point against each part of the 3rd column, then add together
-	let resultZ = (x * c2r0) + (y * c2r1) + (z * c2r2) + (w * c2r3);
+	const resultZ = (x * c2r0) + (y * c2r1) + (z * c2r2) + (w * c2r3);
 
 	// Multiply the point against each part of the 4th column, then add together
-	let resultW = (x * c3r0) + (y * c3r1) + (z * c3r2) + (w * c3r3);
+	const resultW = (x * c3r0) + (y * c3r1) + (z * c3r2) + (w * c3r3);
 
 	return [resultX, resultY, resultZ, resultW];
 }

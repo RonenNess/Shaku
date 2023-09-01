@@ -144,7 +144,7 @@ export class Color {
 	 * @returns Component as hex value.
 	 */
 	public static componentToHex(c: number): string {
-		let hex = Math.round(c).toString(16);
+		const hex = Math.round(c).toString(16);
 		return hex.length == 1 ? "0" + hex : hex;
 	}
 
@@ -168,7 +168,7 @@ export class Color {
 		if(typeof val !== "string" && val[0] != "#") {
 			throw new PintarJS.Error("Invalid color format!");
 		}
-		let parsed = hexToColor(val);
+		const parsed = hexToColor(val);
 		if(!parsed) { throw new Error("Invalid hex value to parse!"); }
 		return new Color(parsed.r, parsed.g, parsed.b, 1);
 	}
@@ -321,7 +321,7 @@ export class Color {
 	 * @returns result color.
 	 */
 	public static lerp(p1: Color, p2: Color, a: number): Color {
-		let lerpScalar = MathHelper.lerp;
+		const lerpScalar = MathHelper.lerp;
 		return new Color(lerpScalar(p1.r, p2.r, a),
 			lerpScalar(p1.g, p2.g, a),
 			lerpScalar(p1.b, p2.b, a),
@@ -484,7 +484,7 @@ const colorNameToHex = {
 
 // create getter function for all named color
 for(const key in colorNameToHex) {
-	let colorValue = hexToColor(colorNameToHex[key as keyof typeof colorNameToHex]);
+	const colorValue = hexToColor(colorNameToHex[key as keyof typeof colorNameToHex]);
 	(function(_colValue) {
 
 		Object.defineProperty(Color, key, {
@@ -520,13 +520,13 @@ Object.defineProperty(Color, "transwhite", {
  */
 function hexToColor(hex: string) {
 	// expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
-	let shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+	const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
 	hex = hex.replace(shorthandRegex, function(m, r, g, b) {
 		return r + r + g + g + b + b;
 	});
 
-	let result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-	let components = result ? {
+	const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+	const components = result ? {
 		r: parseInt(result[1], 16) / 255.0,
 		g: parseInt(result[2], 16) / 255.0,
 		b: parseInt(result[3], 16) / 255.0

@@ -49,7 +49,7 @@ export class CollisionResolver {
 	 * @returns {CollisionTestResult} collision detection result or null if they don't collide.
 	 */
 	test(first, second) {
-		let handler = this.#_getCollisionMethod(first, second);
+		const handler = this.#_getCollisionMethod(first, second);
 		return this.testWithHandler(first, second, handler);
 	}
 
@@ -68,11 +68,11 @@ export class CollisionResolver {
 		}
 
 		// test collision
-		let result = handler(first, second);
+		const result = handler(first, second);
 
 		// collision
 		if(result) {
-			let position = (result.isVector2) ? result : null;
+			const position = (result.isVector2) ? result : null;
 			return new CollisionTestResult(position, first, second);
 		}
 
@@ -95,7 +95,7 @@ export class CollisionResolver {
 	 * @returns {Function} collision detection method or null if not found.
 	 */
 	#_getCollisionMethod(first, second) {
-		let handlersFrom = this._handlers[first.shapeId];
+		const handlersFrom = this._handlers[first.shapeId];
 		if(handlersFrom) {
 			return handlersFrom[second.shapeId] || null;
 		}

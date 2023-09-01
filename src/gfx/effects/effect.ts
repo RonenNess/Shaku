@@ -220,14 +220,14 @@ export class Effect {
 		for(const uniform in this.uniformTypes) {
 
 			// get uniform location
-			let uniformLocation = this._gl.getUniformLocation(this._program, uniform);
+			const uniformLocation = this._gl.getUniformLocation(this._program, uniform);
 			if(uniformLocation === -1) {
 				_logger.error("Could not find uniform: " + uniform);
 				throw new Error(`Uniform named "${uniform}" was not found in shader code!`);
 			}
 
 			// get gl setter method
-			let uniformData = this.uniformTypes[uniform as keyof typeof this.uniformTypes];
+			const uniformData = this.uniformTypes[uniform as keyof typeof this.uniformTypes];
 			if(!Object.values(UniformTypes).includes(uniformData.type)) {
 				_logger.error("Uniform has invalid type: " + uniformData.type);
 				throw new Error(`Uniform "${uniform}" have illegal value type "${uniformData.type}"!`);
@@ -295,7 +295,7 @@ export class Effect {
 			}
 
 			// set binding
-			let bindTo = uniformData.bind;
+			const bindTo = uniformData.bind;
 			if(bindTo) {
 				this._uniformBinds[bindTo] = uniform;
 			}
@@ -311,14 +311,14 @@ export class Effect {
 		for(const attr in this.attributeTypes) {
 
 			// get attribute location
-			let attributeLocation = this._gl.getAttribLocation(this._program, attr);
+			const attributeLocation = this._gl.getAttribLocation(this._program, attr);
 			if(attributeLocation === -1) {
 				_logger.error("Could not find attribute: " + attr);
 				throw new Error(`Attribute named "${attr}" was not found in shader code!`);
 			}
 
 			// get attribute data
-			let attributeData = this.attributeTypes[attr];
+			const attributeData = this.attributeTypes[attr];
 
 			// build setter method
 			(function(_this, name, location, data) {
@@ -341,7 +341,7 @@ export class Effect {
 			})(this, attr, attributeLocation, attributeData);
 
 			// set binding
-			let bindTo = attributeData.bind;
+			const bindTo = attributeData.bind;
 			if(bindTo) {
 				this._attributeBinds[bindTo] = attr;
 			}
@@ -518,15 +518,15 @@ export class Effect {
 
 		// set texture value
 		this._cachedValues.texture = texture;
-		let glTexture = texture._glTexture || texture;
+		const glTexture = texture._glTexture || texture;
 		this._gl.activeTexture(this._gl.TEXTURE0);
 		this._gl.bindTexture(this._gl.TEXTURE_2D, glTexture);
 		uniform(texture, 0);
 
 		// set texture size
-		let textWidth = this.getBoundUniform(Effect.UniformBinds.TextureWidth);
+		const textWidth = this.getBoundUniform(Effect.UniformBinds.TextureWidth);
 		if(textWidth) textWidth(texture.width);
-		let textHeight = this.getBoundUniform(Effect.UniformBinds.TextureHeight);
+		const textHeight = this.getBoundUniform(Effect.UniformBinds.TextureHeight);
 		if(textHeight) textHeight(texture.height);
 
 		// success

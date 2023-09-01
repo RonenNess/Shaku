@@ -55,7 +55,7 @@ export class SoundInstance {
 	play() {
 		if(!this._audio) { throw new Error("Sound instance was already disposed!"); }
 		if(this.playing) { return; }
-		let promise = this._audio.play();
+		const promise = this._audio.play();
 		this._sfx._playingSounds.add(this);
 		return promise;
 	}
