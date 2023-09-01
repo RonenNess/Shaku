@@ -28,7 +28,7 @@ export class JsonAsset extends Asset {
 
 			// on load, validate audio content
 			request.onload = () => {
-				if(request.readyState == 4) {
+				if(request.readyState === 4) {
 					if(request.response) {
 						this._data = request.response;
 						this._notifyReady();

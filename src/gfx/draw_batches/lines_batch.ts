@@ -22,19 +22,19 @@ export class LinesBatch extends DrawBatch {
 
 		/**
 		 * How many line segments this batch can hold.
-		 * @private
+
 		 */
 		this.__maxLinesCount = Math.floor((this._buffers.positionArray.length / 6));
 
 		/**
 		 * How many line segments we currently have.
-		 * @private
+
 		 */
 		this.__linesCount = 0;
 
 		/**
 		 * Indicate there were changes in buffers.
-		 * @private
+
 		 */
 		this.__dirty = false;
 
@@ -62,7 +62,7 @@ export class LinesBatch extends DrawBatch {
 
 	/**
 	 * Get the gfx manager.
-	 * @private
+
 	 */
 	get #_gfx() {
 		return DrawBatch._gfx;
@@ -70,7 +70,7 @@ export class LinesBatch extends DrawBatch {
 
 	/**
 	 * Get the web gl instance.
-	 * @private
+
 	 */
 	get #_gl() {
 		return DrawBatch._gfx._internal.gl;
@@ -78,7 +78,7 @@ export class LinesBatch extends DrawBatch {
 
 	/**
 	 * Build the dynamic buffers.
-	 * @private
+
 	 */
 	#_createBuffers(batchPolygonsCount) {
 		const gl = this.#_gl;
@@ -326,7 +326,7 @@ export class LinesBatch extends DrawBatch {
 
 	/**
 	 * Add a rectangle from sprite data.
-	 * @private
+
 	 */
 	#_addRect(sprite, transform) {
 		// sanity
@@ -469,9 +469,9 @@ export class LinesBatch extends DrawBatch {
 
 	/**
 	 * Called when the batch becomes full while drawing and there's no handler.
-	 * @private
+
 	 */
-	_handleFullBuffer() {
+	private _handleFullBuffer() {
 		// invoke on-overflow callback
 		if(this.onOverflow) {
 			this.onOverflow();
@@ -484,9 +484,9 @@ export class LinesBatch extends DrawBatch {
 
 	/**
 	 * @inheritdoc
-	 * @private
+
 	 */
-	_drawBatch() {
+	private _drawBatch() {
 		// get default effect
 		let effect = this.__currDrawingParams.effect;
 

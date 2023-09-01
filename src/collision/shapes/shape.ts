@@ -48,7 +48,7 @@ export abstract class CollisionShape {
 	/**
 	 * Get Shapes beatch to draw this shape with, either given or default from world.
 	 * If not provided and have no world, will throw exception.
-	 * @private
+
 	 */
 	protected _getDebugDrawBatch(shapesBatch: ShapesBatch): ShapesBatch {
 		if(!shapesBatch && !this._world) {
@@ -89,7 +89,7 @@ export abstract class CollisionShape {
 
 	/**
 	 * Get debug drawing color.
-	 * @private
+
 	 */
 	protected _getDebugColor(): Color {
 		// use forced debug color
@@ -108,7 +108,7 @@ export abstract class CollisionShape {
 
 	/**
 	 * Get default debug colors for given collision flags.
-	 * @private
+
 	 */
 	protected _getDefaultDebugColorFor(flags: number): Color {
 		return defaultDebugColors[flags % defaultDebugColors.length];
@@ -116,21 +116,21 @@ export abstract class CollisionShape {
 
 	/**
 	 * Get collision shape's estimated radius box.
-	 * @private
+
 	 * @returns Shape's radius
 	 */
 	protected abstract _getRadius(): number;
 
 	/**
 	 * Get collision shape's bounding box.
-	 * @private
+
 	 * @returns {Rectangle} Shape's bounding box.
 	 */
 	protected abstract _getBoundingBox(): Rectangle;
 
 	/**
 	 * Set the parent collision world this shape is currently in.
-	 * @private
+
 	 * @param world New parent collision world or null to remove.
 	 */
 	protected _setParent(world: CollisionWorld | null): void {
@@ -147,7 +147,7 @@ export abstract class CollisionShape {
 
 	/**
 	 * Called when the collision shape changes and we need to update the parent world.
-	 * @private
+
 	 */
 	protected _shapeChanged(): void {
 		if(this._world) {

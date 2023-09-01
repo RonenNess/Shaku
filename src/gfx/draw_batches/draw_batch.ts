@@ -75,9 +75,9 @@ export class DrawBatch {
 
 	/**
 	 * Throw exception if batch was destoryed.
-	 * @private
+
 	 */
-	__validateBatch() {
+	private __validateBatch() {
 		if(this.isDestroyed) {
 			throw new Error("Can't perform this action after the batch was destroyed!");
 		}
@@ -122,9 +122,9 @@ export class DrawBatch {
 
 	/**
 	 * Throw exception if batch is not currently drawing.
-	 * @private
+
 	 */
-	__validateDrawing(validateNotStatic) {
+	private __validateDrawing(validateNotStatic) {
 		if(!this.isDrawing) {
 			throw new Error("Can't perform this action without calling 'begin()' first!");
 		}
@@ -243,9 +243,9 @@ export class DrawBatch {
 
 	/**
 	 * Draw current batch with set drawing params.
-	 * @private
+
 	 */
-	_drawBatch() {
+	private _drawBatch() {
 		// sanity
 		this.__validateBatch();
 		this.__validateDrawing(false);
@@ -274,9 +274,9 @@ export class DrawBatch {
 
 	/**
 	 * Called internally after we set the effect and texture and before we start rendering batch.
-	 * @private
+
 	 */
-	_onSetEffect(effect, texture) {
+	private _onSetEffect(effect, texture) {
 	}
 }
 

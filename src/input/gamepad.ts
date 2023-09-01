@@ -19,7 +19,7 @@ export class Gamepad {
 	public centerButtons: ThreeButtonsCluster;
 	public frontButtons: FrontButtons;
 
-	private _buttonsDown: any[];
+	private _buttonsDown: boolean[];
 
 	/**
 	 * Create gamepad state object.

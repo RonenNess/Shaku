@@ -43,7 +43,7 @@ export class Circle {
 	public equals(other: Circle): boolean {
 		return (other === this) ||
 			(other && (other.constructor === this.constructor) &&
-				this.center.equals(other.center) && (this.radius == other.radius));
+				this.center.equals(other.center) && (this.radius === other.radius));
 	}
 
 	/**

@@ -14,7 +14,7 @@ const input = isBrowser ? _input : null;
 const _logger = LoggerFactory.getLogger("shaku");
 
 // is shaku in silent mode
-let _isSilent: boolean = false;
+let _isSilent = false;
 
 // manager state and gametime
 let _usedManagers: IManager[] | null = null;
@@ -24,20 +24,20 @@ let _prevUpdateTime = null;
 let _gameTime: GameTime | null = null;
 
 // to measure fps
-let _currFpsCounter: number = 0;
-let _countSecond: number = 0;
-let _currFps: number = 0;
+let _currFpsCounter = 0;
+let _countSecond = 0;
+let _currFps = 0;
 
 // to measure time it takes for frames to finish
-let _startFrameTime: number = 0;
-let _frameTimeMeasuresCount: number = 0;
-let _totalFrameTimes: number = 0;
+let _startFrameTime = 0;
+let _frameTimeMeasuresCount = 0;
+let _totalFrameTimes = 0;
 
 // are managers currently in "started" mode?
-let _managersStarted: boolean = false;
+let _managersStarted = false;
 
 // were we previously paused?
-let _wasPaused: boolean = false;
+let _wasPaused = false;
 
 // current version
 const version = "2.2.5";
@@ -252,8 +252,8 @@ export class Shaku {
 	}
 
 	/**
-	 * Measure FPS and averege update times.
-	 * @private
+	 * Measure FPS and average update times.
+
 	 */
 	#_updateFpsAndTimeStats(): void {
 		// update fps count and second counter

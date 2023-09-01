@@ -134,7 +134,7 @@ function _ImpFindPath<P extends Vector2 | Vector3>(grid: IGrid, startPos: P, tar
 		closedSet.add(currentNode);
 
 		// did we reach target? :D
-		if(currentNode == targetNode) {
+		if(currentNode === targetNode) {
 			const finalPath = retracePath(startNode, targetNode);
 			return finalPath;
 		}

@@ -115,7 +115,7 @@ export class Animator {
 
 	/**
 	 * Get value from target object.
-	 * @private
+
 	 * @param {Array<String>} keyParts Key parts broken by dots.
 	 */
 	#_getValueFromTarget(keyParts) {
@@ -131,7 +131,7 @@ export class Animator {
 
 	/**
 	 * Set value in target object.
-	 * @private
+
 	 * @param {Array<String>} keyParts Key parts broken by dots.
 	 */
 	#_setValueToTarget(keyParts, value) {
@@ -149,7 +149,7 @@ export class Animator {
 
 	/**
 	 * Make sure a given value is legal for the animator.
-	 * @private
+
 	 */
 	#_validateValueType(value) {
 		return (typeof value === "number") || (typeof value === "function") || (value && value.constructor && value.constructor.lerp);

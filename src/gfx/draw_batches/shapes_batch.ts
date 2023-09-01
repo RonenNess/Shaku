@@ -38,19 +38,19 @@ export class ShapesBatch extends DrawBatch {
 
 		/**
 		 * How many polygons this batch can hold.
-		 * @private
+
 		 */
 		this.__maxPolyCount = Math.floor((this._buffers.positionArray.length / 9));
 
 		/**
 		 * How many polygons we currently have.
-		 * @private
+
 		 */
 		this.__polyCount = 0;
 
 		/**
 		 * Indicate there were changes in buffers.
-		 * @private
+
 		 */
 		this.__dirty = false;
 
@@ -71,7 +71,7 @@ export class ShapesBatch extends DrawBatch {
 
 	/**
 	 * Get the gfx manager.
-	 * @private
+
 	 */
 	get #_gfx(): unknown {
 		return DrawBatch._gfx;
@@ -79,7 +79,7 @@ export class ShapesBatch extends DrawBatch {
 
 	/**
 	 * Get the web gl instance.
-	 * @private
+
 	 */
 	get #_gl(): unknown {
 		return DrawBatch._gfx._internal.gl;
@@ -87,7 +87,7 @@ export class ShapesBatch extends DrawBatch {
 
 	/**
 	 * Build the dynamic buffers.
-	 * @private
+
 	 */
 	#_createBuffers(batchPolygonsCount: number): void {
 		const gl = this.#_gl;
@@ -358,7 +358,7 @@ export class ShapesBatch extends DrawBatch {
 
 	/**
 	 * Add a rectangle from sprite data.
-	 * @private
+
 	 */
 	#_addRect(sprite: unknown, transform: unknown) {
 		// sanity
@@ -486,7 +486,7 @@ export class ShapesBatch extends DrawBatch {
 
 	/**
 	 * Called when the batch becomes full while drawing and there's no handler.
-	 * @private
+
 	 */
 	private _handleFullBuffer(): void {
 		// invoke on-overflow callback
@@ -501,7 +501,7 @@ export class ShapesBatch extends DrawBatch {
 
 	/**
 	 * @inheritdoc
-	 * @private
+
 	 */
 	private _drawBatch(): void {
 		// get default effect

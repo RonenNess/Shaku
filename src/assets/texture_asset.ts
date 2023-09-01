@@ -32,7 +32,7 @@ export class TextureAsset extends TextureAssetBase {
 
 	/**
 	 * Set the WebGL context.
-	 * @private
+
 	 */
 	private static _setWebGl(_gl: WebGLRenderingContext): void {
 		gl = _gl;
@@ -353,5 +353,5 @@ export class TextureAsset extends TextureAssetBase {
 
 // check if value is a power of 2
 function isPowerOf2(value: number): boolean {
-	return (value & (value - 1)) == 0;
+	return (value & (value - 1)) === 0;
 }

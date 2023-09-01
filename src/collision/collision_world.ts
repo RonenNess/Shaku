@@ -100,7 +100,7 @@ export class CollisionWorld {
 
 	/**
 	 * Get or create cell.
-	 * @private
+
 	 */
 	#_getCell(i: number, j: number): Set<CollisionShape> {
 		const key = `${i},${j}` as const;
@@ -114,7 +114,7 @@ export class CollisionWorld {
 
 	/**
 	 * Update a shape in collision world after it moved or changed.
-	 * @private
+
 	 */
 	#_updateShape(shape: CollisionShape): void {
 		// sanity - if no longer in this collision world, skip
@@ -279,7 +279,7 @@ export class CollisionWorld {
 
 	/**
 	 * Iterate shapes that match broad phase test.
-	 * @private
+
 	 * @param shape Shape to test.
 	 * @param handler Method to run on all shapes in phase. Return true to continue iteration, false to break.
 	 * @param mask Optional mask of bits to match against shapes collisionFlags. Will only return shapes that have at least one common bit.

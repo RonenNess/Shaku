@@ -85,7 +85,7 @@ export class Storage {
 
 	/**
 	 * Set value.
-	 * @private
+
 	 */
 	#_set(key: string, value: string): void {
 		// json stringify
@@ -107,7 +107,7 @@ export class Storage {
 
 	/**
 	 * Get value.
-	 * @private
+
 	 */
 	#_get(key: string): object | null {
 		// get value

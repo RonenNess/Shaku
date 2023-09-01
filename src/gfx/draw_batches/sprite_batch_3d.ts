@@ -46,7 +46,7 @@ export class SpriteBatch3D extends SpriteBatch {
 
 	/**
 	 * Get the gfx manager.
-	 * @private
+
 	 */
 	get #_gfx() {
 		return DrawBatch._gfx;
@@ -54,7 +54,7 @@ export class SpriteBatch3D extends SpriteBatch {
 
 	/**
 	 * Get the web gl instance.
-	 * @private
+
 	 */
 	get #_gl() {
 		return DrawBatch._gfx._internal.gl;
@@ -84,9 +84,9 @@ export class SpriteBatch3D extends SpriteBatch {
 
 	/**
 	 * @inheritdoc
-	 * @private
+
 	 */
-	_onSetEffect(effect, texture) {
+	private _onSetEffect(effect, texture) {
 		if(this.__camera.view) { effect.setViewMatrix(this.__camera.view); }
 		if(this.__camera) { this.#_gfx.applyCamera(this.__camera); }
 	}

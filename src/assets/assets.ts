@@ -140,12 +140,12 @@ export class Assets implements IManager {
 
 	/**
 	 * Get already-loaded asset from cache.
-	 * @private
+
 	 * @param url Asset URL.
 	 * @param type If provided will make sure asset is of this type. If asset found but have wrong type, will throw exception.
 	 * @returns Loaded asset or null if not found.
 	 */
-	#_getFromCache(url: string, type: unknown) {
+	#_getFromCache(url: string, type: { new(...args: unknown[]): unknown; }) {
 		const cached = this._loaded[url] || null;
 		if(cached && type) {
 			if(!(cached instanceof type)) {
@@ -157,7 +157,7 @@ export class Assets implements IManager {
 
 	/**
 	 * Load an asset of a given type and add to cache when done.
-	 * @private
+
 	 * @param newAsset Asset instance to load.
 	 * @param params Optional loading params.
 	 */
@@ -169,35 +169,28 @@ export class Assets implements IManager {
 		this._waitingAssets.add(url);
 
 		// initiate loading
-		return new Promise(async (resolve, reject) => {
 
-			// load asset
-			_logger.debug(`Load asset [${typeName}] from URL "${url}".`);
-			try {
-				await newAsset.load(params);
-			}
-			catch(e) {
+		// load asset
+		_logger.debug(`Load asset [${typeName}] from URL "${url}".`);
+		return newAsset.load(params)
+			.then(_ => {
+				// update waiting assets count
+				this._waitingAssets.delete(url);
+
+				// make sure valid
+				if(!newAsset.valid) throw new Error("Loaded asset is not valid!");
+
+				_logger.debug(`Successfully loaded asset [${typeName}] from URL "${url}".`);
+
+				// resolve
+				this._successfulLoadedAssetsCount++;
+			})
+			.catch(e => {
 				_logger.warn(`Failed to load asset [${typeName}] from URL "${url}".`);
 				this._failedAssets.add(url);
-				return reject(e);
-			}
-
-			// update waiting assets count
-			this._waitingAssets.delete(url);
-
-			// make sure valid
-			if(!newAsset.valid) {
-				_logger.warn(`Failed to load asset [${typeName}] from URL "${url}".`);
-				this._failedAssets.add(url);
-				return reject("Loaded asset is not valid!");
-			}
-
-			_logger.debug(`Successfully loaded asset [${typeName}] from URL "${url}".`);
-
-			// resolve
-			this._successfulLoadedAssetsCount++;
-			resolve(newAsset);
-		});
+				throw e;
+			})
+			.then(_ => newAsset);
 	}
 
 	/**
@@ -212,7 +205,7 @@ export class Assets implements IManager {
 
 	/**
 	 * Get / load asset of given type, and return a promise to be resolved when ready.
-	 * @private
+
 	 */
 	#_loadAssetType<T extends Asset>(url: string, typeClass: { new(url: string): T; }, params?: unknown): Promise<T> {
 		// normalize URL
@@ -230,12 +223,8 @@ export class Assets implements IManager {
 
 		// create promise to load asset
 		const promise = new Promise(async (resolve, reject) => {
-			if(needLoad) {
-				await this.#_loadAndCacheAsset(_asset, params);
-			}
-			_asset.onReady(() => {
-				resolve(_asset);
-			});
+			if(needLoad) await this.#_loadAndCacheAsset(_asset, params);
+			_asset.onReady(() => resolve(_asset));
 		});
 
 		// return promise with asset attached to it
@@ -245,9 +234,9 @@ export class Assets implements IManager {
 
 	/**
 	 * Create and init asset of given class type.
-	 * @private
+
 	 */
-	#_createAsset<T>(name: string, classType: { new(...args: unknown[]): T; }, initMethod: (clazz: T) => Promise<void>, needWait?: boolean): Promise<T> {
+	#_createAsset<T, U>(name: string, classType: { new(...args: U[]): T; }, initMethod: (clazz: T) => Promise<void>, needWait?: boolean): Promise<T> {
 		// create asset
 		name = this.#_wrapUrl(name);
 		const _asset = new classType(name || generateRandomAssetName());
@@ -399,14 +388,10 @@ export class Assets implements IManager {
 	 */
 	public createJson(name: string, data?: object | string): Promise<JsonAsset> {
 		// make sure we have valid data
-		if(!data) {
-			throw new Error("Missing or invalid data!");
-		}
+		if(!data) throw new Error("Missing or invalid data!");
 
 		// create asset and return promise
-		return this.#_createAsset(name, JsonAsset, (asset) => {
-			asset.create(data);
-		});
+		return this.#_createAsset(name, JsonAsset, asset => asset.create(data));
 	}
 
 	/**
@@ -432,14 +417,10 @@ export class Assets implements IManager {
 	 */
 	public createBinary(name: string | null, data: number[] | Uint8Array): Promise<BinaryAsset> {
 		// make sure we have valid data
-		if(!data) {
-			throw new Error("Missing or invalid data!");
-		}
+		if(!data) throw new Error("Missing or invalid data!");
 
 		// create asset and return promise
-		return this.#_createAsset(name, BinaryAsset, (asset) => {
-			asset.create(data);
-		});
+		return this.#_createAsset(name, BinaryAsset, asset => asset.create(data));
 	}
 
 	/**
@@ -481,7 +462,7 @@ export class Assets implements IManager {
 }
 
 // generate a random asset URL, for when creating assets that are outside of cache.
-let _nextRandomAssetId: number = 0;
+let _nextRandomAssetId = 0;
 function generateRandomAssetName(): string {
 	return "_runtime_asset_" + (_nextRandomAssetId++) + "_";
 }

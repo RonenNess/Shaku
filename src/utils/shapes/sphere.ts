@@ -47,7 +47,7 @@ export class Sphere {
 			|| (other
 				&& (other.constructor === this.constructor)
 				&& this.center.equals(other.center)
-				&& (this.radius == other.radius));
+				&& (this.radius === other.radius));
 	}
 
 	/**

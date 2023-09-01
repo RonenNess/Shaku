@@ -28,7 +28,7 @@ export class BinaryAsset extends Asset {
 
 			// on load, validate audio content
 			request.onload = () => {
-				if(request.readyState == 4) {
+				if(request.readyState === 4) {
 					if(request.response) {
 						this._data = new Uint8Array(request.response);
 						this._notifyReady();

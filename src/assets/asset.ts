@@ -51,7 +51,7 @@ export abstract class Asset {
 
 	/**
 	 * Notify all waiting callbacks that this asset is ready.
-	 * @private
+
 	 */
 	protected _notifyReady(): void {
 		if(this._waitingCallbacks) {

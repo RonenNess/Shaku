@@ -22,19 +22,19 @@ export class SpriteBatchBase extends DrawBatch {
 
 		/**
 		 * How many quads this batch can hold.
-		 * @private
+
 		 */
 		this.__maxQuadsCount = Math.floor((this._buffers.positionArray.length / 12));
 
 		/**
 		 * How many quads we currently have.
-		 * @private
+
 		 */
 		this.__quadsCount = 0;
 
 		/**
 		 * Indicate there were changes in buffers.
-		 * @private
+
 		 */
 		this.__dirty = false;
 
@@ -71,7 +71,7 @@ export class SpriteBatchBase extends DrawBatch {
 
 	/**
 	 * Get the gfx manager.
-	 * @private
+
 	 */
 	get #_gfx() {
 		return DrawBatch._gfx;
@@ -79,7 +79,7 @@ export class SpriteBatchBase extends DrawBatch {
 
 	/**
 	 * Get the web gl instance.
-	 * @private
+
 	 */
 	get #_gl() {
 		return DrawBatch._gfx._internal.gl;
@@ -110,7 +110,7 @@ export class SpriteBatchBase extends DrawBatch {
 
 	/**
 	 * Build the dynamic buffers.
-	 * @private
+
 	 */
 	#_createBuffers(batchSpritesCount, enableVertexColor, enableNormals, enableBinormals, enableTangents) {
 		const gl = this.#_gl;
@@ -203,11 +203,11 @@ export class SpriteBatchBase extends DrawBatch {
 
 	/**
 	 * Set a new active texture and draw batch if needed.
-	 * @private
+
 	 */
-	_updateTexture(texture) {
+	private _updateTexture(texture) {
 		// if texture changed, draw current batch first
-		if(this.__currDrawingParams.texture && (this.__currDrawingParams.texture != texture)) {
+		if(this.__currDrawingParams.texture && (this.__currDrawingParams.texture !== texture)) {
 			this._drawBatch();
 			this.clear();
 			this.__dirty = true;
@@ -491,9 +491,9 @@ export class SpriteBatchBase extends DrawBatch {
 
 	/**
 	 * Called when the batch becomes full while drawing and there's no handler.
-	 * @private
+
 	 */
-	_handleFullBuffer() {
+	private _handleFullBuffer() {
 		// invoke on-overflow callback
 		if(this.onOverflow) {
 			this.onOverflow();
@@ -506,9 +506,9 @@ export class SpriteBatchBase extends DrawBatch {
 
 	/**
 	 * @inheritdoc
-	 * @private
+
 	 */
-	_drawBatch() {
+	private _drawBatch() {
 		// get texture and effect
 		const texture = this.__currDrawingParams.texture;
 		const effect = this.__currDrawingParams.effect;

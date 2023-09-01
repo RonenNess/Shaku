@@ -10,7 +10,7 @@ function timestamp(): number {
 }
 
 // touch key code
-const _touchKeyCode: string = "touch";
+const _touchKeyCode = "touch";
 
 /** All the ways a user can specify an input */
 type InputCode = KeyboardKeys | MouseButtons | string;
@@ -390,7 +390,7 @@ export class Input implements IManager {
 	/**
 	 * Reset all internal data and states.
 	 * @param keepMousePosition If true, will not reset mouse position.
-	 * @private
+
 	 */
 	#_resetAll(keepMousePosition?: boolean) {
 		// mouse states
@@ -790,7 +790,7 @@ export class Input implements IManager {
 
 	/**
 	 * Return if a mouse or keyboard state in a generic way. Used internally.
-	 * @private
+
 	 * @param {InputCode} code Keyboard, mouse or touch code.
 	 *                          For mouse buttons: mouse_left, mouse_right or mouse_middle.
 	 *                          For keyboard buttons: use one of the keys of KeyboardKeys (for example "a", "alt", "up_arrow", etc..).
@@ -1047,7 +1047,7 @@ export class Input implements IManager {
 
 	/**
 	 * Get keyboard key code from event.
-	 * @private
+
 	 */
 	#_getKeyboardKeyCode(event: KeyboardEvent) {
 		event = this._getEvent(event);
@@ -1057,9 +1057,9 @@ export class Input implements IManager {
 
 	/**
 	 * Called when window loses focus - clear all input states to prevent keys getting stuck.
-	 * @private
+
 	 */
-	_onBlur(event: FocusEvent) {
+	private _onBlur(event: FocusEvent) {
 		if(this.resetOnFocusLoss) {
 			this.#_resetAll(true);
 		}
@@ -1067,19 +1067,19 @@ export class Input implements IManager {
 
 	/**
 	 * Handle mouse wheel events.
-	 * @private
+
 	 * @param {*} event Event data from browser.
 	 */
-	_onMouseWheel(event: WheelEvent) {
+	private _onMouseWheel(event: WheelEvent) {
 		this._mouseWheel = event.deltaY;
 	}
 
 	/**
 	 * Handle keyboard down event.
-	 * @private
+
 	 * @param {*} event Event data from browser.
 	*/
-	_onKeyDown(event: KeyboardEvent) {
+	private _onKeyDown(event: KeyboardEvent) {
 		const keycode = this.#_getKeyboardKeyCode(event);
 		if(!this._keyboardState.get(keycode)) {
 			this._keyboardPressed.set(keycode, true);
@@ -1091,10 +1091,10 @@ export class Input implements IManager {
 
 	/**
 	 * Handle keyboard up event.
-	 * @private
+
 	 * @param {*} event Event data from browser.
 	 */
-	_onKeyUp(event: KeyboardEvent) {
+	private _onKeyUp(event: KeyboardEvent) {
 		const keycode = this.#_getKeyboardKeyCode(event) || 0;
 		this._keyboardState.set(keycode, false);
 		this._keyboardReleased.set(keycode, true);
@@ -1104,11 +1104,11 @@ export class Input implements IManager {
 
 	/**
 	 * Extract position from touch event.
-	 * @private
+
 	 * @param {*} event Event data from browser.
 	 * @returns {Vector2} Position x,y or null if couldn't extract touch position.
 	 */
-	_getTouchEventPosition(event: TouchEvent) {
+	private _getTouchEventPosition(event: TouchEvent) {
 		const touches = event.changedTouches || event.touches;
 		if(touches && touches.length) {
 			const touch = touches[0];
@@ -1121,10 +1121,10 @@ export class Input implements IManager {
 
 	/**
 	 * Handle touch start event.
-	 * @private
+
 	 * @param {*} event Event data from browser.
 	 */
-	_onTouchStart(event: TouchEvent) {
+	private _onTouchStart(event: TouchEvent) {
 		// update position
 		const position = this._getTouchEventPosition(event);
 		if(position) {
@@ -1151,10 +1151,10 @@ export class Input implements IManager {
 
 	/**
 	 * Handle touch end event.
-	 * @private
+
 	 * @param {*} event Event data from browser.
 	 */
-	_onTouchEnd(event: TouchEvent) {
+	private _onTouchEnd(event: TouchEvent) {
 		// update position
 		const position = this._getTouchEventPosition(event);
 		if(position) {
@@ -1182,10 +1182,10 @@ export class Input implements IManager {
 
 	/**
 	 * Handle touch move event.
-	 * @private
+
 	 * @param {*} event Event data from browser.
 	 */
-	_onTouchMove(event: TouchEvent) {
+	private _onTouchMove(event: TouchEvent) {
 		// update position
 		const position = this._getTouchEventPosition(event);
 		if(position) {
@@ -1203,33 +1203,31 @@ export class Input implements IManager {
 
 	/**
 	 * Handle mouse down event.
-	 * @private
-	 * @param {*} event Event data from browser.
+
+	 * @param event Event data from browser.
 	 */
-	_onMouseDown(event: MouseEvent) {
+	private _onMouseDown(event: MouseEvent) {
 		event = this._getEvent(event);
-		if(this.disableMouseWheelAutomaticScrolling && (event.button === this.MouseButtons.MIDDLE)) {
-			event.preventDefault();
-		}
+		if(this.disableMouseWheelAutomaticScrolling && (event.button as MouseButtons === this.MouseButtons.MIDDLE)) event.preventDefault();
 		this._mouseButtonDown(event.button);
 	}
 
 	/**
 	 * Handle mouse up event.
-	 * @private
+
 	 * @param {*} event Event data from browser.
 	 */
-	_onMouseUp(event: MouseEvent) {
+	private _onMouseUp(event: MouseEvent) {
 		event = this._getEvent(event);
 		this._mouseButtonUp(event.button);
 	}
 
 	/**
 	 * Mouse button pressed logic.
-	 * @private
+
 	 * @param {*} button Button pressed.
 	 */
-	_mouseButtonDown(button: MouseButtons) {
+	private _mouseButtonDown(button: MouseButtons) {
 		this._mouseState.set(button, true);
 		this._mousePressed.set(button, true);
 		this._prevLastMousePressedTime.set(button, this._lastMousePressedTime.get(button));
@@ -1238,10 +1236,10 @@ export class Input implements IManager {
 
 	/**
 	 * Mouse button released logic.
-	 * @private
+
 	 * @param {*} button Button released.
 	 */
-	_mouseButtonUp(button: MouseButtons) {
+	private _mouseButtonUp(button: MouseButtons) {
 		this._mouseState.set(button, false);
 		this._mouseReleased.set(button, true);
 		this._prevLastMouseReleasedTime.set(button, this._lastMouseReleasedTime.get(button));
@@ -1250,10 +1248,10 @@ export class Input implements IManager {
 
 	/**
 	 * Handle mouse move event.
-	 * @private
+
 	 * @param {*} event Event data from browser.
 	 */
-	_onMouseMove(event: MouseEvent) {
+	private _onMouseMove(event: MouseEvent) {
 		// get event in a cross-browser way
 		event = this._getEvent(event);
 
@@ -1282,9 +1280,9 @@ export class Input implements IManager {
 
 	/**
 	 * Normalize current _mousePos value to be relative to target element.
-	 * @private
+
 	 */
-	_normalizeMousePos() {
+	private _normalizeMousePos() {
 		if(this._targetElement && this._targetElement instanceof HTMLElement) {
 			const rect = this._targetElement.getBoundingClientRect();
 			this._mousePos.x -= rect.left;
@@ -1296,9 +1294,9 @@ export class Input implements IManager {
 	/**
 	 * Get event either from event param or from window.event.
 	 * This is for older browsers support.
-	 * @private
+
 	 */
-	_getEvent<T extends Event>(event: T): T {
+	private _getEvent<T extends Event>(event: T): T {
 		return event || window.event;
 	}
 }

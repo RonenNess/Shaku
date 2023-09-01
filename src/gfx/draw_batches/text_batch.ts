@@ -44,7 +44,7 @@ export class TextSpriteBatch extends SpriteBatchBase {
 
 	/**
 	 * Get the gfx manager.
-	 * @private
+
 	 */
 	get #_gfx() {
 		return DrawBatch._gfx;
@@ -52,7 +52,7 @@ export class TextSpriteBatch extends SpriteBatchBase {
 
 	/**
 	 * Get the web gl instance.
-	 * @private
+
 	 */
 	get #_gl() {
 		return DrawBatch._gfx._internal.gl;
@@ -79,9 +79,9 @@ export class TextSpriteBatch extends SpriteBatchBase {
 
 	/**
 	 * @inheritdoc
-	 * @private
+
 	 */
-	_drawBatch() {
+	private _drawBatch() {
 		// extract texture
 		const texture = this.__currDrawingParams.texture;
 

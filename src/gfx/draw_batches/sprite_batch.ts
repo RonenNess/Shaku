@@ -26,7 +26,7 @@ export class SpriteBatch extends SpriteBatchBase {
 
 	/**
 	 * Get the gfx manager.
-	 * @private
+
 	 */
 	get #_gfx() {
 		return DrawBatch._gfx;
@@ -34,7 +34,7 @@ export class SpriteBatch extends SpriteBatchBase {
 
 	/**
 	 * Get the web gl instance.
-	 * @private
+
 	 */
 	get #_gl() {
 		return DrawBatch._gfx._internal.gl;

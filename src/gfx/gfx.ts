@@ -478,7 +478,7 @@ export class Gfx implements IManager {
 
 	/**
 	 * Get current rendering region.
-	 * @private
+
 	 * @param {Boolean} includeOffset If true (default) will include viewport offset, if exists.
 	 * @returns {Rectangle} Rectangle with rendering region.
 	 */
@@ -488,7 +488,7 @@ export class Gfx implements IManager {
 
 	/**
 	 * Reset cached rendering region values.
-	 * @private
+
 	 */
 	#_resetCachedRenderingRegion() {
 		_cachedRenderingRegion.withoutOffset = _cachedRenderingRegion.withOffset = null;
@@ -658,7 +658,7 @@ export class Gfx implements IManager {
 			}
 
 			// if we need to shift characters for alignment, do it
-			if(offsetX != 0) {
+			if(offsetX !== 0) {
 				for(let i = 0; i < currentLineSprites.length; ++i) {
 					currentLineSprites[i].position.x += offsetX;
 				}

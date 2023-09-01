@@ -60,7 +60,7 @@ module.exports = {
 		"deprecation/deprecation": "warn",
 		"dot-notation": "warn",
 		"eol-last": ["warn", "always"],
-		"eqeqeq": ["warn", "always"],
+		"eqeqeq": ["warn", "always", { "null": "ignore" }],
 		"guard-for-in": "warn",
 		"jsdoc/newline-after-description": "off",
 		"max-len": "off",
