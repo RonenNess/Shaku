@@ -2,6 +2,8 @@
 
 <big> A simple and effective JavaScript game development framework *that knows its place*!</big>
 
+# Shaku
+
 **If you're looking for a package that implements rendering, sounds, assets and input, while keeping it low level and simple, this is the library for you!**
 
 (if you're looking for a game engine with editor like Unity, this library is not what you're looking for)
@@ -23,7 +25,7 @@ Projects made with *Shaku*:
 
 (Want your game listed above? Contact me at ronenness@gmail.com)
 
-# Table Of Content
+## Table Of Content
 
 - [About](#about)
   - [Features](#features)
@@ -44,7 +46,7 @@ Projects made with *Shaku*:
 - [Changes](#changes)
 - [License](#license)
 
-# About
+## About
 
 *Shaku* is a JavaScript framework for web games development that emphasize **simplicity**, **flexibility** and **freedom**.
 
@@ -155,14 +157,14 @@ The following is a boilerplate HTML with *Shaku* running an empty game main loop
 
 You can find the above HTML file [here](html_boilerplate.html).
 
-# Online Demo Projects
+## Online Demo Projects
 
 Online demo projects can be found [here](https://ronenness.github.io/Shaku/demo/index.html).
 They demonstrate basic to advanced *Shaku* features.
 
 ![Demo-2](resources/demo-2.png)
 
-# Using Shaku
+## Using Shaku
 
 *Shaku*'s API mostly consist of five main managers, each solve a different domain of problems in gamedev: *graphics*, *sounds*, *assets*, *collision* and *input*.
 
@@ -170,7 +172,7 @@ In this doc we'll explore these managers and cover the most common use cases wit
 If you want to dive deep into the API, you can check out the [API Docs](docs/index.md), or browse the code.
 
 
-## Setup
+### Setup
 
 Everything in *Shaku* is located under the `Shaku` object.
 
@@ -222,7 +224,7 @@ It handles both rendering and updates.
 Now we can start using *Shaku*'s managers, mostly between the `startFrame()` and `endFrame()` calls.
 
 
-## Graphics
+### Graphics
 
 Let's start exploring the APIs from the graphics manager, accessed by `Shaku.gfx`.
 
@@ -233,7 +235,7 @@ This way of rendering is essential for performance, but it has some limitations.
 This doc don't cover the entirely of the API, only the main parts of it.
 To see the full API, check out the [API docs](docs/gfx_gfx.md).
 
-### Drawing Textures
+#### Drawing Textures
 
 To draw textures (also known as 2d sprites) we use a `SpriteBatch` renderer.
 This renderer batch together 2d quads and other shapes with textures on them.
@@ -283,7 +285,7 @@ We'll learn more about effects later, don't worry about it for now.
 
 A simple rendering demo can be found [here](https://ronenness.github.io/Shaku/demo/gfx_draw.html).
 
-#### When does a GPU draw call is made?
+##### When does a GPU draw call is made?
 
 The `SpriteBatch` will call the GPU to draw everything on three different occasions:
 
@@ -296,7 +298,7 @@ As you can see number #2 is something we need to watch out for. Texture Atlases 
 To learn more about Sprite Batches and see what else you can do with them, its recommended to check out the docs. For example you can control pixel aligning, buffers size, how to handle overflow, etc.
 
 
-#### Sprites
+##### Sprites
 
 `Sprites` are entities that store all rendering parameters required to make a draw call.
 It's just a more object-based approach to draw stuff.
@@ -326,7 +328,7 @@ Shaku.gfx.drawSprite(sprite);
 spritesBatch.end();
 ```
 
-#### Sprites Group
+##### Sprites Group
 
 As the name implies, a sprites group is a collection of sprites.
 Let's see how we use it:
@@ -366,7 +368,7 @@ The advantage of groups is that you can apply common transformations on all the 
 A demo page that draw with sprites group can be found [here](https://ronenness.github.io/Shaku/demo/gfx_sprites_group.html).
 
 
-### Drawing 3D Sprites
+#### Drawing 3D Sprites
 
 *Shaku* provides a simple 3D Sprite Batch renderer.
 This is useful for simple 3D stuff like this:
@@ -413,7 +415,7 @@ spritesBatch3d.drawVertices(texture, [v1, v2, v3, v4]);
 spritesBatch3d.end();
 ```
 
-### Drawing Shapes
+#### Drawing Shapes
 
 *Shaku* also provides a way to draw some basic 2D shapes:
 
@@ -442,7 +444,7 @@ shapesBatch.end();
 Similar to `ShapesBatch`, there's also a `LinesBatch` renderer to draw just the outline of shapes (or a string of lines from vertices).
 
 
-### Drawing Text
+#### Drawing Text
 
 *Shaku* support rendering text from *Font Texture* (also known as Bitmap Fonts).
 These fonts store the glyphs as pixels data, and render the text as sprites.
@@ -488,7 +490,7 @@ When loading the `FontTexture` you can provide additional parameters, to learn m
 Note that *Shaku* also support hi-res MSDF Font Textures, but it can't generate them at runtime.
 To see how to use MSDF font textures, check out [this demo](https://ronenness.github.io/Shaku/demo/gfx_draw_text_msdf.html).
 
-### Render Targets
+#### Render Targets
 
 Render Targets provide a way to draw *on textures* instead of directly on screen, and then draw these textures on screen. This technique is useful for post processing effects, or to implement virtual resolution (by drawing on a constant-sized texture and then present it on screen).
 
@@ -527,7 +529,7 @@ spritesBatch.end();
 
 A demo that uses render targets can be found [here](https://ronenness.github.io/Shaku/demo/gfx_render_target.html).
 
-### Cameras
+#### Cameras
 
 The camera object define two key properties:
 
@@ -557,7 +559,7 @@ For more details, check out the [Camera object API](docs/gfx_camera.md) in the d
 
 A demo page that uses cameras can be found [here](https://ronenness.github.io/Shaku/demo/miscs_tilemap.html).
 
-### Texture Atlas
+#### Texture Atlas
 
 Every time you change the texture, a draw call is made to the GPU. This means that if you render 100 different textures in a row you will suffer 100 GPU draw calls (and 100 textures switching), which is very ineffective in terms of performance.
 
@@ -594,7 +596,7 @@ spritesBatch.end();
 Note that a texture atlas is not necessarily a single texture; Since there's a GPU limit for max textures size, the atlas may generate more than one texture. That's why when you call `getTexture()` the object don't return just source rectangle, but a texture asset as well.
 
 
-### Effects
+#### Effects
 
 Effects provide a way to change the shaders *Shaku* uses to draw textures and shapes.
 
@@ -677,7 +679,7 @@ spritesBatch.drawQuad(texture, new Shaku.utils.Vector2(100, 100), 400);
 spritesBatch.end();
 ```
 
-#### Default Effect
+##### Default Effect
 
 To learn more about effects, lets review the [default built-in effect](https://github.com/RonenNess/Shaku/blob/main/src/gfx/effects/sprites.js) *Shaku* normally uses for sprites with vertex color:
 
@@ -797,7 +799,7 @@ If you want to define an effect and call this attribute a different name, for ex
 Anything else, you'll just need to set yourself.
 
 
-### Matrices
+#### Matrices
 
 Matrices are used to transform vertices. They can express rotation, scale, translation, and camera view and projection.
 
@@ -839,18 +841,18 @@ spritesBatch3d.end();
 To learn more about matrices, check out the [API docs](docs/gfx_matrix.md).
 
 
-### Conclusion
+#### Conclusion
 
 In this chapter we learned about the `Gfx` manager and how to use it to create batches and render basic things. What we covered here is just the common use cases, to learn more about what you can draw with *Shaku* check out the [online demos](https://ronenness.github.io/Shaku/demo/index.html) or the [online docs](https://ronenness.github.io/Shaku/docs/index.html).
 
-## Sounds
+### Sounds
 
 We finally reached our second manager, the sounds manager, which is accessed by `Shaku.sfx`.
 
 This doc don't cover the entirely of the API, only the main parts of it. To see the full API, check out the [API docs](docs/sfx_sfx.md).
 
 
-### Play Sound
+#### Play Sound
 
 To play an audio asset once:
 
@@ -868,7 +870,7 @@ Note that due to browsers security limitations, you won't be able to play any so
 
 You can, however, preload your sound assets before that.
 
-### Sound Instances
+#### Sound Instances
 
 A sound instance is a way to create a sound object that lives on after it was played, and use it as many times as you like. Its more efficient to reuse instances than to call `play()` multiple times, but its usually an unnecessary optimization as this will rarely be your bottleneck in terms of performance.
 
@@ -900,7 +902,7 @@ The sound instance have the following properties:
 
 A demo page that play sounds can be found [here](https://ronenness.github.io/Shaku/demo/sfx_basic_audio.html).
 
-### Sounds Mixer
+#### Sounds Mixer
 
 Sound Mixer is a utility class to mix and fade sounds.
 It's very useful for music transitioning.
@@ -946,19 +948,19 @@ mixer.update(mixProgress);
 A demo page with sounds mixer can be found [here](https://ronenness.github.io/Shaku/demo/sfx_sound_mixer.html).
 
 
-### Conclusion
+#### Conclusion
 
 In this chapter we learned about the `Sfx` manager and how to use it to play sound effects and music. What we covered here is just the common use cases, to learn more about sound effects with pitch, volume, playback speed and other effects *Shaku* support, check out the [online demos](https://ronenness.github.io/Shaku/demo/index.html) or the [online docs](https://ronenness.github.io/Shaku/docs/index.html).
 
 
-## Input
+### Input
 
 The input manager provides an API to query Keyboard, Mouse, Touch and Gamepad input.
 To access the Input manager we use `Shaku.input`.
 
 This doc don't cover the entirely of the API, only the main parts of it. To see the full API, check out the [API docs](docs/input_input.md).
 
-### States Queries
+#### States Queries
 
 The input manager have five main query method for key states, which can be mouse buttons, touch, keyboard keys, or gamepad buttons. These five methods are the ones you'll use the most:
 
@@ -976,7 +978,7 @@ In addition, all the methods above also accept an array instead of a single key 
 
 A demo page to demonstrate the input manager can be found [here](https://ronenness.github.io/Shaku/demo/input_basic_input.html).
 
-### Keyboard
+#### Keyboard
 
 All keyboard keys are listed under `Shaku.input.KeyboardKeys`.
 
@@ -991,7 +993,7 @@ if (Shaku.input.down('left') || Shaku.input.down('a')) {
 In addition there are some useful keyboard-specific getters you can use: `shiftDown`, `ctrlDown`, `altDown`, `anyKeyPressed`, `anyKeyDown`.
 
 
-### Mouse
+#### Mouse
 
 To get a mouse button state use the 'mouse_' prefix, followed by the button key (left, right, middle). For example to check if left mouse button is down:
 
@@ -1001,7 +1003,7 @@ if (Shaku.input.down('mouse_left')) {
 }
 ```
 
-#### Mouse Position
+##### Mouse Position
 
 To get mouse position use:
 
@@ -1034,11 +1036,11 @@ Shaku.input.setTargetElement(() => Shaku.gfx.canvas);
 Note that we use a callback and not `Shaku.gfx.canvas` directly, as `Shaku.gfx.canvas` will be undefined until we call `Shaku.init`, which is when we must call `setTargetElement()`.
 
 
-#### Mouse Wheel
+##### Mouse Wheel
 
 You can query mouse wheel delta with `Shaku.input.mouseWheel`, or get just the mouse wheel direction (if the user scrolls up or down) with `Shaku.input.mouseWheelSign` (will be 0 if wheel is not used this frame).
 
-### Touch
+#### Touch
 
 By default, *Shaku* will delegate Touch input to Mouse input, so you can use the same key codes for desktop and mobile. This means that Touch start will generate a mouse click input ('mouse_left' code), and when the user drags touch input across the device, the Touch position will update as the Mouse position.
 
@@ -1068,7 +1070,7 @@ if (Shaku.input.pressed('touch')) {
 ```
 
 
-### Gamepad
+#### Gamepad
 
 You can query Gamepad sticks and buttons with the input manager. Note that gamepads only work after the user press any gamepad button or move the stick. This is due to browsers security limitations.
 
@@ -1076,7 +1078,7 @@ To query connected gamepad ids use:
 
 ```js
 // all ids:
-console.log("Gamepads: ", Shaku.input.gamepadIds());
+console.log("gamepads: ", Shaku.input.gamepadIds());
 
 // by index:
 console.log("Gamepad 2 id: ", Shaku.input.gamepadId(2));
@@ -1112,7 +1114,7 @@ If the gamepad has a standard mapping, `gamepad.isMapped` will be set to true, a
 - `gamepad.frontButtons`: Front buttons (topLeft, topRight, bottomLeft, bottomRight).
 
 
-#### Gamepad Key Codes
+##### Gamepad Key Codes
 
 If `Shaku.input.delegateGamepadInputToKeys` is set to true (default), the Input manager will generate key-like states for all the connected gamepads that have standard mappings.
 
@@ -1149,7 +1151,7 @@ if (Shaku.input.pressed(['gamepad0_up', 'gamepad0_leftStickUp'])) {
 }
 ```
 
-### Additional Parameters
+#### Additional Parameters
 
 The input manager support some additional parameters you can set:
 
@@ -1161,30 +1163,30 @@ The input manager support some additional parameters you can set:
 - **resetOnFocusLoss**: If true, will reset input states when the page or target element loses focus.
 - **defaultDoublePressInterval**: The interval in milliseconds to consider two consecutive key presses as a double-press.
 
-### Conclusion
+#### Conclusion
 
 In this chapter we learned about the `Input` manager and how to use it to get input from keyboard, mouse, touch and gamepad. What we covered here is just the common use cases, to learn more about input methods, check out the [online demos](https://ronenness.github.io/Shaku/demo/index.html) or the [online docs](https://ronenness.github.io/Shaku/docs/index.html).
 
 
-## Assets
+### Assets
 
 The *Assets* manager handle loading and runtime creation of game assets, and is accessed by `Shaku.assets`.
 We already covered most of it while exploring the other managers, but in this section we will focus on the input manager itself.
 
 This doc don't cover the entirely of the API, only the main parts of it. To see the full API, check out the [API docs](docs/assets_assets.md).
 
-### Assets Loading
+#### Assets Loading
 
 There are two things to keep in mind while dealing with the assets manager:
 
-#### Assets URL
+##### Assets URL
 
 Every asset have a unique identifier field called `url`. This is how we identify the asset and store it in cache.
 If you try to load the same asset twice, in the second call will just return the copy from the cache, provided the URL is *exactly* the same.
 
 When creating assets dynamically by code, you can also provide a unique `url`, if you want to add the asset to cache and make it accessible anywhere via the assets manager.
 
-#### Promises
+##### Promises
 
 Every `load` and `create` method in the assets manager returns a `promise` that is resolved when the asset is loaded.
 Even if the asset was returned from cache, it will be returned via a promise.
@@ -1229,7 +1231,7 @@ Just keep in mind that using an asset before its ready may cause undefined behav
 To check if an asset is loaded and valid, you can use `asset.valid`.
 
 
-### Load a Sound
+#### Load a Sound
 
 To load a sound asset:
 
@@ -1239,7 +1241,7 @@ const sound = await Shaku.assets.loadSound(url);
 
 To learn more about sound assets, check out the [API docs](docs/assets_sound_asset.md).
 
-### Load a Texture
+#### Load a Texture
 
 To load a texture asset:
 
@@ -1253,7 +1255,7 @@ Params is an *optional* dictionary that accepts the following keys:
 
 To learn more about texture assets, check out the [API docs](docs/assets_texture_asset.md).
 
-### Create a Render Target
+#### Create a Render Target
 
 To create a render target (a texture we can render on):
 
@@ -1265,7 +1267,7 @@ In the above example `name` will be used as `url`, ie to put the loaded render t
 
 A render target is just a texture asset created via code. To learn more about texture assets, check out the [API docs](docs/assets_texture_asset.md).
 
-### Load a Font Texture
+#### Load a Font Texture
 
 To load a font texture asset:
 
@@ -1285,7 +1287,7 @@ Params is a *mandatory* dictionary that accepts the following keys:
 
 To learn more about font texture assets, check out the [API docs](docs/assets_texture_asset.md).
 
-### Load Json File
+#### Load Json File
 
 To load a json file:
 
@@ -1296,7 +1298,7 @@ console.log(json.data);
 
 To learn more about json assets, check out the [API docs](docs/assets_json_asset.md).
 
-#### Create Json File
+##### Create Json File
 
 You can also create a json asset dynamically, and add it to assets cache:
 
@@ -1304,7 +1306,7 @@ You can also create a json asset dynamically, and add it to assets cache:
 const json = await Shaku.assets.createJson(url, data);
 ```
 
-### Load Binary File
+#### Load Binary File
 
 To load a binary file:
 
@@ -1315,7 +1317,7 @@ console.log(bin.data);
 
 To learn more about binary assets, check out the [API docs](docs/assets_binary_asset.md).
 
-#### Create Binary
+##### Create Binary
 
 You can also create a binary asset dynamically, and add it to assets cache:
 
@@ -1323,7 +1325,7 @@ You can also create a binary asset dynamically, and add it to assets cache:
 const bin = await Shaku.assets.createBinary(url, data);
 ```
 
-### Create a Texture Atlas
+#### Create a Texture Atlas
 
 Texture Atlas was already covered when talking about the `Gfx` manager. To load multiple textures and generate an atlas from them, call `createTextureAtlas`:
 
@@ -1337,7 +1339,7 @@ const textureAtlas = await createTextureAtlas(name, sources, maxWidth, maxHeight
 - **maxHeight** is an optional limit to the atlas textures height.
 - **extraMargins** is an optional extra empty pixels to put between textures in the atlas.
 
-### Get Cached Asset
+#### Get Cached Asset
 
 To get an already-loaded asset from cache, you can use:
 
@@ -1348,23 +1350,23 @@ const asset = Shaku.assets.getCached(url);
 This method is more convinient and just return the asset immediately, without a promise.
 If the asset is not loaded yet, it will return null.
 
-### Waiting For Assets
+#### Waiting For Assets
 
 There are three main properties we can use to wait and monitor assets loading progress:
 
-#### Shaku.assets.pendingAssets
+##### Shaku.assets.pendingAssets
 
 Return how many assets are currently waiting to be loaded.
 
-#### Shaku.assets.failedAssets
+##### Shaku.assets.failedAssets
 
 Return how many assets failed to load.
 
-#### Shaku.assets.waitForAll
+##### Shaku.assets.waitForAll
 
 Return a promise that will be resolved when all assets are fully loaded, or rejected if one or more failed. You can use it to load multiple assets in parallel (without await) and then call `waitForAll` to wait for all of them to load.
 
-### Freeing Assets
+#### Freeing Assets
 
 All loaded assets are stored in local cache. To free a specific asset you can call:
 
@@ -1380,14 +1382,14 @@ You can also free all loaded assets at once, by calling `clearCache`:
 Shaku.assets.clearCache();
 ```
 
-## Collision
+### Collision
 
 The *Collision* manager provides basic 2D collision detection, and is accessed by `Shaku.collision`.
 The collision manager handles only detection, its not a physics engine.
 
 This doc don't cover the entirely of the API, only the main parts of it. To see the full collision manager API, check out the [API docs](docs/collision_collision.md).
 
-### Collision Shapes
+#### Collision Shapes
 
 A collision shape is a 2d body we use to test collision.
 There are currently five collision shapes *Shaku* supports:
@@ -1398,7 +1400,7 @@ There are currently five collision shapes *Shaku* supports:
 * [Lines](docs/collision_shapes_lines.md).
 * [Tilemap](docs/collision_shapes_tilemap.md).
 
-#### Collision Flags
+##### Collision Flags
 
 Every shape has a property called `collisionFlags`.
 This property is a number used as a bitmap for collision filtering. For example, you can define the following flags:
@@ -1424,7 +1426,7 @@ And later if we want to only collide with walls or laval, we can use the followi
 const WallsAndLavaMask = CollisionFlags.Walls | CollisionFlags.Lava;
 ```
 
-### Collision World
+#### Collision World
 
 A `Collision World` is a group of collision shapes you can query, debug render, and more. It represent a scene where you need to perform collision detection.
 
@@ -1437,7 +1439,7 @@ const gridSize = new Shaku.utils.Vector2(256, 256);
 const world = Shaku.collision.createWorld(gridSize);
 ```
 
-#### Adding Shapes
+##### Adding Shapes
 
 Now lets add 3 shapes to the world:
 
@@ -1455,7 +1457,7 @@ const circle = new Shaku.collision.CircleShape(new Shaku.utils.Circle(new Shaku.
 world.addShape(circle);
 ```
 
-#### Picking
+##### Picking
 
 To 'pick' shapes that touch a position, you can use the `pick()` method:
 
@@ -1480,18 +1482,18 @@ const shapes = world.pick(position, radius, sortByDistance, mask, predicate)
 - **mask** optional collision mask, to match against the shapes collision flags.
 - **predicate** optional filter method to run in broad phase. Return false to skip a shape, or true to test it.
 
-#### Collision Tests
+##### Collision Tests
 
 If you want to test collision using a specific shape that isn't a point or circle, you can either use `testCollision(sourceShape, sortByDistance, mask, predicate)` to get a single result (faster), or `testCollisionMany(sourceShape, sortByDistance, mask, predicate)` for multiple results.
 
-### Resolver
+#### Resolver
 
 The resolver is a class responsible to perform the math behind the collision detection of different shapes. If you want to create your own custom shapes, you need to register a handler method in the resolver to handle your new shape against all existing shapes.
 
 You can access the resolver with `Shaku.collision.resolver`.
 To learn more about it, check out the [API docs](docs/collision_resolver.md).
 
-### Debug Draw
+#### Debug Draw
 
 Its often useful to draw the collision world when debugging.
 To do so, you can use the `debugDraw()` method:
@@ -1513,44 +1515,44 @@ shape.setDebugColor(color);
 
 ![physics-example](resources/physics.png)
 
-## Utils
+### Utils
 
 Utils is a collection of built-in utility classes and core objects we use with *Shaku*.
 You access them with `Shaku.utils`.
 
 In this section we'll only mention the main objects and won't explain most of them. To learn more about them, check out the docs.
 
-### Vector2
+#### Vector2
 
 Represent a 2d vector.
 For more info check out the [API docs](docs/utils_vector2.md).
 
-### Vector3
+#### Vector3
 
 Represent a 3d vector.
 For more info check out the [API docs](docs/utils_vector3.md).
 
-### Rectangle
+#### Rectangle
 
 Represent a 2d rectangle.
 For more info check out the [API docs](docs/utils_rectangle.md).
 
-### Circle
+#### Circle
 
 Represent a 2d circle.
 For more info check out the [API docs](docs/utils_circle.md).
 
-### Line
+#### Line
 
 Represent a 2d line.
 For more info check out the [API docs](docs/utils_line.md).
 
-### MathHelper
+#### MathHelper
 
 Contains useful math-related functions that extend the basic JavaScript `Math` object.
 For more info check out the [API docs](docs/utils_math_helper.md).
 
-### SeededRandom
+#### SeededRandom
 
 Generate semi-random numbers using a seed.
 
@@ -1558,7 +1560,7 @@ This is useful when you want to generate the same random numbers on different br
 
 For more info check out the [API docs](docs/utils_seeded_random.md).
 
-### Color
+#### Color
 
 Represent a color value.
 The Color object store RGBA components as floats, ranging from 0.0 to 1.0.
@@ -1572,7 +1574,7 @@ Note that these colors are pre-compiled and are not generated at runtime, so the
 
 For more info check out the [API docs](docs/utils_color.md).
 
-### Animators
+#### Animators
 
 `Animator`s are objects you can attach to any JavaScript object and animate any property in it over time. Animators can also register themselves to update automatically, so you don't need to update them and can just launch and forget about them.
 
@@ -1629,21 +1631,21 @@ So how `Animator`s actually work?
 
 Lets review all the properties we can set in an `Animator` instance:
 
-#### animator.from(values)
+##### animator.from(values)
 
 Set values to start animation from.
 If an animated property doesn't have a 'from' value set, the animator will pick the value the target object have when animation starts.
 
 Keys can use dots notation for nested objects.
 
-#### animator.to(values)
+##### animator.to(values)
 
 Set values to animate to.
 We can animate numbers or any class that has a static `lerp()` method.
 
 Keys can use dots notation for nested objects.
 
-#### animator.repeats(enable, reverseAnimation)
+##### animator.repeats(enable, reverseAnimation)
 
 Set how many times to repeat the animation:
 
@@ -1657,36 +1659,36 @@ If for example `reverseAnimation` is true and you repeat an animation that grows
 
 If `reverseAnimation` is not set, every time animation repeats its state will just 'jump' back to the starting values.
 
-#### animator.reverseBackToStart()
+##### animator.reverseBackToStart()
 
 Will set `repeats(1 true)` so the animator will animate back the starting state once done.
 
-#### animator.smoothDamp(enabled)
+##### animator.smoothDamp(enabled)
 
 If true, animation will go faster at the beginning and slower as we reach the animation end.
 
-#### animator.then(callback)
+##### animator.then(callback)
 
 Method to run when animation ends. Get the target and animator as params.
 
-#### animator.duration(seconds)
+##### animator.duration(seconds)
 
 Set animation duration in seconds.
 
-#### animator.reset()
+##### animator.reset()
 
 Reset animation back to start.
 
-#### animator.play()
+##### animator.play()
 
 Play animation automatically, so you won't have to call `update()` yourself.
 
-#### animator.update(delta)
+##### animator.update(delta)
 
 Update animation progress with delta time.
 This is what you need to call manually when not using `play()`.
 
-### Perlin
+#### Perlin
 
 A utility to generate perlin noise.
 
@@ -1703,7 +1705,7 @@ const value = perlin.generateSmooth(x / 25, y / 25, 0.15);
 
 For more info check out the [API docs](docs/utils_perlin.md).
 
-### PathFinder
+#### PathFinder
 
 `PathFinder` is a utility to find a valid walking path between two points on a 2d or 3d grid.
 
@@ -1792,7 +1794,7 @@ const path = Shaku.utils.PathFinder.findPath(gridProvider, {x:0, y:0}, {x:11, y:
 For more info check out the [API docs](docs/utils_path_finder.md).
 
 
-### Storage
+#### Storage
 
 `Storage` is a small utility that wraps `localStorage` and provides a slightly more convinient interface with a fallback to `sessionStorage`, and if none of the above is available, in-memory storage.
 
@@ -1835,7 +1837,7 @@ const value = otherStorage.getItem('item_key'); // value == 'some value to store
 ```
 
 
-#### Storage Adapters
+##### Storage Adapters
 
 When creating a new storage manager, we can provide a list of adapters to use, and the storage will pick the first adapter available.
 
@@ -1863,7 +1865,7 @@ if (!storage.isValid) {
 
 Its true that today all browsers already have `localStorage`, but keep in mind this object may not appear in some conditions (for example iframe with incognito, or if its disabled via settings).
 
-#### Prefix
+##### Prefix
 
 You can add keys prefix to storage instances. Storages with different prefixes will not affect each other's values:
 
@@ -1882,7 +1884,7 @@ npcsStorage.setJson('knight', {health: 54});
 const playerKnightHealth = playersStorage.getJson('knight').health; // playerKnightHealth == 100
 ```
 
-#### Base64
+##### Base64
 
 The `Storage` manager can encode keys and data as base64. This will make your data slightly less readable in the developers console, and make the date more suitable to transfer between devices and over network. But needless to say, it won't provide any actual layer of security.
 
@@ -1904,11 +1906,11 @@ Will turn into something like this when viewed in developer console:
 
 Note that you can't read Base64 values without the Base64 flag set to true and vice versa.
 
-## Miscellaneous
+### Miscellaneous
 
 The following are some useful miscellaneous you should also know about.
 
-### Shaku.gameTime
+#### Shaku.gameTime
 
 `Shaku.gameTime` contains the delta time since last frame + the total elapsed time in seconds since *Shaku* initialization.
 You can use delta time as factor to make your game animate at the same speed regardless of FPS, and use elapsed for animations progress, or to measure time that passed between two events by only storing the start time.
@@ -1948,12 +1950,12 @@ function step()
 
 More info can be found in the [API docs](docs/utils_game_time.md).
 
-### Shaku.getFpsCount()
+#### Shaku.getFpsCount()
 
 Return the current FPS count.
 Until the first second have passed, this will return 0.
 
-### Shaku.getAverageFrameTime()
+#### Shaku.getAverageFrameTime()
 
 Sometimes FPS is not enough to measure performance, because FPS is capped to 60. So if you develop on a powerful machine that is always on 60 FPS, you may not know that a tiny change you've made increased the time it takes to actually render a frame from 1ms to 10ms, which may be noticeable on weaker machines that may not reach max FPS.
 
@@ -1962,34 +1964,34 @@ To measure how long it takes to perform a single game step on average, you can c
 **Don't try to use Shaku.gameTime.delta to measure performance**, as this value is affected by the FPS cap and will be constant if you run on max FPS, regardless of actual performance.
 
 
-### Shaku.requestAnimationFrame()
+#### Shaku.requestAnimationFrame()
 
 As seen previously, this is just a wrapper around `window.requestAnimationFrame` and used to request the next update call for your main loop.
 
 You don't have to use this, but its cleaner this way.
 
-### Shaku.destroy()
+#### Shaku.destroy()
 
 If for some reason you decide to dispose your page from *Shaku*, call this. It should cleanup everything.
 You'll still need to remove the canvas manually though.
 
-### Shaku.silent()
+#### Shaku.silent()
 
 Call this before initializing *Shaku* to silent all prints and logs.
 
-### Shaku.version
+#### Shaku.version
 
 Return *Shaku*'s current version.
 
 # Advanced Topics
 
-## Shaku on NodeJS
+### Shaku on NodeJS
 
 *Shaku* is a client-side library, designed to run in browsers. However, it has many useful utilities that you might want to use on server side as well, especially if you want to share code between client and server (vectors, collision, perlin, path find, math helper and more..).
 
 To use *Shaku* on *NodeJS* you can require it just like you would require any node module. It will work just the same, only without the `gfx`, `sfx` and `input` managers, that will return null instead since *Shaku* will detect we run on server side.
 
-### Connecting to server logger
+#### Connecting to server logger
 
 You might want to connect *Shaku* to your own server-side logger instead of console. To do so, you can create custom logger drivers and set them before initializing *Shaku*. The example below takes an existing `winston` logger and set it as the *Shaku* logger:
 
@@ -2026,440 +2028,22 @@ Shaku.setLogger(new ShakuLogDrivers());
 Alternatively, if you don't want logs from *Shaku* you can just silent it with `Shaku.silent()`.
 
 
-# Build Shaku
+## Build Shaku
 
-To build shaku after making changes, run `build.bat` from the project folder. This will generate `Shaku.js` and `Shaku.min.js` under `dist`.
+### Pre-requisites
 
-To update the docs, call `build_api_docs.py` (requires Python3) and `build_types.py` to generate ts files.
+- Node.js
+- npm
 
-If you added a new file, please copy and update the header comment from one of the existing files. Then you can use `update_top_comment.py` to make sure the header is written properly and have some auto fields set.
+To build shaku after making changes, run `npm run build` from the project folder. This will generate `Shaku.js` and `Shaku.min.js` under `dist`.
 
-# Changes
+To update the docs, call `npm run docs`.
 
-List of changes in released versions.
+## Changes
 
-## 1.1.0
+List of changes in released versions available in the [changelog](changelog/) folder.
 
-- Improved error text on failed JSON / Binary assets.
-- Added 'asset' property to loading assets Promise, so you can access them before they are ready.
-- Improved some demos.
-- Updated `Vector2` add / sub / div / mul to accept two numbers in addition to single number or vector.
-- Added sort method + sort-for-batching to sprites group.
-- Added a method to get average frame time.
-- Added a getter to get draw calls count.
-- Added culling to batch rendering.
-- Changed `renderingRegion` to return actual region, with `viewport` and `renderTarget` considered (breaking change).
+## License
 
-## 1.2.0
-
-- Added collision detection manager.
-- Added `outlineRect` to gfx manager.
-- Added `fillCircle` to gfx manager.
-- Added `outlineCircle` to gfx manager.
-- Changed the topLeft, topRight, bottomLeft, bottomRight getters in `Rectangle` to be 'getXXX' methods (breaking change).
-- - Why: if its a getter you can do `rect.topLeft.x = ...` which implies you can change it, but you can't. also now its more consistent with getSize() and getCenter().
-- Fixed all rotations to go clockwise, to be more industry standard (breaking change).
-- Small default-color optimization in gfx manager.
-- Added `Invert` Blend Mode.
-- Added `Darken` Blend Mode.
-- Renamed `drawLines` to `drawLinesStrip` and added real `drawLines` (breaking change).
-- Changed few exceptions to error logs to be softer on rendering errors.
-- Added `throwErrorOnWarnings()` to allow more strict mode.
-- Fixed rectangle-rectangle collision to include touching borders (breaking change).
-- Fixed `collideCircle()` bug.
-- Added plus / minus key codes.
-
-## 1.3.0
-
-- Fixed collision debug render to accept camera parameter.
-- Added method to get actual rendering size without offset.
-- Changed gfx `renderingRegion` and `canvasSize` to be methods and not getters, to make it clear they are immutable (breaking change).
-- Changed gfx `cover` to accept vector in addition to rectangle.
-- Added `pick` method to collision world.
-- Added position value for collision result with points.
-- Added `flipX` and `flipY` getters / setters to sprite.
-- Fixed `orthographicOffset()` bug with viewport offset.
-- Fixed sprites group demo (wrong rotation).
-- Fixed how viewports work and are applied in general (breaking change).
-- Hid the camera `perspective()` method, at least for now (breaking change).
-- Fixed collision shapes custom debug color.
-- Added `clone()` to sprites.
-
-## 1.3.1
-
-- Refactor and bugfix in the assets manager.
-- Added `onReady()` method to assets.
-- Fixed bug in collision world `pick()`.
-- Fixed debug color after changing collision shape flags.
-
-## 1.3.2
-
-- Added `MathHelper` class.
-- Added `SeededRandom` class.
-- Improved all util objects `equals` methods to be safer.
-- Added `Line` class.
-- Added `Lines` collision shape class.
-- Added `iterateShapes` to collision world.
-
-## 1.4.0
-
-- Adjustments to allow using (parts of) Shaku in nodejs.
-- Fixed typo bug when normalizing vector of 0,0.
-- Added `remove()` to collision shape.
-- Fixed bug in `removeShape()`.
-- Added `radiansDistanceSigned()` and changed `radiansDistance()` to not be signed (breaking change).
-- Added `setLogger()` method to replace the log handler.
-- Fixed sanity checks in creating render target.
-- Fixed reset camera with render target + added auto camera reset when setting render target (breaking change).
-- Added support in multiple textures in effects.
-- Fixed setting secondary textures filter and wrap modes.
-
-## 1.4.1
-
-- Removed accidental glDisable causing warnings in console.
-
-## 1.4.2
-
-- Added `wrapDegrees()` and `dot()` to `MathHelper`.
-- Added a way to change application name in logger.
-- Added `setCameraOrthographic()` to make it easier to set cameras.
-- Improved lerping on same values.
-- Added perlin noise generator.
-- Updated demos.
-- Added `drawPoints()` and `drawPoint()` methods.
-
-## 1.4.3
-
-- Removed the annoying quantity limitation when drawing shapes.
-- Fixed sprites batch culling.
-- Added `fillCircles()` method to draw circles with batching.
-- Added `fillRects()` method to draw rectangles with batching.
-- Slightly optimized collision world movement.
-- Added `getBoundingCircle()` to `Rectangle`.
-- Added `resize()` to `Rectangle`.
-- Improved collision rectangle radius calculation.
-- Added collision tilemap shape.
-
-## 1.4.4
-
-- Refactored `gfx` manager to allow direct access to spriteBatch.
-- Slightly optimized tilemap collision.
-
-## 1.4.5
-
-- Minor bugfixes.
-- Added `ready` promise to assets so you can use `await` on individual assets.
-- Changed `fillRects` to allow individual rectangles rotation.
-- Added `pathFinder` utility.
-
-## 1.4.6
-
-- Added sprite z position to vertices buffer when drawing, to allow supporting z in shaders.
-- Added support in channels count for render targets.
-- Added option to set multiple render targets.
-- Fixed bug in setting effect flags.
-- Added Dithering flag to custom effects.
-- Fixed single channel texture format.
-- Allowed to pass z value as size when drawing sprites.
-- Fixed "mouse" position bug in mobile.
-
-## 1.5.0
-
-**Breaking Changes**
-
-- Removed `transformation` from single sprite drawing.
-- Internally made all sprites always draw with batching.
-- Removed UvScale and UvOffset params from the basic effect, they are not needed with batching.
-- Added offset param to build text.
-- Added misc `gfx` utilities.
-
-## 1.5.1
-
-- Added `Vector3` + full support in drawing API to pass Z value to shader (not actual 3d, 2d with z).
-- Added API to set vertices directly in batch.
-- Added option to provide array of colors instead of a single color, to assign different color per sprite vertex.
-- Added some useful functions to vectors.
-- Added 'allowDiagonal' flag to pathfind utilitiy.
-
-## 1.5.2
-
-- Reduced texture atlas bleeding.
-- Added `intermediateProcessor` to collision detection.
-- Added `skew` property to sprites.
-- Added `extraPadding` flag to font texture.
-- Added auto conversion to string in building text.
-- Improved vector2 degrees calculation.
-- Added vectors example.
-- Added support in full engine pause + auto pausing on lost focus.
-- Improved the internal works of the GameTime object.
-- Fixed bug in texture wrap and filters not applying properly.
-- Removed some dead code.
-
-## 1.5.3
-
-- Collision detection optimization (accidentally did lots of long string conversion - fixed that).
-- Added `pauseTime` option.
-- Fixed artefacts with resolution with odd numbers.
-
-## 1.5.4
-
-- Added default `desynchronized` init flag.
-- Added anti bleeding with rotation.
-- Added some degrees-related helper methods.
-- Added option to provide multiple key codes for main input methods.
-
-## 1.5.5
-
-- Added some utils nice-to-have methods.
-- Fixed log typo.
-- Added static sprites optimization.
-- Added quads draw count metric.
-
-## 1.5.6
-
-- Added `Vector2.random`.
-- Added support in methods as values in animators.
-- Added dispose to sound effects + auto dispose when playing sound, to avoid hitting max media players limit.
-- Removed risky `constructor.name` usage from collision utils.
-- Minor optimization in collision detection.
-
-## 1.5.7
-
-- Added `Storage` utility.
-- Small bug fix when switching `pauseWhenNotFocused` during an update while being unfocused.
-- Added option to set the `crossOrigin` property while loading a texture.
-
-## 1.5.8
-
-- Added method to draw vertices directly under `gfx` manager.
-- Made the `Vertex` object public, and extended its API.
-- Extended `Matrix` API.
-- Added vertices rendering demo.
-- Tiny change in how we return the main object to it will better be identified by code analyzers.
-- Added some useful methods to `Vector2` class.
-- Added method to get logger.
-- Added `fromDict` and `toDict` to more util objects.
-- Added `minimize` flag to all `toDict` methods.
-- Fixed bug in Color `fromDict` turning alpha value of 0 to 1.
-
-## 1.5.9
-
-- Added transformation utility class to help implement scene hierarchy and ECS frameworks using Shaku.
-- Added option to `await` on playing sounds.
-
-## 1.6.0
-
-Special thanks to [knexator](https://github.com/knexator) for this update!
-
-- Added support in MSDF fonts.
-- Improved docs.
-- Improved font asset generation and API.
-- Added some convinient methods to Input manager.
-- Added support in setting source rectangle from spritesheet.
-- Changed default size for sprites.
-
-## 1.6.1
-
-Special thanks to [knexator](https://github.com/knexator) for adding TypeScript Declarations!
-
-- Tiny change to Sprite default size to not break if given a dictionary representing source rect instead of `Rectangle` instance.
-- Added `sourceRectOffsetAdjustment` param to font assets.
-- Added TypeScript Declarations [details here](https://github.com/RonenNess/Shaku/pull/3).
-- Renamed `TextAlignment` enum (old name still works with a deprecation warning).
-- Added Shaku + Three.js demo.
-- Added `prevent default` support on mouse wheel events.
-- Refactored the way Input Manager handles key pressed / released events, so no events could be lost.
-- Slightly optimized Input Manager.
-- Improved the way touch events are handled as mouse in Input Manager.
-- Added `delegateTouchInputToMouse` flag in Input Manager.
-- Added getters for touch screen state and position.
-- Added `stats` to collision world.
-
-## 1.6.2
-
-- Fixed key pressed input bug from last version.
-- Extended the input demo page to include more tests.
-- Added `lastReleaseTime` and `lastPressedTime` to Input manager.
-- Added `doublePressed` and `doubleReleased` to Input manager.
-- Fixed some input manager docs.
-
-## 1.6.3
-
-- Added gamepad input.
-- Added demo for gamepad input.
-- Updated docs.
-
-## 1.6.4
-
-- Added support in custom codes in input manager.
-- Added option to delegate gamepad input into base key events.
-- Improved Input manager error logs.
-
-## 1.6.5
-
-- Optimized gfx by caching rendering region internally.
-- Optimized gfx by caching some variables + simpler bounding rect calculation when there's no rotation or skew.
-- Optimized gfx by reducing buffer bind calls when drawing batches.
-- Optimized gfx by not slicing arrays when we don't have to.
-- Added log warning if couldn't get WebGL2 and fallback to WebGL1.
-
-## 1.7.0
-
-- Extended Input demo.
-- Added useful logs about gamepad state changes.
-- Added xxxReadonly const Vector2 and Vector3 values. These are just faster to use.
-- Fixed some Vector3 const values.
-- Extended Camera to support 3D rendering.
-- Extended Matrix to support 3D rendering.
-- Added basic 3D example.
-- Changed `setContextAttributes()` to override flags instead of replacing them completely.
-
-## 1.7.1
-
-- Made sound dispose slightly safer.
-- Continue updating input manager only when paused.
-- Removed mouse position reset on focus lost.
-
-## 2.0.0
-
-Shaku 2.0 is a heavily refactored Shaku version with some fundamental and breaking changes.
-
-### Main Change
-
-The need for `Shaku 2.0` comes from the mess in the rendering pipeline, specifically with how *Shaku* dealt with *batching*.
-
-Batching is an important optimization to reduce GPU draw calls by combining together quads that share the same texture, blend mode and effect.
-
-In previous versions I tried to hide the batch works behind the scenes and call draw internally when we needed to. This created a good looking API, but created performance traps and obscurity.
-
-I felt these issues hard while making my first big *Shaku* powered project, and if I made mistakes with it, surely others will too.
-
-The main thing I wanted to change with *Shaku* 2.0 was to make batching more visible to the users, and make the rendering API more similar to the legacy C# XNA (or MonoGame) framework, which has a pretty decent API.
-
-So, now instead of drawing things like this:
-
-```js
-Shaku.gfx.draw(...);
-```
-
-We'll need to create a batch and use it like this:
-
-```js
-// init
-const spritesBatch = new Shaku.gfx.SpriteBatch();
-
-// render
-spritesBatch.begin();
-spritesBatch.draw(...);
-spritesBatch.end();
-```
-
-Yes, it's slightly less user friendly. But its clearer, and forces the user to know when a draw call is made.
-This way also creates some new abilities, like the ability to redraw an entire batch more than once with different effects without rebuilding the batch (super fast!).
-
-And like everything with `Shaku`, if you want a more high-level abstract API, you can just wrap it with a simplified draw() call similar to what `Shaku` had in the past.
-
-Note that there are now multiple type of draw batches; for sprites, text, shapes, etc.
-
-### Other Changes
-
-Since I decided to do breaking changes in the `gfx` manager anyway, I took the opportunity to push other breaking changes as well:
-
-- Started using private methods with '#' to hide internal logic.
-- Removed deprecated stuff and renamed some methods that had problematic names.
-- Changed static getters that create instances, like `Vector2.one`, to be normal static methods. This communicates better that a new object is created rather than accessing a member.
-
-### All 2.0 Changes
-
-- Builds with `WebPack` instead of `Browserify`.
-- Huge refactor in gfx and rendering batches.
-- Improved APIs and private metods with #.
-- Improved docs.
-- Added textures atlas.
-- Removed some useless logs.
-- Renamed `Shaku.isPaused` to `Shaku.isCurrentlyPaused()`.
-- Renamed `Shaku.paused` to `Shaku.pause`.
-- Renamed `Shaku.pauseTime` to `Shaku.pauseGameTime`.
-- Will now share loggers with the same name and not recreate them.
-- Changed `Vector2.length` to `Vector2.length()` since its a calculation.
-- Changed `Vector3.length` to `Vector3.length()` since its a calculation.
-- Renamed `Vector2.fromDegree()` to `Vector2.fromDegrees()`.
-- Renamed `Vector2.degreesToFull()` to `Vector2.wrappedDegreesTo()`.
-- Renamed `Vector2.radiansToFull()` to `Vector2.wrappedRadiansTo()`.
-- Renamed `Vector2.rotatedRadians()` to `Vector2.rotatedByRadians()`.
-- Renamed `Vector2.rotatedDegrees()` to `Vector2.rotatedByDegrees()`.
-- Renamed `Vector2.degreesBetweenFull()` to `Vector2.wrappedDegreesBetween()`.
-- Renamed `Vector2.radiansBetweenFull()` to `Vector2.wrappedRadiansBetween()`.
-- Changed left,right,up,down,.. `Vector2` getters to regular methods, to indicate it generates a new returned object.
-- Changed left,right,up,down,.. `Vector3` getters to regular methods, to indicate it generates a new returned object.
-- Fixed bug in `Vector3.set()`.
-- Removed `createEffect()` method; can now just create effect instances normally.
-- Removed deprecated `setUvOffsetAndScale()` method.
-- Added the ability to set attributes and uniforms on inactive effects; will store values in effect instance and apply them as soon as you draw with the effect.
-- Replaced all `instanceof Array` checks with the more robust and faster `Array.isArray()`.
-- Removed `sprite.static` property, as its not properly implemented.
-- Added basic effect without vertex color.
-- Updated and renamed the basic built-in effects.
-- Fixes in Sfx manager.
-- Added `getPixelsData()` to textures.
-- Added better support in Color uniforms in effects.
-- Added a built-in effect for sprites with outline.
-- Removed deprecated.
-- Added 'flipY' flag when loading a texture.
-- Added 'premultiplyAlpha' flag when loading a texture.
-- Improved effects uniform binds and renamed some of them - this might break custom effects.
-
-## 2.1.0
-
-- Refactored 3d sprite batch and moved some functionality into the camera object instead.
-- Added 'Frustum' shape.
-- Added 'Plane' shape.
-- Added 'Sphere' shape.
-- Added 'Box' shape.
-- Added 'min', 'max', 'distanceToSquared', 'dot' and 'clamp' to Vectors.
-- Moved 'Matrix' into utils.
-
-## 2.2.0
-
-- Bugfix in frustum collision with box.
-- Added skeleton animation demo.
-- Fixed cycle dependency in Matrix.
-- Separated 3d camera from 2d camera.
-- Added functionality to the 3d camera object.
-- Changed 'Matrix' API to make it more intuitive.
-- Added optimization for 'instanceof' checks (on Chrome its pretty much the same, on FF instanceof is ~6% slower).
-
-## 2.2.1
-
-- Fixed another faulty circlular import.
-
-## 2.2.2
-
-- Fixed warnings in minified version + broken method to get camera viewproj matrix.
-
-## 2.2.3
-
-- Fixed bug that effect override flags don't update properly when you change them.
-- Added 'useRef' option to vertex set methods, so we can reuse uvs and colors.
-- Added 3D ray object.
-- Added unproject to 3D camera.
-
-## 2.2.4
-
-- Added support in setting 'polygonOffset' via effects or override flags.
-- Added support in setting 'depthFunc' via effect or override flags.
-- Added support in normals in effects and vertices.
-- Removed leftover deprecated param from base rendering batch.
-- Removed deprecated effect method 'prepareToDrawBatch'.
-- Small optimizations and adjustments to 'GameTime'.
-- Added math helper method to calculate normal.
-- Fixed bug with lerpDegrees method to wrap degrees.
-
-## 2.2.5 [WIP]
-
-- Added support in tangents and binormal in effects.
-- Fixed broken average frame time calculation.
-
-# License
-
-*Shaku* is licensed under the permissive MIT license, so you can use it for any purpose (including commercially) and it should be compatible with most common licenses.
+*Shaku* is licensed under the permissive MIT license,
+so you can use it for any purpose (including commercially) and it should be compatible with most common licenses.

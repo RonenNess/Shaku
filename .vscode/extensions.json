@@ -1,0 +1,9 @@
+{
+	"recommendations": [
+		"nucllear.vscode-extension-auto-import",
+		"streetsidesoftware.code-spell-checker",
+		"dbaeumer.vscode-eslint",
+		"visualstudioexptteam.vscodeintellicode",
+		"yoavbls.pretty-ts-errors"
+	]
+}
