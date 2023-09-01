@@ -133,16 +133,12 @@ export abstract class CollisionShape {
 	 * @private
 	 * @param world New parent collision world or null to remove.
 	 */
-	protected _setParent(world: CollisionWorld): void {
+	protected _setParent(world: CollisionWorld | null): void {
 		// same world? skip
-		if(world === this._world) {
-			return;
-		}
+		if(world === this._world) return;
 
 		// we already have a world but try to set a new one? error
-		if(this._world && world) {
-			throw new Error("Cannot add collision shape to world while its already in another world!");
-		}
+		if(this._world && world) throw new Error("Cannot add collision shape to world while its already in another world!");
 
 		// set new world
 		this._world = world;

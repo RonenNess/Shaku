@@ -14,7 +14,7 @@ export class ItemsSorter {
 	 * let result = RectanglesSorter.arrangeRectangles(boxes);
 	 * // show result
 	 * console.log(`Output region size is: ${result.width},${result.height}, and it utilizes ${result.utilized} of the area.`);
-	 * for (let res of result.rectangles) {
+	 * for(const res of result.rectangles) {
 	 *   console.log(`Rectangle ${res.source.id} is at position: ${res.x},${res.y}.`);
 	 * }
 	 * @param {Array<Rectangle|Vector2|*>} rectangles Array of vectors or rectangles to sort.
@@ -37,7 +37,7 @@ export class ItemsSorter {
 
 		// normalize rectangles / vectors
 		let normalizedRects = [];
-		for(let rect of rectangles) {
+		for(const rect of rectangles) {
 			normalizedRects.push({
 				width: ((rect.width !== undefined) ? rect.width : rect.x) + extraMargins.x,
 				height: ((rect.height !== undefined) ? rect.height : rect.y) + extraMargins.y,

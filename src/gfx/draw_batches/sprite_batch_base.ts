@@ -258,7 +258,7 @@ export class SpriteBatchBase extends DrawBatch {
 		const screenRegion = (cullOutOfScreen || (this.cullOutOfScreen && (cullOutOfScreen === undefined))) ? this.#_gfx._internal.getRenderingRegionInternal() : null;
 
 		// add all sprites
-		for(let sprite of sprites) {
+		for(const sprite of sprites) {
 
 			// update texture
 			this._updateTexture(sprite.texture);

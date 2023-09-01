@@ -113,7 +113,7 @@ export class Gfx implements IManager {
 	 */
 	setContextAttributes(flags) {
 		if(_gl) { throw new Error("Can't call setContextAttributes() after gfx was initialized!"); }
-		for(let key in flags) {
+		for(const key in flags) {
 			_initSettings[key] = flags[key];
 		}
 	}
@@ -396,7 +396,7 @@ export class Gfx implements IManager {
 
 		// set render targets
 		var drawBuffers = [];
-		for(let index = 0; index < texture.length; ++index) {
+		for(const index = 0; index < texture.length; ++index) {
 
 			// attach the texture as the first color attachment
 			const attachmentPoint = _gl["COLOR_ATTACHMENT" + index];
@@ -713,7 +713,7 @@ export class Gfx implements IManager {
 				}
 				else {
 					sprite.color = [];
-					for(let col of color) {
+					for(const col of color) {
 						sprite.color.push(col.clone());
 					}
 				}

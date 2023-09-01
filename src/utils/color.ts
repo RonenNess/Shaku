@@ -180,11 +180,12 @@ export class Color {
 	 * @returns New color value.
 	 */
 	public static fromDecimal(val: number, includeAlpha: number): Color {
-		let ret = new Color(1, 1, 1, 1);
+		const ret = new Color(1, 1, 1, 1);
 		if(includeAlpha) { ret.a = (val & 0xff) / 255.0; val = val >> 8; }
 		ret.b = (val & 0xff) / 255.0; val = val >> 8;
 		ret.g = (val & 0xff) / 255.0; val = val >> 8;
 		ret.r = (val & 0xff) / 255.0;
+		return ret;
 	}
 
 	/**
@@ -192,12 +193,12 @@ export class Color {
 	 * @param data Dictionary with {r,g,b,a}.
 	 * @returns Newly created color.
 	 */
-	public static fromDict(data: { r: number, g: number, b: number, a: number; }): Color {
+	public static fromDict(data: Partial<SerializedColor>): Color {
 		return new Color(
-			(data.r !== undefined) ? data.r : 1,
-			(data.g !== undefined) ? data.g : 1,
-			(data.b !== undefined) ? data.b : 1,
-			(data.a !== undefined) ? data.a : 1
+			data.r ?? 1,
+			data.g ?? 1,
+			data.b ?? 1,
+			data.a ?? 1,
 		);
 	}
 
@@ -206,15 +207,15 @@ export class Color {
 	 * @param minimized If true, will not include keys that their values are 1. You can use fromDict on minimized dicts.
 	 * @returns Dictionary with {r,g,b,a}
 	 */
-	public toDict(minimized: true): Partial<{ r: number, g: number, b: number, a: number; }>;
-	public toDict(minimized?: false): { r: number, g: number, b: number, a: number; };
-	public toDict(minimized?: boolean): Partial<{ r: number, g: number, b: number, a: number; }> {
+	public toDict(minimized: true): Partial<SerializedColor>;
+	public toDict(minimized?: false): SerializedColor;
+	public toDict(minimized?: boolean): Partial<SerializedColor> {
 		if(minimized) {
-			const ret = {};
-			if(this.r !== 1) { ret.r = this.r; }
-			if(this.g !== 1) { ret.g = this.g; }
-			if(this.b !== 1) { ret.b = this.b; }
-			if(this.a !== 1) { ret.a = this.a; }
+			const ret: Partial<SerializedColor> = {};
+			if(this.r !== 1) ret.r = this.r;
+			if(this.g !== 1) ret.g = this.g;
+			if(this.b !== 1) ret.b = this.b;
+			if(this.a !== 1) ret.a = this.a;
 			return ret;
 		}
 		return { r: this.r, g: this.g, b: this.b, a: this.a };
@@ -327,6 +328,13 @@ export class Color {
 			lerpScalar(p1.a, p2.a, a)
 		);
 	}
+}
+
+export interface SerializedColor {
+	r: number;
+	g: number;
+	b: number;
+	a: number;
 }
 
 // table to convert common color names to hex
@@ -471,23 +479,21 @@ const colorNameToHex = {
 	"white": "#ffffff",
 	"whitesmoke": "#f5f5f5",
 	"yellow": "#ffff00",
-	"yellowgreen": "#9acd32"
+	"yellowgreen": "#9acd32",
 };
 
 // create getter function for all named color
-for(var key in colorNameToHex) {
-	if(colorNameToHex.hasOwnProperty(key)) {
-		var colorValue = hexToColor(colorNameToHex[key]);
-		(function(_colValue) {
+for(const key in colorNameToHex) {
+	var colorValue = hexToColor(colorNameToHex[key as keyof typeof colorNameToHex]);
+	(function(_colValue) {
 
-			Object.defineProperty(Color, key, {
-				get: function() {
-					return _colValue.clone();
-				}
-			});
+		Object.defineProperty(Color, key, {
+			get: function() {
+				return _colValue.clone();
+			}
+		});
 
-		})(colorValue);
-	}
+	})(colorValue);
 }
 
 // built-in color keys

@@ -51,8 +51,8 @@ export class Circle {
 	 * @param data Dictionary with {center, radius}.
 	 * @returns Newly created circle.
 	 */
-	public static fromDict(data: { center: Vector2, radius: number; }): Circle {
-		return new Circle(Vector2.fromDict(data.center || {}), data.radius || 0);
+	public static fromDict(data: Partial<SerializedCircle>): Circle {
+		return new Circle(Vector2.fromDict(data.center ?? {}), data.radius ?? 0);
 	}
 
 	/**
@@ -60,13 +60,13 @@ export class Circle {
 	 * @param minimized If true, will not include keys that their values are 0. You can use fromDict on minimized dicts.
 	 * @returns Dictionary with {center, radius}.
 	 */
-	public toDict(minimized: true): Partial<{ center: ReturnType<Vector2["toDict"]>, radius: number; }>;
-	public toDict(minimized?: false): { center: ReturnType<Vector2["toDict"]>, radius: number; };
-	public toDict(minimized?: boolean): Partial<{ center: ReturnType<Vector2["toDict"]>, radius: number; }> {
+	public toDict(minimized: true): Partial<SerializedCircle>;
+	public toDict(minimized?: false): SerializedCircle;
+	public toDict(minimized?: boolean): Partial<SerializedCircle> {
 		if(minimized) {
-			const ret = {};
-			if(this.radius) { ret.radius = this.radius; }
-			if(this.center.x || this.center.y) { ret.center = this.center.toDict(true); }
+			const ret: Partial<SerializedCircle> = {};
+			if(this.radius) ret.radius = this.radius;
+			if(this.center.x || this.center.y) ret.center = this.center.toDict(true);
 			return ret;
 		}
 		return { center: this.center.toDict(), radius: this.radius };
@@ -83,4 +83,9 @@ export class Circle {
 		let lerpScalar = MathHelper.lerp;
 		return new Circle(Vector2.lerp(p1.center, p2.center, a), lerpScalar(p1.radius, p2.radius, a));
 	}
+}
+
+export interface SerializedCircle {
+	center: ReturnType<Vector2["toDict"]>;
+	radius: number;
 }

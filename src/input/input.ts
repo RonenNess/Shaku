@@ -262,7 +262,7 @@ export class Input implements IManager {
 		// get default gamepad and check for changes
 		this._defaultGamepad = null;
 		let i = 0;
-		for(let gp of this._gamepadsData) {
+		for(const gp of this._gamepadsData) {
 			let newId = (gp || { id: "null" }).id;
 			let prevId = (prevGamepadData[i] || { id: "null" }).id;
 			if(newId !== prevId) {
@@ -489,7 +489,7 @@ export class Input implements IManager {
 	 */
 	public gamepadIds(): string[] {
 		let ret = [];
-		for(let gp of this._gamepadsData) {
+		for(const gp of this._gamepadsData) {
 			if(gp) { ret.push(gp.id); }
 		}
 		return ret;
@@ -734,8 +734,8 @@ export class Input implements IManager {
 	 * @returns True if there's a key pressed down.
 	 */
 	public get anyKeyDown(): boolean {
-		for (const [_key, pressed] of this._keyboardState) {
-			if (pressed) return true;	
+		for(const [_key, pressed] of this._keyboardState) {
+			if(pressed) return true;
 		}
 		return false;
 	}
@@ -753,36 +753,36 @@ export class Input implements IManager {
 	 * @returns True if any of the mouse buttons are pressed.
 	 */
 	public get anyMouseButtonDown(): boolean {
-		for (const [button, pressed] of this._mouseState) {
-			if (pressed) return true;	
+		for(const [button, pressed] of this._mouseState) {
+			if(pressed) return true;
 		}
 		return false;
 	}
 
 	mouseButtonFromCode(code: InputCode): MouseButtons | null {
-		if (typeof code === "string") {
+		if(typeof code === "string") {
 			code = code.toUpperCase();
 			if(code.indexOf("MOUSE_") === 0) {
 				// get mouse code name
 				const codename = code.split("_")[1];
-				if (codename in MouseButtons) {
+				if(codename in MouseButtons) {
 					return MouseButtons[codename as keyof typeof MouseButtons];
 				}
 				throw new Error("Unknown mouse button: " + code);
 			}
-		} else if (code in MouseButtons) {
+		} else if(code in MouseButtons) {
 			return code as MouseButtons;
 		}
 		return null;
 	}
 
 	keyboardKeyFromCode(code: InputCode): KeyboardKeys | null {
-		if (typeof code === "string") {
+		if(typeof code === "string") {
 			code = code.toUpperCase();
-			if (code in KeyboardKeys) {
+			if(code in KeyboardKeys) {
 				return KeyboardKeys[code as keyof typeof KeyboardKeys];
 			}
-		} else if (code in KeyboardKeys) {
+		} else if(code in KeyboardKeys) {
 			return code as KeyboardKeys;
 		}
 		return null;
@@ -803,7 +803,7 @@ export class Input implements IManager {
 	 */
 	#_getValueWithCode<T>(code: InputCode, mouseCheck: (k: MouseButtons) => T, keyboardCheck: (k: KeyboardKeys) => T, touchValue: T, customValues: Map<string, T>): T | false {
 		// check for custom values
-		if (typeof code === "string") {
+		if(typeof code === "string") {
 			const customVal = customValues.get(code);
 			if(customVal !== undefined) {
 				return customVal;
@@ -811,7 +811,7 @@ export class Input implements IManager {
 			if(this._customKeys.has(code)) {
 				return false;
 			}
-			
+
 			// if its "touch" its for touch events
 			if(code === _touchKeyCode) {
 				return touchValue;
@@ -832,7 +832,7 @@ export class Input implements IManager {
 
 		// if not start with "mouse", treat it as a keyboard key
 		const keyboardKey = this.keyboardKeyFromCode(code);
-		if (keyboardKey === null) {
+		if(keyboardKey === null) {
 			throw new Error("Unknown keyboard key: " + code);
 		}
 		return keyboardCheck.call(this, keyboardKey);
@@ -852,7 +852,7 @@ export class Input implements IManager {
 	 */
 	public down(code: InputCode | InputCode[]): boolean {
 		if(!Array.isArray(code)) { code = [code]; }
-		for(let c of code) {
+		for(const c of code) {
 			if(Boolean(this.#_getValueWithCode(c, this.mouseDown, this.keyDown, this.touching, this._customStates))) {
 				return true;
 			}
@@ -874,7 +874,7 @@ export class Input implements IManager {
 	 */
 	public released(code: InputCode | InputCode[]): boolean {
 		if(!Array.isArray(code)) { code = [code]; }
-		for(let c of code) {
+		for(const c of code) {
 			if(Boolean(this.#_getValueWithCode(c, this.mouseReleased, this.keyReleased, this.touchEnded, this._customReleased))) {
 				return true;
 			}
@@ -896,7 +896,7 @@ export class Input implements IManager {
 	 */
 	public pressed(code: InputCode | InputCode[]) {
 		if(!Array.isArray(code)) { code = [code]; }
-		for(let c of code) {
+		for(const c of code) {
 			if(Boolean(this.#_getValueWithCode(c, this.mousePressed, this.keyPressed, this.touchStarted, this._customPressed))) {
 				return true;
 			}
@@ -960,7 +960,7 @@ export class Input implements IManager {
 
 		// check all keys
 		if(!Array.isArray(code)) { code = [code]; }
-		for(let c of code) {
+		for(const c of code) {
 			if(this.pressed(c)) {
 				let currKeyTime = this.#_getValueWithCode(c, (c) => this._prevLastMousePressedTime.get(c), (c) => this._prevLastKeyPressedTime.get(c), this._prevLastTouchPressedTime, this._prevLastCustomPressedTime);
 				if(currTime - currKeyTime <= maxInterval) {
@@ -993,7 +993,7 @@ export class Input implements IManager {
 
 		// check all keys
 		if(!Array.isArray(code)) { code = [code]; }
-		for(let c of code) {
+		for(const c of code) {
 			if(this.released(c)) {
 				let currKeyTime = this.#_getValueWithCode(c, (c) => this._prevLastMousePressedTime.get(c), (c) => this._prevLastKeyPressedTime.get(c), this._prevLastTouchPressedTime, this._prevLastCustomPressedTime);
 				if(currTime - currKeyTime <= maxInterval) {
@@ -1073,7 +1073,7 @@ export class Input implements IManager {
 	_onMouseWheel(event: WheelEvent) {
 		this._mouseWheel = event.deltaY;
 	}
-	
+
 	/**
 	 * Handle keyboard down event.
 	 * @private

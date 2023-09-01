@@ -27,7 +27,7 @@ export class Storage {
 
 		// choose adapter
 		this._adapter = null;
-		for(let adapter of adapters) {
+		for(const adapter of adapters) {
 			if(adapter.isValid()) {
 				this._adapter = adapter;
 				break;

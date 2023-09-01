@@ -75,7 +75,7 @@ export class TextureAtlasAsset extends Asset {
 
 				// now draw the sources and fill the sources dictionary
 				let textureInAtlasIndex = 0;
-				for(let imageData of arranged.rectangles) {
+				for(const imageData of arranged.rectangles) {
 					ctx.drawImage(imageData.source, imageData.x, imageData.y);
 					let url = imageData.source.src;
 					let originUrl = imageData.source.__origin_url;
@@ -135,7 +135,7 @@ export class TextureAtlasAsset extends Asset {
 	 * @inheritdoc
 	 */
 	public destroy(): void {
-		for(let texture of this.__textures) {
+		for(const texture of this.__textures) {
 			texture.destroy();
 		}
 		this.__textures = [];
@@ -252,7 +252,7 @@ async function loadAllSources(sources: (string | HTMLImageElement)[]) {
 		}
 
 		// wait for all images that are loading
-		for(let loadPromise of waitFor) {
+		for(const loadPromise of waitFor) {
 			images.push(await loadPromise);
 		}
 

@@ -57,7 +57,7 @@ export class Animator {
 		}
 
 		// update values
-		for(let key in this._toValues) {
+		for(const key in this._toValues) {
 
 			// get key as parts and to-value
 			let keyParts = this._toValues[key].keyParts;
@@ -205,7 +205,7 @@ export class Animator {
 	 * @returns {Animator} this.
 	 */
 	from(values) {
-		for(let key in values) {
+		for(const key in values) {
 			if(!this.#_validateValueType(values[key])) {
 				throw new Error("Illegal value type to use with Animator! All values must be either numbers, methods, or a class instance that has a static lerp() method.");
 			}
@@ -222,7 +222,7 @@ export class Animator {
 	 * @returns {Animator} this.
 	 */
 	to(values) {
-		for(let key in values) {
+		for(const key in values) {
 			if(!this.#_validateValueType(values[key])) {
 				throw new Error("Illegal value type to use with Animator! All values must be either numbers, methods, or a class instance that has a static lerp() method.");
 			}
@@ -242,7 +242,7 @@ export class Animator {
 		if(!this._originalFrom) { this._originalFrom = this._fromValues; }
 		if(!this._originalTo) { this._originalTo = this._toValues; }
 
-		for(let key in this._toValues) {
+		for(const key in this._toValues) {
 			newFrom[key] = this._toValues[key].value;
 			newTo[key] = { keyParts: key.split("."), value: this._fromValues[key] };
 		}

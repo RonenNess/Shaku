@@ -156,7 +156,7 @@ export class TilemapShape extends CollisionShape {
 	 */
 	public debugDraw(opacity = 1, shapesBatch: ShapesBatch) {
 		if(opacity === undefined) { opacity = 1; }
-		for(let key in this._tiles) {
+		for(const key in this._tiles) {
 			let tile = this._tiles[key];
 			tile.setDebugColor(this._forceDebugColor);
 			tile.debugDraw(opacity, shapesBatch);

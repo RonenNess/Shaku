@@ -53,8 +53,8 @@ export class Sphere {
 	 * @param data Dictionary with {center, radius}.
 	 * @returns Newly created sphere.
 	 */
-	public static fromDict(data: { center: Vector3, radius: number; }): Sphere {
-		return new Sphere(Vector3.fromDict(data.center || {}), data.radius || 0);
+	public static fromDict(data: Partial<SerializedSphere>): Sphere {
+		return new Sphere(Vector3.fromDict(data.center ?? {}), data.radius ?? 0);
 	}
 
 	/**
@@ -62,13 +62,13 @@ export class Sphere {
 	 * @param minimized If true, will not include keys that their values are 0. You can use fromDict on minimized dicts.
 	 * @returns Dictionary with {center, radius}.
 	 */
-	public toDict(minimized: true): Partial<{ center: ReturnType<Vector3["toDict"]>, radius: number; }>;
-	public toDict(minimized?: false): { center: ReturnType<Vector3["toDict"]>, radius: number; };
-	public toDict(minimized?: boolean): Partial<{ center: ReturnType<Vector3["toDict"]>, radius: number; }> {
+	public toDict(minimized: true): Partial<SerializedSphere>;
+	public toDict(minimized?: false): SerializedSphere;
+	public toDict(minimized?: boolean): Partial<SerializedSphere> {
 		if(minimized) {
-			const ret: Partial<{ center: ReturnType<Vector3["toDict"]>, radius: number; }> = {};
-			if(this.radius) { ret.radius = this.radius; }
-			if(this.center.x || this.center.y) { ret.center = this.center.toDict(true); }
+			const ret: Partial<SerializedSphere> = {};
+			if(this.radius) ret.radius = this.radius;
+			if(this.center.x || this.center.y) ret.center = this.center.toDict(true);
 			return ret;
 		}
 		return { center: this.center.toDict(), radius: this.radius };
@@ -103,4 +103,9 @@ export class Sphere {
 		let lerpScalar = MathHelper.lerp;
 		return new Sphere(Vector3.lerp(p1.center, p2.center, a), lerpScalar(p1.radius, p2.radius, a));
 	}
+}
+
+export interface SerializedSphere {
+	center: ReturnType<Vector3["toDict"]>;
+	radius: number;
 }

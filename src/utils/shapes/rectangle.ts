@@ -338,8 +338,8 @@ export class Rectangle {
 	 * @param data Dictionary with {x,y,width,height}.
 	 * @returns Newly created rectangle.
 	 */
-	public static fromDict(data: { x: number, y: number, width: number, height: number; }): Rectangle {
-		return new Rectangle(data.x || 0, data.y || 0, data.width || 0, data.height || 0);
+	public static fromDict(data: Partial<SerializedRectangle>): Rectangle {
+		return new Rectangle(data.x ?? 0, data.y ?? 0, data.width ?? 0, data.height ?? 0);
 	}
 
 	/**
@@ -347,19 +347,26 @@ export class Rectangle {
 	 * @param minimized If true, will not include keys that their values are 0. You can use fromDict on minimized dicts.
 	 * @returns Dictionary with {x,y,width,height}
 	 */
-	public toDict(minimized: true): Partial<{ x: number, y: number, width: number, height: number; }>;
-	public toDict(minimized: false): { x: number, y: number, width: number, height: number; };
-	public toDict(minimized: boolean): Partial<{ x: number, y: number, width: number, height: number; }> {
+	public toDict(minimized: true): Partial<SerializedRectangle>;
+	public toDict(minimized: false): SerializedRectangle;
+	public toDict(minimized: boolean): Partial<SerializedRectangle> {
 		if(minimized) {
-			const ret = {};
-			if(this.x) { ret.x = this.x; }
-			if(this.y) { ret.y = this.y; }
-			if(this.width) { ret.width = this.width; }
-			if(this.height) { ret.height = this.height; }
+			const ret: Partial<SerializedRectangle> = {};
+			if(this.x) ret.x = this.x;
+			if(this.y) ret.y = this.y;
+			if(this.width) ret.width = this.width;
+			if(this.height) ret.height = this.height;
 			return ret;
 		}
 		return { x: this.x, y: this.y, width: this.width, height: this.height };
 	}
+}
+
+export interface SerializedRectangle {
+	x: number;
+	y: number;
+	width: number;
+	height: number;
 }
 
 /**

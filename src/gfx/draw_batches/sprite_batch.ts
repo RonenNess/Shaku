@@ -73,7 +73,7 @@ export class SpriteBatch extends SpriteBatchBase {
 		let normals = this._buffers.normalsArray;
 		let binormals = this._buffers.binormalsArray;
 		let tangents = this._buffers.tangentsArray;
-		for(let vertex of vertices) {
+		for(const vertex of vertices) {
 			// push color
 			if(this.__currDrawingParams.hasVertexColor) {
 				colors[colors._index++] = (vertex.color.r || 0);
@@ -157,7 +157,7 @@ export class SpriteBatch extends SpriteBatchBase {
 	 * @param {Vector2=} origin Drawing origin. This will be the point at "position" and rotation origin.
 	 * @param {Vector2=} skew Skew the drawing corners on X and Y axis, around the origin point.
 	 */
-	drawQuad(texture: TextureAssetBase, position: Vector2 | Vector3, size: Vector2 | Vector3 | number, sourceRectangle?: Rectangle, color?: Color | Color[], rotation? : number, origin?: Vector2, skew?: Vector2) {
+	drawQuad(texture: TextureAssetBase, position: Vector2 | Vector3, size: Vector2 | Vector3 | number, sourceRectangle?: Rectangle, color?: Color | Color[], rotation?: number, origin?: Vector2, skew?: Vector2) {
 		let sprite = this.#_gfx.Sprite.build(texture, position, size, sourceRectangle, color, rotation, origin, skew);
 		this.drawSprite(sprite);
 	}

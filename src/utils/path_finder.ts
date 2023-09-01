@@ -150,7 +150,7 @@ function _ImpFindPath<P extends Vector2 | Vector3>(grid: IGrid, startPos: P, tar
 		}
 
 		// iterate neighbors
-		for(let neighbor of neighbors) {
+		for(const neighbor of neighbors) {
 			// skip if already passed or can't walk there
 			if(closedSet.has(neighbor) || grid.isBlocked(currentNode.position, neighbor.position)) {
 				continue;

@@ -159,7 +159,7 @@ export class Effect {
 		this._pendingAttributeValues = {};
 
 		// initialize uniform setters
-		for(let uniform in this.uniformTypes) {
+		for(const uniform in this.uniformTypes) {
 
 			// get uniform location
 			let uniformLocation = this._gl.getUniformLocation(this._program, uniform);
@@ -250,7 +250,7 @@ export class Effect {
 		this._attributeBinds = {};
 
 		// get attribute locations
-		for(let attr in this.attributeTypes) {
+		for(const attr in this.attributeTypes) {
 
 			// get attribute location
 			let attributeLocation = this._gl.getAttribLocation(this._program, attr);
@@ -357,13 +357,13 @@ export class Effect {
 		_currEffect = this;
 
 		// set pending uniforms that were set while this effect was not active
-		for(let key in this._pendingUniformValues) {
+		for(const key in this._pendingUniformValues) {
 			this.uniforms[key](...this._pendingUniformValues[key]);
 		}
 		this._pendingUniformValues = {};
 
 		// set pending attributes that were set while this effect was not active
-		for(let key in this._pendingAttributeValues) {
+		for(const key in this._pendingAttributeValues) {
 			this.attributes[key](...this._pendingAttributeValues[key]);
 		}
 		this._pendingAttributeValues = {};

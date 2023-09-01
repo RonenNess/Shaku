@@ -109,7 +109,7 @@ export class StorageAdapterMemory implements StorageAdapter {
 	 * @inheritdoc
 	 */
 	public clear(prefix: string): void {
-		for(let key in this._data) {
+		for(const key in this._data) {
 			if(key.indexOf(prefix) === 0) {
 				delete this._data[key];
 			}

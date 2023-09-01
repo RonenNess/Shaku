@@ -114,7 +114,7 @@ export class Assets implements IManager {
 
 	/**
 	 * @inheritdoc
-	 * @private                
+	 * @private
 	 */
 	public setup(): Promise<void> {
 		return new Promise((resolve, reject) => {
@@ -126,7 +126,7 @@ export class Assets implements IManager {
 
 	/**
 	 * @inheritdoc
-	 * @private                
+	 * @private
 	 */
 	public startFrame() {
 	}
@@ -463,7 +463,7 @@ export class Assets implements IManager {
 	 * Shaku.assets.clearCache();
 	 */
 	public clearCache(): void {
-		for(let key in this._loaded) {
+		for(const key in this._loaded) {
 			this._loaded[key].destroy();
 		}
 		this._loaded = {};

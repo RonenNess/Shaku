@@ -618,8 +618,8 @@ export class Vector3 {
 	 * @param data Dictionary with {x,y,z}.
 	 * @returns Newly created vector.
 	 */
-	public static fromDict(data: { x: number, y: number, z: number; }): Vector3 {
-		return new Vector3(data.x || 0, data.y || 0, data.z || 0);
+	public static fromDict(data: Partial<SerializedVector3>): Vector3 {
+		return new Vector3(data.x ?? 0, data.y ?? 0, data.z ?? 0);
 	}
 
 	/**
@@ -627,16 +627,22 @@ export class Vector3 {
 	 * @param minimized If true, will not include keys that their values are 0. You can use fromDict on minimized dicts.
 	 * @returns Dictionary with {x,y,z}
 	 */
-	public toDict(minimized: true): Partial<{ x: number, y: number, z: number; }>;
-	public toDict(minimized?: false): { x: number, y: number, z: number; };
-	public toDict(minimized?: boolean): Partial<{ x: number, y: number, z: number; }> {
+	public toDict(minimized: true): Partial<SerializedVector3>;
+	public toDict(minimized?: false): SerializedVector3;
+	public toDict(minimized?: boolean): Partial<SerializedVector3> {
 		if(minimized) {
-			const ret = {};
-			if(this.x) { ret.x = this.x; }
-			if(this.y) { ret.y = this.y; }
-			if(this.z) { ret.z = this.z; }
+			const ret: Partial<SerializedVector3> = {};
+			if(this.x) ret.x = this.x;
+			if(this.y) ret.y = this.y;
+			if(this.z) ret.z = this.z;
 			return ret;
 		}
 		return { x: this.x, y: this.y, z: this.z };
 	}
+}
+
+export interface SerializedVector3 {
+	x: number;
+	y: number;
+	z: number;
 }

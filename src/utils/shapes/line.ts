@@ -30,8 +30,8 @@ export class Line {
 	 * @param data Dictionary with {from, to}.
 	 * @returns Newly created line.
 	 */
-	public static fromDict(data: { from: Vector2, to: Vector2; }): Line {
-		return new Line(Vector2.fromDict(data.from || {}), Vector2.fromDict(data.to || {}));
+	public static fromDict(data: Partial<SerializedLine>): Line {
+		return new Line(Vector2.fromDict(data.from ?? {}), Vector2.fromDict(data.to ?? {}));
 	}
 
 	/**
@@ -39,13 +39,13 @@ export class Line {
 	 * @param minimized If true, will not include keys that their values are 0. You can use fromDict on minimized dicts.
 	 * @returns Dictionary with {from, to}.
 	 */
-	public toDict(minimized: true): Partial<{ from: ReturnType<Vector2["toDict"]>, to: ReturnType<Vector2["toDict"]>; }>;
-	public toDict(minimized?: false): { from: ReturnType<Vector2["toDict"]>, to: ReturnType<Vector2["toDict"]>; };
-	public toDict(minimized?: boolean): Partial<{ from: ReturnType<Vector2["toDict"]>, to: ReturnType<Vector2["toDict"]>; }> {
+	public toDict(minimized: true): Partial<SerializedLine>;
+	public toDict(minimized?: false): SerializedLine;
+	public toDict(minimized?: boolean): Partial<SerializedLine> {
 		if(minimized) {
-			const ret = {};
-			if(this.from.x || this.from.y) { ret.from = this.from.toDict(true); }
-			if(this.to.x || this.to.y) { ret.to = this.to.toDict(true); }
+			const ret: Partial<SerializedLine> = {};
+			if(this.from.x || this.from.y) ret.from = this.from.toDict(true);
+			if(this.to.x || this.to.y) ret.to = this.to.toDict(true);
 			return ret;
 		}
 		return { from: this.from.toDict(), to: this.to.toDict() };
@@ -155,4 +155,9 @@ export class Line {
 	public static lerp(l1: Line, l2: Line, a: number): Line {
 		return new Line(Vector2.lerp(l1.from, l2.from, a), Vector2.lerp(l1.to, l2.to, a));
 	}
+}
+
+export interface SerializedLine {
+	from: ReturnType<Vector2["toDict"]>;
+	to: ReturnType<Vector2["toDict"]>;
 }

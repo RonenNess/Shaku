@@ -1,4 +1,4 @@
-import { ShapesBatch, gfx } from "../gfx";
+import { Camera, ShapesBatch, gfx } from "../gfx";
 import { Circle, Color, LoggerFactory, Rectangle, Vector2 } from "../utils";
 import { CollisionResolver } from "./resolver";
 import { CollisionTestResult } from "./result";
@@ -11,12 +11,22 @@ const _logger = LoggerFactory.getLogger("collision"); // TODO
  * You can use different collision worlds to represent different levels or different parts of your game world.
  */
 export class CollisionWorld {
+	private resolver: CollisionResolver;
+
+	private _gridCellSize: Vector2;
+	private _grid: Record<`${number},${number}`, Set<CollisionShape>>;
+	private _shapesToUpdate: Set<CollisionShape>;
+	private _cellsToDelete: Set<string>;
+	private _stats!: WorldStats;
+
+	private __debugDrawBatch: ShapesBatch;
+
 	/**
 	 * Create the collision world.
-	 * @param {CollisionResolver} resolver Collision resolver to use for this world.
-	 * @param {Number|Vector2} gridCellSize For optimize collision testing, the collision world is divided into a collision grid. This param determine the grid cell size.
+	 * @param resolver Collision resolver to use for this world.
+	 * @param gridCellSize For optimize collision testing, the collision world is divided into a collision grid. This param determine the grid cell size.
 	 */
-	public constructor(resolver, gridCellSize) {
+	public constructor(resolver: CollisionResolver, gridCellSize: number | Vector2 = new Vector2(512, 512)) {
 		/**
 		 * Collision resolver used in this collision world.
 		 * By default, will inherit the collision manager default resolver.
@@ -24,9 +34,8 @@ export class CollisionWorld {
 		this.resolver = resolver;
 
 		// set grid cell size
-		if(typeof gridCellSize === "undefined") { gridCellSize = new Vector2(512, 512); }
-		else if(typeof gridCellSize === "number") { gridCellSize = new Vector2(gridCellSize, gridCellSize); }
-		else { gridCellSize = gridCellSize.clone(); }
+		if(typeof gridCellSize === "number") gridCellSize = new Vector2(gridCellSize, gridCellSize);
+		else gridCellSize = gridCellSize.clone();
 		this._gridCellSize = gridCellSize;
 
 		// create collision grid
@@ -43,7 +52,7 @@ export class CollisionWorld {
 	/**
 	 * Reset stats.
 	 */
-	resetStats() {
+	public resetStats(): void {
 		this._stats = {
 			updatedShapes: 0,
 			addedShapes: 0,
@@ -53,36 +62,26 @@ export class CollisionWorld {
 			broadPhaseShapesChecksPostPredicate: 0,
 			broadPhaseCalls: 0,
 			collisionChecks: 0,
-			collisionMatches: 0
+			collisionMatches: 0,
 		};
 	}
 
 	/**
 	 * Get current stats.
-	 * @returns {*} Dictionary with the following stats:
-	 *  updatedShapes: number of times we updated or added new shapes.
-	 *  addedShapes: number of new shapes added.
-	 *  deletedGridCells: grid cells that got deleted after they were empty.
-	 *  createdGridCell: new grid cells created.
-	 *  broadPhaseShapesChecksPrePredicate: how many shapes were tested in a broadphase check, before the predicate method was called.
-	 *  broadPhaseShapesChecksPostPredicate: how many shapes were tested in a broadphase check, after the predicate method was called.
-	 *  broadPhaseCalls: how many broadphase calls were made
-	 *  collisionChecks: how many shape-vs-shape collision checks were actually made.
-	 *  collisionMatches: how many collision checks were positive.
+	 * @returns Dictionary with the world stats.
 	 */
-	get stats() {
+	public get stats(): WorldStats {
 		return this._stats;
 	}
 
 	/**
 	 * Do collision world updates, if we have any.
-	 * @private
 	 */
-	#_performUpdates() {
+	#_performUpdates(): void {
 		// delete empty grid cells
 		if(this._cellsToDelete.size > 0) {
 			this._stats.deletedGridCells += this._cellsToDelete.size;
-			for(let key of this._cellsToDelete) {
+			for(const key of this._cellsToDelete) {
 				if(this._grid[key] && this._grid[key].size === 0) {
 					delete this._grid[key];
 				}
@@ -92,7 +91,7 @@ export class CollisionWorld {
 
 		// update all shapes
 		if(this._shapesToUpdate.size > 0) {
-			for(let shape of this._shapesToUpdate) {
+			for(const shape of this._shapesToUpdate) {
 				this.#_updateShape(shape);
 			}
 			this._shapesToUpdate.clear();
@@ -103,11 +102,11 @@ export class CollisionWorld {
 	 * Get or create cell.
 	 * @private
 	 */
-	#_getCell(i, j) {
-		let key = i + "," + j;
+	#_getCell(i: number, j: number): Set<CollisionShape> {
+		const key = `${i},${j}` as const;
 		let ret = this._grid[key];
 		if(!ret) {
-			this._stats.createdGridCells++;
+			this._stats.createdGridCell++;
 			this._grid[key] = ret = new Set();
 		}
 		return ret;
@@ -117,7 +116,7 @@ export class CollisionWorld {
 	 * Update a shape in collision world after it moved or changed.
 	 * @private
 	 */
-	#_updateShape(shape) {
+	#_updateShape(shape: CollisionShape): void {
 		// sanity - if no longer in this collision world, skip
 		if(shape._world !== this) {
 			return;
@@ -202,21 +201,20 @@ export class CollisionWorld {
 
 	/**
 	 * Request update for this shape on next updates call.
-	 * @private
 	 */
-	_queueUpdate(shape) {
+	private _queueUpdate(shape: CollisionShape): void {
 		this._shapesToUpdate.add(shape);
 	}
 
 	/**
 	 * Iterate all shapes in world.
-	 * @param {Function} callback Callback to invoke on all shapes. Return false to break iteration.
+	 * @param callback Callback to invoke on all shapes. Return false to break iteration.
 	 */
-	iterateShapes(callback) {
-		for(let key in this._grid) {
-			let cell = this._grid[key];
+	public iterateShapes(callback: (shape: CollisionShape) => boolean): void {
+		for(const key in this._grid) {
+			const cell = this._grid[key as keyof typeof this._grid];
 			if(cell) {
-				for(let shape of cell) {
+				for(const shape of cell) {
 					if(callback(shape) === false) {
 						return;
 					}
@@ -227,9 +225,9 @@ export class CollisionWorld {
 
 	/**
 	 * Add a collision shape to this world.
-	 * @param {CollisionShape} shape Shape to add.
+	 * @param shape Shape to add.
 	 */
-	addShape(shape) {
+	public addShape(shape: CollisionShape): void {
 		// add shape
 		shape._setParent(this);
 
@@ -242,9 +240,9 @@ export class CollisionWorld {
 
 	/**
 	 * Remove a collision shape from this world.
-	 * @param {CollisionShape} shape Shape to remove.
+	 * @param shape Shape to remove.
 	 */
-	removeShape(shape) {
+	public removeShape(shape: CollisionShape): void {
 		// sanity
 		if(shape._world !== this) {
 			_logger.warn("Shape to remove is not in this collision world!");
@@ -282,12 +280,12 @@ export class CollisionWorld {
 	/**
 	 * Iterate shapes that match broad phase test.
 	 * @private
-	 * @param {CollisionShape} shape Shape to test.
-	 * @param {Function} handler Method to run on all shapes in phase. Return true to continue iteration, false to break.
-	 * @param {Number} mask Optional mask of bits to match against shapes collisionFlags. Will only return shapes that have at least one common bit.
-	 * @param {Function} predicate Optional filter to run on any shape we're about to test collision with.
+	 * @param shape Shape to test.
+	 * @param handler Method to run on all shapes in phase. Return true to continue iteration, false to break.
+	 * @param mask Optional mask of bits to match against shapes collisionFlags. Will only return shapes that have at least one common bit.
+	 * @param predicate Optional filter to run on any shape we're about to test collision with.
 	 */
-	#_iterateBroadPhase(shape, handler, mask, predicate) {
+	#_iterateBroadPhase(shape: CollisionShape, handler: (shape: CollisionShape) => boolean, mask: number, predicate: (shape: CollisionShape) => boolean): void {
 		// get grid range
 		let bb = shape._getBoundingBox();
 		let minx = Math.floor(bb.left / this._gridCellSize.x);
@@ -311,7 +309,7 @@ export class CollisionWorld {
 
 				// iterate shapes in grid chunk
 				if(currSet) {
-					for(let other of currSet) {
+					for(const other of currSet) {
 
 						// check collision flags
 						if(mask && ((other.collisionFlags & mask) === 0)) {
@@ -355,24 +353,24 @@ export class CollisionWorld {
 
 	/**
 	 * Test collision with shapes in world, and return just the first result found.
-	 * @param {CollisionShape} sourceShape Source shape to check collision for. If shape is in world, it will not collide with itself.
-	 * @param {Boolean} sortByDistance If true will return the nearest collision found (based on center of shapes).
-	 * @param {Number} mask Optional mask of bits to match against shapes collisionFlags. Will only return shapes that have at least one common bit.
-	 * @param {Function} predicate Optional filter to run on any shape we're about to test collision with. If the predicate returns false, we will skip this shape.
-	 * @returns {CollisionTestResult} A collision test result, or null if not found.
+	 * @param sourceShape Source shape to check collision for. If shape is in world, it will not collide with itself.
+	 * @param sortByDistance If true will return the nearest collision found (based on center of shapes).
+	 * @param mask Optional mask of bits to match against shapes collisionFlags. Will only return shapes that have at least one common bit.
+	 * @param predicate Optional filter to run on any shape we're about to test collision with. If the predicate returns false, we will skip this shape.
+	 * @returns A collision test result, or null if not found.
 	 */
-	testCollision(sourceShape, sortByDistance, mask, predicate) {
+	public testCollision(sourceShape: CollisionShape, sortByDistance: boolean, mask: number, predicate: (shape: CollisionShape) => boolean): CollisionTestResult | null {
 		// do updates before check
 		this.#_performUpdates();
 
 		// result to return
-		var result = null;
+		let result: CollisionTestResult | null = null;
 
 		// hard case - single result, sorted by distance
 		if(sortByDistance) {
 			// build options array
-			var options = [];
-			this.#_iterateBroadPhase(sourceShape, (other) => {
+			const options: CollisionShape[] = [];
+			this.#_iterateBroadPhase(sourceShape, other => {
 				options.push(other);
 				return true;
 			}, mask, predicate);
@@ -382,7 +380,7 @@ export class CollisionWorld {
 
 			// check collision sorted
 			var handlers = this.resolver.getHandlers(sourceShape);
-			for(let other of options) {
+			for(const other of options) {
 				this._stats.collisionChecks++;
 				result = this.resolver.testWithHandler(sourceShape, other, handlers[other.shapeId]);
 				if(result) {
@@ -412,37 +410,33 @@ export class CollisionWorld {
 
 	/**
 	 * Test collision with shapes in world, and return all results found.
-	 * @param {CollisionShape} sourceShape Source shape to check collision for. If shape is in world, it will not collide with itself.
-	 * @param {Boolean} sortByDistance If true will sort results by distance.
-	 * @param {Number} mask Optional mask of bits to match against shapes collisionFlags. Will only return shapes that have at least one common bit.
-	 * @param {Function} predicate Optional filter to run on any shape we're about to test collision with. If the predicate returns false, we will skip this shape.
-	 * @param {Function} intermediateProcessor Optional method to run after each positive result with the collision result as param. Return false to stop and return results.
-	 * @returns {Array<CollisionTestResult>} An array of collision test results, or empty array if none found.
+	 * @param sourceShape Source shape to check collision for. If shape is in world, it will not collide with itself.
+	 * @param sortByDistance If true will sort results by distance.
+	 * @param mask Optional mask of bits to match against shapes collisionFlags. Will only return shapes that have at least one common bit.
+	 * @param predicate Optional filter to run on any shape we're about to test collision with. If the predicate returns false, we will skip this shape.
+	 * @param intermediateProcessor Optional method to run after each positive result with the collision result as param. Return false to stop and return results.
+	 * @returns An array of collision test results, or empty array if none found.
 	 */
-	testCollisionMany(sourceShape, sortByDistance, mask, predicate, intermediateProcessor) {
+	public testCollisionMany(sourceShape: CollisionShape, sortByDistance: boolean, mask: number, predicate: (shape: CollisionShape) => boolean, intermediateProcessor?: (result: CollisionTestResult) => boolean): CollisionTestResult[] {
 		// do updates before check
 		this.#_performUpdates();
 
 		// get collisions
-		var ret = [];
+		const ret: CollisionTestResult[] = [];
 		var handlers = this.resolver.getHandlers(sourceShape);
 		this.#_iterateBroadPhase(sourceShape, (other) => {
 			this._stats.collisionChecks++;
 			let result = this.resolver.testWithHandler(sourceShape, other, handlers[other.shapeId]);
-			if(result) {
-				this._stats.collisionMatches++;
-				ret.push(result);
-				if(intermediateProcessor && intermediateProcessor(result) === false) {
-					return false;
-				}
-			}
+			if(!result) return true;
+
+			this._stats.collisionMatches++;
+			ret.push(result);
+			if(intermediateProcessor && intermediateProcessor(result) === false) return false;
 			return true;
 		}, mask, predicate);
 
 		// sort by distance
-		if(sortByDistance) {
-			sortByDistanceResults(sourceShape, ret);
-		}
+		if(sortByDistance) sortByDistanceResults(sourceShape, ret);
 
 		// return results
 		return ret;
@@ -452,46 +446,44 @@ export class CollisionWorld {
 	 * Return array of shapes that touch a given position, with optional radius.
 	 * @example
 	 * let shapes = world.pick(Shaku.input.mousePosition);
-	 * @param {*} position Position to pick.
-	 * @param {*} radius Optional picking radius to use a circle instead of a point.
-	 * @param {*} sortByDistance If true, will sort results by distance from point.
-	 * @param {*} mask Collision mask to filter by.
-	 * @param {*} predicate Optional predicate method to filter by.
+	 * @param position Position to pick.
+	 * @param radius Optional picking radius to use a circle instead of a point.
+	 * @param sortByDistance If true, will sort results by distance from point.
+	 * @param mask Collision mask to filter by.
+	 * @param predicate Optional predicate method to filter by.
 	 * @returns {Array<CollisionShape>} Array with collision shapes we picked.
 	 */
-	pick(position, radius, sortByDistance, mask, predicate) {
-		let shape = ((radius || 0) <= 1) ? new PointShape(position) : new CircleShape(new Circle(position, radius));
-		let ret = this.testCollisionMany(shape, sortByDistance, mask, predicate);
+	public pick(position: Vector2, radius = 0, sortByDistance: boolean, mask: number, predicate: (a: CollisionTestResult) => boolean): CollisionShape[] {
+		const shape = radius <= 1 ? new PointShape(position) : new CircleShape(new Circle(position, radius));
+		const ret = this.testCollisionMany(shape, sortByDistance, mask, predicate);
 		return ret.map(x => x.second);
 	}
 
 	/**
 	 * Set the shapes batch to use for debug-drawing this collision world.
-	 * @param {ShapesBatch} batch Batch to use for debug draw.
+	 * @param batch Batch to use for debug draw.
 	 */
-	setDebugDrawBatch(batch) {
+	public setDebugDrawBatch(batch: ShapesBatch): void {
 		this.__debugDrawBatch = batch;
 	}
 
 	/**
 	 * Return the currently set debug draw batch, or create a new one if needed.
-	 * @returns {ShapesBatch} Shapes batch instance used to debug-draw collision world.
+	 * @returns Shapes batch instance used to debug-draw collision world.
 	 */
-	getOrCreateDebugDrawBatch() {
-		if(!this.__debugDrawBatch) {
-			this.setDebugDrawBatch(new gfx.ShapesBatch());
-		}
+	public getOrCreateDebugDrawBatch(): ShapesBatch {
+		if(!this.__debugDrawBatch) this.setDebugDrawBatch(new gfx.ShapesBatch());
 		return this.__debugDrawBatch;
 	}
 
 	/**
 	 * Debug-draw the current collision world.
-	 * @param {Color} gridColor Optional grid color (default to black).
-	 * @param {Color} gridHighlitColor Optional grid color for cells with shapes in them (default to red).
-	 * @param {Number} opacity Optional opacity factor (default to 0.5).
-	 * @param {Camera} camera Optional camera for offset and viewport.
+	 * @param gridColor Optional grid color (default to black).
+	 * @param gridHighlitColor Optional grid color for cells with shapes in them (default to red).
+	 * @param opacity Optional opacity factor (default to 0.5).
+	 * @param camera Optional camera for offset and viewport.
 	 */
-	debugDraw(gridColor, gridHighlitColor, opacity, camera) {
+	public debugDraw(gridColor?: Color, gridHighlitColor?: Color, opacity?: number, camera?: Camera): void {
 		// if we don't have a debug-draw batch, create it
 		let shapesBatch = this.getOrCreateDebugDrawBatch();
 
@@ -504,11 +496,11 @@ export class CollisionWorld {
 		// default grid colors
 		if(!gridColor) {
 			gridColor = Color.black;
-			gridColor.a *= 0.75;
+			gridColor!.a *= 0.75;
 		}
 		if(!gridHighlitColor) {
 			gridHighlitColor = Color.red;
-			gridHighlitColor.a *= 0.75;
+			gridHighlitColor!.a *= 0.75;
 		}
 
 		// default opacity
@@ -517,34 +509,34 @@ export class CollisionWorld {
 		}
 
 		// set grid color opacity
-		gridColor.a *= opacity * 0.75;
-		gridHighlitColor.a *= opacity * 0.75;
+		gridColor!.a *= opacity * 0.75;
+		gridHighlitColor!.a *= opacity * 0.75;
 
 		// all shapes we rendered
-		let renderedShapes = new Set();
+		const renderedShapes = new Set();
 
 		// get visible grid cells
-		let bb = camera ? camera.getRegion() : gfx._internal.getRenderingRegionInternal(false);
-		let minx = Math.floor(bb.left / this._gridCellSize.x);
-		let miny = Math.floor(bb.top / this._gridCellSize.y);
-		let maxx = minx + Math.ceil(bb.width / this._gridCellSize.x);
-		let maxy = miny + Math.ceil(bb.height / this._gridCellSize.y);
+		const bb = camera ? camera.getRegion() : gfx._internal.getRenderingRegionInternal(false);
+		const minx = Math.floor(bb.left / this._gridCellSize.x);
+		const miny = Math.floor(bb.top / this._gridCellSize.y);
+		const maxx = minx + Math.ceil(bb.width / this._gridCellSize.x);
+		const maxy = miny + Math.ceil(bb.height / this._gridCellSize.y);
 		for(let i = minx; i <= maxx; ++i) {
 			for(let j = miny; j <= maxy; ++j) {
 
 				// get current cell
-				let cell = this._grid[i + "," + j];
+				const cell = this._grid[i + "," + j];
 
 				// draw grid cell
-				let color = (cell && cell.size) ? gridHighlitColor : gridColor;
-				let cellRect1 = new Rectangle(i * this._gridCellSize.x, j * this._gridCellSize.y, this._gridCellSize.x, 2);
-				let cellRect2 = new Rectangle(i * this._gridCellSize.x, j * this._gridCellSize.y, 2, this._gridCellSize.y);
+				const color = (cell && cell.size) ? gridHighlitColor : gridColor;
+				const cellRect1 = new Rectangle(i * this._gridCellSize.x, j * this._gridCellSize.y, this._gridCellSize.x, 2);
+				const cellRect2 = new Rectangle(i * this._gridCellSize.x, j * this._gridCellSize.y, 2, this._gridCellSize.y);
 				shapesBatch.drawRectangle(cellRect1, color);
 				shapesBatch.drawRectangle(cellRect2, color);
 
 				// draw shapes in grid
 				if(cell) {
-					for(let shape of cell) {
+					for(const shape of cell) {
 						if(renderedShapes.has(shape)) {
 							continue;
 						}
@@ -560,12 +552,51 @@ export class CollisionWorld {
 	}
 }
 
+export interface WorldStats {
+	/**
+	 * Number of times we updated or added new shapes.
+	 */
+	updatedShapes: number;
+	/**
+	 * Number of new shapes added.
+	 */
+	addedShapes: number;
+	/**
+	 * Grid cells that got deleted after they were empty.
+	 */
+	deletedGridCells: number;
+	/**
+	 * New grid cells created.
+	 */
+	createdGridCell: number;
+	/**
+	 * How many shapes were tested in a broadphase check, before the predicate method was called.
+	 */
+	broadPhaseShapesChecksPrePredicate: number;
+	/**
+	 * How many shapes were tested in a broadphase check, after the predicate method was called.
+	 */
+	broadPhaseShapesChecksPostPredicate: number;
+	/**
+	 * How many broadphase calls were made
+	 */
+	broadPhaseCalls: number;
+	/**
+	 * How many shape-vs-shape collision checks were actually made.
+	 */
+	collisionChecks: number;
+	/**
+	 * How many collision checks were positive.
+	 */
+	collisionMatches: number;
+}
+
 /**
  * Sort array by distance from source shape.
  * @private
  */
-function sortByDistanceShapes(sourceShape, options) {
-	let sourceCenter = sourceShape.getCenter();
+function sortByDistanceShapes(sourceShape: CollisionShape, options: CollisionShape[]): void {
+	const sourceCenter = sourceShape.getCenter();
 	options.sort((a, b) =>
 		(a.getCenter().distanceTo(sourceCenter) - a._getRadius()) -
 		(b.getCenter().distanceTo(sourceCenter) - b._getRadius()));
@@ -575,8 +606,8 @@ function sortByDistanceShapes(sourceShape, options) {
  * Sort array by distance from source shape.
  * @private
  */
-function sortByDistanceResults(sourceShape, options) {
-	let sourceCenter = sourceShape.getCenter();
+function sortByDistanceResults(sourceShape: CollisionShape, options: CollisionTestResult[]) {
+	const sourceCenter = sourceShape.getCenter();
 	options.sort((a, b) =>
 		(a.second.getCenter().distanceTo(sourceCenter) - a.second._getRadius()) -
 		(b.second.getCenter().distanceTo(sourceCenter) - b.second._getRadius()));

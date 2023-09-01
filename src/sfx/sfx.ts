@@ -38,7 +38,7 @@ export class Sfx implements IManager {
 	public startFrame() {
 		// remove any sound no longer playing
 		let playingSounds = Array.from(this._playingSounds);
-		for(let sound of playingSounds) {
+		for(const sound of playingSounds) {
 			if(!sound.isPlaying) {
 				this._playingSounds.delete(sound);
 			}
@@ -98,7 +98,7 @@ export class Sfx implements IManager {
 	 */
 	stopAll() {
 		let playingSounds = Array.from(this._playingSounds);
-		for(let sound of playingSounds) {
+		for(const sound of playingSounds) {
 			sound.stop();
 		}
 		this._playingSounds = new Set();

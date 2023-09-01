@@ -181,7 +181,7 @@ export class LinesBatch extends DrawBatch {
 		let i = 0;
 		let colors = this._buffers.colorsArray;
 		let positions = this._buffers.positionArray;
-		for(let vertex of vertices) {
+		for(const vertex of vertices) {
 			// push color
 			if(this.__currDrawingParams.hasVertexColor) {
 				colors[colors._index++] = (vertex.color.r || 0);
