@@ -215,7 +215,7 @@ export class Assets implements IManager {
 		let _asset = this.#_getFromCache(url, typeClass);
 
 		// check if need to create new and load
-		const needLoad = false;
+		let needLoad = false;
 		if(!_asset) {
 			_asset = new typeClass(url);
 			needLoad = true;
