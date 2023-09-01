@@ -14,7 +14,7 @@ const input = isBrowser ? _input : null;
 const _logger = LoggerFactory.getLogger("shaku");
 
 // is shaku in silent mode
-var _isSilent: boolean = false;
+let _isSilent: boolean = false;
 
 // manager state and gametime
 let _usedManagers: IManager[] | null = null;
@@ -305,7 +305,7 @@ export class Shaku {
 	 * @returns Current frame's gametime.
 	 */
 	public get gameTime(): GameTime {
-		if (_gameTime === null) throw new Error("gameTime() is only valid between startFrame() and endFrame()");
+		if(_gameTime === null) throw new Error("gameTime() is only valid between startFrame() and endFrame()");
 		return _gameTime;
 	}
 

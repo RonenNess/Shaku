@@ -126,9 +126,9 @@ function getAccurateTimestampMs(): number {
 }
 
 // previous time (to calculate delta).
-var _prevTime: number | null = null;
+let _prevTime: number | null = null;
 
 // current delta and elapsed
-var _currDelta = 0;
-var _currElapsed = 0;
-var _rawTimestampMs = getAccurateTimestampMs();
+let _currDelta = 0;
+let _currElapsed = 0;
+let _rawTimestampMs = getAccurateTimestampMs();

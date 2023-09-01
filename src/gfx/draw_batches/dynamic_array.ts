@@ -17,12 +17,12 @@ function transferPolyfill(source, dest) {
 
 	// polyfill
 	if(dest.byteLength >= source.byteLength) {
-		var nextOffset = 0;
-		var leftBytes = source.byteLength;
-		var wordSizes = [8, 4, 2, 1];
+		let nextOffset = 0;
+		let leftBytes = source.byteLength;
+		let wordSizes = [8, 4, 2, 1];
 		wordSizes.forEach(function(_wordSize_) {
 			if(leftBytes => _wordSize_) {
-				var done = transferWith(_wordSize_, source, dest, nextOffset, leftBytes);
+				let done = transferWith(_wordSize_, source, dest, nextOffset, leftBytes);
 				nextOffset = done.nextOffset;
 				leftBytes = done.leftBytes;
 			}
@@ -30,7 +30,7 @@ function transferPolyfill(source, dest) {
 	}
 
 	function transferWith(wordSize, source, dest, nextOffset, leftBytes) {
-		var ViewClass = Uint8Array;
+		let ViewClass = Uint8Array;
 		switch(wordSize) {
 			case 8:
 				ViewClass = Float64Array;
@@ -48,9 +48,9 @@ function transferPolyfill(source, dest) {
 				ViewClass = Uint8Array;
 				break;
 		}
-		var view_source = new ViewClass(source, nextOffset, Math.trunc(leftBytes / wordSize));
-		var view_dest = new ViewClass(dest, nextOffset, Math.trunc(leftBytes / wordSize));
-		for(var i = 0; i < view_dest.length; i++) {
+		let view_source = new ViewClass(source, nextOffset, Math.trunc(leftBytes / wordSize));
+		let view_dest = new ViewClass(dest, nextOffset, Math.trunc(leftBytes / wordSize));
+		for(let i = 0; i < view_dest.length; i++) {
 			view_dest[i] = view_source[i];
 		}
 		return {

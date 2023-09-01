@@ -168,7 +168,7 @@ export class SoundInstance {
 	set volume(value) {
 		if(!this._audio) { return 0; }
 		this._volume = value;
-		var volume = (value * SoundInstance._masterVolume);
+		let volume = (value * SoundInstance._masterVolume);
 		if(volume < 0) { volume = 0; }
 		if(volume > 1) { volume = 1; }
 		this._audio.volume = volume;

@@ -216,7 +216,7 @@ export class Input implements IManager {
 			window.setTimeout(() => element.focus(), 0);
 
 			// set all the events to listen to
-			var _this = this;
+			let _this = this;
 			this._callbacks = {
 				"mousedown": function(event) { _this._onMouseDown(event); if(_this.preventDefaults) event.preventDefault(); },
 				"mouseup": function(event) { _this._onMouseUp(event); if(_this.preventDefaults) event.preventDefault(); },
@@ -235,7 +235,7 @@ export class Input implements IManager {
 			this.#_resetAll(false);
 
 			// register all callbacks
-			for(var event in this._callbacks) {
+			for(let event in this._callbacks) {
 				element.addEventListener(event, this._callbacks[event as keyof typeof this._callbacks] as (ev: Event) => void, false);
 			}
 
@@ -360,7 +360,7 @@ export class Input implements IManager {
 		if(this._callbacks) {
 			let element = this._targetElement as (HTMLElement | Window);
 
-			for(var event in this._callbacks) {
+			for(let event in this._callbacks) {
 				element.removeEventListener(event, this._callbacks[event as keyof typeof this._callbacks] as (ev: Event) => void);
 			}
 
@@ -1080,7 +1080,7 @@ export class Input implements IManager {
 	 * @param {*} event Event data from browser.
 	*/
 	_onKeyDown(event: KeyboardEvent) {
-		var keycode = this.#_getKeyboardKeyCode(event);
+		let keycode = this.#_getKeyboardKeyCode(event);
 		if(!this._keyboardState.get(keycode)) {
 			this._keyboardPressed.set(keycode, true);
 			this._prevLastKeyPressedTime.set(keycode, this._lastKeyPressedTime.get(keycode));
@@ -1095,7 +1095,7 @@ export class Input implements IManager {
 	 * @param {*} event Event data from browser.
 	 */
 	_onKeyUp(event: KeyboardEvent) {
-		var keycode = this.#_getKeyboardKeyCode(event) || 0;
+		let keycode = this.#_getKeyboardKeyCode(event) || 0;
 		this._keyboardState.set(keycode, false);
 		this._keyboardReleased.set(keycode, true);
 		this._prevLastKeyReleasedTime.set(keycode, this._lastKeyReleasedTime.get(keycode));
@@ -1109,11 +1109,11 @@ export class Input implements IManager {
 	 * @returns {Vector2} Position x,y or null if couldn't extract touch position.
 	 */
 	_getTouchEventPosition(event: TouchEvent) {
-		var touches = event.changedTouches || event.touches;
+		let touches = event.changedTouches || event.touches;
 		if(touches && touches.length) {
-			var touch = touches[0];
-			var x = touch.pageX || touch.offsetX || touch.clientX;
-			var y = touch.pageY || touch.offsetY || touch.clientY;
+			let touch = touches[0];
+			let x = touch.pageX || touch.offsetX || touch.clientX;
+			let y = touch.pageY || touch.offsetY || touch.clientY;
 			return new Vector2(x, y);
 		}
 		return null;
@@ -1258,12 +1258,12 @@ export class Input implements IManager {
 		event = this._getEvent(event);
 
 		// try to get position from event with some fallbacks
-		var pageX = event.clientX;
+		let pageX = event.clientX;
 		if(pageX === undefined) { pageX = event.x; }
 		if(pageX === undefined) { pageX = event.offsetX; }
 		if(pageX === undefined) { pageX = event.pageX; }
 
-		var pageY = event.clientY;
+		let pageY = event.clientY;
 		if(pageY === undefined) { pageY = event.y; }
 		if(pageY === undefined) { pageY = event.offsetY; }
 		if(pageY === undefined) { pageY = event.pageY; }
@@ -1286,7 +1286,7 @@ export class Input implements IManager {
 	 */
 	_normalizeMousePos() {
 		if(this._targetElement && this._targetElement instanceof HTMLElement) {
-			var rect = this._targetElement.getBoundingClientRect();
+			let rect = this._targetElement.getBoundingClientRect();
 			this._mousePos.x -= rect.left;
 			this._mousePos.y -= rect.top;
 		}

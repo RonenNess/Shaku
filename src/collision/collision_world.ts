@@ -379,7 +379,7 @@ export class CollisionWorld {
 			sortByDistanceShapes(sourceShape, options);
 
 			// check collision sorted
-			var handlers = this.resolver.getHandlers(sourceShape);
+			let handlers = this.resolver.getHandlers(sourceShape);
 			for(const other of options) {
 				this._stats.collisionChecks++;
 				result = this.resolver.testWithHandler(sourceShape, other, handlers[other.shapeId]);
@@ -392,7 +392,7 @@ export class CollisionWorld {
 		// easy case - single result, not sorted
 		else {
 			// iterate possible shapes and test collision
-			var handlers = this.resolver.getHandlers(sourceShape);
+			let handlers = this.resolver.getHandlers(sourceShape);
 			this.#_iterateBroadPhase(sourceShape, (other) => {
 
 				// test collision and continue iterating if we don't have a result
@@ -423,7 +423,7 @@ export class CollisionWorld {
 
 		// get collisions
 		const ret: CollisionTestResult[] = [];
-		var handlers = this.resolver.getHandlers(sourceShape);
+		let handlers = this.resolver.getHandlers(sourceShape);
 		this.#_iterateBroadPhase(sourceShape, (other) => {
 			this._stats.collisionChecks++;
 			let result = this.resolver.testWithHandler(sourceShape, other, handlers[other.shapeId]);

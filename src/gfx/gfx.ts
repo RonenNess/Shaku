@@ -391,7 +391,7 @@ export class Gfx implements IManager {
 		_gl.bindFramebuffer(_gl.FRAMEBUFFER, _fb);
 
 		// set render targets
-		var drawBuffers = [];
+		let drawBuffers = [];
 		for(let index = 0; index < texture.length; ++index) {
 
 			// attach the texture as the first color attachment
@@ -1038,7 +1038,7 @@ export class GfxInternal {
 		if(_lastBlendMode !== blendMode) {
 
 			// get gl context and set defaults
-			var gl = _gl;
+			let gl = _gl;
 			switch(blendMode) {
 				case BlendModes.ALPHA_BLEND:
 					gl.enable(gl.BLEND);

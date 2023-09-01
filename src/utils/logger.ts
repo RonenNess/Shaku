@@ -2,7 +2,7 @@
 let _drivers: Console = console;
 
 // application name
-var _application = "Shaku";
+let _application = "Shaku";
 
 /**
  * A logger manager.

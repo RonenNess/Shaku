@@ -188,8 +188,8 @@ export class Matrix {
 	 * @returns a new matrix with result.
 	 */
 	public static createPerspective(fieldOfViewInRadians: number, aspectRatio: number, near: number, far: number): Matrix {
-		var f = 1.0 / Math.tan(fieldOfViewInRadians / 2);
-		var rangeInv = 1 / (near - far);
+		let f = 1.0 / Math.tan(fieldOfViewInRadians / 2);
+		let rangeInv = 1 / (near - far);
 
 		return new Matrix([
 			f / aspectRatio, 0, 0, 0,

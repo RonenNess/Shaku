@@ -4,7 +4,7 @@ import { TextureAsset } from "./texture_asset";
 import { TextureInAtlasAsset } from "./texture_in_atlas_asset";
 
 // the webgl context to use
-var gl = null;
+let gl = null;
 
 /**
  * A texture atlas we can build at runtime to combine together multiple textures.

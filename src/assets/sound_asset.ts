@@ -27,7 +27,7 @@ export class SoundAsset extends Asset {
 		return new Promise((resolve, reject) => {
 
 			// create request to load audio file
-			var request = new XMLHttpRequest();
+			let request = new XMLHttpRequest();
 			request.open("GET", this.url, true);
 			request.responseType = "arraybuffer";
 

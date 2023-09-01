@@ -75,15 +75,15 @@ export class Perlin {
 		}
 
 		// create perm, gradP and grad3 arrays
-		var perm = new Array(512);
-		var gradP = new Array(512);
-		var grad3 = [new Grad(1, 1, 0), new Grad(-1, 1, 0), new Grad(1, -1, 0), new Grad(-1, -1, 0),
+		let perm = new Array(512);
+		let gradP = new Array(512);
+		let grad3 = [new Grad(1, 1, 0), new Grad(-1, 1, 0), new Grad(1, -1, 0), new Grad(-1, -1, 0),
 		new Grad(1, 0, 1), new Grad(-1, 0, 1), new Grad(1, 0, -1), new Grad(-1, 0, -1),
 		new Grad(0, 1, 1), new Grad(0, -1, 1), new Grad(0, 1, -1), new Grad(0, -1, -1)];
 
 		// apply seed
-		for(var i = 0; i < 256; i++) {
-			var v;
+		for(let i = 0; i < 256; i++) {
+			let v;
 			if(i & 1) {
 				v = p[i] ^ (seed & 255);
 			} else {
@@ -136,7 +136,7 @@ export class Perlin {
 		let gradP = this._gradP;
 
 		// find unit grid cell containing point
-		var X = Math.floor(x), Y = Math.floor(y);
+		let X = Math.floor(x), Y = Math.floor(y);
 
 		// get relative xy coordinates of point within that cell
 		x = x - X; y = y - Y;
@@ -145,13 +145,13 @@ export class Perlin {
 		X = X & 255; Y = Y & 255;
 
 		// calculate noise contributions from each of the four corners
-		var n00 = gradP[X + perm[Y]].dot2(x, y) * contrast;
-		var n01 = gradP[X + perm[Y + 1]].dot2(x, y - 1) * contrast;
-		var n10 = gradP[X + 1 + perm[Y]].dot2(x - 1, y) * contrast;
-		var n11 = gradP[X + 1 + perm[Y + 1]].dot2(x - 1, y - 1) * contrast;
+		let n00 = gradP[X + perm[Y]].dot2(x, y) * contrast;
+		let n01 = gradP[X + perm[Y + 1]].dot2(x, y - 1) * contrast;
+		let n10 = gradP[X + 1 + perm[Y]].dot2(x - 1, y) * contrast;
+		let n11 = gradP[X + 1 + perm[Y + 1]].dot2(x - 1, y - 1) * contrast;
 
 		// compute the fade curve value for x
-		var u = fade(x);
+		let u = fade(x);
 
 		// interpolate the four results
 		return Math.min(lerp(

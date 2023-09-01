@@ -222,14 +222,14 @@ export class Assets implements IManager {
 		let _asset = this.#_getFromCache(url, typeClass);
 
 		// check if need to create new and load
-		var needLoad = false;
+		const needLoad = false;
 		if(!_asset) {
 			_asset = new typeClass(url);
 			needLoad = true;
 		}
 
 		// create promise to load asset
-		let promise = new Promise(async (resolve, reject) => {
+		const promise = new Promise(async (resolve, reject) => {
 			if(needLoad) {
 				await this.#_loadAndCacheAsset(_asset, params);
 			}
@@ -250,7 +250,7 @@ export class Assets implements IManager {
 	#_createAsset<T>(name: string, classType: { new(...args: unknown[]): T; }, initMethod: (clazz: T) => Promise<void>, needWait?: boolean): Promise<T> {
 		// create asset
 		name = this.#_wrapUrl(name);
-		var _asset = new classType(name || generateRandomAssetName());
+		let _asset = new classType(name || generateRandomAssetName());
 
 		// if this asset need waiting
 		if(needWait) {
@@ -481,7 +481,7 @@ export class Assets implements IManager {
 }
 
 // generate a random asset URL, for when creating assets that are outside of cache.
-var _nextRandomAssetId: number = 0;
+let _nextRandomAssetId: number = 0;
 function generateRandomAssetName(): string {
 	return "_runtime_asset_" + (_nextRandomAssetId++) + "_";
 }

@@ -77,8 +77,8 @@ export class MathHelper {
 	* @returns Shortest distance between radians.
 	*/
 	public static radiansDistanceSigned(a1: number, a2: number): number {
-		var max = Math.PI * 2;
-		var da = (a2 - a1) % max;
+		let max = Math.PI * 2;
+		let da = (a2 - a1) % max;
 		return 2 * da % max - da;
 	}
 
@@ -151,7 +151,7 @@ export class MathHelper {
 		a2 = this.toRadians(a2);
 
 		// lerp
-		var ret = this.lerpRadians(a1, a2, alpha);
+		let ret = this.lerpRadians(a1, a2, alpha);
 
 		// convert back to degrees and return
 		return this.wrapDegrees(this.toDegrees(ret));
@@ -187,11 +187,11 @@ export class MathHelper {
 	 */
 	public static calculateNormal(v1: Vector3, v2: Vector3, v3: Vector3): Vector3 {
 		// create vectors between the points
-		var _a = v2.sub(v1);
-		var _b = v3.sub(v1);
+		let _a = v2.sub(v1);
+		let _b = v3.sub(v1);
 
 		// calculate normal
-		var surfaceNormal = new Vector3(0, 0, 0);
+		let surfaceNormal = new Vector3(0, 0, 0);
 		surfaceNormal.x = (_a.y * _b.z) - (_a.z - _b.y);
 		surfaceNormal.y = - ((_b.z * _a.x) - (_b.x * _a.z));
 		surfaceNormal.z = (_a.x * _b.y) - (_a.y * _b.x);

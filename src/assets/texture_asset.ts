@@ -4,7 +4,7 @@ import { TextureAssetBase } from "./texture_asset_base";
 const _logger = LoggerFactory.getLogger("assets"); // TODO
 
 // the webgl context to use
-var gl: WebGLRenderingContext | null = null;
+let gl: WebGLRenderingContext | null = null;
 
 /**
  * A loadable texture asset.
@@ -99,7 +99,7 @@ export class TextureAsset extends TextureAssetBase {
 		gl.bindTexture(gl.TEXTURE_2D, targetTexture);
 
 		// calculate format
-		var _format: number = gl.RGBA;
+		let _format: number = gl.RGBA;
 		if(channels !== undefined) {
 			switch(channels) {
 				case 1:

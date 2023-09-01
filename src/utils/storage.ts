@@ -111,7 +111,7 @@ export class Storage {
 	 */
 	#_get(key: string): object | null {
 		// get value
-		var value = this._adapter.getItem(key);
+		let value = this._adapter.getItem(key);
 
 		// not found? return null
 		if(value === null) {

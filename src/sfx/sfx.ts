@@ -123,7 +123,7 @@ export class Sfx implements IManager {
 	 */
 	createSound(sound) {
 		if(!(sound.isSoundAsset)) { throw new Error("Sound type must be an instance of SoundAsset!"); }
-		var ret = new SoundInstance(this, sound.url);
+		let ret = new SoundInstance(this, sound.url);
 		return ret;
 	}
 
