@@ -96,7 +96,7 @@ function step() {
 If you want to experiment with *Shaku* while reading the docs, you can check out this [Sandbox Demo](https://ronenness.github.io/Shaku/demo/sandbox.html).
 See the [demos assets](demo/assets) folder to see which assets you can use for the sandbox (or load assets from external sources).
 
-![Sandbox](resources/sandbox.jpg)
+![Sandbox](resources/demo/sandbox.jpg)
 
 
 ## Installation
@@ -452,7 +452,7 @@ These fonts store the glyphs as pixels data, and render the text as sprites.
 You don't need to prepare the Font Textures upfront; *Shaku* generates them at runtime from regular TTF fonts.
 For example, *Shaku* generated the following font texture for one of the [online demos](https://ronenness.github.io/Shaku/demo/gfx_draw_text.html):
 
-![font texture](resources/font-texture.png)
+![font texture](resources/demo/font-texture.png)
 
 Let's take a look at how we generate a Sprite Font and render some text with it:
 
@@ -496,7 +496,7 @@ Render Targets provide a way to draw *on textures* instead of directly on screen
 
 For example [the following game](https://store.steampowered.com/app/2135030/HellEscape/) is built with *Shaku*, and uses Render Targets to implement the 2D lightings you see here:
 
-![HellEscape](resources/hellescape.png)
+![HellEscape](resources/demo/hellescape.png)
 
 A render target in essence is just a texture asset you can draw on, created like this:
 
@@ -655,7 +655,7 @@ Before reading on, can you guess what this effect do?
 
 This effect recieve *elapsed time* as a uniform (called 'elapsedTime') with type `flot`, and animate the texture colors based on the current time value. Since every component gets a different offset from the start, it will create a rainbow-like colors effect.
 
-![Custom Effects](resources/custom_effects.png)
+![Custom Effects](resources/demo/custom_effects.png)
 
 A demo page with the above effect can be found [here](https://ronenness.github.io/Shaku/demo/gfx_custom_effects.html).
 
@@ -974,7 +974,7 @@ For example, a double-click with the mouse left button can be detected like this
 
 In addition, all the methods above also accept an array instead of a single key code, to test if any of them match the condition. For example, the following will check if 'w' or arrow up is down: `Shaku.input.down(['w', 'up_arrow'])`.
 
-![Input Demo](resources/input-demo.png)
+![Input Demo](resources/demo/input-demo.png)
 
 A demo page to demonstrate the input manager can be found [here](https://ronenness.github.io/Shaku/demo/input_basic_input.html).
 
@@ -1513,7 +1513,7 @@ Note that you can set debug color for individual shapes by calling:
 shape.setDebugColor(color);
 ```
 
-![physics-example](resources/physics.png)
+![physics-example](resources/demo/physics.png)
 
 ### Utils
 
