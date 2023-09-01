@@ -216,12 +216,12 @@ export class Matrix {
 	 * Create a scale matrix.
 	 * @returns a new matrix with result.
 	 */
-	public static createScale(x: number, y: number, z: number): Matrix {
+	public static createScale(x = 1, y = 1, z = 1): Matrix {
 		return new Matrix([
-			x || 1, 0, 0, 0,
-			0, y || 1, 0, 0,
-			0, 0, z || 1, 0,
-			0, 0, 0, 1
+			x, 0, 0, 0,
+			0, y, 0, 0,
+			0, 0, z, 0,
+			0, 0, 0, 1,
 		], false);
 	}
 
