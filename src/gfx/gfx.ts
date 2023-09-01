@@ -809,7 +809,7 @@ export class Gfx implements IManager {
 	 * * DestIn
 	 * * DestOut
 	 *
-	 * ![Blend Modes](resources/blend-modes.png)
+	 * ![Blend Modes](resources/demo/blend-modes.png)
 	 * @see BlendModes
 	 */
 	get BlendModes() {
@@ -838,7 +838,7 @@ export class Gfx implements IManager {
 	 * * NearestMipmapLinear: no filtering, smooth transition between mipmaps.
 	 * * LinearMipmapLinear: filtering, smooth transition between mipmaps.
 	 *
-	 * ![Filter Modes](resources/filter-modes.png)
+	 * ![Filter Modes](resources/demo/filter-modes.png)
 	 * @see TextureFilterModes
 	 */
 	get TextureFilterModes() {

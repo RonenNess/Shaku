@@ -47,9 +47,7 @@
 		"eslint-plugin-import": "^2.28.0",
 		"eslint-plugin-only-warn": "^1.1.0",
 		"typedoc": "^0.24.8",
+		"typedoc-plugin-missing-exports": "^2.1.0",
 		"typescript": "^5.1.6"
-	},
-	"dependencies": {
-		"typedoc-plugin-missing-exports": "^2.0.1"
 	}
 }

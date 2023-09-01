@@ -88,6 +88,11 @@ module.exports = {
 			"message": "Don't use 'this' on static methods and properties.",
 		}],
 	},
+	overrides: [
+		{
+			files: ["src/**/*.ts"],
+		}
+	],
 	parser: "@typescript-eslint/parser",
 	parserOptions: {
 		createDefaultProgram: true,
