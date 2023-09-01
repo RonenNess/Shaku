@@ -490,7 +490,7 @@ for(const key in colorNameToHex) {
 		Object.defineProperty(Color, key, {
 			get: function() {
 				return _colValue.clone();
-			}
+			},
 		});
 
 	})(colorValue);
@@ -504,14 +504,14 @@ Object.freeze(colorKeys);
 Object.defineProperty(Color, "transparent", {
 	get: function() {
 		return new Color(0, 0, 0, 0);
-	}
+	},
 });
 
 // add transparent white getter
 Object.defineProperty(Color, "transwhite", {
 	get: function() {
 		return new Color(1, 1, 1, 0);
-	}
+	},
 });
 
 /**
@@ -529,7 +529,7 @@ function hexToColor(hex: string) {
 	const components = result ? {
 		r: parseInt(result[1], 16) / 255.0,
 		g: parseInt(result[2], 16) / 255.0,
-		b: parseInt(result[3], 16) / 255.0
+		b: parseInt(result[3], 16) / 255.0,
 	} : null;
 
 	// create Color instance

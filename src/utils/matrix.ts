@@ -11,7 +11,7 @@ export class Matrix {
 		1, 0, 0, 0,
 		0, 1, 0, 0,
 		0, 0, 1, 0,
-		0, 0, 0, 1
+		0, 0, 0, 1,
 	], false);
 
 	public values: number[] | Float32Array;
@@ -51,7 +51,7 @@ export class Matrix {
 			v11, v12, v13, v14,
 			v21, v22, v23, v24,
 			v31, v32, v33, v34,
-			v41, v42, v43, v44
+			v41, v42, v43, v44,
 		]);
 	}
 
@@ -195,7 +195,7 @@ export class Matrix {
 			f / aspectRatio, 0, 0, 0,
 			0, f, 0, 0,
 			0, 0, (near + far) * rangeInv, -1,
-			0, 0, near * far * rangeInv * 2, 0
+			0, 0, near * far * rangeInv * 2, 0,
 		], false);
 	}
 
@@ -208,7 +208,7 @@ export class Matrix {
 			1, 0, 0, 0,
 			0, 1, 0, 0,
 			0, 0, 1, 0,
-			x || 0, y || 0, z || 0, 1
+			x || 0, y || 0, z || 0, 1,
 		], false);
 	}
 
@@ -236,7 +236,7 @@ export class Matrix {
 			1, 0, 0, 0,
 			0, cos(a), -sin(a), 0,
 			0, sin(a), cos(a), 0,
-			0, 0, 0, 1
+			0, 0, 0, 1,
 		], false);
 	}
 
@@ -251,7 +251,7 @@ export class Matrix {
 			cos(a), 0, sin(a), 0,
 			0, 1, 0, 0,
 			-sin(a), 0, cos(a), 0,
-			0, 0, 0, 1
+			0, 0, 0, 1,
 		], false);
 	}
 
@@ -266,7 +266,7 @@ export class Matrix {
 			cos(a), -sin(a), 0, 0,
 			sin(a), cos(a), 0, 0,
 			0, 0, 1, 0,
-			0, 0, 0, 1
+			0, 0, 0, 1,
 		], false);
 	}
 
@@ -292,7 +292,7 @@ export class Matrix {
 			result0[0], result0[1], result0[2], result0[3],
 			result1[0], result1[1], result1[2], result1[3],
 			result2[0], result2[1], result2[2], result2[3],
-			result3[0], result3[1], result3[2], result3[3]
+			result3[0], result3[1], result3[2], result3[3],
 		], false);
 	}
 

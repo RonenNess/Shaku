@@ -41,7 +41,7 @@ export class ItemsSorter {
 			normalizedRects.push({
 				width: ((rect.width !== undefined) ? rect.width : rect.x) + extraMargins.x,
 				height: ((rect.height !== undefined) ? rect.height : rect.y) + extraMargins.y,
-				source: rect
+				source: rect,
 			});
 		}
 		rectangles = normalizedRects;
@@ -127,7 +127,7 @@ export class ItemsSorter {
 						x: space.x + rect.width,
 						y: space.y,
 						w: space.w - rect.width,
-						h: rect.height
+						h: rect.height,
 					});
 					space.y += rect.height;
 					space.h -= rect.height;
@@ -141,7 +141,7 @@ export class ItemsSorter {
 			width: width,                               // container width.
 			height: height,                             // container height.
 			rectangles: rectangles,                     // rectangles and where to place them.
-			utilized: (area / (width * height)) || 0    // space utilization.
+			utilized: (area / (width * height)) || 0,    // space utilization.
 		};
 	}
 }

@@ -306,11 +306,11 @@ export class LinesBatch extends DrawBatch {
 			if(this.linesStrip) {
 				if(i === 1) {
 					this.drawVertices([
-						new Vertex(prevPoint.add(circle.center), null, color)
+						new Vertex(prevPoint.add(circle.center), null, color),
 					]);
 				}
 				this.drawVertices([
-					new Vertex(newPoint.add(circle.center), null, color)
+					new Vertex(newPoint.add(circle.center), null, color),
 				]);
 			}
 			// add for line segments

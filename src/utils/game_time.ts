@@ -33,7 +33,7 @@ export class GameTime {
 		 */
 		this.elapsedTime = {
 			milliseconds: _currElapsed,
-			seconds: _currElapsed / 1000.0
+			seconds: _currElapsed / 1000.0,
 		};
 
 		/**

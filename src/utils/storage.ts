@@ -93,7 +93,7 @@ export class Storage {
 			data: value,
 			timestamp: (new Date()).getTime(),
 			src: "Shaku",
-			sver: 1.0
+			sver: 1.0,
 		});
 
 		// convert to base64
@@ -211,5 +211,5 @@ export class Storage {
 Storage.defaultAdapters = [
 	new StorageAdapter.localStorage(),
 	new StorageAdapter.sessionStorage(),
-	new StorageAdapter.memory()
+	new StorageAdapter.memory(),
 ];

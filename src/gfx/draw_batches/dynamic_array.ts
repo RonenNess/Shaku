@@ -55,7 +55,7 @@ function transferPolyfill(source, dest) {
 		}
 		return {
 			nextOffset: view_source.byteOffset + view_source.byteLength,
-			leftBytes: source.byteLength - (view_source.byteOffset + view_source.byteLength)
+			leftBytes: source.byteLength - (view_source.byteOffset + view_source.byteLength),
 		};
 	}
 }

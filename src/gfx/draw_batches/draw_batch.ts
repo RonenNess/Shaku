@@ -163,7 +163,7 @@ export class DrawBatch {
 			transform: transform || Matrix.identity,
 			overrideEffectFlags: overrideEffectFlags,
 			hasVertexColor: effect.hasVertexColor,
-			texture: lastTexture
+			texture: lastTexture,
 		};
 
 		// we are now drawing
