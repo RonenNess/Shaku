@@ -26,7 +26,7 @@ export interface DepthFunctions {
 /**
  * Uniform types enum.
  */
-enum UniformTypes {
+export enum UniformTypes {
 	TEXTURE = "texture",
 	MATRIX = "uniformMatrix4fv",
 	COLOR = "uniform4fv",

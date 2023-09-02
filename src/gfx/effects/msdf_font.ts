@@ -9,21 +9,21 @@ export class MsdfFontEffect extends Effect {
 	/**
 	 * @inheritdoc
 	 */
-	get vertexCode() {
+	public override get vertexCode() {
 		return vertexShader;
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	get fragmentCode() {
+	public override get fragmentCode() {
 		return fragmentShader;
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	get uniformTypes() {
+	public override get uniformTypes() {
 		return {
 			[Effect.UniformBinds.MainTexture]: { type: Effect.UniformTypes.TEXTURE, bind: Effect.UniformBinds.MainTexture },
 			[Effect.UniformBinds.Projection]: { type: Effect.UniformTypes.MATRIX, bind: Effect.UniformBinds.Projection },
@@ -34,7 +34,7 @@ export class MsdfFontEffect extends Effect {
 	/**
 	 * @inheritdoc
 	 */
-	get attributeTypes() {
+	public override get attributeTypes() {
 		return {
 			[Effect.AttributeBinds.Position]: { size: 3, type: Effect.AttributeTypes.Float, normalize: false, bind: Effect.AttributeBinds.Position },
 			[Effect.AttributeBinds.TextureCoords]: { size: 2, type: Effect.AttributeTypes.Float, normalize: false, bind: Effect.AttributeBinds.TextureCoords },

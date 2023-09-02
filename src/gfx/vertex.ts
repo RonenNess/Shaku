@@ -4,82 +4,89 @@ import { Color, Vector2, Vector3 } from "../utils";
  * A vertex we can push to sprite batch.
  */
 export class Vertex {
+	public position: Vector2 | Vector3;
+	public textureCoord: Vector2;
+	public color: Color;
+	public normal: Vector3;
+	public binormal: Vector3;
+	public tangent: Vector3;
+
 	/**
 	 * Create the vertex data.
-	 * @param {Vector2|Vector3} position Vertex position.
-	 * @param {Vector2} textureCoord Vertex texture coord (in pixels).
-	 * @param {Color} color Vertex color (undefined will default to white).
-	 * @param {Vector3} normal Vertex normal.
+	 * @param position Vertex position.
+	 * @param textureCoord Vertex texture coord (in pixels).
+	 * @param color Vertex color (undefined will default to white).
+	 * @param normal Vertex normal.
 	 */
-	public constructor(position, textureCoord, color, normal) {
-		this.position = position || Vector2.zero();
-		this.textureCoord = textureCoord || Vector2.zero();
-		this.color = color || Color.white;
+	public constructor(position: Vector2 | Vector3 = Vector2.zero(), textureCoord: Vector2 = Vector2.zero(), color = Color.white, normal: Vector3) {
+		this.position = position;
+		this.textureCoord = textureCoord;
+		this.color = color;
 		this.normal = normal;
 	}
 
 	/**
 	 * Set position.
-	 * @param {Vector2|Vector3} position Vertex position.
-	 * @param {Boolean} useRef If true, will not clone the given position vector and use its reference instead.
-	 * @returns {Vertex} this.
+	 * @param position Vertex position.
+	 * @param useRef If true, will not clone the given position vector and use its reference instead.
+	 * @returns this.
 	 */
-	setPosition(position, useRef) {
+	public setPosition(position: Vector2 | Vector3, useRef: boolean): Vertex {
 		this.position = useRef ? position : position.clone();
 		return this;
 	}
 
 	/**
 	 * Set texture coordinates.
-	 * @param {Vector2} textureCoord Vertex texture coord (in pixels).
-	 * @param {Boolean} useRef If true, will not clone the given coords vector and use its reference instead.
-	 * @returns {Vertex} this.
+	 * @param textureCoord Vertex texture coord (in pixels).
+	 * @param useRef If true, will not clone the given coords vector and use its reference instead.
+	 * @returns this.
 	 */
-	setTextureCoords(textureCoord, useRef) {
+	public setTextureCoords(textureCoord: Vector2, useRef: boolean): Vertex {
 		this.textureCoord = useRef ? textureCoord : textureCoord.clone();
 		return this;
 	}
 
 	/**
 	 * Set vertex color.
-	 * @param {Color} color Vertex color.
-	 * @param {Boolean} useRef If true, will not clone the given color and use its reference instead.
-	 * @returns {Vertex} this.
+	 * @param color Vertex color.
+	 * @param useRef If true, will not clone the given color and use its reference instead.
+	 * @returns this.
 	 */
-	setColor(color, useRef) {
+	public setColor(color: Color, useRef: boolean): Vertex {
 		this.color = useRef ? color : color.clone();
 		return this;
 	}
 
 	/**
 	 * Set vertex normal.
-	 * @param {Vector3} normal Vertex normal.
-	 * @param {Boolean} useRef If true, will not clone the given normal and use its reference instead.
-	 * @returns {Vertex} this.
+	 * @param normal Vertex normal.
+	 * @param useRef If true, will not clone the given normal and use its reference instead.
+	 * @returns this.
 	 */
-	setNormal(normal, useRef) {
+	public setNormal(normal: Vector3, useRef: boolean): Vertex {
 		this.normal = useRef ? normal : normal.clone();
 		return this;
 	}
 
 	/**
 	 * Set vertex binormal.
-	 * @param {Vector3} binormal Vertex binormal.
-	 * @param {Boolean} useRef If true, will not clone the given binormal and use its reference instead.
-	 * @returns {Vertex} this.
+	 * @param binormal Vertex binormal.
+	 * @param useRef If true, will not clone the given binormal and use its reference instead.
+	 * @returns this.
 	 */
-	setBinormal(binormal, useRef) {
+	public setBinormal(binormal: Vector3, useRef: boolean): Vertex {
 		this.binormal = useRef ? binormal : binormal.clone();
 		return this;
 	}
 
 	/**
 	 * Set vertex tangent.
-	 * @param {Vector3} tangent Vertex tangent.
-	 * @param {Boolean} useRef If true, will not clone the given tangent and use its reference instead.
-	 * @returns {Vertex} this.
+	 * @param tangent Vertex tangent.
+	 * @param useRef If true, will not clone the given tangent and use its reference instead.
+	 * @returns this.
 	 */
-	setTangent(tangent, useRef) {
+	public setTangent(tangent: Vector3, useRef: boolean): Vertex {
 		this.tangent = useRef ? tangent : tangent.clone();
 		return this;
 	}

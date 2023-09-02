@@ -7,6 +7,12 @@ import { Sprite } from "./sprite";
  * You need SpritesGroup to use batched rendering.
  */
 export class SpritesGroup {
+	private _sprites: Sprite[];
+
+	public rotation: number;
+	public position: Vector2;
+	public scale: Vector2;
+
 	/**
 	 * Create the group object.
 	 */
@@ -19,44 +25,35 @@ export class SpritesGroup {
 
 	/**
 	 * Iterate all sprites.
-	 * @param {Function} callback Callback to run on all sprites in group.
+	 * @param callback Callback to run on all sprites in group.
 	 */
-	forEach(callback) {
+	public forEach(callback: (sprite: Sprite) => void): void {
 		this._sprites.forEach(callback);
 	}
 
 	/**
 	 * Set color for all sprites in group.
-	 * @param {Color} color Color to set.
+	 * @param color Color to set.
 	 */
-	setColor(color) {
-		for(let i = 0; i < this._sprites.length; ++i) {
-			this._sprites[i].color.copy(color);
-		}
+	public setColor(color: Color): void {
+		for(let i = 0; i < this._sprites.length; ++i) this._sprites[i].color.copy(color);
 	}
 
 	/**
 	 * Get group's transformations.
-	 * @returns {Matrix} Transformations matrix, or null if there's nothing to apply.
+	 * @returns Transformations matrix, or null if there's nothing to apply.
 	 */
-	getTransform() {
-
+	public getTransform(): Matrix | null {
 		const matrices = [];
 
 		// add position
-		if((this.position.x !== 0) || (this.position.y !== 0)) {
-			matrices.push(Matrix.createTranslation(this.position.x, this.position.y, 0));
-		}
+		if((this.position.x !== 0) || (this.position.y !== 0)) matrices.push(Matrix.createTranslation(this.position.x, this.position.y, 0));
 
 		// add rotation
-		if(this.rotation) {
-			matrices.push(Matrix.createRotationZ(-this.rotation));
-		}
+		if(this.rotation) matrices.push(Matrix.createRotationZ(-this.rotation));
 
 		// add scale
-		if((this.scale.x !== 1) || (this.scale.y !== 1)) {
-			matrices.push(Matrix.createScale(this.scale.x, this.scale.y));
-		}
+		if((this.scale.x !== 1) || (this.scale.y !== 1)) matrices.push(Matrix.createScale(this.scale.x, this.scale.y));
 
 		// calculate matrix (or null if there are no transformations)
 		if(matrices.length === 0) return null;
@@ -66,48 +63,44 @@ export class SpritesGroup {
 
 	/**
 	 * Adds a sprite to group.
-	 * @param {Sprite} sprite Sprite to add.
-	 * @returns {Sprite} The newly added sprite.
+	 * @param sprite Sprite to add.
+	 * @returns The newly added sprite.
 	 */
-	add(sprite) {
+	public add(sprite: Sprite): Sprite {
 		this._sprites.push(sprite);
 		return sprite;
 	}
 
 	/**
 	 * Remove a sprite from group.
-	 * @param {Sprite} sprite Sprite to remove.
+	 * @param sprite Sprite to remove.
 	 */
-	remove(sprite) {
-		for(let i = 0; i < this._sprites.length; ++i) {
-			if(this._sprites[i] === sprite) {
-				this._sprites.splice(i, 1);
-				return;
-			}
-		}
+	public remove(sprite: Sprite): void {
+		const index = this._sprites.indexOf(sprite);
+		if(index !== -1) this._sprites.splice(index, 1);
 	}
 
 	/**
 	 * Shift first sprite element.
-	 * @returns {Sprite} The removed sprite.
+	 * @returns The removed sprite.
 	 */
-	shift() {
+	public shift(): Sprite {
 		return this._sprites.shift();
 	}
 
 	/**
 	 * Sort sprites.
-	 * @param {Function} compare Comparer method.
+	 * @param compare Comparer method.
 	 */
-	sort(compare) {
+	public sort(compare: (a: Sprite, b: Sprite) => number) {
 		this._sprites.sort(compare);
 	}
 
 	/**
 	 * Sprites count in group.
-	 * @returns {Number} Number of sprites in group.
+	 * @returns Number of sprites in group.
 	 */
-	get count() {
+	public get count(): number {
 		return this._sprites.length;
 	}
 }

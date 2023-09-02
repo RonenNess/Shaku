@@ -63,14 +63,14 @@ export class SpriteBatch3D extends SpriteBatch {
 	/**
 	 * @inheritdoc
 	 */
-	get supportVertexColor() {
+	override get supportVertexColor() {
 		return true;
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	get defaultEffect() {
+	override get defaultEffect() {
 		return this.#_gfx.builtinEffects.Sprites3d;
 	}
 
@@ -86,7 +86,7 @@ export class SpriteBatch3D extends SpriteBatch {
 	 * @inheritdoc
 
 	 */
-	private _onSetEffect(effect, texture) {
+	private override _onSetEffect(effect, texture) {
 		if(this.__camera.view) effect.setViewMatrix(this.__camera.view);
 		if(this.__camera) this.#_gfx.applyCamera(this.__camera);
 	}

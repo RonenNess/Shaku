@@ -863,9 +863,7 @@ export class Input implements IManager {
 	public pressed(code: InputCode | InputCode[]) {
 		if(!Array.isArray(code)) code = [code];
 		for(const c of code) {
-			if(Boolean(this.#_getValueWithCode(c, this.mousePressed, this.keyPressed, this.touchStarted, this._customPressed))) {
-				return true;
-			}
+			if(this.#_getValueWithCode(c, this.mousePressed, this.keyPressed, this.touchStarted, this._customPressed)) return true;
 		}
 		return false;
 	}

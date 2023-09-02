@@ -35,9 +35,7 @@ export class Gamepad {
 
 		// set buttons down state
 		this._buttonsDown = [];
-		for(let i = 0; i < gp.buttons.length; ++i) {
-			this._buttonsDown[i] = _gamepadButtonPressed(gp.buttons[i]);
-		}
+		for(let i = 0; i < gp.buttons.length; ++i) this._buttonsDown[i] = _gamepadButtonPressed(gp.buttons[i]);
 
 		/**
 		 * Gamepad first axis value.
@@ -232,8 +230,7 @@ export class FrontButtons {
  * @private
  */
 function _gamepadButtonPressed(b: { pressed: boolean; } | number): boolean {
-	if(typeof b === "object") {
-		return b.pressed;
-	}
-	return b === 1.0;
+	return (typeof b === "object")
+		? b.pressed
+		: b === 1.0;
 }

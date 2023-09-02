@@ -129,7 +129,7 @@ export class LinesBatch extends DrawBatch {
 	/**
 	 * @inheritdoc
 	 */
-	clear() {
+	override clear() {
 		super.clear();
 		this._buffers.positionArray._index = 0;
 		this._buffers.colorsArray._index = 0;
@@ -140,7 +140,7 @@ export class LinesBatch extends DrawBatch {
 	/**
 	 * @inheritdoc
 	 */
-	destroy() {
+	override destroy() {
 		const gl = this.#_gl;
 		if(this._buffers) {
 			if(this._buffers.positionBuffer) gl.deleteBuffer(this._buffers.positionBuffer);
@@ -152,14 +152,14 @@ export class LinesBatch extends DrawBatch {
 	/**
 	 * @inheritdoc
 	 */
-	get isDestroyed() {
+	override get isDestroyed() {
 		return Boolean(this._buffers) === false;
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	get defaultEffect() {
+	override get defaultEffect() {
 		return this.#_gfx.builtinEffects.Shapes;
 	}
 
@@ -476,7 +476,7 @@ export class LinesBatch extends DrawBatch {
 	 * @inheritdoc
 
 	 */
-	private _drawBatch() {
+	private override _drawBatch() {
 		// get default effect
 		let effect = this.__currDrawingParams.effect;
 
