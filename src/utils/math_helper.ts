@@ -23,7 +23,7 @@ export class MathHelper {
 	 */
 	public static lerp(start: number, end: number, amount: number): number {
 		// to prevent shaking on same values
-		if(start === end) { return end; }
+		if(start === end) return end;
 
 		// do lerping
 		return ((1 - amount) * start) + (amount * end);
@@ -128,7 +128,7 @@ export class MathHelper {
 	 */
 	public static lerpRadians(a1: number, a2: number, alpha: number): number {
 		// to prevent shaking on same values
-		if(a1 === a2) { return a2; }
+		if(a1 === a2) return a2;
 
 		// do lerping
 		return a1 + this.radiansDistanceSigned(a1, a2) * alpha;
@@ -144,7 +144,7 @@ export class MathHelper {
 	 */
 	public static lerpDegrees(a1: number, a2: number, alpha: number): number {
 		// to prevent shaking on same values
-		if(a1 === a2) { return a2; }
+		if(a1 === a2) return a2;
 
 		// convert to radians
 		a1 = this.toRadians(a1);
@@ -174,7 +174,7 @@ export class MathHelper {
 	 */
 	public static wrapDegrees(degrees: number): number {
 		degrees = degrees % 360;
-		if(degrees < 0) { degrees += 360; }
+		if(degrees < 0) degrees += 360;
 		return degrees;
 	}
 

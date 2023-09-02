@@ -259,8 +259,8 @@ export class Effect {
 						_this._gl.activeTexture(textureCode);
 						_this._gl.bindTexture(_this._gl.TEXTURE_2D, glTexture);
 						_this._gl.uniform1i(location, (index || 0));
-						if(texture.filter) { _setTextureFilter(_this._gl, texture.filter); }
-						if(texture.wrapMode) { _setTextureWrapMode(_this._gl, texture.wrapMode); }
+						if(texture.filter) _setTextureFilter(_this._gl, texture.filter);
+						if(texture.wrapMode) _setTextureWrapMode(_this._gl, texture.wrapMode);
 					};
 				})(this, uniform, uniformLocation, uniformData.type);
 			}

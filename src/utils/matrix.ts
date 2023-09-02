@@ -70,10 +70,10 @@ export class Matrix {
 	 * @returns If matrices are the same.
 	 */
 	public equals(other: Matrix): boolean {
-		if(other === this) { return true; }
-		if(!other) { return false; }
+		if(other === this) return true;
+		if(!other) return false;
 		for(let i = 0; i < this.values.length; ++i) {
-			if(this.values[i] !== other.values[i]) { return false; }
+			if(this.values[i] !== other.values[i]) return false;
 		}
 		return true;
 	}
@@ -142,9 +142,9 @@ export class Matrix {
 	public transform(target: Vector3): Vector3;
 	public transform(target: Vertex): Vertex;
 	public transform(target: Vector2 | Vector3 | Vertex): Vector2 | Vector3 | Vertex {
-		if(target.isVector2) { return Matrix.transformVector2(this, target); }
-		if(target.isVector3) { return Matrix.transformVector3(this, target); }
-		if(target.Vertex) { return Matrix.transformVertex(this, target); }
+		if(target.isVector2) return Matrix.transformVector2(this, target);
+		if(target.isVector3) return Matrix.transformVector3(this, target);
+		if(target.Vertex) return Matrix.transformVertex(this, target);
 		throw new Error("Unknown type to transform!");
 	}
 

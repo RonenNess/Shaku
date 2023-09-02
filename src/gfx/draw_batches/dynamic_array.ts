@@ -7,8 +7,8 @@
  */
 function transferPolyfill(source, dest) {
 	// to handle typed buffers
-	if(source.buffer instanceof ArrayBuffer) { source = source.buffer; }
-	if(dest.buffer instanceof ArrayBuffer) { source = dest.buffer; }
+	if(source.buffer instanceof ArrayBuffer) source = source.buffer;
+	if(dest.buffer instanceof ArrayBuffer) source = dest.buffer;
 
 	// use native
 	if(ArrayBuffer.transfer) {

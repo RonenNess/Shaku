@@ -84,8 +84,8 @@ export class Sfx implements IManager {
 	play(soundAsset, volume, playbackRate, preservesPitch) {
 		const sound = this.createSound(soundAsset);
 		sound.volume = volume !== undefined ? volume : 1;
-		if(playbackRate !== undefined) { sound.playbackRate = playbackRate; }
-		if(preservesPitch !== undefined) { sound.preservesPitch = preservesPitch; }
+		if(playbackRate !== undefined) sound.playbackRate = playbackRate;
+		if(preservesPitch !== undefined) sound.preservesPitch = preservesPitch;
 		const ret = sound.play();
 		sound.disposeWhenDone();
 		return ret;
@@ -122,7 +122,7 @@ export class Sfx implements IManager {
 	 * @returns {SoundInstance} Newly created sound instance.
 	 */
 	createSound(sound) {
-		if(!(sound.isSoundAsset)) { throw new Error("Sound type must be an instance of SoundAsset!"); }
+		if(!(sound.isSoundAsset)) throw new Error("Sound type must be an instance of SoundAsset!");
 		const ret = new SoundInstance(this, sound.url);
 		return ret;
 	}

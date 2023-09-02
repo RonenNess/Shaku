@@ -78,7 +78,7 @@ export class Storage {
 	 * @returns True if key exists in storage.
 	 */
 	public exists(key: string): boolean {
-		if(typeof key !== "string") { throw new Error("Key must be a string!"); }
+		if(typeof key !== "string") throw new Error("Key must be a string!");
 		key = this.normalizeKey(key);
 		return this._adapter.exists(key);
 	}
@@ -147,7 +147,7 @@ export class Storage {
 	 */
 	public setItem(key: string, value: string): void {
 		// sanity and normalize key
-		if(typeof key !== "string") { throw new Error("Key must be a string!"); }
+		if(typeof key !== "string") throw new Error("Key must be a string!");
 		key = this.normalizeKey(key);
 
 		// write value with metadata
@@ -161,7 +161,7 @@ export class Storage {
 	 */
 	public getItem(key: string): object | null {
 		// sanity and normalize key
-		if(typeof key !== "string") { throw new Error("Key must be a string!"); }
+		if(typeof key !== "string") throw new Error("Key must be a string!");
 		key = this.normalizeKey(key);
 
 		// read value from metadata
@@ -192,7 +192,7 @@ export class Storage {
 	 * @param key Key to delete.
 	 */
 	public deleteItem(key: string): void {
-		if(typeof key !== "string") { throw new Error("Key must be a string!"); }
+		if(typeof key !== "string") throw new Error("Key must be a string!");
 		key = this.normalizeKey(key);
 		this._adapter.deleteItem(key);
 	}

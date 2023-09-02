@@ -398,7 +398,7 @@ export class CollisionWorld {
 				// test collision and continue iterating if we don't have a result
 				this._stats.collisionChecks++;
 				result = this.resolver.testWithHandler(sourceShape, other, handlers[other.shapeId]);
-				if(result) { this._stats.collisionMatches++; }
+				if(result) this._stats.collisionMatches++;
 				return !result;
 
 			}, mask, predicate);

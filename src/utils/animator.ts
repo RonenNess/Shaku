@@ -105,7 +105,7 @@ export class Animator {
 
 		// if repeating, reset progress
 		if(this._repeats && this._progress >= 1) {
-			if(typeof this._repeats === "number") { this._repeats--; }
+			if(typeof this._repeats === "number") this._repeats--;
 			this._progress = 0;
 			if(this._repeatsWithReverseAnimation) {
 				this.flipFromAndTo();
@@ -125,7 +125,9 @@ export class Animator {
 		}
 
 		// get value for path with parts
-		function index(obj, i) { return obj[i]; }
+		function index(obj, i) {
+			return obj[i];
+		}
 		return keyParts.reduce(index, this._target);
 	}
 
@@ -142,7 +144,9 @@ export class Animator {
 		}
 
 		// set value for path with parts
-		function index(obj, i) { return obj[i]; }
+		function index(obj, i) {
+			return obj[i];
+		}
 		const parent = keyParts.slice(0, keyParts.length - 1).reduce(index, this._target);
 		parent[keyParts[keyParts.length - 1]] = value;
 	}
@@ -239,8 +243,8 @@ export class Animator {
 		const newFrom = {};
 		const newTo = {};
 
-		if(!this._originalFrom) { this._originalFrom = this._fromValues; }
-		if(!this._originalTo) { this._originalTo = this._toValues; }
+		if(!this._originalFrom) this._originalFrom = this._fromValues;
+		if(!this._originalTo) this._originalTo = this._toValues;
 
 		for(const key in this._toValues) {
 			newFrom[key] = this._toValues[key].value;
@@ -267,9 +271,9 @@ export class Animator {
 	 * @returns {Animator} this.
 	 */
 	reset() {
-		if(this._originalFrom) { this._fromValues = this._originalFrom; }
-		if(this._originalTo) { this._toValues = this._originalTo; }
-		if(this._originalRepeats !== null) { this._repeats = this._originalRepeats; }
+		if(this._originalFrom) this._fromValues = this._originalFrom;
+		if(this._originalTo) this._toValues = this._originalTo;
+		if(this._originalRepeats !== null) this._repeats = this._originalRepeats;
 		this._progress = 0;
 		return this;
 	}

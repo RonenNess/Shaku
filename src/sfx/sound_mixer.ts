@@ -24,8 +24,8 @@ export class SoundMixer {
 	 * Stop both sounds.
 	 */
 	stop() {
-		if(this._sound1) { this._sound1.stop(); }
-		if(this._sound2) { this._sound2.stop(); }
+		if(this._sound1) this._sound1.stop();
+		if(this._sound2) this._sound2.stop();
 	}
 
 	/**
@@ -90,17 +90,17 @@ export class SoundMixer {
 		// transition
 		else {
 			this._progress = progress;
-			if(this._sound1) { this._sound1.play(); }
-			if(this._sound2) { this._sound2.play(); }
+			if(this._sound1) this._sound1.play();
+			if(this._sound2) this._sound2.play();
 
 			if(this.allowOverlapping) {
-				if(this._sound1) { this._sound1.volume = this.fromSoundVolume * (1 - progress); }
-				if(this._sound2) { this._sound2.volume = this.toSoundVolume * progress; }
+				if(this._sound1) this._sound1.volume = this.fromSoundVolume * (1 - progress);
+				if(this._sound2) this._sound2.volume = this.toSoundVolume * progress;
 			}
 			else {
 				progress *= 2;
-				if(this._sound1) { this._sound1.volume = Math.max(this.fromSoundVolume * (1 - progress), 0); }
-				if(this._sound2) { this._sound2.volume = Math.max(this.toSoundVolume * (progress - 1), 0); }
+				if(this._sound1) this._sound1.volume = Math.max(this.fromSoundVolume * (1 - progress), 0);
+				if(this._sound2) this._sound2.volume = Math.max(this.toSoundVolume * (progress - 1), 0);
 			}
 		}
 	}

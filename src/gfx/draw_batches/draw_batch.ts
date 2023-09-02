@@ -38,7 +38,7 @@ export class DrawBatch {
 	 */
 	makeStatic() {
 		this.__validateBatch();
-		if(!this.isDrawing) { throw new Error("Must call 'makeStatic()' between 'begin()' and 'end()'."); }
+		if(!this.isDrawing) throw new Error("Must call 'makeStatic()' between 'begin()' and 'end()'.");
 		this.setBuffersUsage(this.BuffersUsage.STATIC_DRAW);
 		this.__staticBuffers = true;
 	}

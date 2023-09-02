@@ -53,8 +53,8 @@ export class TextureAtlasAsset extends Asset {
 			sources = await loadAllSources(sources);
 
 			// make sure maxWidth and maxHeight are valid
-			if(maxWidth > gl.MAX_TEXTURE_SIZE) { maxWidth = gl.MAX_TEXTURE_SIZE; }
-			if(maxHeight > gl.MAX_TEXTURE_SIZE) { maxHeight = gl.MAX_TEXTURE_SIZE; }
+			if(maxWidth > gl.MAX_TEXTURE_SIZE) maxWidth = gl.MAX_TEXTURE_SIZE;
+			if(maxHeight > gl.MAX_TEXTURE_SIZE) maxHeight = gl.MAX_TEXTURE_SIZE;
 
 			// build atlas textures while there are still sources
 			while(sources && sources.length) {

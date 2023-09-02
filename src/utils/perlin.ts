@@ -54,7 +54,7 @@ export class Perlin {
 	 * @param seed Seed for perlin noise, or undefined for random.
 	 */
 	public constructor(seed?: number) {
-		if(seed === undefined) { seed = Math.random(); }
+		if(seed === undefined) seed = Math.random();
 		this.seed(seed);
 	}
 

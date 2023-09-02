@@ -169,7 +169,7 @@ export class Color {
 			throw new PintarJS.Error("Invalid color format!");
 		}
 		const parsed = hexToColor(val);
-		if(!parsed) { throw new Error("Invalid hex value to parse!"); }
+		if(!parsed) throw new Error("Invalid hex value to parse!");
 		return new Color(parsed.r, parsed.g, parsed.b, 1);
 	}
 
@@ -181,7 +181,7 @@ export class Color {
 	 */
 	public static fromDecimal(val: number, includeAlpha: number): Color {
 		const ret = new Color(1, 1, 1, 1);
-		if(includeAlpha) { ret.a = (val & 0xff) / 255.0; val = val >> 8; }
+		if(includeAlpha) ret.a = (val & 0xff) / 255.0; val = val >> 8;
 		ret.b = (val & 0xff) / 255.0; val = val >> 8;
 		ret.g = (val & 0xff) / 255.0; val = val >> 8;
 		ret.r = (val & 0xff) / 255.0;
@@ -535,6 +535,6 @@ function hexToColor(hex: string) {
 	} : null;
 
 	// create Color instance
-	if(!components) { throw new Error("Invalid hex value to parse!"); }
+	if(!components) throw new Error("Invalid hex value to parse!");
 	return new Color(components.r, components.g, components.b, 1);
 }

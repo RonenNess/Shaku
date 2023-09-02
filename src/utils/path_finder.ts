@@ -60,7 +60,7 @@ export class Node {
  * @param grid Grid provider to check if tiles are blocked.
  * @param startPos Starting tile index.
  * @param targetPos Target tile index.
- * @param options Additional options: { maxIterations, ignorePrices, allowDiagonal }
+ * @param options Additional options: maxIterations, ignorePrices, allowDiagonal
  * @returns List of tiles to traverse.
  */
 function findPath<P extends Vector2 | Vector3>(grid: IGrid, startPos: P, targetPos: P, options: { maxIterations?: number, ignorePrices?: boolean, allowDiagonal?: boolean; } = {}): P[] {
@@ -143,8 +143,8 @@ function _ImpFindPath<P extends Vector2 | Vector3>(grid: IGrid, startPos: P, tar
 		const neighbors = [];
 		for(let nx = -1; nx <= 1; nx++) {
 			for(let ny = -1; ny <= 1; ny++) {
-				if(nx === 0 && ny === 0) { continue; }
-				if(!allowDiagonal && (nx !== 0 && ny !== 0)) { continue; }
+				if(nx === 0 && ny === 0) continue;
+				if(!allowDiagonal && (nx !== 0 && ny !== 0)) continue;
 				neighbors.push(getOrCreateNode({ x: currentNode.position.x + nx, y: currentNode.position.y + ny, z: currentNode.position.z }));
 			}
 		}

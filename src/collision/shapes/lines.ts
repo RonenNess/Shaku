@@ -90,16 +90,16 @@ export class LinesShape extends CollisionShape {
 	 * @inheritdoc
 	 */
 	public debugDraw(opacity = 1, shapesBatch: ShapesBatch): void {
-		if(opacity === undefined) { opacity = 1; }
+		if(opacity === undefined) opacity = 1;
 		const color = this._getDebugColor();
 		color.a *= opacity;
 
 		shapesBatch = this._getDebugDrawBatch(shapesBatch);
 		const needToBegin = !shapesBatch.isDrawing;
-		if(needToBegin) { shapesBatch.begin(); }
+		if(needToBegin) shapesBatch.begin();
 		for(let i = 0; i < this._lines.length; ++i) {
 			shapesBatch.drawLine(this._lines[i].from, this._lines[i].to, color);
 		}
-		if(needToBegin) { shapesBatch.end(); }
+		if(needToBegin) shapesBatch.end();
 	}
 }

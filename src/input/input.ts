@@ -383,7 +383,7 @@ export class Input implements IManager {
 	 * @param {HTMLElement | elementCallback} element Element to attach input to.
 	 */
 	public setTargetElement(element: HTMLElement | (() => HTMLElement)): void {
-		if(this._callbacks) { throw new Error("'setTargetElement() must be called before initializing the input manager!"); }
+		if(this._callbacks) throw new Error("'setTargetElement() must be called before initializing the input manager!");
 		this._targetElement = element;
 	}
 
@@ -466,7 +466,7 @@ export class Input implements IManager {
 		// not found? create
 		if(!cached) {
 			const gp = this._gamepadsData[index];
-			if(!gp) { return null; }
+			if(!gp) return null;
 			this._queriedGamepadStates[index] = cached = new Gamepad(gp);
 		}
 
@@ -490,7 +490,7 @@ export class Input implements IManager {
 	public gamepadIds(): string[] {
 		const ret = [];
 		for(const gp of this._gamepadsData) {
-			if(gp) { ret.push(gp.id); }
+			if(gp) ret.push(gp.id);
 		}
 		return ret;
 	}
@@ -841,7 +841,7 @@ export class Input implements IManager {
 	/**
 	 * Return if a mouse or keyboard button is currently down.
 	 * @example
-	 * if (Shaku.input.down(["mouse_left", "touch", "space"])) { alert("mouse, touch screen or space are pressed!"); }
+	 * if (Shaku.input.down(["mouse_left", "touch", "space"])) alert("mouse, touch screen or space are pressed!");
 	 * @param code Keyboard, touch or mouse code. Can be array of codes to test any of them.
 	 * For mouse buttons: set code to "mouse_left", "mouse_right" or "mouse_middle".
 	 * For keyboard buttons: use one of the keys of KeyboardKeys (for example "a", "alt", "up_arrow", etc..).
@@ -851,7 +851,7 @@ export class Input implements IManager {
 	 * @returns True if key or mouse button are down.
 	 */
 	public down(code: InputCode | InputCode[]): boolean {
-		if(!Array.isArray(code)) { code = [code]; }
+		if(!Array.isArray(code)) code = [code];
 		for(const c of code) {
 			if(Boolean(this.#_getValueWithCode(c, this.mouseDown, this.keyDown, this.touching, this._customStates))) {
 				return true;
@@ -863,7 +863,7 @@ export class Input implements IManager {
 	/**
 	 * Return if a mouse or keyboard button was released in this frame.
 	 * @example
-	 * if (Shaku.input.released(["mouse_left", "touch", "space"])) { alert("mouse, touch screen or space were released!"); }
+	 * if (Shaku.input.released(["mouse_left", "touch", "space"])) alert("mouse, touch screen or space were released!");
 	 * @param code Keyboard, touch, gamepad or mouse button code. Can be array of codes to test any of them.
 	 * For mouse buttons: set code to "mouse_left", "mouse_right" or "mouse_middle".
 	 * For keyboard buttons: use one of the keys of KeyboardKeys (for example "a", "alt", "up_arrow", etc..).
@@ -873,7 +873,7 @@ export class Input implements IManager {
 	 * @returns True if key or mouse button were down in previous frame, and released this frame.
 	 */
 	public released(code: InputCode | InputCode[]): boolean {
-		if(!Array.isArray(code)) { code = [code]; }
+		if(!Array.isArray(code)) code = [code];
 		for(const c of code) {
 			if(Boolean(this.#_getValueWithCode(c, this.mouseReleased, this.keyReleased, this.touchEnded, this._customReleased))) {
 				return true;
@@ -885,7 +885,7 @@ export class Input implements IManager {
 	/**
 	 * Return if a mouse or keyboard button was pressed in this frame.
 	 * @example
-	 * if (Shaku.input.pressed(["mouse_left", "touch", "space"])) { alert("mouse, touch screen or space were pressed!"); }
+	 * if (Shaku.input.pressed(["mouse_left", "touch", "space"])) alert("mouse, touch screen or space were pressed!");
 	 * @param {InputCode|Array<InputCode>} code Keyboard, touch, gamepad or mouse button code. Can be array of codes to test any of them.
 	 *                          For mouse buttons: set code to "mouse_left", "mouse_right" or "mouse_middle".
 	 *                          For keyboard buttons: use one of the keys of KeyboardKeys (for example "a", "alt", "up_arrow", etc..).
@@ -895,7 +895,7 @@ export class Input implements IManager {
 	 * @returns {Boolean} True if key or mouse button where up in previous frame, and pressed this frame.
 	 */
 	public pressed(code: InputCode | InputCode[]) {
-		if(!Array.isArray(code)) { code = [code]; }
+		if(!Array.isArray(code)) code = [code];
 		for(const c of code) {
 			if(Boolean(this.#_getValueWithCode(c, this.mousePressed, this.keyPressed, this.touchStarted, this._customPressed))) {
 				return true;
@@ -917,7 +917,7 @@ export class Input implements IManager {
 	 * @returns {Number} Timestamp of last key release, or 0 if was never released.
 	 */
 	lastReleaseTime(code: InputCode) {
-		if(Array.isArray(code)) { throw new Error("Array not supported in 'lastReleaseTime'!"); }
+		if(Array.isArray(code)) throw new Error("Array not supported in 'lastReleaseTime'!");
 		return this.#_getValueWithCode(code, (c) => this._lastMouseReleasedTime.get(c), (c) => this._lastKeyReleasedTime.get(c), this._lastTouchReleasedTime, this._prevLastCustomReleasedTime) || 0;
 	}
 
@@ -934,7 +934,7 @@ export class Input implements IManager {
 	 * @returns {Number} Timestamp of last key press, or 0 if was never pressed.
 	 */
 	lastPressTime(code: InputCode) {
-		if(Array.isArray(code)) { throw new Error("Array not supported in 'lastPressTime'!"); }
+		if(Array.isArray(code)) throw new Error("Array not supported in 'lastPressTime'!");
 		return this.#_getValueWithCode(code, (c) => this._lastMousePressedTime.get(c), (c) => this._lastKeyPressedTime.get(c), this._lastTouchPressedTime, this._prevLastCustomPressedTime) || 0;
 	}
 
@@ -959,7 +959,7 @@ export class Input implements IManager {
 		const currTime = timestamp();
 
 		// check all keys
-		if(!Array.isArray(code)) { code = [code]; }
+		if(!Array.isArray(code)) code = [code];
 		for(const c of code) {
 			if(this.pressed(c)) {
 				const currKeyTime = this.#_getValueWithCode(c, (c) => this._prevLastMousePressedTime.get(c), (c) => this._prevLastKeyPressedTime.get(c), this._prevLastTouchPressedTime, this._prevLastCustomPressedTime);
@@ -992,7 +992,7 @@ export class Input implements IManager {
 		const currTime = timestamp();
 
 		// check all keys
-		if(!Array.isArray(code)) { code = [code]; }
+		if(!Array.isArray(code)) code = [code];
 		for(const c of code) {
 			if(this.released(c)) {
 				const currKeyTime = this.#_getValueWithCode(c, (c) => this._prevLastMousePressedTime.get(c), (c) => this._prevLastKeyPressedTime.get(c), this._prevLastTouchPressedTime, this._prevLastCustomPressedTime);
@@ -1257,14 +1257,14 @@ export class Input implements IManager {
 
 		// try to get position from event with some fallbacks
 		let pageX = event.clientX;
-		if(pageX === undefined) { pageX = event.x; }
-		if(pageX === undefined) { pageX = event.offsetX; }
-		if(pageX === undefined) { pageX = event.pageX; }
+		if(pageX === undefined) pageX = event.x;
+		if(pageX === undefined) pageX = event.offsetX;
+		if(pageX === undefined) pageX = event.pageX;
 
 		let pageY = event.clientY;
-		if(pageY === undefined) { pageY = event.y; }
-		if(pageY === undefined) { pageY = event.offsetY; }
-		if(pageY === undefined) { pageY = event.pageY; }
+		if(pageY === undefined) pageY = event.y;
+		if(pageY === undefined) pageY = event.offsetY;
+		if(pageY === undefined) pageY = event.pageY;
 
 		// if pageX and pageY are not supported, use clientX and clientY instead
 		if(pageX === undefined) {

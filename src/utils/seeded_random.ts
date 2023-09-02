@@ -9,7 +9,7 @@ export class SeededRandom {
 	 * @param seed Seed to start from. If not provided, will use 0.
 	 */
 	public constructor(seed?: number) {
-		if(seed === undefined) { seed = 0; }
+		if(seed === undefined) seed = 0;
 		this.seed = seed;
 	}
 

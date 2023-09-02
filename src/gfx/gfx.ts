@@ -108,7 +108,7 @@ export class Gfx implements IManager {
 	 * @param {Dictionary} flags WebGL init flags to set.
 	 */
 	setContextAttributes(flags) {
-		if(_gl) { throw new Error("Can't call setContextAttributes() after gfx was initialized!"); }
+		if(_gl) throw new Error("Can't call setContextAttributes() after gfx was initialized!");
 		for(const key in flags) {
 			_initSettings[key] = flags[key];
 		}
@@ -122,7 +122,7 @@ export class Gfx implements IManager {
 	 * @param {HTMLCanvasElement} element Canvas element to initialize on.
 	 */
 	setCanvas(element) {
-		if(_gl) { throw new Error("Can't call setCanvas() after gfx was initialized!"); }
+		if(_gl) throw new Error("Can't call setCanvas() after gfx was initialized!");
 		_canvas = element;
 	}
 
@@ -341,8 +341,8 @@ export class Gfx implements IManager {
 
 		// make sure even numbers
 		if(!allowOddNumbers) {
-			if(width % 2 !== 0) { width++; }
-			if(height % 2 !== 0) { height++; }
+			if(width % 2 !== 0) width++;
+			if(height % 2 !== 0) height++;
 		}
 
 		// if changed, set resolution
@@ -1013,16 +1013,16 @@ export class GfxInternal {
 	}
 
 	setTextureFilter(filter) {
-		if(!Object.values(TextureFilterModes).includes(filter)) { throw new Error("Invalid texture filter mode! Please pick a value from 'TextureFilterModes'."); }
+		if(!Object.values(TextureFilterModes).includes(filter)) throw new Error("Invalid texture filter mode! Please pick a value from 'TextureFilterModes'.");
 		const glMode = _gl[filter];
 		_gl.texParameteri(_gl.TEXTURE_2D, _gl.TEXTURE_MIN_FILTER, glMode);
 		_gl.texParameteri(_gl.TEXTURE_2D, _gl.TEXTURE_MAG_FILTER, glMode);
 	}
 
 	setTextureWrapMode(wrapX, wrapY) {
-		if(wrapY === undefined) { wrapY = wrapX; }
-		if(!Object.values(TextureWrapModes).includes(wrapX)) { throw new Error("Invalid texture wrap mode! Please pick a value from 'TextureWrapModes'."); }
-		if(!Object.values(TextureWrapModes).includes(wrapY)) { throw new Error("Invalid texture wrap mode! Please pick a value from 'TextureWrapModes'."); }
+		if(wrapY === undefined) wrapY = wrapX;
+		if(!Object.values(TextureWrapModes).includes(wrapX)) throw new Error("Invalid texture wrap mode! Please pick a value from 'TextureWrapModes'.");
+		if(!Object.values(TextureWrapModes).includes(wrapY)) throw new Error("Invalid texture wrap mode! Please pick a value from 'TextureWrapModes'.");
 		_gl.texParameteri(_gl.TEXTURE_2D, _gl.TEXTURE_WRAP_S, _gl[wrapX]);
 		_gl.texParameteri(_gl.TEXTURE_2D, _gl.TEXTURE_WRAP_T, _gl[wrapY]);
 	}

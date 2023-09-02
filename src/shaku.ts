@@ -123,7 +123,7 @@ export class Shaku {
 			}
 
 			// sanity & log
-			if(_usedManagers) { throw new Error("Already initialized!"); }
+			if(_usedManagers) throw new Error("Already initialized!");
 			_logger.info(`Initialize Shaku v${version}.`);
 
 			// reset game start time
@@ -295,7 +295,7 @@ export class Shaku {
 	 * @param enable Set to true to throw error on warnings.
 	 */
 	public throwErrorOnWarnings(enable: boolean): void {
-		if(enable === undefined) { throw new Error("Must provide a value!"); }
+		if(enable === undefined) throw new Error("Must provide a value!");
 		_logger.throwErrorOnWarnings(enable);
 	}
 
@@ -331,7 +331,7 @@ export class Shaku {
 	 * @returns Average time, in milliseconds, it takes to complete a game frame.
 	 */
 	public getAverageFrameTime(): number {
-		if(_frameTimeMeasuresCount === 0) { return 0; }
+		if(_frameTimeMeasuresCount === 0) return 0;
 		return _totalFrameTimes / _frameTimeMeasuresCount;
 	}
 

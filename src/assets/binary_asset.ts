@@ -54,8 +54,8 @@ export class BinaryAsset extends Asset {
 	 */
 	public create(source: Uint8Array): Promise<void> {
 		return new Promise((resolve, reject) => {
-			if(Array.isArray(source)) { source = new Uint8Array(source); }
-			if(!(source instanceof Uint8Array)) { return reject("Binary asset source must be of type 'Uint8Array'!"); }
+			if(Array.isArray(source)) source = new Uint8Array(source);
+			if(!(source instanceof Uint8Array)) return reject("Binary asset source must be of type 'Uint8Array'!");
 			this._data = source;
 			this._notifyReady();
 			resolve();

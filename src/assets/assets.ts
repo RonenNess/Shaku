@@ -54,7 +54,7 @@ export class Assets implements IManager {
 	 * @returns Wrapped URL.
 	 */
 	#_wrapUrl(url: string) {
-		if(!url) { return url; }
+		if(!url) return url;
 		return this.root + url + this.suffix;
 	}
 
@@ -246,7 +246,7 @@ export class Assets implements IManager {
 		const promise = new Promise(async (resolve, reject) => {
 
 			// make sure not in cache
-			if(name && this._loaded[name]) { return reject(`Asset of type "${classType.name}" to create with URL "${name}" already exist in cache!`); }
+			if(name && this._loaded[name]) return reject(`Asset of type "${classType.name}" to create with URL "${name}" already exist in cache!`);
 
 			// create and return
 			await initMethod(_asset);

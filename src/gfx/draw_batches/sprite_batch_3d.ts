@@ -87,7 +87,7 @@ export class SpriteBatch3D extends SpriteBatch {
 
 	 */
 	private _onSetEffect(effect, texture) {
-		if(this.__camera.view) { effect.setViewMatrix(this.__camera.view); }
-		if(this.__camera) { this.#_gfx.applyCamera(this.__camera); }
+		if(this.__camera.view) effect.setViewMatrix(this.__camera.view);
+		if(this.__camera) this.#_gfx.applyCamera(this.__camera);
 	}
 }

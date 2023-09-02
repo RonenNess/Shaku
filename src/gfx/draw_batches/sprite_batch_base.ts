@@ -116,7 +116,7 @@ export class SpriteBatchBase extends DrawBatch {
 		const gl = this.#_gl;
 
 		// default enable vertex color
-		if(enableVertexColor === undefined) { enableVertexColor = true; }
+		if(enableVertexColor === undefined) enableVertexColor = true;
 
 		// dynamic buffers, used for batch rendering
 		this._buffers = {
@@ -176,7 +176,7 @@ export class SpriteBatchBase extends DrawBatch {
 
 		// extand buffers functionality
 		function extendBuffer(buff) {
-			if(buff) { buff._index = 0; }
+			if(buff) buff._index = 0;
 		}
 		extendBuffer(this._buffers.positionArray);
 		extendBuffer(this._buffers.textureArray);
@@ -191,12 +191,12 @@ export class SpriteBatchBase extends DrawBatch {
 	 */
 	clear() {
 		super.clear();
-		if(this._buffers.positionArray) { this._buffers.positionArray._index = 0; }
-		if(this._buffers.textureArray) { this._buffers.textureArray._index = 0; }
-		if(this._buffers.normalsArray) { this._buffers.normalsArray._index = 0; }
-		if(this._buffers.binormalsArray) { this._buffers.binormalsArray._index = 0; }
-		if(this._buffers.tangentsArray) { this._buffers.tangentsArray._index = 0; }
-		if(this._buffers.colorsArray && this.supportVertexColor) { this._buffers.colorsArray._index = 0; }
+		if(this._buffers.positionArray) this._buffers.positionArray._index = 0;
+		if(this._buffers.textureArray) this._buffers.textureArray._index = 0;
+		if(this._buffers.normalsArray) this._buffers.normalsArray._index = 0;
+		if(this._buffers.binormalsArray) this._buffers.binormalsArray._index = 0;
+		if(this._buffers.tangentsArray) this._buffers.tangentsArray._index = 0;
+		if(this._buffers.colorsArray && this.supportVertexColor) this._buffers.colorsArray._index = 0;
 		this.__quadsCount = 0;
 		this.__dirty = false;
 	}

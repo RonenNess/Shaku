@@ -32,12 +32,12 @@ export class CollisionResolver {
 	 */
 	setHandler(firstShapeId, secondShapeId, handler) {
 		// register handler
-		if(!this._handlers[firstShapeId]) { this._handlers[firstShapeId] = {}; }
+		if(!this._handlers[firstShapeId]) this._handlers[firstShapeId] = {};
 		this._handlers[firstShapeId][secondShapeId] = handler;
 
 		// register reverse order handler
 		if(firstShapeId !== secondShapeId) {
-			if(!this._handlers[secondShapeId]) { this._handlers[secondShapeId] = {}; }
+			if(!this._handlers[secondShapeId]) this._handlers[secondShapeId] = {};
 			this._handlers[secondShapeId][firstShapeId] = (f, s) => { return handler(s, f); };
 		}
 	}

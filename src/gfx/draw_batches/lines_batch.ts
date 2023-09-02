@@ -120,7 +120,7 @@ export class LinesBatch extends DrawBatch {
 
 		// extand buffers functionality
 		function extendBuffer(buff) {
-			if(buff) { buff._index = 0; }
+			if(buff) buff._index = 0;
 		}
 		extendBuffer(this._buffers.positionArray);
 		extendBuffer(this._buffers.colorsArray);
@@ -291,7 +291,7 @@ export class LinesBatch extends DrawBatch {
 			(circle.radius * Math.cos(0)) * ratio.x,
 			(circle.radius * Math.sin(0)) * ratio.y
 		);
-		if(rotateVec) { rotateVec(prevPoint); }
+		if(rotateVec) rotateVec(prevPoint);
 
 		// generate list of vertices to draw the circle
 		for(let i = 1; i <= segmentsCount; i++) {
@@ -300,7 +300,7 @@ export class LinesBatch extends DrawBatch {
 				(circle.radius * Math.cos(i * segmentStep)) * ratio.x,
 				(circle.radius * Math.sin(i * segmentStep)) * ratio.y
 			);
-			if(rotateVec) { rotateVec(newPoint); }
+			if(rotateVec) rotateVec(newPoint);
 
 			// add for line strip
 			if(this.linesStrip) {

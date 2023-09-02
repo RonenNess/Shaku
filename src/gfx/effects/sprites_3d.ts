@@ -9,12 +9,16 @@ export class Sprites3dEffect extends SpritesEffect {
 	/**
 	 * @inheritdoc
 	 */
-	get enableDepthTest() { return true; }
+	get enableDepthTest() {
+		return true;
+	}
 
 	/**
 	 * @inheritdoc
 	 */
-	get enableFaceCulling() { return false; }
+	get enableFaceCulling() {
+		return false;
+	}
 
 	/**
 	 * @inheritdoc
