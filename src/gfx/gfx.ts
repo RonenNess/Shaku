@@ -411,7 +411,7 @@ export class Gfx implements IManager {
 		_gl.drawBuffers(drawBuffers);
 
 		// unbind frame buffer
-		//_gl.bindFramebuffer(_gl.FRAMEBUFFER, null);
+		// _gl.bindFramebuffer(_gl.FRAMEBUFFER, null);
 
 		// reset camera
 		if(!keepCamera) {
@@ -1081,7 +1081,7 @@ export class GfxInternal {
 					gl.blendFuncSeparate(gl.ONE_MINUS_DST_COLOR, gl.ZERO, gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
 					break;
 
-				case BlendModes.OBERLAY:
+				case BlendModes.OVERLAY:
 					gl.enable(gl.BLEND);
 					if(gl.MAX) {
 						gl.blendEquation(gl.MAX);

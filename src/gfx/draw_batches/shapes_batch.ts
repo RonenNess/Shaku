@@ -127,7 +127,7 @@ export class ShapesBatch extends DrawBatch {
 		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this._buffers.indexBuffer);
 		gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STATIC_DRAW);
 
-		// extand buffers functionality
+		// extend buffers functionality
 		function extendBuffer(buff) {
 			if(buff) buff._index = 0;
 		}
@@ -289,8 +289,8 @@ export class ShapesBatch extends DrawBatch {
 	 * @param circle Circle to draw.
 	 * @param color Circle fill color.
 	 * @param segmentsCount How many segments to build the circle from (more segments = smoother circle).
-	 * @param outsideColor If provided, will create a gradient-colored circle and this value will be the outter side color.
-	 * @param ratio If procided, will scale the circle on X and Y axis to turn it into an oval. If a number is provided, will use this number to scale Y axis.
+	 * @param outsideColor If provided, will create a gradient-colored circle and this value will be the outer side color.
+	 * @param ratio If provided, will scale the circle on X and Y axis to turn it into an oval. If a number is provided, will use this number to scale Y axis.
 	 * @param rotation If provided will rotate the oval / circle.
 	 */
 	public drawCircle(circle: Circle, color: Color, segmentsCount = 24, outsideColor = color, ratio: number | Vector2 = Vector2.oneReadonly, rotation?: number): void {
@@ -391,7 +391,7 @@ export class ShapesBatch extends DrawBatch {
 			if(sprite.rotation) {
 				const cos = Math.cos(sprite.rotation);
 				const sin = Math.sin(sprite.rotation);
-				function rotateVec(vector) {
+				function rotateVec(vector: Vector2) {
 					const x = (vector.x * cos - vector.y * sin);
 					const y = (vector.x * sin + vector.y * cos);
 					vector.x = x;

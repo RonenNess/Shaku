@@ -134,6 +134,6 @@ export class LoggerFactory {
 	 */
 	public static setApplicationName(name: string): typeof LoggerFactory {
 		_application = name;
-		return this;
+		return LoggerFactory;
 	}
 }

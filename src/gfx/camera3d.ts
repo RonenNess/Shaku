@@ -9,8 +9,8 @@ export class Camera3D extends Camera {
 	private static DEFAULT_LOOK_AT = new Vector3(0, 5, -10);
 	private static DEFAULT_LOOK_AT_EYES = new Vector3(0, 0, -500);
 	private static DEFAULT_LOOK_AT_TARGET = Vector3.zeroReadonly;
-	private static DEFAULT_PERPSECTIVE_FOV = Math.PI / 2;
-	private static DEFAULT_PERPSECTIVE_ASPECT_RATIO = 1 / 1;
+	private static DEFAULT_PERSPECTIVE_FOV = Math.PI / 2;
+	private static DEFAULT_PERSPECTIVE_ASPECT_RATIO = 1 / 1;
 	private static DEFAULT_PERSPECTIVE_NEAR = 0.1;
 	private static DEFAULT_PERSPECTIVE_FAR = 1000;
 
@@ -90,8 +90,8 @@ export class Camera3D extends Camera {
 	 * @param far Far clipping plane.
 	 */
 	public perspective(
-		fieldOfView = Camera3D.DEFAULT_PERPSECTIVE_FOV,
-		aspectRatio = Camera3D.DEFAULT_PERPSECTIVE_ASPECT_RATIO,
+		fieldOfView = Camera3D.DEFAULT_PERSPECTIVE_FOV,
+		aspectRatio = Camera3D.DEFAULT_PERSPECTIVE_ASPECT_RATIO,
 		near = Camera3D.DEFAULT_PERSPECTIVE_NEAR,
 		far = Camera3D.DEFAULT_PERSPECTIVE_FAR
 	): void {

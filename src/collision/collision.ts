@@ -66,7 +66,7 @@ export class Collision implements IManager {
 	}
 
 	/**
-	 * Get the collision reactanle shape class.
+	 * Get the collision rectangle shape class.
 	 */
 	get RectangleShape() {
 		return RectangleShape;

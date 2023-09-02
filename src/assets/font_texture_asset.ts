@@ -73,7 +73,7 @@ export class FontTextureAsset extends Asset {
 	 *  - fontName: mandatory font name. on some browsers if the font name does not match the font you actually load via the URL, it will not be loaded properly.
 	 *  - missingCharPlaceholder (default="?"): character to use for missing characters.
 	 *  - smoothFont (default=true): if true, will set font to smooth mode.
-	 *  - fontSize (default=52): font size in texture. larget font size will take more memory, but allow for sharper text rendering in larger scales.
+	 *  - fontSize (default=52): font size in texture. larger font size will take more memory, but allow for sharper text rendering in larger scales.
 	 *  - enforceTexturePowerOfTwo (default=true): if true, will force texture size to be power of two.
 	 *  - maxTextureWidth (default=1024): max texture width.
 	 *  - charactersSet (default=FontTextureAsset.defaultCharactersSet): which characters to set in the texture.

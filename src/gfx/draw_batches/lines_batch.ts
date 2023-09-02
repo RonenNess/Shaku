@@ -118,7 +118,7 @@ export class LinesBatch extends DrawBatch {
 		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this._buffers.indexBuffer);
 		gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STATIC_DRAW);
 
-		// extand buffers functionality
+		// extend buffers functionality
 		function extendBuffer(buff) {
 			if(buff) buff._index = 0;
 		}
@@ -366,7 +366,7 @@ export class LinesBatch extends DrawBatch {
 			if(sprite.rotation) {
 				const cos = Math.cos(sprite.rotation);
 				const sin = Math.sin(sprite.rotation);
-				function rotateVec(vector) {
+				function rotateVec(vector: Vector2) {
 					const x = (vector.x * cos - vector.y * sin);
 					const y = (vector.x * sin + vector.y * cos);
 					vector.x = x;

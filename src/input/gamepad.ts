@@ -229,7 +229,7 @@ export class FrontButtons {
 
 /**
  * Get if a gamepad button is currently pressed.
- * @prviate
+ * @private
  */
 function _gamepadButtonPressed(b: { pressed: boolean; } | number): boolean {
 	if(typeof b === "object") {

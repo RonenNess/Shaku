@@ -67,14 +67,14 @@ export class DrawBatch {
 
 	/**
 	 * Return if the batch was destroyed.
-	 * @returns {Boolean} True if batch was destoryed.
+	 * @returns {Boolean} True if batch was destroyed.
 	 */
 	get isDestroyed() {
 		return false;
 	}
 
 	/**
-	 * Throw exception if batch was destoryed.
+	 * Throw exception if batch was destroyed.
 
 	 */
 	private __validateBatch() {
@@ -147,7 +147,7 @@ export class DrawBatch {
 			throw new Error("Can't call Drawing Batch 'begin' twice without calling 'end()' first!");
 		}
 
-		// sanity - batch is not destoryed
+		// sanity - batch is not destroyed
 		this.__validateBatch();
 
 		// we might still have values in this.__currDrawingParams if "preserve buffers" is true.

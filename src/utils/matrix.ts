@@ -76,7 +76,7 @@ export class Matrix {
 
 	/**
 	 * Clone and invert the matrix.
-	 * @returns Clonsed inverted matrix.
+	 * @returns Cloned inverted matrix.
 	 */
 	public inverted(): Matrix {
 		return this.clone().invertSelf();

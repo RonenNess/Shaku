@@ -9,7 +9,7 @@ export interface IManager {
 	setup(): Promise<void>;
 
 	/**
-	 * Called every update at the begining of the frame.
+	 * Called every update at the beginning of the frame.
 	 */
 	startFrame(): void;
 

@@ -80,7 +80,7 @@ export class Circle {
 	 * @returns result circle.
 	 */
 	public static lerp(p1: Circle, p2: Circle, a: number): Circle {
-		const lerpScalar = MathHelper.lerp;
+		const lerpScalar = MathHelper.lerp.bind(Circle);
 		return new Circle(Vector2.lerp(p1.center, p2.center, a), lerpScalar(p1.radius, p2.radius, a));
 	}
 }

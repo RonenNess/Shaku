@@ -136,4 +136,4 @@ export class Frustum {
 	}
 }
 
-const _vector = /*@__PURE__*/ new Vector3();
+const _vector = /* @__PURE__ */ new Vector3();

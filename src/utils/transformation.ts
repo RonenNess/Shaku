@@ -21,7 +21,7 @@ const _defaults = {
  * // create local and world transformations
  * const transform = new Shaku.utils.Transformation();
  * const worldTransform = new Shaku.utils.Transformation();
- * // set offset to world transofm and rotation to local transform
+ * // set offset to world transform and rotation to local transform
  * worldTransform.setPosition({x: 100, y:50});
  * transform.setRotation(5);
  * // combine transformations and convert to a matrix
@@ -33,7 +33,7 @@ export class Transformation {
 	 * Method to call when this transformation change.
 	 * Function params: transformation instance (this), properties changed (boolean), transform modes changed (boolean).
 	 */
-	public onChange: null | ((transformation: Transformation, propertiesChanged: boolean, transformaModesChanged: boolean) => void);
+	public onChange: null | ((transformation: Transformation, propertiesChanged: boolean, transformModesChanged: boolean) => void);
 
 	/**
 	 * Transformation local position.

@@ -89,7 +89,7 @@ export class MathHelper {
 	* @returns Shortest distance between radians.
 	*/
 	public static radiansDistance(a1: number, a2: number): number {
-		return Math.abs(this.radiansDistanceSigned(a1, a2));
+		return Math.abs(MathHelper.radiansDistanceSigned(a1, a2));
 	}
 
 	/**
@@ -101,7 +101,7 @@ export class MathHelper {
 	public static degreesDistanceSigned(a1: number, a2: number): number {
 		const a1r = a1 * _toRadsFactor;
 		const a2r = a2 * _toRadsFactor;
-		const ret = this.radiansDistanceSigned(a1r, a2r);
+		const ret = MathHelper.radiansDistanceSigned(a1r, a2r);
 		return ret * _toDegreesFactor;
 	}
 
@@ -114,7 +114,7 @@ export class MathHelper {
 	public static degreesDistance(a1: number, a2: number): number {
 		const a1r = a1 * _toRadsFactor;
 		const a2r = a2 * _toRadsFactor;
-		const ret = this.radiansDistance(a1r, a2r);
+		const ret = MathHelper.radiansDistance(a1r, a2r);
 		return ret * _toDegreesFactor;
 	}
 
@@ -131,7 +131,7 @@ export class MathHelper {
 		if(a1 === a2) return a2;
 
 		// do lerping
-		return a1 + this.radiansDistanceSigned(a1, a2) * alpha;
+		return a1 + MathHelper.radiansDistanceSigned(a1, a2) * alpha;
 	}
 
 	/**
@@ -147,24 +147,25 @@ export class MathHelper {
 		if(a1 === a2) return a2;
 
 		// convert to radians
-		a1 = this.toRadians(a1);
-		a2 = this.toRadians(a2);
+		a1 = MathHelper.toRadians(a1);
+		a2 = MathHelper.toRadians(a2);
 
 		// lerp
-		const ret = this.lerpRadians(a1, a2, alpha);
+		const ret = MathHelper.lerpRadians(a1, a2, alpha);
 
 		// convert back to degrees and return
-		return this.wrapDegrees(this.toDegrees(ret));
+		return MathHelper.wrapDegrees(MathHelper.toDegrees(ret));
 	}
 
 	/**
 	* Round numbers from 10'th digit.
 	* This is useful for calculations that should return round or almost round numbers, but have a long tail of 0's and 1 due to floating points accuracy.
 	* @param num Number to round.
-	* @returns ounded number.
+	* @returns Rounded number.
 	*/
 	public static round10(num: number): number {
-		return Math.round(num * 100000000.0) / 100000000.0;
+		const rounding = 10 ** 8;
+		return Math.round(num * rounding) / rounding;
 	}
 
 	/**

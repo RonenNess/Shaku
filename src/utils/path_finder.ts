@@ -5,7 +5,7 @@ import { Vector2, Vector3 } from "./shapes";
  */
 export interface IGrid {
 	/**
-	 * Check if a given tile is blocked from a given neihbor.
+	 * Check if a given tile is blocked from a given neighbor.
 	 * @param _from Source tile index.
 	 * @param _to Target tile index. Must be a neighbor of _from.
 	 * @returns Can we travel from _from to _to?
@@ -208,7 +208,7 @@ function getDistance(pa, pb) {
 }
 
 /**
- * Path finder utilitiy.
+ * Path finder utility.
  * To use it:
  *  1. Implement a `IGrid` instance that returns if a grid node is blocking and what's the price to cross it.
  *  2. Call findPath() with your grid to find a path between start and end points.

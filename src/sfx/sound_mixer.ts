@@ -9,7 +9,7 @@ export class SoundMixer {
 	 * @param {SoundInstance} sound1 Sound to mix from. Can be null to just fade in.
 	 * @param {SoundInstance} sound2 Sound to mix to. Can be null to just fade out.
 	 * @param {Boolean} allowOverlapping If true (default), will mix while overlapping sounds.
-	 *                                   If false, will first finish first sound before begining next.
+	 *                                   If false, will first finish first sound before beginning next.
 	 */
 	public constructor(sound1, sound2, allowOverlapping) {
 		this._sound1 = sound1;

@@ -26,8 +26,8 @@ export class CollisionResolver {
 	/**
 	 * Set the method used to test collision between two shapes.
 	 * Note: you don't need to register the same handler twice for reverse order, its done automatically inside.
-	 * @param {String} firstShapeId The shape identifier the handler recieves as first argument.
-	 * @param {String} secondShapeId The shape identifier the handler recieves as second argument.
+	 * @param {String} firstShapeId The shape identifier the handler receives as first argument.
+	 * @param {String} secondShapeId The shape identifier the handler receives as second argument.
 	 * @param {Function} handler Method to test collision between the shapes. Return false if don't collide, return either Vector2 with collision position or 'true' for collision.
 	 */
 	setHandler(firstShapeId, secondShapeId, handler) {

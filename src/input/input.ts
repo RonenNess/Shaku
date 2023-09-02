@@ -17,7 +17,7 @@ type InputCode = KeyboardKeys | MouseButtons | string;
 
 /**
  * Input manager.
- * Used to recieve input from keyboard and mouse.
+ * Used to receive input from keyboard and mouse.
  *
  * To access the Input manager use `Shaku.input`.
  */
@@ -216,17 +216,17 @@ export class Input implements IManager {
 			// set all the events to listen to
 			const _this = this;
 			this._callbacks = {
-				"mousedown": function(event) { _this._onMouseDown(event); if(_this.preventDefaults) event.preventDefault(); },
-				"mouseup": function(event) { _this._onMouseUp(event); if(_this.preventDefaults) event.preventDefault(); },
-				"mousemove": function(event) { _this._onMouseMove(event); if(_this.preventDefaults) event.preventDefault(); },
-				"keydown": function(event) { _this._onKeyDown(event); if(_this.preventDefaults) event.preventDefault(); },
-				"keyup": function(event) { _this._onKeyUp(event); if(_this.preventDefaults) event.preventDefault(); },
-				"blur": function(event) { _this._onBlur(event); if(_this.preventDefaults) event.preventDefault(); },
-				"wheel": function(event) { _this._onMouseWheel(event); if(_this.preventDefaults) event.preventDefault(); },
-				"touchstart": function(event) { _this._onTouchStart(event); if(_this.preventDefaults) event.preventDefault(); },
-				"touchend": function(event) { _this._onTouchEnd(event); if(_this.preventDefaults) event.preventDefault(); },
-				"touchmove": function(event) { _this._onTouchMove(event); if(_this.preventDefaults) event.preventDefault(); },
-				"contextmenu": function(event) { if(_this.disableContextMenu) { event.preventDefault(); } },
+				mousedown: function(event) { _this._onMouseDown(event); if(_this.preventDefaults) event.preventDefault(); },
+				mouseup: function(event) { _this._onMouseUp(event); if(_this.preventDefaults) event.preventDefault(); },
+				mousemove: function(event) { _this._onMouseMove(event); if(_this.preventDefaults) event.preventDefault(); },
+				keydown: function(event) { _this._onKeyDown(event); if(_this.preventDefaults) event.preventDefault(); },
+				keyup: function(event) { _this._onKeyUp(event); if(_this.preventDefaults) event.preventDefault(); },
+				blur: function(event) { _this._onBlur(event); if(_this.preventDefaults) event.preventDefault(); },
+				wheel: function(event) { _this._onMouseWheel(event); if(_this.preventDefaults) event.preventDefault(); },
+				touchstart: function(event) { _this._onTouchStart(event); if(_this.preventDefaults) event.preventDefault(); },
+				touchend: function(event) { _this._onTouchEnd(event); if(_this.preventDefaults) event.preventDefault(); },
+				touchmove: function(event) { _this._onTouchMove(event); if(_this.preventDefaults) event.preventDefault(); },
+				contextmenu: function(event) { if(_this.disableContextMenu) { event.preventDefault(); } },
 			};
 
 			// reset all data to init initial state
@@ -784,36 +784,23 @@ export class Input implements IManager {
 		// check for custom values
 		if(typeof code === "string") {
 			const customVal = customValues.get(code);
-			if(customVal !== undefined) {
-				return customVal;
-			}
-			if(this._customKeys.has(code)) {
-				return false;
-			}
+			if(customVal !== undefined) return customVal;
+			if(this._customKeys.has(code)) return false;
 
 			// if its "touch" its for touch events
-			if(code === _touchKeyCode) {
-				return touchValue;
-			}
+			if(code === _touchKeyCode) return touchValue;
 
 			// if its just a number, add the "n" prefix
-			if(!isNaN(parseInt(code)) && code.length === 1) {
-				code = "n" + code;
-			}
+			if(!isNaN(parseInt(code, 10)) && code.length === 1) code = "n" + code;
 		}
 
 		// if starts with "mouse" its for mouse button events
 		const mouseKey = this.mouseButtonFromCode(code);
-		if(mouseKey !== null) {
-			// return if mouse down
-			return mouseCheck.call(this, mouseKey);
-		}
+		if(mouseKey !== null) return mouseCheck.call(this, mouseKey); // return if mouse down
 
 		// if not start with "mouse", treat it as a keyboard key
 		const keyboardKey = this.keyboardKeyFromCode(code);
-		if(keyboardKey === null) {
-			throw new Error("Unknown keyboard key: " + code);
-		}
+		if(keyboardKey === null) throw new Error("Unknown keyboard key: " + code);
 		return keyboardCheck.call(this, keyboardKey);
 	}
 

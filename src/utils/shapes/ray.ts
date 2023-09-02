@@ -152,7 +152,7 @@ export class Ray {
 
 		if(tzmax < tmax || tmax !== tmax) tmax = tzmax;
 
-		//return point closest to the ray (positive side)
+		// return point closest to the ray (positive side)
 
 		if(tmax < 0) return null;
 

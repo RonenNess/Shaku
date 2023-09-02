@@ -1,6 +1,6 @@
 /**
  * Storage adapter class that implement access to a storage device.
- * Used by the Storage utilitiy.
+ * Used by the Storage utility.
  */
 export interface StorageAdapter {
 	/**

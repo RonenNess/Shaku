@@ -46,7 +46,7 @@ export abstract class CollisionShape {
 	}
 
 	/**
-	 * Get Shapes beatch to draw this shape with, either given or default from world.
+	 * Get Shapes batch to draw this shape with, either given or default from world.
 	 * If not provided and have no world, will throw exception.
 
 	 */

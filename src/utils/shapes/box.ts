@@ -184,7 +184,7 @@ export class Box {
 
 	/**
 	 * Check if this box collides with another box.
-	 * @param box Box to test collidion with.
+	 * @param box Box to test collision with.
 	 * @returns True if collide, false otherwise.
 	 */
 	public collideBox(box: Box): boolean {
@@ -196,7 +196,7 @@ export class Box {
 
 	/**
 	 * Check if this box collides with a sphere.
-	 * @param sphere Sphere to test collidion with.
+	 * @param sphere Sphere to test collision with.
 	 * @returns True if collide, false otherwise.
 	 */
 	public collideSphere(sphere: Sphere): boolean {
@@ -210,7 +210,7 @@ export class Box {
 
 	/**
 	 * Check if this box collides with a plane.
-	 * @param plane Plane to test collidion with.
+	 * @param plane Plane to test collision with.
 	 * @returns True if collide, false otherwise.
 	 */
 	public collidePlane(plane: Plane): boolean {
@@ -261,7 +261,7 @@ export class Box {
 	/**
 	 * Clamp a given vector inside this box.
 	 * @param point Vector to clamp.
-	 * @returns Vector clammped.
+	 * @returns Vector clamped.
 	 */
 	public clampPoint(point: Vector3): Vector3 {
 		return point.clampSelf(this.min, this.max);
@@ -326,4 +326,4 @@ export class Box {
 	}
 }
 
-const _vector = /*@__PURE__*/ new Vector3();
+const _vector = /* @__PURE__ */ new Vector3();

@@ -370,7 +370,7 @@ export class SpriteBatchBase extends DrawBatch {
 			if(sprite.rotation) {
 				const cos = Math.cos(sprite.rotation);
 				const sin = Math.sin(sprite.rotation);
-				function rotateVec(vector) {
+				function rotateVec(vector: Vector2) {
 					const x = (vector.x * cos - vector.y * sin);
 					const y = (vector.x * sin + vector.y * cos);
 					vector.x = x;
