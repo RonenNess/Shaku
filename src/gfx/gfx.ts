@@ -1019,8 +1019,7 @@ export class GfxInternal {
 		_gl.texParameteri(_gl.TEXTURE_2D, _gl.TEXTURE_MAG_FILTER, glMode);
 	}
 
-	setTextureWrapMode(wrapX, wrapY) {
-		if(wrapY === undefined) wrapY = wrapX;
+	setTextureWrapMode(wrapX, wrapY = wrapX) {
 		if(!Object.values(TextureWrapModes).includes(wrapX)) throw new Error("Invalid texture wrap mode! Please pick a value from 'TextureWrapModes'.");
 		if(!Object.values(TextureWrapModes).includes(wrapY)) throw new Error("Invalid texture wrap mode! Please pick a value from 'TextureWrapModes'.");
 		_gl.texParameteri(_gl.TEXTURE_2D, _gl.TEXTURE_WRAP_S, _gl[wrapX]);

@@ -1,4 +1,4 @@
-import { LoggerFactory, Matrix, Rectangle, Vector2, Vector3 } from "../../utils";
+import { Circle, Color, LoggerFactory, Matrix, Rectangle, Vector2, Vector3 } from "../../utils";
 import { Vertex } from "../vertex";
 import { DrawBatch } from "./draw_batch";
 
@@ -245,31 +245,21 @@ export class LinesBatch extends DrawBatch {
 
 	/**
 	 * Draw a colored circle.
-	 * @param {Circle} circle Circle to draw.
-	 * @param {Color} color Circle fill color.
-	 * @param {Number=} segmentsCount How many segments to build the circle from (more segments = smoother circle).
-	 * @param {Number|Vector2=} ratio If procided, will scale the circle on X and Y axis to turn it into an oval. If a number is provided, will use this number to scale Y axis.
-	 * @param {Number=} rotation If provided will rotate the oval / circle.
+	 * @param circle Circle to draw.
+	 * @param color Circle fill color.
+	 * @param segmentsCount How many segments to build the circle from (more segments = smoother circle).
+	 * @param ratio If provided, will scale the circle on X and Y axis to turn it into an oval. If a number is provided, will use this number to scale Y axis.
+	 * @param rotation If provided will rotate the oval / circle.
 	 */
-	drawCircle(circle, color, segmentsCount, ratio, rotation) {
+	drawCircle(circle: Circle, color: Color, segmentsCount = 24, ratio: Vector2 | number = Vector2.oneReadonly, rotation?: number) {
 		// sanity
 		this.__validateDrawing(true);
 
 		// defaults segments count
-		if(segmentsCount === undefined) {
-			segmentsCount = 24;
-		}
-		else if(segmentsCount < 2) {
-			return;
-		}
+		if(segmentsCount < 2) return;
 
 		// default ratio
-		if(!ratio) {
-			ratio = Vector2.oneReadonly;
-		}
-		else if(typeof ratio === "number") {
-			ratio = new Vector2(1, ratio);
-		}
+		if(typeof ratio === "number") ratio = new Vector2(1, ratio);
 
 		// for rotation
 		let rotateVec;

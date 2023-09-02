@@ -59,7 +59,7 @@ export class SpritesGroup {
 		}
 
 		// calculate matrix (or null if there are no transformations)
-		if(matrices.length === 0) { return null; };
+		if(matrices.length === 0) return null;
 		if(matrices.length === 1) return matrices[0];
 		return Matrix.multiplyMany(matrices);
 	}

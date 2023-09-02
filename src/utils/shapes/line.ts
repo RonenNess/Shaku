@@ -57,11 +57,10 @@ export class Line {
 	 * @param threshold Distance between point and line to consider as intersecting. Default is 0.5, meaning it will treat point and line as round integers (sort-of).
 	 * @returns if point is contained within the circle.
 	 */
-	public containsVector(p: Vector2, threshold: number): boolean {
+	public containsVector(p: Vector2, threshold = 0.5): boolean {
 		const A = this.from;
 		const B = this.to;
 		const distance = Vector2.distance;
-		if(threshold === undefined) threshold = 0.5;
 		return Math.abs((distance(A, p) + distance(B, p)) - distance(A, B)) <= threshold;
 	}
 

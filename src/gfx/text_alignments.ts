@@ -17,4 +17,4 @@ export enum TextAlignments {
 	 * Align text to center.
 	 */
 	CENTER = "center",
-};
+}

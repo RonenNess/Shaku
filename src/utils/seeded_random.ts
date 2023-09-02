@@ -8,8 +8,7 @@ export class SeededRandom {
 	 * Create the seeded random object.
 	 * @param seed Seed to start from. If not provided, will use 0.
 	 */
-	public constructor(seed?: number) {
-		if(seed === undefined) seed = 0;
+	public constructor(seed = 0) {
 		this.seed = seed;
 	}
 

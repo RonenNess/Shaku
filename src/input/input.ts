@@ -208,9 +208,7 @@ export class Input implements IManager {
 			const element = this._targetElement;
 
 			// to make sure keyboard input would work if provided with canvas entity
-			if((element instanceof HTMLCanvasElement) && (element.tabIndex === -1 || element.tabIndex === undefined)) {
-				element.tabIndex = 1000;
-			}
+			if((element instanceof HTMLCanvasElement) && (element.tabIndex === -1 || element.tabIndex === undefined)) element.tabIndex = 1000;
 
 			// focus on target element
 			window.setTimeout(() => element.focus(), 0);
@@ -454,12 +452,7 @@ export class Input implements IManager {
 	 * @param index Gamepad index or undefined for first connected device.
 	 * @returns Gamepad current state.
 	 */
-	public gamepad(index?: number): Gamepad | null {
-		// default index
-		if(index === null || index === undefined) {
-			index = this._defaultGamepadIndex;
-		}
-
+	public gamepad(index = this._defaultGamepadIndex): Gamepad | null {
 		// try to get cached value
 		let cached = this._queriedGamepadStates[index];
 
@@ -546,9 +539,7 @@ export class Input implements IManager {
 			return;
 		}
 		// update custom codes
-		else {
-			this._customKeys.add(code);
-		}
+		else this._customKeys.add(code);
 
 		// set state
 		value = Boolean(value);
@@ -556,12 +547,8 @@ export class Input implements IManager {
 		this._customStates.set(code, value);
 
 		// set defaults
-		if(this._customPressed.get(code) === undefined) {
-			this._customPressed.set(code, false);
-		}
-		if(this._customReleased.get(code) === undefined) {
-			this._customReleased.set(code, false);
-		}
+		if(this._customPressed.get(code) === undefined) this._customPressed.set(code, false);
+		if(this._customReleased.get(code) === undefined) this._customReleased.set(code, false);
 
 		// pressed now?
 		if(!prev && value) {
@@ -618,41 +605,37 @@ export class Input implements IManager {
 
 	/**
 	 * Get if mouse button was pressed this frame.
-	 * @param button Button code (defults to MouseButtons.left).
+	 * @param button Button code (defaults to MouseButtons.left).
 	 * @returns True if mouse button is currently down, but was up in previous frame.
 	 */
 	public mousePressed(button = MouseButtons.LEFT): boolean {
-		if(button === undefined) throw new Error("Invalid button code!");
 		return Boolean(this._mousePressed.get(button));
 	}
 
 	/**
 	 * Get if mouse button is currently pressed.
-	 * @param button Button code (defults to MouseButtons.left).
+	 * @param button Button code (defaults to MouseButtons.left).
 	 * @returns true if mouse button is currently down, false otherwise.
 	 */
 	public mouseDown(button = MouseButtons.LEFT): boolean {
-		if(button === undefined) throw new Error("Invalid button code!");
 		return Boolean(this._mouseState.get(button));
 	}
 
 	/**
 	 * Get if mouse button is currently not down.
-	 * @param button Button code (defults to MouseButtons.left).
+	 * @param button Button code (defaults to MouseButtons.left).
 	 * @returns true if mouse button is currently up, false otherwise.
 	 */
 	public mouseUp(button = MouseButtons.LEFT): boolean {
-		if(button === undefined) throw new Error("Invalid button code!");
 		return Boolean(!this.mouseDown(button));
 	}
 
 	/**
 	 * Get if mouse button was released in current frame.
-	 * @param button Button code (defults to MouseButtons.left).
+	 * @param button Button code (defaults to MouseButtons.left).
 	 * @returns True if mouse was down last frame, but released in current frame.
 	 */
 	public mouseReleased(button = MouseButtons.LEFT): boolean {
-		if(button === undefined) throw new Error("Invalid button code!");
 		return Boolean(this._mouseReleased.get(button));
 	}
 
@@ -662,7 +645,6 @@ export class Input implements IManager {
 	 * @returns True if keyboard key is currently down, false otherwise.
 	 */
 	public keyDown(key: KeyboardKeys): boolean {
-		if(key === undefined) throw new Error("Invalid key code!");
 		// TODO IMPORTANT: key is never a KeyboardKey, instead it's a string
 		return Boolean(this._keyboardState.get(key));
 	}
@@ -673,7 +655,6 @@ export class Input implements IManager {
 	 * @returns True if keyboard key is currently up, false otherwise.
 	 */
 	public keyUp(key: KeyboardKeys): boolean {
-		if(key === undefined) throw new Error("Invalid key code!");
 		return Boolean(!this.keyDown(key));
 	}
 
@@ -683,7 +664,6 @@ export class Input implements IManager {
 	 * @returns True if key was down last frame, but released in current frame.
 	 */
 	public keyReleased(key: KeyboardKeys): boolean {
-		if(key === undefined) throw new Error("Invalid key code!");
 		return Boolean(this._keyboardReleased.get(key));
 	}
 
@@ -693,7 +673,6 @@ export class Input implements IManager {
 	 * @returns True if key is currently down, but was up in previous frame.
 	 */
 	public keyPressed(key: KeyboardKeys): boolean {
-		if(key === undefined) throw new Error("Invalid key code!");
 		return Boolean(this._keyboardPressed.get(key));
 	}
 
@@ -1256,15 +1235,8 @@ export class Input implements IManager {
 		event = this._getEvent(event);
 
 		// try to get position from event with some fallbacks
-		let pageX = event.clientX;
-		if(pageX === undefined) pageX = event.x;
-		if(pageX === undefined) pageX = event.offsetX;
-		if(pageX === undefined) pageX = event.pageX;
-
-		let pageY = event.clientY;
-		if(pageY === undefined) pageY = event.y;
-		if(pageY === undefined) pageY = event.offsetY;
-		if(pageY === undefined) pageY = event.pageY;
+		let pageX = event.clientX ?? event.x ?? event.offsetX ?? event.pageX;
+		let pageY = event.clientY ?? event.y ?? event.offsetY ?? event.pageY;
 
 		// if pageX and pageY are not supported, use clientX and clientY instead
 		if(pageX === undefined) {

@@ -5,4 +5,4 @@ export enum TextureWrapModes {
 	CLAMP = "CLAMP_TO_EDGE",
 	REPEAT = "REPEAT",
 	REPEAT_MIRRORED = "MIRRORED_REPEAT",
-};
+}

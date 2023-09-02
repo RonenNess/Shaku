@@ -53,8 +53,7 @@ export class Perlin {
 	 * Create the perlin noise generator.
 	 * @param seed Seed for perlin noise, or undefined for random.
 	 */
-	public constructor(seed?: number) {
-		if(seed === undefined) seed = Math.random();
+	public constructor(seed = Math.random()) {
 		this.seed(seed);
 	}
 
@@ -109,10 +108,7 @@ export class Perlin {
 	 * @param contrast Optional contrast factor.
 	 * @returns Perlin noise value for given point.
 	 */
-	public generateSmooth(x: number, y: number, blurDistance: number, contrast: number): number {
-		if(blurDistance === undefined) {
-			blurDistance = 0.25;
-		}
+	public generateSmooth(x: number, y: number, blurDistance = 0.25, contrast?: number): number {
 		const a = this.generate(x - blurDistance, y - blurDistance, contrast);
 		const b = this.generate(x + blurDistance, y + blurDistance, contrast);
 		const c = this.generate(x - blurDistance, y + blurDistance, contrast);
@@ -127,12 +123,7 @@ export class Perlin {
 	 * @param contrast Optional contrast factor.
 	 * @returns Perlin noise value for given point, ranged from 0 to 1.
 	 */
-	public generate(x: number, y: number, contrast: number): number {
-		// default contrast
-		if(contrast === undefined) {
-			contrast = 1;
-		}
-
+	public generate(x: number, y: number, contrast = 1): number {
 		// store new params
 		const perm = this._perm;
 		const gradP = this._gradP;
@@ -160,5 +151,5 @@ export class Perlin {
 			lerp(n00, n10, u),
 			lerp(n01, n11, u),
 			fade(y)) + 0.5, 1);
-	};
+	}
 }

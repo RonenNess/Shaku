@@ -69,35 +69,23 @@ export class Animator {
 			// if from not set, get default
 			if(fromValue === undefined) {
 				this._fromValues[key] = fromValue = this.#_getValueFromTarget(keyParts);
-				if(fromValue === undefined) {
-					throw new Error(`Animator issue: missing origin value for key "${key}" and property not found in target object.`);
-				}
+				if(fromValue === undefined) throw new Error(`Animator issue: missing origin value for key "${key}" and property not found in target object.`);
 			}
 
 			// if to-value is a method, call it
-			if(typeof toValue === "function") {
-				toValue = toValue();
-			}
+			if(typeof toValue === "function") toValue = toValue();
 
 			// if from-value is a method, call it
-			if(typeof fromValue === "function") {
-				fromValue = toValue();
-			}
+			if(typeof fromValue === "function") fromValue = toValue();
 
 			// get lerp factor
 			const a = (this._smoothDamp && this._progress < 1) ? (this._progress * (1 + 1 - this._progress)) : this._progress;
 
 			// calculate new value
 			let newValue = null;
-			if(typeof fromValue === "number") {
-				newValue = lerp(fromValue, toValue, a);
-			}
-			else if(fromValue.constructor.lerp) {
-				newValue = fromValue.constructor.lerp(fromValue, toValue, a);
-			}
-			else {
-				throw new Error(`Animator issue: from-value for key "${key}" is not a number, and its class type don't implement a 'lerp()' method!`);
-			}
+			if(typeof fromValue === "number") newValue = lerp(fromValue, toValue, a);
+			else if(fromValue.constructor.lerp) newValue = fromValue.constructor.lerp(fromValue, toValue, a);
+			else throw new Error(`Animator issue: from-value for key "${key}" is not a number, and its class type don't implement a 'lerp()' method!`);
 
 			// set new value
 			this.#_setValueToTarget(keyParts, newValue);
@@ -107,9 +95,7 @@ export class Animator {
 		if(this._repeats && this._progress >= 1) {
 			if(typeof this._repeats === "number") this._repeats--;
 			this._progress = 0;
-			if(this._repeatsWithReverseAnimation) {
-				this.flipFromAndTo();
-			}
+			if(this._repeatsWithReverseAnimation) this.flipFromAndTo();
 		}
 	}
 
@@ -120,9 +106,7 @@ export class Animator {
 	 */
 	#_getValueFromTarget(keyParts) {
 		// easy case - get value when key parts is just one component
-		if(keyParts.length === 1) {
-			return this._target[keyParts[0]];
-		}
+		if(keyParts.length === 1) return this._target[keyParts[0]];
 
 		// get value for path with parts
 		function index(obj, i) {

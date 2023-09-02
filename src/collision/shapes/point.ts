@@ -69,7 +69,6 @@ export class PointShape extends CollisionShape {
 	 * @param opacity Shape opacity factor.
 	 */
 	public debugDraw(opacity = 1, shapesBatch: ShapesBatch) {
-		if(opacity === undefined) opacity = 1;
 		const color = this._getDebugColor();
 		color.a *= opacity;
 		shapesBatch = this._getDebugDrawBatch(shapesBatch);

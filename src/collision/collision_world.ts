@@ -483,7 +483,7 @@ export class CollisionWorld {
 	 * @param opacity Optional opacity factor (default to 0.5).
 	 * @param camera Optional camera for offset and viewport.
 	 */
-	public debugDraw(gridColor?: Color, gridHighlitColor?: Color, opacity?: number, camera?: Camera): void {
+	public debugDraw(gridColor?: Color, gridHighlitColor?: Color, opacity = 0.5, camera?: Camera): void {
 		// if we don't have a debug-draw batch, create it
 		const shapesBatch = this.getOrCreateDebugDrawBatch();
 
@@ -501,11 +501,6 @@ export class CollisionWorld {
 		if(!gridHighlitColor) {
 			gridHighlitColor = Color.red;
 			gridHighlitColor!.a *= 0.75;
-		}
-
-		// default opacity
-		if(opacity === undefined) {
-			opacity = 0.5;
 		}
 
 		// set grid color opacity

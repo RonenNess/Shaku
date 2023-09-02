@@ -112,11 +112,8 @@ export class SpriteBatchBase extends DrawBatch {
 	 * Build the dynamic buffers.
 
 	 */
-	#_createBuffers(batchSpritesCount, enableVertexColor, enableNormals, enableBinormals, enableTangents) {
+	#_createBuffers(batchSpritesCount, enableVertexColor = true, enableNormals, enableBinormals, enableTangents) {
 		const gl = this.#_gl;
-
-		// default enable vertex color
-		if(enableVertexColor === undefined) enableVertexColor = true;
 
 		// dynamic buffers, used for batch rendering
 		this._buffers = {

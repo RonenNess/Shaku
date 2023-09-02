@@ -11,9 +11,7 @@ function transferPolyfill(source, dest) {
 	if(dest.buffer instanceof ArrayBuffer) source = dest.buffer;
 
 	// use native
-	if(ArrayBuffer.transfer) {
-		return ArrayBuffer.transfer(source, dest);
-	}
+	if(ArrayBuffer.transfer) return ArrayBuffer.transfer(source, dest);
 
 	// polyfill
 	if(dest.byteLength >= source.byteLength) {
@@ -21,7 +19,7 @@ function transferPolyfill(source, dest) {
 		let leftBytes = source.byteLength;
 		const wordSizes = [8, 4, 2, 1];
 		wordSizes.forEach(function(_wordSize_) {
-			if(leftBytes => _wordSize_) {
+			if(leftBytes >= _wordSize_) {
 				const done = transferWith(_wordSize_, source, dest, nextOffset, leftBytes);
 				nextOffset = done.nextOffset;
 				leftBytes = done.leftBytes;

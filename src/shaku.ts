@@ -118,9 +118,7 @@ export class Shaku {
 	public async init(managers?: IManager[] | null): Promise<void> {
 		return new Promise(async (resolve, reject) => {
 			// welcome message
-			if(!_isSilent) {
-				console.log(`%c\u{1F9D9} Shaku ${version}\n%c Game dev lib by Ronen Ness`, "color:orange; font-size: 18pt", "color:grey; font-size: 8pt");
-			}
+			if(!_isSilent) console.log(`%c\u{1F9D9} Shaku ${version}\n%c Game dev lib by Ronen Ness`, "color:orange; font-size: 18pt", "color:grey; font-size: 8pt");
 
 			// sanity & log
 			if(_usedManagers) throw new Error("Already initialized!");
@@ -133,9 +131,7 @@ export class Shaku {
 			_usedManagers = managers || (isBrowser ? [assets, sfx!, gfx!, input!, collision] : [assets, collision]);
 
 			// init all managers
-			for(let i = 0; i < _usedManagers.length; ++i) {
-				await _usedManagers[i].setup();
-			}
+			for(let i = 0; i < _usedManagers.length; ++i) await _usedManagers[i].setup();
 
 			// set starting time
 			_prevUpdateTime = new GameTime();
@@ -295,7 +291,6 @@ export class Shaku {
 	 * @param enable Set to true to throw error on warnings.
 	 */
 	public throwErrorOnWarnings(enable: boolean): void {
-		if(enable === undefined) throw new Error("Must provide a value!");
 		_logger.throwErrorOnWarnings(enable);
 	}
 
@@ -369,7 +364,7 @@ export class Shaku {
 	public getLogger(name: string): Logger {
 		return LoggerFactory.getLogger(name);
 	}
-};
+}
 
 // return the main Shaku object.
 export const shaku = new Shaku();

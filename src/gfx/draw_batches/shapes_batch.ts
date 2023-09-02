@@ -293,30 +293,13 @@ export class ShapesBatch extends DrawBatch {
 	 * @param ratio If procided, will scale the circle on X and Y axis to turn it into an oval. If a number is provided, will use this number to scale Y axis.
 	 * @param rotation If provided will rotate the oval / circle.
 	 */
-	public drawCircle(circle: Circle, color: Color, segmentsCount?: number, outsideColor?: Color, ratio?: number | Vector2, rotation?: number): void {
+	public drawCircle(circle: Circle, color: Color, segmentsCount = 24, outsideColor = color, ratio: number | Vector2 = Vector2.oneReadonly, rotation?: number): void {
 		// sanity
 		this.__validateDrawing(true);
 
-		// defaults segments count
-		if(segmentsCount === undefined) {
-			segmentsCount = 24;
-		}
-		else if(segmentsCount < 2) {
-			return;
-		}
+		if(segmentsCount < 2) return;
 
-		// default outside color
-		if(!outsideColor) {
-			outsideColor = color;
-		}
-
-		// default ratio
-		if(!ratio) {
-			ratio = Vector2.oneReadonly;
-		}
-		else if(typeof ratio === "number") {
-			ratio = new Vector2(1, ratio);
-		}
+		if(typeof ratio === "number") ratio = new Vector2(1, ratio);
 
 		// for rotation
 		let rotateVec;

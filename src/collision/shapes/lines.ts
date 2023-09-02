@@ -90,7 +90,6 @@ export class LinesShape extends CollisionShape {
 	 * @inheritdoc
 	 */
 	public debugDraw(opacity = 1, shapesBatch: ShapesBatch): void {
-		if(opacity === undefined) opacity = 1;
 		const color = this._getDebugColor();
 		color.a *= opacity;
 

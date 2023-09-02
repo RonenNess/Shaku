@@ -6,4 +6,4 @@ export enum BuffersUsage {
 	STATIC_DRAW = "static",
 	DYNAMIC_DRAW = "dynamic",
 	STREAM_DRAW = "stream",
-};
+}

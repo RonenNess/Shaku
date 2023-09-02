@@ -29,13 +29,9 @@ export class Matrix {
 		}
 
 		// clone values
-		if(cloneValues || cloneValues === undefined) {
-			this.values = values.slice(0);
-		}
+		if(cloneValues || cloneValues === undefined) this.values = values.slice(0);
 		// copy values reference
-		else {
-			this.values = values;
-		}
+		else this.values = values;
 	}
 
 	/**
