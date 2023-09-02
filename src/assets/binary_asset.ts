@@ -33,10 +33,7 @@ export class BinaryAsset extends Asset {
 						this._data = new Uint8Array(request.response);
 						this._notifyReady();
 						resolve();
-					}
-					else {
-						reject(request.statusText);
-					}
+					} else reject(request.statusText);
 				}
 			};
 
@@ -92,6 +89,6 @@ export class BinaryAsset extends Asset {
 	 * @returns Data converted to string.
 	 */
 	public string(): string {
-		return (new TextDecoder()).decode(this._data);
+		return new TextDecoder().decode(this._data);
 	}
 }

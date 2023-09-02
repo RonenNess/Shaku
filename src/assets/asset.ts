@@ -54,12 +54,9 @@ export abstract class Asset {
 
 	 */
 	protected _notifyReady(): void {
-		if(this._waitingCallbacks) {
-			for(let i = 0; i < this._waitingCallbacks.length; ++i) {
-				this._waitingCallbacks[i](this);
-			}
-			this._waitingCallbacks = null;
-		}
+		if(!this._waitingCallbacks) return;
+		for(let i = 0; i < this._waitingCallbacks.length; ++i) this._waitingCallbacks[i](this);
+		this._waitingCallbacks = null;
 	}
 
 	/**

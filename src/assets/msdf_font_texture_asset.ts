@@ -11,13 +11,7 @@ import { TextureAsset } from "./texture_asset";
 export class MsdfFontTextureAsset extends FontTextureAsset {
 	private _positionOffsets: Record<string, Vector2> | null;
 	private _xAdvances: Record<string, number> | null;
-	private _placeholderChar: string;
-	private _fontName: string;
-	private _fontSize: number;
-	private _lineHeight: number;
-	private _sourceRects: unknown;
 	private _kernings: unknown | null;
-	private _texture: TextureAsset | null;
 
 	/**
 	 * @inheritdoc
@@ -37,7 +31,7 @@ export class MsdfFontTextureAsset extends FontTextureAsset {
 	 *
 	 * @returns Promise to resolve when fully loaded.
 	 */
-	public load(params: { jsonUrl: string; textureUrl: string; missingCharPlaceholder?: string; }): Promise<void> {
+	public override load(params: { jsonUrl: string; textureUrl: string; missingCharPlaceholder?: string; }): Promise<void> {
 		return new Promise(async (resolve, reject) => {
 
 			if(!params || !params.jsonUrl || !params.textureUrl) {
@@ -55,16 +49,12 @@ export class MsdfFontTextureAsset extends FontTextureAsset {
 			const atlasMetadata = atlasJson.data;
 			atlasTexture.filter = TextureFilterModes.LINEAR;
 
-			if(atlasMetadata.common.pages > 1) {
-				throw new Error("Can't use MSDF font with several pages");
-			}
+			if(atlasMetadata.common.pages > 1) throw new Error("Can't use MSDF font with several pages");
 
 			// set default missing char placeholder + store it
 			this._placeholderChar = (params.missingCharPlaceholder || "?")[0];
 
-			if(!atlasMetadata.info.charset.includes(this._placeholderChar)) {
-				throw new Error("The atlas' charset doesn't include the given placeholder character");
-			}
+			if(!atlasMetadata.info.charset.includes(this._placeholderChar)) throw new Error("The atlas' charset doesn't include the given placeholder character");
 
 			this._fontName = atlasMetadata.info.face;
 			this._fontSize = atlasMetadata.info.size;
@@ -100,7 +90,7 @@ export class MsdfFontTextureAsset extends FontTextureAsset {
 	 * Get texture width.
 	 * @returns Texture width.
 	 */
-	public get width(): number {
+	public override get width(): number {
 		return this._texture._width;
 	}
 
@@ -108,7 +98,7 @@ export class MsdfFontTextureAsset extends FontTextureAsset {
 	 * Get texture height.
 	 * @returns Texture height.
 	 */
-	public get height(): number {
+	public override get height(): number {
 		return this._texture._height;
 	}
 
@@ -116,28 +106,30 @@ export class MsdfFontTextureAsset extends FontTextureAsset {
 	 * Get texture size as a vector.
 	 * @returns Texture size.
 	 */
-	public getSize(): Vector2 {
+	public override getSize(): Vector2 {
 		return this._texture.getSize();
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	public getPositionOffset(character: string): Vector2 {
-		return this._positionOffsets[character] || this._positionOffsets[this.placeholderCharacter];
+	public override getPositionOffset(character: string): Vector2 {
+		return this._positionOffsets[character]
+			|| this._positionOffsets[this.placeholderCharacter];
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	public getXAdvance(character: string): number {
-		return this._xAdvances[character] || this._xAdvances[this.placeholderCharacter];
+	public override getXAdvance(character: string): number {
+		return this._xAdvances[character]
+			|| this._xAdvances[this.placeholderCharacter];
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	public destroy(): void {
+	public override destroy(): void {
 		super.destroy();
 		this._positionOffsets = null;
 		this._xAdvances = null;

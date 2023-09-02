@@ -53,15 +53,11 @@ export class TextureAsset extends TextureAssetBase {
 
 		return new Promise((resolve, reject) => {
 
-			if(!gl) {
-				return reject("Can't load textures before initializing gfx manager!");
-			}
+			if(!gl) return reject("Can't load textures before initializing gfx manager!");
 
 			// create image to load
 			const image = new Image();
-			if(params.crossOrigin !== undefined) {
-				image.crossOrigin = params.crossOrigin;
-			}
+			if(params.crossOrigin !== undefined) image.crossOrigin = params.crossOrigin;
 			image.onload = async () => {
 				try {
 					await this.create(image, params);
@@ -72,9 +68,7 @@ export class TextureAsset extends TextureAssetBase {
 					reject(e);
 				}
 			};
-			image.onerror = () => {
-				reject("Failed to load texture image!");
-			};
+			image.onerror = () => reject("Failed to load texture image!");
 
 			// initiate image load
 			image.src = this.url;
@@ -148,13 +142,9 @@ export class TextureAsset extends TextureAssetBase {
 	 * @param params Optional additional params. See load() for details.
 	 */
 	public fromImage(image: TextureAsset, params?: unknown): void {
-		if(image.width === 0) {
-			throw new Error("Image to build texture from must be loaded and have valid size!");
-		}
+		if(image.width === 0) throw new Error("Image to build texture from must be loaded and have valid size!");
 
-		if(this.valid) {
-			throw new Error("Texture asset is already initialized!");
-		}
+		if(this.valid) throw new Error("Texture asset is already initialized!");
 
 		// default params
 		params = params || {};
@@ -219,9 +209,7 @@ export class TextureAsset extends TextureAssetBase {
 					this._notifyReady();
 					resolve();
 				};
-				if(params.crossOrigin !== undefined) {
-					img.crossOrigin = params.crossOrigin;
-				}
+				if(params.crossOrigin !== undefined) img.crossOrigin = params.crossOrigin;
 				img.src = source;
 			}
 			else {
@@ -267,9 +255,7 @@ export class TextureAsset extends TextureAssetBase {
 	 * @returns Pixel color.
 	 */
 	public getPixel(x: number, y: number): Color {
-		if(!this._image) {
-			throw new Error("'getPixel()' only works on textures loaded from image!");
-		}
+		if(!this._image) throw new Error("'getPixel()' only works on textures loaded from image!");
 
 		// build internal canvas and context to get pixel data
 		if(!this._ctxForPixelData) {
@@ -295,9 +281,7 @@ export class TextureAsset extends TextureAssetBase {
 	 * @returns A 2D array with all texture pixel colors.
 	 */
 	public getPixelsData(x?: number, y?: number, width?: number, height?: number): Color[][] {
-		if(!this._image) {
-			throw new Error("'getPixel()' only works on textures loaded from image!");
-		}
+		if(!this._image) throw new Error("'getPixel()' only works on textures loaded from image!");
 
 		// default x, y
 		x = x || 0;

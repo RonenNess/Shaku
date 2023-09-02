@@ -33,22 +33,15 @@ export class JsonAsset extends Asset {
 						this._data = request.response;
 						this._notifyReady();
 						resolve();
-					}
-					else {
-						if(request.status === 200) {
-							reject("Response is not a valid JSON!");
-						}
-						else {
-							reject(request.statusText);
-						}
+					} else {
+						if(request.status === 200) reject("Response is not a valid JSON!");
+						else reject(request.statusText);
 					}
 				}
 			};
 
 			// on load error, reject
-			request.onerror = (e) => {
-				reject(e);
-			};
+			request.onerror = e => reject(e);
 
 			// initiate request
 			request.send();
@@ -66,16 +59,9 @@ export class JsonAsset extends Asset {
 			// make sure data is a valid json + clone it
 			try {
 				if(source) {
-					if(typeof source === "string") {
-						source = JSON.parse(source);
-					}
-					else {
-						source = JSON.parse(JSON.stringify(source));
-					}
-				}
-				else {
-					source = {};
-				}
+					if(typeof source === "string") source = JSON.parse(source);
+					else source = JSON.parse(JSON.stringify(source));
+				} else source = {};
 			}
 			catch(e) {
 				return reject("Data is not a valid JSON serializable object!");

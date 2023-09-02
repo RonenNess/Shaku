@@ -12,12 +12,12 @@ export class FontTextureAsset extends Asset {
 	 */
 	public static readonly defaultCharactersSet = " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~ ¡¢£¤¥¦§¨©ª«¬­®¯°±²³´µ¶·¸¹º»¼½¾";
 
-	private _fontName: string | null;
-	private _fontSize: number | null;
-	private _placeholderChar: string | null;
-	private _sourceRects: Rectangle[] | null;
-	private _texture: TextureAsset | null;
-	private _lineHeight: number;
+	protected _fontName: string | null;
+	protected _fontSize: number | null;
+	protected _placeholderChar: string | null;
+	protected _sourceRects: Rectangle[] | null;
+	protected _texture: TextureAsset | null;
+	protected _lineHeight: number;
 
 	/**
 	 * @inheritdoc
@@ -69,7 +69,7 @@ export class FontTextureAsset extends Asset {
 
 	/**
 	 * Generate the font texture from a font found in given URL.
-	 * @param {*} params Additional params. Possible values are:
+	 * @param params Additional params. Possible values are:
 	 *  - fontName: mandatory font name. on some browsers if the font name does not match the font you actually load via the URL, it will not be loaded properly.
 	 *  - missingCharPlaceholder (default="?"): character to use for missing characters.
 	 *  - smoothFont (default=true): if true, will set font to smooth mode.
@@ -94,9 +94,7 @@ export class FontTextureAsset extends Asset {
 	}): Promise<void> {
 		return new Promise(async (resolve, reject) => {
 
-			if(!params || !params.fontName) {
-				return reject("When loading font texture you must provide params with a 'fontName' value!");
-			}
+			if(!params || !params.fontName) return reject("When loading font texture you must provide params with a 'fontName' value!");
 
 			// set default missing char placeholder + store it
 			this._placeholderChar = (params.missingCharPlaceholder || "?")[0];
@@ -114,9 +112,7 @@ export class FontTextureAsset extends Asset {
 			let charsSet = params.charactersSet || FontTextureAsset.defaultCharactersSet;
 
 			// make sure charSet got the placeholder char
-			if(charsSet.indexOf(this._placeholderChar) === -1) {
-				charsSet += this._placeholderChar;
-			}
+			if(charsSet.indexOf(this._placeholderChar) === -1) charsSet += this._placeholderChar;
 
 			// load font
 			const fontFace = new FontFace(params.fontName, `url(${this.url})`);
@@ -212,7 +208,6 @@ export class FontTextureAsset extends Asset {
 			const img = new Image();
 			img.src = canvas.toDataURL("image/png");
 			img.onload = () => {
-
 				// convert image to texture
 				const texture = new TextureAsset(this.url + "__font-texture");
 				texture.fromImage(img);
@@ -221,7 +216,6 @@ export class FontTextureAsset extends Asset {
 				this._texture = texture;
 				this._notifyReady();
 				resolve();
-
 			};
 		});
 	}
@@ -263,7 +257,8 @@ export class FontTextureAsset extends Asset {
 	 * @returns Source rectangle for character.
 	 */
 	public getSourceRect(character: string): Rectangle {
-		return this._sourceRects[character] || this._sourceRects[this.placeholderCharacter];
+		return this._sourceRects[character]
+			|| this._sourceRects[this.placeholderCharacter];
 	}
 
 	/**
@@ -302,7 +297,7 @@ export class FontTextureAsset extends Asset {
 function makePowerTwo(val: number): number {
 	let ret = 2;
 	while(ret < val) {
-		if(ret >= val) { return ret; }
+		if(ret >= val) return ret;
 		ret = ret * 2;
 	}
 	return ret;
@@ -329,7 +324,7 @@ function measureTextHeight(fontFamily: string, fontSize: number, char?: string, 
  */
 function measureTextWidth(fontFamily: string, fontSize: number, char?: string, extraWidth?: number): number {
 	// special case to ignore \r and \n when measuring text width
-	if(char === "\n" || char === "\r") { return 0; }
+	if(char === "\n" || char === "\r") return 0;
 
 	// measure character width
 	const canvas = document.createElement("canvas");
@@ -337,8 +332,6 @@ function measureTextWidth(fontFamily: string, fontSize: number, char?: string, e
 	context.font = fontSize.toString() + "px " + fontFamily;
 	let result = 0;
 	const text = char || "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 ";
-	for(let i = 0; i < text.length; ++i) {
-		result = Math.max(result, context.measureText(text[i]).width + (extraWidth || 0));
-	}
+	for(let i = 0; i < text.length; ++i) result = Math.max(result, context.measureText(text[i]).width + (extraWidth || 0));
 	return Math.ceil(result);
 }

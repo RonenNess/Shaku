@@ -4,7 +4,7 @@ import { TextureAsset } from "./texture_asset";
 import { TextureInAtlasAsset } from "./texture_in_atlas_asset";
 
 // the webgl context to use
-let gl = null;
+let gl: WebGLRenderingContext | null = null;
 
 /**
  * A texture atlas we can build at runtime to combine together multiple textures.
@@ -41,9 +41,7 @@ export class TextureAtlasAsset extends Asset {
 	 */
 	private async _build(sources: string[] | unknown[], maxWidth?: number, maxHeight?: number, extraMargins?: number): Promise<void> {
 		// sanity
-		if(this.__textures.length) {
-			throw new Error("Texture Atlas already built!");
-		}
+		if(this.__textures.length) throw new Error("Texture Atlas already built!");
 
 		// default margins
 		extraMargins = extraMargins;
@@ -84,9 +82,7 @@ export class TextureAtlasAsset extends Asset {
 					const sourceRectangle = new Rectangle(imageData.x, imageData.y, imageData.width, imageData.height);
 					const textureInAtlas = new TextureInAtlasAsset(internalUrl, atlasTexture, sourceRectangle, this);
 					this.__sources[url] = this.__sources[relativeUrl] = this.__sources[relativeUrl.substr(1)] = textureInAtlas;
-					if(originUrl) {
-						this.__sources[originUrl] = this.__sources[url];
-					}
+					if(originUrl) this.__sources[originUrl] = this.__sources[url];
 				}
 
 				// convert to texture
@@ -135,9 +131,7 @@ export class TextureAtlasAsset extends Asset {
 	 * @inheritdoc
 	 */
 	public destroy(): void {
-		for(const texture of this.__textures) {
-			texture.destroy();
-		}
+		for(const texture of this.__textures) texture.destroy();
 		this.__textures = [];
 		this.__sources = {};
 	}
@@ -161,9 +155,7 @@ function arrangeTextures(sourceImages: unknown[], maxAtlasWidth?: number, maxAtl
 
 		// make width a power of 2
 		let power = 1;
-		while(power < width) {
-			power *= 2;
-		}
+		while(power < width) power *= 2;
 		width = power;
 
 		// return new width and make sure don't exceed max size
@@ -202,12 +194,8 @@ function loadImage(path: string): Promise<HTMLImageElement> {
 		img.crossOrigin = "Anonymous"; // to avoid CORS if used with Canvas
 		img.src = path;
 		img.__origin_url = path;
-		img.onload = () => {
-			resolve(img);
-		};
-		img.onerror = e => {
-			reject(e);
-		};
+		img.onload = () => resolve(img);
+		img.onerror = e => reject(e);
 	});
 }
 
@@ -227,16 +215,12 @@ async function loadAllSources(sources: (string | HTMLImageElement)[]) {
 			const curr = sources[i];
 
 			// if its source url:
-			if(typeof curr === "string") {
-				waitFor.push(loadImage(curr));
-			}
+			if(typeof curr === "string") waitFor.push(loadImage(curr));
 			// if its an image instance:
 			else if(curr instanceof Image) {
 
 				// if ready, push as-is
-				if(curr.width) {
-					images.push(curr);
-				}
+				if(curr.width) images.push(curr);
 				// if not ready, push to wait list
 				else {
 					waitFor.push(new Promise((resolve, reject) => {
@@ -252,9 +236,7 @@ async function loadAllSources(sources: (string | HTMLImageElement)[]) {
 		}
 
 		// wait for all images that are loading
-		for(const loadPromise of waitFor) {
-			images.push(await loadPromise);
-		}
+		for(const loadPromise of waitFor) images.push(await loadPromise);
 
 		// return result
 		resolve(images);

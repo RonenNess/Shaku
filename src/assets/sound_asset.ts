@@ -39,9 +39,7 @@ export class SoundAsset extends Asset {
 			};
 
 			// on load error, reject
-			request.onerror = (e) => {
-				reject(e);
-			};
+			request.onerror = e => reject(e);
 
 			// initiate request
 			request.send();

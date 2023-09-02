@@ -83,20 +83,15 @@ export class NullDrivers {
 	public constructor() {
 	}
 
-	public trace(msg: string): void {
-	}
+	public trace(msg: string): void { }
 
-	public debug(msg: string): void {
-	}
+	public debug(msg: string): void { }
 
-	public info(msg: string): void {
-	}
+	public info(msg: string): void { }
 
-	public warn(msg: string): void {
-	}
+	public warn(msg: string): void { }
 
-	public error(msg: string): void {
-	}
+	public error(msg: string): void { }
 }
 
 // cached loggers
@@ -115,9 +110,7 @@ export class LoggerFactory {
 	 * @returns Logger to use.
 	 */
 	public static getLogger(name: string): Logger {
-		if(!_cachedLoggers[name]) {
-			_cachedLoggers[name] = new Logger(name);
-		}
+		if(!_cachedLoggers[name]) _cachedLoggers[name] = new Logger(name);
 		return _cachedLoggers[name];
 	}
 

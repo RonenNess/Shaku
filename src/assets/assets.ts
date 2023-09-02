@@ -117,7 +117,7 @@ export class Assets implements IManager {
 	 * @private
 	 */
 	public setup(): Promise<void> {
-		return new Promise((resolve, reject) => {
+		return new Promise((resolve, _reject) => {
 			_logger.info("Setup assets manager..");
 			this._loaded = {};
 			resolve();
@@ -148,9 +148,7 @@ export class Assets implements IManager {
 	#_getFromCache(url: string, type: { new(...args: unknown[]): unknown; }) {
 		const cached = this._loaded[url] || null;
 		if(cached && type) {
-			if(!(cached instanceof type)) {
-				throw new Error(`Asset with URL "${url}" is already loaded, but has unexpected type (expecting ${type})!`);
-			}
+			if(!(cached instanceof type)) throw new Error(`Asset with URL "${url}" is already loaded, but has unexpected type (expecting ${type})!`);
 		}
 		return cached;
 	}
@@ -222,7 +220,7 @@ export class Assets implements IManager {
 		}
 
 		// create promise to load asset
-		const promise = new Promise(async (resolve, reject) => {
+		const promise = new Promise(async (resolve, _reject) => {
 			if(needLoad) await this.#_loadAndCacheAsset(_asset, params);
 			_asset.onReady(() => resolve(_asset));
 		});
@@ -242,9 +240,7 @@ export class Assets implements IManager {
 		const _asset = new classType(name || generateRandomAssetName());
 
 		// if this asset need waiting
-		if(needWait) {
-			this._waitingAssets.add(name);
-		}
+		if(needWait) this._waitingAssets.add(name);
 
 		// generate render target in async
 		const promise = new Promise(async (resolve, reject) => {
@@ -254,9 +250,7 @@ export class Assets implements IManager {
 
 			// create and return
 			await initMethod(_asset);
-			if(name) {
-				this._loaded[name] = _asset;
-			}
+			if(name) this._loaded[name] = _asset;
 			resolve(_asset);
 		});
 
@@ -302,9 +296,7 @@ export class Assets implements IManager {
 	 */
 	public createRenderTarget(name: string | null, width: number, height: number, channels?: number): Promise<TextureAsset> {
 		// make sure we have valid size
-		if(!width || !height) {
-			throw new Error("Missing or invalid size!");
-		}
+		if(!width || !height) throw new Error("Missing or invalid size!");
 
 		// create asset and return promise
 		return this.#_createAsset(name, TextureAsset, (asset) => {
@@ -323,9 +315,7 @@ export class Assets implements IManager {
 	 */
 	public createTextureAtlas(name: string | null, sources: [string, ...string[]], maxWidth?: number, maxHeight?: number, extraMargins?: Vector2) {
 		// make sure we have valid size
-		if(!sources || !sources.length) {
-			throw new Error("Missing or invalid sources!");
-		}
+		if(!sources || !sources.length) throw new Error("Missing or invalid sources!");
 
 		// create asset and return promise
 		return this.#_createAsset(name, TextureAtlasAsset, async (asset) => {
@@ -333,8 +323,7 @@ export class Assets implements IManager {
 				await asset._build(sources, maxWidth, maxHeight, extraMargins);
 				this._waitingAssets.delete(name);
 				this._successfulLoadedAssetsCount++;
-			}
-			catch(e) {
+			} catch(e) {
 				_logger.warn(`Failed to create texture atlas: "${e}".`);
 				this._failedAssets.add(url);
 			}
@@ -444,9 +433,7 @@ export class Assets implements IManager {
 	 * Shaku.assets.clearCache();
 	 */
 	public clearCache(): void {
-		for(const key in this._loaded) {
-			this._loaded[key].destroy();
-		}
+		for(const key in this._loaded) this._loaded[key].destroy();
 		this._loaded = {};
 		this._waitingAssets = new Set();
 		this._failedAssets = new Set();
