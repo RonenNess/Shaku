@@ -137,7 +137,6 @@ export class Animator {
 
 	/**
 	 * Make sure a given value is legal for the animator.
-
 	 */
 	#_validateValueType(value) {
 		return (typeof value === "number") || (typeof value === "function") || (value && value.constructor && value.constructor.lerp);

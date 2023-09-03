@@ -388,7 +388,6 @@ export class Input implements IManager {
 	/**
 	 * Reset all internal data and states.
 	 * @param keepMousePosition If true, will not reset mouse position.
-
 	 */
 	#_resetAll(keepMousePosition?: boolean) {
 		// mouse states
@@ -780,7 +779,7 @@ export class Input implements IManager {
 	 * @param {*} touchValue Value to use to return value if its a touch code.
 	 * @param {*} customValues Dictionary to check for custom values injected via setCustomState().
 	 */
-	#_getValueWithCode<T>(code: InputCode, mouseCheck: (k: MouseButtons) => T, keyboardCheck: (k: KeyboardKeys) => T, touchValue: T, customValues: Map<string, T>): T | false {
+	private getValueWithCode<T>(code: InputCode, mouseCheck: (k: MouseButtons) => T, keyboardCheck: (k: KeyboardKeys) => T, touchValue: T, customValues: Map<string, T>): T | false {
 		// check for custom values
 		if(typeof code === "string") {
 			const customVal = customValues.get(code);
@@ -819,7 +818,7 @@ export class Input implements IManager {
 	public down(code: InputCode | InputCode[]): boolean {
 		if(!Array.isArray(code)) code = [code];
 		for(const c of code) {
-			if(Boolean(this.#_getValueWithCode(c, this.mouseDown, this.keyDown, this.touching, this.customStates))) {
+			if(Boolean(this.getValueWithCode(c, this.mouseDown, this.keyDown, this.touching, this.customStates))) {
 				return true;
 			}
 		}
@@ -841,7 +840,7 @@ export class Input implements IManager {
 	public released(code: InputCode | InputCode[]): boolean {
 		if(!Array.isArray(code)) code = [code];
 		for(const c of code) {
-			if(Boolean(this.#_getValueWithCode(c, this.mouseReleased, this.keyReleased, this.touchEnded, this.customReleased))) {
+			if(Boolean(this.getValueWithCode(c, this.mouseReleased, this.keyReleased, this.touchEnded, this.customReleased))) {
 				return true;
 			}
 		}
@@ -863,7 +862,7 @@ export class Input implements IManager {
 	public pressed(code: InputCode | InputCode[]) {
 		if(!Array.isArray(code)) code = [code];
 		for(const c of code) {
-			if(this.#_getValueWithCode(c, this.mousePressed, this.keyPressed, this.touchStarted, this.customPressed)) return true;
+			if(this.getValueWithCode(c, this.mousePressed, this.keyPressed, this.touchStarted, this.customPressed)) return true;
 		}
 		return false;
 	}
@@ -882,7 +881,7 @@ export class Input implements IManager {
 	 */
 	lastReleaseTime(code: InputCode) {
 		if(Array.isArray(code)) throw new Error("Array not supported in 'lastReleaseTime'!");
-		return this.#_getValueWithCode(code, (c) => this.lastMouseReleasedTime.get(c), (c) => this.lastKeyReleasedTime.get(c), this.lastTouchReleasedTime, this.prevLastCustomReleasedTime) || 0;
+		return this.getValueWithCode(code, (c) => this.lastMouseReleasedTime.get(c), (c) => this.lastKeyReleasedTime.get(c), this.lastTouchReleasedTime, this.prevLastCustomReleasedTime) || 0;
 	}
 
 	/**
@@ -899,7 +898,7 @@ export class Input implements IManager {
 	 */
 	lastPressTime(code: InputCode) {
 		if(Array.isArray(code)) throw new Error("Array not supported in 'lastPressTime'!");
-		return this.#_getValueWithCode(code, (c) => this.lastMousePressedTime.get(c), (c) => this.lastKeyPressedTime.get(c), this.lastTouchPressedTime, this.prevLastCustomPressedTime) || 0;
+		return this.getValueWithCode(code, (c) => this.lastMousePressedTime.get(c), (c) => this.lastKeyPressedTime.get(c), this.lastTouchPressedTime, this.prevLastCustomPressedTime) || 0;
 	}
 
 	/**
@@ -926,7 +925,7 @@ export class Input implements IManager {
 		if(!Array.isArray(code)) code = [code];
 		for(const c of code) {
 			if(this.pressed(c)) {
-				const currKeyTime = this.#_getValueWithCode(c, (c) => this.prevLastMousePressedTime.get(c), (c) => this.prevLastKeyPressedTime.get(c), this.prevLastTouchPressedTime, this.prevLastCustomPressedTime);
+				const currKeyTime = this.getValueWithCode(c, (c) => this.prevLastMousePressedTime.get(c), (c) => this.prevLastKeyPressedTime.get(c), this.prevLastTouchPressedTime, this.prevLastCustomPressedTime);
 				if(currTime - currKeyTime <= maxInterval) {
 					return true;
 				}
@@ -959,7 +958,7 @@ export class Input implements IManager {
 		if(!Array.isArray(code)) code = [code];
 		for(const c of code) {
 			if(this.released(c)) {
-				const currKeyTime = this.#_getValueWithCode(c, (c) => this.prevLastMousePressedTime.get(c), (c) => this.prevLastKeyPressedTime.get(c), this.prevLastTouchPressedTime, this.prevLastCustomPressedTime);
+				const currKeyTime = this.getValueWithCode(c, (c) => this.prevLastMousePressedTime.get(c), (c) => this.prevLastKeyPressedTime.get(c), this.prevLastTouchPressedTime, this.prevLastCustomPressedTime);
 				if(currTime - currKeyTime <= maxInterval) {
 					return true;
 				}
@@ -1011,9 +1010,8 @@ export class Input implements IManager {
 
 	/**
 	 * Get keyboard key code from event.
-
 	 */
-	#_getKeyboardKeyCode(event: KeyboardEvent) {
+	private getKeyboardKeyCode(event: KeyboardEvent) {
 		event = this._getEvent(event);
 		// TODO: stop using numerical keyCode and use modern .code
 		return event.keyCode !== undefined ? event.keyCode : event.key.charCodeAt(0);
@@ -1021,7 +1019,6 @@ export class Input implements IManager {
 
 	/**
 	 * Called when window loses focus - clear all input states to prevent keys getting stuck.
-
 	 */
 	private _onBlur(event: FocusEvent) {
 		if(this.resetOnFocusLoss) {
@@ -1044,7 +1041,7 @@ export class Input implements IManager {
 	 * @param {*} event Event data from browser.
 	*/
 	private _onKeyDown(event: KeyboardEvent) {
-		const keycode = this.#_getKeyboardKeyCode(event);
+		const keycode = this.getKeyboardKeyCode(event);
 		if(!this.keyboardState.get(keycode)) {
 			this.keyboardPressed.set(keycode, true);
 			this.prevLastKeyPressedTime.set(keycode, this.lastKeyPressedTime.get(keycode));
@@ -1059,7 +1056,7 @@ export class Input implements IManager {
 	 * @param {*} event Event data from browser.
 	 */
 	private _onKeyUp(event: KeyboardEvent) {
-		const keycode = this.#_getKeyboardKeyCode(event) || 0;
+		const keycode = this.getKeyboardKeyCode(event) || 0;
 		this.keyboardState.set(keycode, false);
 		this.keyboardReleased.set(keycode, true);
 		this.prevLastKeyReleasedTime.set(keycode, this.lastKeyReleasedTime.get(keycode));
@@ -1237,7 +1234,6 @@ export class Input implements IManager {
 
 	/**
 	 * Normalize current _mousePos value to be relative to target element.
-
 	 */
 	private _normalizeMousePos() {
 		if(this._targetElement && this._targetElement instanceof HTMLElement) {
@@ -1251,7 +1247,6 @@ export class Input implements IManager {
 	/**
 	 * Get event either from event param or from window.event.
 	 * This is for older browsers support.
-
 	 */
 	private _getEvent<T extends Event>(event: T): T {
 		return event || window.event;

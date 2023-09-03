@@ -19,6 +19,7 @@ module.exports = {
 		"@typescript-eslint/indent": ["warn", "tab"],
 		"indent": "off",
 		"@typescript-eslint/member-delimiter-style": ["off", "semi"],
+		"@typescript-eslint/member-ordering": "warn",
 		"@typescript-eslint/naming-convention": ["warn", { "selector": "enumMember", "format": null, "custom": { "regex": "[A-Z][A-Z0-9_]*[a-z0-9_]*", "match": true } }],
 		"@typescript-eslint/no-dynamic-delete": "off",
 		"@typescript-eslint/no-empty-function": ["warn", { "allow": ["constructors", "overrideMethods"] }],

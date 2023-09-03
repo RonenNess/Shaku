@@ -111,7 +111,7 @@ export class Transformation {
 	public setPosition(value: Vector2): Transformation {
 		if(this.position.equals(value)) return this;
 		this.position.copy(value);
-		this.#_markDirty(true, false);
+		this.markDirty(true, false);
 		return this;
 	}
 
@@ -123,7 +123,7 @@ export class Transformation {
 	public setPositionX(value: number): Transformation {
 		if(this.position.x === value) return this;
 		this.position.x = value;
-		this.#_markDirty(true, false);
+		this.markDirty(true, false);
 		return this;
 	}
 
@@ -135,7 +135,7 @@ export class Transformation {
 	public setPositionY(value: number): Transformation {
 		if(this.position.y === value) return this;
 		this.position.y = value;
-		this.#_markDirty(true, false);
+		this.markDirty(true, false);
 		return this;
 	}
 
@@ -146,7 +146,7 @@ export class Transformation {
 	 */
 	public move(value: Vector2): Transformation {
 		this.position.addSelf(value);
-		this.#_markDirty(true, false);
+		this.markDirty(true, false);
 		return this;
 	}
 
@@ -158,7 +158,7 @@ export class Transformation {
 	public setPositionMode(value: TransformModes): Transformation {
 		if(this.positionMode === value) return this;
 		this.positionMode = value;
-		this.#_markDirty(false, true);
+		this.markDirty(false, true);
 		return this;
 	}
 
@@ -186,7 +186,7 @@ export class Transformation {
 	public setScale(value: Vector2): Transformation {
 		if(this._scale.equals(value)) return this;
 		this._scale.copy(value);
-		this.#_markDirty(true, false);
+		this.markDirty(true, false);
 		return this;
 	}
 
@@ -198,7 +198,7 @@ export class Transformation {
 	public setScaleX(value: number): Transformation {
 		if(this._scale.x === value) return this;
 		this._scale.x = value;
-		this.#_markDirty(true, false);
+		this.markDirty(true, false);
 		return this;
 	}
 
@@ -210,7 +210,7 @@ export class Transformation {
 	public setScaleY(value: number): Transformation {
 		if(this._scale.y === value) return this;
 		this._scale.y = value;
-		this.#_markDirty(true, false);
+		this.markDirty(true, false);
 		return this;
 	}
 
@@ -221,7 +221,7 @@ export class Transformation {
 	 */
 	public scale(value: Vector2): Transformation {
 		this._scale.mulSelf(value);
-		this.#_markDirty(true, false);
+		this.markDirty(true, false);
 		return this;
 	}
 
@@ -233,7 +233,7 @@ export class Transformation {
 	public setScaleMode(value: TransformModes): Transformation {
 		if(this.scaleMode === value) return this;
 		this.scaleMode = value;
-		this.#_markDirty(false, true);
+		this.markDirty(false, true);
 		return this;
 	}
 
@@ -282,7 +282,7 @@ export class Transformation {
 		if(wrap && ((this.rotation < 0) || (this.rotation > (Math.PI * 2)))) {
 			this.rotation = Math.atan2(Math.sin(this.rotation), Math.cos(this.rotation));
 		}
-		this.#_markDirty(true, false);
+		this.markDirty(true, false);
 		return this;
 	}
 
@@ -315,7 +315,7 @@ export class Transformation {
 	 */
 	public rotateDegrees(value: number): Transformation {
 		this.rotation += MathHelper.toRadians(value);
-		this.#_markDirty(true, false);
+		this.markDirty(true, false);
 		return this;
 	}
 
@@ -327,7 +327,7 @@ export class Transformation {
 	public setRotationMode(value: TransformModes): Transformation {
 		if(this.rotationMode === value) return this;
 		this.rotationMode = value;
-		this.#_markDirty(false, true);
+		this.markDirty(false, true);
 		return this;
 	}
 
@@ -336,7 +336,7 @@ export class Transformation {
 	 * @param localTransform Local transformations changed.
 	 * @param transformationModes Transformation modes changed.
 	 */
-	#_markDirty(localTransform: boolean, transformationModes: boolean): void {
+	private markDirty(localTransform: boolean, transformationModes: boolean): void {
 		this.matrix = null;
 		this.onChange?.(this, localTransform, transformationModes);
 	}
@@ -410,7 +410,7 @@ export class Transformation {
 		this.rotation = MathHelper.toRadians(data.rot ?? Transformation.defaults.rotation);
 		this.rotationMode = data.rotm ?? Transformation.defaults.rotationMode;
 
-		this.#_markDirty(true, true);
+		this.markDirty(true, true);
 		return this;
 	}
 

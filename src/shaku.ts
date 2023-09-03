@@ -40,7 +40,6 @@ export class Shaku {
 
 	/**
 	 * Assets manager.
-	 * @name Shaku#assets
 	 */
 	public assets: typeof assets;
 
@@ -228,14 +227,13 @@ export class Shaku {
 		this.prevUpdateTime = this._gameTime;
 
 		// count fps and time stats
-		if(this._gameTime) this.#_updateFpsAndTimeStats();
+		if(this._gameTime) this.updateFpsAndTimeStats();
 	}
 
 	/**
 	 * Measure FPS and average update times.
-
 	 */
-	#_updateFpsAndTimeStats(): void {
+	private updateFpsAndTimeStats(): void {
 		// update fps count and second counter
 		this.currFpsCounter++;
 		this.countSecond += this._gameTime!.delta; // only called from inside a "if (_gameTime) {}" block, so we can use ! safely.

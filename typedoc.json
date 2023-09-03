@@ -6,6 +6,7 @@
 	"out": "typedoc",
 	"excludePrivate": true,
 	"excludeProtected": true,
+	"excludeInternal": true,
 	"includeVersion": true,
 	"skipErrorChecking": true,
 	"plugin": [

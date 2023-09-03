@@ -17,7 +17,6 @@ export class CollisionResolver {
 
 	/**
 	 * Initialize the resolver.
-
 	 */
 	private _init() {
 
@@ -49,7 +48,7 @@ export class CollisionResolver {
 	 * @returns {CollisionTestResult} collision detection result or null if they don't collide.
 	 */
 	test(first, second) {
-		const handler = this.#_getCollisionMethod(first, second);
+		const handler = this.getCollisionMethod(first, second);
 		return this.testWithHandler(first, second, handler);
 	}
 
@@ -94,7 +93,7 @@ export class CollisionResolver {
 	 * @param {CollisionShape} second Second collision shape to test.
 	 * @returns {Function} collision detection method or null if not found.
 	 */
-	#_getCollisionMethod(first, second) {
+	private getCollisionMethod(first, second) {
 		const handlersFrom = this._handlers[first.shapeId];
 		if(handlersFrom) {
 			return handlersFrom[second.shapeId] || null;

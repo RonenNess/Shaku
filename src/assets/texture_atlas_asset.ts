@@ -26,7 +26,6 @@ export class TextureAtlasAsset extends Asset {
 
 	/**
 	 * Set the WebGL context.
-
 	 */
 	private static _setWebGl(_gl: WebGLRenderingContext): void {
 		TextureAtlasAsset.gl = _gl;

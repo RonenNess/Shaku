@@ -18,23 +18,20 @@ export class SpriteBatchBase extends DrawBatch {
 		super();
 
 		// create buffers for drawing sprites
-		this.#_createBuffers(batchSpritesCount || 500, enableVertexColor, Boolean(enableNormals), Boolean(enableBinormals), Boolean(enableTangents));
+		this.createBuffers(batchSpritesCount || 500, enableVertexColor, Boolean(enableNormals), Boolean(enableBinormals), Boolean(enableTangents));
 
 		/**
 		 * How many quads this batch can hold.
-
 		 */
 		this.__maxQuadsCount = Math.floor((this._buffers.positionArray.length / 12));
 
 		/**
 		 * How many quads we currently have.
-
 		 */
 		this.__quadsCount = 0;
 
 		/**
 		 * Indicate there were changes in buffers.
-
 		 */
 		this.__dirty = false;
 
@@ -71,7 +68,6 @@ export class SpriteBatchBase extends DrawBatch {
 
 	/**
 	 * Get the gfx manager.
-
 	 */
 	get #_gfx() {
 		return DrawBatch._gfx;
@@ -79,7 +75,6 @@ export class SpriteBatchBase extends DrawBatch {
 
 	/**
 	 * Get the web gl instance.
-
 	 */
 	get #_gl() {
 		return DrawBatch._gfx._internal.gl;
@@ -110,9 +105,8 @@ export class SpriteBatchBase extends DrawBatch {
 
 	/**
 	 * Build the dynamic buffers.
-
 	 */
-	#_createBuffers(batchSpritesCount, enableVertexColor = true, enableNormals, enableBinormals, enableTangents) {
+	private createBuffers(batchSpritesCount, enableVertexColor = true, enableNormals, enableBinormals, enableTangents) {
 		const gl = this.#_gl;
 
 		// dynamic buffers, used for batch rendering
@@ -200,7 +194,6 @@ export class SpriteBatchBase extends DrawBatch {
 
 	/**
 	 * Set a new active texture and draw batch if needed.
-
 	 */
 	private _updateTexture(texture) {
 		// if texture changed, draw current batch first
@@ -488,7 +481,6 @@ export class SpriteBatchBase extends DrawBatch {
 
 	/**
 	 * Called when the batch becomes full while drawing and there's no handler.
-
 	 */
 	private _handleFullBuffer() {
 		// invoke on-overflow callback
@@ -503,7 +495,6 @@ export class SpriteBatchBase extends DrawBatch {
 
 	/**
 	 * @inheritdoc
-
 	 */
 	private _drawBatch() {
 		// get texture and effect

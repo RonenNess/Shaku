@@ -1499,11 +1499,11 @@ Its often useful to draw the collision world when debugging.
 To do so, you can use the `debugDraw()` method:
 
 ```js
-world.debugDraw(gridColor, gridHighlitColor, opacity, camera);
+world.debugDraw(gridColor, gridHighlightColor, opacity, camera);
 ```
 
 * *gridColor*: optional grid lines color, for cells that have no collision shapes in them.
-* *gridHighlitColor*: optional grid lines color, for cells that have collision shapes in them.
+* *gridHighlightColor*: optional grid lines color, for cells that have collision shapes in them.
 * *opacity*: optional opacity for all shapes and grid.
 * *camera*: optional camera to draw the collision world with.
 

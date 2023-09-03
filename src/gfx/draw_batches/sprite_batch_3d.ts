@@ -15,7 +15,7 @@ export class SpriteBatch3D extends SpriteBatch {
 	 */
 	public constructor(batchSpritesCount, enableNormals, enableBinormals, enableTangents) {
 		super(batchSpritesCount, true, enableNormals, enableBinormals, enableTangents);
-		this.__camera = this.#_gfx.createCamera3D();
+		this.__camera = this.gfx.createCamera3D();
 		this.setPerspectiveCamera();
 		this.camera.setViewLookat();
 	}
@@ -38,7 +38,7 @@ export class SpriteBatch3D extends SpriteBatch {
 	setPerspectiveCamera(fieldOfView, aspectRatio, zNear, zFar) {
 		const camera = this.__camera;
 		fieldOfView = fieldOfView || ((45 * Math.PI) / 180);
-		aspectRatio = aspectRatio || (this.#_gfx.getRenderingSize().x / this.#_gfx.getRenderingSize().y);
+		aspectRatio = aspectRatio || (this.gfx.getRenderingSize().x / this.gfx.getRenderingSize().y);
 		zNear = zNear || 0.1;
 		zFar = zFar || 10000.0;
 		camera.perspective(fieldOfView, aspectRatio, zNear, zFar);
@@ -46,17 +46,15 @@ export class SpriteBatch3D extends SpriteBatch {
 
 	/**
 	 * Get the gfx manager.
-
 	 */
-	get #_gfx() {
+	private get gfx() {
 		return DrawBatch._gfx;
 	}
 
 	/**
 	 * Get the web gl instance.
-
 	 */
-	get #_gl() {
+	private get gl() {
 		return DrawBatch._gfx._internal.gl;
 	}
 
@@ -71,7 +69,7 @@ export class SpriteBatch3D extends SpriteBatch {
 	 * @inheritdoc
 	 */
 	override get defaultEffect() {
-		return this.#_gfx.builtinEffects.Sprites3d;
+		return this.gfx.builtinEffects.Sprites3d;
 	}
 
 	/**
@@ -84,10 +82,9 @@ export class SpriteBatch3D extends SpriteBatch {
 
 	/**
 	 * @inheritdoc
-
 	 */
 	private override _onSetEffect(effect, texture) {
 		if(this.__camera.view) effect.setViewMatrix(this.__camera.view);
-		if(this.__camera) this.#_gfx.applyCamera(this.__camera);
+		if(this.__camera) this.gfx.applyCamera(this.__camera);
 	}
 }

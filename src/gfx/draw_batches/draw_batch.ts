@@ -75,7 +75,6 @@ export class DrawBatch {
 
 	/**
 	 * Throw exception if batch was destroyed.
-
 	 */
 	private __validateBatch() {
 		if(this.isDestroyed) {
@@ -122,7 +121,6 @@ export class DrawBatch {
 
 	/**
 	 * Throw exception if batch is not currently drawing.
-
 	 */
 	private __validateDrawing(validateNotStatic) {
 		if(!this.isDrawing) {
@@ -243,7 +241,6 @@ export class DrawBatch {
 
 	/**
 	 * Draw current batch with set drawing params.
-
 	 */
 	private _drawBatch() {
 		// sanity
@@ -274,7 +271,6 @@ export class DrawBatch {
 
 	/**
 	 * Called internally after we set the effect and texture and before we start rendering batch.
-
 	 */
 	private _onSetEffect(effect, texture) {
 	}

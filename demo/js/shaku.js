@@ -3021,11 +3021,11 @@
 					/**
 					 * Debug-draw the current collision world.
 					 * @param {Color} gridColor Optional grid color (default to black).
-					 * @param {Color} gridHighlitColor Optional grid color for cells with shapes in them (default to red).
+					 * @param {Color} gridHighlightColor Optional grid color for cells with shapes in them (default to red).
 					 * @param {Number} opacity Optional opacity factor (default to 0.5).
 					 * @param {Camera} camera Optional camera for offset and viewport.
 					 */
-					debugDraw(gridColor, gridHighlitColor, opacity, camera) {
+					debugDraw(gridColor, gridHighlightColor, opacity, camera) {
 						// if we don't have a debug-draw batch, create it
 						let shapesBatch = this.getOrCreateDebugDrawBatch();
 
@@ -3040,9 +3040,9 @@
 							gridColor = Color.black;
 							gridColor.a *= 0.75;
 						}
-						if (!gridHighlitColor) {
-							gridHighlitColor = Color.red;
-							gridHighlitColor.a *= 0.75;
+						if (!gridHighlightColor) {
+							gridHighlightColor = Color.red;
+							gridHighlightColor.a *= 0.75;
 						}
 
 						// default opacity
@@ -3052,7 +3052,7 @@
 
 						// set grid color opacity
 						gridColor.a *= opacity * 0.75;
-						gridHighlitColor.a *= opacity * 0.75;
+						gridHighlightColor.a *= opacity * 0.75;
 
 						// all shapes we rendered
 						let renderedShapes = new Set();
@@ -3070,7 +3070,7 @@
 								let cell = this._grid[i + ',' + j];
 
 								// draw grid cell
-								let color = (cell && cell.size) ? gridHighlitColor : gridColor;
+								let color = (cell && cell.size) ? gridHighlightColor : gridColor;
 								let cellRect1 = new Rectangle(i * this._gridCellSize.x, j * this._gridCellSize.y, this._gridCellSize.x, 2);
 								let cellRect2 = new Rectangle(i * this._gridCellSize.x, j * this._gridCellSize.y, 2, this._gridCellSize.y);
 								shapesBatch.drawRectangle(cellRect1, color);

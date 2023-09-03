@@ -10,11 +10,30 @@ const _logger = LoggerFactory.getLogger("gfx - sprite - batch"); // TODO
  * Responsible to drawing a batch of basic geometric shapes with as little draw calls as possible.
  */
 export class ShapesBatch extends DrawBatch {
+
+	/**
+	 * Optional method to trigger when shapes batch overflows and can't contain any more polygons.
+	 */
 	public onOverflow: (() => void) | null;
+
+	/**
+	 * If true, will floor vertices positions before pushing them to batch.
+	 */
 	public snapPixels: boolean;
 
+	/**
+	 * How many polygons this batch can hold.
+	 */
 	private maxPolyCount: number;
+
+	/**
+	 * How many polygons we currently have.
+	 */
 	private polyCount: number;
+
+	/**
+	 * Indicate there were changes in buffers.
+	 */
 	private dirty: boolean;
 	private buffers: {
 		positionBuffer: unknown;
@@ -34,62 +53,34 @@ export class ShapesBatch extends DrawBatch {
 		super();
 
 		// create buffers for drawing shapes
-		this.#_createBuffers(batchPolygonsCount || 500);
+		this.createBuffers(batchPolygonsCount || 500);
 
-		/**
-		 * How many polygons this batch can hold.
-
-		 */
 		this.maxPolyCount = Math.floor((this.buffers.positionArray.length / 9));
-
-		/**
-		 * How many polygons we currently have.
-
-		 */
 		this.polyCount = 0;
-
-		/**
-		 * Indicate there were changes in buffers.
-
-		 */
 		this.dirty = false;
-
-		/**
-		 * Optional method to trigger when shapes batch overflows and can't contain any more polygons.
-		 * @type {Function}
-		 * @name ShapesBatch#onOverflow
-		 */
 		this.onOverflow = null;
-
-		/**
-		 * If true, will floor vertices positions before pushing them to batch.
-		 * @type {Boolean}
-		 * @name ShapesBatch#snapPixels
-		 */
 		this.snapPixels = false;
 	}
 
 	/**
 	 * Get the gfx manager.
-
 	 */
-	get #_gfx(): unknown {
+	private get gfx(): unknown {
 		return DrawBatch._gfx;
 	}
 
 	/**
 	 * Get the web gl instance.
 	 */
-	get #_gl(): WebGLRenderingContext {
+	private get gl(): WebGLRenderingContext {
 		return DrawBatch._gfx._internal.gl;
 	}
 
 	/**
 	 * Build the dynamic buffers.
-
 	 */
-	#_createBuffers(batchPolygonsCount: number): void {
-		const gl = this.#_gl;
+	private createBuffers(batchPolygonsCount: number): void {
+		const gl = this.gl;
 
 		// dynamic buffers, used for batch rendering
 		this.buffers = {
@@ -113,16 +104,12 @@ export class ShapesBatch extends DrawBatch {
 		if(maxIndex <= 65535) {
 			indicesArrayType = Uint16Array;
 			this.indicesType = gl.UNSIGNED_SHORT;
-		}
-		else {
+		} else {
 			indicesArrayType = Uint32Array;
 			this.indicesType = gl.UNSIGNED_INT;
 		}
 		const indices = new indicesArrayType(batchPolygonsCount * 3); // 3 = number of indices per sprite
-		for(let i = 0; i < indices.length; i++) {
-
-			indices[i] = i;
-		}
+		for(let i = 0; i < indices.length; i++) indices[i] = i;
 		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.buffers.indexBuffer);
 		gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STATIC_DRAW);
 
@@ -149,7 +136,7 @@ export class ShapesBatch extends DrawBatch {
 	 * @inheritdoc
 	 */
 	public override destroy(): void {
-		const gl = this.#_gl;
+		const gl = this.gl;
 		if(this.buffers) {
 			if(this.buffers.positionBuffer) gl.deleteBuffer(this.buffers.positionBuffer);
 			if(this.buffers.colorsBuffer) gl.deleteBuffer(this.buffers.colorsBuffer);
@@ -168,7 +155,7 @@ export class ShapesBatch extends DrawBatch {
 	 * @inheritdoc
 	 */
 	public override get defaultEffect(): ShapesEffect {
-		return this.#_gfx.builtinEffects.Shapes;
+		return this.gfx.builtinEffects.Shapes;
 	}
 
 	/**
@@ -249,8 +236,8 @@ export class ShapesBatch extends DrawBatch {
 	 * @param skew Skew the drawing corners on X and Y axis, around the origin point.
 	 */
 	public drawQuad(position: Vector2 | Vector3, size: Vector2 | Vector3 | number, color?: Color | Color[] | undefined, rotation?: number, origin?: Vector2, skew?: Vector2): void {
-		const sprite = this.#_gfx.Sprite.build(null, position, size, undefined, color, rotation, origin, skew);
-		this.#_addRect(sprite);
+		const sprite = this.gfx.Sprite.build(null, position, size, undefined, color, rotation, origin, skew);
+		this.addRect(sprite);
 	}
 
 	/**
@@ -340,9 +327,8 @@ export class ShapesBatch extends DrawBatch {
 
 	/**
 	 * Add a rectangle from sprite data.
-
 	 */
-	#_addRect(sprite: unknown, transform: unknown) {
+	private addRect(sprite: unknown, transform: unknown) {
 		// sanity
 		this.__validateDrawing(true);
 
@@ -468,7 +454,6 @@ export class ShapesBatch extends DrawBatch {
 
 	/**
 	 * Called when the batch becomes full while drawing and there's no handler.
-
 	 */
 	private _handleFullBuffer(): void {
 		// invoke on-overflow callback
@@ -483,15 +468,14 @@ export class ShapesBatch extends DrawBatch {
 
 	/**
 	 * @inheritdoc
-
 	 */
 	private override _drawBatch(): void {
 		// get default effect
 		const effect = this.__currDrawingParams.effect;
 
 		// get some members
-		const gl = this.#_gl;
-		const gfx = this.#_gfx;
+		const gl = this.gl;
+		const gfx = this.gfx;
 		const positionArray = this.buffers.positionArray;
 		const colorsArray = this.__currDrawingParams.hasVertexColor ? this.buffers.colorsArray : null;
 		const positionBuffer = this.buffers.positionBuffer;

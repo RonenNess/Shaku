@@ -32,7 +32,6 @@ export class TextureAsset extends TextureAssetBase {
 
 	/**
 	 * Set the WebGL context.
-
 	 */
 	private static _setWebGl(_gl: WebGLRenderingContext): void {
 		gl = _gl;

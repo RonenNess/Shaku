@@ -16,12 +16,26 @@ export abstract class Asset {
 	}
 
 	/**
+	 * Get asset's URL.
+	 * @returns Asset URL.
+	 */
+	public get url(): string {
+		return this._url;
+	}
+
+	/**
 	 * Get if this asset is ready, ie loaded or created.
 	 * @returns True if asset finished loading / creating. This doesn't mean its necessarily valid, only that its done loading.
 	 */
 	public get ready(): boolean {
 		return this.waitingCallbacks === null;
 	}
+
+	/**
+	 * Get if this asset is loaded and valid.
+	 * @returns True if asset is loaded and valid, false otherwise.
+	 */
+	public abstract get valid(): boolean;
 
 	/**
 	 * Register a method to be called when asset is ready.
@@ -51,27 +65,12 @@ export abstract class Asset {
 
 	/**
 	 * Notify all waiting callbacks that this asset is ready.
-
 	 */
 	protected _notifyReady(): void {
 		if(!this.waitingCallbacks) return;
 		for(let i = 0; i < this.waitingCallbacks.length; ++i) this.waitingCallbacks[i](this);
 		this.waitingCallbacks = null;
 	}
-
-	/**
-	 * Get asset's URL.
-	 * @returns Asset URL.
-	 */
-	public get url(): string {
-		return this._url;
-	}
-
-	/**
-	 * Get if this asset is loaded and valid.
-	 * @returns True if asset is loaded and valid, false otherwise.
-	 */
-	public abstract get valid(): boolean;
 
 	/**
 	 * Load the asset from it's URL.

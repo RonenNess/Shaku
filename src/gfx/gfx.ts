@@ -370,7 +370,7 @@ export class Gfx implements IManager {
 	 */
 	setRenderTarget(texture, keepCamera) {
 		// reset cached rendering size
-		this.#_resetCachedRenderingRegion();
+		this.resetCachedRenderingRegion();
 
 		// if texture is null, remove any render target
 		if(texture === null) {
@@ -463,7 +463,7 @@ export class Gfx implements IManager {
 	applyCamera(camera) {
 		// set viewport and projection
 		this._viewport = camera.viewport;
-		const viewport = this.#_getRenderingRegionInternal(true);
+		const viewport = this.getRenderingRegionInternal(true);
 		_gl.viewport(viewport.x, viewport.y, viewport.width, viewport.height);
 		_projection = camera.projection.clone();
 
@@ -473,7 +473,7 @@ export class Gfx implements IManager {
 		}
 
 		// reset cached rendering region
-		this.#_resetCachedRenderingRegion();
+		this.resetCachedRenderingRegion();
 	}
 
 	/**
@@ -482,15 +482,14 @@ export class Gfx implements IManager {
 	 * @param {Boolean} includeOffset If true (default) will include viewport offset, if exists.
 	 * @returns {Rectangle} Rectangle with rendering region.
 	 */
-	#_getRenderingRegionInternal(includeOffset) {
+	private getRenderingRegionInternal(includeOffset) {
 		return this.internal.getRenderingRegionInternal(includeOffset);
 	}
 
 	/**
 	 * Reset cached rendering region values.
-
 	 */
-	#_resetCachedRenderingRegion() {
+	private resetCachedRenderingRegion() {
 		_cachedRenderingRegion.withoutOffset = _cachedRenderingRegion.withOffset = null;
 	}
 
@@ -500,7 +499,7 @@ export class Gfx implements IManager {
 	 * @returns {Rectangle} Rectangle with rendering region.
 	 */
 	getRenderingRegion(includeOffset) {
-		return this.#_getRenderingRegionInternal(includeOffset).clone();
+		return this.getRenderingRegionInternal(includeOffset).clone();
 	}
 
 	/**
@@ -509,7 +508,7 @@ export class Gfx implements IManager {
 	 * @returns {Vector2} rendering size.
 	 */
 	getRenderingSize() {
-		const region = this.#_getRenderingRegionInternal();
+		const region = this.getRenderingRegionInternal();
 		return region.getSize();
 	}
 
@@ -761,7 +760,7 @@ export class Gfx implements IManager {
 	 * @returns {Boolean} True if given shape is in visible region.
 	 */
 	inScreen(shape) {
-		const region = this.#_getRenderingRegionInternal();
+		const region = this.getRenderingRegionInternal();
 
 		if(shape.isCircle) {
 			return region.collideCircle(shape);
@@ -898,7 +897,7 @@ export class Gfx implements IManager {
 		_drawShapePolygonsCount = 0;
 
 		// reset cached rendering region
-		this.#_resetCachedRenderingRegion();
+		this.resetCachedRenderingRegion();
 	}
 
 	/**

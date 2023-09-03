@@ -77,14 +77,10 @@ export class TilemapShape extends CollisionShape {
 					this.tileSize.x,
 					this.tileSize.y)
 			);
-			if(collisionFlags !== undefined) {
-				rect.collisionFlags = collisionFlags;
-			}
+			if(collisionFlags !== undefined) rect.collisionFlags = collisionFlags;
 			this.tiles[key] = rect;
 		}
-		else {
-			delete this.tiles[key];
-		}
+		else delete this.tiles[key];
 	}
 
 	/**
@@ -112,9 +108,7 @@ export class TilemapShape extends CollisionShape {
 			for(let j = startIndex.y; j <= endIndex.y; ++j) {
 				const key = i + "," + j;
 				const tile = this.tiles[key];
-				if(tile && (callback(tile) === false)) {
-					return;
-				}
+				if(tile && (callback(tile) === false)) return;
 			}
 		}
 	}

@@ -1,3 +1,4 @@
+import { Sprite } from "..";
 import { Circle, Color, LoggerFactory, Matrix, Rectangle, Vector2, Vector3 } from "../../utils";
 import { Vertex } from "../vertex";
 import { DrawBatch } from "./draw_batch";
@@ -9,79 +10,76 @@ const _logger = LoggerFactory.getLogger("gfx - sprite - batch"); // TODO
  * Responsible to drawing a batch of line segments or strips.
  */
 export class LinesBatch extends DrawBatch {
+
+	/**
+	 * Optional method to trigger when shapes batch overflows and can't contain any more polygons.
+	 */
+	public onOverflow: (() => void) | null;
+
+	/**
+	 * If true, will floor vertices positions before pushing them to batch.
+	 */
+	public snapPixels: boolean;
+
+	/**
+	 * If true, will draw lines as a single lines strip.
+	 */
+	public linesStrip: boolean;
+
+	/**
+	 * How many line segments this batch can hold.
+	 */
+	private __maxLinesCount: number;
+
+	/**
+	 * How many line segments we currently have.
+	 */
+	private __linesCount: number;
+
+	/**
+	 * Indicate there were changes in buffers.
+	 */
+	private __dirty: boolean;
+
 	/**
 	 * Create the sprites batch.
-	 * @param {Number=} lineSegmentsCount Internal buffers size, in line segments count (line segment = 3 vertices). Bigger value = faster rendering but more RAM.
+	 * @param lineSegmentsCount Internal buffers size, in line segments count (line segment = 3 vertices). Bigger value = faster rendering but more RAM.
 	 */
-	public constructor(lineSegmentsCount) {
+	public constructor(lineSegmentsCount = 500) {
 		// init draw batch
 		super();
 
 		// create buffers for drawing shapes
-		this.#_createBuffers(lineSegmentsCount || 500);
+		this.createBuffers(lineSegmentsCount);
 
-		/**
-		 * How many line segments this batch can hold.
-
-		 */
 		this.__maxLinesCount = Math.floor((this._buffers.positionArray.length / 6));
-
-		/**
-		 * How many line segments we currently have.
-
-		 */
 		this.__linesCount = 0;
-
-		/**
-		 * Indicate there were changes in buffers.
-
-		 */
 		this.__dirty = false;
 
-		/**
-		 * Optional method to trigger when shapes batch overflows and can't contain any more polygons.
-		 * @type {Function}
-		 * @name ShapesBatch#onOverflow
-		 */
 		this.onOverflow = null;
-
-		/**
-		 * If true, will floor vertices positions before pushing them to batch.
-		 * @type {Boolean}
-		 * @name ShapesBatch#snapPixels
-		 */
 		this.snapPixels = false;
-
-		/**
-		 * If true, will draw lines as a single lines strip.
-		 * @type {Boolean}
-		 * @name ShapesBatch#linesStrip
-		 */
 		this.linesStrip = false;
 	}
 
 	/**
 	 * Get the gfx manager.
-
 	 */
-	get #_gfx() {
+	private get gfx() {
 		return DrawBatch._gfx;
 	}
 
 	/**
 	 * Get the web gl instance.
-
 	 */
-	get #_gl() {
+	private get gl() {
 		return DrawBatch._gfx._internal.gl;
 	}
 
 	/**
 	 * Build the dynamic buffers.
-
 	 */
-	#_createBuffers(batchPolygonsCount) {
-		const gl = this.#_gl;
+	private createBuffers(batchPolygonsCount: number): void {
+		const gl = this.gl;
 
 		// dynamic buffers, used for batch rendering
 		this._buffers = {
@@ -129,7 +127,7 @@ export class LinesBatch extends DrawBatch {
 	/**
 	 * @inheritdoc
 	 */
-	override clear() {
+	public override clear(): void {
 		super.clear();
 		this._buffers.positionArray._index = 0;
 		this._buffers.colorsArray._index = 0;
@@ -140,8 +138,8 @@ export class LinesBatch extends DrawBatch {
 	/**
 	 * @inheritdoc
 	 */
-	override destroy() {
-		const gl = this.#_gl;
+	public override destroy(): void {
+		const gl = this.gl;
 		if(this._buffers) {
 			if(this._buffers.positionBuffer) gl.deleteBuffer(this._buffers.positionBuffer);
 			if(this._buffers.colorsBuffer) gl.deleteBuffer(this._buffers.colorsBuffer);
@@ -152,22 +150,22 @@ export class LinesBatch extends DrawBatch {
 	/**
 	 * @inheritdoc
 	 */
-	override get isDestroyed() {
+	public override get isDestroyed(): boolean {
 		return Boolean(this._buffers) === false;
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	override get defaultEffect() {
-		return this.#_gfx.builtinEffects.Shapes;
+	public override get defaultEffect() {
+		return this.gfx.builtinEffects.Shapes;
 	}
 
 	/**
 	 * Push vertices to drawing batch.
-	 * @param {Array<Vertex>} vertices Vertices to push. Vertices count must be dividable by 3 to keep the batch consistent of polygons.
+	 * @param vertices Vertices to push. Vertices count must be dividable by 3 to keep the batch consistent of polygons.
 	 */
-	drawVertices(vertices) {
+	public drawVertices(vertices: Vertex[]): void {
 		// sanity
 		this.__validateDrawing(true);
 
@@ -216,30 +214,28 @@ export class LinesBatch extends DrawBatch {
 
 	/**
 	 * Add a rectangle to draw.
-	 * @param {Vector2|Vector3} position Drawing position (at origin). If vector3 is provided, will pass z value to the shader code position attribute.
-	 * @param {Vector2|Vector3|Number} size Drawing size. If vector3 is provided, will pass z value to the shader code position attribute for the bottom vertices, as position.z + size.z.
-	 * @param {Color|Array<Color>|undefined=} color Rectangle color, or undefined to not change color. If array is set, will assign each color to different vertex, starting from top-left.
-	 * @param {Number=} rotation Rotate rectangle.
-	 * @param {Vector2=} origin Drawing origin. This will be the point at "position" and rotation origin.
-	 * @param {Vector2=} skew Skew the drawing corners on X and Y axis, around the origin point.
+	 * @param position Drawing position (at origin). If vector3 is provided, will pass z value to the shader code position attribute.
+	 * @param size Drawing size. If vector3 is provided, will pass z value to the shader code position attribute for the bottom vertices, as position.z + size.z.
+	 * @param color Rectangle color, or undefined to not change color. If array is set, will assign each color to different vertex, starting from top-left.
+	 * @param rotation Rotate rectangle.
+	 * @param origin Drawing origin. This will be the point at "position" and rotation origin.
+	 * @param skew Skew the drawing corners on X and Y axis, around the origin point.
 	 */
-	drawQuad(position, size, color, rotation, origin, skew) {
-		const sprite = this.#_gfx.Sprite.build(null, position, size, undefined, color, rotation, origin, skew);
-		this.#_addRect(sprite);
+	public drawQuad(position: Vector2 | Vector3, size: Vector2 | Vector3 | number, color?: Color | Color[] | undefined, rotation?: number, origin?: Vector2, skew?: Vector2): void {
+		const sprite = this.gfx.Sprite.build(null, position, size, undefined, color, rotation, origin, skew);
+		this.addRect(sprite);
 	}
 
 	/**
 	 * Add a rectangle that covers a given destination rectangle.
-	 * @param {Rectangle|Vector2} destRect Destination rectangle to draw on. If vector is provided, will draw from 0,0 with vector as size.
-	 * @param {Rectangle=} sourceRect Source rectangle, or undefined to use the entire texture.
-	 * @param {Color|Array<Color>|undefined=} color Rectangle color, or undefined to not change color. If array is set, will assign each color to different vertex, starting from top-left.
-	 * @param {Number=} rotation Rotate rectangle.
-	 * @param {Vector2=} origin Drawing origin. This will be the point at "position" and rotation origin.
+	 * @param destRect Destination rectangle to draw on. If vector is provided, will draw from 0,0 with vector as size.
+	 * @param sourceRect Source rectangle, or undefined to use the entire texture.
+	 * @param color Rectangle color, or undefined to not change color. If array is set, will assign each color to different vertex, starting from top-left.
+	 * @param rotation Rotate rectangle.
+	 * @param origin Drawing origin. This will be the point at "position" and rotation origin.
 	 */
-	drawRectangle(destRect, sourceRect, color, rotation, origin) {
-		if((destRect.isVector2) || (destRect.isVector3)) {
-			destRect = new Rectangle(0, 0, destRect.x, destRect.y);
-		}
+	public drawRectangle(destRect: Rectangle | Vector2, sourceRect?: Rectangle, color?: Color | Color[] | undefined, rotation?: number, origin?: Vector2): void {
+		if((destRect instanceof Vector2) || (destRect instanceof Vector3)) destRect = new Rectangle(0, 0, destRect.x, destRect.y);
 		this.drawQuad(destRect.getCenter(), destRect.getSize(), sourceRect, color, rotation, origin);
 	}
 
@@ -251,7 +247,7 @@ export class LinesBatch extends DrawBatch {
 	 * @param ratio If provided, will scale the circle on X and Y axis to turn it into an oval. If a number is provided, will use this number to scale Y axis.
 	 * @param rotation If provided will rotate the oval / circle.
 	 */
-	drawCircle(circle: Circle, color: Color, segmentsCount = 24, ratio: Vector2 | number = Vector2.oneReadonly, rotation?: number) {
+	public drawCircle(circle: Circle, color: Color, segmentsCount = 24, ratio: Vector2 | number = Vector2.oneReadonly, rotation?: number) {
 		// sanity
 		this.__validateDrawing(true);
 
@@ -316,9 +312,8 @@ export class LinesBatch extends DrawBatch {
 
 	/**
 	 * Add a rectangle from sprite data.
-
 	 */
-	#_addRect(sprite, transform) {
+	private addRect(sprite: Sprite, transform: Matrix) {
 		// sanity
 		this.__validateDrawing(true);
 
@@ -435,37 +430,34 @@ export class LinesBatch extends DrawBatch {
 
 	/**
 	 * Get how many line segments are currently in batch.
-	 * @returns {Number} Line segments in batch count.
+	 * @returns Line segments in batch count.
 	 */
-	get linesInBatch() {
+	public get linesInBatch(): number {
 		return this.__linesCount;
 	}
 
 	/**
 	 * Get how many line segments this batch can contain.
-	 * @returns {Number} Max line segments count.
+	 * @returns Max line segments count.
 	 */
-	get maxLinesCount() {
+	public get maxLinesCount(): number {
 		return this.__maxLinesCount;
 	}
 
 	/**
 	 * Check if this batch is full.
-	 * @returns {Boolean} True if batch is full.
+	 * @returns True if batch is full.
 	 */
-	get isFull() {
+	public get isFull(): boolean {
 		return this.__linesCount >= this.__maxLinesCount;
 	}
 
 	/**
 	 * Called when the batch becomes full while drawing and there's no handler.
-
 	 */
-	private _handleFullBuffer() {
+	private _handleFullBuffer(): void {
 		// invoke on-overflow callback
-		if(this.onOverflow) {
-			this.onOverflow();
-		}
+		this.onOverflow?.();
 
 		// draw current batch and clear
 		this._drawBatch();
@@ -474,15 +466,14 @@ export class LinesBatch extends DrawBatch {
 
 	/**
 	 * @inheritdoc
-
 	 */
 	private override _drawBatch() {
 		// get default effect
 		let effect = this.__currDrawingParams.effect;
 
 		// get some members
-		const gl = this.#_gl;
-		const gfx = this.#_gfx;
+		const gl = this.gl;
+		const gfx = this.gfx;
 		const positionArray = this._buffers.positionArray;
 		const colorsArray = this.__currDrawingParams.hasVertexColor ? this._buffers.colorsArray : null;
 		const positionBuffer = this._buffers.positionBuffer;
@@ -493,9 +484,7 @@ export class LinesBatch extends DrawBatch {
 		const needBuffersCopy = this.__dirty;
 
 		// nothing to draw? skip
-		if(positionArray._index <= 1) {
-			return;
-		}
+		if(positionArray._index <= 1) return;
 
 		// get default effect
 		effect = effect || this.defaultEffect;
@@ -536,9 +525,7 @@ export class LinesBatch extends DrawBatch {
 		this.__dirty = false;
 
 		// if static, free arrays we no longer need them
-		if(this.__staticBuffers) {
-			this._buffers.positionArray = this._buffers.colorsArray = null;
-		}
+		if(this.__staticBuffers) this._buffers.positionArray = this._buffers.colorsArray = null;
 	}
 }
 

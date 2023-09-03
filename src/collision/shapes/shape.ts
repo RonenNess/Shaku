@@ -48,7 +48,6 @@ export abstract class CollisionShape {
 	/**
 	 * Get Shapes batch to draw this shape with, either given or default from world.
 	 * If not provided and have no world, will throw exception.
-
 	 */
 	protected _getDebugDrawBatch(shapesBatch: ShapesBatch): ShapesBatch {
 		if(!shapesBatch && !this.world) throw new Error("Can't debug-draw a collision shape that is not under any collision world without providing a shapes batch to use!");
@@ -85,7 +84,6 @@ export abstract class CollisionShape {
 
 	/**
 	 * Get debug drawing color.
-
 	 */
 	protected _getDebugColor(): Color {
 		// use forced debug color
@@ -100,7 +98,6 @@ export abstract class CollisionShape {
 
 	/**
 	 * Get default debug colors for given collision flags.
-
 	 */
 	protected _getDefaultDebugColorFor(flags: number): Color {
 		return defaultDebugColors[flags % defaultDebugColors.length];
@@ -139,7 +136,6 @@ export abstract class CollisionShape {
 
 	/**
 	 * Called when the collision shape changes and we need to update the parent world.
-
 	 */
 	protected _shapeChanged(): void {
 		if(this.world) this.world._queueUpdate(this);
