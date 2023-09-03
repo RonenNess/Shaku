@@ -13,17 +13,17 @@ export class ShapesBatch extends DrawBatch {
 	public onOverflow: (() => void) | null;
 	public snapPixels: boolean;
 
-	private __maxPolyCount: number;
-	private __polyCount: number;
-	private __dirty: boolean;
-	private _buffers: {
+	private maxPolyCount: number;
+	private polyCount: number;
+	private dirty: boolean;
+	private buffers: {
 		positionBuffer: unknown;
 		positionArray: Float32Array;
 		colorsBuffer: unknown;
 		colorsArray: Float32Array;
 		indexBuffer: unknown;
 	} | null;
-	private __indicesType: unknown;
+	private indicesType: unknown;
 
 	/**
 	 * Create the sprites batch.
@@ -40,19 +40,19 @@ export class ShapesBatch extends DrawBatch {
 		 * How many polygons this batch can hold.
 
 		 */
-		this.__maxPolyCount = Math.floor((this._buffers.positionArray.length / 9));
+		this.maxPolyCount = Math.floor((this.buffers.positionArray.length / 9));
 
 		/**
 		 * How many polygons we currently have.
 
 		 */
-		this.__polyCount = 0;
+		this.polyCount = 0;
 
 		/**
 		 * Indicate there were changes in buffers.
 
 		 */
-		this.__dirty = false;
+		this.dirty = false;
 
 		/**
 		 * Optional method to trigger when shapes batch overflows and can't contain any more polygons.
@@ -79,9 +79,8 @@ export class ShapesBatch extends DrawBatch {
 
 	/**
 	 * Get the web gl instance.
-
 	 */
-	get #_gl(): unknown {
+	get #_gl(): WebGLRenderingContext {
 		return DrawBatch._gfx._internal.gl;
 	}
 
@@ -93,7 +92,7 @@ export class ShapesBatch extends DrawBatch {
 		const gl = this.#_gl;
 
 		// dynamic buffers, used for batch rendering
-		this._buffers = {
+		this.buffers = {
 
 			positionBuffer: gl.createBuffer(),
 			positionArray: new Float32Array(3 * 3 * batchPolygonsCount),
@@ -109,30 +108,30 @@ export class ShapesBatch extends DrawBatch {
 		let indicesArrayType;
 		if(maxIndex <= 256) {
 			indicesArrayType = Uint8Array;
-			this.__indicesType = gl.UNSIGNED_BYTE;
+			this.indicesType = gl.UNSIGNED_BYTE;
 		}
 		if(maxIndex <= 65535) {
 			indicesArrayType = Uint16Array;
-			this.__indicesType = gl.UNSIGNED_SHORT;
+			this.indicesType = gl.UNSIGNED_SHORT;
 		}
 		else {
 			indicesArrayType = Uint32Array;
-			this.__indicesType = gl.UNSIGNED_INT;
+			this.indicesType = gl.UNSIGNED_INT;
 		}
 		const indices = new indicesArrayType(batchPolygonsCount * 3); // 3 = number of indices per sprite
 		for(let i = 0; i < indices.length; i++) {
 
 			indices[i] = i;
 		}
-		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this._buffers.indexBuffer);
+		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.buffers.indexBuffer);
 		gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STATIC_DRAW);
 
 		// extend buffers functionality
 		function extendBuffer(buff) {
 			if(buff) buff._index = 0;
 		}
-		extendBuffer(this._buffers.positionArray);
-		extendBuffer(this._buffers.colorsArray);
+		extendBuffer(this.buffers.positionArray);
+		extendBuffer(this.buffers.colorsArray);
 	}
 
 	/**
@@ -140,10 +139,10 @@ export class ShapesBatch extends DrawBatch {
 	 */
 	public override clear(): void {
 		super.clear();
-		this._buffers.positionArray._index = 0;
-		this._buffers.colorsArray._index = 0;
-		this.__polyCount = 0;
-		this.__dirty = false;
+		this.buffers.positionArray._index = 0;
+		this.buffers.colorsArray._index = 0;
+		this.polyCount = 0;
+		this.dirty = false;
 	}
 
 	/**
@@ -151,18 +150,18 @@ export class ShapesBatch extends DrawBatch {
 	 */
 	public override destroy(): void {
 		const gl = this.#_gl;
-		if(this._buffers) {
-			if(this._buffers.positionBuffer) gl.deleteBuffer(this._buffers.positionBuffer);
-			if(this._buffers.colorsBuffer) gl.deleteBuffer(this._buffers.colorsBuffer);
+		if(this.buffers) {
+			if(this.buffers.positionBuffer) gl.deleteBuffer(this.buffers.positionBuffer);
+			if(this.buffers.colorsBuffer) gl.deleteBuffer(this.buffers.colorsBuffer);
 		}
-		this._buffers = null;
+		this.buffers = null;
 	}
 
 	/**
 	 * @inheritdoc
 	 */
 	public override get isDestroyed(): boolean {
-		return Boolean(this._buffers) === false;
+		return Boolean(this.buffers) === false;
 	}
 
 	/**
@@ -205,8 +204,8 @@ export class ShapesBatch extends DrawBatch {
 
 		// push vertices
 		let i = 0;
-		const colors = this._buffers.colorsArray;
-		const positions = this._buffers.positionArray;
+		const colors = this.buffers.colorsArray;
+		const positions = this.buffers.positionArray;
 		for(const vertex of vertices) {
 			// push color
 			if(this.__currDrawingParams.hasVertexColor) {
@@ -224,10 +223,10 @@ export class ShapesBatch extends DrawBatch {
 			// every 3 vertices..
 			if(i++ === 2) {
 				// update quads count
-				this.__polyCount++;
+				this.polyCount++;
 
 				// check if full
-				if(this.__polyCount >= this.__maxPolyCount) {
+				if(this.polyCount >= this.maxPolyCount) {
 					this._handleFullBuffer();
 				}
 
@@ -237,7 +236,7 @@ export class ShapesBatch extends DrawBatch {
 		}
 
 		// mark as dirty
-		this.__dirty = true;
+		this.dirty = true;
 	}
 
 	/**
@@ -348,7 +347,7 @@ export class ShapesBatch extends DrawBatch {
 		this.__validateDrawing(true);
 
 		// mark as dirty
-		this.__dirty = true;
+		this.dirty = true;
 
 		// add rectangle from sprite data
 		{
@@ -448,7 +447,7 @@ export class ShapesBatch extends DrawBatch {
 	 * @returns Polygons in batch count.
 	 */
 	public get polygonsInBatch(): number {
-		return this.__polyCount;
+		return this.polyCount;
 	}
 
 	/**
@@ -456,7 +455,7 @@ export class ShapesBatch extends DrawBatch {
 	 * @returns Max polygons count.
 	 */
 	public get maxPolygonsCount(): number {
-		return this.__maxPolyCount;
+		return this.maxPolyCount;
 	}
 
 	/**
@@ -464,7 +463,7 @@ export class ShapesBatch extends DrawBatch {
 	 * @returns True if batch is full.
 	 */
 	public get isFull(): boolean {
-		return this.__polyCount >= this.__maxPolyCount;
+		return this.polyCount >= this.maxPolyCount;
 	}
 
 	/**
@@ -493,14 +492,14 @@ export class ShapesBatch extends DrawBatch {
 		// get some members
 		const gl = this.#_gl;
 		const gfx = this.#_gfx;
-		const positionArray = this._buffers.positionArray;
-		const colorsArray = this.__currDrawingParams.hasVertexColor ? this._buffers.colorsArray : null;
-		const positionBuffer = this._buffers.positionBuffer;
-		const colorsBuffer = this._buffers.colorsBuffer;
-		const indexBuffer = this._buffers.indexBuffer;
+		const positionArray = this.buffers.positionArray;
+		const colorsArray = this.__currDrawingParams.hasVertexColor ? this.buffers.colorsArray : null;
+		const positionBuffer = this.buffers.positionBuffer;
+		const colorsBuffer = this.buffers.colorsBuffer;
+		const indexBuffer = this.buffers.indexBuffer;
 
 		// should copy buffers
-		const needBuffersCopy = this.__dirty;
+		const needBuffersCopy = this.dirty;
 
 		// calculate current batch quads count
 		const _currPolyCount = this.polygonsInBatch;
@@ -535,16 +534,16 @@ export class ShapesBatch extends DrawBatch {
 		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
 
 		// draw elements
-		gl.drawElements(gl.TRIANGLES, _currPolyCount * 3, this.__indicesType, 0);
+		gl.drawElements(gl.TRIANGLES, _currPolyCount * 3, this.indicesType, 0);
 		gfx._internal.drawCallsCount++;
 		gfx._internal.drawShapePolygonsCount += _currPolyCount;
 
 		// mark as not dirty
-		this.__dirty = false;
+		this.dirty = false;
 
 		// if static, free arrays we no longer need them
 		if(this.__staticBuffers) {
-			this._buffers.positionArray = this._buffers.colorsArray = null;
+			this.buffers.positionArray = this.buffers.colorsArray = null;
 		}
 	}
 }

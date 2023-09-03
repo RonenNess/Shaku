@@ -12,14 +12,13 @@ const _logger = LoggerFactory.getLogger("collision"); // TODO
  */
 export class CollisionWorld {
 	private resolver: CollisionResolver;
-
-	private _gridCellSize: Vector2;
-	private _grid: Record<`${number},${number}`, Set<CollisionShape>>;
-	private _shapesToUpdate: Set<CollisionShape>;
-	private _cellsToDelete: Set<string>;
+	private gridCellSize: Vector2;
+	private grid: Record<`${number},${number}`, Set<CollisionShape>>;
+	private shapesToUpdate: Set<CollisionShape>;
+	private cellsToDelete: Set<string>;
 	private _stats!: WorldStats;
 
-	private __debugDrawBatch: ShapesBatch;
+	private debugDrawBatch: ShapesBatch;
 
 	/**
 	 * Create the collision world.
@@ -36,14 +35,14 @@ export class CollisionWorld {
 		// set grid cell size
 		if(typeof gridCellSize === "number") gridCellSize = new Vector2(gridCellSize, gridCellSize);
 		else gridCellSize = gridCellSize.clone();
-		this._gridCellSize = gridCellSize;
+		this.gridCellSize = gridCellSize;
 
 		// create collision grid
-		this._grid = {};
+		this.grid = {};
 
 		// shapes that need updates and grid chunks to delete
-		this._shapesToUpdate = new Set();
-		this._cellsToDelete = new Set();
+		this.shapesToUpdate = new Set();
+		this.cellsToDelete = new Set();
 
 		// reset stats data
 		this.resetStats();
@@ -79,22 +78,22 @@ export class CollisionWorld {
 	 */
 	#_performUpdates(): void {
 		// delete empty grid cells
-		if(this._cellsToDelete.size > 0) {
-			this._stats.deletedGridCells += this._cellsToDelete.size;
-			for(const key of this._cellsToDelete) {
-				if(this._grid[key] && this._grid[key].size === 0) {
-					delete this._grid[key];
+		if(this.cellsToDelete.size > 0) {
+			this._stats.deletedGridCells += this.cellsToDelete.size;
+			for(const key of this.cellsToDelete) {
+				if(this.grid[key] && this.grid[key].size === 0) {
+					delete this.grid[key];
 				}
 			}
-			this._cellsToDelete.clear();
+			this.cellsToDelete.clear();
 		}
 
 		// update all shapes
-		if(this._shapesToUpdate.size > 0) {
-			for(const shape of this._shapesToUpdate) {
+		if(this.shapesToUpdate.size > 0) {
+			for(const shape of this.shapesToUpdate) {
 				this.#_updateShape(shape);
 			}
-			this._shapesToUpdate.clear();
+			this.shapesToUpdate.clear();
 		}
 	}
 
@@ -104,10 +103,10 @@ export class CollisionWorld {
 	 */
 	#_getCell(i: number, j: number): Set<CollisionShape> {
 		const key = `${i},${j}` as const;
-		let ret = this._grid[key];
+		let ret = this.grid[key];
 		if(!ret) {
 			this._stats.createdGridCell++;
-			this._grid[key] = ret = new Set();
+			this.grid[key] = ret = new Set();
 		}
 		return ret;
 	}
@@ -127,10 +126,10 @@ export class CollisionWorld {
 
 		// get new range
 		const bb = shape._getBoundingBox();
-		const minx = Math.floor(bb.left / this._gridCellSize.x);
-		const miny = Math.floor(bb.top / this._gridCellSize.y);
-		const maxx = Math.ceil(bb.right / this._gridCellSize.x);
-		const maxy = Math.ceil(bb.bottom / this._gridCellSize.y);
+		const minx = Math.floor(bb.left / this.gridCellSize.x);
+		const miny = Math.floor(bb.top / this.gridCellSize.y);
+		const maxx = Math.ceil(bb.right / this.gridCellSize.x);
+		const maxy = Math.ceil(bb.bottom / this.gridCellSize.y);
 
 		// change existing grid cells
 		if(shape._worldRange) {
@@ -159,11 +158,11 @@ export class CollisionWorld {
 
 					// remove from cell
 					const key = i + "," + j;
-					const currSet = this._grid[key];
+					const currSet = this.grid[key];
 					if(currSet) {
 						currSet.delete(shape);
 						if(currSet.size === 0) {
-							this._cellsToDelete.add(key);
+							this.cellsToDelete.add(key);
 						}
 					}
 				}
@@ -203,7 +202,7 @@ export class CollisionWorld {
 	 * Request update for this shape on next updates call.
 	 */
 	private _queueUpdate(shape: CollisionShape): void {
-		this._shapesToUpdate.add(shape);
+		this.shapesToUpdate.add(shape);
 	}
 
 	/**
@@ -211,8 +210,8 @@ export class CollisionWorld {
 	 * @param callback Callback to invoke on all shapes. Return false to break iteration.
 	 */
 	public iterateShapes(callback: (shape: CollisionShape) => boolean): void {
-		for(const key in this._grid) {
-			const cell = this._grid[key as keyof typeof this._grid];
+		for(const key in this.grid) {
+			const cell = this.grid[key as keyof typeof this.grid];
 			if(cell) {
 				for(const shape of cell) {
 					if(callback(shape) === false) {
@@ -258,11 +257,11 @@ export class CollisionWorld {
 			for(let i = minx; i < maxx; ++i) {
 				for(let j = miny; j < maxy; ++j) {
 					const key = i + "," + j;
-					const currSet = this._grid[key];
+					const currSet = this.grid[key];
 					if(currSet) {
 						currSet.delete(shape);
 						if(currSet.size === 0) {
-							this._cellsToDelete.add(key);
+							this.cellsToDelete.add(key);
 						}
 					}
 				}
@@ -270,7 +269,7 @@ export class CollisionWorld {
 		}
 
 		// remove shape
-		this._shapesToUpdate.delete(shape);
+		this.shapesToUpdate.delete(shape);
 		shape._setParent(null);
 
 		// do general updates
@@ -288,10 +287,10 @@ export class CollisionWorld {
 	#_iterateBroadPhase(shape: CollisionShape, handler: (shape: CollisionShape) => boolean, mask: number, predicate: (shape: CollisionShape) => boolean): void {
 		// get grid range
 		const bb = shape._getBoundingBox();
-		const minx = Math.floor(bb.left / this._gridCellSize.x);
-		const miny = Math.floor(bb.top / this._gridCellSize.y);
-		const maxx = Math.ceil(bb.right / this._gridCellSize.x);
-		const maxy = Math.ceil(bb.bottom / this._gridCellSize.y);
+		const minx = Math.floor(bb.left / this.gridCellSize.x);
+		const miny = Math.floor(bb.top / this.gridCellSize.y);
+		const maxx = Math.ceil(bb.right / this.gridCellSize.x);
+		const maxy = Math.ceil(bb.bottom / this.gridCellSize.y);
 
 		// update stats
 		this._stats.broadPhaseCalls++;
@@ -305,7 +304,7 @@ export class CollisionWorld {
 
 				// get current grid chunk
 				const key = i + "," + j;
-				const currSet = this._grid[key];
+				const currSet = this.grid[key];
 
 				// iterate shapes in grid chunk
 				if(currSet) {
@@ -464,7 +463,7 @@ export class CollisionWorld {
 	 * @param batch Batch to use for debug draw.
 	 */
 	public setDebugDrawBatch(batch: ShapesBatch): void {
-		this.__debugDrawBatch = batch;
+		this.debugDrawBatch = batch;
 	}
 
 	/**
@@ -472,8 +471,8 @@ export class CollisionWorld {
 	 * @returns Shapes batch instance used to debug-draw collision world.
 	 */
 	public getOrCreateDebugDrawBatch(): ShapesBatch {
-		if(!this.__debugDrawBatch) this.setDebugDrawBatch(new gfx.ShapesBatch());
-		return this.__debugDrawBatch;
+		if(!this.debugDrawBatch) this.setDebugDrawBatch(new gfx.ShapesBatch());
+		return this.debugDrawBatch;
 	}
 
 	/**
@@ -512,20 +511,20 @@ export class CollisionWorld {
 
 		// get visible grid cells
 		const bb = camera ? camera.getRegion() : gfx._internal.getRenderingRegionInternal(false);
-		const minx = Math.floor(bb.left / this._gridCellSize.x);
-		const miny = Math.floor(bb.top / this._gridCellSize.y);
-		const maxx = minx + Math.ceil(bb.width / this._gridCellSize.x);
-		const maxy = miny + Math.ceil(bb.height / this._gridCellSize.y);
+		const minx = Math.floor(bb.left / this.gridCellSize.x);
+		const miny = Math.floor(bb.top / this.gridCellSize.y);
+		const maxx = minx + Math.ceil(bb.width / this.gridCellSize.x);
+		const maxy = miny + Math.ceil(bb.height / this.gridCellSize.y);
 		for(let i = minx; i <= maxx; ++i) {
 			for(let j = miny; j <= maxy; ++j) {
 
 				// get current cell
-				const cell = this._grid[i + "," + j];
+				const cell = this.grid[i + "," + j];
 
 				// draw grid cell
 				const color = (cell && cell.size) ? gridHighlitColor : gridColor;
-				const cellRect1 = new Rectangle(i * this._gridCellSize.x, j * this._gridCellSize.y, this._gridCellSize.x, 2);
-				const cellRect2 = new Rectangle(i * this._gridCellSize.x, j * this._gridCellSize.y, 2, this._gridCellSize.y);
+				const cellRect1 = new Rectangle(i * this.gridCellSize.x, j * this.gridCellSize.y, this.gridCellSize.x, 2);
+				const cellRect2 = new Rectangle(i * this.gridCellSize.x, j * this.gridCellSize.y, 2, this.gridCellSize.y);
 				shapesBatch.drawRectangle(cellRect1, color);
 				shapesBatch.drawRectangle(cellRect2, color);
 

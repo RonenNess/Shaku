@@ -6,9 +6,9 @@ import { CollisionShape } from "./shape";
  * Collision circle class.
  */
 export class CircleShape extends CollisionShape {
-	private _circle: Circle;
-	private _position: Vector2;
-	private _boundingBox: Rectangle;
+	private circle: Circle;
+	private position: Vector2;
+	private boundingBox: Rectangle;
 
 	/**
 	 * Create the collision shape.
@@ -31,9 +31,9 @@ export class CircleShape extends CollisionShape {
 	 * @param circle Circle shape.
 	 */
 	public setShape(circle: Circle): void {
-		this._circle = circle;
-		this._position = circle.center;
-		this._boundingBox = new Rectangle(circle.center.x - circle.radius, circle.center.y - circle.radius, circle.radius * 2, circle.radius * 2);
+		this.circle = circle;
+		this.position = circle.center;
+		this.boundingBox = new Rectangle(circle.center.x - circle.radius, circle.center.y - circle.radius, circle.radius * 2, circle.radius * 2);
 		this._shapeChanged();
 	}
 
@@ -41,21 +41,21 @@ export class CircleShape extends CollisionShape {
 	 * @inheritdoc
 	 */
 	protected _getRadius(): number {
-		return this._circle.radius;
+		return this.circle.radius;
 	}
 
 	/**
 	 * @inheritdoc
 	 */
 	public getCenter(): Vector2 {
-		return this._position.clone();
+		return this.position.clone();
 	}
 
 	/**
 	 * @inheritdoc
 	 */
 	protected _getBoundingBox(): Rectangle {
-		return this._boundingBox;
+		return this.boundingBox;
 	}
 
 	/**
@@ -67,7 +67,7 @@ export class CircleShape extends CollisionShape {
 		shapesBatch = this._getDebugDrawBatch(shapesBatch);
 		const needToBegin = !shapesBatch.isDrawing;
 		if(needToBegin) shapesBatch.begin();
-		shapesBatch.drawCircle(this._circle, color, 14);
+		shapesBatch.drawCircle(this.circle, color, 14);
 		if(needToBegin) shapesBatch.end();
 	}
 }

@@ -3,16 +3,6 @@ import { Matrix } from "./matrix";
 import { Vector2 } from "./shapes";
 import { TransformModes } from "./transform_modes";
 
-// some default values
-const _defaults = {
-	position: Vector2.zero(),
-	positionMode: TransformModes.RELATIVE,
-	scale: Vector2.one(),
-	scaleMode: TransformModes.AXIS_ALIGNED,
-	rotation: 0,
-	rotationMode: TransformModes.RELATIVE,
-};
-
 /**
  * Transformations helper class to store 2d position, rotation and scale.
  * Can also perform transformations inheritance, where we combine local with parent transformations.
@@ -29,6 +19,17 @@ const _defaults = {
  * const matrix = combined.asMatrix();
  */
 export class Transformation {
+
+	// some default values
+	private static readonly defaults = {
+		position: Vector2.zero(),
+		positionMode: TransformModes.RELATIVE,
+		scale: Vector2.one(),
+		scaleMode: TransformModes.AXIS_ALIGNED,
+		rotation: 0,
+		rotationMode: TransformModes.RELATIVE,
+	};
+
 	/**
 	 * Method to call when this transformation change.
 	 * Function params: transformation instance (this), properties changed (boolean), transform modes changed (boolean).
@@ -38,12 +39,12 @@ export class Transformation {
 	/**
 	 * Transformation local position.
 	 */
-	private _position: Vector2;
+	private position: Vector2;
 
 	/**
 	 * Position transformation mode.
 	 */
-	private _positionMode: TransformModes;
+	private positionMode: TransformModes;
 
 	/**
 	 * Transformation local scale.
@@ -53,22 +54,22 @@ export class Transformation {
 	/**
 	 * Scale transformation mode.
 	 */
-	private _scaleMode: TransformModes;
+	private scaleMode: TransformModes;
 
 	/**
 	 * Transformation local rotation.
 	 */
-	private _rotation: number;
+	private rotation: number;
 
 	/**
 	 * Rotation transformation mode.
 	 */
-	private _rotationMode: TransformModes;
+	private rotationMode: TransformModes;
 
-	private _dirty: boolean;
-	private _matrix: Matrix | null;
-	private _worldMatrix: Matrix;
-	private _worldPosition: Vector2;
+	private dirty: boolean;
+	private matrix: Matrix | null;
+	private worldMatrix: Matrix;
+	private worldPosition: Vector2;
 
 	/**
 	 * Create the transformations.
@@ -76,13 +77,13 @@ export class Transformation {
 	 * @param rotation Optional rotation value.
 	 * @param scale Optional scale value.
 	 */
-	public constructor(position: Vector2 = _defaults.position.clone(), rotation: number = _defaults.rotation, scale: Vector2 = _defaults.scale.clone()) {
-		this._position = position;
-		this._positionMode = _defaults.positionMode;
+	public constructor(position: Vector2 = Transformation.defaults.position.clone(), rotation: number = Transformation.defaults.rotation, scale: Vector2 = Transformation.defaults.scale.clone()) {
+		this.position = position;
+		this.positionMode = Transformation.defaults.positionMode;
 		this._scale = scale;
-		this._scaleMode = _defaults.scaleMode;
-		this._rotation = rotation;
-		this._rotationMode = _defaults.rotationMode;
+		this.scaleMode = Transformation.defaults.scaleMode;
+		this.rotation = rotation;
+		this.rotationMode = Transformation.defaults.rotationMode;
 		this.onChange = null;
 	}
 
@@ -91,7 +92,7 @@ export class Transformation {
 	 * @returns Position.
 	 */
 	public getPosition(): Vector2 {
-		return this._position.clone();
+		return this.position.clone();
 	}
 
 	/**
@@ -99,7 +100,7 @@ export class Transformation {
 	 * @returns Position transformation mode.
 	 */
 	public getPositionMode(): TransformModes {
-		return this._positionMode;
+		return this.positionMode;
 	}
 
 	/**
@@ -108,8 +109,8 @@ export class Transformation {
 	 * @returns this.
 	 */
 	public setPosition(value: Vector2): Transformation {
-		if(this._position.equals(value)) return this;
-		this._position.copy(value);
+		if(this.position.equals(value)) return this;
+		this.position.copy(value);
 		this.#_markDirty(true, false);
 		return this;
 	}
@@ -120,8 +121,8 @@ export class Transformation {
 	 * @returns this.
 	 */
 	public setPositionX(value: number): Transformation {
-		if(this._position.x === value) return this;
-		this._position.x = value;
+		if(this.position.x === value) return this;
+		this.position.x = value;
 		this.#_markDirty(true, false);
 		return this;
 	}
@@ -132,8 +133,8 @@ export class Transformation {
 	 * @returns this.
 	 */
 	public setPositionY(value: number): Transformation {
-		if(this._position.y === value) return this;
-		this._position.y = value;
+		if(this.position.y === value) return this;
+		this.position.y = value;
 		this.#_markDirty(true, false);
 		return this;
 	}
@@ -144,7 +145,7 @@ export class Transformation {
 	 * @returns this.
 	 */
 	public move(value: Vector2): Transformation {
-		this._position.addSelf(value);
+		this.position.addSelf(value);
 		this.#_markDirty(true, false);
 		return this;
 	}
@@ -155,8 +156,8 @@ export class Transformation {
 	 * @returns this.
 	 */
 	public setPositionMode(value: TransformModes): Transformation {
-		if(this._positionMode === value) return this;
-		this._positionMode = value;
+		if(this.positionMode === value) return this;
+		this.positionMode = value;
 		this.#_markDirty(false, true);
 		return this;
 	}
@@ -174,7 +175,7 @@ export class Transformation {
 	 * @returns Scale transformation mode.
 	 */
 	public getScaleMode(): TransformModes {
-		return this._scaleMode;
+		return this.scaleMode;
 	}
 
 	/**
@@ -230,8 +231,8 @@ export class Transformation {
 	 * @returns this.
 	 */
 	public setScaleMode(value: TransformModes): Transformation {
-		if(this._scaleMode === value) return this;
-		this._scaleMode = value;
+		if(this.scaleMode === value) return this;
+		this.scaleMode = value;
 		this.#_markDirty(false, true);
 		return this;
 	}
@@ -241,7 +242,7 @@ export class Transformation {
 	 * @returns rotation.
 	 */
 	public getRotation(): number {
-		return this._rotation;
+		return this.rotation;
 	}
 
 	/**
@@ -249,7 +250,7 @@ export class Transformation {
 	 * @returns rotation.
 	 */
 	public getRotationDegrees(): number {
-		return MathHelper.toDegrees(this._rotation);
+		return MathHelper.toDegrees(this.rotation);
 	}
 
 	/**
@@ -266,7 +267,7 @@ export class Transformation {
 	 * @returns Rotation transformations mode.
 	 */
 	public getRotationMode(): TransformModes {
-		return this._rotationMode;
+		return this.rotationMode;
 	}
 
 	/**
@@ -276,10 +277,10 @@ export class Transformation {
 	 * @returns this.
 	 */
 	public setRotation(value: number, wrap: boolean): Transformation {
-		if(this._rotation === value) return this;
-		this._rotation = value;
-		if(wrap && ((this._rotation < 0) || (this._rotation > (Math.PI * 2)))) {
-			this._rotation = Math.atan2(Math.sin(this._rotation), Math.cos(this._rotation));
+		if(this.rotation === value) return this;
+		this.rotation = value;
+		if(wrap && ((this.rotation < 0) || (this.rotation > (Math.PI * 2)))) {
+			this.rotation = Math.atan2(Math.sin(this.rotation), Math.cos(this.rotation));
 		}
 		this.#_markDirty(true, false);
 		return this;
@@ -292,7 +293,7 @@ export class Transformation {
 	 * @returns this.
 	 */
 	public rotate(value: number, wrap: boolean): Transformation {
-		this.setRotation(this._rotation + value, wrap);
+		this.setRotation(this.rotation + value, wrap);
 		return this;
 	}
 
@@ -313,7 +314,7 @@ export class Transformation {
 	 * @returns this.
 	 */
 	public rotateDegrees(value: number): Transformation {
-		this._rotation += MathHelper.toRadians(value);
+		this.rotation += MathHelper.toRadians(value);
 		this.#_markDirty(true, false);
 		return this;
 	}
@@ -324,8 +325,8 @@ export class Transformation {
 	 * @returns {Transformation} this.
 	 */
 	public setRotationMode(value: TransformModes): Transformation {
-		if(this._rotationMode === value) return this;
-		this._rotationMode = value;
+		if(this.rotationMode === value) return this;
+		this.rotationMode = value;
 		this.#_markDirty(false, true);
 		return this;
 	}
@@ -336,7 +337,7 @@ export class Transformation {
 	 * @param transformationModes Transformation modes changed.
 	 */
 	#_markDirty(localTransform: boolean, transformationModes: boolean): void {
-		this._matrix = null;
+		this.matrix = null;
 		this.onChange?.(this, localTransform, transformationModes);
 	}
 
@@ -346,8 +347,8 @@ export class Transformation {
 	 * @returns True if equal, false otherwise.
 	 */
 	public equals(other: Transformation): boolean {
-		return this._rotation === other._rotation
-			&& this._position.equals(other._position)
+		return this.rotation === other.rotation
+			&& this.position.equals(other.position)
 			&& this._scale.equals(other._scale);
 	}
 
@@ -357,15 +358,15 @@ export class Transformation {
 	 */
 	public clone(): Transformation {
 		// create cloned transformation
-		const ret = new Transformation(this._position.clone(), this._rotation, this._scale.clone());
+		const ret = new Transformation(this.position.clone(), this.rotation, this._scale.clone());
 
 		// copy transformation modes
-		ret._rotationMode = this._rotationMode;
-		ret._positionMode = this._positionMode;
-		ret._scaleMode = this._scaleMode;
+		ret.rotationMode = this.rotationMode;
+		ret.positionMode = this.positionMode;
+		ret.scaleMode = this.scaleMode;
 
 		// clone matrix
-		ret._matrix = this._matrix;
+		ret.matrix = this.matrix;
 
 		// return clone
 		return ret;
@@ -378,16 +379,16 @@ export class Transformation {
 		const ret: Partial<SerializedTransformation> = {};
 
 		// position + mode
-		if(!this._position.equals(_defaults.position)) ret.pos = this._position;
-		if(this._positionMode !== _defaults.positionMode) ret.posm = this._positionMode;
+		if(!this.position.equals(Transformation.defaults.position)) ret.pos = this.position;
+		if(this.positionMode !== Transformation.defaults.positionMode) ret.posm = this.positionMode;
 
 		// scale + mode
-		if(!this._scale.equals(_defaults.scale)) ret.scl = this._scale;
-		if(this._scaleMode !== _defaults.scaleMode) ret.sclm = this._scaleMode;
+		if(!this._scale.equals(Transformation.defaults.scale)) ret.scl = this._scale;
+		if(this.scaleMode !== Transformation.defaults.scaleMode) ret.sclm = this.scaleMode;
 
 		// rotation + mode
-		if(this._rotation !== _defaults.rotation) ret.rot = Math.floor(MathHelper.toDegrees(this._rotation));
-		if(this._rotationMode !== _defaults.rotationMode) ret.rotm = this._rotationMode;
+		if(this.rotation !== Transformation.defaults.rotation) ret.rot = Math.floor(MathHelper.toDegrees(this.rotation));
+		if(this.rotationMode !== Transformation.defaults.rotationMode) ret.rotm = this.rotationMode;
 
 		return ret;
 	}
@@ -398,16 +399,16 @@ export class Transformation {
 	 */
 	public deserialize(data: Partial<SerializedTransformation>): Transformation {
 		// position + mode
-		this._position.copy(data.pos ?? _defaults.position);
-		this._positionMode = data.posm ?? _defaults.positionMode;
+		this.position.copy(data.pos ?? Transformation.defaults.position);
+		this.positionMode = data.posm ?? Transformation.defaults.positionMode;
 
 		// scale + mode
-		this._scale.copy(data.scl ?? _defaults.scale);
-		this._scaleMode = data.sclm ?? _defaults.scaleMode;
+		this._scale.copy(data.scl ?? Transformation.defaults.scale);
+		this.scaleMode = data.sclm ?? Transformation.defaults.scaleMode;
 
 		// rotation + mode
-		this._rotation = MathHelper.toRadians(data.rot ?? _defaults.rotation);
-		this._rotationMode = data.rotm ?? _defaults.rotationMode;
+		this.rotation = MathHelper.toRadians(data.rot ?? Transformation.defaults.rotation);
+		this.rotationMode = data.rotm ?? Transformation.defaults.rotationMode;
 
 		this.#_markDirty(true, true);
 		return this;
@@ -419,29 +420,29 @@ export class Transformation {
 	 */
 	public asMatrix(): Matrix {
 		// return cached
-		if(this._matrix) return this._matrix;
+		if(this.matrix) return this.matrix;
 
 		// get matrix type and create list of matrices to combine
 		const matrices: Matrix[] = [];
 
 		// apply position
-		if((this._position.x !== 0) || (this._position.y !== 0)) matrices.push(Matrix.createTranslation(this._position.x, this._position.y, 0));
+		if((this.position.x !== 0) || (this.position.y !== 0)) matrices.push(Matrix.createTranslation(this.position.x, this.position.y, 0));
 
 		// apply rotation
-		if(this._rotation) matrices.push(Matrix.createRotationZ(-this._rotation));
+		if(this.rotation) matrices.push(Matrix.createRotationZ(-this.rotation));
 
 		// apply scale
 		if((this._scale.x !== 1) || (this._scale.y !== 1)) matrices.push(Matrix.createScale(this._scale.x, this._scale.y));
 
 		// no transformations? identity matrix
-		if(matrices.length === 0) this._matrix = Matrix.identity;
+		if(matrices.length === 0) this.matrix = Matrix.identity;
 		// only one transformation? return it
-		else if(matrices.length === 1) this._matrix = matrices[0];
+		else if(matrices.length === 1) this.matrix = matrices[0];
 		// more than one transformation? combine matrices
-		else this._matrix = Matrix.multiplyMany(matrices);
+		else this.matrix = Matrix.multiplyMany(matrices);
 
 		// return matrix
-		return this._matrix;
+		return this.matrix;
 	}
 
 	/**
@@ -451,9 +452,9 @@ export class Transformation {
 	 * @returns Combined transformations.
 	 */
 	public static combine(child: Transformation, parent: Transformation): Transformation {
-		const position = combineVector(child._position, parent._position, parent, child._positionMode);
-		const scale = combineVectorMul(child._scale, parent._scale, parent, child._scaleMode);
-		const rotation = combineScalar(child._rotation, parent._rotation, parent, child._rotationMode);
+		const position = combineVector(child.position, parent.position, parent, child.positionMode);
+		const scale = combineVectorMul(child._scale, parent._scale, parent, child.scaleMode);
+		const rotation = combineScalar(child.rotation, parent.rotation, parent, child.rotationMode);
 		return new Transformation(position, rotation, scale);
 	}
 }

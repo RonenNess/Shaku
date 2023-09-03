@@ -138,9 +138,9 @@ export class Matrix {
 	public transform(target: Vector3): Vector3;
 	public transform(target: Vertex): Vertex;
 	public transform(target: Vector2 | Vector3 | Vertex): Vector2 | Vector3 | Vertex {
-		if(target.isVector2) return Matrix.transformVector2(this, target);
-		if(target.isVector3) return Matrix.transformVector3(this, target);
-		if(target.Vertex) return Matrix.transformVertex(this, target);
+		if(target instanceof Vector2) return Matrix.transformVector2(this, target);
+		if(target instanceof Vector3) return Matrix.transformVector3(this, target);
+		if(target instanceof Vertex) return Matrix.transformVertex(this, target);
 		throw new Error("Unknown type to transform!");
 	}
 
@@ -308,9 +308,8 @@ export class Matrix {
 			Math.abs(eye.x - center.x) < EPSILON &&
 			Math.abs(eye.y - center.y) < EPSILON &&
 			Math.abs(eye.z - center.z) < EPSILON
-		) {
-			return Matrix.identity.clone();
-		}
+		) return Matrix.identity.clone();
+
 		z0 = eye.x - center.x;
 		z1 = eye.y - center.y;
 		z2 = eye.z - center.z;
@@ -373,9 +372,7 @@ export class Matrix {
 	 */
 	public static multiplyMany(matrices: Matrix[]): Matrix {
 		let ret = matrices[0];
-		for(let i = 1; i < matrices.length; i++) {
-			ret = Matrix.multiply(ret, matrices[i]);
-		}
+		for(let i = 1; i < matrices.length; i++) ret = Matrix.multiply(ret, matrices[i]);
 		return ret;
 	}
 
@@ -415,9 +412,7 @@ export class Matrix {
 	 */
 	public static multiplyManyIntoFirst(matrices: Matrix[]): Matrix {
 		let ret = matrices[0];
-		for(let i = 1; i < matrices.length; i++) {
-			ret = Matrix.multiplyIntoFirst(ret, matrices[i]);
-		}
+		for(let i = 1; i < matrices.length; i++) ret = Matrix.multiplyIntoFirst(ret, matrices[i]);
 		return ret;
 	}
 
@@ -440,10 +435,10 @@ export class Matrix {
 	 * @param vector Vector to transform.
 	 * @returns Transformed vector.
 	 */
-	public static transformVector2(matrix: Matrix, vector: Vector2): Vector2 {
-		const x = vector.x,
-			y = vector.y,
-			z = vector.z || 0;
+	public static transformVector2(matrix: Matrix, vector: Vector2 | Vector3): Vector2 {
+		const x = vector.x;
+		const y = vector.y;
+		const z = vector instanceof Vector3 ? vector.z : 0;
 		const e = matrix.values;
 
 		const w = 1 / (e[3] * x + e[7] * y + e[11] * z + e[15]);
@@ -505,9 +500,3 @@ function multiplyMatrixAndPoint(matrix: number[], point: [number, number, number
 
 	return [resultX, resultY, resultZ, resultW];
 }
-
-/**
- * An identity matrix.
- */
-Matrix.identity.isIdentity = true;
-Object.freeze(Matrix.identity);

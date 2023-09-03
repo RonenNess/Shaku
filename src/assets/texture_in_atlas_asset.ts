@@ -8,7 +8,7 @@ import { TextureAssetBase } from "./texture_asset_base";
  */
 export class TextureInAtlasAsset extends TextureAssetBase {
 	private _texture: TextureAsset;
-	private _sourceRect: Rectangle;
+	private sourceRect: Rectangle;
 	private _atlas: TextureAtlasAsset;
 	private _sourceRectNormalized: Rectangle;
 
@@ -18,7 +18,7 @@ export class TextureInAtlasAsset extends TextureAssetBase {
 	public constructor(url: string, texture: TextureAsset, sourceRect: Rectangle, atlas: TextureAtlasAsset) {
 		super(url);
 		this._texture = texture;
-		this._sourceRect = sourceRect;
+		this.sourceRect = sourceRect;
 		this._atlas = atlas;
 	}
 
@@ -27,7 +27,7 @@ export class TextureInAtlasAsset extends TextureAssetBase {
 	 * @returns Source rectangle.
 	 */
 	public get sourceRectangle(): Rectangle {
-		return this._sourceRect;
+		return this.sourceRect;
 	}
 
 	/**
@@ -37,10 +37,10 @@ export class TextureInAtlasAsset extends TextureAssetBase {
 	public get sourceRectangleNormalized(): Rectangle {
 		if(!this._sourceRectNormalized) {
 			this._sourceRectNormalized = new Rectangle(
-				this._sourceRect.x / this.width,
-				this._sourceRect.y / this.height,
-				this._sourceRect.width / this.width,
-				this._sourceRect.height / this.height
+				this.sourceRect.x / this.width,
+				this.sourceRect.y / this.height,
+				this.sourceRect.width / this.width,
+				this.sourceRect.height / this.height
 			);
 		}
 		return this._sourceRectNormalized;

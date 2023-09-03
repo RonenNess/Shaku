@@ -9,15 +9,15 @@ import { CollisionShape } from "./shape";
  * Its the most efficient (both memory and CPU) way to implement grid based / tilemap collision.
  */
 export class TilemapShape extends CollisionShape {
-	private _offset: Vector2;
-	private _intBoundingRect: Rectangle;
-	private _boundingRect: Rectangle;
-	private _center: Vector2;
-	private _radius: number;
-	private _borderThickness: number;
-	private _gridSize: Vector2;
-	private _tileSize: Vector2;
-	private _tiles: Record<string, RectangleShape>;
+	private offset: Vector2;
+	private intBoundingRect: Rectangle;
+	private boundingRect: Rectangle;
+	private center: Vector2;
+	private radius: number;
+	private borderThickness: number;
+	private gridSize: Vector2;
+	private tileSize: Vector2;
+	private tiles: Record<string, RectangleShape>;
 
 	/**
 	 * Create the collision tilemap.
@@ -29,15 +29,15 @@ export class TilemapShape extends CollisionShape {
 	public constructor(offset: Vector2, gridSize: Vector2, tileSize: Vector2, borderThickness?: number) {
 		super();
 		borderThickness = borderThickness || 0;
-		this._offset = offset.clone();
-		this._intBoundingRect = new Rectangle(offset.x, offset.y, gridSize.x * tileSize.x, gridSize.y * tileSize.y);
-		this._boundingRect = this._intBoundingRect.resize(borderThickness * 2);
-		this._center = this._boundingRect.getCenter();
-		this._radius = this._boundingRect.getBoundingCircle().radius;
-		this._borderThickness = borderThickness;
-		this._gridSize = gridSize.clone();
-		this._tileSize = tileSize.clone();
-		this._tiles = {};
+		this.offset = offset.clone();
+		this.intBoundingRect = new Rectangle(offset.x, offset.y, gridSize.x * tileSize.x, gridSize.y * tileSize.y);
+		this.boundingRect = this.intBoundingRect.resize(borderThickness * 2);
+		this.center = this.boundingRect.getCenter();
+		this.radius = this.boundingRect.getBoundingCircle().radius;
+		this.borderThickness = borderThickness;
+		this.gridSize = gridSize.clone();
+		this.tileSize = tileSize.clone();
+		this.tiles = {};
 	}
 
 	/**
@@ -55,7 +55,7 @@ export class TilemapShape extends CollisionShape {
 	 * @returns tile key.
 	 */
 	private _indexToKey(index: Vector2): string {
-		if(index.x < 0 || index.y < 0 || index.x >= this._gridSize.x || index.y >= this._gridSize.y) {
+		if(index.x < 0 || index.y < 0 || index.x >= this.gridSize.x || index.y >= this.gridSize.y) {
 			throw new Error(`Collision tile with index ${index.x},${index.y} is out of bounds!`);
 		}
 		return index.x + "," + index.y;
@@ -70,20 +70,20 @@ export class TilemapShape extends CollisionShape {
 	public setTile(index: Vector2, haveCollision: boolean, collisionFlags?: number): void {
 		const key = this._indexToKey(index);
 		if(haveCollision) {
-			const rect = this._tiles[key] || new RectangleShape(
+			const rect = this.tiles[key] || new RectangleShape(
 				new Rectangle(
-					this._offset.x + index.x * this._tileSize.x,
-					this._offset.y + index.y * this._tileSize.y,
-					this._tileSize.x,
-					this._tileSize.y)
+					this.offset.x + index.x * this.tileSize.x,
+					this.offset.y + index.y * this.tileSize.y,
+					this.tileSize.x,
+					this.tileSize.y)
 			);
 			if(collisionFlags !== undefined) {
 				rect.collisionFlags = collisionFlags;
 			}
-			this._tiles[key] = rect;
+			this.tiles[key] = rect;
 		}
 		else {
-			delete this._tiles[key];
+			delete this.tiles[key];
 		}
 	}
 
@@ -93,9 +93,9 @@ export class TilemapShape extends CollisionShape {
 	 * @returns Collision shape at this position, or null if not set.
 	 */
 	public getTileAt(position: Vector2): RectangleShape | null {
-		const index = new Vector2(Math.floor(position.x / this._tileSize.x), Math.floor(position.y / this._tileSize.y));
+		const index = new Vector2(Math.floor(position.x / this.tileSize.x), Math.floor(position.y / this.tileSize.y));
 		const key = index.x + "," + index.y;
-		return this._tiles[key] || null;
+		return this.tiles[key] || null;
 	}
 
 	/**
@@ -106,12 +106,12 @@ export class TilemapShape extends CollisionShape {
 	public iterateTilesAtRegion(region: Rectangle, callback: (tile: RectangleShape) => boolean): void {
 		const topLeft = region.getTopLeft();
 		const bottomRight = region.getBottomRight();
-		const startIndex = new Vector2(Math.floor(topLeft.x / this._tileSize.x), Math.floor(topLeft.y / this._tileSize.y));
-		const endIndex = new Vector2(Math.floor(bottomRight.x / this._tileSize.x), Math.floor(bottomRight.y / this._tileSize.y));
+		const startIndex = new Vector2(Math.floor(topLeft.x / this.tileSize.x), Math.floor(topLeft.y / this.tileSize.y));
+		const endIndex = new Vector2(Math.floor(bottomRight.x / this.tileSize.x), Math.floor(bottomRight.y / this.tileSize.y));
 		for(let i = startIndex.x; i <= endIndex.x; ++i) {
 			for(let j = startIndex.y; j <= endIndex.y; ++j) {
 				const key = i + "," + j;
-				const tile = this._tiles[key];
+				const tile = this.tiles[key];
 				if(tile && (callback(tile) === false)) {
 					return;
 				}
@@ -134,29 +134,29 @@ export class TilemapShape extends CollisionShape {
 	 * @inheritdoc
 	 */
 	protected _getRadius(): number {
-		return this._radius;
+		return this.radius;
 	}
 
 	/**
 	 * @inheritdoc
 	 */
 	protected _getBoundingBox(): Rectangle {
-		return this._boundingRect;
+		return this.boundingRect;
 	}
 
 	/**
 	 * @inheritdoc
 	 */
 	public getCenter(): Vector2 {
-		return this._center.clone();
+		return this.center.clone();
 	}
 
 	/**
 	 * @inheritdoc
 	 */
 	public debugDraw(opacity = 1, shapesBatch: ShapesBatch) {
-		for(const key in this._tiles) {
-			const tile = this._tiles[key];
+		for(const key in this.tiles) {
+			const tile = this.tiles[key];
 			tile.setDebugColor(this._forceDebugColor);
 			tile.debugDraw(opacity, shapesBatch);
 		}

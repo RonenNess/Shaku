@@ -108,7 +108,7 @@ export class Ray {
 	 */
 	public findCollisionPointWithBox(box: Box): Vector3 | null {
 
-		let tmin, tmax, tymin, tymax, tzmin, tzmax;
+		let txmin, txmax, tymin, tymax, tzmin, tzmax;
 
 		const invdirx = 1 / this.direction.x;
 		const invdiry = 1 / this.direction.y;
@@ -117,11 +117,11 @@ export class Ray {
 		const origin = this.origin;
 
 		if(invdirx >= 0) {
-			tmin = (box.min.x - origin.x) * invdirx;
-			tmax = (box.max.x - origin.x) * invdirx;
+			txmin = (box.min.x - origin.x) * invdirx;
+			txmax = (box.max.x - origin.x) * invdirx;
 		} else {
-			tmin = (box.max.x - origin.x) * invdirx;
-			tmax = (box.min.x - origin.x) * invdirx;
+			txmin = (box.max.x - origin.x) * invdirx;
+			txmax = (box.min.x - origin.x) * invdirx;
 		}
 
 		if(invdiry >= 0) {
@@ -132,11 +132,11 @@ export class Ray {
 			tymax = (box.min.y - origin.y) * invdiry;
 		}
 
-		if((tmin > tymax) || (tymin > tmax)) return null;
+		if((txmin > tymax) || (tymin > txmax)) return null;
 
-		if(tymin > tmin || isNaN(tmin)) tmin = tymin;
+		if(tymin > txmin || isNaN(txmin)) txmin = tymin;
 
-		if(tymax < tmax || isNaN(tmax)) tmax = tymax;
+		if(tymax < txmax || isNaN(txmax)) txmax = tymax;
 
 		if(invdirz >= 0) {
 			tzmin = (box.min.z - origin.z) * invdirz;
@@ -146,18 +146,18 @@ export class Ray {
 			tzmax = (box.min.z - origin.z) * invdirz;
 		}
 
-		if((tmin > tzmax) || (tzmin > tmax)) return null;
+		if((txmin > tzmax) || (tzmin > txmax)) return null;
 
-		if(tzmin > tmin || tmin !== tmin) tmin = tzmin;
+		if(tzmin > txmin || txmin !== txmin) txmin = tzmin;
 
-		if(tzmax < tmax || tmax !== tmax) tmax = tzmax;
+		if(tzmax < txmax || txmax !== txmax) txmax = tzmax;
 
 		// return point closest to the ray (positive side)
 
-		if(tmax < 0) return null;
+		if(txmax < 0) return null;
 
 		// return position
-		return this.at(tmin >= 0 ? tmin : tmax);
+		return this.at(txmin >= 0 ? txmin : txmax);
 	}
 
 	/**

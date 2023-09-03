@@ -60,7 +60,7 @@ export class Gfx implements IManager {
 	/**
 	 * Provide access to Gfx internal stuff.
 	 */
-	private _internal: GfxInternal;
+	private internal: GfxInternal;
 
 	/**
 	 * Create the manager.
@@ -70,7 +70,7 @@ export class Gfx implements IManager {
 		this.defaultTextureFilter = TextureFilterModes.NEAREST;
 		this.defaultTextureWrapMode = TextureWrapModes.CLAMP;
 		this.whiteTexture = null;
-		this._internal = new GfxInternal(this);
+		this.internal = new GfxInternal(this);
 
 		// set self for effect and draw batch
 		DrawBatch._gfx = this;
@@ -483,7 +483,7 @@ export class Gfx implements IManager {
 	 * @returns {Rectangle} Rectangle with rendering region.
 	 */
 	#_getRenderingRegionInternal(includeOffset) {
-		return this._internal.getRenderingRegionInternal(includeOffset);
+		return this.internal.getRenderingRegionInternal(includeOffset);
 	}
 
 	/**

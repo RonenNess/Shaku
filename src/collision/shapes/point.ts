@@ -6,8 +6,8 @@ import { CollisionShape } from "./shape";
  * Collision point class.
  */
 export class PointShape extends CollisionShape {
-	private _position: Vector2;
-	private _boundingBox: Rectangle;
+	private position: Vector2;
+	private boundingBox: Rectangle;
 
 	/**
 	 * Create the collision shape.
@@ -30,8 +30,8 @@ export class PointShape extends CollisionShape {
 	 * @param position Point position.
 	 */
 	public setPosition(position: Vector2): void {
-		this._position = position.clone();
-		this._boundingBox = new Rectangle(position.x, position.y, 1, 1);
+		this.position = position.clone();
+		this.boundingBox = new Rectangle(position.x, position.y, 1, 1);
 		this._shapeChanged();
 	}
 
@@ -40,14 +40,14 @@ export class PointShape extends CollisionShape {
 	 * @returns Point position.
 	 */
 	public getPosition(): Vector2 {
-		return this._position.clone();
+		return this.position.clone();
 	}
 
 	/**
 	 * @inheritdoc
 	 */
 	public getCenter(): Vector2 {
-		return this._position.clone();
+		return this.position.clone();
 	}
 
 	/**
@@ -61,7 +61,7 @@ export class PointShape extends CollisionShape {
 	 * @inheritdoc
 	 */
 	protected _getBoundingBox(): Rectangle {
-		return this._boundingBox;
+		return this.boundingBox;
 	}
 
 	/**

@@ -164,7 +164,10 @@ export class Rectangle {
 	 * @returns if point is contained within the rectangle.
 	 */
 	public containsVector(p: Vector2): boolean {
-		return (p.x >= this.x) && (p.x <= this.x + this.width) && (p.y >= this.y) && (p.y <= this.y + this.height);
+		return (p.x >= this.x)
+			&& (p.x <= this.x + this.width)
+			&& (p.y >= this.y)
+			&& (p.y <= this.y + this.height);
 	}
 
 	/**
@@ -175,10 +178,10 @@ export class Rectangle {
 	public collideRect(other: Rectangle): boolean {
 		const r1 = this;
 		const r2 = other;
-		return !(r2.left >= r1.right ||
-			r2.right <= r1.left ||
-			r2.top >= r1.bottom ||
-			r2.bottom <= r1.top);
+		return !(r2.left >= r1.right
+			|| r2.right <= r1.left
+			|| r2.top >= r1.bottom
+			|| r2.bottom <= r1.top);
 	}
 
 	/**

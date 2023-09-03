@@ -41,9 +41,11 @@ export class Circle {
 	 * @returns True if circles are equal, false otherwise.
 	 */
 	public equals(other: Circle): boolean {
-		return (other === this) ||
-			(other && (other.constructor === this.constructor) &&
-				this.center.equals(other.center) && (this.radius === other.radius));
+		return (other === this)
+			|| (other
+				&& (other.constructor === this.constructor)
+				&& this.center.equals(other.center)
+				&& (this.radius === other.radius));
 	}
 
 	/**

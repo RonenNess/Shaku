@@ -7,9 +7,9 @@ import { CollisionShape } from "./shape";
  * This shape is made of one line or more.
  */
 export class LinesShape extends CollisionShape {
-	private _lines: Line[];
-	private _circle: Circle;
-	private _boundingBox: Rectangle;
+	private lines: Line[];
+	private circle: Circle;
+	private boundingBox: Rectangle;
 
 	/**
 	 * Create the collision shape.
@@ -17,7 +17,7 @@ export class LinesShape extends CollisionShape {
 	 */
 	public constructor(lines: Line | Line[]) {
 		super();
-		this._lines = [];
+		this.lines = [];
 		this.addLines(lines);
 	}
 
@@ -34,25 +34,21 @@ export class LinesShape extends CollisionShape {
 	 */
 	public addLines(lines: Line | Line[]): void {
 		// convert to array
-		if(!Array.isArray(lines)) {
-			lines = [lines];
-		}
+		if(!Array.isArray(lines)) lines = [lines];
 
 		// add lines
-		for(let i = 0; i < lines.length; ++i) {
-			this._lines.push(lines[i]);
-		}
+		for(let i = 0; i < lines.length; ++i) this.lines.push(lines[i]);
 
 		// get all points
 		const points = [];
-		for(let i = 0; i < this._lines.length; ++i) {
-			points.push(this._lines[i].from);
-			points.push(this._lines[i].to);
+		for(let i = 0; i < this.lines.length; ++i) {
+			points.push(this.lines[i].from);
+			points.push(this.lines[i].to);
 		}
 
 		// reset bounding box and circle
-		this._boundingBox = Rectangle.fromPoints(points);
-		this._circle = new Circle(this._boundingBox.getCenter(), Math.max(this._boundingBox.width, this._boundingBox.height));
+		this.boundingBox = Rectangle.fromPoints(points);
+		this.circle = new Circle(this.boundingBox.getCenter(), Math.max(this.boundingBox.width, this.boundingBox.height));
 		this._shapeChanged();
 	}
 
@@ -61,7 +57,7 @@ export class LinesShape extends CollisionShape {
 	 * @param lines Line / lines to set.
 	 */
 	public setLines(lines: Line | Line[]): void {
-		this._lines = [];
+		this.lines = [];
 		this.addLines(lines);
 	}
 
@@ -69,21 +65,21 @@ export class LinesShape extends CollisionShape {
 	 * @inheritdoc
 	 */
 	protected _getRadius(): number {
-		return this._circle.radius;
+		return this.circle.radius;
 	}
 
 	/**
 	 * @inheritdoc
 	 */
 	public getCenter(): Vector2 {
-		return this._circle.center.clone();
+		return this.circle.center.clone();
 	}
 
 	/**
 	 * @inheritdoc
 	 */
 	protected _getBoundingBox(): Rectangle {
-		return this._boundingBox;
+		return this.boundingBox;
 	}
 
 	/**
@@ -96,9 +92,7 @@ export class LinesShape extends CollisionShape {
 		shapesBatch = this._getDebugDrawBatch(shapesBatch);
 		const needToBegin = !shapesBatch.isDrawing;
 		if(needToBegin) shapesBatch.begin();
-		for(let i = 0; i < this._lines.length; ++i) {
-			shapesBatch.drawLine(this._lines[i].from, this._lines[i].to, color);
-		}
+		for(let i = 0; i < this.lines.length; ++i) shapesBatch.drawLine(this.lines[i].from, this.lines[i].to, color);
 		if(needToBegin) shapesBatch.end();
 	}
 }

@@ -18,10 +18,10 @@ const _logger = LoggerFactory.getLogger("gfx"); // TODO
  * To access the Assets manager you use `Shaku.assets`.
  */
 export class Assets implements IManager {
-	private _loaded: Record<string, Asset> | null;
-	private _waitingAssets: Set<string>;
+	private loaded: Record<string, Asset> | null;
+	private waitingAssets: Set<string>;
 	private _failedAssets: Set<string>;
-	private _successfulLoadedAssetsCount: number;
+	private successfulLoadedAssetsCount: number;
 
 	public root: string;
 	public suffix: string;
@@ -30,10 +30,10 @@ export class Assets implements IManager {
 	 * Create the manager.
 	 */
 	public constructor() {
-		this._loaded = null;
-		this._waitingAssets = new Set();
+		this.loaded = null;
+		this.waitingAssets = new Set();
 		this._failedAssets = new Set();
-		this._successfulLoadedAssetsCount = 0;
+		this.successfulLoadedAssetsCount = 0;
 
 		/**
 		 * Optional URL root to prepend to all loaded assets URLs.
@@ -64,7 +64,7 @@ export class Assets implements IManager {
 	 * @returns URLs of assets waiting to be loaded.
 	 */
 	public get pendingAssets() {
-		return Array.from(this._waitingAssets);
+		return Array.from(this.waitingAssets);
 	}
 
 	/**
@@ -99,7 +99,7 @@ export class Assets implements IManager {
 				}
 
 				// all done?
-				if(this._waitingAssets.size === 0) {
+				if(this.waitingAssets.size === 0) {
 					_logger.debug("Done waiting for assets: everything loaded successfully.");
 					return resolve();
 				}
@@ -119,7 +119,7 @@ export class Assets implements IManager {
 	public setup(): Promise<void> {
 		return new Promise((resolve, _reject) => {
 			_logger.info("Setup assets manager..");
-			this._loaded = {};
+			this.loaded = {};
 			resolve();
 		});
 	}
@@ -145,8 +145,8 @@ export class Assets implements IManager {
 	 * @param type If provided will make sure asset is of this type. If asset found but have wrong type, will throw exception.
 	 * @returns Loaded asset or null if not found.
 	 */
-	#_getFromCache(url: string, type: { new(...args: unknown[]): unknown; }) {
-		const cached = this._loaded[url] || null;
+	#_getFromCache(url: string, type: { new(...args: unknown[]): unknown; }): Asset | null {
+		const cached = this.loaded[url] ?? null;
 		if(cached && type) {
 			if(!(cached instanceof type)) throw new Error(`Asset with URL "${url}" is already loaded, but has unexpected type (expecting ${type})!`);
 		}
@@ -163,8 +163,8 @@ export class Assets implements IManager {
 		// extract url and typename, and add to cache
 		const url = newAsset.url;
 		const typeName = newAsset.constructor.name;
-		this._loaded[url] = newAsset;
-		this._waitingAssets.add(url);
+		this.loaded[url] = newAsset;
+		this.waitingAssets.add(url);
 
 		// initiate loading
 
@@ -173,7 +173,7 @@ export class Assets implements IManager {
 		return newAsset.load(params)
 			.then(_ => {
 				// update waiting assets count
-				this._waitingAssets.delete(url);
+				this.waitingAssets.delete(url);
 
 				// make sure valid
 				if(!newAsset.valid) throw new Error("Loaded asset is not valid!");
@@ -181,7 +181,7 @@ export class Assets implements IManager {
 				_logger.debug(`Successfully loaded asset [${typeName}] from URL "${url}".`);
 
 				// resolve
-				this._successfulLoadedAssetsCount++;
+				this.successfulLoadedAssetsCount++;
 			})
 			.catch(e => {
 				_logger.warn(`Failed to load asset [${typeName}] from URL "${url}".`);
@@ -198,7 +198,7 @@ export class Assets implements IManager {
 	 */
 	public getCached(url: string) {
 		url = this.#_wrapUrl(url);
-		return this._loaded[url] || null;
+		return this.loaded[url] || null;
 	}
 
 	/**
@@ -240,17 +240,17 @@ export class Assets implements IManager {
 		const _asset = new classType(name || generateRandomAssetName());
 
 		// if this asset need waiting
-		if(needWait) this._waitingAssets.add(name);
+		if(needWait) this.waitingAssets.add(name);
 
 		// generate render target in async
 		const promise = new Promise(async (resolve, reject) => {
 
 			// make sure not in cache
-			if(name && this._loaded[name]) return reject(`Asset of type "${classType.name}" to create with URL "${name}" already exist in cache!`);
+			if(name && this.loaded[name]) return reject(`Asset of type "${classType.name}" to create with URL "${name}" already exist in cache!`);
 
 			// create and return
 			await initMethod(_asset);
-			if(name) this._loaded[name] = _asset;
+			if(name) this.loaded[name] = _asset;
 			resolve(_asset);
 		});
 
@@ -314,15 +314,12 @@ export class Assets implements IManager {
 	 * @returns Promise to resolve with asset instance, when loaded. You can access the loading asset with `.asset` on the promise.
 	 */
 	public createTextureAtlas(name: string | null, sources: [string, ...string[]], maxWidth?: number, maxHeight?: number, extraMargins?: Vector2) {
-		// make sure we have valid size
-		if(!sources || !sources.length) throw new Error("Missing or invalid sources!");
-
 		// create asset and return promise
 		return this.#_createAsset(name, TextureAtlasAsset, async (asset) => {
 			try {
 				await asset._build(sources, maxWidth, maxHeight, extraMargins);
-				this._waitingAssets.delete(name);
-				this._successfulLoadedAssetsCount++;
+				this.waitingAssets.delete(name);
+				this.successfulLoadedAssetsCount++;
 			} catch(e) {
 				_logger.warn(`Failed to create texture atlas: "${e}".`);
 				this._failedAssets.add(url);
@@ -405,9 +402,6 @@ export class Assets implements IManager {
 	 * @returns promise to resolve with asset instance, when ready. You can access the loading asset with `.asset` on the promise.
 	 */
 	public createBinary(name: string | null, data: number[] | Uint8Array): Promise<BinaryAsset> {
-		// make sure we have valid data
-		if(!data) throw new Error("Missing or invalid data!");
-
 		// create asset and return promise
 		return this.#_createAsset(name, BinaryAsset, asset => asset.create(data));
 	}
@@ -420,10 +414,10 @@ export class Assets implements IManager {
 	 */
 	public free(url: string): void {
 		url = this.#_wrapUrl(url);
-		const asset = this._loaded[url];
+		const asset = this.loaded[url];
 		if(asset) {
 			asset.destroy();
-			delete this._loaded[url];
+			delete this.loaded[url];
 		}
 	}
 
@@ -433,9 +427,9 @@ export class Assets implements IManager {
 	 * Shaku.assets.clearCache();
 	 */
 	public clearCache(): void {
-		for(const key in this._loaded) this._loaded[key].destroy();
-		this._loaded = {};
-		this._waitingAssets = new Set();
+		for(const key in this.loaded) this.loaded[key].destroy();
+		this.loaded = {};
+		this.waitingAssets = new Set();
 		this._failedAssets = new Set();
 	}
 

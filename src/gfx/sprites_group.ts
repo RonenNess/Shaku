@@ -7,17 +7,17 @@ import { Sprite } from "./sprite";
  * You need SpritesGroup to use batched rendering.
  */
 export class SpritesGroup {
-	private _sprites: Sprite[];
-
 	public rotation: number;
 	public position: Vector2;
 	public scale: Vector2;
+
+	private sprites: Sprite[];
 
 	/**
 	 * Create the group object.
 	 */
 	public constructor() {
-		this._sprites = [];
+		this.sprites = [];
 		this.rotation = 0;
 		this.position = new Vector2(0, 0);
 		this.scale = new Vector2(1, 1);
@@ -28,7 +28,7 @@ export class SpritesGroup {
 	 * @param callback Callback to run on all sprites in group.
 	 */
 	public forEach(callback: (sprite: Sprite) => void): void {
-		this._sprites.forEach(callback);
+		this.sprites.forEach(callback);
 	}
 
 	/**
@@ -36,7 +36,7 @@ export class SpritesGroup {
 	 * @param color Color to set.
 	 */
 	public setColor(color: Color): void {
-		for(let i = 0; i < this._sprites.length; ++i) this._sprites[i].color.copy(color);
+		for(let i = 0; i < this.sprites.length; ++i) this.sprites[i].color.copy(color);
 	}
 
 	/**
@@ -67,7 +67,7 @@ export class SpritesGroup {
 	 * @returns The newly added sprite.
 	 */
 	public add(sprite: Sprite): Sprite {
-		this._sprites.push(sprite);
+		this.sprites.push(sprite);
 		return sprite;
 	}
 
@@ -76,8 +76,8 @@ export class SpritesGroup {
 	 * @param sprite Sprite to remove.
 	 */
 	public remove(sprite: Sprite): void {
-		const index = this._sprites.indexOf(sprite);
-		if(index !== -1) this._sprites.splice(index, 1);
+		const index = this.sprites.indexOf(sprite);
+		if(index !== -1) this.sprites.splice(index, 1);
 	}
 
 	/**
@@ -85,7 +85,7 @@ export class SpritesGroup {
 	 * @returns The removed sprite.
 	 */
 	public shift(): Sprite {
-		return this._sprites.shift();
+		return this.sprites.shift();
 	}
 
 	/**
@@ -93,7 +93,7 @@ export class SpritesGroup {
 	 * @param compare Comparer method.
 	 */
 	public sort(compare: (a: Sprite, b: Sprite) => number) {
-		this._sprites.sort(compare);
+		this.sprites.sort(compare);
 	}
 
 	/**
@@ -101,6 +101,6 @@ export class SpritesGroup {
 	 * @returns Number of sprites in group.
 	 */
 	public get count(): number {
-		return this._sprites.length;
+		return this.sprites.length;
 	}
 }

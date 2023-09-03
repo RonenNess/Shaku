@@ -74,10 +74,7 @@ export class GameTime {
 		GameTime.updateRawData();
 
 		// calculate delta time
-		let delta = 0;
-		if(_prevTime) {
-			delta = _rawTimestampMs - _prevTime;
-		}
+		const delta = _prevTime ? _rawTimestampMs - _prevTime : 0;
 
 		// update previous time
 		_prevTime = _rawTimestampMs;
@@ -119,9 +116,7 @@ const gotPerformance = (typeof performance !== "undefined") && performance.now;
 
 // get most accurate timestamp in milliseconds.
 function getAccurateTimestampMs(): number {
-	if(gotPerformance) {
-		return performance.now();
-	}
+	if(gotPerformance) return performance.now();
 	return Date.now();
 }
 

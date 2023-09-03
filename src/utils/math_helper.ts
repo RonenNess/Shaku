@@ -1,18 +1,18 @@
 import { Vector3 } from "./shapes";
 
-// for radians / degrees conversion
-const _toRadsFactor = (Math.PI / 180);
-const _toDegreesFactor = (180 / Math.PI);
 
 /**
  * Implement some math utilities functions.
- */
-export class MathHelper {
-
+*/
+export abstract class MathHelper {
 	/**
 	 * PI * 2 value.
 	 */
 	public static PI2 = Math.PI * 2;
+
+	// for radians / degrees conversion
+	public static readonly TO_RADS_FACTOR = MathHelper.PI2 / 360;
+	public static readonly TO_DEGREES_FACTOR = 360 / MathHelper.PI2;
 
 	/**
 	 * Perform linear interpolation between start and end values.
@@ -49,7 +49,7 @@ export class MathHelper {
 	 */
 	public static roundToMultiple(numToRound: number, multiple: number): number {
 		const isPositive = (numToRound >= 0);
-		return ((numToRound + isPositive * (multiple - 1)) / multiple) * multiple;
+		return ((numToRound + Number(isPositive) * (multiple - 1)) / multiple) * multiple;
 	}
 
 	/**
@@ -58,7 +58,7 @@ export class MathHelper {
 	 * @returns Value as radians.
 	 */
 	public static toRadians(degrees: number): number {
-		return degrees * _toRadsFactor;
+		return degrees * MathHelper.TO_RADS_FACTOR;
 	}
 
 	/**
@@ -67,7 +67,7 @@ export class MathHelper {
 	 * @returns Value as degrees.
 	 */
 	public static toDegrees(radians: number): number {
-		return radians * _toDegreesFactor;
+		return radians * MathHelper.TO_DEGREES_FACTOR;
 	}
 
 	/**
@@ -77,7 +77,7 @@ export class MathHelper {
 	* @returns Shortest distance between radians.
 	*/
 	public static radiansDistanceSigned(a1: number, a2: number): number {
-		const max = Math.PI * 2;
+		const max = MathHelper.PI2;
 		const da = (a2 - a1) % max;
 		return 2 * da % max - da;
 	}
@@ -99,10 +99,10 @@ export class MathHelper {
 	* @returns Shortest distance between angles.
 	*/
 	public static degreesDistanceSigned(a1: number, a2: number): number {
-		const a1r = a1 * _toRadsFactor;
-		const a2r = a2 * _toRadsFactor;
+		const a1r = a1 * MathHelper.TO_RADS_FACTOR;
+		const a2r = a2 * MathHelper.TO_RADS_FACTOR;
 		const ret = MathHelper.radiansDistanceSigned(a1r, a2r);
-		return ret * _toDegreesFactor;
+		return ret * MathHelper.TO_DEGREES_FACTOR;
 	}
 
 	/**
@@ -112,10 +112,10 @@ export class MathHelper {
 	* @returns Shortest distance between angles.
 	*/
 	public static degreesDistance(a1: number, a2: number): number {
-		const a1r = a1 * _toRadsFactor;
-		const a2r = a2 * _toRadsFactor;
+		const a1r = a1 * MathHelper.TO_RADS_FACTOR;
+		const a2r = a2 * MathHelper.TO_RADS_FACTOR;
 		const ret = MathHelper.radiansDistance(a1r, a2r);
-		return ret * _toDegreesFactor;
+		return ret * MathHelper.TO_DEGREES_FACTOR;
 	}
 
 	/**
@@ -201,4 +201,6 @@ export class MathHelper {
 		// return result
 		return surfaceNormal;
 	}
+
+	private constructor() { }
 }

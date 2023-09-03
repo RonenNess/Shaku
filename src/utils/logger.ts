@@ -9,12 +9,12 @@ let _application = "Shaku";
  * By default writes logs to console.
  */
 export class Logger {
-	private _nameHeader: string;
-	private _throwErrors: boolean;
+	private nameHeader: string;
+	private throwErrors: boolean;
 
 	public constructor(name: string) {
-		this._nameHeader = ("[" + _application + "][" + name + "]").padEnd(25, " ");
-		this._throwErrors = false;
+		this.nameHeader = ("[" + _application + "][" + name + "]").padEnd(25, " ");
+		this.throwErrors = false;
 	}
 
 	/**
@@ -22,7 +22,7 @@ export class Logger {
 	 * @param sg Message to write.
 	 */
 	public trace(msg: string): void {
-		_drivers.trace(this._nameHeader, msg);
+		_drivers.trace(this.nameHeader, msg);
 	}
 
 	/**
@@ -30,7 +30,7 @@ export class Logger {
 	 * @param msg Message to write.
 	 */
 	public debug(msg: string): void {
-		_drivers.debug(this._nameHeader, msg);
+		_drivers.debug(this.nameHeader, msg);
 	}
 
 	/**
@@ -38,7 +38,7 @@ export class Logger {
 	 * @param msg Message to write.
 	 */
 	public info(msg: string): void {
-		_drivers.info(this._nameHeader, msg);
+		_drivers.info(this.nameHeader, msg);
 	}
 
 	/**
@@ -46,10 +46,8 @@ export class Logger {
 	 * @param msg Message to write.
 	 */
 	public warn(msg: string): void {
-		_drivers.warn(this._nameHeader, msg);
-		if(this._throwErrors) {
-			throw new Error(msg);
-		}
+		_drivers.warn(this.nameHeader, msg);
+		if(this.throwErrors) throw new Error(msg);
 	}
 
 	/**
@@ -57,10 +55,8 @@ export class Logger {
 	 * @param msg Message to write.
 	 */
 	public error(msg: string): void {
-		_drivers.error(this._nameHeader, msg);
-		if(this._throwErrors) {
-			throw new Error(msg);
-		}
+		_drivers.error(this.nameHeader, msg);
+		if(this.throwErrors) throw new Error(msg);
 	}
 
 	/**
@@ -68,7 +64,7 @@ export class Logger {
 	 * @param enable Set to true to throw error on warnings.
 	 */
 	public throwErrorOnWarnings(enable: boolean): void {
-		this._throwErrors = Boolean(enable);
+		this.throwErrors = Boolean(enable);
 	}
 }
 
@@ -80,8 +76,7 @@ export class NullDrivers {
 	/**
 	 * @private
 	 */
-	public constructor() {
-	}
+	public constructor() { }
 
 	public trace(msg: string): void { }
 

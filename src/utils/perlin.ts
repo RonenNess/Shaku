@@ -1,8 +1,4 @@
-// import some utilities
-
 import { MathHelper } from "./math_helper";
-
-const lerp = MathHelper.lerp;
 
 // do fade
 function fade(t: number): number {
@@ -38,7 +34,8 @@ const p = [151, 160, 137, 91, 90, 15,
 	129, 22, 39, 253, 19, 98, 108, 110, 79, 113, 224, 232, 178, 185, 112, 104, 218, 246, 97, 228,
 	251, 34, 242, 193, 238, 210, 144, 12, 191, 179, 162, 241, 81, 51, 145, 235, 249, 14, 239, 107,
 	49, 192, 214, 31, 181, 199, 106, 157, 184, 84, 204, 176, 115, 121, 50, 45, 127, 4, 150, 254,
-	138, 236, 205, 93, 222, 114, 67, 29, 24, 72, 243, 141, 128, 195, 78, 66, 215, 61, 156, 180];
+	138, 236, 205, 93, 222, 114, 67, 29, 24, 72, 243, 141, 128, 195, 78, 66, 215, 61, 156, 180,
+];
 
 /**
  * Generate 2d perlin noise.
@@ -46,8 +43,8 @@ const p = [151, 160, 137, 91, 90, 15,
  * https://github.com/josephg/noisejs/blob/master/perlin.js
  */
 export class Perlin {
-	private _perm: number[];
-	private _gradP: Grad[];
+	private perm: number[];
+	private gradP: Grad[];
 
 	/**
 	 * Create the perlin noise generator.
@@ -63,15 +60,11 @@ export class Perlin {
 	 */
 	public seed(seed: number) {
 		// scale the seed out
-		if(seed > 0 && seed < 1) {
-			seed *= 65536;
-		}
+		if(seed > 0 && seed < 1) seed *= 65536;
 
 		// make sure round and current number of bits
 		seed = Math.floor(seed);
-		if(seed < 256) {
-			seed |= seed << 8;
-		}
+		if(seed < 256) seed |= seed << 8;
 
 		// create perm, gradP and grad3 arrays
 		const perm = new Array(512);
@@ -85,19 +78,16 @@ export class Perlin {
 		// apply seed
 		for(let i = 0; i < 256; i++) {
 			let v;
-			if(i & 1) {
-				v = p[i] ^ (seed & 255);
-			} else {
-				v = p[i] ^ ((seed >> 8) & 255);
-			}
+			if(i & 1) v = p[i] ^ (seed & 255);
+			else v = p[i] ^ ((seed >> 8) & 255);
 
 			perm[i] = perm[i + 256] = v;
 			gradP[i] = gradP[i + 256] = grad3[v % 12];
 		}
 
 		// store new params
-		this._perm = perm;
-		this._gradP = gradP;
+		this.perm = perm;
+		this.gradP = gradP;
 	}
 
 	/**
@@ -125,8 +115,8 @@ export class Perlin {
 	 */
 	public generate(x: number, y: number, contrast = 1): number {
 		// store new params
-		const perm = this._perm;
-		const gradP = this._gradP;
+		const perm = this.perm;
+		const gradP = this.gradP;
 
 		// find unit grid cell containing point
 		let X = Math.floor(x), Y = Math.floor(y);
@@ -147,9 +137,9 @@ export class Perlin {
 		const u = fade(x);
 
 		// interpolate the four results
-		return Math.min(lerp(
-			lerp(n00, n10, u),
-			lerp(n01, n11, u),
+		return Math.min(MathHelper.lerp(
+			MathHelper.lerp(n00, n10, u),
+			MathHelper.lerp(n01, n11, u),
 			fade(y)) + 0.5, 1);
 	}
 }

@@ -3,15 +3,17 @@ import { Asset } from "./asset";
 import { TextureAsset } from "./texture_asset";
 import { TextureInAtlasAsset } from "./texture_in_atlas_asset";
 
-// the webgl context to use
-let gl: WebGLRenderingContext | null = null;
+
 
 /**
  * A texture atlas we can build at runtime to combine together multiple textures.
  */
 export class TextureAtlasAsset extends Asset {
+	// the webgl context to use
+	private static gl: WebGLRenderingContext | null = null;
+
 	private __textures: TextureAsset[];
-	private __sources: Record<string, TextureInAtlasAsset>;
+	private sources: Record<string, TextureInAtlasAsset>;
 
 	/**
 	 * @inheritdoc
@@ -19,7 +21,7 @@ export class TextureAtlasAsset extends Asset {
 	public constructor(url: string) {
 		super(url);
 		this.__textures = [];
-		this.__sources = {};
+		this.sources = {};
 	}
 
 	/**
@@ -27,7 +29,7 @@ export class TextureAtlasAsset extends Asset {
 
 	 */
 	private static _setWebGl(_gl: WebGLRenderingContext): void {
-		gl = _gl;
+		TextureAtlasAsset.gl = _gl;
 	}
 
 	/**
@@ -81,8 +83,8 @@ export class TextureAtlasAsset extends Asset {
 					const internalUrl = atlasTexture.url + "_" + (textureInAtlasIndex++).toString() + "_" + url.replaceAll("/", "_").replaceAll(":", "");
 					const sourceRectangle = new Rectangle(imageData.x, imageData.y, imageData.width, imageData.height);
 					const textureInAtlas = new TextureInAtlasAsset(internalUrl, atlasTexture, sourceRectangle, this);
-					this.__sources[url] = this.__sources[relativeUrl] = this.__sources[relativeUrl.substr(1)] = textureInAtlas;
-					if(originUrl) this.__sources[originUrl] = this.__sources[url];
+					this.sources[url] = this.sources[relativeUrl] = this.sources[relativeUrl.substr(1)] = textureInAtlas;
+					if(originUrl) this.sources[originUrl] = this.sources[url];
 				}
 
 				// convert to texture
@@ -117,7 +119,7 @@ export class TextureAtlasAsset extends Asset {
 	 * @returns Texture in atlas asset, or null if not found.
 	 */
 	public getTexture(url: string): TextureAtlasAsset | null {
-		return this.__sources[url] || null;
+		return this.sources[url] || null;
 	}
 
 	/**
@@ -133,7 +135,7 @@ export class TextureAtlasAsset extends Asset {
 	public destroy(): void {
 		for(const texture of this.__textures) texture.destroy();
 		this.__textures = [];
-		this.__sources = {};
+		this.sources = {};
 	}
 }
 

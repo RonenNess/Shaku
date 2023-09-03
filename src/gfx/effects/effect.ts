@@ -145,13 +145,13 @@ export class Effect {
 	public uniformTypes: Record<UniformTypes, { type: unknown, bind?: unknown; }>;
 	public attributes: Record<unknown, unknown>;
 
-	private _gl: WebGLRenderingContext;
-	private _program: WebGLProgram;
-	private _uniformBinds: Record<UniformBinds, (...args: unknown[]) => unknown>;
-	private _pendingUniformValues: Partial<Record<AttributeTypes, unknown>>;
-	private _pendingAttributeValues: Partial<Record<AttributeTypes, unknown>>;
-	private _attributeBinds: Record<AttributeBinds, unknown>;
-	private _cachedValues: Partial<{
+	private gl: WebGLRenderingContext;
+	private program: WebGLProgram;
+	private uniformBinds: Record<UniformBinds, (...args: unknown[]) => unknown>;
+	private pendingUniformValues: Partial<Record<AttributeTypes, unknown>>;
+	private pendingAttributeValues: Partial<Record<AttributeTypes, unknown>>;
+	private attributeBinds: Record<AttributeBinds, unknown>;
+	private cachedValues: Partial<{
 		tangents: unknown;
 		binormals: unknown;
 		normals: unknown;
@@ -203,24 +203,24 @@ export class Effect {
 		}
 
 		// store program and gl
-		this._gl = gl;
-		this._program = program;
+		this.gl = gl;
+		this.program = program;
 
 		// a set of dynamically-created setters to set uniform values
 		this.uniforms = {};
 
 		// dictionary to bind uniform to built-in roles, like main texture or color
-		this._uniformBinds = {};
+		this.uniformBinds = {};
 
 		// values waiting to set as soon as the effect turns active
-		this._pendingUniformValues = {};
-		this._pendingAttributeValues = {};
+		this.pendingUniformValues = {};
+		this.pendingAttributeValues = {};
 
 		// initialize uniform setters
 		for(const uniform in this.uniformTypes) {
 
 			// get uniform location
-			const uniformLocation = this._gl.getUniformLocation(this._program, uniform);
+			const uniformLocation = this.gl.getUniformLocation(this.program, uniform);
 			if(uniformLocation === -1) {
 				_logger.error("Could not find uniform: " + uniform);
 				throw new Error(`Uniform named "${uniform}" was not found in shader code!`);
@@ -238,10 +238,10 @@ export class Effect {
 				(function(_this, name, location, method) {
 					_this.uniforms[name] = (mat) => {
 						if(_currEffect !== _this) {
-							_this._pendingUniformValues[name] = [mat];
+							_this.pendingUniformValues[name] = [mat];
 							return;
 						}
-						_this._gl[method](location, false, mat);
+						_this.gl[method](location, false, mat);
 					};
 				})(this, uniform, uniformLocation, uniformData.type);
 			}
@@ -250,17 +250,17 @@ export class Effect {
 				(function(_this, name, location, method) {
 					_this.uniforms[name] = (texture, index) => {
 						if(_currEffect !== _this) {
-							_this._pendingUniformValues[name] = [texture, index];
+							_this.pendingUniformValues[name] = [texture, index];
 							return;
 						}
 						index = index || 0;
 						const glTexture = texture._glTexture || texture;
-						const textureCode = _this._gl["TEXTURE" + (index || 0)];
-						_this._gl.activeTexture(textureCode);
-						_this._gl.bindTexture(_this._gl.TEXTURE_2D, glTexture);
-						_this._gl.uniform1i(location, (index || 0));
-						if(texture.filter) _setTextureFilter(_this._gl, texture.filter);
-						if(texture.wrapMode) _setTextureWrapMode(_this._gl, texture.wrapMode);
+						const textureCode = _this.gl["TEXTURE" + (index || 0)];
+						_this.gl.activeTexture(textureCode);
+						_this.gl.bindTexture(_this.gl.TEXTURE_2D, glTexture);
+						_this.gl.uniform1i(location, (index || 0));
+						if(texture.filter) _setTextureFilter(_this.gl, texture.filter);
+						if(texture.wrapMode) _setTextureWrapMode(_this.gl, texture.wrapMode);
 					};
 				})(this, uniform, uniformLocation, uniformData.type);
 			}
@@ -269,14 +269,14 @@ export class Effect {
 				(function(_this, name, location, method) {
 					_this.uniforms[name] = (v1, v2, v3, v4) => {
 						if(_currEffect !== _this) {
-							_this._pendingUniformValues[name] = [v1, v2, v3, v4];
+							_this.pendingUniformValues[name] = [v1, v2, v3, v4];
 							return;
 						}
 						if(v1.isColor) {
-							_this._gl[method](location, v1.floatArray);
+							_this.gl[method](location, v1.floatArray);
 						}
 						else {
-							_this._gl[method](location, v1, v2, v3, v4);
+							_this.gl[method](location, v1, v2, v3, v4);
 						}
 					};
 				})(this, uniform, uniformLocation, uniformData.type);
@@ -286,10 +286,10 @@ export class Effect {
 				(function(_this, name, location, method) {
 					_this.uniforms[name] = (v1, v2, v3, v4) => {
 						if(_currEffect !== _this) {
-							_this._pendingUniformValues[name] = [v1, v2, v3, v4];
+							_this.pendingUniformValues[name] = [v1, v2, v3, v4];
 							return;
 						}
-						_this._gl[method](location, v1, v2, v3, v4);
+						_this.gl[method](location, v1, v2, v3, v4);
 					};
 				})(this, uniform, uniformLocation, uniformData.type);
 			}
@@ -297,7 +297,7 @@ export class Effect {
 			// set binding
 			const bindTo = uniformData.bind;
 			if(bindTo) {
-				this._uniformBinds[bindTo] = uniform;
+				this.uniformBinds[bindTo] = uniform;
 			}
 		}
 
@@ -305,13 +305,13 @@ export class Effect {
 		this.attributes = {};
 
 		// dictionary to bind attribute to built-in roles, like vertices positions or uvs
-		this._attributeBinds = {};
+		this.attributeBinds = {};
 
 		// get attribute locations
 		for(const attr in this.attributeTypes) {
 
 			// get attribute location
-			const attributeLocation = this._gl.getAttribLocation(this._program, attr);
+			const attributeLocation = this.gl.getAttribLocation(this.program, attr);
 			if(attributeLocation === -1) {
 				_logger.error("Could not find attribute: " + attr);
 				throw new Error(`Attribute named "${attr}" was not found in shader code!`);
@@ -325,17 +325,17 @@ export class Effect {
 				_this.attributes[name] = (buffer) => {
 
 					if(_currEffect !== _this) {
-						_this._pendingAttributeValues[name] = [buffer];
+						_this.pendingAttributeValues[name] = [buffer];
 						return;
 					}
 
 					if(buffer) {
-						_this._gl.bindBuffer(_this._gl.ARRAY_BUFFER, buffer);
-						_this._gl.vertexAttribPointer(location, data.size, _this._gl[data.type] || _this._gl.FLOAT, data.normalize || false, data.stride || 0, data.offset || 0);
-						_this._gl.enableVertexAttribArray(location);
+						_this.gl.bindBuffer(_this.gl.ARRAY_BUFFER, buffer);
+						_this.gl.vertexAttribPointer(location, data.size, _this.gl[data.type] || _this.gl.FLOAT, data.normalize || false, data.stride || 0, data.offset || 0);
+						_this.gl.enableVertexAttribArray(location);
 					}
 					else {
-						_this._gl.disableVertexAttribArray(location);
+						_this.gl.disableVertexAttribArray(location);
 					}
 				};
 			})(this, attr, attributeLocation, attributeData);
@@ -343,12 +343,12 @@ export class Effect {
 			// set binding
 			const bindTo = attributeData.bind;
 			if(bindTo) {
-				this._attributeBinds[bindTo] = attr;
+				this.attributeBinds[bindTo] = attr;
 			}
 		}
 
 		// values we already set for this effect, so we won't set them again
-		this._cachedValues = {};
+		this.cachedValues = {};
 	}
 
 	/**
@@ -388,46 +388,46 @@ export class Effect {
 	 */
 	public setAsActive(overrideFlags: Partial<{ enableDepthTest: boolean; enableFaceCulling: boolean; enableStencilTest: boolean; enableDithering: boolean; polygonOffset: Partial<{ factor: number; units: number; }>; depthFunc: unknown; }>) {
 		// use effect program
-		this._gl.useProgram(this._program);
+		this.gl.useProgram(this.program);
 
 		// enable / disable some features
 		overrideFlags = overrideFlags || {};
-		if(overrideFlags.enableDepthTest ?? this.enableDepthTest) { this._gl.enable(this._gl.DEPTH_TEST); } else { this._gl.disable(this._gl.DEPTH_TEST); }
-		if(overrideFlags.enableFaceCulling ?? this.enableFaceCulling) { this._gl.enable(this._gl.CULL_FACE); } else { this._gl.disable(this._gl.CULL_FACE); }
-		if(overrideFlags.enableStencilTest ?? this.enableStencilTest) { this._gl.enable(this._gl.STENCIL_TEST); } else { this._gl.disable(this._gl.STENCIL_TEST); }
-		if(overrideFlags.enableDithering ?? this.enableDithering) { this._gl.enable(this._gl.DITHER); } else { this._gl.disable(this._gl.DITHER); }
+		if(overrideFlags.enableDepthTest ?? this.enableDepthTest) { this.gl.enable(this.gl.DEPTH_TEST); } else { this.gl.disable(this.gl.DEPTH_TEST); }
+		if(overrideFlags.enableFaceCulling ?? this.enableFaceCulling) { this.gl.enable(this.gl.CULL_FACE); } else { this.gl.disable(this.gl.CULL_FACE); }
+		if(overrideFlags.enableStencilTest ?? this.enableStencilTest) { this.gl.enable(this.gl.STENCIL_TEST); } else { this.gl.disable(this.gl.STENCIL_TEST); }
+		if(overrideFlags.enableDithering ?? this.enableDithering) { this.gl.enable(this.gl.DITHER); } else { this.gl.disable(this.gl.DITHER); }
 
 		// set polygon offset
 		const polygonOffset = overrideFlags.polygonOffset ?? this.polygonOffset;
 		if(polygonOffset) {
-			this._gl.enable(this._gl.POLYGON_OFFSET_FILL);
-			this._gl.polygonOffset(polygonOffset.factor ?? 0, polygonOffset.units ?? 0);
+			this.gl.enable(this.gl.POLYGON_OFFSET_FILL);
+			this.gl.polygonOffset(polygonOffset.factor ?? 0, polygonOffset.units ?? 0);
 		}
 		else {
-			this._gl.disable(this._gl.POLYGON_OFFSET_FILL);
-			this._gl.polygonOffset(0, 0);
+			this.gl.disable(this.gl.POLYGON_OFFSET_FILL);
+			this.gl.polygonOffset(0, 0);
 		}
 
 		// default depth func
-		this._gl.depthFunc(overrideFlags.depthFunc ?? this.depthFunc);
+		this.gl.depthFunc(overrideFlags.depthFunc ?? this.depthFunc);
 
 		// set as active
 		_currEffect = this;
 
 		// set pending uniforms that were set while this effect was not active
-		for(const key in this._pendingUniformValues) {
-			this.uniforms[key](...this._pendingUniformValues[key]);
+		for(const key in this.pendingUniformValues) {
+			this.uniforms[key](...this.pendingUniformValues[key]);
 		}
-		this._pendingUniformValues = {};
+		this.pendingUniformValues = {};
 
 		// set pending attributes that were set while this effect was not active
-		for(const key in this._pendingAttributeValues) {
-			this.attributes[key](...this._pendingAttributeValues[key]);
+		for(const key in this.pendingAttributeValues) {
+			this.attributes[key](...this.pendingAttributeValues[key]);
 		}
-		this._pendingAttributeValues = {};
+		this.pendingAttributeValues = {};
 
 		// reset cached values
-		this._cachedValues = {};
+		this.cachedValues = {};
 	}
 
 	/**
@@ -436,7 +436,7 @@ export class Effect {
 	 * @returns Uniform set method, or null if not set.
 	 */
 	public getBoundUniform(bindKey: UniformBinds): ((...args: unknown[]) => unknown) | null {
-		const key = this._uniformBinds[bindKey];
+		const key = this.uniformBinds[bindKey];
 		if(key) return this.uniforms[key] || null;
 		return null;
 	}
@@ -509,7 +509,7 @@ export class Effect {
 	 */
 	public setTexture(texture: TextureAssetBase): boolean {
 		// already using this texture? skip
-		if(texture === this._cachedValues.texture) return false;
+		if(texture === this.cachedValues.texture) return false;
 
 		// get texture uniform
 		const uniform = this.getBoundUniform(Effect.UniformBinds.MainTexture);
@@ -517,10 +517,10 @@ export class Effect {
 		if(!uniform) return false; // didn't set..
 
 		// set texture value
-		this._cachedValues.texture = texture;
+		this.cachedValues.texture = texture;
 		const glTexture = texture._glTexture || texture;
-		this._gl.activeTexture(this._gl.TEXTURE0);
-		this._gl.bindTexture(this._gl.TEXTURE_2D, glTexture);
+		this.gl.activeTexture(this.gl.TEXTURE0);
+		this.gl.bindTexture(this.gl.TEXTURE_2D, glTexture);
 		uniform(texture, 0);
 
 		// set texture size
@@ -541,8 +541,8 @@ export class Effect {
 	public setColor(color: Color): void {
 		const uniform = this.getBoundUniform(Effect.UniformBinds.Color);
 		if(!uniform) return;
-		if(color.equals(this._cachedValues.color)) return;
-		this._cachedValues.color = color.clone();
+		if(color.equals(this.cachedValues.color)) return;
+		this.cachedValues.color = color.clone();
 		uniform(color.floatArray);
 	}
 
@@ -554,8 +554,8 @@ export class Effect {
 	public setProjectionMatrix(matrix: Matrix): void {
 		const uniform = this.getBoundUniform(Effect.UniformBinds.Projection);
 		if(!uniform) return;
-		if(matrix.equals(this._cachedValues.projection)) return;
-		this._cachedValues.projection = matrix.clone();
+		if(matrix.equals(this.cachedValues.projection)) return;
+		this.cachedValues.projection = matrix.clone();
 		uniform(matrix.values);
 	}
 
@@ -613,10 +613,10 @@ export class Effect {
 	 * @param forceSetBuffer If true, will always set buffer even if buffer is currently set.
 	 */
 	public setPositionsAttribute(buffer: WebGLBuffer, forceSetBuffer: boolean): void {
-		const attr = this._attributeBinds[Effect.AttributeBinds.Position];
+		const attr = this.attributeBinds[Effect.AttributeBinds.Position];
 		if(!attr) return;
-		if(!forceSetBuffer && buffer === this._cachedValues.positions) return;
-		this._cachedValues.positions = buffer;
+		if(!forceSetBuffer && buffer === this.cachedValues.positions) return;
+		this.cachedValues.positions = buffer;
 		this.attributes[attr](buffer);
 	}
 
@@ -627,10 +627,10 @@ export class Effect {
 	 * @param forceSetBuffer If true, will always set buffer even if buffer is currently set.
 	 */
 	public setTextureCoordsAttribute(buffer: WebGLBuffer, forceSetBuffer: boolean): void {
-		const attr = this._attributeBinds[Effect.AttributeBinds.TextureCoords];
+		const attr = this.attributeBinds[Effect.AttributeBinds.TextureCoords];
 		if(!attr) return;
-		if(!forceSetBuffer && buffer === this._cachedValues.coords) return;
-		this._cachedValues.coords = buffer;
+		if(!forceSetBuffer && buffer === this.cachedValues.coords) return;
+		this.cachedValues.coords = buffer;
 		this.attributes[attr](buffer);
 	}
 
@@ -639,7 +639,7 @@ export class Effect {
 	 * @returns True if got vertices color attribute.
 	 */
 	public get hasVertexColor(): boolean {
-		return Boolean(this._attributeBinds[Effect.AttributeBinds.Colors]);
+		return Boolean(this.attributeBinds[Effect.AttributeBinds.Colors]);
 	}
 
 	/**
@@ -649,10 +649,10 @@ export class Effect {
 	 * @param forceSetBuffer If true, will always set buffer even if buffer is currently set.
 	 */
 	public setColorsAttribute(buffer: WebGLBuffer, forceSetBuffer: boolean): void {
-		const attr = this._attributeBinds[Effect.AttributeBinds.Colors];
+		const attr = this.attributeBinds[Effect.AttributeBinds.Colors];
 		if(!attr) return;
-		if(!forceSetBuffer && buffer === this._cachedValues.colors) return;
-		this._cachedValues.colors = buffer;
+		if(!forceSetBuffer && buffer === this.cachedValues.colors) return;
+		this.cachedValues.colors = buffer;
 		this.attributes[attr](buffer);
 	}
 
@@ -663,10 +663,10 @@ export class Effect {
 	 * @param forceSetBuffer If true, will always set buffer even if buffer is currently set.
 	 */
 	public setNormalsAttribute(buffer: WebGLBuffer, forceSetBuffer: boolean): void {
-		const attr = this._attributeBinds[Effect.AttributeBinds.Normals];
+		const attr = this.attributeBinds[Effect.AttributeBinds.Normals];
 		if(!attr) return;
-		if(!forceSetBuffer && buffer === this._cachedValues.normals) return;
-		this._cachedValues.normals = buffer;
+		if(!forceSetBuffer && buffer === this.cachedValues.normals) return;
+		this.cachedValues.normals = buffer;
 		this.attributes[attr](buffer);
 	}
 
@@ -677,10 +677,10 @@ export class Effect {
 	 * @param forceSetBuffer If true, will always set buffer even if buffer is currently set.
 	 */
 	public setBinormalsAttribute(buffer: WebGLBuffer, forceSetBuffer: boolean): void {
-		const attr = this._attributeBinds[Effect.AttributeBinds.Binormals];
+		const attr = this.attributeBinds[Effect.AttributeBinds.Binormals];
 		if(!attr) return;
-		if(!forceSetBuffer && buffer === this._cachedValues.binormals) return;
-		this._cachedValues.binormals = buffer;
+		if(!forceSetBuffer && buffer === this.cachedValues.binormals) return;
+		this.cachedValues.binormals = buffer;
 		this.attributes[attr](buffer);
 	}
 
@@ -691,10 +691,10 @@ export class Effect {
 	 * @param forceSetBuffer If true, will always set buffer even if buffer is currently set.
 	 */
 	public setTangentsAttribute(buffer: WebGLBuffer, forceSetBuffer: boolean): void {
-		const attr = this._attributeBinds[Effect.AttributeBinds.Tangents];
+		const attr = this.attributeBinds[Effect.AttributeBinds.Tangents];
 		if(!attr) return;
-		if(!forceSetBuffer && buffer === this._cachedValues.tangents) return;
-		this._cachedValues.tangents = buffer;
+		if(!forceSetBuffer && buffer === this.cachedValues.tangents) return;
+		this.cachedValues.tangents = buffer;
 		this.attributes[attr](buffer);
 	}
 

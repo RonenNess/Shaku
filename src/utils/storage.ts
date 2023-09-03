@@ -4,8 +4,17 @@ import { StorageAdapter } from "./storage_adapter";
  * A thin wrapper layer around storage utility.
  */
 export class Storage {
-	private _adapter: StorageAdapter | null;
-	private _keysPrefix: string;
+	/**
+	 * Default adapters to use when no adapters list is provided.
+	 */
+	private static readonly defaultAdapters = [
+		new StorageAdapter.localStorage(),
+		new StorageAdapter.sessionStorage(),
+		new StorageAdapter.memory(),
+	];
+
+	private adapter: StorageAdapter | null;
+	private keysPrefix: string;
 	public valuesAsBase64: boolean;
 	public keysAsBase64: boolean;
 
@@ -16,30 +25,25 @@ export class Storage {
 	 * @param valuesAsBase64 If true, will encode and decode data as base64.
 	 * @param keysAsBase64 If true, will encode and decode keys as base64.
 	 */
-	public constructor(adapters: StorageAdapter[], prefix: string, valuesAsBase64: boolean, keysAsBase64: boolean) {
-		// default adapters
-		adapters = adapters || Storage.defaultAdapters;
-
+	public constructor(adapters: StorageAdapter[] = Storage.defaultAdapters, prefix = "", valuesAsBase64?: boolean, keysAsBase64?: boolean) {
 		// default to array
-		if(!Array.isArray(adapters)) {
-			adapters = [adapters];
-		}
+		if(!Array.isArray(adapters)) adapters = [adapters];
 
 		// choose adapter
-		this._adapter = null;
+		this.adapter = null;
 		for(const adapter of adapters) {
 			if(adapter.isValid()) {
-				this._adapter = adapter;
+				this.adapter = adapter;
 				break;
 			}
 		}
 
 		// set if should use base64
-		this.valuesAsBase64 = Boolean(valuesAsBase64);
-		this.keysAsBase64 = Boolean(keysAsBase64);
+		this.valuesAsBase64 = !!valuesAsBase64;
+		this.keysAsBase64 = !!keysAsBase64;
 
 		// set prefix
-		this._keysPrefix = "shaku_storage_" + (prefix || "") + "_";
+		this.keysPrefix = "shaku_storage_" + (prefix || "") + "_";
 	}
 
 	/**
@@ -47,7 +51,7 @@ export class Storage {
 	 * @returns True if this storage type is persistent.
 	 */
 	public get persistent(): boolean {
-		return this.isValid && this._adapter.persistent;
+		return this.isValid && this.adapter.persistent;
 	}
 
 	/**
@@ -55,7 +59,7 @@ export class Storage {
 	 * @returns True if found a valid adapter to use, false otherwise.
 	 */
 	public get isValid(): boolean {
-		return Boolean(this._adapter);
+		return Boolean(this.adapter);
 	}
 
 	/**
@@ -65,10 +69,8 @@ export class Storage {
 	 * @returns Normalized key.
 	 */
 	public normalizeKey(key: string): string {
-		key = this._keysPrefix + key.toString();
-		if(this.keysAsBase64) {
-			key = btoa(key);
-		}
+		key = this.keysPrefix + key.toString();
+		if(this.keysAsBase64) key = btoa(key);
 		return key;
 	}
 
@@ -80,7 +82,7 @@ export class Storage {
 	public exists(key: string): boolean {
 		if(typeof key !== "string") throw new Error("Key must be a string!");
 		key = this.normalizeKey(key);
-		return this._adapter.exists(key);
+		return this.adapter.exists(key);
 	}
 
 	/**
@@ -97,12 +99,10 @@ export class Storage {
 		});
 
 		// convert to base64
-		if(this.valuesAsBase64) {
-			value = btoa(value);
-		}
+		if(this.valuesAsBase64) value = btoa(value);
 
 		// store value
-		this._adapter.setItem(key, value);
+		this.adapter.setItem(key, value);
 	}
 
 	/**
@@ -111,12 +111,10 @@ export class Storage {
 	 */
 	#_get(key: string): object | null {
 		// get value
-		let value = this._adapter.getItem(key);
+		let value = this.adapter.getItem(key);
 
 		// not found? return null
-		if(value === null) {
-			return null;
-		}
+		if(value === null) return null;
 
 		// convert from base64
 		if(this.valuesAsBase64) {
@@ -194,22 +192,13 @@ export class Storage {
 	public deleteItem(key: string): void {
 		if(typeof key !== "string") throw new Error("Key must be a string!");
 		key = this.normalizeKey(key);
-		this._adapter.deleteItem(key);
+		this.adapter.deleteItem(key);
 	}
 
 	/**
 	 * Clear all values from this storage instance, based on prefix + adapter type.
 	 */
 	public clear(): void {
-		this._adapter.clear(this._keysPrefix);
+		this.adapter.clear(this.keysPrefix);
 	}
 }
-
-/**
- * Default adapters to use when no adapters list is provided.
- */
-Storage.defaultAdapters = [
-	new StorageAdapter.localStorage(),
-	new StorageAdapter.sessionStorage(),
-	new StorageAdapter.memory(),
-];

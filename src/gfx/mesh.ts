@@ -11,7 +11,7 @@ export class Mesh {
 	public indices: WebGLBuffer;
 	public indicesCount: number;
 
-	private __color: Color;
+	private color: Color;
 
 	/**
 	 * Create the mesh object.
@@ -27,7 +27,7 @@ export class Mesh {
 		this.colors = colors;
 		this.indices = indices;
 		this.indicesCount = indicesCount;
-		this.__color = new Color(-1, -1, -1, -1);
+		this.color = new Color(-1, -1, -1, -1);
 		Object.freeze(this);
 	}
 
@@ -37,8 +37,8 @@ export class Mesh {
 	 * @param color Color to set.
 	 */
 	public overrideColors(gl: WebGLRenderingContext, color: Color): void {
-		if(color.equals(this.__color)) return;
-		this.__color.copy(color);
+		if(color.equals(this.color)) return;
+		this.color.copy(color);
 
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.colors);
 		const colors = [];

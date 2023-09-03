@@ -38,9 +38,7 @@ export class Box {
 	 */
 	public setFromArray(array: number[]): Box {
 		this.makeEmpty();
-		for(let i = 0, il = array.length; i < il; i += 3) {
-			this.expandByPoint(_vector.fromArray(array, i));
-		}
+		for(let i = 0, il = array.length; i < il; i += 3) this.expandByPoint(_vector.fromArray(array, i));
 		return this;
 	}
 
@@ -51,9 +49,7 @@ export class Box {
 	 */
 	public setFromPoints(points: Vector3[]): Box {
 		this.makeEmpty();
-		for(let i = 0, il = points.length; i < il; i++) {
-			this.expandByPoint(points[i]);
-		}
+		for(let i = 0, il = points.length; i < il; i++) this.expandByPoint(points[i]);
 		return this;
 	}
 
@@ -166,9 +162,12 @@ export class Box {
 	 * @returns True if box containing the point.
 	 */
 	public containsPoint(point: Vector3): boolean {
-		return point.x < this.min.x || point.x > this.max.x ||
-			point.y < this.min.y || point.y > this.max.y ||
-			point.z < this.min.z || point.z > this.max.z ? false : true;
+		return point.x < this.min.x
+			|| point.x > this.max.x
+			|| point.y < this.min.y
+			|| point.y > this.max.y
+			|| point.z < this.min.z
+			|| point.z > this.max.z ? false : true;
 	}
 
 	/**
@@ -177,9 +176,12 @@ export class Box {
 	 * @returns True if box containing the box.
 	 */
 	public containsBox(box: Box): boolean {
-		return this.min.x <= box.min.x && box.max.x <= this.max.x &&
-			this.min.y <= box.min.y && box.max.y <= this.max.y &&
-			this.min.z <= box.min.z && box.max.z <= this.max.z;
+		return this.min.x <= box.min.x
+			&& box.max.x <= this.max.x
+			&& this.min.y <= box.min.y
+			&& box.max.y <= this.max.y
+			&& this.min.z <= box.min.z
+			&& box.max.z <= this.max.z;
 	}
 
 	/**
@@ -189,9 +191,12 @@ export class Box {
 	 */
 	public collideBox(box: Box): boolean {
 		// using 6 splitting planes to rule out intersections.
-		return box.max.x < this.min.x || box.min.x > this.max.x ||
-			box.max.y < this.min.y || box.min.y > this.max.y ||
-			box.max.z < this.min.z || box.min.z > this.max.z ? false : true;
+		return box.max.x < this.min.x
+			|| box.min.x > this.max.x
+			|| box.max.y < this.min.y
+			|| box.min.y > this.max.y
+			|| box.max.z < this.min.z
+			|| box.min.z > this.max.z ? false : true;
 	}
 
 	/**
@@ -220,39 +225,27 @@ export class Box {
 		let min, max;
 
 		if(plane.normal.x > 0) {
-
 			min = plane.normal.x * this.min.x;
 			max = plane.normal.x * this.max.x;
-
 		} else {
-
 			min = plane.normal.x * this.max.x;
 			max = plane.normal.x * this.min.x;
-
 		}
 
 		if(plane.normal.y > 0) {
-
 			min += plane.normal.y * this.min.y;
 			max += plane.normal.y * this.max.y;
-
 		} else {
-
 			min += plane.normal.y * this.max.y;
 			max += plane.normal.y * this.min.y;
-
 		}
 
 		if(plane.normal.z > 0) {
-
 			min += plane.normal.z * this.min.z;
 			max += plane.normal.z * this.max.z;
-
 		} else {
-
 			min += plane.normal.z * this.max.z;
 			max += plane.normal.z * this.min.z;
-
 		}
 
 		return (min <= - plane.constant && max >= - plane.constant);

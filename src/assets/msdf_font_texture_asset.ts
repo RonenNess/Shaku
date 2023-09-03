@@ -9,17 +9,17 @@ import { TextureAsset } from "./texture_asset";
  * This asset uses a signed distance field atlas to render characters as sprites at high res.
  */
 export class MsdfFontTextureAsset extends FontTextureAsset {
-	private _positionOffsets: Record<string, Vector2> | null;
-	private _xAdvances: Record<string, number> | null;
-	private _kernings: unknown | null;
+	private positionOffsets: Record<string, Vector2> | null;
+	private xAdvances: Record<string, number> | null;
+	private kernings: unknown | null;
 
 	/**
 	 * @inheritdoc
 	 */
 	public constructor(url: string) {
 		super(url);
-		this._positionOffsets = null;
-		this._xAdvances = null;
+		this.positionOffsets = null;
+		this.xAdvances = null;
 	}
 
 	/**
@@ -64,20 +64,20 @@ export class MsdfFontTextureAsset extends FontTextureAsset {
 
 			// dictionaries to store per-character data
 			this._sourceRects = {};
-			this._positionOffsets = {};
-			this._xAdvances = {};
-			this._kernings = {};
+			this.positionOffsets = {};
+			this.xAdvances = {};
+			this.kernings = {};
 
 			for(const charData of atlasMetadata.chars) {
 				const currChar = charData.char;
 
 				const sourceRect = new Rectangle(charData.x, charData.y, charData.width, charData.height);
 				this._sourceRects[currChar] = sourceRect;
-				this._positionOffsets[currChar] = new Vector2(
+				this.positionOffsets[currChar] = new Vector2(
 					charData.xoffset,
 					charData.yoffset
 				);
-				this._xAdvances[currChar] = charData.xadvance;
+				this.xAdvances[currChar] = charData.xadvance;
 			}
 
 			this._texture = atlasTexture;
@@ -114,16 +114,16 @@ export class MsdfFontTextureAsset extends FontTextureAsset {
 	 * @inheritdoc
 	 */
 	public override getPositionOffset(character: string): Vector2 {
-		return this._positionOffsets[character]
-			|| this._positionOffsets[this.placeholderCharacter];
+		return this.positionOffsets[character]
+			|| this.positionOffsets[this.placeholderCharacter];
 	}
 
 	/**
 	 * @inheritdoc
 	 */
 	public override getXAdvance(character: string): number {
-		return this._xAdvances[character]
-			|| this._xAdvances[this.placeholderCharacter];
+		return this.xAdvances[character]
+			|| this.xAdvances[this.placeholderCharacter];
 	}
 
 	/**
@@ -131,8 +131,8 @@ export class MsdfFontTextureAsset extends FontTextureAsset {
 	 */
 	public override destroy(): void {
 		super.destroy();
-		this._positionOffsets = null;
-		this._xAdvances = null;
-		this._kernings = null;
+		this.positionOffsets = null;
+		this.xAdvances = null;
+		this.kernings = null;
 	}
 }

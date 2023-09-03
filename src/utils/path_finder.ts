@@ -82,9 +82,7 @@ function _ImpFindPath<P extends Vector2 | Vector3>(grid: IGrid, startPos: P, tar
 
 		// get from cache
 		const key = (position.x + "," + position.y);
-		if(nodesCache[key]) {
-			return nodesCache[key];
-		}
+		if(nodesCache[key]) return nodesCache[key];
 
 		// create new
 		const ret = new Node(position);
@@ -106,9 +104,7 @@ function _ImpFindPath<P extends Vector2 | Vector3>(grid: IGrid, startPos: P, tar
 	// remove from array by value
 	function removeFromArray(arr, val) {
 		const index = arr.indexOf(val);
-		if(index !== -1) {
-			arr.splice(index, 1);
-		}
+		if(index !== -1) arr.splice(index, 1);
 	}
 
 	// while we got open way to go...
@@ -116,17 +112,13 @@ function _ImpFindPath<P extends Vector2 | Vector3>(grid: IGrid, startPos: P, tar
 	while(openSet.length > 0) {
 		// check iterations count
 		if(options.maxIterations) {
-			if(iterationsCount++ > options.maxIterations) {
-				break;
-			}
+			if(iterationsCount++ > options.maxIterations) break;
 		}
 
 		// find optimal node to start from
 		let currentNode = openSet[0];
 		for(let i = 1; i < openSet.length; i++) {
-			if((openSet[i].fCost <= currentNode.fCost) && (openSet[i].hCost < currentNode.hCost)) {
-				currentNode = openSet[i];
-			}
+			if((openSet[i].fCost <= currentNode.fCost) && (openSet[i].hCost < currentNode.hCost)) currentNode = openSet[i];
 		}
 
 		// add current node to close set
@@ -152,9 +144,7 @@ function _ImpFindPath<P extends Vector2 | Vector3>(grid: IGrid, startPos: P, tar
 		// iterate neighbors
 		for(const neighbor of neighbors) {
 			// skip if already passed or can't walk there
-			if(closedSet.has(neighbor) || grid.isBlocked(currentNode.position, neighbor.position)) {
-				continue;
-			}
+			if(closedSet.has(neighbor) || grid.isBlocked(currentNode.position, neighbor.position)) continue;
 
 			// calc const and price to walk there
 			const price = (options.ignorePrices) ? 1 : grid.getPrice(neighbor.position);
@@ -169,9 +159,7 @@ function _ImpFindPath<P extends Vector2 | Vector3>(grid: IGrid, startPos: P, tar
 				neighbor.parent = currentNode;
 
 				// add to open set
-				if(!isInOpenSet) {
-					openSet.push(neighbor);
-				}
+				if(!isInOpenSet) openSet.push(neighbor);
 			}
 		}
 	}
@@ -201,9 +189,9 @@ function retracePath(startNode: Node, endNode: Node) {
  * Get distance between two points on grid.
  * This method is quick and dirty and takes diagonal into consideration.
  */
-function getDistance(pa, pb) {
-	const dx = (pa.position.x - pb.position.x);
-	const dy = (pa.position.y - pb.position.y);
+function getDistance(pa: Node, pb: Node) {
+	const dx = pa.position.x - pb.position.x;
+	const dy = pa.position.y - pb.position.y;
 	return Math.sqrt(dx * dx + dy * dy);
 }
 

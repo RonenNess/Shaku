@@ -13,35 +13,6 @@ const input = isBrowser ? _input : null;
 
 const _logger = LoggerFactory.getLogger("shaku");
 
-// is shaku in silent mode
-let _isSilent = false;
-
-// manager state and gametime
-let _usedManagers: IManager[] | null = null;
-let _prevUpdateTime = null;
-
-// current game time
-let _gameTime: GameTime | null = null;
-
-// to measure fps
-let _currFpsCounter = 0;
-let _countSecond = 0;
-let _currFps = 0;
-
-// to measure time it takes for frames to finish
-let _startFrameTime = 0;
-let _frameTimeMeasuresCount = 0;
-let _totalFrameTimes = 0;
-
-// are managers currently in "started" mode?
-let _managersStarted = false;
-
-// were we previously paused?
-let _wasPaused = false;
-
-// current version
-const version = "2.2.5";
-
 /**
  * Shaku's main object.
  * This object wraps the entire lib namespace, and this is what you use to access all managers and manage your main loop.
@@ -95,6 +66,36 @@ export class Shaku {
 	 */
 	public pauseGameTime: boolean;
 
+
+	// is shaku in silent mode
+	private isSilent = false;
+
+	// manager state and gametime
+	private usedManagers: IManager[] | null = null;
+	private prevUpdateTime: GameTime | null = null;
+
+	// current game time
+	private _gameTime: GameTime | null = null;
+
+	// to measure fps
+	private currFpsCounter = 0;
+	private countSecond = 0;
+	private currFps = 0;
+
+	// to measure time it takes for frames to finish
+	private startFrameTime = 0;
+	private frameTimeMeasuresCount = 0;
+	private totalFrameTimes = 0;
+
+	// are managers currently in "started" mode?
+	private managersStarted = false;
+
+	// were we previously paused?
+	private wasPaused = false;
+
+	// current version
+	private static readonly VERSION = "2.2.5";
+
 	/**
 	 * Create the Shaku main object.
 	 */
@@ -116,28 +117,28 @@ export class Shaku {
 	 * @returns promise to resolve when finish initialization.
 	 */
 	public async init(managers?: IManager[] | null): Promise<void> {
-		return new Promise(async (resolve, reject) => {
+		return new Promise(async (resolve, _reject) => {
 			// welcome message
-			if(!_isSilent) console.log(`%c\u{1F9D9} Shaku ${version}\n%c Game dev lib by Ronen Ness`, "color:orange; font-size: 18pt", "color:grey; font-size: 8pt");
+			if(!this.isSilent) console.log(`%c\u{1F9D9} Shaku ${this.version}\n%c Game dev lib by Ronen Ness`, "color:orange; font-size: 18pt", "color:grey; font-size: 8pt");
 
 			// sanity & log
-			if(_usedManagers) throw new Error("Already initialized!");
-			_logger.info(`Initialize Shaku v${version}.`);
+			if(this.usedManagers) throw new Error("Already initialized!");
+			_logger.info(`Initialize Shaku v${this.version}.`);
 
 			// reset game start time
 			GameTime.reset();
 
 			// setup used managers
-			_usedManagers = managers || (isBrowser ? [assets, sfx!, gfx!, input!, collision] : [assets, collision]);
+			this.usedManagers = managers || (isBrowser ? [assets, sfx!, gfx!, input!, collision] : [assets, collision]);
 
 			// init all managers
-			for(let i = 0; i < _usedManagers.length; ++i) await _usedManagers[i].setup();
+			for(let i = 0; i < this.usedManagers.length; ++i) await this.usedManagers[i].setup();
 
 			// set starting time
-			_prevUpdateTime = new GameTime();
+			this.prevUpdateTime = new GameTime();
 
 			// done!
-			_logger.info(`Shaku ${version} was initialized successfully!`);
+			_logger.info(`Shaku ${this.version} was initialized successfully!`);
 			_logger.info(`------------------------------------------------`);
 			resolve();
 		});
@@ -148,14 +149,10 @@ export class Shaku {
 	 */
 	public destroy(): void {
 		// sanity
-		if(!_usedManagers) {
-			throw new Error("Not initialized!");
-		}
+		if(!this.usedManagers) throw new Error("Not initialized!");
 
 		// destroy all managers
-		for(let i = 0; i < _usedManagers.length; ++i) {
-			_usedManagers[i].destroy();
-		}
+		for(let i = 0; i < this.usedManagers.length; ++i) this.usedManagers[i].destroy();
 	}
 
 	/**
@@ -163,7 +160,8 @@ export class Shaku {
 	 * @returns True if currently paused for any reason.
 	 */
 	public isCurrentlyPaused(): boolean {
-		return this.pause || (this.pauseWhenNotFocused && !document.hasFocus());
+		return this.pause
+			|| (this.pauseWhenNotFocused && !document.hasFocus());
 	}
 
 	/**
@@ -171,48 +169,40 @@ export class Shaku {
 	 */
 	public startFrame(): void {
 		// sanity
-		if(!_usedManagers) throw new Error("Not initialized!");
+		if(!this.usedManagers) throw new Error("Not initialized!");
 
 		// if paused, skip
 		if(this.isCurrentlyPaused()) {
-			if(this.input) {
-				this.input.startFrame();
-			}
+			if(this.input) this.input.startFrame();
 			GameTime.updateRawData();
-			_gameTime = new GameTime();
-			_wasPaused = true;
+			this._gameTime = new GameTime();
+			this.wasPaused = true;
 			return;
 		}
 
 		// returning from pause
-		if(_wasPaused) {
-			_wasPaused = false;
+		if(this.wasPaused) {
+			this.wasPaused = false;
 			GameTime.resetDelta();
 		}
 
 		// reset delta if paused
-		if(this.pauseGameTime) {
-			GameTime.resetDelta();
-		}
+		if(this.pauseGameTime) GameTime.resetDelta();
 		// update game time
-		else {
-			GameTime.update();
-		}
+		else GameTime.update();
 
 		// get frame start time
-		_startFrameTime = GameTime.rawTimestamp();
+		this.startFrameTime = GameTime.rawTimestamp();
 
 		// create new gameTime object to freeze values
-		_gameTime = new GameTime();
+		this._gameTime = new GameTime();
 
 		// update animators
-		utils.Animator.updatePlayingAnimations(_gameTime.delta);
+		utils.Animator.updatePlayingAnimations(this._gameTime.delta);
 
 		// update managers
-		for(let i = 0; i < _usedManagers.length; ++i) {
-			_usedManagers[i].startFrame();
-		}
-		_managersStarted = true;
+		for(let i = 0; i < this.usedManagers.length; ++i) this.usedManagers[i].startFrame();
+		this.managersStarted = true;
 	}
 
 	/**
@@ -220,31 +210,25 @@ export class Shaku {
 	 */
 	public endFrame(): void {
 		// sanity
-		if(!_usedManagers) throw new Error("Not initialized!");
+		if(!this.usedManagers) throw new Error("Not initialized!");
 
 		// update managers
-		if(_managersStarted) {
-			for(let i = 0; i < _usedManagers.length; ++i) {
-				_usedManagers[i].endFrame();
-			}
-			_managersStarted = false;
+		if(this.managersStarted) {
+			for(let i = 0; i < this.usedManagers.length; ++i) this.usedManagers[i].endFrame();
+			this.managersStarted = false;
 		}
 
 		// if paused, skip
 		if(this.isCurrentlyPaused()) {
-			if(this.input) {
-				this.input.endFrame();
-			}
+			if(this.input) this.input.endFrame();
 			return;
 		}
 
 		// store previous gameTime object
-		_prevUpdateTime = _gameTime;
+		this.prevUpdateTime = this._gameTime;
 
 		// count fps and time stats
-		if(_gameTime) {
-			this.#_updateFpsAndTimeStats();
-		}
+		if(this._gameTime) this.#_updateFpsAndTimeStats();
 	}
 
 	/**
@@ -253,27 +237,27 @@ export class Shaku {
 	 */
 	#_updateFpsAndTimeStats(): void {
 		// update fps count and second counter
-		_currFpsCounter++;
-		_countSecond += _gameTime!.delta; // only called from inside a "if (_gameTime) {}" block, so we can use ! safely.
+		this.currFpsCounter++;
+		this.countSecond += this._gameTime!.delta; // only called from inside a "if (_gameTime) {}" block, so we can use ! safely.
 
 		// a second passed:
-		if(_countSecond >= 1) {
+		if(this.countSecond >= 1) {
 
 			// reset second count and set current fps value
-			_countSecond = 0;
-			_currFps = _currFpsCounter;
-			_currFpsCounter = 0;
+			this.countSecond = 0;
+			this.currFps = this.currFpsCounter;
+			this.currFpsCounter = 0;
 
 			// trim the frames avg time, so we won't drag peaks for too long
-			_totalFrameTimes = this.getAverageFrameTime();
-			_frameTimeMeasuresCount = 1;
+			this.totalFrameTimes = this.getAverageFrameTime();
+			this.frameTimeMeasuresCount = 1;
 		}
 
 		// get frame end time and update average frames time
 		GameTime.updateRawData();
 		const _endFrameTime = GameTime.rawTimestamp();
-		_frameTimeMeasuresCount++;
-		_totalFrameTimes += (_endFrameTime - _startFrameTime);
+		this.frameTimeMeasuresCount++;
+		this.totalFrameTimes += (_endFrameTime - this.startFrameTime);
 	}
 
 	/**
@@ -281,7 +265,7 @@ export class Shaku {
 	 * You can call this before init.
 	 */
 	public silent(): void {
-		_isSilent = true;
+		this.isSilent = true;
 		LoggerFactory.silent();
 	}
 
@@ -300,8 +284,8 @@ export class Shaku {
 	 * @returns Current frame's gametime.
 	 */
 	public get gameTime(): GameTime {
-		if(_gameTime === null) throw new Error("gameTime() is only valid between startFrame() and endFrame()");
-		return _gameTime;
+		if(this._gameTime === null) throw new Error("gameTime() is only valid between startFrame() and endFrame()");
+		return this._gameTime;
 	}
 
 	/**
@@ -309,7 +293,7 @@ export class Shaku {
 	 * @returns Shaku's version.
 	 */
 	public get version(): string {
-		return version;
+		return Shaku.VERSION;
 	}
 
 	/**
@@ -318,7 +302,7 @@ export class Shaku {
 	 * @returns FPS count.
 	 */
 	public getFpsCount(): number {
-		return _currFps;
+		return this.currFps;
 	}
 
 	/**
@@ -326,8 +310,8 @@ export class Shaku {
 	 * @returns Average time, in milliseconds, it takes to complete a game frame.
 	 */
 	public getAverageFrameTime(): number {
-		if(_frameTimeMeasuresCount === 0) return 0;
-		return _totalFrameTimes / _frameTimeMeasuresCount;
+		if(this.frameTimeMeasuresCount === 0) return 0;
+		return this.totalFrameTimes / this.frameTimeMeasuresCount;
 	}
 
 	/**
@@ -359,7 +343,7 @@ export class Shaku {
 
 	/**
 	 * Get / create a custom logger.
-	 * @returns {Logger} Logger instance.
+	 * @returns Logger instance.
 	 */
 	public getLogger(name: string): Logger {
 		return LoggerFactory.getLogger(name);

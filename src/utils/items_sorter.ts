@@ -61,9 +61,7 @@ export class ItemsSorter {
 		let startWidth = Math.max(Math.ceil(Math.sqrt(area / 0.95)), maxRectWidth);
 
 		// if we got a method to process width, apply it
-		if(processRegionWidthMethod) {
-			startWidth = processRegionWidthMethod(startWidth);
-		}
+		if(processRegionWidthMethod) startWidth = processRegionWidthMethod(startWidth);
 
 		// start with a single empty space, unbounded at the bottom
 		const spaces = [{ x: 0, y: 0, w: startWidth, h: Infinity }];

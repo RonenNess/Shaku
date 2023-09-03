@@ -13,8 +13,8 @@ let gl: WebGLRenderingContext | null = null;
 export class TextureAsset extends TextureAssetBase {
 	private _image: unknown | null;
 	private _height: number;
-	private _texture: WebGLTexture | null;
-	private _ctxForPixelData: CanvasRenderingContext2D | null;
+	private texture: WebGLTexture | null;
+	private ctxForPixelData: CanvasRenderingContext2D | null;
 
 	public _width: number;
 
@@ -26,8 +26,8 @@ export class TextureAsset extends TextureAssetBase {
 		this._image = null;
 		this._width = 0;
 		this._height = 0;
-		this._texture = null;
-		this._ctxForPixelData = null;
+		this.texture = null;
+		this.ctxForPixelData = null;
 	}
 
 	/**
@@ -131,7 +131,7 @@ export class TextureAsset extends TextureAssetBase {
 		// store texture
 		this._width = width;
 		this._height = height;
-		this._texture = targetTexture;
+		this.texture = targetTexture;
 		this._notifyReady();
 	}
 
@@ -188,7 +188,7 @@ export class TextureAsset extends TextureAssetBase {
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
 
 		// success!
-		this._texture = texture;
+		this.texture = texture;
 		this._notifyReady();
 	}
 
@@ -244,7 +244,7 @@ export class TextureAsset extends TextureAssetBase {
 	 * @inheritdoc
 	 */
 	private get _glTexture(): WebGLTexture {
-		return this._texture;
+		return this.texture;
 	}
 
 	/**
@@ -258,15 +258,15 @@ export class TextureAsset extends TextureAssetBase {
 		if(!this._image) throw new Error("'getPixel()' only works on textures loaded from image!");
 
 		// build internal canvas and context to get pixel data
-		if(!this._ctxForPixelData) {
+		if(!this.ctxForPixelData) {
 			const canvas = document.createElement("canvas");
 			canvas.width = 1;
 			canvas.height = 1;
-			this._ctxForPixelData = canvas.getContext("2d");
+			this.ctxForPixelData = canvas.getContext("2d");
 		}
 
 		// get pixel data
-		const ctx = this._ctxForPixelData;
+		const ctx = this.ctxForPixelData;
 		ctx.drawImage(this._image, x, y, 1, 1, 0, 0, 1, 1);
 		const pixelData = ctx.getImageData(0, 0, 1, 1).data as [number, number, number, number];
 		return Color.fromBytesArray(pixelData);
@@ -292,15 +292,15 @@ export class TextureAsset extends TextureAssetBase {
 		height = height || (this.height - y);
 
 		// build internal canvas and context to get pixel data
-		if(!this._ctxForPixelData) {
+		if(!this.ctxForPixelData) {
 			const canvas = document.createElement("canvas");
 			canvas.width = width;
 			canvas.height = height;
-			this._ctxForPixelData = canvas.getContext("2d");
+			this.ctxForPixelData = canvas.getContext("2d");
 		}
 
 		// get pixel data
-		const ctx = this._ctxForPixelData;
+		const ctx = this.ctxForPixelData;
 		ctx.drawImage(this._image, x, y, width, height, 0, 0, width, height);
 		const pixelData = ctx.getImageData(x, y, width, height).data;
 
@@ -320,18 +320,18 @@ export class TextureAsset extends TextureAssetBase {
 	 * @inheritdoc
 	 */
 	public get valid(): boolean {
-		return Boolean(this._texture);
+		return Boolean(this.texture);
 	}
 
 	/**
 	 * @inheritdoc
 	 */
 	public destroy(): void {
-		gl.deleteTexture(this._texture);
+		gl.deleteTexture(this.texture);
 		this._image = null;
 		this._width = this._height = 0;
-		this._ctxForPixelData = null;
-		this._texture = null;
+		this.ctxForPixelData = null;
+		this.texture = null;
 	}
 }
 

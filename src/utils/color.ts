@@ -5,6 +5,155 @@ import { MathHelper } from "./math_helper";
  * All color components are expected to be in 0.0 - 1.0 range (and not 0-255).
  */
 export class Color {
+	// cspell: disable
+	/* eslint-disable @typescript-eslint/no-use-before-define */
+	public static readonly aliceblue = hexToColor("#f0f8ff");
+	public static readonly antiquewhite = hexToColor("#faebd7");
+	public static readonly aqua = hexToColor("#00ffff");
+	public static readonly aquamarine = hexToColor("#7fffd4");
+	public static readonly azure = hexToColor("#f0ffff");
+	public static readonly beige = hexToColor("#f5f5dc");
+	public static readonly bisque = hexToColor("#ffe4c4");
+	public static readonly black = hexToColor("#000000");
+	public static readonly blanchedalmond = hexToColor("#ffebcd");
+	public static readonly blue = hexToColor("#0000ff");
+	public static readonly blueviolet = hexToColor("#8a2be2");
+	public static readonly brown = hexToColor("#a52a2a");
+	public static readonly burlywood = hexToColor("#deb887");
+	public static readonly cadetblue = hexToColor("#5f9ea0");
+	public static readonly chartreuse = hexToColor("#7fff00");
+	public static readonly chocolate = hexToColor("#d2691e");
+	public static readonly coral = hexToColor("#ff7f50");
+	public static readonly cornflowerblue = hexToColor("#6495ed");
+	public static readonly cornsilk = hexToColor("#fff8dc");
+	public static readonly crimson = hexToColor("#dc143c");
+	public static readonly cyan = hexToColor("#00ffff");
+	public static readonly darkblue = hexToColor("#00008b");
+	public static readonly darkcyan = hexToColor("#008b8b");
+	public static readonly darkgoldenrod = hexToColor("#b8860b");
+	public static readonly darkgray = hexToColor("#a9a9a9");
+	public static readonly darkgreen = hexToColor("#006400");
+	public static readonly darkkhaki = hexToColor("#bdb76b");
+	public static readonly darkmagenta = hexToColor("#8b008b");
+	public static readonly darkolivegreen = hexToColor("#556b2f");
+	public static readonly darkorange = hexToColor("#ff8c00");
+	public static readonly darkorchid = hexToColor("#9932cc");
+	public static readonly darkred = hexToColor("#8b0000");
+	public static readonly darksalmon = hexToColor("#e9967a");
+	public static readonly darkseagreen = hexToColor("#8fbc8f");
+	public static readonly darkslateblue = hexToColor("#483d8b");
+	public static readonly darkslategray = hexToColor("#2f4f4f");
+	public static readonly darkturquoise = hexToColor("#00ced1");
+	public static readonly darkviolet = hexToColor("#9400d3");
+	public static readonly deeppink = hexToColor("#ff1493");
+	public static readonly deepskyblue = hexToColor("#00bfff");
+	public static readonly dimgray = hexToColor("#696969");
+	public static readonly dodgerblue = hexToColor("#1e90ff");
+	public static readonly firebrick = hexToColor("#b22222");
+	public static readonly floralwhite = hexToColor("#fffaf0");
+	public static readonly forestgreen = hexToColor("#228b22");
+	public static readonly fuchsia = hexToColor("#ff00ff");
+	public static readonly gainsboro = hexToColor("#dcdcdc");
+	public static readonly ghostwhite = hexToColor("#f8f8ff");
+	public static readonly gold = hexToColor("#ffd700");
+	public static readonly goldenrod = hexToColor("#daa520");
+	public static readonly gray = hexToColor("#808080");
+	public static readonly green = hexToColor("#008000");
+	public static readonly greenyellow = hexToColor("#adff2f");
+	public static readonly honeydew = hexToColor("#f0fff0");
+	public static readonly hotpink = hexToColor("#ff69b4");
+	public static readonly indianred = hexToColor("#cd5c5c");
+	public static readonly indigo = hexToColor("#4b0082");
+	public static readonly ivory = hexToColor("#fffff0");
+	public static readonly khaki = hexToColor("#f0e68c");
+	public static readonly lavender = hexToColor("#e6e6fa");
+	public static readonly lavenderblush = hexToColor("#fff0f5");
+	public static readonly lawngreen = hexToColor("#7cfc00");
+	public static readonly lemonchiffon = hexToColor("#fffacd");
+	public static readonly lightblue = hexToColor("#add8e6");
+	public static readonly lightcoral = hexToColor("#f08080");
+	public static readonly lightcyan = hexToColor("#e0ffff");
+	public static readonly lightgoldenrodyellow = hexToColor("#fafad2");
+	public static readonly lightgrey = hexToColor("#d3d3d3");
+	public static readonly lightgreen = hexToColor("#90ee90");
+	public static readonly lightpink = hexToColor("#ffb6c1");
+	public static readonly lightsalmon = hexToColor("#ffa07a");
+	public static readonly lightseagreen = hexToColor("#20b2aa");
+	public static readonly lightskyblue = hexToColor("#87cefa");
+	public static readonly lightslategray = hexToColor("#778899");
+	public static readonly lightsteelblue = hexToColor("#b0c4de");
+	public static readonly lightyellow = hexToColor("#ffffe0");
+	public static readonly lime = hexToColor("#00ff00");
+	public static readonly limegreen = hexToColor("#32cd32");
+	public static readonly linen = hexToColor("#faf0e6");
+	public static readonly magenta = hexToColor("#ff00ff");
+	public static readonly maroon = hexToColor("#800000");
+	public static readonly mediumaquamarine = hexToColor("#66cdaa");
+	public static readonly mediumblue = hexToColor("#0000cd");
+	public static readonly mediumorchid = hexToColor("#ba55d3");
+	public static readonly mediumpurple = hexToColor("#9370d8");
+	public static readonly mediumseagreen = hexToColor("#3cb371");
+	public static readonly mediumslateblue = hexToColor("#7b68ee");
+	public static readonly mediumspringgreen = hexToColor("#00fa9a");
+	public static readonly mediumturquoise = hexToColor("#48d1cc");
+	public static readonly mediumvioletred = hexToColor("#c71585");
+	public static readonly midnightblue = hexToColor("#191970");
+	public static readonly mintcream = hexToColor("#f5fffa");
+	public static readonly mistyrose = hexToColor("#ffe4e1");
+	public static readonly moccasin = hexToColor("#ffe4b5");
+	public static readonly navajowhite = hexToColor("#ffdead");
+	public static readonly navy = hexToColor("#000080");
+	public static readonly oldlace = hexToColor("#fdf5e6");
+	public static readonly olive = hexToColor("#808000");
+	public static readonly olivedrab = hexToColor("#6b8e23");
+	public static readonly orange = hexToColor("#ffa500");
+	public static readonly orangered = hexToColor("#ff4500");
+	public static readonly orchid = hexToColor("#da70d6");
+	public static readonly palegoldenrod = hexToColor("#eee8aa");
+	public static readonly palegreen = hexToColor("#98fb98");
+	public static readonly paleturquoise = hexToColor("#afeeee");
+	public static readonly palevioletred = hexToColor("#d87093");
+	public static readonly papayawhip = hexToColor("#ffefd5");
+	public static readonly peachpuff = hexToColor("#ffdab9");
+	public static readonly peru = hexToColor("#cd853f");
+	public static readonly pink = hexToColor("#ffc0cb");
+	public static readonly plum = hexToColor("#dda0dd");
+	public static readonly powderblue = hexToColor("#b0e0e6");
+	public static readonly purple = hexToColor("#800080");
+	public static readonly rebeccapurple = hexToColor("#663399");
+	public static readonly red = hexToColor("#ff0000");
+	public static readonly rosybrown = hexToColor("#bc8f8f");
+	public static readonly royalblue = hexToColor("#4169e1");
+	public static readonly saddlebrown = hexToColor("#8b4513");
+	public static readonly salmon = hexToColor("#fa8072");
+	public static readonly sandybrown = hexToColor("#f4a460");
+	public static readonly seagreen = hexToColor("#2e8b57");
+	public static readonly seashell = hexToColor("#fff5ee");
+	public static readonly sienna = hexToColor("#a0522d");
+	public static readonly silver = hexToColor("#c0c0c0");
+	public static readonly skyblue = hexToColor("#87ceeb");
+	public static readonly slateblue = hexToColor("#6a5acd");
+	public static readonly slategray = hexToColor("#708090");
+	public static readonly snow = hexToColor("#fffafa");
+	public static readonly springgreen = hexToColor("#00ff7f");
+	public static readonly steelblue = hexToColor("#4682b4");
+	public static readonly tan = hexToColor("#d2b48c");
+	public static readonly teal = hexToColor("#008080");
+	public static readonly thistle = hexToColor("#d8bfd8");
+	public static readonly tomato = hexToColor("#ff6347");
+	public static readonly turquoise = hexToColor("#40e0d0");
+	public static readonly violet = hexToColor("#ee82ee");
+	public static readonly wheat = hexToColor("#f5deb3");
+	public static readonly white = hexToColor("#ffffff");
+	public static readonly whitesmoke = hexToColor("#f5f5f5");
+	public static readonly yellow = hexToColor("#ffff00");
+	public static readonly yellowgreen = hexToColor("#9acd32");
+
+	public static readonly transparent = new Color(0, 0, 0, 0);
+	public static readonly transwhite = new Color(1, 1, 1, 0);
+	/* eslint-enable @typescript-eslint/no-use-before-define */
+	// cspell: enable
+
 	private _r: number;
 	private _g: number;
 	private _b: number;
@@ -154,7 +303,11 @@ export class Color {
 	 */
 	public get asHex(): string {
 		if(!this._asHex) {
-			this._asHex = "#" + Color.componentToHex(this.r * 255) + Color.componentToHex(this.g * 255) + Color.componentToHex(this.b * 255) + Color.componentToHex(this.a * 255);
+			this._asHex = "#"
+				+ Color.componentToHex(this.r * 255)
+				+ Color.componentToHex(this.g * 255)
+				+ Color.componentToHex(this.b * 255)
+				+ Color.componentToHex(this.a * 255);
 		}
 		return this._asHex;
 	}
@@ -165,9 +318,7 @@ export class Color {
 	 * @returns New color value.
 	 */
 	public static fromHex(val: string): Color {
-		if(typeof val !== "string" && val[0] !== "#") {
-			throw new PintarJS.Error("Invalid color format!");
-		}
+		if(typeof val !== "string" && val[0] !== "#") throw new Error("Invalid color format!");
 		const parsed = hexToColor(val);
 		if(!parsed) throw new Error("Invalid hex value to parse!");
 		return new Color(parsed.r, parsed.g, parsed.b, 1);
@@ -234,7 +385,10 @@ export class Color {
 	 * @returns Color as decimal ARGB.
 	 */
 	public get asDecimalABGR(): number {
-		return ((Math.round(this.a * 255) << (8 * 3)) | (Math.round(this.b * 255) << (8 * 2)) | (Math.round(this.g * 255) << (8 * 1)) | (Math.round(this.r * 255))) >>> 0;
+		return ((Math.round(this.a * 255) << (8 * 3))
+			| (Math.round(this.b * 255) << (8 * 2))
+			| (Math.round(this.g * 255) << (8 * 1))
+			| (Math.round(this.r * 255))) >>> 0;
 	}
 
 	/**
@@ -292,7 +446,10 @@ export class Color {
 	 * Get if this color is transparent black.
 	 */
 	public get isTransparentBlack(): boolean {
-		return this._r === this._g && this._g === this._b && this._b === this._a && this._a === 0;
+		return this._r === this._g
+			&& this._g === this._b
+			&& this._b === this._a
+			&& this._a === 0;
 	}
 
 	/**
@@ -308,9 +465,13 @@ export class Color {
 	 * @param other Other color to compare to.
 	 */
 	public equals(other: Color): boolean {
-		return (this === other) ||
-			(other && (other.constructor === this.constructor) &&
-				(this._r === other._r) && (this._g === other._g) && (this._b === other._b) && (this._a === other._a));
+		return (this === other)
+			|| (other &&
+				(other.constructor === this.constructor) &&
+				(this._r === other._r) &&
+				(this._g === other._g) &&
+				(this._b === other._b) &&
+				(this._a === other._a));
 	}
 
 	/**
@@ -336,185 +497,6 @@ export interface SerializedColor {
 	b: number;
 	a: number;
 }
-
-// table to convert common color names to hex
-// cspell: disable
-const colorNameToHex = {
-	aliceblue: "#f0f8ff",
-	antiquewhite: "#faebd7",
-	aqua: "#00ffff",
-	aquamarine: "#7fffd4",
-	azure: "#f0ffff",
-	beige: "#f5f5dc",
-	bisque: "#ffe4c4",
-	black: "#000000",
-	blanchedalmond: "#ffebcd",
-	blue: "#0000ff",
-	blueviolet: "#8a2be2",
-	brown: "#a52a2a",
-	burlywood: "#deb887",
-	cadetblue: "#5f9ea0",
-	chartreuse: "#7fff00",
-	chocolate: "#d2691e",
-	coral: "#ff7f50",
-	cornflowerblue: "#6495ed",
-	cornsilk: "#fff8dc",
-	crimson: "#dc143c",
-	cyan: "#00ffff",
-	darkblue: "#00008b",
-	darkcyan: "#008b8b",
-	darkgoldenrod: "#b8860b",
-	darkgray: "#a9a9a9",
-	darkgreen: "#006400",
-	darkkhaki: "#bdb76b",
-	darkmagenta: "#8b008b",
-	darkolivegreen: "#556b2f",
-	darkorange: "#ff8c00",
-	darkorchid: "#9932cc",
-	darkred: "#8b0000",
-	darksalmon: "#e9967a",
-	darkseagreen: "#8fbc8f",
-	darkslateblue: "#483d8b",
-	darkslategray: "#2f4f4f",
-	darkturquoise: "#00ced1",
-	darkviolet: "#9400d3",
-	deeppink: "#ff1493",
-	deepskyblue: "#00bfff",
-	dimgray: "#696969",
-	dodgerblue: "#1e90ff",
-	firebrick: "#b22222",
-	floralwhite: "#fffaf0",
-	forestgreen: "#228b22",
-	fuchsia: "#ff00ff",
-	gainsboro: "#dcdcdc",
-	ghostwhite: "#f8f8ff",
-	gold: "#ffd700",
-	goldenrod: "#daa520",
-	gray: "#808080",
-	green: "#008000",
-	greenyellow: "#adff2f",
-	honeydew: "#f0fff0",
-	hotpink: "#ff69b4",
-	indianred: "#cd5c5c",
-	indigo: "#4b0082",
-	ivory: "#fffff0",
-	khaki: "#f0e68c",
-	lavender: "#e6e6fa",
-	lavenderblush: "#fff0f5",
-	lawngreen: "#7cfc00",
-	lemonchiffon: "#fffacd",
-	lightblue: "#add8e6",
-	lightcoral: "#f08080",
-	lightcyan: "#e0ffff",
-	lightgoldenrodyellow: "#fafad2",
-	lightgrey: "#d3d3d3",
-	lightgreen: "#90ee90",
-	lightpink: "#ffb6c1",
-	lightsalmon: "#ffa07a",
-	lightseagreen: "#20b2aa",
-	lightskyblue: "#87cefa",
-	lightslategray: "#778899",
-	lightsteelblue: "#b0c4de",
-	lightyellow: "#ffffe0",
-	lime: "#00ff00",
-	limegreen: "#32cd32",
-	linen: "#faf0e6",
-	magenta: "#ff00ff",
-	maroon: "#800000",
-	mediumaquamarine: "#66cdaa",
-	mediumblue: "#0000cd",
-	mediumorchid: "#ba55d3",
-	mediumpurple: "#9370d8",
-	mediumseagreen: "#3cb371",
-	mediumslateblue: "#7b68ee",
-	mediumspringgreen: "#00fa9a",
-	mediumturquoise: "#48d1cc",
-	mediumvioletred: "#c71585",
-	midnightblue: "#191970",
-	mintcream: "#f5fffa",
-	mistyrose: "#ffe4e1",
-	moccasin: "#ffe4b5",
-	navajowhite: "#ffdead",
-	navy: "#000080",
-	oldlace: "#fdf5e6",
-	olive: "#808000",
-	olivedrab: "#6b8e23",
-	orange: "#ffa500",
-	orangered: "#ff4500",
-	orchid: "#da70d6",
-	palegoldenrod: "#eee8aa",
-	palegreen: "#98fb98",
-	paleturquoise: "#afeeee",
-	palevioletred: "#d87093",
-	papayawhip: "#ffefd5",
-	peachpuff: "#ffdab9",
-	peru: "#cd853f",
-	pink: "#ffc0cb",
-	plum: "#dda0dd",
-	powderblue: "#b0e0e6",
-	purple: "#800080",
-	rebeccapurple: "#663399",
-	red: "#ff0000",
-	rosybrown: "#bc8f8f",
-	royalblue: "#4169e1",
-	saddlebrown: "#8b4513",
-	salmon: "#fa8072",
-	sandybrown: "#f4a460",
-	seagreen: "#2e8b57",
-	seashell: "#fff5ee",
-	sienna: "#a0522d",
-	silver: "#c0c0c0",
-	skyblue: "#87ceeb",
-	slateblue: "#6a5acd",
-	slategray: "#708090",
-	snow: "#fffafa",
-	springgreen: "#00ff7f",
-	steelblue: "#4682b4",
-	tan: "#d2b48c",
-	teal: "#008080",
-	thistle: "#d8bfd8",
-	tomato: "#ff6347",
-	turquoise: "#40e0d0",
-	violet: "#ee82ee",
-	wheat: "#f5deb3",
-	white: "#ffffff",
-	whitesmoke: "#f5f5f5",
-	yellow: "#ffff00",
-	yellowgreen: "#9acd32",
-};
-// cspell: enable
-
-// create getter function for all named color
-for(const key in colorNameToHex) {
-	const colorValue = hexToColor(colorNameToHex[key as keyof typeof colorNameToHex]);
-	(function(_colValue) {
-
-		Object.defineProperty(Color, key, {
-			get: function() {
-				return _colValue.clone();
-			},
-		});
-
-	})(colorValue);
-}
-
-// built-in color keys
-const colorKeys = Object.keys(colorNameToHex);
-Object.freeze(colorKeys);
-
-// add transparent getter
-Object.defineProperty(Color, "transparent", {
-	get: function() {
-		return new Color(0, 0, 0, 0);
-	},
-});
-
-// add transparent white getter
-Object.defineProperty(Color, "transwhite", {
-	get: function() {
-		return new Color(1, 1, 1, 0);
-	},
-});
 
 /**
  * Convert Hex value to Color instance.

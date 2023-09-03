@@ -24,13 +24,9 @@ export class SeededRandom {
 		const rnd = this.seed / 233280;
 
 		// got min and max?
-		if(min && max) {
-			return min + rnd * (max - min);
-		}
+		if(min && max) return min + rnd * (max - min);
 		// got only min (used as max)?
-		else if(min) {
-			return rnd * min;
-		}
+		else if(min) return rnd * min;
 		// no min nor max provided
 		return rnd;
 	}

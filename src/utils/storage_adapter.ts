@@ -54,13 +54,13 @@ export interface StorageAdapter {
  * Implement simple memory storage adapter.
  */
 export class StorageAdapterMemory implements StorageAdapter {
-	private _data: Record<string, string>;
+	private data: Record<string, string>;
 
 	/**
 	 * Create the memory storage adapter.
 	 */
 	public constructor() {
-		this._data = {};
+		this.data = {};
 	}
 
 	/**
@@ -81,38 +81,36 @@ export class StorageAdapterMemory implements StorageAdapter {
 	 * @inheritdoc
 	 */
 	public exists(key: string): boolean {
-		return Boolean(this._data[key]);
+		return Boolean(this.data[key]);
 	}
 
 	/**
 	 * @inheritdoc
 	 */
 	public setItem(key: string, value: string): void {
-		this._data[key] = value;
+		this.data[key] = value;
 	}
 
 	/**
 	 * @inheritdoc
 	 */
 	public getItem(key: string): string | null {
-		return this._data[key];
+		return this.data[key];
 	}
 
 	/**
 	 * @inheritdoc
 	 */
 	public deleteItem(key: string): void {
-		delete this._data[key];
+		delete this.data[key];
 	}
 
 	/**
 	 * @inheritdoc
 	 */
 	public clear(prefix: string): void {
-		for(const key in this._data) {
-			if(key.indexOf(prefix) === 0) {
-				delete this._data[key];
-			}
+		for(const key in this.data) {
+			if(key.startsWith(prefix)) delete this.data[key];
 		}
 	}
 }
@@ -174,9 +172,7 @@ export class StorageAdapterLocalStorage implements StorageAdapter {
 	public clear(prefix: string): void {
 		for(let i = 0; i < localStorage.length; i++) {
 			const key = localStorage.key(i);
-			if(key.indexOf(prefix) === 0) {
-				delete localStorage.deleteItem(key);
-			}
+			if(key?.startsWith(prefix)) delete localStorage.deleteItem(key);
 		}
 	}
 }
@@ -238,9 +234,7 @@ export class StorageAdapterSessionStorage implements StorageAdapter {
 	public clear(prefix: string): void {
 		for(let i = 0; i < sessionStorage.length; i++) {
 			const key = sessionStorage.key(i);
-			if(key.indexOf(prefix) === 0) {
-				delete sessionStorage.deleteItem(key);
-			}
+			if(key?.startsWith(prefix)) delete sessionStorage.deleteItem(key);
 		}
 	}
 }

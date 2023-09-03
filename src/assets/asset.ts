@@ -4,7 +4,7 @@
  */
 export abstract class Asset {
 	private _url: string;
-	private _waitingCallbacks: ((asset: Asset) => void)[] | null;
+	private waitingCallbacks: ((asset: Asset) => void)[] | null;
 
 	/**
 	 * Create the new asset.
@@ -12,7 +12,7 @@ export abstract class Asset {
 	 */
 	public constructor(url: string) {
 		this._url = url;
-		this._waitingCallbacks = [];
+		this.waitingCallbacks = [];
 	}
 
 	/**
@@ -20,7 +20,7 @@ export abstract class Asset {
 	 * @returns True if asset finished loading / creating. This doesn't mean its necessarily valid, only that its done loading.
 	 */
 	public get ready(): boolean {
-		return this._waitingCallbacks === null;
+		return this.waitingCallbacks === null;
 	}
 
 	/**
@@ -36,7 +36,7 @@ export abstract class Asset {
 		}
 
 		// add to callbacks list
-		this._waitingCallbacks.push(callback);
+		this.waitingCallbacks.push(callback);
 	}
 
 	/**
@@ -54,9 +54,9 @@ export abstract class Asset {
 
 	 */
 	protected _notifyReady(): void {
-		if(!this._waitingCallbacks) return;
-		for(let i = 0; i < this._waitingCallbacks.length; ++i) this._waitingCallbacks[i](this);
-		this._waitingCallbacks = null;
+		if(!this.waitingCallbacks) return;
+		for(let i = 0; i < this.waitingCallbacks.length; ++i) this.waitingCallbacks[i](this);
+		this.waitingCallbacks = null;
 	}
 
 	/**

@@ -19,7 +19,7 @@ export class Gamepad {
 	public centerButtons: ThreeButtonsCluster;
 	public frontButtons: FrontButtons;
 
-	private _buttonsDown: boolean[];
+	private buttonsDown: boolean[];
 
 	/**
 	 * Create gamepad state object.
@@ -34,8 +34,8 @@ export class Gamepad {
 		this.id = gp.id;
 
 		// set buttons down state
-		this._buttonsDown = [];
-		for(let i = 0; i < gp.buttons.length; ++i) this._buttonsDown[i] = _gamepadButtonPressed(gp.buttons[i]);
+		this.buttonsDown = [];
+		for(let i = 0; i < gp.buttons.length; ++i) this.buttonsDown[i] = _gamepadButtonPressed(gp.buttons[i]);
 
 		/**
 		 * Gamepad first axis value.
@@ -91,7 +91,7 @@ export class Gamepad {
 			 * @name Gamepad#leftStickPressed
 			 * @type {Boolean}
 			 */
-			this.leftStickPressed = this._buttonsDown[10];
+			this.leftStickPressed = this.buttonsDown[10];
 
 			/**
 			 * Gamepad right stick is pressed.
@@ -99,35 +99,35 @@ export class Gamepad {
 			 * @name Gamepad#leftStickPressed
 			 * @type {Boolean}
 			 */
-			this.rightStickPressed = this._buttonsDown[11];
+			this.rightStickPressed = this.buttonsDown[11];
 
 			/**
 			 * Right cluster button states.
 			 * @name Gamepad#rightButtons
 			 * @type {FourButtonsCluster}
 			 */
-			this.rightButtons = new FourButtonsCluster(this._buttonsDown[0], this._buttonsDown[1], this._buttonsDown[2], this._buttonsDown[3]);
+			this.rightButtons = new FourButtonsCluster(this.buttonsDown[0], this.buttonsDown[1], this.buttonsDown[2], this.buttonsDown[3]);
 
 			/**
 			 * Left cluster button states.
 			 * @name Gamepad#leftButtons
 			 * @type {FourButtonsCluster}
 			 */
-			this.leftButtons = new FourButtonsCluster(this._buttonsDown[13], this._buttonsDown[15], this._buttonsDown[14], this._buttonsDown[12]);
+			this.leftButtons = new FourButtonsCluster(this.buttonsDown[13], this.buttonsDown[15], this.buttonsDown[14], this.buttonsDown[12]);
 
 			/**
 			 * Center cluster button states.
 			 * @name Gamepad#leftButtons
 			 * @type {FourButtonsCluster}
 			 */
-			this.centerButtons = new ThreeButtonsCluster(this._buttonsDown[8], this._buttonsDown[9], this._buttonsDown[16]);
+			this.centerButtons = new ThreeButtonsCluster(this.buttonsDown[8], this.buttonsDown[9], this.buttonsDown[16]);
 
 			/**
 			 * Front buttons states.
 			 * @name Gamepad#frontButtons
 			 * @type {FrontButtons}
 			 */
-			this.frontButtons = new FrontButtons(this._buttonsDown[4], this._buttonsDown[5], this._buttonsDown[6], this._buttonsDown[7]);
+			this.frontButtons = new FrontButtons(this.buttonsDown[4], this.buttonsDown[5], this.buttonsDown[6], this.buttonsDown[7]);
 
 			/**
 			 * True if the gamepad is of a known type and we have extra mapped attributes.
@@ -148,7 +148,7 @@ export class Gamepad {
 	 * @returns True if pressed, false otherwise.
 	 */
 	public button(index: number): boolean {
-		return this._buttonsDown[index];
+		return this.buttonsDown[index];
 	}
 
 	/**
@@ -156,7 +156,7 @@ export class Gamepad {
 	 * @returns Buttons count.
 	 */
 	public get buttonsCount(): number {
-		return this._buttonsDown.length;
+		return this.buttonsDown.length;
 	}
 }
 

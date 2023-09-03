@@ -6,9 +6,9 @@ import { CollisionShape } from "./shape";
  * Collision rectangle class.
  */
 export class RectangleShape extends CollisionShape {
-	private _rect: Rectangle;
-	private _center: Vector2;
-	private _radius: number;
+	private rect: Rectangle;
+	private center: Vector2;
+	private radius: number;
 
 	/**
 	 * Create the collision shape.
@@ -31,9 +31,9 @@ export class RectangleShape extends CollisionShape {
 	 * @param rectangle Rectangle shape.
 	 */
 	public setShape(rectangle: Rectangle): void {
-		this._rect = rectangle;
-		this._center = rectangle.getCenter();
-		this._radius = this._rect.getBoundingCircle().radius;
+		this.rect = rectangle;
+		this.center = rectangle.getCenter();
+		this.radius = this.rect.getBoundingCircle().radius;
 		this._shapeChanged();
 	}
 
@@ -41,21 +41,21 @@ export class RectangleShape extends CollisionShape {
 	 * @inheritdoc
 	 */
 	protected _getRadius(): number {
-		return this._radius;
+		return this.radius;
 	}
 
 	/**
 	 * @inheritdoc
 	 */
 	protected _getBoundingBox(): Rectangle {
-		return this._rect;
+		return this.rect;
 	}
 
 	/**
 	 * @inheritdoc
 	 */
 	public getCenter(): Vector2 {
-		return this._center.clone();
+		return this.center.clone();
 	}
 
 	/**
@@ -67,7 +67,7 @@ export class RectangleShape extends CollisionShape {
 		shapesBatch = this._getDebugDrawBatch(shapesBatch);
 		const needToBegin = !shapesBatch.isDrawing;
 		if(needToBegin) shapesBatch.begin();
-		shapesBatch.drawRectangle(this._rect, color);
+		shapesBatch.drawRectangle(this.rect, color);
 		if(needToBegin) shapesBatch.end();
 	}
 }
