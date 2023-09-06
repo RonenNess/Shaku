@@ -52,18 +52,18 @@ export class MsdfFontTextureAsset extends FontTextureAsset {
 			if(atlasMetadata.common.pages > 1) throw new Error("Can't use MSDF font with several pages");
 
 			// set default missing char placeholder + store it
-			this._placeholderChar = (params.missingCharPlaceholder || "?")[0];
+			this.placeholderChar = (params.missingCharPlaceholder || "?")[0];
 
-			if(!atlasMetadata.info.charset.includes(this._placeholderChar)) throw new Error("The atlas' charset doesn't include the given placeholder character");
+			if(!atlasMetadata.info.charset.includes(this.placeholderChar)) throw new Error("The atlas' charset doesn't include the given placeholder character");
 
-			this._fontName = atlasMetadata.info.face;
-			this._fontSize = atlasMetadata.info.size;
+			this.fontName = atlasMetadata.info.face;
+			this.fontSize = atlasMetadata.info.size;
 
 			// set line height
-			this._lineHeight = atlasMetadata.common.lineHeight;
+			this.lineHeight = atlasMetadata.common.lineHeight;
 
 			// dictionaries to store per-character data
-			this._sourceRects = {};
+			this.sourceRects = {};
 			this.positionOffsets = {};
 			this.xAdvances = {};
 			this.kernings = {};
@@ -72,7 +72,7 @@ export class MsdfFontTextureAsset extends FontTextureAsset {
 				const currChar = charData.char;
 
 				const sourceRect = new Rectangle(charData.x, charData.y, charData.width, charData.height);
-				this._sourceRects[currChar] = sourceRect;
+				this.sourceRects[currChar] = sourceRect;
 				this.positionOffsets[currChar] = new Vector2(
 					charData.xoffset,
 					charData.yoffset
@@ -80,8 +80,8 @@ export class MsdfFontTextureAsset extends FontTextureAsset {
 				this.xAdvances[currChar] = charData.xadvance;
 			}
 
-			this._texture = atlasTexture;
-			this._notifyReady();
+			this.texture = atlasTexture;
+			this.notifyReady();
 			resolve();
 		});
 	}
@@ -90,16 +90,16 @@ export class MsdfFontTextureAsset extends FontTextureAsset {
 	 * Get texture width.
 	 * @returns Texture width.
 	 */
-	public override get width(): number {
-		return this._texture._width;
+	public override getWidth(): number {
+		return this.texture.getWidth();
 	}
 
 	/**
 	 * Get texture height.
 	 * @returns Texture height.
 	 */
-	public override get height(): number {
-		return this._texture._height;
+	public override getHeight(): number {
+		return this.texture.getHeight();
 	}
 
 	/**
@@ -107,7 +107,7 @@ export class MsdfFontTextureAsset extends FontTextureAsset {
 	 * @returns Texture size.
 	 */
 	public override getSize(): Vector2 {
-		return this._texture.getSize();
+		return this.texture.getSize();
 	}
 
 	/**

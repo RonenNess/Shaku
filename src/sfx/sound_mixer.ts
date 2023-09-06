@@ -23,7 +23,7 @@ export class SoundMixer {
 	/**
 	 * Stop both sounds.
 	 */
-	stop() {
+	public stop() {
 		if(this._sound1) this._sound1.stop();
 		if(this._sound2) this._sound2.stop();
 	}
@@ -32,7 +32,7 @@ export class SoundMixer {
 	 * Get first sound.
 	 * @returns {SoundInstance} First sound instance.
 	 */
-	get fromSound() {
+	public getFromSound() {
 		return this._sound1;
 	}
 
@@ -40,7 +40,7 @@ export class SoundMixer {
 	 * Get second sound.
 	 * @returns {SoundInstance} Second sound instance.
 	 */
-	get toSound() {
+	public getToSound() {
 		return this._sound2;
 	}
 
@@ -48,7 +48,7 @@ export class SoundMixer {
 	 * Return current progress.
 	 * @returns {Number} Mix progress from 0 to 1.
 	 */
-	get progress() {
+	public getProgress() {
 		return this._progress;
 	}
 
@@ -56,7 +56,7 @@ export class SoundMixer {
 	 * Update the mixer progress with time delta instead of absolute value.
 	 * @param {Number} delta Progress delta, in seconds.
 	 */
-	updateDelta(delta) {
+	public updateDelta(delta) {
 		this.update(this._progress + delta);
 	}
 
@@ -64,7 +64,7 @@ export class SoundMixer {
 	 * Update the mixer progress.
 	 * @param {Number} progress Transition progress from sound1 to sound2. Values must be between 0.0 to 1.0.
 	 */
-	update(progress) {
+	public update(progress) {
 		// special case - start
 		if(progress <= 0) {
 			if(this._sound1) {

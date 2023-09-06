@@ -34,7 +34,7 @@ export class Animator {
 	 * Update this animator with a given delta time.
 	 * @param {Number} delta Delta time to progress this animator by.
 	 */
-	update(delta) {
+	public update(delta) {
 		// if already done, skip
 		if(this._progress >= 1) {
 			return;
@@ -147,7 +147,7 @@ export class Animator {
 	 * @param {Function} callback Callback to invoke when done.
 	 * @returns {Animator} this.
 	 */
-	then(callback) {
+	public then(callback) {
 		this._onFinish = callback;
 		return this;
 	}
@@ -158,7 +158,7 @@ export class Animator {
 	 * @param {Boolean} enable set smooth damp mode.
 	 * @returns {Animator} this.
 	 */
-	smoothDamp(enable) {
+	public smoothDamp(enable) {
 		this._smoothDamp = enable;
 		return this;
 	}
@@ -169,7 +169,7 @@ export class Animator {
 	 * @param {Boolean} reverseAnimation if true, it will reverse animation to repeat it instead of just "jumping" back to starting state.
 	 * @returns {Animator} this.
 	 */
-	repeats(enable, reverseAnimation) {
+	public repeats(enable, reverseAnimation) {
 		this._originalRepeats = this._repeats = enable;
 		this._repeatsWithReverseAnimation = Boolean(reverseAnimation);
 		return this;
@@ -180,7 +180,7 @@ export class Animator {
 	 * This is equivalent to calling `repeats(1, true)`.
 	 * @returns {Animator} this.
 	 */
-	reverseBackToStart() {
+	public reverseBackToStart() {
 		return this.repeats(1, true);
 	}
 
@@ -191,7 +191,7 @@ export class Animator {
 	 * Key = property name in target (can contain dots for nested), value = value to start animation from.
 	 * @returns {Animator} this.
 	 */
-	from(values) {
+	public from(values) {
 		for(const key in values) {
 			if(!this.#_validateValueType(values[key])) {
 				throw new Error("Illegal value type to use with Animator! All values must be either numbers, methods, or a class instance that has a static lerp() method.");
@@ -208,7 +208,7 @@ export class Animator {
 	 * Key = property name in target (can contain dots for nested), value = value to start animation from.
 	 * @returns {Animator} this.
 	 */
-	to(values) {
+	public to(values) {
 		for(const key in values) {
 			if(!this.#_validateValueType(values[key])) {
 				throw new Error("Illegal value type to use with Animator! All values must be either numbers, methods, or a class instance that has a static lerp() method.");
@@ -222,7 +222,7 @@ export class Animator {
 	/**
 	 * Flip between the "from" and the "to" states.
 	 */
-	flipFromAndTo() {
+	public flipFromAndTo() {
 		const newFrom = {};
 		const newTo = {};
 
@@ -244,7 +244,7 @@ export class Animator {
 	 * @param {Number} seconds Animator duration time in seconds.
 	 * @returns {Animator} this.
 	 */
-	duration(seconds) {
+	public duration(seconds) {
 		this.speedFactor = 1 / seconds;
 		return this;
 	}
@@ -253,7 +253,7 @@ export class Animator {
 	 * Reset animator progress.
 	 * @returns {Animator} this.
 	 */
-	reset() {
+	public reset() {
 		if(this._originalFrom) this._fromValues = this._originalFrom;
 		if(this._originalTo) this._toValues = this._originalTo;
 		if(this._originalRepeats !== null) this._repeats = this._originalRepeats;
@@ -265,7 +265,7 @@ export class Animator {
 	 * Make this Animator update automatically with the gameTime delta time, until its done.
 	 * @returns {Animator} this.
 	 */
-	play() {
+	public play() {
 		if(this._isInAutoUpdate) {
 			return;
 		}
@@ -279,7 +279,7 @@ export class Animator {
 	 * Get if this animator finished.
 	 * @returns {Boolean} True if animator finished.
 	 */
-	get ended() {
+	public getEnded() {
 		return this._progress >= 1;
 	}
 
@@ -288,7 +288,7 @@ export class Animator {
 	 * @private
 	 * @param {Number} delta Delta time in seconds.
 	 */
-	static updatePlayingAnimations(delta) {
+	public static updatePlayingAnimations(delta) {
 		for(let i = _autoAnimators.length - 1; i >= 0; --i) {
 
 			_autoAnimators[i].update(delta);

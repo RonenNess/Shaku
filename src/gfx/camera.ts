@@ -10,7 +10,7 @@ export class Camera {
 
 	private region: Rectangle | null;
 	private gfx: Gfx;
-	private _viewport: Rectangle | null;
+	private viewport: Rectangle | null;
 
 	/**
 	 * Camera projection matrix.
@@ -25,7 +25,7 @@ export class Camera {
 	public constructor(gfx: Gfx) {
 		this.region = null;
 		this.gfx = gfx;
-		this._viewport = null;
+		this.viewport = null;
 		this.orthographic();
 	}
 
@@ -33,16 +33,16 @@ export class Camera {
 	 * Get camera's viewport (drawing region to set when using this camera).
 	 * @returns Camera's viewport as rectangle.
 	 */
-	public get viewport(): Rectangle {
-		return this._viewport;
+	public getViewport(): Rectangle {
+		return this.viewport;
 	}
 
 	/**
 	 * Set camera's viewport.
 	 * @param viewport New viewport to set or null to not use any viewport when using this camera.
 	 */
-	public set viewport(viewport: Rectangle | null) {
-		this._viewport = viewport;
+	public setViewport(viewport: Rectangle | null) {
+		this.viewport = viewport;
 	}
 
 	/**
@@ -61,7 +61,7 @@ export class Camera {
 	 * @param far Far clipping plane.
 	 */
 	public orthographicOffset(offset: Vector2, ignoreViewportSize?: boolean, near?: number, far?: number): void {
-		const renderingSize = (ignoreViewportSize || !this._viewport) ? this.gfx.getCanvasSize() : this._viewport.getSize();
+		const renderingSize = (ignoreViewportSize || !this.viewport) ? this.gfx.getCanvasSize() : this.viewport.getSize();
 		const region = new Rectangle(offset.x, offset.y, renderingSize.x, renderingSize.y);
 		this.orthographic(region, near, far);
 	}

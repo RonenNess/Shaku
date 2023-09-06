@@ -5,14 +5,14 @@ import { Asset } from "./asset";
  * This asset type loads array of bytes from a remote file.
  */
 export class BinaryAsset extends Asset {
-	private _data: Uint8Array | null;
+	private data: Uint8Array | null;
 
 	/**
 	 * @inheritdoc
 	 */
 	public constructor(url: string) {
 		super(url);
-		this._data = null;
+		this.data = null;
 	}
 
 	/**
@@ -29,18 +29,15 @@ export class BinaryAsset extends Asset {
 			// on load, validate audio content
 			request.onload = () => {
 				if(request.readyState === 4) {
-					if(request.response) {
-						this._data = new Uint8Array(request.response);
-						this._notifyReady();
-						resolve();
-					} else reject(request.statusText);
+					if(!request.response) reject(request.statusText);
+					this.data = new Uint8Array(request.response);
+					this.notifyReady();
+					resolve();
 				}
 			};
 
 			// on load error, reject
-			request.onerror = (e) => {
-				reject(e);
-			};
+			request.onerror = e => reject(e);
 
 			// initiate request
 			request.send();
@@ -56,8 +53,8 @@ export class BinaryAsset extends Asset {
 		return new Promise((resolve, reject) => {
 			if(Array.isArray(source)) source = new Uint8Array(source);
 			if(!(source instanceof Uint8Array)) return reject("Binary asset source must be of type 'Uint8Array'!");
-			this._data = source;
-			this._notifyReady();
+			this.data = source;
+			this.notifyReady();
 			resolve();
 		});
 	}
@@ -65,23 +62,23 @@ export class BinaryAsset extends Asset {
 	/**
 	 * @inheritdoc
 	 */
-	public get valid(): boolean {
-		return Boolean(this._data);
+	public isValid(): boolean {
+		return Boolean(this.data);
 	}
 
 	/**
 	 * @inheritdoc
 	 */
 	public destroy() {
-		this._data = null;
+		this.data = null;
 	}
 
 	/**
 	 * Get binary data.
 	 * @returns Data as bytes array.
 	 */
-	public get data(): Uint8Array {
-		return this._data;
+	public getData(): Uint8Array {
+		return this.data;
 	}
 
 	/**
@@ -89,6 +86,6 @@ export class BinaryAsset extends Asset {
 	 * @returns Data converted to string.
 	 */
 	public string(): string {
-		return new TextDecoder().decode(this._data);
+		return new TextDecoder().decode(this.data);
 	}
 }

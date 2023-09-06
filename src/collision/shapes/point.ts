@@ -21,7 +21,7 @@ export class PointShape extends CollisionShape {
 	/**
 	 * @inheritdoc
 	 */
-	public get shapeId(): "point" {
+	public getShapeId(): "point" {
 		return "point";
 	}
 
@@ -32,7 +32,7 @@ export class PointShape extends CollisionShape {
 	public setPosition(position: Vector2): void {
 		this.position = position.clone();
 		this.boundingBox = new Rectangle(position.x, position.y, 1, 1);
-		this._shapeChanged();
+		this.shapeChanged();
 	}
 
 	/**
@@ -53,14 +53,14 @@ export class PointShape extends CollisionShape {
 	/**
 	 * @inheritdoc
 	 */
-	protected _getRadius(): 1 {
+	protected getRadius(): 1 {
 		return 1;
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	protected _getBoundingBox(): Rectangle {
+	protected getBoundingBox(): Rectangle {
 		return this.boundingBox;
 	}
 
@@ -69,10 +69,10 @@ export class PointShape extends CollisionShape {
 	 * @param opacity Shape opacity factor.
 	 */
 	public debugDraw(opacity = 1, shapesBatch: ShapesBatch) {
-		const color = this._getDebugColor();
+		const color = this.getDebugColor();
 		color.a *= opacity;
-		shapesBatch = this._getDebugDrawBatch(shapesBatch);
-		const needToBegin = !shapesBatch.isDrawing;
+		shapesBatch = this.getDebugDrawBatch(shapesBatch);
+		const needToBegin = !shapesBatch.isDrawing();
 		if(needToBegin) shapesBatch.begin();
 		shapesBatch.drawCircle(new Circle(this.getPosition(), 3), color, 4);
 		if(needToBegin) shapesBatch.end();

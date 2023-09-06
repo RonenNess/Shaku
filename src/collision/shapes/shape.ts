@@ -10,7 +10,7 @@ export abstract class CollisionShape {
 	private worldRange: Rectangle | null;
 	private debugColor: Color | null;
 	private forceDebugColor: Color | null;
-	private _collisionFlags: number;
+	private collisionFlags: number;
 
 	/**
 	 * Create the collision shape.
@@ -20,36 +20,36 @@ export abstract class CollisionShape {
 		this.worldRange = null;
 		this.debugColor = null;
 		this.forceDebugColor = null;
-		this._collisionFlags = Number.MAX_SAFE_INTEGER;
+		this.collisionFlags = Number.MAX_SAFE_INTEGER;
 	}
 
 	/**
 	 * Get the collision shape's unique identifier.
 	 * @returns Shape's unique identifier
 	 */
-	public abstract get shapeId(): string;
+	public abstract getShapeId(): string;
 
 	/**
 	 * Get collision flags (matched against collision mask when checking collision).
 	 */
-	public get collisionFlags() {
-		return this._collisionFlags;
+	public getCollisionFlags() {
+		return this.collisionFlags;
 	}
 
 	/**
 	 * Set collision flags (matched against collision mask when checking collision).
 	 */
-	public set collisionFlags(value) {
+	public setCollisionFlags(value) {
 		this.debugColor = null;
-		this._collisionFlags = value;
-		return this._collisionFlags;
+		this.collisionFlags = value;
+		return this.collisionFlags;
 	}
 
 	/**
 	 * Get Shapes batch to draw this shape with, either given or default from world.
 	 * If not provided and have no world, will throw exception.
 	 */
-	protected _getDebugDrawBatch(shapesBatch: ShapesBatch): ShapesBatch {
+	protected getDebugDrawBatch(shapesBatch: ShapesBatch): ShapesBatch {
 		if(!shapesBatch && !this.world) throw new Error("Can't debug-draw a collision shape that is not under any collision world without providing a shapes batch to use!");
 		return (shapesBatch || this.world.getOrCreateDebugDrawBatch());
 	}
@@ -85,12 +85,12 @@ export abstract class CollisionShape {
 	/**
 	 * Get debug drawing color.
 	 */
-	protected _getDebugColor(): Color {
+	protected getDebugColor(): Color {
 		// use forced debug color
 		if(this.forceDebugColor) return this.forceDebugColor.clone();
 
 		// calculate debug color
-		if(!this.debugColor) this.debugColor = this._getDefaultDebugColorFor(this.collisionFlags);
+		if(!this.debugColor) this.debugColor = this.getDefaultDebugColorFor(this.collisionFlags);
 
 		// return color
 		return this.debugColor.clone();
@@ -99,7 +99,7 @@ export abstract class CollisionShape {
 	/**
 	 * Get default debug colors for given collision flags.
 	 */
-	protected _getDefaultDebugColorFor(flags: number): Color {
+	protected getDefaultDebugColorFor(flags: number): Color {
 		return defaultDebugColors[flags % defaultDebugColors.length];
 	}
 
@@ -108,21 +108,21 @@ export abstract class CollisionShape {
 
 	 * @returns Shape's radius
 	 */
-	protected abstract _getRadius(): number;
+	protected abstract getRadius(): number;
 
 	/**
 	 * Get collision shape's bounding box.
 
 	 * @returns {Rectangle} Shape's bounding box.
 	 */
-	protected abstract _getBoundingBox(): Rectangle;
+	protected abstract getBoundingBox(): Rectangle;
 
 	/**
 	 * Set the parent collision world this shape is currently in.
 
 	 * @param world New parent collision world or null to remove.
 	 */
-	protected _setParent(world: CollisionWorld | null): void {
+	protected setParent(world: CollisionWorld | null): void {
 		// same world? skip
 		if(world === this.world) return;
 
@@ -137,7 +137,7 @@ export abstract class CollisionShape {
 	/**
 	 * Called when the collision shape changes and we need to update the parent world.
 	 */
-	protected _shapeChanged(): void {
+	protected shapeChanged(): void {
 		if(this.world) this.world._queueUpdate(this);
 	}
 }

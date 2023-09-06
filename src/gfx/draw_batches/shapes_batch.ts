@@ -1,5 +1,5 @@
 import { ShapesEffect } from "..";
-import { Circle, Color, LoggerFactory, Matrix, Rectangle, Vector2, Vector3 } from "../../utils";
+import { Circle, Color, LoggerFactory, MathHelper, Matrix, Rectangle, Vector2, Vector3 } from "../../utils";
 import { Vertex } from "../vertex";
 import { DrawBatch } from "./draw_batch";
 
@@ -65,14 +65,14 @@ export class ShapesBatch extends DrawBatch {
 	/**
 	 * Get the gfx manager.
 	 */
-	private get gfx(): unknown {
+	private getGfx(): unknown {
 		return DrawBatch._gfx;
 	}
 
 	/**
 	 * Get the web gl instance.
 	 */
-	private get gl(): WebGLRenderingContext {
+	private getGl(): WebGLRenderingContext {
 		return DrawBatch._gfx._internal.gl;
 	}
 
@@ -147,14 +147,14 @@ export class ShapesBatch extends DrawBatch {
 	/**
 	 * @inheritdoc
 	 */
-	public override get isDestroyed(): boolean {
+	public override isDestroyed(): boolean {
 		return Boolean(this.buffers) === false;
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	public override get defaultEffect(): ShapesEffect {
+	public override getDefaultEffect(): ShapesEffect {
 		return this.gfx.builtinEffects.Shapes;
 	}
 
@@ -214,7 +214,7 @@ export class ShapesBatch extends DrawBatch {
 
 				// check if full
 				if(this.polyCount >= this.maxPolyCount) {
-					this._handleFullBuffer();
+					this.handleFullBuffer();
 				}
 
 				// reset count
@@ -302,7 +302,7 @@ export class ShapesBatch extends DrawBatch {
 		}
 
 		// build first position that is not center
-		const segmentStep = (2 * Math.PI) / segmentsCount;
+		const segmentStep = MathHelper.PI2 / segmentsCount;
 		let prevPoint = new Vector2(
 			(circle.radius * Math.cos(0)) * ratio.x,
 			(circle.radius * Math.sin(0)) * ratio.y
@@ -432,7 +432,7 @@ export class ShapesBatch extends DrawBatch {
 	 * Get how many polygons are currently in batch.
 	 * @returns Polygons in batch count.
 	 */
-	public get polygonsInBatch(): number {
+	public getPolygonsInBatch(): number {
 		return this.polyCount;
 	}
 
@@ -440,7 +440,7 @@ export class ShapesBatch extends DrawBatch {
 	 * Get how many polygons this sprite batch can contain.
 	 * @returns Max polygons count.
 	 */
-	public get maxPolygonsCount(): number {
+	public getMaxPolygonsCount(): number {
 		return this.maxPolyCount;
 	}
 
@@ -448,14 +448,14 @@ export class ShapesBatch extends DrawBatch {
 	 * Check if this batch is full.
 	 * @returns True if batch is full.
 	 */
-	public get isFull(): boolean {
+	public isFull(): boolean {
 		return this.polyCount >= this.maxPolyCount;
 	}
 
 	/**
 	 * Called when the batch becomes full while drawing and there's no handler.
 	 */
-	private _handleFullBuffer(): void {
+	private handleFullBuffer(): void {
 		// invoke on-overflow callback
 		if(this.onOverflow) {
 			this.onOverflow();

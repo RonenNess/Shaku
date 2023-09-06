@@ -12,59 +12,59 @@ export class FontTextureAsset extends Asset {
 	 */
 	public static readonly defaultCharactersSet = " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_`abcdefghijklmnopqrstuvwxyz{|}~ ¡¢£¤¥¦§¨©ª«¬­®¯°±²³´µ¶·¸¹º»¼½¾";
 
-	protected _fontName: string | null;
-	protected _fontSize: number | null;
-	protected _placeholderChar: string | null;
-	protected _sourceRects: Rectangle[] | null;
-	protected _texture: TextureAsset | null;
-	protected _lineHeight: number;
+	protected fontName: string | null;
+	protected fontSize: number | null;
+	protected placeholderChar: string | null;
+	protected sourceRects: Record<string, Rectangle> | null;
+	protected texture: TextureAsset | null;
+	protected lineHeight: number;
 
 	/**
 	 * @inheritdoc
 	 */
 	public constructor(url: string) {
 		super(url);
-		this._fontName = null;
-		this._fontSize = null;
-		this._placeholderChar = null;
-		this._sourceRects = null;
-		this._texture = null;
-		this._lineHeight = 0;
+		this.fontName = null;
+		this.fontSize = null;
+		this.placeholderChar = null;
+		this.sourceRects = null;
+		this.texture = null;
+		this.lineHeight = 0;
 	}
 
 	/**
 	 * Get line height.
 	 */
-	public get lineHeight() {
-		return this._lineHeight;
+	public getLineHeight() {
+		return this.lineHeight;
 	}
 
 	/**
 	 * Get font name.
 	 */
-	public get fontName() {
-		return this._fontName;
+	public getFontName() {
+		return this.fontName;
 	}
 
 	/**
 	 * Get font size.
 	 */
-	public get fontSize() {
-		return this._fontSize;
+	public getFontSize() {
+		return this.fontSize;
 	}
 
 	/**
 	 * Get placeholder character.
 	 */
-	public get placeholderCharacter() {
-		return this._placeholderChar;
+	public getPlaceholderCharacter() {
+		return this.placeholderChar;
 	}
 
 	/**
 	 * Get the texture.
 	 */
-	public get texture() {
-		return this._texture;
+	public getTexture() {
+		return this.texture;
 	}
 
 	/**
@@ -97,7 +97,7 @@ export class FontTextureAsset extends Asset {
 			if(!params || !params.fontName) return reject("When loading font texture you must provide params with a 'fontName' value!");
 
 			// set default missing char placeholder + store it
-			this._placeholderChar = (params.missingCharPlaceholder || "?")[0];
+			this.placeholderChar = (params.missingCharPlaceholder || "?")[0];
 
 			// set smoothing mode
 			const smooth = params.smoothFont === undefined ? true : params.smoothFont;
@@ -112,7 +112,7 @@ export class FontTextureAsset extends Asset {
 			let charsSet = params.charactersSet || FontTextureAsset.defaultCharactersSet;
 
 			// make sure charSet got the placeholder char
-			if(charsSet.indexOf(this._placeholderChar) === -1) charsSet += this._placeholderChar;
+			if(charsSet.indexOf(this.placeholderChar) === -1) charsSet += this.placeholderChar;
 
 			// load font
 			const fontFace = new FontFace(params.fontName, `url(${this.url})`);
@@ -120,8 +120,8 @@ export class FontTextureAsset extends Asset {
 			document.fonts.add(fontFace);
 
 			// store font name and size
-			this._fontName = params.fontName;
-			this._fontSize = params.fontSize || 52;
+			this.fontName = params.fontName;
+			this.fontSize = params.fontSize || 52;
 			const margin = { x: 10, y: 5 };
 
 			// measure font height
@@ -130,7 +130,7 @@ export class FontTextureAsset extends Asset {
 			const fontWidth = measureTextWidth(this.fontName, this.fontSize, undefined, extraPadding.x);
 
 			// set line height
-			this._lineHeight = fontHeight;
+			this.lineHeight = fontHeight;
 
 			// calc estimated size of a single character in texture
 			const estimatedCharSizeInTexture = new Vector2(fontWidth + margin.x * 2, fontHeight + margin.y * 2);
@@ -147,7 +147,7 @@ export class FontTextureAsset extends Asset {
 			}
 
 			// a dictionary to store the source rect of every character
-			this._sourceRects = {};
+			this.sourceRects = {};
 
 			// create a canvas to generate the texture on
 			const canvas = document.createElement("canvas");
@@ -183,7 +183,7 @@ export class FontTextureAsset extends Asset {
 				// calc source rect
 				const offsetAdjustment = params.sourceRectOffsetAdjustment || { x: 0, y: 0 };
 				const sourceRect = new Rectangle(x + offsetAdjustment.x, y + offsetAdjustment.y, currCharWidth, fontHeight);
-				this._sourceRects[currChar] = sourceRect;
+				this.sourceRects[currChar] = sourceRect;
 
 				// draw character
 				ctx.fillText(currChar, x, y + fontHeight);
@@ -213,8 +213,8 @@ export class FontTextureAsset extends Asset {
 				texture.fromImage(img);
 
 				// success!
-				this._texture = texture;
-				this._notifyReady();
+				this.texture = texture;
+				this.notifyReady();
 				resolve();
 			};
 		});
@@ -224,16 +224,16 @@ export class FontTextureAsset extends Asset {
 	 * Get texture width.
 	 * @returns Texture width.
 	 */
-	public get width(): number {
-		return this._texture._width;
+	public getWidth(): number {
+		return this.texture.getWidth();
 	}
 
 	/**
 	 * Get texture height.
 	 * @returns Texture height.
 	 */
-	public get height(): number {
-		return this._texture._height;
+	public getHeight(): number {
+		return this.texture.getHeight();
 	}
 
 	/**
@@ -241,14 +241,14 @@ export class FontTextureAsset extends Asset {
 	 * @returns Texture size.
 	 */
 	public getSize(): Vector2 {
-		return this._texture.getSize();
+		return this.texture.getSize();
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	public get valid(): boolean {
-		return Boolean(this._texture);
+	public isValid(): boolean {
+		return Boolean(this.texture);
 	}
 
 	/**
@@ -257,8 +257,8 @@ export class FontTextureAsset extends Asset {
 	 * @returns Source rectangle for character.
 	 */
 	public getSourceRect(character: string): Rectangle {
-		return this._sourceRects[character]
-			|| this._sourceRects[this.placeholderCharacter];
+		return this.sourceRects[character]
+			|| this.sourceRects[this.placeholderCharacter];
 	}
 
 	/**
@@ -266,7 +266,7 @@ export class FontTextureAsset extends Asset {
 	 * @param character Character to get the offset for.
 	 * @returns Offset to add to the cursor before drawing the character.
 	 */
-	public getPositionOffset(character: string): Vector2 {
+	public getPositionOffset(_character: string): Vector2 {
 		return Vector2.zero();
 	}
 
@@ -283,13 +283,13 @@ export class FontTextureAsset extends Asset {
 	 * @inheritdoc
 	 */
 	public destroy(): void {
-		if(this._texture) this._texture.destroy();
-		this._fontName = null;
-		this._fontSize = null;
-		this._placeholderChar = null;
-		this._sourceRects = null;
-		this._texture = null;
-		this._lineHeight = 0;
+		if(this.texture) this.texture.destroy();
+		this.fontName = null;
+		this.fontSize = null;
+		this.placeholderChar = null;
+		this.sourceRects = null;
+		this.texture = null;
+		this.lineHeight = 0;
 	}
 }
 
@@ -314,7 +314,7 @@ function measureTextHeight(fontFamily: string, fontSize: number, char?: string, 
 	text.style.marginBottom = text.style.marginLeft = text.style.marginTop = text.style.marginRight = "0px";
 	text.textContent = char || "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 ";
 	document.body.appendChild(text);
-	const result = text.getBoundingClientRect().height + (extraHeight || 0);
+	const result = text.getBoundingClientRect().height + (extraHeight ?? 0);
 	document.body.removeChild(text);
 	return Math.ceil(result);
 }
@@ -332,6 +332,6 @@ function measureTextWidth(fontFamily: string, fontSize: number, char?: string, e
 	context.font = fontSize.toString() + "px " + fontFamily;
 	let result = 0;
 	const text = char || "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 ";
-	for(let i = 0; i < text.length; ++i) result = Math.max(result, context.measureText(text[i]).width + (extraWidth || 0));
+	for(let i = 0; i < text.length; ++i) result = Math.max(result, context.measureText(text[i]).width + (extraWidth ?? 0));
 	return Math.ceil(result);
 }

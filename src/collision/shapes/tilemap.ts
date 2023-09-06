@@ -43,7 +43,7 @@ export class TilemapShape extends CollisionShape {
 	/**
 	 * @inheritdoc
 	 */
-	public get shapeId(): "tilemap" {
+	public getShapeId(): "tilemap" {
 		return "tilemap";
 	}
 
@@ -54,7 +54,7 @@ export class TilemapShape extends CollisionShape {
 	 * @param index Index to get key for.
 	 * @returns tile key.
 	 */
-	private _indexToKey(index: Vector2): string {
+	private indexToKey(index: Vector2): string {
 		if(index.x < 0 || index.y < 0 || index.x >= this.gridSize.x || index.y >= this.gridSize.y) {
 			throw new Error(`Collision tile with index ${index.x},${index.y} is out of bounds!`);
 		}
@@ -68,7 +68,7 @@ export class TilemapShape extends CollisionShape {
 	 * @param collisionFlags Optional collision flag to set for this tile.
 	 */
 	public setTile(index: Vector2, haveCollision: boolean, collisionFlags?: number): void {
-		const key = this._indexToKey(index);
+		const key = this.indexToKey(index);
 		if(haveCollision) {
 			const rect = this.tiles[key] || new RectangleShape(
 				new Rectangle(
@@ -127,14 +127,14 @@ export class TilemapShape extends CollisionShape {
 	/**
 	 * @inheritdoc
 	 */
-	protected _getRadius(): number {
+	protected getRadius(): number {
 		return this.radius;
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	protected _getBoundingBox(): Rectangle {
+	protected getBoundingBox(): Rectangle {
 		return this.boundingRect;
 	}
 

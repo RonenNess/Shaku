@@ -73,11 +73,6 @@ export class Logger {
  * @private
  */
 export class NullDrivers {
-	/**
-	 * @private
-	 */
-	public constructor() { }
-
 	public trace(msg: string): void { }
 
 	public debug(msg: string): void { }

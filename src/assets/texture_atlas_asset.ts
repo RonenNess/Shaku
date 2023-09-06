@@ -12,7 +12,7 @@ export class TextureAtlasAsset extends Asset {
 	// the webgl context to use
 	private static gl: WebGLRenderingContext | null = null;
 
-	private __textures: TextureAsset[];
+	private textures: TextureAsset[];
 	private sources: Record<string, TextureInAtlasAsset>;
 
 	/**
@@ -20,14 +20,14 @@ export class TextureAtlasAsset extends Asset {
 	 */
 	public constructor(url: string) {
 		super(url);
-		this.__textures = [];
+		this.textures = [];
 		this.sources = {};
 	}
 
 	/**
 	 * Set the WebGL context.
 	 */
-	private static _setWebGl(_gl: WebGLRenderingContext): void {
+	private static setWebGl(_gl: WebGLRenderingContext): void {
 		TextureAtlasAsset.gl = _gl;
 	}
 
@@ -40,9 +40,9 @@ export class TextureAtlasAsset extends Asset {
 	 * @param extraMargins Extra pixels to add between textures.
 	 * @returns Promise to resolve when done.
 	 */
-	private async _build(sources: string[] | unknown[], maxWidth?: number, maxHeight?: number, extraMargins?: number): Promise<void> {
+	private async build(sources: string[] | unknown[], maxWidth?: number, maxHeight?: number, extraMargins?: number): Promise<void> {
 		// sanity
-		if(this.__textures.length) throw new Error("Texture Atlas already built!");
+		if(this.textures.length) throw new Error("Texture Atlas already built!");
 
 		// default margins
 		extraMargins = extraMargins;
@@ -64,7 +64,7 @@ export class TextureAtlasAsset extends Asset {
 				const arranged = arrangeTextures(sources, maxWidth, maxHeight, extraMargins);
 
 				// build the texture atlas!
-				const atlasTexture = new TextureAsset(`_atlas_${this.url}_${this.__textures.length}`);
+				const atlasTexture = new TextureAsset(`_atlas_${this.url}_${this.textures.length}`);
 
 				// first create a canvas and get its 2d context
 				const canvas = document.createElement("canvas");
@@ -93,7 +93,7 @@ export class TextureAtlasAsset extends Asset {
 
 				// push to textures list
 				atlasTexture.utilized = arranged.utilized;
-				this.__textures.push(atlasTexture);
+				this.textures.push(atlasTexture);
 
 				// get leftovers as next batch
 				sources = arranged.leftovers;
@@ -108,8 +108,8 @@ export class TextureAtlasAsset extends Asset {
 	 * Get a list with all textures in atlas.
 	 * @returns Textures in atlas.
 	 */
-	public get textures(): TextureAsset[] {
-		return this.__textures.slice(0);
+	public getTextures(): TextureAsset[] {
+		return this.textures.slice(0);
 	}
 
 	/**
@@ -124,16 +124,16 @@ export class TextureAtlasAsset extends Asset {
 	/**
 	 * @inheritdoc
 	 */
-	public get valid(): boolean {
-		return Boolean(this.__textures.length);
+	public isValid(): boolean {
+		return Boolean(this.textures.length);
 	}
 
 	/**
 	 * @inheritdoc
 	 */
 	public destroy(): void {
-		for(const texture of this.__textures) texture.destroy();
-		this.__textures = [];
+		for(const texture of this.textures) texture.destroy();
+		this.textures = [];
 		this.sources = {};
 	}
 }

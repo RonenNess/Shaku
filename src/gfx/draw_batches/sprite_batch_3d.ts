@@ -24,7 +24,7 @@ export class SpriteBatch3D extends SpriteBatch {
 	 * Get camera instance.
 	 * @returns {Camera} Camera instance.
 	 */
-	get camera() {
+	public getCamera() {
 		return this.__camera;
 	}
 
@@ -35,7 +35,7 @@ export class SpriteBatch3D extends SpriteBatch {
 	 * @param {Number=} zNear Z near plane.
 	 * @param {Number=} zFar Z far plane.
 	 */
-	setPerspectiveCamera(fieldOfView, aspectRatio, zNear, zFar) {
+	public setPerspectiveCamera(fieldOfView, aspectRatio, zNear, zFar) {
 		const camera = this.__camera;
 		fieldOfView = fieldOfView || ((45 * Math.PI) / 180);
 		aspectRatio = aspectRatio || (this.gfx.getRenderingSize().x / this.gfx.getRenderingSize().y);
@@ -47,28 +47,28 @@ export class SpriteBatch3D extends SpriteBatch {
 	/**
 	 * Get the gfx manager.
 	 */
-	private get gfx() {
+	private getGfx() {
 		return DrawBatch._gfx;
 	}
 
 	/**
 	 * Get the web gl instance.
 	 */
-	private get gl() {
+	private getGl() {
 		return DrawBatch._gfx._internal.gl;
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	override get supportVertexColor() {
+	public override getSupportVertexColor() {
 		return true;
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	override get defaultEffect() {
+	public override getDefaultEffect() {
 		return this.gfx.builtinEffects.Sprites3d;
 	}
 
@@ -76,7 +76,7 @@ export class SpriteBatch3D extends SpriteBatch {
 	 * Set the camera for this batch.
 	 * @param {Camera} camera Camera object to apply when drawing, or null if you want to set the camera manually.
 	 */
-	setCamera(camera) {
+	public setCamera(camera) {
 		this.__camera = camera;
 	}
 

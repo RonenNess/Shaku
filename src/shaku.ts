@@ -74,7 +74,7 @@ export class Shaku {
 	private prevUpdateTime: GameTime | null = null;
 
 	// current game time
-	private _gameTime: GameTime | null = null;
+	private gameTime: GameTime | null = null;
 
 	// to measure fps
 	private currFpsCounter = 0;
@@ -174,7 +174,7 @@ export class Shaku {
 		if(this.isCurrentlyPaused()) {
 			if(this.input) this.input.startFrame();
 			GameTime.updateRawData();
-			this._gameTime = new GameTime();
+			this.gameTime = new GameTime();
 			this.wasPaused = true;
 			return;
 		}
@@ -194,10 +194,10 @@ export class Shaku {
 		this.startFrameTime = GameTime.rawTimestamp();
 
 		// create new gameTime object to freeze values
-		this._gameTime = new GameTime();
+		this.gameTime = new GameTime();
 
 		// update animators
-		utils.Animator.updatePlayingAnimations(this._gameTime.delta);
+		utils.Animator.updatePlayingAnimations(this.gameTime.delta);
 
 		// update managers
 		for(let i = 0; i < this.usedManagers.length; ++i) this.usedManagers[i].startFrame();
@@ -224,10 +224,10 @@ export class Shaku {
 		}
 
 		// store previous gameTime object
-		this.prevUpdateTime = this._gameTime;
+		this.prevUpdateTime = this.gameTime;
 
 		// count fps and time stats
-		if(this._gameTime) this.updateFpsAndTimeStats();
+		if(this.gameTime) this.updateFpsAndTimeStats();
 	}
 
 	/**
@@ -236,7 +236,7 @@ export class Shaku {
 	private updateFpsAndTimeStats(): void {
 		// update fps count and second counter
 		this.currFpsCounter++;
-		this.countSecond += this._gameTime!.delta; // only called from inside a "if (_gameTime) {}" block, so we can use ! safely.
+		this.countSecond += this.gameTime!.delta; // only called from inside a "if (_gameTime) {}" block, so we can use ! safely.
 
 		// a second passed:
 		if(this.countSecond >= 1) {
@@ -253,9 +253,9 @@ export class Shaku {
 
 		// get frame end time and update average frames time
 		GameTime.updateRawData();
-		const _endFrameTime = GameTime.rawTimestamp();
+		const endFrameTime = GameTime.rawTimestamp();
 		this.frameTimeMeasuresCount++;
-		this.totalFrameTimes += (_endFrameTime - this.startFrameTime);
+		this.totalFrameTimes += (endFrameTime - this.startFrameTime);
 	}
 
 	/**
@@ -281,16 +281,16 @@ export class Shaku {
 	 * Only valid between startFrame() and endFrame().
 	 * @returns Current frame's gametime.
 	 */
-	public get gameTime(): GameTime {
-		if(this._gameTime === null) throw new Error("gameTime() is only valid between startFrame() and endFrame()");
-		return this._gameTime;
+	public getGameTime(): GameTime {
+		if(this.gameTime === null) throw new Error("gameTime() is only valid between startFrame() and endFrame()");
+		return this.gameTime;
 	}
 
 	/**
 	 * Get Shaku's version.
 	 * @returns Shaku's version.
 	 */
-	public get version(): string {
+	public getVersion(): string {
 		return Shaku.VERSION;
 	}
 

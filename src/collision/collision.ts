@@ -30,7 +30,7 @@ export class Collision implements IManager {
 	 * @private
 	 **/
 	public setup(): Promise<void> {
-		return new Promise((resolve, reject) => {
+		return new Promise((resolve, _reject) => {
 			_logger.info("Setup collision manager..");
 
 			this.resolver._init();
@@ -61,42 +61,42 @@ export class Collision implements IManager {
 	 * @param {Number|Vector2} gridCellSize Collision world grid cell size.
 	 * @returns {CollisionWorld} Newly created collision world.
 	 */
-	createWorld(gridCellSize) {
+	public createWorld(gridCellSize) {
 		return new CollisionWorld(this.resolver, gridCellSize);
 	}
 
 	/**
 	 * Get the collision rectangle shape class.
 	 */
-	get RectangleShape() {
+	public getRectangleShape() {
 		return RectangleShape;
 	}
 
 	/**
 	 * Get the collision point shape class.
 	 */
-	get PointShape() {
+	public getPointShape() {
 		return PointShape;
 	}
 
 	/**
 	 * Get the collision circle shape class.
 	 */
-	get CircleShape() {
+	public getCircleShape() {
 		return CircleShape;
 	}
 
 	/**
 	 * Get the collision lines shape class.
 	 */
-	get LinesShape() {
+	public getLinesShape() {
 		return LinesShape;
 	}
 
 	/**
 	 * Get the tilemap collision shape class.
 	 */
-	get TilemapShape() {
+	public getTilemapShape() {
 		return TilemapShape;
 	}
 

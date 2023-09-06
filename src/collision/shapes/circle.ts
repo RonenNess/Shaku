@@ -22,7 +22,7 @@ export class CircleShape extends CollisionShape {
 	/**
 	 * @inheritdoc
 	 */
-	public get shapeId(): "circle" {
+	public getShapeId(): "circle" {
 		return "circle";
 	}
 
@@ -34,14 +34,7 @@ export class CircleShape extends CollisionShape {
 		this.circle = circle;
 		this.position = circle.center;
 		this.boundingBox = new Rectangle(circle.center.x - circle.radius, circle.center.y - circle.radius, circle.radius * 2, circle.radius * 2);
-		this._shapeChanged();
-	}
-
-	/**
-	 * @inheritdoc
-	 */
-	protected _getRadius(): number {
-		return this.circle.radius;
+		this.shapeChanged();
 	}
 
 	/**
@@ -54,20 +47,27 @@ export class CircleShape extends CollisionShape {
 	/**
 	 * @inheritdoc
 	 */
-	protected _getBoundingBox(): Rectangle {
-		return this.boundingBox;
+	public debugDraw(opacity = 1, shapesBatch: ShapesBatch): void {
+		const color = this.getDebugColor();
+		color.a *= opacity;
+		shapesBatch = this.getDebugDrawBatch(shapesBatch);
+		const needToBegin = !shapesBatch.isDrawing();
+		if(needToBegin) shapesBatch.begin();
+		shapesBatch.drawCircle(this.circle, color, 14);
+		if(needToBegin) shapesBatch.end();
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	public debugDraw(opacity = 1, shapesBatch: ShapesBatch): void {
-		const color = this._getDebugColor();
-		color.a *= opacity;
-		shapesBatch = this._getDebugDrawBatch(shapesBatch);
-		const needToBegin = !shapesBatch.isDrawing;
-		if(needToBegin) shapesBatch.begin();
-		shapesBatch.drawCircle(this.circle, color, 14);
-		if(needToBegin) shapesBatch.end();
+	protected getRadius(): number {
+		return this.circle.radius;
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	protected getBoundingBox(): Rectangle {
+		return this.boundingBox;
 	}
 }

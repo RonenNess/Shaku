@@ -16,7 +16,7 @@ export class CollisionWorld {
 	private grid: Record<`${number},${number}`, Set<CollisionShape>>;
 	private shapesToUpdate: Set<CollisionShape>;
 	private cellsToDelete: Set<string>;
-	private _stats!: WorldStats;
+	private stats!: WorldStats;
 
 	private debugDrawBatch: ShapesBatch;
 
@@ -52,7 +52,7 @@ export class CollisionWorld {
 	 * Reset stats.
 	 */
 	public resetStats(): void {
-		this._stats = {
+		this.stats = {
 			updatedShapes: 0,
 			addedShapes: 0,
 			deletedGridCells: 0,
@@ -69,8 +69,8 @@ export class CollisionWorld {
 	 * Get current stats.
 	 * @returns Dictionary with the world stats.
 	 */
-	public get stats(): WorldStats {
-		return this._stats;
+	public getStats(): WorldStats {
+		return this.stats;
 	}
 
 	/**
@@ -79,7 +79,7 @@ export class CollisionWorld {
 	private performUpdates(): void {
 		// delete empty grid cells
 		if(this.cellsToDelete.size > 0) {
-			this._stats.deletedGridCells += this.cellsToDelete.size;
+			this.stats.deletedGridCells += this.cellsToDelete.size;
 			for(const key of this.cellsToDelete) {
 				if(this.grid[key] && this.grid[key].size === 0) delete this.grid[key];
 			}
@@ -100,7 +100,7 @@ export class CollisionWorld {
 		const key = `${i},${j}` as const;
 		let ret = this.grid[key];
 		if(!ret) {
-			this._stats.createdGridCell++;
+			this.stats.createdGridCell++;
 			this.grid[key] = ret = new Set();
 		}
 		return ret;
@@ -114,10 +114,10 @@ export class CollisionWorld {
 		if(shape._world !== this) return;
 
 		// update shapes
-		this._stats.updatedShapes++;
+		this.stats.updatedShapes++;
 
 		// get new range
-		const bb = shape._getBoundingBox();
+		const bb = shape.getBoundingBox();
 		const minx = Math.floor(bb.left / this.gridCellSize.x);
 		const miny = Math.floor(bb.top / this.gridCellSize.y);
 		const maxx = Math.ceil(bb.right / this.gridCellSize.x);
@@ -171,7 +171,7 @@ export class CollisionWorld {
 		}
 		// first-time adding to grid
 		else {
-			this._stats.addedShapes++;
+			this.stats.addedShapes++;
 			for(let i = minx; i < maxx; ++i) {
 				for(let j = miny; j < maxy; ++j) {
 					const currSet = this.getCell(i, j);
@@ -187,7 +187,7 @@ export class CollisionWorld {
 	/**
 	 * Request update for this shape on next updates call.
 	 */
-	private _queueUpdate(shape: CollisionShape): void {
+	private queueUpdate(shape: CollisionShape): void {
 		this.shapesToUpdate.add(shape);
 	}
 
@@ -212,7 +212,7 @@ export class CollisionWorld {
 	 */
 	public addShape(shape: CollisionShape): void {
 		// add shape
-		shape._setParent(this);
+		shape.setParent(this);
 
 		// add shape to grid
 		this.updateShape(shape);
@@ -252,7 +252,7 @@ export class CollisionWorld {
 
 		// remove shape
 		this.shapesToUpdate.delete(shape);
-		shape._setParent(null);
+		shape.setParent(null);
 
 		// do general updates
 		this.performUpdates();
@@ -268,14 +268,14 @@ export class CollisionWorld {
 	 */
 	private iterateBroadPhase(shape: CollisionShape, handler: (shape: CollisionShape) => boolean, mask: number, predicate: (shape: CollisionShape) => boolean): void {
 		// get grid range
-		const bb = shape._getBoundingBox();
+		const bb = shape.getBoundingBox();
 		const minx = Math.floor(bb.left / this.gridCellSize.x);
 		const miny = Math.floor(bb.top / this.gridCellSize.y);
 		const maxx = Math.ceil(bb.right / this.gridCellSize.x);
 		const maxy = Math.ceil(bb.bottom / this.gridCellSize.y);
 
 		// update stats
-		this._stats.broadPhaseCalls++;
+		this.stats.broadPhaseCalls++;
 
 		// shapes we checked
 		const checked = new Set();
@@ -303,13 +303,13 @@ export class CollisionWorld {
 						if(other === shape) continue;
 
 						// update stats
-						this._stats.broadPhaseShapesChecksPrePredicate++;
+						this.stats.broadPhaseShapesChecksPrePredicate++;
 
 						// use predicate
 						if(predicate && !predicate(other)) continue;
 
 						// update stats
-						this._stats.broadPhaseShapesChecksPostPredicate++;
+						this.stats.broadPhaseShapesChecksPostPredicate++;
 
 						// invoke handler on shape
 						const proceedLoop = Boolean(handler(other));
@@ -352,10 +352,10 @@ export class CollisionWorld {
 			// check collision sorted
 			const handlers = this.resolver.getHandlers(sourceShape);
 			for(const other of options) {
-				this._stats.collisionChecks++;
+				this.stats.collisionChecks++;
 				result = this.resolver.testWithHandler(sourceShape, other, handlers[other.shapeId]);
 				if(result) {
-					this._stats.collisionMatches++;
+					this.stats.collisionMatches++;
 					break;
 				}
 			}
@@ -367,9 +367,9 @@ export class CollisionWorld {
 			this.iterateBroadPhase(sourceShape, (other) => {
 
 				// test collision and continue iterating if we don't have a result
-				this._stats.collisionChecks++;
+				this.stats.collisionChecks++;
 				result = this.resolver.testWithHandler(sourceShape, other, handlers[other.shapeId]);
-				if(result) this._stats.collisionMatches++;
+				if(result) this.stats.collisionMatches++;
 				return !result;
 
 			}, mask, predicate);
@@ -396,11 +396,11 @@ export class CollisionWorld {
 		const ret: CollisionTestResult[] = [];
 		const handlers = this.resolver.getHandlers(sourceShape);
 		this.iterateBroadPhase(sourceShape, (other) => {
-			this._stats.collisionChecks++;
+			this.stats.collisionChecks++;
 			const result = this.resolver.testWithHandler(sourceShape, other, handlers[other.shapeId]);
 			if(!result) return true;
 
-			this._stats.collisionMatches++;
+			this.stats.collisionMatches++;
 			ret.push(result);
 			if(intermediateProcessor && intermediateProcessor(result) === false) return false;
 			return true;
@@ -467,16 +467,16 @@ export class CollisionWorld {
 		// default grid colors
 		if(!gridColor) {
 			gridColor = Color.black;
-			gridColor!.a *= 0.75;
+			gridColor.a *= 0.75;
 		}
 		if(!gridHighlightColor) {
 			gridHighlightColor = Color.red;
-			gridHighlightColor!.a *= 0.75;
+			gridHighlightColor.a *= 0.75;
 		}
 
 		// set grid color opacity
-		gridColor!.a *= opacity * 0.75;
-		gridHighlightColor!.a *= opacity * 0.75;
+		gridColor.a *= opacity * 0.75;
+		gridHighlightColor.a *= opacity * 0.75;
 
 		// all shapes we rendered
 		const renderedShapes = new Set();
@@ -564,8 +564,8 @@ export interface WorldStats {
 function sortByDistanceShapes(sourceShape: CollisionShape, options: CollisionShape[]): void {
 	const sourceCenter = sourceShape.getCenter();
 	options.sort((a, b) =>
-		(a.getCenter().distanceTo(sourceCenter) - a._getRadius()) -
-		(b.getCenter().distanceTo(sourceCenter) - b._getRadius()));
+		(a.getCenter().distanceTo(sourceCenter) - a.getRadius()) -
+		(b.getCenter().distanceTo(sourceCenter) - b.getRadius()));
 }
 
 /**
@@ -575,6 +575,6 @@ function sortByDistanceShapes(sourceShape: CollisionShape, options: CollisionSha
 function sortByDistanceResults(sourceShape: CollisionShape, options: CollisionTestResult[]) {
 	const sourceCenter = sourceShape.getCenter();
 	options.sort((a, b) =>
-		(a.second.getCenter().distanceTo(sourceCenter) - a.second._getRadius()) -
-		(b.second.getCenter().distanceTo(sourceCenter) - b.second._getRadius()));
+		(a.second.getCenter().distanceTo(sourceCenter) - a.second.getRadius()) -
+		(b.second.getCenter().distanceTo(sourceCenter) - b.second.getRadius()));
 }

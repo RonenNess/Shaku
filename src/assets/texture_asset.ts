@@ -11,21 +11,20 @@ let gl: WebGLRenderingContext | null = null;
  * This asset type loads an image from URL or source, and turn it into a texture.
  */
 export class TextureAsset extends TextureAssetBase {
-	private _image: unknown | null;
-	private _height: number;
+	public width: number;
+	private image: unknown | null;
+	private height: number;
 	private texture: WebGLTexture | null;
 	private ctxForPixelData: CanvasRenderingContext2D | null;
-
-	public _width: number;
 
 	/**
 	 * @inheritdoc
 	 */
 	public constructor(url: string) {
 		super(url);
-		this._image = null;
-		this._width = 0;
-		this._height = 0;
+		this.image = null;
+		this.width = 0;
+		this.height = 0;
 		this.texture = null;
 		this.ctxForPixelData = null;
 	}
@@ -33,7 +32,7 @@ export class TextureAsset extends TextureAssetBase {
 	/**
 	 * Set the WebGL context.
 	 */
-	private static _setWebGl(_gl: WebGLRenderingContext): void {
+	private static setWebGl(_gl: WebGLRenderingContext): void {
 		gl = _gl;
 	}
 
@@ -46,7 +45,7 @@ export class TextureAsset extends TextureAssetBase {
 	 *  - premultiplyAlpha (default=false): if true, will load texture with premultiply alpha flag set.
 	 * @returns Promise to resolve when fully loaded.
 	 */
-	public load(params?: { generateMipMaps?: boolean, crossOrigin?: boolean | undefined, flipY?: boolean, premultiplyAlpha?: boolean; }): Promise<void> {
+	public load(params?: LoadParams): Promise<void> {
 		// default params
 		params = params || {};
 
@@ -60,7 +59,7 @@ export class TextureAsset extends TextureAssetBase {
 			image.onload = async () => {
 				try {
 					await this.create(image, params);
-					this._notifyReady();
+					this.notifyReady();
 					resolve();
 				}
 				catch(e) {
@@ -92,17 +91,17 @@ export class TextureAsset extends TextureAssetBase {
 		gl.bindTexture(gl.TEXTURE_2D, targetTexture);
 
 		// calculate format
-		let _format: number = gl.RGBA;
+		let format: number = gl.RGBA;
 		if(channels !== undefined) {
 			switch(channels) {
 				case 1:
-					_format = gl.LUMINANCE;
+					format = gl.LUMINANCE;
 					break;
 				case 3:
-					_format = gl.RGB;
+					format = gl.RGB;
 					break;
 				case 4:
-					_format = gl.RGBA;
+					format = gl.RGBA;
 					break;
 				default:
 					throw new Error("Unknown render target format!");
@@ -112,9 +111,9 @@ export class TextureAsset extends TextureAssetBase {
 		{
 			// create texture
 			const level = 0;
-			const internalFormat = _format;
+			const internalFormat = format;
 			const border = 0;
-			const format = _format;
+			const format = format;
 			const type = gl.UNSIGNED_BYTE;
 			const data = null;
 			gl.texImage2D(gl.TEXTURE_2D, level, internalFormat,
@@ -128,10 +127,10 @@ export class TextureAsset extends TextureAssetBase {
 		}
 
 		// store texture
-		this._width = width;
-		this._height = height;
+		this.width = width;
+		this.height = height;
 		this.texture = targetTexture;
-		this._notifyReady();
+		this.notifyReady();
 	}
 
 	/**
@@ -140,10 +139,10 @@ export class TextureAsset extends TextureAssetBase {
 	 * @param image Image to create texture from. Image must be loaded!
 	 * @param params Optional additional params. See load() for details.
 	 */
-	public fromImage(image: TextureAsset, params?: unknown): void {
+	public fromImage(image: TextureAsset, params?: LoadParams): void {
 		if(image.width === 0) throw new Error("Image to build texture from must be loaded and have valid size!");
 
-		if(this.valid) throw new Error("Texture asset is already initialized!");
+		if(this.isValid()) throw new Error("Texture asset is already initialized!");
 
 		// default params
 		params = params || {};
@@ -155,9 +154,9 @@ export class TextureAsset extends TextureAssetBase {
 		gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, Boolean(params.premultiplyAlpha));
 
 		// store image
-		this._image = image;
-		this._width = image.width;
-		this._height = image.height;
+		this.image = image;
+		this.width = image.width;
+		this.height = image.height;
 
 		// create texture
 		const texture = gl.createTexture();
@@ -188,7 +187,7 @@ export class TextureAsset extends TextureAssetBase {
 
 		// success!
 		this.texture = texture;
-		this._notifyReady();
+		this.notifyReady();
 	}
 
 	/**
@@ -198,14 +197,14 @@ export class TextureAsset extends TextureAssetBase {
 	 * @param params Optional additional params. See load() for details.
 	 * @returns Promise to resolve when asset is ready.
 	 */
-	public create(source: TextureAsset | string, params: unknown): Promise<void> {
-		return new Promise(async (resolve, reject) => {
+	public create(source: TextureAsset | string, params: LoadParams): Promise<void> {
+		return new Promise((resolve, _reject) => {
 
 			if(typeof source === "string") {
 				const img = new Image();
 				img.onload = () => {
 					this.fromImage(source, params);
-					this._notifyReady();
+					this.notifyReady();
 					resolve();
 				};
 				if(params.crossOrigin !== undefined) img.crossOrigin = params.crossOrigin;
@@ -221,29 +220,22 @@ export class TextureAsset extends TextureAssetBase {
 	/**
 	 * @inheritdoc
 	 */
-	public get image(): unknown {
-		return this._image;
+	public getImage(): unknown {
+		return this.image;
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	public get width(): number {
-		return this._width;
+	public getWidth(): number {
+		return this.width;
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	public get height(): number {
-		return this._height;
-	}
-
-	/**
-	 * @inheritdoc
-	 */
-	private get _glTexture(): WebGLTexture {
-		return this.texture;
+	public getHeight(): number {
+		return this.height;
 	}
 
 	/**
@@ -254,7 +246,7 @@ export class TextureAsset extends TextureAssetBase {
 	 * @returns Pixel color.
 	 */
 	public getPixel(x: number, y: number): Color {
-		if(!this._image) throw new Error("'getPixel()' only works on textures loaded from image!");
+		if(!this.image) throw new Error("'getPixel()' only works on textures loaded from image!");
 
 		// build internal canvas and context to get pixel data
 		if(!this.ctxForPixelData) {
@@ -266,7 +258,7 @@ export class TextureAsset extends TextureAssetBase {
 
 		// get pixel data
 		const ctx = this.ctxForPixelData;
-		ctx.drawImage(this._image, x, y, 1, 1, 0, 0, 1, 1);
+		ctx.drawImage(this.image, x, y, 1, 1, 0, 0, 1, 1);
 		const pixelData = ctx.getImageData(0, 0, 1, 1).data as [number, number, number, number];
 		return Color.fromBytesArray(pixelData);
 	}
@@ -279,16 +271,12 @@ export class TextureAsset extends TextureAssetBase {
 	 * @param height How many pixels to get on Y axis. Defaults to texture height - y.
 	 * @returns A 2D array with all texture pixel colors.
 	 */
-	public getPixelsData(x?: number, y?: number, width?: number, height?: number): Color[][] {
-		if(!this._image) throw new Error("'getPixel()' only works on textures loaded from image!");
-
-		// default x, y
-		x = x || 0;
-		y = y || 0;
+	public getPixelsData(x = 0, y = 0, width?: number, height?: number): Color[][] {
+		if(!this.image) throw new Error("'getPixel()' only works on textures loaded from image!");
 
 		// default width / height
-		width = width || (this.width - x);
-		height = height || (this.height - y);
+		width ||= this.width - x;
+		height ||= this.height - y;
 
 		// build internal canvas and context to get pixel data
 		if(!this.ctxForPixelData) {
@@ -300,7 +288,7 @@ export class TextureAsset extends TextureAssetBase {
 
 		// get pixel data
 		const ctx = this.ctxForPixelData;
-		ctx.drawImage(this._image, x, y, width, height, 0, 0, width, height);
+		ctx.drawImage(this.image, x, y, width, height, 0, 0, width, height);
 		const pixelData = ctx.getImageData(x, y, width, height).data;
 
 		//  convert to colors
@@ -318,7 +306,7 @@ export class TextureAsset extends TextureAssetBase {
 	/**
 	 * @inheritdoc
 	 */
-	public get valid(): boolean {
+	public isValid(): boolean {
 		return Boolean(this.texture);
 	}
 
@@ -327,11 +315,25 @@ export class TextureAsset extends TextureAssetBase {
 	 */
 	public destroy(): void {
 		gl.deleteTexture(this.texture);
-		this._image = null;
-		this._width = this._height = 0;
+		this.image = null;
+		this.width = this.height = 0;
 		this.ctxForPixelData = null;
 		this.texture = null;
 	}
+
+	/**
+	 * @inheritdoc
+	 */
+	private getGlTexture(): WebGLTexture {
+		return this.texture;
+	}
+}
+
+interface LoadParams {
+	generateMipMaps?: boolean;
+	crossOrigin?: boolean | undefined;
+	flipY?: boolean;
+	premultiplyAlpha?: boolean;
 }
 
 // check if value is a power of 2

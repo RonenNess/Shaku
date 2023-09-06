@@ -1,3 +1,4 @@
+import { FontTextureAsset, MsdfFontTextureAsset } from "../..";
 import { Color, LoggerFactory } from "../../utils";
 import { SpritesGroup } from "../sprites_group";
 import { DrawBatch } from "./draw_batch";
@@ -45,21 +46,21 @@ export class TextSpriteBatch extends SpriteBatchBase {
 	/**
 	 * Get the gfx manager.
 	 */
-	get #_gfx() {
+	private getGfx() {
 		return DrawBatch._gfx;
 	}
 
 	/**
 	 * Get the web gl instance.
 	 */
-	get #_gl() {
+	private getGl() {
 		return DrawBatch._gfx._internal.gl;
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	get defaultEffect() {
+	public getDefaultEffect() {
 		return this.msdfFont ?
 			this.#_gfx.builtinEffects.MsdfFont :
 			(this.outlineWeight ? this.#_gfx.builtinEffects.SpritesWithOutline : this.#_gfx.builtinEffects.Sprites);
@@ -70,7 +71,7 @@ export class TextSpriteBatch extends SpriteBatchBase {
 	 * @param {SpritesGroup} textGroup Text sprite group to draw.
 	 * @param {Boolean} cullOutOfScreen If true, will cull out sprites that are not visible in screen.
 	 */
-	drawText(textGroup, cullOutOfScreen) {
+	public drawText(textGroup, cullOutOfScreen) {
 		const transform = textGroup.getTransform();
 		this.drawSprite(textGroup._sprites, transform, cullOutOfScreen);
 	}
@@ -78,17 +79,17 @@ export class TextSpriteBatch extends SpriteBatchBase {
 	/**
 	 * @inheritdoc
 	 */
-	private _drawBatch() {
+	private drawBatch() {
 		// extract texture
 		const texture = this.__currDrawingParams.texture;
 
 		// sanity for msdf font
-		if(this.msdfFont && !(texture.isMsdfFontTextureAsset)) {
+		if(this.msdfFont && !(texture instanceof MsdfFontTextureAsset)) {
 			_logger.warn("Trying to render an MSDF font but using an asset that isn't an instance of 'MsdfFontTextureAsset'!");
 		}
 
 		// sanity for none msdf font
-		if(!this.msdfFont && !(texture.isFontTextureAsset)) {
+		if(!this.msdfFont && !(texture instanceof FontTextureAsset)) {
 			_logger.warn("Trying to render text sprites but using an asset that isn't an instance of 'FontTextureAsset'!");
 		}
 

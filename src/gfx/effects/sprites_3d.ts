@@ -9,28 +9,28 @@ export class Sprites3dEffect extends SpritesEffect {
 	/**
 	 * @inheritdoc
 	 */
-	public override get enableDepthTest() {
+	public override getEnableDepthTest() {
 		return true;
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	public override get enableFaceCulling() {
+	public override getEnableFaceCulling() {
 		return false;
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	public override get vertexCode() {
+	public override getVertexCode() {
 		return vertexShader;
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	public override get fragmentCode() {
+	public override getFragmentCode() {
 		return fragmentShader;
 	}
 }

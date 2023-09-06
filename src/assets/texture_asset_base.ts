@@ -6,76 +6,76 @@ import { Asset } from "./asset";
  * Base type for all texture asset types.
  */
 export abstract class TextureAssetBase extends Asset {
-	private _filter: TextureFilterModes | null;
-	private _wrapMode: TextureWrapModes | null;
+	private filter: TextureFilterModes | null;
+	private wrapMode: TextureWrapModes | null;
 
 	/**
 	 * @inheritdoc
 	 */
 	public constructor(url: string) {
 		super(url);
-		this._filter = null;
-		this._wrapMode = null;
+		this.filter = null;
+		this.wrapMode = null;
 	}
 
 	/**
 	 * Get texture magnifying filter, or null to use default.
 	 */
-	public get filter(): TextureFilterModes | null {
-		return this._filter;
+	public getFilter(): TextureFilterModes | null {
+		return this.filter;
 	}
 
 	/**
 	 * Set texture magnifying filter.
 	 * @param value Filter mode to use or null to use default.
 	 */
-	public set filter(value: TextureFilterModes | null) {
-		this._filter = value;
+	public setFilter(value: TextureFilterModes | null) {
+		this.filter = value;
 	}
 
 	/**
 	 * Get texture wrapping mode, or null to use default.
 	 */
-	public get wrapMode(): TextureWrapModes | null {
-		return this._wrapMode;
+	public getWrapMode(): TextureWrapModes | null {
+		return this.wrapMode;
 	}
 
 	/**
 	 * Set texture wrapping mode.
 	 * @param value Wrapping mode to use or null to use default.
 	 */
-	public set wrapMode(value: TextureWrapModes | null) {
-		this._wrapMode = value;
+	public setWrapMode(value: TextureWrapModes | null) {
+		this.wrapMode = value;
 	}
-
-	/**
-	 * Get raw image.
-	 * @returns {Image} Image instance.
-	 */
-	public abstract get image(): unknown;
-
-	/**
-	 * Get texture width.
-	 * @returns Texture width.
-	 */
-	public abstract get width(): number;
-
-	/**
-	 * Get texture height.
-	 * @returns Texture height.
-	 */
-	public abstract get height(): number;
 
 	/**
 	 * Get texture size as a vector.
 	 * @returns Texture size.
 	 */
 	public getSize(): Vector2 {
-		return new Vector2(this.width, this.height);
+		return new Vector2(this.getWidth(), this.getHeight());
 	}
+
+	/**
+	 * Get raw image.
+	 * @returns {Image} Image instance.
+	 */
+	public abstract getImage(): unknown;
+
+	/**
+	 * Get texture width.
+	 * @returns Texture width.
+	 */
+	public abstract getWidth(): number;
+
+	/**
+	 * Get texture height.
+	 * @returns Texture height.
+	 */
+	public abstract getHeight(): number;
 
 	/**
 	 * Get texture instance for WebGL.
 	 */
-	protected abstract get _glTexture(): unknown;
+	protected abstract getGlTexture(): unknown;
 }

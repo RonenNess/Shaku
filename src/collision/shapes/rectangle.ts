@@ -22,7 +22,7 @@ export class RectangleShape extends CollisionShape {
 	/**
 	 * @inheritdoc
 	 */
-	public get shapeId(): "rect" {
+	public getShapeId(): "rect" {
 		return "rect";
 	}
 
@@ -34,20 +34,20 @@ export class RectangleShape extends CollisionShape {
 		this.rect = rectangle;
 		this.center = rectangle.getCenter();
 		this.radius = this.rect.getBoundingCircle().radius;
-		this._shapeChanged();
+		this.shapeChanged();
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	protected _getRadius(): number {
+	protected getRadius(): number {
 		return this.radius;
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	protected _getBoundingBox(): Rectangle {
+	protected getBoundingBox(): Rectangle {
 		return this.rect;
 	}
 
@@ -62,10 +62,10 @@ export class RectangleShape extends CollisionShape {
 	 * @inheritdoc
 	 */
 	public debugDraw(opacity = 1, shapesBatch: ShapesBatch) {
-		const color = this._getDebugColor();
+		const color = this.getDebugColor();
 		color.a *= opacity;
-		shapesBatch = this._getDebugDrawBatch(shapesBatch);
-		const needToBegin = !shapesBatch.isDrawing;
+		shapesBatch = this.getDebugDrawBatch(shapesBatch);
+		const needToBegin = !shapesBatch.isDrawing();
 		if(needToBegin) shapesBatch.begin();
 		shapesBatch.drawRectangle(this.rect, color);
 		if(needToBegin) shapesBatch.end();

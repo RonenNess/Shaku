@@ -69,21 +69,21 @@ export class SpriteBatchBase extends DrawBatch {
 	/**
 	 * Get the gfx manager.
 	 */
-	get #_gfx() {
+	private getGfx() {
 		return DrawBatch._gfx;
 	}
 
 	/**
 	 * Get the web gl instance.
 	 */
-	get #_gl() {
+	private getGl() {
 		return DrawBatch._gfx._internal.gl;
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	destroy() {
+	public destroy() {
 		const gl = this.#_gl;
 		if(this._buffers) {
 			if(this._buffers.positionBuffer) gl.deleteBuffer(this._buffers.positionBuffer);
@@ -99,7 +99,7 @@ export class SpriteBatchBase extends DrawBatch {
 	/**
 	 * @inheritdoc
 	 */
-	get isDestroyed() {
+	public isDestroyed() {
 		return Boolean(this._buffers) === false;
 	}
 
@@ -180,7 +180,7 @@ export class SpriteBatchBase extends DrawBatch {
 	/**
 	 * @inheritdoc
 	 */
-	clear() {
+	public clear() {
 		super.clear();
 		if(this._buffers.positionArray) this._buffers.positionArray._index = 0;
 		if(this._buffers.textureArray) this._buffers.textureArray._index = 0;
@@ -195,10 +195,10 @@ export class SpriteBatchBase extends DrawBatch {
 	/**
 	 * Set a new active texture and draw batch if needed.
 	 */
-	private _updateTexture(texture) {
+	private updateTexture(texture) {
 		// if texture changed, draw current batch first
 		if(this.__currDrawingParams.texture && (this.__currDrawingParams.texture !== texture)) {
-			this._drawBatch();
+			this.drawBatch();
 			this.clear();
 			this.__dirty = true;
 		}
@@ -211,14 +211,14 @@ export class SpriteBatchBase extends DrawBatch {
 	 * Get if this sprite batch support vertex color.
 	 * @returns {Boolean} True if support vertex color.
 	 */
-	get supportVertexColor() {
+	public getSupportVertexColor() {
 		return Boolean(this._buffers.colorsBuffer);
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	get defaultEffect() {
+	public getDefaultEffect() {
 		return this.supportVertexColor ? this.#_gfx.builtinEffects.Sprites : this.#_gfx.builtinEffects.SpritesNoVertexColor;
 	}
 
@@ -228,7 +228,7 @@ export class SpriteBatchBase extends DrawBatch {
 	 * @param {Matrix=} transform Optional transformations to apply on sprite vertices. Won't apply on static sprites.
 	 * @param {Boolean=} cullOutOfScreen If true, will cull sprites that are not visible in currently set rendering region.
 	 */
-	drawSprite(sprites, transform, cullOutOfScreen) {
+	public drawSprite(sprites, transform, cullOutOfScreen) {
 		// sanity
 		this.__validateDrawing(true);
 
@@ -251,7 +251,7 @@ export class SpriteBatchBase extends DrawBatch {
 		for(const sprite of sprites) {
 
 			// update texture
-			this._updateTexture(sprite.texture);
+			this.updateTexture(sprite.texture);
 
 			// update quads count
 			this.__quadsCount++;
@@ -450,7 +450,7 @@ export class SpriteBatchBase extends DrawBatch {
 
 			// check if full
 			if(this.__quadsCount >= this.__maxQuadsCount) {
-				this._handleFullBuffer();
+				this.handleFullBuffer();
 			}
 		}
 	}
@@ -459,7 +459,7 @@ export class SpriteBatchBase extends DrawBatch {
 	 * Get how many quads are currently in batch.
 	 * @returns {Number} Quads in batch count.
 	 */
-	get quadsInBatch() {
+	public getQuadsInBatch() {
 		return this.__quadsCount;
 	}
 
@@ -467,7 +467,7 @@ export class SpriteBatchBase extends DrawBatch {
 	 * Get how many quads this sprite batch can contain.
 	 * @returns {Number} Max quads count.
 	 */
-	get maxQuadsCount() {
+	public getMaxQuadsCount() {
 		return this.__maxQuadsCount;
 	}
 
@@ -475,28 +475,28 @@ export class SpriteBatchBase extends DrawBatch {
 	 * Check if this batch is full.
 	 * @returns {Boolean} True if batch is full.
 	 */
-	get isFull() {
+	public isFull() {
 		return this.__quadsCount >= this.__maxQuadsCount;
 	}
 
 	/**
 	 * Called when the batch becomes full while drawing and there's no handler.
 	 */
-	private _handleFullBuffer() {
+	private handleFullBuffer() {
 		// invoke on-overflow callback
 		if(this.onOverflow) {
 			this.onOverflow();
 		}
 
 		// draw current batch and clear
-		this._drawBatch();
+		this.drawBatch();
 		this.clear();
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	private _drawBatch() {
+	private drawBatch() {
 		// get texture and effect
 		const texture = this.__currDrawingParams.texture;
 		const effect = this.__currDrawingParams.effect;

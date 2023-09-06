@@ -3,7 +3,7 @@
  * All asset types inherit from this.
  */
 export abstract class Asset {
-	private _url: string;
+	protected url: string;
 	private waitingCallbacks: ((asset: Asset) => void)[] | null;
 
 	/**
@@ -11,7 +11,7 @@ export abstract class Asset {
 	 * @param url Asset URL / identifier.
 	 */
 	public constructor(url: string) {
-		this._url = url;
+		this.url = url;
 		this.waitingCallbacks = [];
 	}
 
@@ -19,23 +19,18 @@ export abstract class Asset {
 	 * Get asset's URL.
 	 * @returns Asset URL.
 	 */
-	public get url(): string {
-		return this._url;
+	public getUrl(): string {
+		return this.url;
 	}
 
 	/**
 	 * Get if this asset is ready, ie loaded or created.
-	 * @returns True if asset finished loading / creating. This doesn't mean its necessarily valid, only that its done loading.
+	 * @returns True if asset finished loading / creating.
+	 * This doesn't mean its necessarily valid, only that its done loading.
 	 */
-	public get ready(): boolean {
+	public isReady(): boolean {
 		return this.waitingCallbacks === null;
 	}
-
-	/**
-	 * Get if this asset is loaded and valid.
-	 * @returns True if asset is loaded and valid, false otherwise.
-	 */
-	public abstract get valid(): boolean;
 
 	/**
 	 * Register a method to be called when asset is ready.
@@ -44,7 +39,7 @@ export abstract class Asset {
 	 */
 	public onReady(callback: (asset: Asset) => void): void {
 		// already ready
-		if(this.valid || this.ready) {
+		if(this.isValid() || this.isReady()) {
 			callback(this);
 			return;
 		}
@@ -58,7 +53,7 @@ export abstract class Asset {
 	 * @returns Promise to resolve when ready.
 	 */
 	public waitForReady(): Promise<Asset> {
-		return new Promise((resolve, reject) => {
+		return new Promise((resolve, _reject) => {
 			this.onReady(resolve);
 		});
 	}
@@ -66,7 +61,7 @@ export abstract class Asset {
 	/**
 	 * Notify all waiting callbacks that this asset is ready.
 	 */
-	protected _notifyReady(): void {
+	protected notifyReady(): void {
 		if(!this.waitingCallbacks) return;
 		for(let i = 0; i < this.waitingCallbacks.length; ++i) this.waitingCallbacks[i](this);
 		this.waitingCallbacks = null;
@@ -86,6 +81,12 @@ export abstract class Asset {
 	 * @returns Promise to resolve when asset is ready.
 	 */
 	public abstract create(source: unknown, params: unknown): Promise<void>;
+
+	/**
+	 * Get if this asset is loaded and valid.
+	 * @returns True if asset is loaded and valid, false otherwise.
+	 */
+	public abstract isValid(): boolean;
 
 	/**
 	 * Destroy the asset, freeing any allocated resources in the process.

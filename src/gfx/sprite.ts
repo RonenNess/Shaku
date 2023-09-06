@@ -149,7 +149,7 @@ export class Sprite {
 	 * This is just a sugarcoat that returns if size.x < 0.
 	 * @returns If sprite is flipped on X axis.
 	 */
-	public get flipX(): boolean {
+	public getFlipX(): boolean {
 		return this.size.x < 0;
 	}
 
@@ -158,7 +158,7 @@ export class Sprite {
 	 * This is just a sugarcoat that set size.x to negative or positive value, without changing its scale.
 	 * @param flip Should we flip the sprite around X axis. If undefined, will take the negative of flipX current value, ie will toggle flipping.
 	 */
-	public set flipX(flip: boolean | undefined = !this.flipX) {
+	public setFlipX(flip: boolean | undefined = !this.flipX) {
 		this.size.x = Math.abs(this.size.x) * (flip ? -1 : 1);
 	}
 
@@ -167,7 +167,7 @@ export class Sprite {
 	 * This is just a sugarcoat that returns if size.y < 0.
 	 * @returns If sprite is flipped on Y axis.
 	 */
-	public get flipY(): boolean {
+	public getFlipY(): boolean {
 		return this.size.y < 0;
 	}
 
@@ -176,7 +176,7 @@ export class Sprite {
 	 * This is just a sugarcoat that set size.y to negative or positive value, without changing its scale.
 	 * @param flip Should we flip the sprite around Y axis. If undefined, will take the negative of flipY current value, ie will toggle flipping.
 	 */
-	public set flipY(flip: boolean | undefined = !this.flipY) {
+	public setFlipY(flip: boolean | undefined = !this.flipY) {
 		this.size.y = Math.abs(this.size.y) * (flip ? -1 : 1);
 	}
 }

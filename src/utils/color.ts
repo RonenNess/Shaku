@@ -154,11 +154,11 @@ export class Color {
 	/* eslint-enable @typescript-eslint/no-use-before-define */
 	// cspell: enable
 
-	private _r: number;
-	private _g: number;
-	private _b: number;
-	private _a?: number;
-	private _asHex: string | null;
+	private r: number;
+	private g: number;
+	private b: number;
+	private a?: number;
+	private asHex: string | null;
 
 	/**
 	 * Create the color.
@@ -180,11 +180,11 @@ export class Color {
 	 * @returns this.
 	 */
 	public set(r: number, g: number, b: number, a = 1): Color {
-		this._r = r;
-		this._g = g;
-		this._b = b;
-		this._a = (a === undefined) ? 1 : a;
-		this._asHex = null;
+		this.r = r;
+		this.g = g;
+		this.b = b;
+		this.a = (a === undefined) ? 1 : a;
+		this.asHex = null;
 		return this;
 	}
 
@@ -197,11 +197,11 @@ export class Color {
 	 * @returns this.
 	 */
 	public setByte(r: number, g: number, b: number, a?: number): Color {
-		this._r = r / 255.0;
-		this._g = g / 255.0;
-		this._b = b / 255.0;
-		this._a = (a === undefined) ? 1 : (a / 255.0);
-		this._asHex = null;
+		this.r = r / 255.0;
+		this.g = g / 255.0;
+		this.b = b / 255.0;
+		this.a = (a === undefined) ? 1 : (a / 255.0);
+		this.asHex = null;
 		return this;
 	}
 
@@ -219,72 +219,72 @@ export class Color {
 	 * Get r component.
 	 * @returns Red component.
 	 */
-	public get r(): number {
-		return this._r;
+	public getR(): number {
+		return this.r;
 	}
 
 	/**
 	 * Get g component.
 	 * @returns Green component.
 	 */
-	public get g(): number {
-		return this._g;
+	public getG(): number {
+		return this.g;
 	}
 
 	/**
 	 * Get b component.
 	 * @returns Blue component.
 	 */
-	public get b(): number {
-		return this._b;
+	public getB(): number {
+		return this.b;
 	}
 
 	/**
 	 * Get a component.
 	 * @returns Alpha component.
 	 */
-	public get a(): number {
-		return this._a;
+	public getA(): number {
+		return this.a;
 	}
 
 	/**
 	 * Set r component.
 	 * @returns Red component after change.
 	 */
-	public set r(val: number): void {
-		this._r = val;
-		this._asHex = null;
-		return this._r;
+	public setR(val: number): void {
+		this.r = val;
+		this.asHex = null;
+		return this.r;
 	}
 
 	/**
 	 * Set g component.
 	 * @returns Green component after change.
 	 */
-	public set g(val: number): void {
-		this._g = val;
-		this._asHex = null;
-		return this._g;
+	public setG(val: number): void {
+		this.g = val;
+		this.asHex = null;
+		return this.g;
 	}
 
 	/**
 	 * Set b component.
 	 * @returns Blue component after change.
 	 */
-	public set b(val: number): void {
-		this._b = val;
-		this._asHex = null;
-		return this._b;
+	public setB(val: number): void {
+		this.b = val;
+		this.asHex = null;
+		return this.b;
 	}
 
 	/**
 	 * Set a component.
 	 * @returns Alpha component after change.
 	 */
-	public set a(val: number) {
-		this._a = val;
-		this._asHex = null;
-		return this._a;
+	public setA(val: number) {
+		this.a = val;
+		this.asHex = null;
+		return this.a;
 	}
 
 	/**
@@ -301,15 +301,15 @@ export class Color {
 	 * Convert this color to hex string (starting with "#").
 	 * @returns Color as hex.
 	 */
-	public get asHex(): string {
-		if(!this._asHex) {
-			this._asHex = "#"
+	public getAsHex(): string {
+		if(!this.asHex) {
+			this.asHex = "#"
 				+ Color.componentToHex(this.r * 255)
 				+ Color.componentToHex(this.g * 255)
 				+ Color.componentToHex(this.b * 255)
 				+ Color.componentToHex(this.a * 255);
 		}
-		return this._asHex;
+		return this.asHex;
 	}
 
 	/**
@@ -376,7 +376,7 @@ export class Color {
 	 * Convert this color to decimal number.
 	 * @returns Color as decimal RGBA.
 	 */
-	public get asDecimalRGBA(): number {
+	public getAsDecimalRGBA(): number {
 		return ((Math.round(this.r * 255) << (8 * 3)) | (Math.round(this.g * 255) << (8 * 2)) | (Math.round(this.b * 255) << (8 * 1)) | (Math.round(this.a * 255))) >>> 0;
 	}
 
@@ -384,7 +384,7 @@ export class Color {
 	 * Convert this color to decimal number.
 	 * @returns Color as decimal ARGB.
 	 */
-	public get asDecimalABGR(): number {
+	public getAsDecimalABGR(): number {
 		return ((Math.round(this.a * 255) << (8 * 3))
 			| (Math.round(this.b * 255) << (8 * 2))
 			| (Math.round(this.g * 255) << (8 * 1))
@@ -394,7 +394,7 @@ export class Color {
 	/**
 	 * Convert this color to a float array.
 	 */
-	public get floatArray() {
+	public getFloatArray() {
 		return [this.r, this.g, this.b, this.a];
 	}
 
@@ -416,7 +416,7 @@ export class Color {
 	/**
 	 * Get if this color is pure black (ignoring alpha).
 	 */
-	public get isBlack(): boolean {
+	public isBlack(): boolean {
 		return this.r === 0 && this.g === 0 && this.b === 0;
 	}
 
@@ -445,18 +445,18 @@ export class Color {
 	/**
 	 * Get if this color is transparent black.
 	 */
-	public get isTransparentBlack(): boolean {
-		return this._r === this._g
-			&& this._g === this._b
-			&& this._b === this._a
-			&& this._a === 0;
+	public isTransparentBlack(): boolean {
+		return this.r === this.g
+			&& this.g === this.b
+			&& this.b === this.a
+			&& this.a === 0;
 	}
 
 	/**
 	 * Get array with all built-in web color names.
 	 * @returns Array with color names.
 	 */
-	public static get webColorNames(): string[] {
+	public static getWebColorNames(): string[] {
 		return colorKeys;
 	}
 
@@ -468,10 +468,10 @@ export class Color {
 		return (this === other)
 			|| (other &&
 				(other.constructor === this.constructor) &&
-				(this._r === other._r) &&
-				(this._g === other._g) &&
-				(this._b === other._b) &&
-				(this._a === other._a));
+				(this.r === other.r) &&
+				(this.g === other.g) &&
+				(this.b === other.b) &&
+				(this.a === other.a));
 	}
 
 	/**

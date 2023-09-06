@@ -1,4 +1,4 @@
-import { LoggerFactory } from "../utils";
+import { LoggerFactory, Vector2 } from "../utils";
 import { CollisionTestResult } from "./result";
 import { CollisionShape } from "./shapes";
 
@@ -8,17 +8,19 @@ const _logger = LoggerFactory.getLogger("collision"); // TODO
  * The collision resolver is responsible to implement collision detection between pair of shapes of same or different types.
  */
 export class CollisionResolver {
+	private handlers: Record<unknown, unknown>;
+
 	/**
 	 * Create the resolver.
 	 */
 	public constructor() {
-		this._handlers = {};
+		this.handlers = {};
 	}
 
 	/**
 	 * Initialize the resolver.
 	 */
-	private _init() {
+	private init() {
 
 	}
 
@@ -29,15 +31,15 @@ export class CollisionResolver {
 	 * @param {String} secondShapeId The shape identifier the handler receives as second argument.
 	 * @param {Function} handler Method to test collision between the shapes. Return false if don't collide, return either Vector2 with collision position or 'true' for collision.
 	 */
-	setHandler(firstShapeId, secondShapeId, handler) {
+	public setHandler(firstShapeId, secondShapeId, handler) {
 		// register handler
-		if(!this._handlers[firstShapeId]) this._handlers[firstShapeId] = {};
-		this._handlers[firstShapeId][secondShapeId] = handler;
+		if(!this.handlers[firstShapeId]) this.handlers[firstShapeId] = {};
+		this.handlers[firstShapeId][secondShapeId] = handler;
 
 		// register reverse order handler
 		if(firstShapeId !== secondShapeId) {
-			if(!this._handlers[secondShapeId]) this._handlers[secondShapeId] = {};
-			this._handlers[secondShapeId][firstShapeId] = (f, s) => { return handler(s, f); };
+			if(!this.handlers[secondShapeId]) this.handlers[secondShapeId] = {};
+			this.handlers[secondShapeId][firstShapeId] = (f, s) => { return handler(s, f); };
 		}
 	}
 
@@ -47,7 +49,7 @@ export class CollisionResolver {
 	 * @param {CollisionShape} second Second collision shape to test.
 	 * @returns {CollisionTestResult} collision detection result or null if they don't collide.
 	 */
-	test(first, second) {
+	public test(first, second) {
 		const handler = this.getCollisionMethod(first, second);
 		return this.testWithHandler(first, second, handler);
 	}
@@ -59,7 +61,7 @@ export class CollisionResolver {
 	 * @param {Function} handler Method to test collision between the shapes.
 	 * @returns {CollisionTestResult} collision detection result or null if they don't collide.
 	 */
-	testWithHandler(first, second, handler) {
+	public testWithHandler(first, second, handler) {
 		// missing handler?
 		if(!handler) {
 			_logger.warn(`Missing collision handler for shapes "${first.shapeId}" and "${second.shapeId}".`);
@@ -71,7 +73,7 @@ export class CollisionResolver {
 
 		// collision
 		if(result) {
-			const position = (result.isVector2) ? result : null;
+			const position = (result instanceof Vector2) ? result : null;
 			return new CollisionTestResult(position, first, second);
 		}
 
@@ -82,8 +84,8 @@ export class CollisionResolver {
 	/**
 	 * Get handlers dictionary for a given shape.
 	 */
-	getHandlers(shape) {
-		return this._handlers[shape.shapeId];
+	public getHandlers(shape) {
+		return this.handlers[shape.shapeId];
 	}
 
 	/**
@@ -94,7 +96,7 @@ export class CollisionResolver {
 	 * @returns {Function} collision detection method or null if not found.
 	 */
 	private getCollisionMethod(first, second) {
-		const handlersFrom = this._handlers[first.shapeId];
+		const handlersFrom = this.handlers[first.shapeId];
 		if(handlersFrom) {
 			return handlersFrom[second.shapeId] || null;
 		}

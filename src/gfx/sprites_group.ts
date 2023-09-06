@@ -100,7 +100,7 @@ export class SpritesGroup {
 	 * Sprites count in group.
 	 * @returns Number of sprites in group.
 	 */
-	public get count(): number {
+	public getCount(): number {
 		return this.sprites.length;
 	}
 }

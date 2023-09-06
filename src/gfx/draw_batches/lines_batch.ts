@@ -1,5 +1,5 @@
 import { Sprite } from "..";
-import { Circle, Color, LoggerFactory, Matrix, Rectangle, Vector2, Vector3 } from "../../utils";
+import { Circle, Color, LoggerFactory, MathHelper, Matrix, Rectangle, Vector2, Vector3 } from "../../utils";
 import { Vertex } from "../vertex";
 import { DrawBatch } from "./draw_batch";
 
@@ -29,17 +29,17 @@ export class LinesBatch extends DrawBatch {
 	/**
 	 * How many line segments this batch can hold.
 	 */
-	private __maxLinesCount: number;
+	private maxLinesCount: number;
 
 	/**
 	 * How many line segments we currently have.
 	 */
-	private __linesCount: number;
+	private linesCount: number;
 
 	/**
 	 * Indicate there were changes in buffers.
 	 */
-	private __dirty: boolean;
+	private dirty: boolean;
 
 	/**
 	 * Create the sprites batch.
@@ -52,9 +52,9 @@ export class LinesBatch extends DrawBatch {
 		// create buffers for drawing shapes
 		this.createBuffers(lineSegmentsCount);
 
-		this.__maxLinesCount = Math.floor((this._buffers.positionArray.length / 6));
-		this.__linesCount = 0;
-		this.__dirty = false;
+		this.maxLinesCount = Math.floor((this._buffers.positionArray.length / 6));
+		this.linesCount = 0;
+		this.dirty = false;
 
 		this.onOverflow = null;
 		this.snapPixels = false;
@@ -64,14 +64,14 @@ export class LinesBatch extends DrawBatch {
 	/**
 	 * Get the gfx manager.
 	 */
-	private get gfx() {
+	private getGfx() {
 		return DrawBatch._gfx;
 	}
 
 	/**
 	 * Get the web gl instance.
 	 */
-	private get gl() {
+	private getGl() {
 		return DrawBatch._gfx._internal.gl;
 	}
 
@@ -131,8 +131,8 @@ export class LinesBatch extends DrawBatch {
 		super.clear();
 		this._buffers.positionArray._index = 0;
 		this._buffers.colorsArray._index = 0;
-		this.__linesCount = 0;
-		this.__dirty = false;
+		this.linesCount = 0;
+		this.dirty = false;
 	}
 
 	/**
@@ -150,14 +150,14 @@ export class LinesBatch extends DrawBatch {
 	/**
 	 * @inheritdoc
 	 */
-	public override get isDestroyed(): boolean {
+	public override isDestroyed(): boolean {
 		return Boolean(this._buffers) === false;
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	public override get defaultEffect() {
+	public override getDefaultEffect() {
 		return this.gfx.builtinEffects.Shapes;
 	}
 
@@ -196,11 +196,11 @@ export class LinesBatch extends DrawBatch {
 			// every 2 vertices..
 			if((i++ === 1) || this.linesStrip) {
 				// update quads count
-				this.__linesCount++;
+				this.linesCount++;
 
 				// check if full
-				if(this.__linesCount >= this.__maxLinesCount) {
-					this._handleFullBuffer();
+				if(this.linesCount >= this.maxLinesCount) {
+					this.handleFullBuffer();
 				}
 
 				// reset count
@@ -209,7 +209,7 @@ export class LinesBatch extends DrawBatch {
 		}
 
 		// mark as dirty
-		this.__dirty = true;
+		this.dirty = true;
 	}
 
 	/**
@@ -272,7 +272,7 @@ export class LinesBatch extends DrawBatch {
 		}
 
 		// build first position that is not center
-		const segmentStep = (2 * Math.PI) / segmentsCount;
+		const segmentStep = MathHelper.PI2 / segmentsCount;
 		let prevPoint = new Vector2(
 			(circle.radius * Math.cos(0)) * ratio.x,
 			(circle.radius * Math.sin(0)) * ratio.y
@@ -318,7 +318,7 @@ export class LinesBatch extends DrawBatch {
 		this.__validateDrawing(true);
 
 		// mark as dirty
-		this.__dirty = true;
+		this.dirty = true;
 
 		// add rectangle from sprite data
 		{
@@ -432,30 +432,30 @@ export class LinesBatch extends DrawBatch {
 	 * Get how many line segments are currently in batch.
 	 * @returns Line segments in batch count.
 	 */
-	public get linesInBatch(): number {
-		return this.__linesCount;
+	public getLinesInBatch(): number {
+		return this.linesCount;
 	}
 
 	/**
 	 * Get how many line segments this batch can contain.
 	 * @returns Max line segments count.
 	 */
-	public get maxLinesCount(): number {
-		return this.__maxLinesCount;
+	public getMaxLinesCount(): number {
+		return this.maxLinesCount;
 	}
 
 	/**
 	 * Check if this batch is full.
 	 * @returns True if batch is full.
 	 */
-	public get isFull(): boolean {
-		return this.__linesCount >= this.__maxLinesCount;
+	public isFull(): boolean {
+		return this.linesCount >= this.maxLinesCount;
 	}
 
 	/**
 	 * Called when the batch becomes full while drawing and there's no handler.
 	 */
-	private _handleFullBuffer(): void {
+	private handleFullBuffer(): void {
 		// invoke on-overflow callback
 		this.onOverflow?.();
 
@@ -481,7 +481,7 @@ export class LinesBatch extends DrawBatch {
 		const indexBuffer = this._buffers.indexBuffer;
 
 		// should copy buffers
-		const needBuffersCopy = this.__dirty;
+		const needBuffersCopy = this.dirty;
 
 		// nothing to draw? skip
 		if(positionArray._index <= 1) return;
@@ -522,7 +522,7 @@ export class LinesBatch extends DrawBatch {
 		gfx._internal.drawShapePolygonsCount += verticesCount / 2;
 
 		// mark as not dirty
-		this.__dirty = false;
+		this.dirty = false;
 
 		// if static, free arrays we no longer need them
 		if(this.__staticBuffers) this._buffers.positionArray = this._buffers.colorsArray = null;

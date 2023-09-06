@@ -18,12 +18,21 @@ const _logger = LoggerFactory.getLogger("gfx"); // TODO
  * To access the Assets manager you use `Shaku.assets`.
  */
 export class Assets implements IManager {
+
+	/**
+	 * generate a random asset URL, for when creating assets that are outside of cache.
+	 */
+	private static nextRandomAssetId = 0;
+	private static generateRandomAssetName(): string {
+		return "_runtime_asset_" + (Assets.nextRandomAssetId++) + "_";
+	}
+
 	public root: string;
 	public suffix: string;
 
 	private loaded: Record<string, Asset> | null;
 	private waitingAssets: Set<string>;
-	private _failedAssets: Set<string>;
+	private failedAssets: Set<string>;
 	private successfulLoadedAssetsCount: number;
 
 	/**
@@ -32,7 +41,7 @@ export class Assets implements IManager {
 	public constructor() {
 		this.loaded = null;
 		this.waitingAssets = new Set();
-		this._failedAssets = new Set();
+		this.failedAssets = new Set();
 		this.successfulLoadedAssetsCount = 0;
 
 		/**
@@ -53,7 +62,7 @@ export class Assets implements IManager {
 	 * This list will be reset if you call clearCache().
 	 * @returns URLs of assets waiting to be loaded.
 	 */
-	public get pendingAssets() {
+	public getPendingAssets() {
 		return Array.from(this.waitingAssets);
 	}
 
@@ -62,8 +71,8 @@ export class Assets implements IManager {
 	 * This list will be reset if you call clearCache().
 	 * @returns URLs of assets that had error loading.
 	 */
-	public get failedAssets() {
-		return Array.from(this._failedAssets);
+	public getFailedAssets() {
+		return Array.from(this.failedAssets);
 	}
 
 	/**
@@ -75,7 +84,7 @@ export class Assets implements IManager {
 	 * @returns Promise to resolve when all assets are loaded, or reject if there are failed assets.
 	 */
 	public waitForAll() {
-		return new Promise((resolve, reject) => {
+		return new Promise<void>((resolve, reject) => {
 
 			_logger.debug("Waiting for all assets..");
 
@@ -83,7 +92,7 @@ export class Assets implements IManager {
 			const checkAssets = () => {
 
 				// got errors?
-				if(this._failedAssets.size !== 0) {
+				if(this.failedAssets.size !== 0) {
 					_logger.warn("Done waiting for assets: had errors.");
 					return reject(this.failedAssets);
 				}
@@ -176,7 +185,7 @@ export class Assets implements IManager {
 		if(!width || !height) throw new Error("Missing or invalid size!");
 
 		// create asset and return promise
-		return this.createAsset(name, TextureAsset, (asset) => {
+		return this.createAsset(name, TextureAsset, asset => {
 			asset.createRenderTarget(width, height, channels);
 		});
 	}
@@ -192,14 +201,14 @@ export class Assets implements IManager {
 	 */
 	public createTextureAtlas(name: string | null, sources: [string, ...string[]], maxWidth?: number, maxHeight?: number, extraMargins?: Vector2) {
 		// create asset and return promise
-		return this.createAsset(name, TextureAtlasAsset, async (asset) => {
+		return this.createAsset(name, TextureAtlasAsset, async asset => {
 			try {
 				await asset._build(sources, maxWidth, maxHeight, extraMargins);
 				this.waitingAssets.delete(name);
 				this.successfulLoadedAssetsCount++;
 			} catch(e) {
 				_logger.warn(`Failed to create texture atlas: "${e}".`);
-				this._failedAssets.add(url);
+				this.failedAssets.add(url);
 			}
 		}, true);
 	}
@@ -307,7 +316,7 @@ export class Assets implements IManager {
 		for(const key in this.loaded) this.loaded[key].destroy();
 		this.loaded = {};
 		this.waitingAssets = new Set();
-		this._failedAssets = new Set();
+		this.failedAssets = new Set();
 	}
 
 	/**
@@ -335,7 +344,7 @@ export class Assets implements IManager {
 	 * @param type If provided will make sure asset is of this type. If asset found but have wrong type, will throw exception.
 	 * @returns Loaded asset or null if not found.
 	 */
-	private getFromCache(url: string, type: { new(...args: unknown[]): unknown; }): Asset | null {
+	private getFromCache(url: string, type: new (...args: unknown[]) => unknown): Asset | null {
 		const cached = this.loaded[url] ?? null;
 		if(cached && type) {
 			if(!(cached instanceof type)) throw new Error(`Asset with URL "${url}" is already loaded, but has unexpected type (expecting ${type})!`);
@@ -351,7 +360,7 @@ export class Assets implements IManager {
 	 */
 	private async loadAndCacheAsset(newAsset: Asset, params: unknown) {
 		// extract url and typename, and add to cache
-		const url = newAsset.url;
+		const url = newAsset.getUrl();
 		const typeName = newAsset.constructor.name;
 		this.loaded[url] = newAsset;
 		this.waitingAssets.add(url);
@@ -366,7 +375,7 @@ export class Assets implements IManager {
 				this.waitingAssets.delete(url);
 
 				// make sure valid
-				if(!newAsset.valid) throw new Error("Loaded asset is not valid!");
+				if(!newAsset.isValid()) throw new Error("Loaded asset is not valid!");
 
 				_logger.debug(`Successfully loaded asset [${typeName}] from URL "${url}".`);
 
@@ -375,7 +384,7 @@ export class Assets implements IManager {
 			})
 			.catch(e => {
 				_logger.warn(`Failed to load asset [${typeName}] from URL "${url}".`);
-				this._failedAssets.add(url);
+				this.failedAssets.add(url);
 				throw e;
 			})
 			.then(_ => newAsset);
@@ -384,38 +393,38 @@ export class Assets implements IManager {
 	/**
 	 * Get / load asset of given type, and return a promise to be resolved when ready.
 	 */
-	private loadAssetType<T extends Asset>(url: string, typeClass: { new(url: string): T; }, params?: unknown): Promise<T> {
+	private loadAssetType<T extends Asset>(url: string, typeClass: new (url: string) => T, params?: unknown): Promise<T> {
 		// normalize URL
 		url = this.wrapUrl(url);
 
 		// try to get from cache
-		let _asset = this.getFromCache(url, typeClass);
+		let asset = this.getFromCache(url, typeClass);
 
 		// check if need to create new and load
 		let needLoad = false;
-		if(!_asset) {
-			_asset = new typeClass(url);
+		if(!asset) {
+			asset = new typeClass(url);
 			needLoad = true;
 		}
 
 		// create promise to load asset
 		const promise = new Promise(async (resolve, _reject) => {
-			if(needLoad) await this.loadAndCacheAsset(_asset, params);
-			_asset.onReady(() => resolve(_asset));
+			if(needLoad) await this.loadAndCacheAsset(asset, params);
+			asset.onReady(() => resolve(asset));
 		});
 
 		// return promise with asset attached to it
-		promise.asset = _asset;
+		promise.asset = asset;
 		return promise;
 	}
 
 	/**
 	 * Create and init asset of given class type.
 	 */
-	private createAsset<T, U>(name: string, classType: { new(...args: U[]): T; }, initMethod: (clazz: T) => Promise<void>, needWait?: boolean): Promise<T> {
+	private createAsset<T, U>(name: string, classType: new (...args: U[]) => T, initMethod: (clazz: T) => Promise<void>, needWait?: boolean): Promise<T> {
 		// create asset
 		name = this.wrapUrl(name);
-		const _asset = new classType(name || generateRandomAssetName());
+		const asset = new classType(name || Assets.generateRandomAssetName());
 
 		// if this asset need waiting
 		if(needWait) this.waitingAssets.add(name);
@@ -427,21 +436,15 @@ export class Assets implements IManager {
 			if(name && this.loaded[name]) return reject(`Asset of type "${classType.name}" to create with URL "${name}" already exist in cache!`);
 
 			// create and return
-			await initMethod(_asset);
-			if(name) this.loaded[name] = _asset;
-			resolve(_asset);
+			await initMethod(asset);
+			if(name) this.loaded[name] = asset;
+			resolve(asset);
 		});
 
 		// attach asset to promise
-		promise.asset = _asset;
+		promise.asset = asset;
 		return promise;
 	}
-}
-
-// generate a random asset URL, for when creating assets that are outside of cache.
-let _nextRandomAssetId = 0;
-function generateRandomAssetName(): string {
-	return "_runtime_asset_" + (_nextRandomAssetId++) + "_";
 }
 
 export const assets = new Assets();

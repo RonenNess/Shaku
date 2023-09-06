@@ -155,7 +155,7 @@ export class Gamepad {
 	 * Get buttons count.
 	 * @returns Buttons count.
 	 */
-	public get buttonsCount(): number {
+	public getButtonsCount(): number {
 		return this.buttonsDown.length;
 	}
 }

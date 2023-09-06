@@ -83,7 +83,7 @@ export class Rectangle {
 	 * Get left value.
 	 * @returns rectangle left.
 	 */
-	public get left(): number {
+	public getLeft(): number {
 		return this.x;
 	}
 
@@ -91,7 +91,7 @@ export class Rectangle {
 	 * Get right value.
 	 * @returns rectangle right.
 	 */
-	public get right(): number {
+	public getRight(): number {
 		return this.x + this.width;
 	}
 
@@ -99,7 +99,7 @@ export class Rectangle {
 	 * Get top value.
 	 * @returns rectangle top.
 	 */
-	public get top(): number {
+	public getTop(): number {
 		return this.y;
 	}
 
@@ -107,7 +107,7 @@ export class Rectangle {
 	 * Get bottom value.
 	 * @returns rectangle bottom.
 	 */
-	public get bottom(): number {
+	public getBottom(): number {
 		return this.y + this.height;
 	}
 

@@ -123,7 +123,7 @@ export class Effect {
 	 * Get all supported depth funcs we can set.
 	 * @returns Depth func options: {Never, Less, Equal, LessEqual, Greater, GreaterEqual, Always, NotEqual}.
 	 */
-	public static get DepthFuncs(): DepthFunctions {
+	public static getDepthFuncs(): DepthFunctions {
 		if(!_depthFuncs) {
 			const gl = Effect._gfx._internal.gl;
 			_depthFuncs = {
@@ -272,7 +272,7 @@ export class Effect {
 							_this.pendingUniformValues[name] = [v1, v2, v3, v4];
 							return;
 						}
-						if(v1.isColor) {
+						if(v1 instanceof Color) {
 							_this.gl[method](location, v1.floatArray);
 						}
 						else {
@@ -360,7 +360,7 @@ export class Effect {
 	 *         }
 	 * @returns Dictionary with uniforms descriptions.
 	 */
-	public get uniformTypess() { // TODO
+	public getUniformTypess() { // TODO
 		throw new Error("Not Implemented!");
 	}
 
@@ -377,7 +377,7 @@ export class Effect {
 	 *         }
 	 * @returns Dictionary with attributes descriptions.
 	 */
-	public get attributeTypes() {
+	public getAttributeTypes() {
 		throw new Error("Not Implemented!");
 	}
 
@@ -445,7 +445,7 @@ export class Effect {
 	 * Get this effect's vertex shader code, as string.
 	 * @returns Vertex shader code.
 	 */
-	public get vertexCode(): string {
+	public getVertexCode(): string {
 		throw new Error("Not Implemented!");
 	}
 
@@ -453,21 +453,21 @@ export class Effect {
 	 * Get this effect's fragment shader code, as string.
 	 * @returns Fragment shader code.
 	 */
-	public get fragmentCode(): string {
+	public getFragmentCode(): string {
 		throw new Error("Not Implemented!");
 	}
 
 	/**
 	 * Should this effect enable depth test?
 	 */
-	public get enableDepthTest() {
+	public getEnableDepthTest() {
 		return false;
 	}
 
 	/**
 	 * Should this effect enable face culling?
 	 */
-	public get enableFaceCulling() {
+	public getEnableFaceCulling() {
 		return false;
 	}
 
@@ -475,21 +475,21 @@ export class Effect {
 	 * Get depth func to use when rendering using this effect.
 	 * Use "DepthFuncs" to get options.
 	 */
-	public get depthFunc() {
+	public getDepthFunc() {
 		return Effect.DepthFuncs.LessEqual;
 	}
 
 	/**
 	 * Should this effect enable stencil test?
 	 */
-	public get enableStencilTest() {
+	public getEnableStencilTest() {
 		return false;
 	}
 
 	/**
 	 * Should this effect enable dithering?
 	 */
-	public get enableDithering() {
+	public getEnableDithering() {
 		return false;
 	}
 
@@ -497,7 +497,7 @@ export class Effect {
 	 * Get polygon offset factor, to apply on depth value before checking.
 	 * @returns Return false to disable polygon offset, or {factor, unit} to apply polygon offset.
 	 */
-	public get polygonOffset(): false | { factor: number; units: number; } {
+	public getPolygonOffset(): false | { factor: number; units: number; } {
 		return false;
 	}
 
@@ -638,7 +638,7 @@ export class Effect {
 	 * Return if this effect have colors attribute on vertices.
 	 * @returns True if got vertices color attribute.
 	 */
-	public get hasVertexColor(): boolean {
+	public getHasVertexColor(): boolean {
 		return Boolean(this.attributeBinds[Effect.AttributeBinds.Colors]);
 	}
 

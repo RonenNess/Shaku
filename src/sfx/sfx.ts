@@ -23,7 +23,7 @@ export class Sfx implements IManager {
 	 * @inheritdoc
 	 * @private
 	 **/
-	setup(): Promise<void> {
+	public setup(): Promise<void> {
 		return new Promise((resolve, reject) => {
 			_logger.info("Setup sfx manager..");
 			this._playingSounds = new Set();
@@ -65,7 +65,7 @@ export class Sfx implements IManager {
 	 * Get the SoundMixer class.
 	 * @see SoundMixer
 	 */
-	get SoundMixer() {
+	public getSoundMixer() {
 		return SoundMixer;
 	}
 
@@ -81,7 +81,7 @@ export class Sfx implements IManager {
 	 * @param {Boolean} preservesPitch Optional preserve pitch when changing rate factor.
 	 * @returns {Promise} Promise to resolve when sound starts playing.
 	 */
-	play(soundAsset, volume, playbackRate, preservesPitch) {
+	public play(soundAsset, volume, playbackRate, preservesPitch) {
 		const sound = this.createSound(soundAsset);
 		sound.volume = volume !== undefined ? volume : 1;
 		if(playbackRate !== undefined) sound.playbackRate = playbackRate;
@@ -96,7 +96,7 @@ export class Sfx implements IManager {
 	 * @example
 	 * Shaku.sfx.stopAll();
 	 */
-	stopAll() {
+	public stopAll() {
 		const playingSounds = Array.from(this._playingSounds);
 		for(const sound of playingSounds) {
 			sound.stop();
@@ -108,7 +108,7 @@ export class Sfx implements IManager {
 	 * Get currently playing sounds count.
 	 * @returns {Number} Number of sounds currently playing.
 	 */
-	get playingSoundsCount() {
+	public getPlayingSoundsCount() {
 		return this._playingSounds.size;
 	}
 
@@ -121,8 +121,8 @@ export class Sfx implements IManager {
 	 * @param {SoundAsset} sound Sound asset to play.
 	 * @returns {SoundInstance} Newly created sound instance.
 	 */
-	createSound(sound) {
-		if(!(sound.isSoundAsset)) throw new Error("Sound type must be an instance of SoundAsset!");
+	public createSound(sound) {
+		if(!(sound instanceof SoundAsset)) throw new Error("Sound type must be an instance of SoundAsset!");
 		const ret = new SoundInstance(this, sound.url);
 		return ret;
 	}
@@ -132,7 +132,7 @@ export class Sfx implements IManager {
 	 * This affect all sound effects volumes.
 	 * @returns {Number} Current master volume value.
 	 */
-	get masterVolume() {
+	public getMasterVolume() {
 		return SoundInstance._masterVolume;
 	}
 
@@ -141,7 +141,7 @@ export class Sfx implements IManager {
 	 * This affect all sound effects volumes.
 	 * @param {Number} value Master volume to set.
 	 */
-	set masterVolume(value) {
+	public setMasterVolume(value) {
 		SoundInstance._masterVolume = value;
 		return value;
 	}

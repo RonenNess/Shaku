@@ -5,14 +5,14 @@ import { Asset } from "./asset";
  * This is the asset type you use to play sounds.
  */
 export class SoundAsset extends Asset {
-	private _valid: boolean;
+	private valid: boolean;
 
 	/**
 	 * @inheritdoc
 	 */
 	public constructor(url: string) {
 		super(url);
-		this._valid = false;
+		this.valid = false;
 	}
 
 	/**
@@ -33,8 +33,8 @@ export class SoundAsset extends Asset {
 
 			// on load, validate audio content
 			request.onload = () => {
-				this._valid = true;
-				this._notifyReady();
+				this.valid = true;
+				this.notifyReady();
 				resolve();
 			};
 
@@ -49,14 +49,14 @@ export class SoundAsset extends Asset {
 	/**
 	 * @inheritdoc
 	 */
-	public get valid(): boolean {
-		return this._valid;
+	public isValid(): boolean {
+		return this.valid;
 	}
 
 	/**
 	 * @inheritdoc
 	 */
 	public destroy(): void {
-		this._valid = false;
+		this.valid = false;
 	}
 }

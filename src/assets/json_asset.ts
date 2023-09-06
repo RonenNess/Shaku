@@ -5,14 +5,14 @@ import { Asset } from "./asset";
  * This asset type loads JSON from a remote file.
  */
 export class JsonAsset extends Asset {
-	private _data: unknown | null;
+	private data: unknown | null;
 
 	/**
 	 * @inheritdoc
 	 */
 	public constructor(url: string) {
 		super(url);
-		this._data = null;
+		this.data = null;
 	}
 
 	/**
@@ -30,8 +30,8 @@ export class JsonAsset extends Asset {
 			request.onload = () => {
 				if(request.readyState === 4) {
 					if(request.response) {
-						this._data = request.response;
-						this._notifyReady();
+						this.data = request.response;
+						this.notifyReady();
 						resolve();
 					} else {
 						if(request.status === 200) reject("Response is not a valid JSON!");
@@ -68,8 +68,8 @@ export class JsonAsset extends Asset {
 			}
 
 			// store data and resolve
-			this._data = source;
-			this._notifyReady();
+			this.data = source;
+			this.notifyReady();
 			resolve();
 		});
 	}
@@ -78,21 +78,21 @@ export class JsonAsset extends Asset {
 	 * Get json data.
 	 * @returns Data as dictionary.
 	 */
-	public get data(): unknown {
-		return this._data;
+	public getData(): unknown {
+		return this.data;
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	public get valid(): boolean {
-		return Boolean(this._data);
+	public isValid(): boolean {
+		return Boolean(this.data);
 	}
 
 	/**
 	 * @inheritdoc
 	 */
 	public destroy(): void {
-		this._data = null;
+		this.data = null;
 	}
 }

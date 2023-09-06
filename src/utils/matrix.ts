@@ -424,7 +424,7 @@ export class Matrix {
 	 */
 	public static transformVertex(matrix: Matrix, vertex: Vertex): Vertex {
 		return new Vertex(
-			(vertex.position.isVector2) ? Matrix.transformVector2(matrix, vertex.position) : Matrix.transformVector3(matrix, vertex.position),
+			(vertex.position instanceof Vector2) ? Matrix.transformVector2(matrix, vertex.position) : Matrix.transformVector3(matrix, vertex.position),
 			vertex.textureCoord,
 			vertex.color);
 	}

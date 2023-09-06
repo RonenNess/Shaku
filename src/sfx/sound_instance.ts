@@ -25,7 +25,7 @@ export class SoundInstance {
 	 * Dispose the audio object when done playing the sound.
 	 * This will call dispose() automatically when audio ends.
 	 */
-	disposeWhenDone() {
+	public disposeWhenDone() {
 		this._audio.onended = () => {
 			this.dispose();
 		};
@@ -36,7 +36,7 @@ export class SoundInstance {
 	 * When playing lots of sounds its important to call dispose on sounds you no longer use, to avoid getting hit by
 	 * "Blocked attempt to create a WebMediaPlayer" exception.
 	 */
-	dispose() {
+	public dispose() {
 		if(this._audio) {
 			try {
 				this._audio.pause();
@@ -54,7 +54,7 @@ export class SoundInstance {
 	* Play sound.
 	* @returns {Promise} Promise to return when sound start playing.
 	*/
-	play() {
+	public play() {
 		if(!this._audio) throw new Error("Sound instance was already disposed!");
 		if(this.playing) return;
 		const promise = this._audio.play();
@@ -66,7 +66,7 @@ export class SoundInstance {
 	* Get sound effect playback rate.
 	* @returns {Number} Playback rate.
 	*/
-	get playbackRate() {
+	public getPlaybackRate() {
 		if(!this._audio) return 0;
 		return this._audio.playbackRate;
 	}
@@ -75,7 +75,7 @@ export class SoundInstance {
 	* Set playback rate.
 	* @param {Number} val Playback value to set.
 	*/
-	set playbackRate(val) {
+	public setPlaybackRate(val) {
 		if(!this._audio) return 0;
 		if(val < 0.1) _logger.error("playbackRate value set is too low, value was capped to 0.1.");
 		if(val > 10) _logger.error("playbackRate value set is too high, value was capped to 10.");
@@ -87,7 +87,7 @@ export class SoundInstance {
 	* Get if to preserve pitch while changing playback rate.
 	* @returns {Boolean} Preserve pitch state of the sound instance.
 	*/
-	get preservesPitch() {
+	public getPreservesPitch() {
 		if(!this._audio) return false;
 		return Boolean(this._audio.preservesPitch || this._audio.mozPreservesPitch);
 	}
@@ -96,7 +96,7 @@ export class SoundInstance {
 	* Set if to preserve pitch while changing playback rate.
 	* @param {Boolean} val New preserve pitch value to set.
 	*/
-	set preservesPitch(val) {
+	public setPreservesPitch(val) {
 		if(!this._audio) return false;
 		return this._audio.preservesPitch = this._audio.mozPreservesPitch = Boolean(val);
 	}
@@ -104,7 +104,7 @@ export class SoundInstance {
 	/**
 	* Pause the sound.
 	*/
-	pause() {
+	public pause() {
 		if(!this._audio) throw new Error("Sound instance was already disposed!");
 		this._audio.pause();
 	}
@@ -113,7 +113,7 @@ export class SoundInstance {
 	* Replay sound from start.
 	* @returns {Promise} Promise to return when sound start playing.
 	*/
-	replay() {
+	public replay() {
 		if(!this._audio) throw new Error("Sound instance was already disposed!");
 		this.stop();
 		return this.play();
@@ -123,7 +123,7 @@ export class SoundInstance {
 	* Stop the sound and go back to start.
 	* @returns {Boolean} True if successfully stopped sound, false otherwise.
 	*/
-	stop() {
+	public stop() {
 		if(!this._audio) throw new Error("Sound instance was already disposed!");
 		try {
 			this.pause();
@@ -139,7 +139,7 @@ export class SoundInstance {
 	* Get if playing in loop.
 	* @returns {Boolean} If this sound should play in loop.
 	*/
-	get loop() {
+	public getLoop() {
 		if(!this._audio) return false;
 		return this._audio.loop;
 	}
@@ -148,7 +148,7 @@ export class SoundInstance {
 	* Set if playing in loop.
 	* @param {Boolean} value If this sound should play in loop.
 	*/
-	set loop(value) {
+	public setLoop(value) {
 		if(!this._audio) return false;
 		this._audio.loop = value;
 		return this._audio.loop;
@@ -158,7 +158,7 @@ export class SoundInstance {
 	* Get volume.
 	* @returns {Number} Sound effect volume.
 	*/
-	get volume() {
+	public getVolume() {
 		if(!this._audio) return 0;
 		return this._volume;
 	}
@@ -167,7 +167,7 @@ export class SoundInstance {
 	* Set volume.
 	* @param {Number} value Sound effect volume to set.
 	*/
-	set volume(value) {
+	public setVolume(value) {
 		if(!this._audio) return 0;
 		this._volume = value;
 		let volume = (value * SoundInstance._masterVolume);
@@ -181,7 +181,7 @@ export class SoundInstance {
 	* Get current time in track.
 	* @returns {Number} Current time in playing sound.
 	*/
-	get currentTime() {
+	public getCurrentTime() {
 		if(!this._audio) return 0;
 		return this._audio.currentTime;
 	}
@@ -190,7 +190,7 @@ export class SoundInstance {
 	* Set current time in track.
 	* @param {Number} value Set current playing time in sound track.
 	*/
-	set currentTime(value) {
+	public setCurrentTime(value) {
 		if(!this._audio) return 0;
 		return this._audio.currentTime = value;
 	}
@@ -199,7 +199,7 @@ export class SoundInstance {
 	* Get track duration.
 	* @returns {Number} Sound duration in seconds.
 	*/
-	get duration() {
+	public getDuration() {
 		if(!this._audio) return 0;
 		return this._audio.duration;
 	}
@@ -208,7 +208,7 @@ export class SoundInstance {
 	* Get if sound is currently paused.
 	* @returns {Boolean} True if sound is currently paused.
 	*/
-	get paused() {
+	public getPaused() {
 		if(!this._audio) return false;
 		return this._audio.paused;
 	}
@@ -217,7 +217,7 @@ export class SoundInstance {
 	* Get if sound is currently playing.
 	* @returns {Boolean} True if sound is currently playing.
 	*/
-	get playing() {
+	public getPlaying() {
 		if(!this._audio) return false;
 		return !this.paused && !this.finished;
 	}
@@ -226,7 +226,7 @@ export class SoundInstance {
 	* Get if finished playing.
 	* @returns {Boolean} True if sound reached the end and didn't loop.
 	*/
-	get finished() {
+	public getFinished() {
 		if(!this._audio) return false;
 		return this._audio.ended;
 	}

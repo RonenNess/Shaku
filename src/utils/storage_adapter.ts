@@ -7,7 +7,7 @@ export interface StorageAdapter {
 	 * Return if this storage adapter is persistent storage or not.
 	 * @returns True if this storage type is persistent.
 	 */
-	get persistent(): boolean;
+	getPersistent(): boolean;
 
 	/**
 	 * Check if this adapter is OK to be used.
@@ -66,7 +66,7 @@ export class StorageAdapterMemory implements StorageAdapter {
 	/**
 	 * @inheritdoc
 	 */
-	public get persistent(): boolean {
+	public getPersistent(): boolean {
 		return false;
 	}
 
@@ -122,7 +122,7 @@ export class StorageAdapterLocalStorage implements StorageAdapter {
 	/**
 	 * @inheritdoc
 	 */
-	public get persistent(): boolean {
+	public getPersistent(): boolean {
 		return true;
 	}
 
@@ -184,7 +184,7 @@ export class StorageAdapterSessionStorage implements StorageAdapter {
 	/**
 	 * @inheritdoc
 	 */
-	public get persistent(): boolean {
+	public getPersistent(): boolean {
 		return false;
 	}
 

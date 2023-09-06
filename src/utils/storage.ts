@@ -50,15 +50,15 @@ export class Storage {
 	 * Return if this storage adapter is persistent storage or not.
 	 * @returns True if this storage type is persistent.
 	 */
-	public get persistent(): boolean {
-		return this.isValid && this.adapter.persistent;
+	public getPersistent(): boolean {
+		return this.isValid() && this.adapter.getPersistent();
 	}
 
 	/**
 	 * Check if this storage instance has a valid adapter.
 	 * @returns True if found a valid adapter to use, false otherwise.
 	 */
-	public get isValid(): boolean {
+	public isValid(): boolean {
 		return Boolean(this.adapter);
 	}
 

@@ -77,7 +77,7 @@ export class DynamicArray {
 	/**
 	 * Reset the array back to original size.
 	 */
-	reset(includeSize) {
+	public reset(includeSize) {
 		this.index = 0;
 		if(includeSize && this.buffer.length !== this._startSize) {
 			this.buffer = new this.type(this._startSize);
@@ -88,7 +88,7 @@ export class DynamicArray {
 	 * Push a value into the array and grow it if necessary.
 	 * @param {Number} value Value to push.
 	 */
-	push(value) {
+	public push(value) {
 		if(this.index >= this.buffer.length) {
 			const newBuffer = new this.type(this.buffer.length * 2);
 			transferPolyfill(this.buffer, newBuffer);

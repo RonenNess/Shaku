@@ -50,7 +50,7 @@ export class Node {
 	/**
 	 * Get the node fCost factor.
 	 */
-	public get fCost() {
+	public getFCost() {
 		return this.gCost + this.hCost;
 	}
 }

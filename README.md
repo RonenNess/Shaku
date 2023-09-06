@@ -573,7 +573,7 @@ const sourceUrls = [
 	'assets/stone_wall.png',
 	'assets/grass.png',
 	'assets/tree.png',
-	...
+	// ...
 ];
 
 // create a texture atlas named 'my-texture-atlas'.
@@ -1998,7 +1998,7 @@ You might want to connect *Shaku* to your own server-side logger instead of cons
 ```js
 // set shaku logs
 // logger == winston logger instance
-const shakuLogs = logger.child(...); // <-- add whatever custom params you need as the ...
+const shakuLogs = logger.child(/* ... */); // <-- add whatever custom params you need as the ...
 class ShakuLogDrivers
 {
 	trace(header, msg)

@@ -24,7 +24,7 @@ export class LinesShape extends CollisionShape {
 	/**
 	 * @inheritdoc
 	 */
-	public get shapeId(): "lines" {
+	public getShapeId(): "lines" {
 		return "lines";
 	}
 
@@ -49,7 +49,7 @@ export class LinesShape extends CollisionShape {
 		// reset bounding box and circle
 		this.boundingBox = Rectangle.fromPoints(points);
 		this.circle = new Circle(this.boundingBox.getCenter(), Math.max(this.boundingBox.width, this.boundingBox.height));
-		this._shapeChanged();
+		this.shapeChanged();
 	}
 
 	/**
@@ -64,7 +64,7 @@ export class LinesShape extends CollisionShape {
 	/**
 	 * @inheritdoc
 	 */
-	protected _getRadius(): number {
+	protected getRadius(): number {
 		return this.circle.radius;
 	}
 
@@ -78,7 +78,7 @@ export class LinesShape extends CollisionShape {
 	/**
 	 * @inheritdoc
 	 */
-	protected _getBoundingBox(): Rectangle {
+	protected getBoundingBox(): Rectangle {
 		return this.boundingBox;
 	}
 
@@ -86,11 +86,11 @@ export class LinesShape extends CollisionShape {
 	 * @inheritdoc
 	 */
 	public debugDraw(opacity = 1, shapesBatch: ShapesBatch): void {
-		const color = this._getDebugColor();
+		const color = this.getDebugColor();
 		color.a *= opacity;
 
-		shapesBatch = this._getDebugDrawBatch(shapesBatch);
-		const needToBegin = !shapesBatch.isDrawing;
+		shapesBatch = this.getDebugDrawBatch(shapesBatch);
+		const needToBegin = !shapesBatch.isDrawing();
 		if(needToBegin) shapesBatch.begin();
 		for(let i = 0; i < this.lines.length; ++i) shapesBatch.drawLine(this.lines[i].from, this.lines[i].to, color);
 		if(needToBegin) shapesBatch.end();

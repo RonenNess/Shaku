@@ -1,5 +1,5 @@
-import { FontTextureAsset, TextureAsset, TextureAtlasAsset } from "../assets";
-import { Circle, Color, IManager, LoggerFactory, Matrix, Rectangle, Vector2 } from "../utils";
+import { FontTextureAsset, MsdfFontTextureAsset, TextureAsset, TextureAtlasAsset } from "../assets";
+import { Circle, Color, IManager, Line, LoggerFactory, Matrix, Rectangle, Vector2 } from "../utils";
 import { BlendModes } from "./blend_modes";
 import { Camera } from "./camera";
 import { Camera3D } from "./camera3d";
@@ -81,7 +81,7 @@ export class Gfx implements IManager {
 	 * Get the init WebGL version.
 	 * @returns WebGL version number.
 	 */
-	public get webglVersion(): number {
+	public getWebglVersion(): number {
 		return _webglVersion;
 	}
 
@@ -89,7 +89,7 @@ export class Gfx implements IManager {
 	 * Maximum number of vertices we allow when drawing lines.
 	 * @returns {Number} max vertices per lines strip.
 	 */
-	get maxLineSegments() {
+	public getMaxLineSegments() {
 		return 512;
 	}
 
@@ -107,7 +107,7 @@ export class Gfx implements IManager {
 	 * Shaku.gfx.setContextAttributes({ antialias: true, alpha: false });
 	 * @param {Dictionary} flags WebGL init flags to set.
 	 */
-	setContextAttributes(flags) {
+	public setContextAttributes(flags) {
 		if(_gl) throw new Error("Can't call setContextAttributes() after gfx was initialized!");
 		for(const key in flags) {
 			_initSettings[key] = flags[key];
@@ -121,7 +121,7 @@ export class Gfx implements IManager {
 	 * Shaku.gfx.setCanvas(document.getElementById("my-canvas"));
 	 * @param {HTMLCanvasElement} element Canvas element to initialize on.
 	 */
-	setCanvas(element) {
+	public setCanvas(element) {
 		if(_gl) throw new Error("Can't call setCanvas() after gfx was initialized!");
 		_canvas = element;
 	}
@@ -133,7 +133,7 @@ export class Gfx implements IManager {
 	 * document.body.appendChild(Shaku.gfx.canvas);
 	 * @returns {HTMLCanvasElement} Canvas we use for rendering.
 	 */
-	get canvas() {
+	public getCanvas() {
 		return _canvas;
 	}
 
@@ -141,7 +141,7 @@ export class Gfx implements IManager {
 	 * Get the draw batch base class.
 	 * @see DrawBatch
 	 */
-	get DrawBatch() {
+	public getDrawBatch() {
 		return DrawBatch;
 	}
 
@@ -149,7 +149,7 @@ export class Gfx implements IManager {
 	 * Get the sprites batch class.
 	 * @see SpriteBatch
 	 */
-	get SpriteBatch() {
+	public getSpriteBatch() {
 		return SpriteBatch;
 	}
 
@@ -157,7 +157,7 @@ export class Gfx implements IManager {
 	 * Get the 3d sprites batch class.
 	 * @see SpriteBatch3D
 	 */
-	get SpriteBatch3D() {
+	public getSpriteBatch3D() {
 		return SpriteBatch3D;
 	}
 
@@ -165,7 +165,7 @@ export class Gfx implements IManager {
 	 * Get the text sprites batch class.
 	 * @see TextSpriteBatch
 	 */
-	get TextSpriteBatch() {
+	public getTextSpriteBatch() {
 		return TextSpriteBatch;
 	}
 
@@ -173,7 +173,7 @@ export class Gfx implements IManager {
 	 * Get the shapes batch class.
 	 * @see ShapesBatch
 	 */
-	get ShapesBatch() {
+	public getShapesBatch() {
 		return ShapesBatch;
 	}
 
@@ -181,7 +181,7 @@ export class Gfx implements IManager {
 	 * Get the lines batch class.
 	 * @see LinesBatch
 	 */
-	get LinesBatch() {
+	public getLinesBatch() {
 		return LinesBatch;
 	}
 
@@ -189,7 +189,7 @@ export class Gfx implements IManager {
 	 * Get the Effect base class, which is required to implement custom effects.
 	 * @see Effect
 	 */
-	get Effect() {
+	public getEffect() {
 		return Effect;
 	}
 
@@ -197,7 +197,7 @@ export class Gfx implements IManager {
 	 * Get the default sprites effect class.
 	 * @see SpritesEffect
 	 */
-	get SpritesEffect() {
+	public getSpritesEffect() {
 		return SpritesEffect;
 	}
 
@@ -205,7 +205,7 @@ export class Gfx implements IManager {
 	 * Get the default sprites effect class that is used when vertex colors is disabled.
 	 * @see SpritesEffectNoVertexColor
 	 */
-	get SpritesEffectNoVertexColor() {
+	public getSpritesEffectNoVertexColor() {
 		return SpritesEffectNoVertexColor;
 	}
 
@@ -213,7 +213,7 @@ export class Gfx implements IManager {
 	 * Get the default shapes effect class that is used to draw 2d shapes.
 	 * @see ShapesEffect
 	 */
-	get ShapesEffect() {
+	public getShapesEffect() {
 		return ShapesEffect;
 	}
 
@@ -221,7 +221,7 @@ export class Gfx implements IManager {
 	 * Get the default 3d sprites effect class that is used to draw 3d textured quads.
 	 * @see Sprites3dEffect
 	 */
-	get Sprites3dEffect() {
+	public getSprites3dEffect() {
 		return Sprites3dEffect;
 	}
 
@@ -229,7 +229,7 @@ export class Gfx implements IManager {
 	 * Get the Effect for rendering fonts with an MSDF texture.
 	 * @see MsdfFontEffect
 	 */
-	get MsdfFontEffect() {
+	public getMsdfFontEffect() {
 		return MsdfFontEffect;
 	}
 
@@ -237,7 +237,7 @@ export class Gfx implements IManager {
 	 * Get the sprite class.
 	 * @see Sprite
 	 */
-	get Sprite() {
+	public getSprite() {
 		return Sprite;
 	}
 
@@ -245,7 +245,7 @@ export class Gfx implements IManager {
 	 * Get the sprites group object.
 	 * @see SpritesGroup
 	 */
-	get SpritesGroup() {
+	public getSpritesGroup() {
 		return SpritesGroup;
 	}
 
@@ -253,7 +253,7 @@ export class Gfx implements IManager {
 	 * Get the matrix object.
 	 * @see Matrix
 	 */
-	get Matrix() {
+	public getMatrix() {
 		return Matrix;
 	}
 
@@ -261,7 +261,7 @@ export class Gfx implements IManager {
 	 * Get the vertex object.
 	 * @see Vertex
 	 */
-	get Vertex() {
+	public getVertex() {
 		return Vertex;
 	}
 
@@ -272,7 +272,7 @@ export class Gfx implements IManager {
 	 * * Center: align text to center.
 	 * @see TextAlignments
 	 */
-	get TextAlignments() {
+	public getTextAlignments() {
 		return TextAlignments;
 	}
 
@@ -281,7 +281,7 @@ export class Gfx implements IManager {
 	 * @param {Boolean} withViewport If true, will create camera with viewport value equal to canvas' size.
 	 * @returns {Camera} New camera object.
 	 */
-	createCamera(withViewport) {
+	public createCamera(withViewport) {
 		const ret = new Camera(this);
 		if(withViewport) {
 			ret.viewport = this.getRenderingRegion();
@@ -294,7 +294,7 @@ export class Gfx implements IManager {
 	 * @param {Boolean} withViewport If true, will create camera with viewport value equal to canvas' size.
 	 * @returns {Camera3D} New camera object.
 	 */
-	createCamera3D(withViewport) {
+	public createCamera3D(withViewport) {
 		const ret = new Camera3D(this);
 		if(withViewport) {
 			ret.viewport = this.getRenderingRegion();
@@ -307,7 +307,7 @@ export class Gfx implements IManager {
 	 * @param {Vector2} offset Camera top-left corner.
 	 * @returns {Camera} Camera instance.
 	 */
-	setCameraOrthographic(offset) {
+	public setCameraOrthographic(offset) {
 		const camera = this.createCamera();
 		camera.orthographicOffset(offset);
 		this.applyCamera(camera);
@@ -320,7 +320,7 @@ export class Gfx implements IManager {
 	 * @param {Boolean=} limitToParent if true, will use parent element size. If false, will stretch on entire document.
 	 * @param {Boolean=} allowOddNumbers if true, will permit odd numbers, which could lead to small artefacts when drawing pixel art. If false (default) will round to even numbers.
 	 */
-	maximizeCanvasSize(limitToParent, allowOddNumbers) {
+	public maximizeCanvasSize(limitToParent, allowOddNumbers) {
 		// new width and height
 		let width = 0;
 		let height = 0;
@@ -368,7 +368,7 @@ export class Gfx implements IManager {
 	 * @param {TextureAsset|Array<TextureAsset>|null} texture Render target texture to set as render target, or null to reset and render back on canvas. Can also be array for multiple targets, which will take layouts 0-15 by their order.
 	 * @param {Boolean=} keepCamera If true, will keep current camera settings. If false (default) will reset camera.
 	 */
-	setRenderTarget(texture, keepCamera) {
+	public setRenderTarget(texture, keepCamera) {
 		// reset cached rendering size
 		this.resetCachedRenderingRegion();
 
@@ -428,7 +428,7 @@ export class Gfx implements IManager {
 	 * @param {Number} height Resolution height.
 	 * @param {Boolean} updateCanvasStyle If true, will also update the canvas *css* size in pixels.
 	 */
-	setResolution(width, height, updateCanvasStyle) {
+	public setResolution(width, height, updateCanvasStyle) {
 		_canvas.width = width;
 		_canvas.height = height;
 
@@ -448,7 +448,7 @@ export class Gfx implements IManager {
 	/**
 	 * Reset camera properties to default camera.
 	 */
-	resetCamera() {
+	public resetCamera() {
 		_camera = this.createCamera();
 		const size = this.getRenderingSize();
 		_camera.orthographic(new Rectangle(0, 0, size.x, size.y));
@@ -460,7 +460,7 @@ export class Gfx implements IManager {
 	 * Changing the camera properties after calling this method will *not* update the renderer, until you call applyCamera again.
 	 * @param {Camera} camera Camera to apply.
 	 */
-	applyCamera(camera) {
+	public applyCamera(camera) {
 		// set viewport and projection
 		this._viewport = camera.viewport;
 		const viewport = this.getRenderingRegionInternal(true);
@@ -498,7 +498,7 @@ export class Gfx implements IManager {
 	 * @param {Boolean} includeOffset If true (default) will include viewport offset, if exists.
 	 * @returns {Rectangle} Rectangle with rendering region.
 	 */
-	getRenderingRegion(includeOffset) {
+	public getRenderingRegion(includeOffset) {
 		return this.getRenderingRegionInternal(includeOffset).clone();
 	}
 
@@ -507,7 +507,7 @@ export class Gfx implements IManager {
 	 * Unlike "canvasSize", this takes viewport and render target into consideration.
 	 * @returns {Vector2} rendering size.
 	 */
-	getRenderingSize() {
+	public getRenderingSize() {
 		const region = this.getRenderingRegionInternal();
 		return region.getSize();
 	}
@@ -516,7 +516,7 @@ export class Gfx implements IManager {
 	 * Get canvas size as vector.
 	 * @returns {Vector2} Canvas size.
 	 */
-	getCanvasSize() {
+	public getCanvasSize() {
 		return new Vector2(_canvas.width, _canvas.height);
 	}
 
@@ -607,7 +607,7 @@ export class Gfx implements IManager {
 	 * @param {Vector2=} marginFactor Optional factor for characters and line spacing. For example value of 2,1 will make double horizontal spacing.
 	 * @returns {SpritesGroup} Sprites group containing the needed sprites to draw the given text with its properties.
 	 */
-	buildText(fontTexture, text, fontSize, color, alignment, offset, marginFactor) {
+	public buildText(fontTexture, text, fontSize, color, alignment, offset, marginFactor) {
 		// make sure text is a string
 		if(typeof text !== "string") {
 			text = "" + text;
@@ -696,14 +696,14 @@ export class Gfx implements IManager {
 				sprite.sourceRectangle = sourceRect;
 				sprite.size = size;
 				const positionOffset = fontTexture.getPositionOffset(character);
-				if(fontTexture.isMsdfFontTextureAsset) {
+				if(fontTexture instanceof MsdfFontTextureAsset) {
 					sprite.position.copy(position).addSelf(positionOffset.mul(scale * 0.5));
 				}
 				else {
 					sprite.position.copy(position).addSelf(positionOffset.mul(scale));
 				}
 				sprite.origin.set(0.5, 0.5);
-				if(color.isColor) {
+				if(color instanceof Color) {
 					sprite.color.copy(color);
 				}
 				else {
@@ -743,7 +743,7 @@ export class Gfx implements IManager {
 	/**
 	 * Make the renderer canvas centered.
 	 */
-	centerCanvas() {
+	public centerCanvas() {
 		const canvas = _canvas;
 		const parent = canvas.parentElement;
 		const pwidth = Math.min(parent.clientWidth, window.innerWidth);
@@ -759,19 +759,19 @@ export class Gfx implements IManager {
 	 * @param {Circle|Vector|Rectangle|Line} shape Shape to check.
 	 * @returns {Boolean} True if given shape is in visible region.
 	 */
-	inScreen(shape) {
+	public inScreen(shape) {
 		const region = this.getRenderingRegionInternal();
 
-		if(shape.isCircle) {
+		if(shape instanceof Circle) {
 			return region.collideCircle(shape);
 		}
-		else if(shape.isVector2) {
+		else if(shape instanceof Vector2) {
 			return region.containsVector(shape);
 		}
-		else if(shape.isRectangle) {
+		else if(shape instanceof Rectangle) {
 			return region.collideRect(shape);
 		}
-		else if(shape.isLine) {
+		else if(shape instanceof Line) {
 			return region.collideLine(shape);
 		}
 		else {
@@ -784,7 +784,7 @@ export class Gfx implements IManager {
 	 * @param {Vector2} position Camera position.
 	 * @param {Boolean} useCanvasSize If true, will always use cancas size when calculating center. If false and render target is set, will use render target's size.
 	 */
-	centerCamera(position, useCanvasSize) {
+	public centerCamera(position, useCanvasSize) {
 		const renderSize = useCanvasSize ? this.getCanvasSize() : this.getRenderingSize();
 		const halfScreenSize = renderSize.mul(0.5);
 		const centeredPos = position.sub(halfScreenSize);
@@ -807,7 +807,7 @@ export class Gfx implements IManager {
 	 * ![Blend Modes](resources/demo/blend-modes.png)
 	 * @see BlendModes
 	 */
-	get BlendModes() {
+	public getBlendModes() {
 		return BlendModes;
 	}
 
@@ -820,7 +820,7 @@ export class Gfx implements IManager {
 	 * ![Wrap Modes](resources/wrap-modes.png)
 	 * @see TextureWrapModes
 	 */
-	get TextureWrapModes() {
+	public getTextureWrapModes() {
 		return TextureWrapModes;
 	}
 
@@ -836,7 +836,7 @@ export class Gfx implements IManager {
 	 * ![Filter Modes](resources/demo/filter-modes.png)
 	 * @see TextureFilterModes
 	 */
-	get TextureFilterModes() {
+	public getTextureFilterModes() {
 		return TextureFilterModes;
 	}
 
@@ -844,7 +844,7 @@ export class Gfx implements IManager {
 	 * Get number of actual WebGL draw calls we performed since the beginning of the frame.
 	 * @returns {Number} Number of WebGL draw calls this frame.
 	 */
-	get drawCallsCount() {
+	public getDrawCallsCount() {
 		return _drawCallsCount;
 	}
 
@@ -852,7 +852,7 @@ export class Gfx implements IManager {
 	 * Get number of textured / colored quads we drawn since the beginning of the frame.
 	 * @returns {Number} Number of quads drawn in this frame.
 	 */
-	get quadsDrawCount() {
+	public getQuadsDrawCount() {
 		return _drawQuadsCount;
 	}
 
@@ -860,7 +860,7 @@ export class Gfx implements IManager {
 	 * Get number of shape polygons we drawn since the beginning of the frame.
 	 * @returns {Number} Number of shape polygons drawn in this frame.
 	 */
-	get shapePolygonsDrawCount() {
+	public getShapePolygonsDrawCount() {
 		return _drawShapePolygonsCount;
 	}
 
@@ -870,7 +870,7 @@ export class Gfx implements IManager {
 	 * Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
 	 * @param {Color=} color Color to clear screen to, or black if not set.
 	 */
-	clear(color) {
+	public clear(color) {
 		color = color || Color.black;
 		_gl.clearColor(color.r, color.g, color.b, color.a);
 		_gl.clear(_gl.COLOR_BUFFER_BIT | _gl.DEPTH_BUFFER_BIT);
@@ -881,7 +881,7 @@ export class Gfx implements IManager {
 	 * Only relevant when depth is used.
 	 * @param {Number=} value Value to clear depth buffer to.
 	 */
-	clearDepth(value) {
+	public clearDepth(value) {
 		_gl.clearDepth((value !== undefined) ? value : 1.0);
 	}
 
@@ -925,35 +925,35 @@ export class GfxInternal {
 		this._gfx = gfx;
 	}
 
-	get gl() {
+	public getGl() {
 		return _gl;
 	}
 
-	get drawQuadsCount() {
+	public getDrawQuadsCount() {
 		return _drawQuadsCount;
 	}
 
-	set drawQuadsCount(value) {
+	public setDrawQuadsCount(value) {
 		_drawQuadsCount = value;
 	}
 
-	get drawCallsCount() {
+	public getDrawCallsCount() {
 		return _drawCallsCount;
 	}
 
-	set drawCallsCount(value) {
+	public setDrawCallsCount(value) {
 		_drawCallsCount = value;
 	}
 
-	get drawShapePolygonsCount() {
+	public getDrawShapePolygonsCount() {
 		return _drawShapePolygonsCount;
 	}
 
-	set drawShapePolygonsCount(value) {
+	public setDrawShapePolygonsCount(value) {
 		_drawShapePolygonsCount = value;
 	}
 
-	useEffect(effect, overrideFlags) {
+	public useEffect(effect, overrideFlags) {
 		// if null, use default
 		if(effect === null) {
 			effect = this._gfx.builtinEffects.Sprites;
@@ -975,7 +975,7 @@ export class GfxInternal {
 		}
 	}
 
-	getRenderingRegionInternal(includeOffset?: boolean) {
+	public getRenderingRegionInternal(includeOffset?: boolean) {
 		// cached with offset
 		if(includeOffset && _cachedRenderingRegion.withOffset) {
 			return _cachedRenderingRegion.withOffset;
@@ -1011,28 +1011,28 @@ export class GfxInternal {
 		return ret;
 	}
 
-	setTextureFilter(filter) {
+	public setTextureFilter(filter) {
 		if(!Object.values(TextureFilterModes).includes(filter)) throw new Error("Invalid texture filter mode! Please pick a value from 'TextureFilterModes'.");
 		const glMode = _gl[filter];
 		_gl.texParameteri(_gl.TEXTURE_2D, _gl.TEXTURE_MIN_FILTER, glMode);
 		_gl.texParameteri(_gl.TEXTURE_2D, _gl.TEXTURE_MAG_FILTER, glMode);
 	}
 
-	setTextureWrapMode(wrapX, wrapY = wrapX) {
+	public setTextureWrapMode(wrapX, wrapY = wrapX) {
 		if(!Object.values(TextureWrapModes).includes(wrapX)) throw new Error("Invalid texture wrap mode! Please pick a value from 'TextureWrapModes'.");
 		if(!Object.values(TextureWrapModes).includes(wrapY)) throw new Error("Invalid texture wrap mode! Please pick a value from 'TextureWrapModes'.");
 		_gl.texParameteri(_gl.TEXTURE_2D, _gl.TEXTURE_WRAP_S, _gl[wrapX]);
 		_gl.texParameteri(_gl.TEXTURE_2D, _gl.TEXTURE_WRAP_T, _gl[wrapY]);
 	}
 
-	setActiveTexture(texture) {
+	public setActiveTexture(texture) {
 		if(_activeEffect.setTexture(texture)) {
 			this.setTextureFilter(texture.filter || this._gfx.defaultTextureFilter);
 			this.setTextureWrapMode(texture.wrapMode || this._gfx.defaultTextureWrapMode);
 		}
 	}
 
-	setBlendMode(blendMode) {
+	public setBlendMode(blendMode) {
 		if(_lastBlendMode !== blendMode) {
 
 			// get gl context and set defaults
