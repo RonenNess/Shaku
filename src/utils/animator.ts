@@ -34,11 +34,9 @@ export class Animator {
 	 * Update this animator with a given delta time.
 	 * @param {Number} delta Delta time to progress this animator by.
 	 */
-	public update(delta) {
+	public update(delta: number): void {
 		// if already done, skip
-		if(this._progress >= 1) {
-			return;
-		}
+		if(this._progress >= 1) return;
 
 		// apply speed factor and update progress
 		delta *= this.speedFactor;
@@ -51,9 +49,7 @@ export class Animator {
 			this._progress = 1;
 
 			// trigger finish method
-			if(this._onFinish) {
-				this._onFinish(this._target, this);
-			}
+			this._onFinish?.(this._target, this);
 		}
 
 		// update values
@@ -101,7 +97,6 @@ export class Animator {
 
 	/**
 	 * Get value from target object.
-
 	 * @param {Array<String>} keyParts Key parts broken by dots.
 	 */
 	#_getValueFromTarget(keyParts) {
@@ -117,7 +112,6 @@ export class Animator {
 
 	/**
 	 * Set value in target object.
-
 	 * @param {Array<String>} keyParts Key parts broken by dots.
 	 */
 	#_setValueToTarget(keyParts, value) {

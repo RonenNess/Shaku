@@ -50,7 +50,6 @@ export class TilemapShape extends CollisionShape {
 	/**
 	 * Get tile key from vector index.
 	 * Also validate range.
-
 	 * @param index Index to get key for.
 	 * @returns tile key.
 	 */

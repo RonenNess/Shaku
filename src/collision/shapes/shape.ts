@@ -49,7 +49,7 @@ export abstract class CollisionShape {
 	 * Get Shapes batch to draw this shape with, either given or default from world.
 	 * If not provided and have no world, will throw exception.
 	 */
-	protected getDebugDrawBatch(shapesBatch: ShapesBatch): ShapesBatch {
+	protected getDebugDrawBatch(shapesBatch?: ShapesBatch): ShapesBatch {
 		if(!shapesBatch && !this.world) throw new Error("Can't debug-draw a collision shape that is not under any collision world without providing a shapes batch to use!");
 		return (shapesBatch || this.world.getOrCreateDebugDrawBatch());
 	}
@@ -105,21 +105,18 @@ export abstract class CollisionShape {
 
 	/**
 	 * Get collision shape's estimated radius box.
-
 	 * @returns Shape's radius
 	 */
 	protected abstract getRadius(): number;
 
 	/**
 	 * Get collision shape's bounding box.
-
 	 * @returns {Rectangle} Shape's bounding box.
 	 */
 	protected abstract getBoundingBox(): Rectangle;
 
 	/**
 	 * Set the parent collision world this shape is currently in.
-
 	 * @param world New parent collision world or null to remove.
 	 */
 	protected setParent(world: CollisionWorld | null): void {

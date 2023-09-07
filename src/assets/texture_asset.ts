@@ -79,7 +79,7 @@ export class TextureAsset extends TextureAssetBase {
 	 * @param height Texture height.
 	 * @param channels Texture channels count. Defaults to 4 (RGBA).
 	 */
-	public createRenderTarget(width: number, height: number, channels?: number): void {
+	public createRenderTarget(width: number, height: number, channels = 4): void {
 		// reset flags
 		gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
 		gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
@@ -92,20 +92,10 @@ export class TextureAsset extends TextureAssetBase {
 
 		// calculate format
 		let format: number = gl.RGBA;
-		if(channels !== undefined) {
-			switch(channels) {
-				case 1:
-					format = gl.LUMINANCE;
-					break;
-				case 3:
-					format = gl.RGB;
-					break;
-				case 4:
-					format = gl.RGBA;
-					break;
-				default:
-					throw new Error("Unknown render target format!");
-			}
+		switch(channels) {
+			case 1: format = gl.LUMINANCE; break;
+			case 3: format = gl.RGB; break;
+			case 4: format = gl.RGBA; break;
 		}
 
 		{
@@ -113,12 +103,9 @@ export class TextureAsset extends TextureAssetBase {
 			const level = 0;
 			const internalFormat = format;
 			const border = 0;
-			const format = format;
 			const type = gl.UNSIGNED_BYTE;
 			const data = null;
-			gl.texImage2D(gl.TEXTURE_2D, level, internalFormat,
-				targetTextureWidth, targetTextureHeight, border,
-				format, type, data);
+			gl.texImage2D(gl.TEXTURE_2D, level, internalFormat, targetTextureWidth, targetTextureHeight, border, format, type, data);
 
 			// set default wrap and filter modes
 			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
@@ -139,13 +126,10 @@ export class TextureAsset extends TextureAssetBase {
 	 * @param image Image to create texture from. Image must be loaded!
 	 * @param params Optional additional params. See load() for details.
 	 */
-	public fromImage(image: TextureAsset, params?: LoadParams): void {
-		if(image.width === 0) throw new Error("Image to build texture from must be loaded and have valid size!");
+	public fromImage(image: TextureAsset, params: LoadParams = {}): void {
+		if(!image.width) throw new Error("Image to build texture from must be loaded and have valid size!");
 
 		if(this.isValid()) throw new Error("Texture asset is already initialized!");
-
-		// default params
-		params = params || {};
 
 		// set flip Y argument
 		gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, Boolean(params.flipY));
@@ -275,6 +259,7 @@ export class TextureAsset extends TextureAssetBase {
 		if(!this.image) throw new Error("'getPixel()' only works on textures loaded from image!");
 
 		// default width / height
+		// cannot put as default value because we do not want to allow 0
 		width ||= this.width - x;
 		height ||= this.height - y;
 

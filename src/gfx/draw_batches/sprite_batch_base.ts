@@ -70,14 +70,14 @@ export class SpriteBatchBase extends DrawBatch {
 	 * Get the gfx manager.
 	 */
 	private getGfx() {
-		return DrawBatch._gfx;
+		return SpriteBatchBase._gfx;
 	}
 
 	/**
 	 * Get the web gl instance.
 	 */
 	private getGl() {
-		return DrawBatch._gfx._internal.gl;
+		return SpriteBatchBase._gfx._internal.gl;
 	}
 
 	/**
@@ -219,7 +219,7 @@ export class SpriteBatchBase extends DrawBatch {
 	 * @inheritdoc
 	 */
 	public getDefaultEffect() {
-		return this.supportVertexColor ? this.#_gfx.builtinEffects.Sprites : this.#_gfx.builtinEffects.SpritesNoVertexColor;
+		return this.supportVertexColor ? SpriteBatchBase._gfx.builtinEffects.Sprites : SpriteBatchBase._gfx.builtinEffects.SpritesNoVertexColor;
 	}
 
 	/**
@@ -245,7 +245,7 @@ export class SpriteBatchBase extends DrawBatch {
 		const uvs = this._buffers.textureArray;
 
 		// get screen region for culling
-		const screenRegion = (cullOutOfScreen || (this.cullOutOfScreen && (cullOutOfScreen === undefined))) ? this.#_gfx._internal.getRenderingRegionInternal() : null;
+		const screenRegion = (cullOutOfScreen || (this.cullOutOfScreen && (cullOutOfScreen === undefined))) ? SpriteBatchBase._gfx._internal.getRenderingRegionInternal() : null;
 
 		// add all sprites
 		for(const sprite of sprites) {
@@ -524,7 +524,7 @@ export class SpriteBatchBase extends DrawBatch {
 
 		// get some fields we'll need
 		const gl = this.#_gl;
-		const gfx = this.#_gfx;
+		const gfx = SpriteBatchBase._gfx;
 		const positionArray = this._buffers.positionArray;
 		const textureArray = this._buffers.textureArray;
 		const colorsArray = this.__currDrawingParams.hasVertexColor ? this._buffers.colorsArray : null;

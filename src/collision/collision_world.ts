@@ -260,7 +260,6 @@ export class CollisionWorld {
 
 	/**
 	 * Iterate shapes that match broad phase test.
-
 	 * @param shape Shape to test.
 	 * @param handler Method to run on all shapes in phase. Return true to continue iteration, false to break.
 	 * @param mask Optional mask of bits to match against shapes collisionFlags. Will only return shapes that have at least one common bit.

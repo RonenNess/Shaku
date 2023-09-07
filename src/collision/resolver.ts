@@ -90,7 +90,6 @@ export class CollisionResolver {
 
 	/**
 	 * Get the collision detection method for two given shapes.
-
 	 * @param {CollisionShape} first First collision shape to test.
 	 * @param {CollisionShape} second Second collision shape to test.
 	 * @returns {Function} collision detection method or null if not found.

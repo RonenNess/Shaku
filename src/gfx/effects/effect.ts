@@ -173,7 +173,6 @@ export class Effect {
 	/**
 	 * Build the effect.
 	 * Called from gfx manager.
-
 	 * @param gl WebGL context.
 	 */
 	#_build(gl: WebGLRenderingContext) {

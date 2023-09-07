@@ -318,7 +318,7 @@ export class Color {
 	 * @returns New color value.
 	 */
 	public static fromHex(val: string): Color {
-		if(typeof val !== "string" && val[0] !== "#") throw new Error("Invalid color format!");
+		if(val[0] !== "#") throw new Error("Invalid color format!");
 		const parsed = hexToColor(val);
 		if(!parsed) throw new Error("Invalid hex value to parse!");
 		return new Color(parsed.r, parsed.g, parsed.b, 1);

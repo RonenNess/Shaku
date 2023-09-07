@@ -8,15 +8,15 @@ export class Camera {
 	private static DEFAULT_NEAR = -1;
 	private static DEFAULT_FAR = 400;
 
-	private region: Rectangle | null;
-	private gfx: Gfx;
-	private viewport: Rectangle | null;
-
 	/**
 	 * Camera projection matrix.
 	 * You can set it manually, or use "orthographicOffset" / "orthographic" / "perspective" helper functions.
 	 */
 	protected projection: Matrix | null;
+
+	private region: Rectangle | null;
+	private gfx: Gfx;
+	private viewport: Rectangle | null;
 
 	/**
 	 * Create the camera.
@@ -27,6 +27,10 @@ export class Camera {
 		this.gfx = gfx;
 		this.viewport = null;
 		this.orthographic();
+	}
+
+	public getProjection(): Matrix {
+		return this.projection;
 	}
 
 	/**

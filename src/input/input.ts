@@ -768,7 +768,6 @@ export class Input implements IManager {
 
 	/**
 	 * Return if a mouse or keyboard state in a generic way. Used internally.
-
 	 * @param {InputCode} code Keyboard, mouse or touch code.
 	 *                          For mouse buttons: mouse_left, mouse_right or mouse_middle.
 	 *                          For keyboard buttons: use one of the keys of KeyboardKeys (for example "a", "alt", "up_arrow", etc..).
@@ -1024,7 +1023,6 @@ export class Input implements IManager {
 
 	/**
 	 * Handle mouse wheel events.
-
 	 * @param {*} event Event data from browser.
 	 */
 	private onMouseWheel(event: WheelEvent) {
@@ -1033,7 +1031,6 @@ export class Input implements IManager {
 
 	/**
 	 * Handle keyboard down event.
-
 	 * @param {*} event Event data from browser.
 	*/
 	private onKeyDown(event: KeyboardEvent) {
@@ -1048,7 +1045,6 @@ export class Input implements IManager {
 
 	/**
 	 * Handle keyboard up event.
-
 	 * @param {*} event Event data from browser.
 	 */
 	private onKeyUp(event: KeyboardEvent) {
@@ -1061,7 +1057,6 @@ export class Input implements IManager {
 
 	/**
 	 * Extract position from touch event.
-
 	 * @param {*} event Event data from browser.
 	 * @returns {Vector2} Position x,y or null if couldn't extract touch position.
 	 */
@@ -1078,7 +1073,6 @@ export class Input implements IManager {
 
 	/**
 	 * Handle touch start event.
-
 	 * @param {*} event Event data from browser.
 	 */
 	private onTouchStart(event: TouchEvent) {
@@ -1108,7 +1102,6 @@ export class Input implements IManager {
 
 	/**
 	 * Handle touch end event.
-
 	 * @param {*} event Event data from browser.
 	 */
 	private onTouchEnd(event: TouchEvent) {
@@ -1139,7 +1132,6 @@ export class Input implements IManager {
 
 	/**
 	 * Handle touch move event.
-
 	 * @param {*} event Event data from browser.
 	 */
 	private onTouchMove(event: TouchEvent) {
@@ -1160,7 +1152,6 @@ export class Input implements IManager {
 
 	/**
 	 * Handle mouse down event.
-
 	 * @param event Event data from browser.
 	 */
 	private onMouseDown(event: MouseEvent) {
@@ -1171,7 +1162,6 @@ export class Input implements IManager {
 
 	/**
 	 * Handle mouse up event.
-
 	 * @param {*} event Event data from browser.
 	 */
 	private onMouseUp(event: MouseEvent) {
@@ -1181,7 +1171,6 @@ export class Input implements IManager {
 
 	/**
 	 * Mouse button pressed logic.
-
 	 * @param {*} button Button pressed.
 	 */
 	private mouseButtonDown(button: MouseButtons) {
@@ -1193,7 +1182,6 @@ export class Input implements IManager {
 
 	/**
 	 * Mouse button released logic.
-
 	 * @param {*} button Button released.
 	 */
 	private mouseButtonUp(button: MouseButtons) {
@@ -1205,7 +1193,6 @@ export class Input implements IManager {
 
 	/**
 	 * Handle mouse move event.
-
 	 * @param {*} event Event data from browser.
 	 */
 	private onMouseMove(event: MouseEvent) {

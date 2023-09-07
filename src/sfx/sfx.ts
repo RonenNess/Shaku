@@ -118,12 +118,11 @@ export class Sfx implements IManager {
 	 * let sound = await Shaku.assets.loadSound("assets/my_sound.ogg");
 	 * let soundInstance = Shaku.sfx.createSound(sound);
 	 * soundInstance.play();
-	 * @param {SoundAsset} sound Sound asset to play.
-	 * @returns {SoundInstance} Newly created sound instance.
+	 * @param sound Sound asset to play.
+	 * @returns Newly created sound instance.
 	 */
-	public createSound(sound) {
-		if(!(sound instanceof SoundAsset)) throw new Error("Sound type must be an instance of SoundAsset!");
-		const ret = new SoundInstance(this, sound.url);
+	public createSound(sound: SoundAsset): SoundInstance {
+		const ret = new SoundInstance(this, sound.getUrl());
 		return ret;
 	}
 

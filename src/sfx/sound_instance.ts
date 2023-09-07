@@ -1,3 +1,4 @@
+import { Sfx } from ".";
 import { LoggerFactory } from "../utils";
 
 const _logger = LoggerFactory.getLogger("sfx"); // TODO
@@ -11,9 +12,9 @@ export class SoundInstance {
 	* @param {Sfx} sfxManager Sfx manager instance.
 	* @param {String} url Sound URL or source.
 	*/
-	public constructor(sfxManager, url) {
+	public constructor(sfxManager: Sfx, url: string) {
 		if(!url) {
-			_logger.error("Sound type can't be null or invalid!");
+			_logger.error("Sound type can't be invalid!");
 			throw new Error("Invalid sound type to play in SoundInstance!");
 		}
 		this._sfx = sfxManager;

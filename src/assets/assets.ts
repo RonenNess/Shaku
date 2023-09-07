@@ -182,7 +182,7 @@ export class Assets implements IManager {
 	 */
 	public createRenderTarget(name: string | null, width: number, height: number, channels?: number): Promise<TextureAsset> {
 		// make sure we have valid size
-		if(!width || !height) throw new Error("Missing or invalid size!");
+		if(!width || !height) throw new Error("Invalid size!");
 
 		// create asset and return promise
 		return this.createAsset(name, TextureAsset, asset => {
@@ -260,7 +260,7 @@ export class Assets implements IManager {
 	 */
 	public createJson(name: string, data?: object | string): Promise<JsonAsset> {
 		// make sure we have valid data
-		if(!data) throw new Error("Missing or invalid data!");
+		if(!data) throw new Error("Invalid data!");
 
 		// create asset and return promise
 		return this.createAsset(name, JsonAsset, asset => asset.create(data));
@@ -339,7 +339,6 @@ export class Assets implements IManager {
 
 	/**
 	 * Get already-loaded asset from cache.
-
 	 * @param url Asset URL.
 	 * @param type If provided will make sure asset is of this type. If asset found but have wrong type, will throw exception.
 	 * @returns Loaded asset or null if not found.
@@ -354,7 +353,6 @@ export class Assets implements IManager {
 
 	/**
 	 * Load an asset of a given type and add to cache when done.
-
 	 * @param newAsset Asset instance to load.
 	 * @param params Optional loading params.
 	 */

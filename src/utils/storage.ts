@@ -80,7 +80,6 @@ export class Storage {
 	 * @returns True if key exists in storage.
 	 */
 	public exists(key: string): boolean {
-		if(typeof key !== "string") throw new Error("Key must be a string!");
 		key = this.normalizeKey(key);
 		return this.adapter.exists(key);
 	}
@@ -118,8 +117,7 @@ export class Storage {
 		if(this.valuesAsBase64) {
 			try {
 				value = atob(value);
-			}
-			catch(e) {
+			} catch(e) {
 				throw new Error("Failed to parse Base64 string while reading data. Did you try to read a value as Base64 that wasn't encoded as Base64 when written to storage?");
 			}
 		}
@@ -127,8 +125,7 @@ export class Storage {
 		// parse json
 		try {
 			value = JSON.parse(value);
-		}
-		catch(e) {
+		} catch(e) {
 			throw new Error("Failed to JSON-parse data from storage. Did you try to read something that wasn't written with the Storage utility?");
 		}
 
@@ -142,8 +139,6 @@ export class Storage {
 	 * @param value Value to set.
 	 */
 	public setItem(key: string, value: string): void {
-		// sanity and normalize key
-		if(typeof key !== "string") throw new Error("Key must be a string!");
 		key = this.normalizeKey(key);
 
 		// write value with metadata
@@ -156,8 +151,6 @@ export class Storage {
 	 * @returns Value or null if not set.
 	 */
 	public getItem(key: string): object | null {
-		// sanity and normalize key
-		if(typeof key !== "string") throw new Error("Key must be a string!");
 		key = this.normalizeKey(key);
 
 		// read value from metadata
@@ -188,7 +181,6 @@ export class Storage {
 	 * @param key Key to delete.
 	 */
 	public deleteItem(key: string): void {
-		if(typeof key !== "string") throw new Error("Key must be a string!");
 		key = this.normalizeKey(key);
 		this.adapter.deleteItem(key);
 	}

@@ -9,12 +9,17 @@ const _logger = LoggerFactory.getLogger("gfx - draw - batch"); // TODO
 /**
  * Base class for a drawing batch, used to draw a collection of sprites or shapes.
  */
-export class DrawBatch {
-	public static _gfx: Gfx;
+export abstract class DrawBatch {
+	// will be set by the Gfx manager during init
+	public static _gfx: Gfx | null = null;
 
-	private __drawing: boolean;
-	private __staticBuffers: boolean;
-	private __currDrawingParams: unknown;
+	public defaultEffect: Effect;
+	public defaultBlendMode: BlendModes;
+
+	private drawing: boolean;
+	private staticBuffers: boolean;
+	private currDrawingParams: unknown;
+	private buffersUsage: unknown;
 
 	/**
 	 * Create the draw batch.
@@ -24,13 +29,13 @@ export class DrawBatch {
 		this.setBuffersUsage(BuffersUsage.STREAM_DRAW);
 
 		// will have values after calling "begin()"
-		this.__currDrawingParams = null;
+		this.currDrawingParams = null;
 
 		// if true, it means the buffers have been frozen and can't be changed
-		this.__staticBuffers = false;
+		this.staticBuffers = false;
 
 		// are we currently between "begin()" and "end()" calls
-		this.__drawing = false;
+		this.drawing = false;
 	}
 
 	/**
@@ -40,50 +45,11 @@ export class DrawBatch {
 	 * This also free up some internal arrays, thus reducing the memory used for this batch.
 	 * Note: must be called after "begin()" and right before the "end()" call.
 	 */
-	public makeStatic() {
+	public makeStatic(): void {
 		this.validateBatch();
 		if(!this.isDrawing()) throw new Error("Must call 'makeStatic()' between 'begin()' and 'end()'.");
-		this.setBuffersUsage(this.BuffersUsage.STATIC_DRAW);
-		this.__staticBuffers = true;
-	}
-
-	/**
-	 * Get the default effect to use for this drawing batch type.
-	 * @returns {Effect} Default effect to use for this drawing batch.
-	 */
-	public getDefaultEffect() {
-		return null;
-	}
-
-	/**
-	 * Get the BuffersUsage enum.
-	 * @see BuffersUsage
-	 */
-	public getBuffersUsage() {
-		return BuffersUsage;
-	}
-
-	/**
-	 * Destroy the batch and free any resources assigned to it.
-	 */
-	public destroy() {
-	}
-
-	/**
-	 * Return if the batch was destroyed.
-	 * @returns {Boolean} True if batch was destroyed.
-	 */
-	public isDestroyed() {
-		return false;
-	}
-
-	/**
-	 * Throw exception if batch was destroyed.
-	 */
-	private validateBatch() {
-		if(this.isDestroyed()) {
-			throw new Error("Can't perform this action after the batch was destroyed!");
-		}
+		this.setBuffersUsage(BuffersUsage.STATIC_DRAW);
+		this.staticBuffers = true;
 	}
 
 	/**
@@ -91,48 +57,22 @@ export class DrawBatch {
 	 * Use StreamDraw if you want to set buffers once, and use them in GPU few times.
 	 * Use DynamicDraw if you want to set buffers many times, and use them in GPU many times.
 	 * Use StaticDraw if you want to set buffers once, and use them in GPU many times.
-	 * @param {BuffersUsage} usage Buffers usage.
+	 * @param usage Buffers usage.
 	 */
-	public setBuffersUsage(usage) {
+	public setBuffersUsage(usage: BuffersUsage): void {
 		switch(usage) {
-			case BuffersUsage.DYNAMIC_DRAW:
-				this.__buffersUsage = DrawBatch._gfx._internal.gl.DYNAMIC_DRAW;
-				break;
-
-			case BuffersUsage.STREAM_DRAW:
-				this.__buffersUsage = DrawBatch._gfx._internal.gl.STREAM_DRAW;
-				break;
-
-			case BuffersUsage.STATIC_DRAW:
-				this.__buffersUsage = DrawBatch._gfx._internal.gl.STATIC_DRAW;
-				break;
-
-			default:
-				this.__buffersUsage = DrawBatch._gfx._internal.gl.DYNAMIC_DRAW;
-				_logger.warn("Illegal buffers usage value: " + usage);
-				break;
+			case BuffersUsage.DYNAMIC_DRAW: return this.buffersUsage = DrawBatch._gfx._internal.gl.DYNAMIC_DRAW;
+			case BuffersUsage.STREAM_DRAW: return this.buffersUsage = DrawBatch._gfx._internal.gl.STREAM_DRAW;
+			case BuffersUsage.STATIC_DRAW: return this.buffersUsage = DrawBatch._gfx._internal.gl.STATIC_DRAW;
 		}
-
 	}
 
 	/**
 	 * Return if the batch is currently drawing.
-	 * @returns {Boolean} If the batch began drawing.
+	 * @returns If the batch began drawing.
 	 */
 	public isDrawing(): boolean {
-		return this.__drawing;
-	}
-
-	/**
-	 * Throw exception if batch is not currently drawing.
-	 */
-	private validateDrawing(validateNotStatic) {
-		if(!this.isDrawing()) {
-			throw new Error("Can't perform this action without calling 'begin()' first!");
-		}
-		if(validateNotStatic && this.__staticBuffers) {
-			throw new Error("Can't perform this action after batch has turned static!");
-		}
+		return this.drawing;
 	}
 
 	/**
@@ -143,23 +83,19 @@ export class DrawBatch {
 	 * @param transform Optional transformations to apply on all sprites.
 	 * @param overrideEffectFlags Optional flags to override effect's defaults. Possible keys: {enableDepthTest, enableFaceCulling, enableStencilTest, enableDithering}.
 	 */
-	public begin(blendMode?: BlendModes, effect?: Effect, transform?: Matrix, overrideEffectFlags?: { enableDepthTest?: boolean, enableFaceCulling?: boolean, enableStencilTest?: boolean, enableDithering?: boolean; }) {
+	public begin(blendMode = this.defaultBlendMode, effect = this.defaultEffect, transform?: Matrix, overrideEffectFlags?: { enableDepthTest?: boolean, enableFaceCulling?: boolean, enableStencilTest?: boolean, enableDithering?: boolean; }) {
 		// sanity - not already drawing
-		if(this.isDrawing()) {
-			throw new Error("Can't call Drawing Batch 'begin' twice without calling 'end()' first!");
-		}
+		if(this.isDrawing()) throw new Error("Can't call Drawing Batch 'begin' twice without calling 'end()' first!");
 
 		// sanity - batch is not destroyed
 		this.validateBatch();
 
 		// we might still have values in this.__currDrawingParams if "preserve buffers" is true.
 		// if so, we extract last texture from it
-		const lastTexture = this.__currDrawingParams ? (this.__currDrawingParams.texture || null) : null;
+		const lastTexture = this.currDrawingParams ? (this.currDrawingParams.texture || null) : null;
 
 		// set new drawing params
-		effect = effect || this.defaultEffect;
-		blendMode = blendMode || this.defaultBlendMode;
-		this.__currDrawingParams = {
+		this.currDrawingParams = {
 			blendMode: blendMode,
 			effect: effect,
 			transform: transform || Matrix.identity,
@@ -169,31 +105,31 @@ export class DrawBatch {
 		};
 
 		// we are now drawing
-		this.__drawing = true;
+		this.drawing = true;
 	}
 
 	/**
 	 * Finish drawing without presenting on screen.
 	 */
-	public endWithoutDraw() {
+	public endWithoutDraw(): void {
 		// sanity
 		this.validateBatch();
 		this.validateDrawing(false);
 
 		// clear buffers and drawing params
-		if(!this.__staticBuffers) {
+		if(!this.staticBuffers) {
 			this.clear();
-			this.__currDrawingParams = null;
+			this.currDrawingParams = null;
 		}
 
 		// no longer drawing
-		this.__drawing = false;
+		this.drawing = false;
 	}
 
 	/**
 	 * End drawing and present whatever left in buffers on screen.
 	 */
-	public end() {
+	public end(): void {
 		// sanity
 		this.validateBatch();
 		this.validateDrawing(false);
@@ -202,19 +138,19 @@ export class DrawBatch {
 		this.drawBatch();
 
 		// clear buffers and drawing params
-		if(!this.__staticBuffers) {
+		if(!this.staticBuffers) {
 			this.clear();
-			this.__currDrawingParams = null;
+			this.currDrawingParams = null;
 		}
 
 		// no longer drawing
-		this.__drawing = false;
+		this.drawing = false;
 	}
 
 	/**
 	 * Draw whatever is currently in buffers without ending the draw batch.
 	 */
-	public present() {
+	public present(): void {
 		this.drawBatch();
 	}
 
@@ -222,55 +158,68 @@ export class DrawBatch {
 	 * Clear this buffer from any drawings in it.
 	 * Called internally if "preserveBuffers" is not true.
 	 */
-	public clear() {
-		if(this.__staticBuffers) {
-			throw new Error("Can't clear batch after it was turned static. You can only destroy it.");
-		}
+	public clear(): void {
+		if(this.staticBuffers) throw new Error("Can't clear batch after it was turned static. You can only destroy it.");
 	}
 
 	/**
 	 * Return if this batch was turned static.
-	 * @returns {Boolean} True if its a static batch you can no longer change.
+	 * @returns True if its a static batch you can no longer change.
 	 */
-	public isStatic() {
-		return this.__staticBuffers;
+	public isStatic(): boolean {
+		return this.staticBuffers;
 	}
 
 	/**
 	 * Get the default blend mode to use for this drawing batch.
 	 */
-	public getDefaultBlendMode() {
+	public getDefaultBlendMode(): BlendModes {
 		return BlendModes.ALPHA_BLEND;
+	}
+
+	/**
+	 * Throw exception if batch was destroyed.
+	 */
+	private validateBatch(): void {
+		if(this.isDestroyed()) throw new Error("Can't perform this action after the batch was destroyed!");
+	}
+
+	/**
+	 * Throw exception if batch is not currently drawing.
+	 */
+	private validateDrawing(validateNotStatic: boolean) {
+		if(!this.isDrawing()) throw new Error("Can't perform this action without calling 'begin()' first!");
+		if(validateNotStatic && this.staticBuffers) throw new Error("Can't perform this action after batch has turned static!");
 	}
 
 	/**
 	 * Draw current batch with set drawing params.
 	 */
-	private drawBatch() {
+	private drawBatch(): void {
 		// sanity
 		this.validateBatch();
 		this.validateDrawing(false);
 
 		// get default effect
-		const effect = this.__currDrawingParams.effect;
+		const effect = this.currDrawingParams.effect;
 
 		// get the gfx manager
 		const gfx = DrawBatch._gfx;
 
 		// set effect
-		gfx._internal.useEffect(effect, this.__currDrawingParams.overrideEffectFlags);
+		gfx._internal.useEffect(effect, this.currDrawingParams.overrideEffectFlags);
 
 		// set blend mode if needed
-		gfx._internal.setBlendMode(this.__currDrawingParams.blendMode);
+		gfx._internal.setBlendMode(this.currDrawingParams.blendMode);
 
 		// set world matrix
-		effect.setWorldMatrix(this.__currDrawingParams.transform);
+		effect.setWorldMatrix(this.currDrawingParams.transform);
 
 		// set active texture
-		gfx._internal.setActiveTexture(this.__currDrawingParams.texture);
+		gfx._internal.setActiveTexture(this.currDrawingParams.texture);
 
 		// trigger on set effect
-		this.onSetEffect(effect, this.__currDrawingParams.texture);
+		this.onSetEffect(effect, this.currDrawingParams.texture);
 	}
 
 	/**
@@ -278,7 +227,21 @@ export class DrawBatch {
 	 */
 	private onSetEffect(effect, texture) {
 	}
-}
 
-// will be set by the Gfx manager during init
-DrawBatch._gfx = null;
+	/**
+	 * Get the default effect to use for this drawing batch type.
+	 * @returns Default effect to use for this drawing batch.
+	 */
+	public abstract getDefaultEffect(): Effect;
+
+	/**
+	 * Destroy the batch and free any resources assigned to it.
+	 */
+	public abstract destroy(): void;
+
+	/**
+	 * Return if the batch was destroyed.
+	 * @returns True if batch was destroyed.
+	 */
+	public abstract isDestroyed(): boolean;
+}

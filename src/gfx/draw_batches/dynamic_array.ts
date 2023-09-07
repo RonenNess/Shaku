@@ -30,27 +30,15 @@ function transferPolyfill(source, dest) {
 	function transferWith(wordSize, source, dest, nextOffset, leftBytes) {
 		let ViewClass = Uint8Array;
 		switch(wordSize) {
-			case 8:
-				ViewClass = Float64Array;
-				break;
-			case 4:
-				ViewClass = Float32Array;
-				break;
-			case 2:
-				ViewClass = Uint16Array;
-				break;
-			case 1:
-				ViewClass = Uint8Array;
-				break;
-			default:
-				ViewClass = Uint8Array;
-				break;
+			case 8: ViewClass = Float64Array; break;
+			case 4: ViewClass = Float32Array; break;
+			case 2: ViewClass = Uint16Array; break;
+			case 1: ViewClass = Uint8Array; break;
+			default: ViewClass = Uint8Array; break;
 		}
 		const view_source = new ViewClass(source, nextOffset, Math.trunc(leftBytes / wordSize));
 		const view_dest = new ViewClass(dest, nextOffset, Math.trunc(leftBytes / wordSize));
-		for(let i = 0; i < view_dest.length; i++) {
-			view_dest[i] = view_source[i];
-		}
+		for(let i = 0; i < view_dest.length; i++) view_dest[i] = view_source[i];
 		return {
 			nextOffset: view_source.byteOffset + view_source.byteLength,
 			leftBytes: source.byteLength - (view_source.byteOffset + view_source.byteLength),
@@ -61,34 +49,37 @@ function transferPolyfill(source, dest) {
 /**
  * A float 32 array that grows automatically.
  */
-export class DynamicArray {
+export class DynamicArray<T extends Int8Array | Uint8Array | Float32Array | Float64Array> {
+	public buffer: T;
+	public index: number;
+	public type: (startSize: number) => T;
+
+	private startSize: number;
+
 	/**
 	 * Create the array.
-	 * @param {Number} startSize Starting size.
+	 * @param startSize Starting size.
 	 * @param {*} type Array type (defaults to Float32Array).
 	 */
-	public constructor(startSize, type) {
-		this.type = type || Float32Array;
+	public constructor(startSize: number, type = Float32Array) {
 		this.buffer = new this.type(startSize);
 		this.index = 0;
-		this._startSize = startSize;
+		this.startSize = startSize;
 	}
 
 	/**
 	 * Reset the array back to original size.
 	 */
-	public reset(includeSize) {
+	public reset(includeSize: boolean) {
 		this.index = 0;
-		if(includeSize && this.buffer.length !== this._startSize) {
-			this.buffer = new this.type(this._startSize);
-		}
+		if(includeSize && this.buffer.length !== this.startSize) this.buffer = new this.type(this.startSize);
 	}
 
 	/**
 	 * Push a value into the array and grow it if necessary.
-	 * @param {Number} value Value to push.
+	 * @param value Value to push.
 	 */
-	public push(value) {
+	public push(value: number) {
 		if(this.index >= this.buffer.length) {
 			const newBuffer = new this.type(this.buffer.length * 2);
 			transferPolyfill(this.buffer, newBuffer);

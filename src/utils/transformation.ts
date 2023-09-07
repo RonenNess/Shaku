@@ -279,9 +279,7 @@ export class Transformation {
 	public setRotation(value: number, wrap: boolean): Transformation {
 		if(this.rotation === value) return this;
 		this.rotation = value;
-		if(wrap && ((this.rotation < 0) || (this.rotation > MathHelper.PI2))) {
-			this.rotation = Math.atan2(Math.sin(this.rotation), Math.cos(this.rotation));
-		}
+		if(wrap && ((this.rotation < 0) || (this.rotation > MathHelper.PI2))) this.rotation = Math.atan2(Math.sin(this.rotation), Math.cos(this.rotation));
 		this.markDirty(true, false);
 		return this;
 	}
@@ -484,9 +482,6 @@ function combineScalar(childValue: number, parentValue: number, parent: Transfor
 		case TransformModes.AXIS_ALIGNED:
 		case TransformModes.RELATIVE:
 			return parentValue + childValue;
-
-		default:
-			throw new Error("Unknown transform mode!");
 	}
 }
 
@@ -507,7 +502,7 @@ function combineVector(childValue: Vector2, parentValue: Vector2, parent: Transf
 			return parentValue.add(childValue);
 
 		case TransformModes.RELATIVE:
-			return parentValue.add(childValue.rotatedByRadians(parent._rotation));
+			return parentValue.add(childValue.rotatedByRadians(parent.getRotation()));
 
 		default:
 			throw new Error("Unknown transform mode!");
@@ -531,9 +526,6 @@ function combineVectorMul(childValue: Vector2, parentValue: Vector2, parent: Tra
 			return parentValue.mul(childValue);
 
 		case TransformModes.RELATIVE:
-			return parentValue.mul(childValue.rotatedByRadians(parent._rotation));
-
-		default:
-			throw new Error("Unknown transform mode!");
+			return parentValue.mul(childValue.rotatedByRadians(parent.getRotation()));
 	}
 }

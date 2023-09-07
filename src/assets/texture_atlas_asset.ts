@@ -33,7 +33,6 @@ export class TextureAtlasAsset extends Asset {
 
 	/**
 	 * Build the texture atlas.
-
 	 * @param {Array<string>|Array<Image>} sources Source URLs or images to load into texture. If array of Images, should also contain an "__origin_url" property under them for asset key.
 	 * @param maxWidth Optional texture atlas width limit.
 	 * @param maxHeight Optional texture atlas height limit.
