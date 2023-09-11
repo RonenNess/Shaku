@@ -84,7 +84,7 @@ export class SpriteBatchBase extends DrawBatch {
 	 * @inheritdoc
 	 */
 	public destroy() {
-		const gl = this.#_gl;
+		const gl = this.getGl();
 		if(this._buffers) {
 			if(this._buffers.positionBuffer) gl.deleteBuffer(this._buffers.positionBuffer);
 			if(this._buffers.colorsBuffer) gl.deleteBuffer(this._buffers.colorsBuffer);
@@ -107,7 +107,7 @@ export class SpriteBatchBase extends DrawBatch {
 	 * Build the dynamic buffers.
 	 */
 	private createBuffers(batchSpritesCount, enableVertexColor = true, enableNormals, enableBinormals, enableTangents) {
-		const gl = this.#_gl;
+		const gl = this.getGl();
 
 		// dynamic buffers, used for batch rendering
 		this._buffers = {
@@ -523,7 +523,7 @@ export class SpriteBatchBase extends DrawBatch {
 		}
 
 		// get some fields we'll need
-		const gl = this.#_gl;
+		const gl = this.getGl();
 		const gfx = SpriteBatchBase._gfx;
 		const positionArray = this._buffers.positionArray;
 		const textureArray = this._buffers.textureArray;

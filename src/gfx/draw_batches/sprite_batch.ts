@@ -42,7 +42,7 @@ export class SpriteBatch extends SpriteBatchBase {
 	 * @inheritdoc
 	 */
 	public getDefaultEffect() {
-		return this.supportVertexColor ? this.#_gfx.builtinEffects.Sprites : this.#_gfx.builtinEffects.SpritesNoVertexColor;
+		return this.supportVertexColor ? this.getGfx().builtinEffects.Sprites : this.getGfx().builtinEffects.SpritesNoVertexColor;
 	}
 
 	/**
@@ -156,7 +156,7 @@ export class SpriteBatch extends SpriteBatchBase {
 	 * @param {Vector2=} skew Skew the drawing corners on X and Y axis, around the origin point.
 	 */
 	public drawQuad(texture: TextureAssetBase, position: Vector2 | Vector3, size: Vector2 | Vector3 | number, sourceRectangle?: Rectangle, color?: Color | Color[], rotation?: number, origin?: Vector2, skew?: Vector2) {
-		const sprite = this.#_gfx.Sprite.build(texture, position, size, sourceRectangle, color, rotation, origin, skew);
+		const sprite = this.getGfx().Sprite.build(texture, position, size, sourceRectangle, color, rotation, origin, skew);
 		this.drawSprite(sprite);
 	}
 

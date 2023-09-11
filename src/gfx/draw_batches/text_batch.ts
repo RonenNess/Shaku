@@ -62,8 +62,8 @@ export class TextSpriteBatch extends SpriteBatchBase {
 	 */
 	public getDefaultEffect() {
 		return this.msdfFont ?
-			this.#_gfx.builtinEffects.MsdfFont :
-			(this.outlineWeight ? this.#_gfx.builtinEffects.SpritesWithOutline : this.#_gfx.builtinEffects.Sprites);
+			this.getGfx().builtinEffects.MsdfFont :
+			(this.outlineWeight ? this.getGfx().builtinEffects.SpritesWithOutline : this.getGfx().builtinEffects.Sprites);
 	}
 
 	/**
