@@ -1,96 +1,96 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <title>Shaku</title>
-    <meta name="description" content="Shaku - a simple and easy-to-use javascript library for videogame programming.">
-    <meta name="author" content="Ronen Ness">
-    <link href="css/style.css" rel="stylesheet" type="text/css" media="all">
-  </head>
-  <body>
-    <div class="noselect">
-    <button class="view-code-btn" onclick="showSampleCode();">View Code</button> 
-    <h1 class="demo-title">Shaku Gfx Demo: Draw Lines</h1>
-      <p>This demo shows how to draw lines. Click anywhere on the canvas to add line segments.</p>
-      
-      <div>
-        <input type="checkbox" id="loop-lines" name="loop-lines">
-        <label for="loop-lines">Loop lines segment.</label>
-      </div>
 
-      <!-- include shaku -->
-      <script src="js/demos.js"></script>
-      <script src="js/shaku.js"></script>
+<head>
+	<meta charset="UTF-8">
+	<title>Shaku</title>
+	<meta name="description" content="Shaku - a simple and easy-to-use javascript library for videogame programming.">
+	<meta name="author" content="Ronen Ness">
+	<link href="css/style.css" rel="stylesheet" type="text/css" media="all">
+</head>
 
-      <!-- demo code -->
-      <script>
-        async function runGame()
-        {
-          // make shaku only listen to gfx canvas
-          Shaku.input.setTargetElement(() => Shaku.gfx.canvas);
+<body>
+	<div class="noselect">
+		<button class="view-code-btn" onclick="showSampleCode();">View Code</button>
+		<h1 class="demo-title">Shaku Gfx Demo: Draw Lines</h1>
+		<p>This demo shows how to draw lines. Click anywhere on the canvas to add line segments.</p>
 
-          // init shaku
-          await Shaku.init();
+		<div>
+			<input type="checkbox" id="loop-lines" name="loop-lines">
+			<label for="loop-lines">Loop lines segment.</label>
+		</div>
 
-          // add shaku's canvas to document and set resolution to 800x600
-          document.body.appendChild(Shaku.gfx.canvas);
-          Shaku.gfx.setResolution(800, 600, true);
+		<!-- include shaku -->
+		<script src="js/demos.js"></script>
+		<script src="js/shaku.js"></script>
 
-          // create lines batch
-          let linesBatch = new Shaku.gfx.LinesBatch();
-          linesBatch.linesStrip = true;
+		<!-- demo code -->
+		<script>
+			async function runGame() {
+				// make shaku only listen to gfx canvas
+				Shaku.input.setTargetElement(() => Shaku.gfx.canvas);
 
-          // lines to draw
-          let lines = [
-            new Shaku.gfx.Vertex(new Shaku.utils.Vector2(50,50), null, Shaku.utils.Color.random()),
-            new Shaku.gfx.Vertex(new Shaku.utils.Vector2(150,150), null, Shaku.utils.Color.random())
-          ];
+				// init shaku
+				await Shaku.init();
 
-          // do a single main loop step
-          function step() 
-          {  
-            // start new frame and clear screen
-            Shaku.startFrame();
-            Shaku.gfx.clear(Shaku.utils.Color.black);
+				// add shaku's canvas to document and set resolution to 800x600
+				document.body.appendChild(Shaku.gfx.canvas);
+				Shaku.gfx.setResolution(800, 600, true);
 
-            // draw lines
-            linesBatch.begin();
-            linesBatch.drawVertices(lines);
-            const looped = document.getElementById('loop-lines').checked;
-            if (looped) {
-              linesBatch.drawVertices([lines[0]]);
-            }
-            linesBatch.end();
+				// create lines batch
+				let linesBatch = new Shaku.gfx.LinesBatch();
+				linesBatch.linesStrip = true;
 
-            // add line segments
-            if (Shaku.input.down('mouse_left') && (Shaku.input.mouseMoving || Shaku.input.pressed('mouse_left'))) {
-              lines.push(new Shaku.gfx.Vertex(Shaku.input.mousePosition, null, Shaku.utils.Color.random()));
-              while (lines.length >= 500) {
-                lines.shift();
-              }
-            }
+				// lines to draw
+				let lines = [
+					new Shaku.gfx.Vertex(new Shaku.utils.Vector2(50, 50), null, Shaku.utils.Color.random()),
+					new Shaku.gfx.Vertex(new Shaku.utils.Vector2(150, 150), null, Shaku.utils.Color.random())
+				];
 
-            // end frame and request next frame
-            Shaku.endFrame();
-            Shaku.requestAnimationFrame(step);
-          }
+				// do a single main loop step
+				function step() {
+					// start new frame and clear screen
+					Shaku.startFrame();
+					Shaku.gfx.clear(Shaku.utils.Color.black);
 
-          // start main loop
-          step();
-        }
+					// draw lines
+					linesBatch.begin();
+					linesBatch.drawVertices(lines);
+					const looped = document.getElementById('loop-lines').checked;
+					if (looped) {
+						linesBatch.drawVertices([lines[0]]);
+					}
+					linesBatch.end();
 
-        runGame();
-      </script>
+					// add line segments
+					if (Shaku.input.down('mouse_left') && (Shaku.input.mouseMoving || Shaku.input.pressed('mouse_left'))) {
+						lines.push(new Shaku.gfx.Vertex(Shaku.input.mousePosition, null, Shaku.utils.Color.random()));
+						while (lines.length >= 500) {
+							lines.shift();
+						}
+					}
 
-</div>
+					// end frame and request next frame
+					Shaku.endFrame();
+					Shaku.requestAnimationFrame(step);
+				}
 
-<!-- code example part -->
-<div id="sample-code-modal" class="modal">
-  <div class="modal__overlay jsOverlay"></div>
-  <div class="modal__container">   
+				// start main loop
+				step();
+			}
 
-<p class="noselect">The following shows a minimal code example on how to draw line segments.</p>
-<pre><code class="language-js">// create lines batch
+			runGame();
+		</script>
+
+	</div>
+
+	<!-- code example part -->
+	<div id="sample-code-modal" class="modal">
+		<div class="modal__overlay jsOverlay"></div>
+		<div class="modal__container">
+
+			<p class="noselect">The following shows a minimal code example on how to draw line segments.</p>
+			<pre><code class="language-js">// create lines batch
 let linesBatch = new Shaku.gfx.LinesBatch();
 linesBatch.linesStrip = true;
 
@@ -110,12 +110,13 @@ linesBatch.drawVertices(lines);
 linesBatch.end();
 </code></pre>
 
-  <button class="modal__close" onclick="closeModal('sample-code-modal')">&#10005;</button>
-</div>
-</div>
+			<button class="modal__close" onclick="closeModal('sample-code-modal')">&#10005;</button>
+		</div>
+	</div>
 
-<link href="prism/prism.css" rel="stylesheet" />
-<script src="prism/prism.js"></script>
+	<link href="prism/prism.css" rel="stylesheet" />
+	<script src="prism/prism.js"></script>
 
-  </body>
+</body>
+
 </html>

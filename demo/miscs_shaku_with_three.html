@@ -1,161 +1,163 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <title>Shaku</title>
-    <meta name="description" content="Shaku - a simple and easy-to-use javascript library for videogame programming.">
-    <meta name="author" content="Ronen Ness">
-    <link href="css/style.css" rel="stylesheet" type="text/css" media="all">
-  </head>
-  <body>
-    <div class="noselect" style="color: white;">
-      <h1 class="demo-title" style="margin-left: 0;">Shaku: Combine With THREE</h1>
-      <p>This demo show how to combine Shaku with THREE.JS.<br/>
-      THREE will be used for 3D rendering, while Shaku can be used for 2d, sounds, input and utils. <br />
-      Note: Shaku and THREE can't share the same canvas as this cause unexpected behavior. Instead, we use two canvases on top of each other.</p>
-      
-      <!-- include shaku -->
-      <script src="js/demos.js"></script>
-      <script src="js/shaku.js"></script>
-      <script src="three/three.min.js"></script>
 
-      <!-- demo code -->
-      <script>
-        async function runGame()
-        {
-          // init shaku
-          await Shaku.init();
+<head>
+	<meta charset="UTF-8">
+	<title>Shaku</title>
+	<meta name="description" content="Shaku - a simple and easy-to-use javascript library for videogame programming.">
+	<meta name="author" content="Ronen Ness">
+	<link href="css/style.css" rel="stylesheet" type="text/css" media="all">
+</head>
 
-          // add shaku's canvas to document and set resolution to 800x600
-          document.body.appendChild(Shaku.gfx.canvas);
-          Shaku.gfx.setResolution(800, 600, true);
+<body>
+	<div class="noselect" style="color: white;">
+		<h1 class="demo-title" style="margin-left: 0;">Shaku: Combine With THREE</h1>
+		<p>This demo show how to combine Shaku with THREE.JS.<br />
+			THREE will be used for 3D rendering, while Shaku can be used for 2d, sounds, input and utils. <br />
+			Note: Shaku and THREE can't share the same canvas as this cause unexpected behavior. Instead, we use two
+			canvases on top of each other.</p>
 
-          // update canvas style to cover all background
-          Shaku.gfx.canvas.style.position = "fixed";
-          Shaku.gfx.canvas.style.zIndex = -100;
-          Shaku.gfx.canvas.style.left = '0px';
-          Shaku.gfx.canvas.style.top = '0px';
-          Shaku.gfx.canvas.style.display = 'block';
+		<!-- include shaku -->
+		<script src="js/demos.js"></script>
+		<script src="js/shaku.js"></script>
+		<script src="three/three.min.js"></script>
 
-          // create batches to draw
-          let spritesBatch = new Shaku.gfx.SpriteBatch();
-          let spriteTextBatch = new Shaku.gfx.TextSpriteBatch();
+		<!-- demo code -->
+		<script>
+			async function runGame() {
+				// init shaku
+				await Shaku.init();
 
-          // load font texture and create text
-          let fontTexture = await Shaku.assets.loadFontTexture('assets/DejaVuSansMono.ttf', {fontName: 'DejaVuSansMono'});
-          let text1 = Shaku.gfx.buildText(fontTexture, "This text and sprite are rendered with Shaku!\nUse arrows to move the 3D cube. Space to rotate sprite.", 20, Shaku.utils.Color.white);
-          text1.position.set(40, 400);
-          
-          // load sprite texture and create a test sprite
-          let spriteTexture = await Shaku.assets.loadTexture('assets/sprite.png');
-          let sprite = new Shaku.gfx.Sprite(spriteTexture);
-          sprite.position.set(80, 500);
+				// add shaku's canvas to document and set resolution to 800x600
+				document.body.appendChild(Shaku.gfx.canvas);
+				Shaku.gfx.setResolution(800, 600, true);
 
-          // this method will update threejs once init
-          var updateThree = null;
+				// update canvas style to cover all background
+				Shaku.gfx.canvas.style.position = "fixed";
+				Shaku.gfx.canvas.style.zIndex = -100;
+				Shaku.gfx.canvas.style.left = '0px';
+				Shaku.gfx.canvas.style.top = '0px';
+				Shaku.gfx.canvas.style.display = 'block';
 
-          // will contain three js camera
-          var camera;
+				// create batches to draw
+				let spritesBatch = new Shaku.gfx.SpriteBatch();
+				let spriteTextBatch = new Shaku.gfx.TextSpriteBatch();
 
-          // init threejs
-          {
-            // create scene and camera
-            const scene = new THREE.Scene();
-            camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+				// load font texture and create text
+				let fontTexture = await Shaku.assets.loadFontTexture('assets/DejaVuSansMono.ttf', { fontName: 'DejaVuSansMono' });
+				let text1 = Shaku.gfx.buildText(fontTexture, "This text and sprite are rendered with Shaku!\nUse arrows to move the 3D cube. Space to rotate sprite.", 20, Shaku.utils.Color.white);
+				text1.position.set(40, 400);
 
-            // create renderer and add to scene
-            const renderer = new THREE.WebGLRenderer();
-            renderer.setSize( window.innerWidth, window.innerHeight );
-            document.body.appendChild( renderer.domElement );
-            
-            // update canvas style to cover all background behind the Shaku canvas
-            renderer.domElement.style.position = "fixed";
-            renderer.domElement.style.zIndex = -200;
-            renderer.domElement.style.left = '0px';
-            renderer.domElement.style.top = '0px';
-            renderer.domElement.style.display = 'block';
+				// load sprite texture and create a test sprite
+				let spriteTexture = await Shaku.assets.loadTexture('assets/sprite.png');
+				let sprite = new Shaku.gfx.Sprite(spriteTexture);
+				sprite.position.set(80, 500);
 
-            // set clear color
-            scene.background = new THREE.Color( 0x0077aa );
+				// this method will update threejs once init
+				var updateThree = null;
 
-            // create a cube and set camera position
-            const geometry = new THREE.BoxGeometry( 1, 1, 1 );
-            const material = new THREE.MeshLambertMaterial( { color: 0x00ff00 } );
-            const cube = new THREE.Mesh( geometry, material );
-            scene.add( cube );
-            camera.position.z = 5;
+				// will contain three js camera
+				var camera;
 
-            // add test light
-            const light = new THREE.PointLight( 0xffffff, 1, 100 );
-            light.position.set( 5, 5, 5 );
-            scene.add( light );
+				// init threejs
+				{
+					// create scene and camera
+					const scene = new THREE.Scene();
+					camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 
-            // method to update three js scene
-            updateThree = () => {
+					// create renderer and add to scene
+					const renderer = new THREE.WebGLRenderer();
+					renderer.setSize(window.innerWidth, window.innerHeight);
+					document.body.appendChild(renderer.domElement);
 
-              // render scene
-              renderer.render( scene, camera );
+					// update canvas style to cover all background behind the Shaku canvas
+					renderer.domElement.style.position = "fixed";
+					renderer.domElement.style.zIndex = -200;
+					renderer.domElement.style.left = '0px';
+					renderer.domElement.style.top = '0px';
+					renderer.domElement.style.display = 'block';
 
-              // rotate cube
-              cube.rotation.x += 0.01;
-              cube.rotation.y += 0.01;
-            }
-          }
+					// set clear color
+					scene.background = new THREE.Color(0x0077aa);
 
-          // do a single main loop step
-          function step() 
-          { 
-            // update threejs to render 3d stuff
-            updateThree(); 
+					// create a cube and set camera position
+					const geometry = new THREE.BoxGeometry(1, 1, 1);
+					const material = new THREE.MeshLambertMaterial({ color: 0x00ff00 });
+					const cube = new THREE.Mesh(geometry, material);
+					scene.add(cube);
+					camera.position.z = 5;
 
-            // start new frame and clear screen
-            Shaku.startFrame();
-            
-            // draw text
-            spriteTextBatch.begin();
-            spriteTextBatch.drawText(text1);
-            spriteTextBatch.end();
+					// add test light
+					const light = new THREE.PointLight(0xffffff, 1, 100);
+					light.position.set(5, 5, 5);
+					scene.add(light);
 
-            // control camera with Shaku input
-            if (Shaku.input.down(['left', 'a'])) {
-              camera.position.x += 0.1;
-            }
-            if (Shaku.input.down(['right', 'd'])) {
-              camera.position.x -= 0.1;
-            }
-            if (Shaku.input.down(['up', 'w'])) {
-              camera.position.y -= 0.1;
-            }
-            if (Shaku.input.down(['down', 's'])) {
-              camera.position.y += 0.1;
-            }
+					// method to update three js scene
+					updateThree = () => {
 
-            // rotate sprite
-            if (Shaku.input.down(['space'])) {
-              sprite.rotation += 0.1;
-            }
+						// render scene
+						renderer.render(scene, camera);
 
-            // draw 2d sprite
-            spritesBatch.begin();
-            spritesBatch.drawSprite(sprite);
-            spritesBatch.end();
+						// rotate cube
+						cube.rotation.x += 0.01;
+						cube.rotation.y += 0.01;
+					};
+				}
 
-            // make fullscreen
-            Shaku.gfx.maximizeCanvasSize(false);
+				// do a single main loop step
+				function step() {
+					// update threejs to render 3d stuff
+					updateThree();
 
-            // end frame and request next frame
-            Shaku.endFrame();
-            Shaku.requestAnimationFrame(step);
-          }
+					// start new frame and clear screen
+					Shaku.startFrame();
 
-          // start main loop
-          step();
-        }
+					// draw text
+					spriteTextBatch.begin();
+					spriteTextBatch.drawText(text1);
+					spriteTextBatch.end();
 
-        runGame();
-      </script>
+					// control camera with Shaku input
+					if (Shaku.input.down(['left', 'a'])) {
+						camera.position.x += 0.1;
+					}
+					if (Shaku.input.down(['right', 'd'])) {
+						camera.position.x -= 0.1;
+					}
+					if (Shaku.input.down(['up', 'w'])) {
+						camera.position.y -= 0.1;
+					}
+					if (Shaku.input.down(['down', 's'])) {
+						camera.position.y += 0.1;
+					}
 
-</div>
+					// rotate sprite
+					if (Shaku.input.down(['space'])) {
+						sprite.rotation += 0.1;
+					}
 
-  </body>
+					// draw 2d sprite
+					spritesBatch.begin();
+					spritesBatch.drawSprite(sprite);
+					spritesBatch.end();
+
+					// make fullscreen
+					Shaku.gfx.maximizeCanvasSize(false);
+
+					// end frame and request next frame
+					Shaku.endFrame();
+					Shaku.requestAnimationFrame(step);
+				}
+
+				// start main loop
+				step();
+			}
+
+			runGame();
+		</script>
+
+	</div>
+
+</body>
+
 </html>

@@ -1,93 +1,93 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <title>Shaku</title>
-    <meta name="description" content="Shaku - a simple and easy-to-use javascript library for videogame programming.">
-    <meta name="author" content="Ronen Ness">
-    <link href="css/style.css" rel="stylesheet" type="text/css" media="all">
-  </head>
-  <body>
-    <div class="noselect">
-    <button class="view-code-btn" onclick="showSampleCode();">View Code</button> 
-    <h1 class="demo-title">Shaku Gfx Demo: Draw</h1>
-      <p>This demo shows how to draw basic stuff.</p>
-      
-      <!-- include shaku -->
-      <script src="js/demos.js"></script>
-      <script src="js/shaku.js"></script>
 
-      <!-- demo code -->
-      <script>
-        async function runGame()
-        {
-          // init shaku
-          await Shaku.init();
+<head>
+	<meta charset="UTF-8">
+	<title>Shaku</title>
+	<meta name="description" content="Shaku - a simple and easy-to-use javascript library for videogame programming.">
+	<meta name="author" content="Ronen Ness">
+	<link href="css/style.css" rel="stylesheet" type="text/css" media="all">
+</head>
 
-          // add shaku's canvas to document and set resolution to 800x600
-          const screenX = 800;
-          const screenY = 600;
-          document.body.appendChild(Shaku.gfx.canvas);
-          Shaku.gfx.setResolution(screenX, screenY, true);
+<body>
+	<div class="noselect">
+		<button class="view-code-btn" onclick="showSampleCode();">View Code</button>
+		<h1 class="demo-title">Shaku Gfx Demo: Draw</h1>
+		<p>This demo shows how to draw basic stuff.</p>
 
-          // load sprite's texture asset
-          let texture = await Shaku.assets.loadTexture('assets/shaku.png');
+		<!-- include shaku -->
+		<script src="js/demos.js"></script>
+		<script src="js/shaku.js"></script>
 
-          // create sprites and shapes batch
-          let spritesBatch = new Shaku.gfx.SpriteBatch();
-          let shapesBatch = new Shaku.gfx.ShapesBatch();
+		<!-- demo code -->
+		<script>
+			async function runGame() {
+				// init shaku
+				await Shaku.init();
 
-          // do a single main loop step
-          function step() 
-          {  
-            // start new frame and clear screen
-            Shaku.startFrame();
-            Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
+				// add shaku's canvas to document and set resolution to 800x600
+				const screenX = 800;
+				const screenY = 600;
+				document.body.appendChild(Shaku.gfx.canvas);
+				Shaku.gfx.setResolution(screenX, screenY, true);
 
-            // start batch drawings
-            shapesBatch.begin();
-            spritesBatch.begin();
+				// load sprite's texture asset
+				let texture = await Shaku.assets.loadTexture('assets/shaku.png');
 
-            // draw background circle
-            shapesBatch.drawCircle(new Shaku.utils.Circle(Shaku.gfx.getCanvasSize().div(2), 400), Shaku.utils.Color.pink, 32, Shaku.utils.Color.cornflowerblue);
+				// create sprites and shapes batch
+				let spritesBatch = new Shaku.gfx.SpriteBatch();
+				let shapesBatch = new Shaku.gfx.ShapesBatch();
 
-            // draw rectangles
-            const rectSize = 50;
-            shapesBatch.drawRectangle(new Shaku.utils.Rectangle(0,                     0,                    rectSize, rectSize), Shaku.utils.Color.red, Shaku.gameTime.elapsed);
-            shapesBatch.drawRectangle(new Shaku.utils.Rectangle(screenX - rectSize,    0,                    rectSize, rectSize), Shaku.utils.Color.green, Shaku.gameTime.elapsed);
-            shapesBatch.drawRectangle(new Shaku.utils.Rectangle(0,                     screenY - rectSize,   rectSize, rectSize), Shaku.utils.Color.blue, Shaku.gameTime.elapsed);
-            shapesBatch.drawRectangle(new Shaku.utils.Rectangle(screenX - rectSize,    screenY - rectSize,   rectSize, rectSize), Shaku.utils.Color.yellow, Shaku.gameTime.elapsed);
+				// do a single main loop step
+				function step() {
+					// start new frame and clear screen
+					Shaku.startFrame();
+					Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
 
-            // draw a sprite
-            let rotation = Shaku.gameTime.elapsed * 0.5;
-            let center = Shaku.gfx.getCanvasSize().div(2);
-            spritesBatch.drawQuad(texture, center, 256, undefined, undefined, rotation);
+					// start batch drawings
+					shapesBatch.begin();
+					spritesBatch.begin();
 
-            // render the shapes and sprites batches
-            shapesBatch.end();
-            spritesBatch.end();
+					// draw background circle
+					shapesBatch.drawCircle(new Shaku.utils.Circle(Shaku.gfx.getCanvasSize().div(2), 400), Shaku.utils.Color.pink, 32, Shaku.utils.Color.cornflowerblue);
 
-            // end frame and request next frame
-            Shaku.endFrame();
-            Shaku.requestAnimationFrame(step);
-          }
+					// draw rectangles
+					const rectSize = 50;
+					shapesBatch.drawRectangle(new Shaku.utils.Rectangle(0, 0, rectSize, rectSize), Shaku.utils.Color.red, Shaku.gameTime.elapsed);
+					shapesBatch.drawRectangle(new Shaku.utils.Rectangle(screenX - rectSize, 0, rectSize, rectSize), Shaku.utils.Color.green, Shaku.gameTime.elapsed);
+					shapesBatch.drawRectangle(new Shaku.utils.Rectangle(0, screenY - rectSize, rectSize, rectSize), Shaku.utils.Color.blue, Shaku.gameTime.elapsed);
+					shapesBatch.drawRectangle(new Shaku.utils.Rectangle(screenX - rectSize, screenY - rectSize, rectSize, rectSize), Shaku.utils.Color.yellow, Shaku.gameTime.elapsed);
 
-          // start main loop
-          step();
-        }
+					// draw a sprite
+					let rotation = Shaku.gameTime.elapsed * 0.5;
+					let center = Shaku.gfx.getCanvasSize().div(2);
+					spritesBatch.drawQuad(texture, center, 256, undefined, undefined, rotation);
 
-        runGame();
-      </script>
+					// render the shapes and sprites batches
+					shapesBatch.end();
+					spritesBatch.end();
 
-</div>
+					// end frame and request next frame
+					Shaku.endFrame();
+					Shaku.requestAnimationFrame(step);
+				}
 
-<!-- code example part -->
-<div id="sample-code-modal" class="modal">
-  <div class="modal__overlay jsOverlay"></div>
-  <div class="modal__container">   
+				// start main loop
+				step();
+			}
 
-<p class="noselect">The following code shows how to draw basic stuff with sprites batch.</p>
-<pre><code class="language-js">// init shaku
+			runGame();
+		</script>
+
+	</div>
+
+	<!-- code example part -->
+	<div id="sample-code-modal" class="modal">
+		<div class="modal__overlay jsOverlay"></div>
+		<div class="modal__container">
+
+			<p class="noselect">The following code shows how to draw basic stuff with sprites batch.</p>
+			<pre><code class="language-js">// init shaku
 await Shaku.init();
 
 // add shaku's canvas to document and set resolution to 800x600
@@ -101,8 +101,8 @@ let texture = await Shaku.assets.loadTexture('assets/sprite.png');
 let spritesBatch = new Shaku.gfx.SpriteBatch();
 
 // main loop
-function step() 
-{  
+function step()
+{
   // start new frame and clear screen
   Shaku.startFrame();
   Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
@@ -122,12 +122,13 @@ function step()
 // start main loop
 step();</code></pre>
 
-  <button class="modal__close" onclick="closeModal('sample-code-modal')">&#10005;</button>
-</div>
-</div>
+			<button class="modal__close" onclick="closeModal('sample-code-modal')">&#10005;</button>
+		</div>
+	</div>
 
-<link href="prism/prism.css" rel="stylesheet" />
-<script src="prism/prism.js"></script>
+	<link href="prism/prism.css" rel="stylesheet" />
+	<script src="prism/prism.js"></script>
 
-  </body>
+</body>
+
 </html>

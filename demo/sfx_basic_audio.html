@@ -1,134 +1,136 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <title>Shaku</title>
-    <meta name="description" content="Shaku - a simple and easy-to-use javascript library for videogame programming.">
-    <meta name="author" content="Ronen Ness">
-    <link href="css/style.css" rel="stylesheet" type="text/css" media="all">
-  </head>
-  <body>
 
-    <div class="noselect">
-      <button class="view-code-btn" onclick="showSampleCode();">View Code</button> 
-      <h1 class="demo-title">Shaku Sfx Demo: Basic Audio</h1>
-      <p>This demo demonstrate how to play basic sounds with Shaku. <br /><br />
-        <b>Press 1-9</b> to play drum sound with different pitch.<br />
-        <b>Press b</b> to toggle birds ambience sound.<br /><br />
-      Due to browsers security features, you can't play any sounds via code before the user interacts with the page. </p>
-      <button id="show-birds-sound">Birds sound: off</button>
-      <p>Drums Playing:</p>
+<head>
+	<meta charset="UTF-8">
+	<title>Shaku</title>
+	<meta name="description" content="Shaku - a simple and easy-to-use javascript library for videogame programming.">
+	<meta name="author" content="Ronen Ness">
+	<link href="css/style.css" rel="stylesheet" type="text/css" media="all">
+</head>
 
-      <!-- include shaku -->
-      <script src="js/demos.js"></script>
-      <script src="js/shaku.js"></script>
+<body>
 
-      <!-- demo code -->
-      <script>
-        async function runDemo()
-        {
-          // init shaku
-          await Shaku.init();
+	<div class="noselect">
+		<button class="view-code-btn" onclick="showSampleCode();">View Code</button>
+		<h1 class="demo-title">Shaku Sfx Demo: Basic Audio</h1>
+		<p>This demo demonstrate how to play basic sounds with Shaku. <br /><br />
+			<b>Press 1-9</b> to play drum sound with different pitch.<br />
+			<b>Press b</b> to toggle birds ambience sound.<br /><br />
+			Due to browsers security features, you can't play any sounds via code before the user interacts with the
+			page.
+		</p>
+		<button id="show-birds-sound">Birds sound: off</button>
+		<p>Drums Playing:</p>
 
-          // create button element to show key state
-          function createButtonElement(key) {
-            let p = document.createElement("BUTTON");
-            p.style.fontSize = '120%';
-            p.innerHTML = key;
-            p.id = 'drum-' + key;
-            p._index = key;
-            p.onclick = () => { playDrum(p._index); }
-            document.body.appendChild(p); 
-          }
-          for (let i = 1; i <= 9; ++i) {
-            createButtonElement(i);
-          }
+		<!-- include shaku -->
+		<script src="js/demos.js"></script>
+		<script src="js/shaku.js"></script>
 
-          // play a drum sound + animate drum button
-          function playDrum(i)
-          {
-            // play drum sound
-            let pitch = 0.5 + 0.4 * i;
-            Shaku.sfx.play(drums, 1, pitch); 
+		<!-- demo code -->
+		<script>
+			async function runDemo() {
+				// init shaku
+				await Shaku.init();
 
-            // animate display button
-            document.getElementById('drum-' + i).animate([
-              { transform: 'translateY(0px)' },
-              { transform: 'translateY(-10px)' },
-              { transform: 'translateY(0px)' },
-            ], {
-              duration: 200,
-              iterations: 1
-            });
-          }
+				// create button element to show key state
+				function createButtonElement(key) {
+					let p = document.createElement("BUTTON");
+					p.style.fontSize = '120%';
+					p.innerHTML = key;
+					p.id = 'drum-' + key;
+					p._index = key;
+					p.onclick = () => { playDrum(p._index); };
+					document.body.appendChild(p);
+				}
+				for (let i = 1; i <= 9; ++i) {
+					createButtonElement(i);
+				}
 
-          // play / stop birds sound
-          function toggleBirdsSound()
-          {
-            if (birdsSound.playing) {
-              birdsSound.stop();
-            }
-            else {
-              birdsSound.play();
-            }
-            document.getElementById('show-birds-sound').innerHTML = "Birds sound: " + (birdsSound.playing ? "on" : "off");
-          }
-          document.getElementById('show-birds-sound').onclick = toggleBirdsSound;
+				// play a drum sound + animate drum button
+				function playDrum(i) {
+					// play drum sound
+					let pitch = 0.5 + 0.4 * i;
+					Shaku.sfx.play(drums, 1, pitch);
 
-          // load sound asset
-          let drums = await Shaku.assets.loadSound('assets/drum.ogg');
-          let birds = await Shaku.assets.loadSound('assets/birds.ogg');
+					// animate display button
+					document.getElementById('drum-' + i).animate([
+						{ transform: 'translateY(0px)' },
+						{ transform: 'translateY(-10px)' },
+						{ transform: 'translateY(0px)' },
+					], {
+						duration: 200,
+						iterations: 1
+					});
+				}
 
-          // create birds background sound
-          let birdsSound = Shaku.sfx.createSound(birds);
-          birdsSound.loop = true;
+				// play / stop birds sound
+				function toggleBirdsSound() {
+					if (birdsSound.playing) {
+						birdsSound.stop();
+					}
+					else {
+						birdsSound.play();
+					}
+					document.getElementById('show-birds-sound').innerHTML = "Birds sound: " + (birdsSound.playing ? "on" : "off");
+				}
+				document.getElementById('show-birds-sound').onclick = toggleBirdsSound;
 
-          // do a main loop step.
-          function step() 
-          {
-            // start frame
-            Shaku.startFrame();
+				// load sound asset
+				let drums = await Shaku.assets.loadSound('assets/drum.ogg');
+				let birds = await Shaku.assets.loadSound('assets/birds.ogg');
 
-            // play drumps in numbers 1-9
-            for (let i = 1; i <= 9; ++i) {
-              if (Shaku.input.pressed(String(i))) { 
-                playDrum(i);
-              }
-            }
+				// create birds background sound
+				let birdsSound = Shaku.sfx.createSound(birds);
+				birdsSound.loop = true;
 
-            // start / stop birds sound
-            if (Shaku.input.pressed('b')) {
-              toggleBirdsSound();
-            }
+				// do a main loop step.
+				function step() {
+					// start frame
+					Shaku.startFrame();
 
-            // end frame and request next frame
-            Shaku.endFrame();
-            Shaku.requestAnimationFrame(step);
-          }
+					// play drumps in numbers 1-9
+					for (let i = 1; i <= 9; ++i) {
+						if (Shaku.input.pressed(String(i))) {
+							playDrum(i);
+						}
+					}
 
-          // start main loop
-          step();
-        }
+					// start / stop birds sound
+					if (Shaku.input.pressed('b')) {
+						toggleBirdsSound();
+					}
 
-        // start demo
-        runDemo();
+					// end frame and request next frame
+					Shaku.endFrame();
+					Shaku.requestAnimationFrame(step);
+				}
 
-      </script>
-      </div>
+				// start main loop
+				step();
+			}
 
-      <!-- code example part -->
-      <div id="sample-code-modal" class="modal">
-        <div class="modal__overlay jsOverlay"></div>
-        <div class="modal__container">   
+			// start demo
+			runDemo();
 
-      <p class="noselect">The following is a minimal code example on how to use the SFX manager. These are just the basics, for the full API please see the docs.<br />
-        <i>Keep in mind you also need to call Shaku.init(), Shaku.startFrame() and Shaku.endFrame(), which are mandatory for all examples and omitted for simplicity.</i>
-      </p>
-      <pre><code class="language-js">// load sound asset
+		</script>
+	</div>
+
+	<!-- code example part -->
+	<div id="sample-code-modal" class="modal">
+		<div class="modal__overlay jsOverlay"></div>
+		<div class="modal__container">
+
+			<p class="noselect">The following is a minimal code example on how to use the SFX manager. These are just
+				the basics, for the full API please see the docs.<br />
+				<i>Keep in mind you also need to call Shaku.init(), Shaku.startFrame() and Shaku.endFrame(), which are
+					mandatory for all examples and omitted for simplicity.</i>
+			</p>
+			<pre><code class="language-js">// load sound asset
 let soundAsset = await Shaku.assets.loadSound('assets/drum.ogg');
 
 // play sound once
-Shaku.sfx.play(soundAsset, volume, pitch); 
+Shaku.sfx.play(soundAsset, volume, pitch);
 
 // create sound instance and play it in a loop
 // sound instances are also more efficient than sfx.play() if you need to repeat the same sound lots of times (for example steps sound or gun blasts).
@@ -139,12 +141,13 @@ soundInstance.play();
 // stop looping sound
 soundInstance.stop();</code></pre>
 
-        <button class="modal__close" onclick="closeModal('sample-code-modal')">&#10005;</button>
-      </div>
-    </div>
+			<button class="modal__close" onclick="closeModal('sample-code-modal')">&#10005;</button>
+		</div>
+	</div>
 
-      <link href="prism/prism.css" rel="stylesheet" />
-      <script src="prism/prism.js"></script>
+	<link href="prism/prism.css" rel="stylesheet" />
+	<script src="prism/prism.js"></script>
 
-  </body>
+</body>
+
 </html>

@@ -1,198 +1,196 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <title>Shaku</title>
-    <meta name="description" content="Shaku - a simple and easy-to-use javascript library for videogame programming.">
-    <meta name="author" content="Ronen Ness">
-    <link href="css/style.css" rel="stylesheet" type="text/css" media="all">
-  </head>
-  <body>
-    <div style="padding:0.5em" class="noselect">
-      <h1 class="demo-title" style="margin-left: 0;">Shaku: Snake</h1>
-      <p>This demo shows a simple snake game made with Shaku.<br />Use <b>Arrows</b> or <b>WASD</b> to move.</p>
-      
-      <!-- include shaku -->
-      <script src="js/demos.js"></script>
-      <script src="js/shaku.js"></script>
 
-      <!-- demo code -->
-      <script id="main-code">async function runGame()
-{
-  // init shaku
-  await Shaku.init();
+<head>
+	<meta charset="UTF-8">
+	<title>Shaku</title>
+	<meta name="description" content="Shaku - a simple and easy-to-use javascript library for videogame programming.">
+	<meta name="author" content="Ronen Ness">
+	<link href="css/style.css" rel="stylesheet" type="text/css" media="all">
+</head>
 
-  // add shaku's canvas to document
-  document.body.appendChild(Shaku.gfx.canvas);
+<body>
+	<div style="padding:0.5em" class="noselect">
+		<h1 class="demo-title" style="margin-left: 0;">Shaku: Snake</h1>
+		<p>This demo shows a simple snake game made with Shaku.<br />Use <b>Arrows</b> or <b>WASD</b> to move.</p>
 
-  // create shapes batch
-  let shapesBatch = new Shaku.gfx.ShapesBatch();
+		<!-- include shaku -->
+		<script src="js/demos.js"></script>
+		<script src="js/shaku.js"></script>
 
-  // create text sprite batch
-  let textSpriteBatch = new Shaku.gfx.TextSpriteBatch();
-  textSpriteBatch.outlineWeight = 0.75;
+		<!-- demo code -->
+		<script id="main-code">async function runGame() {
+				// init shaku
+				await Shaku.init();
 
-  // single tile size in the snake game
-  let tileSize = 50;
-  let gridSize = new Shaku.utils.Vector2(25, 15);
+				// add shaku's canvas to document
+				document.body.appendChild(Shaku.gfx.canvas);
 
-  // we don't move snake every frame; only in this intervals
-  const snakeMovementInterval = 0.1;
-  let timeForSnakeMovement;
+				// create shapes batch
+				let shapesBatch = new Shaku.gfx.ShapesBatch();
 
-  // snake direction
-  let direction;
-  let lastMovedDirection;
+				// create text sprite batch
+				let textSpriteBatch = new Shaku.gfx.TextSpriteBatch();
+				textSpriteBatch.outlineWeight = 0.75;
 
-  // set canvas size to match grid
-  let screenX = tileSize * gridSize.x;
-  let screenY = tileSize * gridSize.y;
-  Shaku.gfx.setResolution(screenX, screenY, true);
+				// single tile size in the snake game
+				let tileSize = 50;
+				let gridSize = new Shaku.utils.Vector2(25, 15);
 
-  // load font texture
-  let fontTexture = await Shaku.assets.loadFontTexture('assets/DejaVuSansMono.ttf', {fontName: 'DejaVuSansMono'});
+				// we don't move snake every frame; only in this intervals
+				const snakeMovementInterval = 0.1;
+				let timeForSnakeMovement;
 
-  // head position and snake body
-  let head;
-  let snake;
+				// snake direction
+				let direction;
+				let lastMovedDirection;
 
-  // food position
-  let food;
+				// set canvas size to match grid
+				let screenX = tileSize * gridSize.x;
+				let screenY = tileSize * gridSize.y;
+				Shaku.gfx.setResolution(screenX, screenY, true);
 
-  // did we get game over?
-  let gameOver = false;
-  let gameOverTextGroup = Shaku.gfx.buildText(fontTexture, "Game Over!\nPress 'Space' to restart.", 64, Shaku.utils.Color.white, Shaku.gfx.TextAlignments.Center);
-  gameOverTextGroup.position.set(screenX / 2, screenY / 2 - 32);
+				// load font texture
+				let fontTexture = await Shaku.assets.loadFontTexture('assets/DejaVuSansMono.ttf', { fontName: 'DejaVuSansMono' });
 
-  // generate food position
-  function generateFood()
-  {
-    food = new Shaku.utils.Vector2(Math.floor(Math.random() * gridSize.x), Math.floor(Math.random() * gridSize.y));
-  }
+				// head position and snake body
+				let head;
+				let snake;
 
-  // draw a tile
-  function drawTile(index, color)
-  {
-    shapesBatch.drawRectangle(new Shaku.utils.Rectangle(index.x * tileSize, index.y * tileSize, tileSize, tileSize), color);
-  }
+				// food position
+				let food;
 
-  // convert directions to values to movement vectors
-  const directionsToVector = {up: {x:0, y:-1}, down: {x:0, y:1}, left: {x:-1, y:0}, right: {x:1, y:0}};
+				// did we get game over?
+				let gameOver = false;
+				let gameOverTextGroup = Shaku.gfx.buildText(fontTexture, "Game Over!\nPress 'Space' to restart.", 64, Shaku.utils.Color.white, Shaku.gfx.TextAlignments.Center);
+				gameOverTextGroup.position.set(screenX / 2, screenY / 2 - 32);
 
-  // reset game state
-  function resetGame()
-  {
-    head = gridSize.div(2).floor();
-    snake = [head];
-    direction = 'right';
-    lastMovedDirection = direction;
-    timeForSnakeMovement = snakeMovementInterval * 2;
-    gameOver = false;
-    generateFood();
-  }
-  resetGame();
+				// generate food position
+				function generateFood() {
+					food = new Shaku.utils.Vector2(Math.floor(Math.random() * gridSize.x), Math.floor(Math.random() * gridSize.y));
+				}
 
-  // do a single main loop step
-  function step() 
-  {  
-    // start new frame and clear screen
-    Shaku.startFrame();
-    Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
+				// draw a tile
+				function drawTile(index, color) {
+					shapesBatch.drawRectangle(new Shaku.utils.Rectangle(index.x * tileSize, index.y * tileSize, tileSize, tileSize), color);
+				}
 
-    shapesBatch.begin();
+				// convert directions to values to movement vectors
+				const directionsToVector = { up: { x: 0, y: -1 }, down: { x: 0, y: 1 }, left: { x: -1, y: 0 }, right: { x: 1, y: 0 } };
 
-    // draw snake
-    for (let i = 1; i < snake.length; ++i) {
-      drawTile(snake[i], Shaku.utils.Color.darkred);
-    }
-    drawTile(snake[0], Shaku.utils.Color.red);
+				// reset game state
+				function resetGame() {
+					head = gridSize.div(2).floor();
+					snake = [head];
+					direction = 'right';
+					lastMovedDirection = direction;
+					timeForSnakeMovement = snakeMovementInterval * 2;
+					gameOver = false;
+					generateFood();
+				}
+				resetGame();
 
-    // draw food
-    if (food) {
-      drawTile(food, Shaku.utils.Color.lime);
-    }
+				// do a single main loop step
+				function step() {
+					// start new frame and clear screen
+					Shaku.startFrame();
+					Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
 
-    // if game over, stop here
-    if (gameOver) {
-      if (Shaku.input.released('space')) {
-        resetGame();
-      }
-      shapesBatch.end();
-      textSpriteBatch.begin();
-      textSpriteBatch.drawText(gameOverTextGroup);
-      textSpriteBatch.end();
-      Shaku.endFrame();
-      Shaku.requestAnimationFrame(step);
-      return;
-    }
+					shapesBatch.begin();
 
-    // set snake direction
-    if ((Shaku.input.down('left') || Shaku.input.down('a')) && lastMovedDirection !== 'right') { direction = 'left'; }
-    if ((Shaku.input.down('right') || Shaku.input.down('d')) && lastMovedDirection !== 'left') { direction = 'right'; }
-    if ((Shaku.input.down('up') || Shaku.input.down('w')) && lastMovedDirection !== 'down') { direction = 'up'; }
-    if ((Shaku.input.down('down') || Shaku.input.down('s')) && lastMovedDirection !== 'up') { direction = 'down'; }
+					// draw snake
+					for (let i = 1; i < snake.length; ++i) {
+						drawTile(snake[i], Shaku.utils.Color.darkred);
+					}
+					drawTile(snake[0], Shaku.utils.Color.red);
 
-    // check if its time to make a snake step
-    timeForSnakeMovement -= Shaku.gameTime.delta;
-    if (timeForSnakeMovement <= 0) {
-      timeForSnakeMovement = snakeMovementInterval;
+					// draw food
+					if (food) {
+						drawTile(food, Shaku.utils.Color.lime);
+					}
 
-      // store last part position
-      let last = snake[snake.length - 1].clone();
-      let lastHead = head.clone();
+					// if game over, stop here
+					if (gameOver) {
+						if (Shaku.input.released('space')) {
+							resetGame();
+						}
+						shapesBatch.end();
+						textSpriteBatch.begin();
+						textSpriteBatch.drawText(gameOverTextGroup);
+						textSpriteBatch.end();
+						Shaku.endFrame();
+						Shaku.requestAnimationFrame(step);
+						return;
+					}
 
-      // move head
-      head.x += directionsToVector[direction].x;
-      head.y += directionsToVector[direction].y;
+					// set snake direction
+					if ((Shaku.input.down('left') || Shaku.input.down('a')) && lastMovedDirection !== 'right') { direction = 'left'; }
+					if ((Shaku.input.down('right') || Shaku.input.down('d')) && lastMovedDirection !== 'left') { direction = 'right'; }
+					if ((Shaku.input.down('up') || Shaku.input.down('w')) && lastMovedDirection !== 'down') { direction = 'up'; }
+					if ((Shaku.input.down('down') || Shaku.input.down('s')) && lastMovedDirection !== 'up') { direction = 'down'; }
 
-      // store last moved direction
-      lastMovedDirection = snake.length > 1 ? direction : null;
+					// check if its time to make a snake step
+					timeForSnakeMovement -= Shaku.gameTime.delta;
+					if (timeForSnakeMovement <= 0) {
+						timeForSnakeMovement = snakeMovementInterval;
 
-      // update tail
-      for (let i = snake.length - 1; i >= 1; --i) {
-        snake[i] = (i === 1) ? lastHead : snake[i - 1].clone(); 
-      }
+						// store last part position
+						let last = snake[snake.length - 1].clone();
+						let lastHead = head.clone();
 
-      // pick up food
-      if (head.equals(food)) {
-        generateFood();
-        snake.push(last.clone());
-      }
+						// move head
+						head.x += directionsToVector[direction].x;
+						head.y += directionsToVector[direction].y;
 
-      // check if game over due to out of level
-      if (head.x < 0 || head.y < 0 || head.x >= gridSize.x || head.y >= gridSize.y) { 
-        gameOver = true;
-      }
-      // check if game over due to stepping on tail
-      for (let i = 1; i < snake.length && !gameOver; ++i) {
-        if (head.equals(snake[i])) {
-          gameOver = true;
-        }
-      }
-    }
-    
-    // draw shapes batch
-    shapesBatch.end();
+						// store last moved direction
+						lastMovedDirection = snake.length > 1 ? direction : null;
 
-    // draw score
-    let scoreTextGroup = Shaku.gfx.buildText(fontTexture, "Score: " + snake.length, 26, Shaku.utils.Color.white, Shaku.gfx.TextAlignments.Left);
-    scoreTextGroup.position.set(5, 18);
-    textSpriteBatch.begin();
-    textSpriteBatch.drawText(scoreTextGroup);
-    textSpriteBatch.end();
+						// update tail
+						for (let i = snake.length - 1; i >= 1; --i) {
+							snake[i] = (i === 1) ? lastHead : snake[i - 1].clone();
+						}
 
-    // end frame and request next frame
-    Shaku.endFrame();
-    Shaku.requestAnimationFrame(step);
-  }
+						// pick up food
+						if (head.equals(food)) {
+							generateFood();
+							snake.push(last.clone());
+						}
 
-  // start main loop
-  step();
-}
+						// check if game over due to out of level
+						if (head.x < 0 || head.y < 0 || head.x >= gridSize.x || head.y >= gridSize.y) {
+							gameOver = true;
+						}
+						// check if game over due to stepping on tail
+						for (let i = 1; i < snake.length && !gameOver; ++i) {
+							if (head.equals(snake[i])) {
+								gameOver = true;
+							}
+						}
+					}
 
-runGame();</script>
+					// draw shapes batch
+					shapesBatch.end();
 
-</div>
+					// draw score
+					let scoreTextGroup = Shaku.gfx.buildText(fontTexture, "Score: " + snake.length, 26, Shaku.utils.Color.white, Shaku.gfx.TextAlignments.Left);
+					scoreTextGroup.position.set(5, 18);
+					textSpriteBatch.begin();
+					textSpriteBatch.drawText(scoreTextGroup);
+					textSpriteBatch.end();
 
-  </body>
+					// end frame and request next frame
+					Shaku.endFrame();
+					Shaku.requestAnimationFrame(step);
+				}
+
+				// start main loop
+				step();
+			}
+
+			runGame();</script>
+
+	</div>
+
+</body>
+
 </html>

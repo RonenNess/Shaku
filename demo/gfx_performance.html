@@ -1,182 +1,182 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <title>Shaku</title>
-    <meta name="description" content="Shaku - a simple and easy-to-use javascript library for videogame programming.">
-    <meta name="author" content="Ronen Ness">
-    <link href="css/style.css" rel="stylesheet" type="text/css" media="all">
-  </head>
-  <body>
-    <div class="noselect">
-    <h1 class="demo-title" style="margin-left: 0;">Shaku Gfx Demo: Performance Test</h1>
-      <p>This demo is a performance test to check the limits of Shaku on your machine, with colors and movements.<br />
-      Press <b>Z</b> to add sprites, and <b>X</b> to remove sprites.</p>
 
-      <div>
-        <input type="checkbox" id="apply-rotation" name="apply-rotation">
-        <label for="apply-rotation">Rotate Sprites</label>
-      </div>
+<head>
+	<meta charset="UTF-8">
+	<title>Shaku</title>
+	<meta name="description" content="Shaku - a simple and easy-to-use javascript library for videogame programming.">
+	<meta name="author" content="Ronen Ness">
+	<link href="css/style.css" rel="stylesheet" type="text/css" media="all">
+</head>
 
-      <div>
-        <input type="checkbox" id="apply-colors" name="apply-colors">
-        <label for="apply-colors">Random Colors</label>
-      </div>
+<body>
+	<div class="noselect">
+		<h1 class="demo-title" style="margin-left: 0;">Shaku Gfx Demo: Performance Test</h1>
+		<p>This demo is a performance test to check the limits of Shaku on your machine, with colors and
+			movements.<br />
+			Press <b>Z</b> to add sprites, and <b>X</b> to remove sprites.</p>
 
-      <p id="fps-data"></p>
+		<div>
+			<input type="checkbox" id="apply-rotation" name="apply-rotation">
+			<label for="apply-rotation">Rotate Sprites</label>
+		</div>
 
-      <!-- include shaku -->
-      <script src="js/demos.js"></script>
-      <script src="js/shaku.js"></script>
+		<div>
+			<input type="checkbox" id="apply-colors" name="apply-colors">
+			<label for="apply-colors">Random Colors</label>
+		</div>
 
-      <!-- demo code -->
-      <script>
-        async function runDemo()
-        {
-          // init shaku
-          await Shaku.init();
+		<p id="fps-data"></p>
 
-          // screen size
-          let screenX = 1000;
-          let screenY = 800;
+		<!-- include shaku -->
+		<script src="js/demos.js"></script>
+		<script src="js/shaku.js"></script>
 
-          // add canvas to document
-          document.body.appendChild(Shaku.gfx.canvas);
-          Shaku.gfx.setResolution(screenX, screenY, true);
+		<!-- demo code -->
+		<script>
+			async function runDemo() {
+				// init shaku
+				await Shaku.init();
 
-          // load textures
-          let texture = await Shaku.assets.loadTexture('assets/skelly.png');
+				// screen size
+				let screenX = 1000;
+				let screenY = 800;
 
-          // create sprites group
-          let group = new Shaku.gfx.SpritesGroup();
+				// add canvas to document
+				document.body.appendChild(Shaku.gfx.canvas);
+				Shaku.gfx.setResolution(screenX, screenY, true);
 
-          // will hold the sprites batch
-          let spritesBatch = 0;
+				// load textures
+				let texture = await Shaku.assets.loadTexture('assets/skelly.png');
 
-          // add a new sprite to group
-          function drawSprite()
-          {
-            // create sprite
-            let sprite = new Shaku.gfx.Sprite(texture);
+				// create sprites group
+				let group = new Shaku.gfx.SpritesGroup();
 
-            // random position and set size
-            sprite.position.set(16 + Math.random() * (screenX - 32), 24 + Math.random() * (screenY - 48));
-            sprite.size.set(32, 48);
+				// will hold the sprites batch
+				let spritesBatch = 0;
 
-            // set source rect
-            sprite.sourceRectangle = new Shaku.utils.Rectangle(0, 0, texture.width, texture.height);
+				// add a new sprite to group
+				function drawSprite() {
+					// create sprite
+					let sprite = new Shaku.gfx.Sprite(texture);
 
-            // random color
-            if (Math.random() < 0.75) {
-              sprite.color.set(Math.random(), Math.random(), Math.random(), 1);
-            }
+					// random position and set size
+					sprite.position.set(16 + Math.random() * (screenX - 32), 24 + Math.random() * (screenY - 48));
+					sprite.size.set(32, 48);
 
-            // random if should rotate randomly
-            if (Math.random() < 0.375) {
-              sprite.rotationSpeed = (Math.random() - 0.5) * 5;
-            }
+					// set source rect
+					sprite.sourceRectangle = new Shaku.utils.Rectangle(0, 0, texture.width, texture.height);
 
-            // randomize velocity
-            sprite.velocity = new Shaku.utils.Vector2(Math.random() * 2 - 1, Math.random() * 2 - 1);
+					// random color
+					if (Math.random() < 0.75) {
+						sprite.color.set(Math.random(), Math.random(), Math.random(), 1);
+					}
 
-            // add to group
-            group.add(sprite);
-          }
+					// random if should rotate randomly
+					if (Math.random() < 0.375) {
+						sprite.rotationSpeed = (Math.random() - 0.5) * 5;
+					}
 
-          // create starting sprites
-          let spritesCount = 100000;
-          for (let i = 0; i < spritesCount; ++i) {
-            drawSprite();
-          }
+					// randomize velocity
+					sprite.velocity = new Shaku.utils.Vector2(Math.random() * 2 - 1, Math.random() * 2 - 1);
 
-          // animate stuff
-          let updateIndex = 0;
-          function updateSprites() 
-          {
-            let applyRotation = document.getElementById('apply-rotation').checked;
-            let speedFactor = Shaku.gameTime.delta * 150;
-            for (let sprite of group._sprites) {
-              
-              // move sprite
-              sprite.position.x += sprite.velocity.x * speedFactor;
-              sprite.position.y += sprite.velocity.y * speedFactor;
-              if (sprite.position.x < 0 && sprite.velocity.x < 0) {
-                sprite.position.x = 0;
-                sprite.velocity.x = Math.abs(sprite.velocity.x);
-              }
-              else if (sprite.position.x > screenX && sprite.velocity.x > 0) {
-                sprite.position.x = screenX;
-                sprite.velocity.x = -Math.abs(sprite.velocity.x);
-              }
-              if (sprite.position.y < 0 && sprite.velocity.y < 0) {
-                sprite.position.y = 0;
-                sprite.velocity.y = Math.abs(sprite.velocity.y);
-              }
-              else if (sprite.position.y > screenY && sprite.velocity.y > 0) {
-                sprite.position.y = screenY;
-                sprite.velocity.y = -Math.abs(sprite.velocity.y);
-              }
+					// add to group
+					group.add(sprite);
+				}
 
-              // rotate sprite
-              if (applyRotation) {
-                if (sprite.rotationSpeed) {
-                  sprite.rotation += sprite.rotationSpeed * Shaku.gameTime.delta;
-                }
-              }
-              else {
-                sprite.rotation = 0;
-              }
-            };
-          }
+				// create starting sprites
+				let spritesCount = 100000;
+				for (let i = 0; i < spritesCount; ++i) {
+					drawSprite();
+				}
 
+				// animate stuff
+				let updateIndex = 0;
+				function updateSprites() {
+					let applyRotation = document.getElementById('apply-rotation').checked;
+					let speedFactor = Shaku.gameTime.delta * 150;
+					for (let sprite of group._sprites) {
 
-          // do a main loop step.
-          function step() 
-          {  
-            // start frame and clear screen
-            Shaku.startFrame();
-            Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
+						// move sprite
+						sprite.position.x += sprite.velocity.x * speedFactor;
+						sprite.position.y += sprite.velocity.y * speedFactor;
+						if (sprite.position.x < 0 && sprite.velocity.x < 0) {
+							sprite.position.x = 0;
+							sprite.velocity.x = Math.abs(sprite.velocity.x);
+						}
+						else if (sprite.position.x > screenX && sprite.velocity.x > 0) {
+							sprite.position.x = screenX;
+							sprite.velocity.x = -Math.abs(sprite.velocity.x);
+						}
+						if (sprite.position.y < 0 && sprite.velocity.y < 0) {
+							sprite.position.y = 0;
+							sprite.velocity.y = Math.abs(sprite.velocity.y);
+						}
+						else if (sprite.position.y > screenY && sprite.velocity.y > 0) {
+							sprite.position.y = screenY;
+							sprite.velocity.y = -Math.abs(sprite.velocity.y);
+						}
 
-            // check if need to rebuild sprite batch
-            let applyColors = document.getElementById('apply-colors').checked;
-            if (!spritesBatch || (spritesBatch.supportVertexColor !== applyColors)) {
-              let batchSize = 4000;
-              spritesBatch = new Shaku.gfx.SpriteBatch(batchSize, applyColors);
-            }
-
-            // draw sprites
-            spritesBatch.begin();
-            spritesBatch.drawSpriteGroup(group);
-            spritesBatch.end();
-
-            // add sprites
-            if (Shaku.input.down('z')) { for (let x = 0; x < 100; ++x) drawSprite(); }
-            if (Shaku.input.down('x')) { for (let x = 0; x < 100 && group.count > 1; ++x) group.shift(); }
-
-            // to suffer less fps drop from animation updates and focus on rendering, we only update every X frames
-            if ((updateIndex++) % 5) {
-              updateSprites();
-            }
-
-            // end frame and request next frame
-            Shaku.endFrame();
-            Shaku.requestAnimationFrame(step);
-            
-            // update fps and data
-            document.getElementById('fps-data').innerHTML = "FPS: " + Shaku.getFpsCount() + "<br />Sprites: " + group.count + "<br />Avg Frame Time (ms): " + Shaku.getAverageFrameTime() + "<br />Delta Time (ms): " + (Shaku.gameTime.delta * 1000.0) + "<br />Draw Calls: " + Shaku.gfx.drawCallsCount;
-          }
-
-          // start main loop
-          step();
-        }
-
-        // start demo
-        runDemo();
-
-      </script>
-
-</div>
+						// rotate sprite
+						if (applyRotation) {
+							if (sprite.rotationSpeed) {
+								sprite.rotation += sprite.rotationSpeed * Shaku.gameTime.delta;
+							}
+						}
+						else {
+							sprite.rotation = 0;
+						}
+					};
+				}
 
 
-  </body>
+				// do a main loop step.
+				function step() {
+					// start frame and clear screen
+					Shaku.startFrame();
+					Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
+
+					// check if need to rebuild sprite batch
+					let applyColors = document.getElementById('apply-colors').checked;
+					if (!spritesBatch || (spritesBatch.supportVertexColor !== applyColors)) {
+						let batchSize = 4000;
+						spritesBatch = new Shaku.gfx.SpriteBatch(batchSize, applyColors);
+					}
+
+					// draw sprites
+					spritesBatch.begin();
+					spritesBatch.drawSpriteGroup(group);
+					spritesBatch.end();
+
+					// add sprites
+					if (Shaku.input.down('z')) { for (let x = 0; x < 100; ++x) drawSprite(); }
+					if (Shaku.input.down('x')) { for (let x = 0; x < 100 && group.count > 1; ++x) group.shift(); }
+
+					// to suffer less fps drop from animation updates and focus on rendering, we only update every X frames
+					if ((updateIndex++) % 5) {
+						updateSprites();
+					}
+
+					// end frame and request next frame
+					Shaku.endFrame();
+					Shaku.requestAnimationFrame(step);
+
+					// update fps and data
+					document.getElementById('fps-data').innerHTML = "FPS: " + Shaku.getFpsCount() + "<br />Sprites: " + group.count + "<br />Avg Frame Time (ms): " + Shaku.getAverageFrameTime() + "<br />Delta Time (ms): " + (Shaku.gameTime.delta * 1000.0) + "<br />Draw Calls: " + Shaku.gfx.drawCallsCount;
+				}
+
+				// start main loop
+				step();
+			}
+
+			// start demo
+			runDemo();
+
+		</script>
+
+	</div>
+
+
+</body>
+
 </html>

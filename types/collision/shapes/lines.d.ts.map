@@ -1,1 +1,0 @@
-{"version":3,"file":"lines.d.ts","sourceRoot":"","sources":["../../../src/collision/shapes/lines.js"],"names":[],"mappings":";AAoBA;;;GAGG;AACH;IAEI;;;OAGG;IACH,mBAFW,MAAM,IAAI,CAAC,GAAC,IAAI,EAO1B;IAFG,cAAgB;IAYpB;;;OAGG;IACH,gBAFW,MAAM,IAAI,CAAC,GAAC,IAAI,QA0B1B;IAHG,wBAAgD;IAChD,gBAAqH;IAIzH;;;OAGG;IACH,gBAFW,MAAM,IAAI,CAAC,GAAC,IAAI,QAM1B;IA0BD;;OAEG;IACH,gDAaC;CACJ"}

@@ -1,130 +1,133 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <title>Shaku</title>
-    <meta name="description" content="Shaku - a simple and easy-to-use javascript library for videogame programming.">
-    <meta name="author" content="Ronen Ness">
-    <link href="css/style.css" rel="stylesheet" type="text/css" media="all">
-  </head>
-  <body>
-    <div class="noselect">
-    <button class="view-code-btn" onclick="showSampleCode();">View Code</button> 
-    <h1 class="demo-title">Shaku Gfx Demo: Texture Atlas</h1>
-      <p>This demo load multiple textures and generate a Texture Atlas Asset from them <i>at runtime</i>.<br />
-        If not all textures can fit in a single texture atlas, it will generate multiple textures instead.<br /><br />
-      In this demo we limit the atlas textures size to 512x512, so we'll get more than one texture. Without providing a size limit it will create textures as big as WebGL allows us.<br/><br/>
-      On the left side of the canvas you'll see the generated atlas textures. On the right we'll extract a random image from the atlas and render it, just to show how to use the atlas.</p>
-      
-      <label><b>Texture Atlas Data:</b></label>
-      <p id="atlas-data"></p>
-      
-      <!-- include shaku -->
-      <script src="js/demos.js"></script>
-      <script src="js/shaku.js"></script>
 
-      <!-- demo code -->
-      <script>
-        async function runGame()
-        {
-          // init shaku
-          await Shaku.init();
+<head>
+	<meta charset="UTF-8">
+	<title>Shaku</title>
+	<meta name="description" content="Shaku - a simple and easy-to-use javascript library for videogame programming.">
+	<meta name="author" content="Ronen Ness">
+	<link href="css/style.css" rel="stylesheet" type="text/css" media="all">
+</head>
 
-          // add shaku's canvas to document and set resolution to 800x600
-          const screenX = 1400;
-          const screenY = 600;
-          document.body.appendChild(Shaku.gfx.canvas);
-          Shaku.gfx.setResolution(screenX, screenY, true);
+<body>
+	<div class="noselect">
+		<button class="view-code-btn" onclick="showSampleCode();">View Code</button>
+		<h1 class="demo-title">Shaku Gfx Demo: Texture Atlas</h1>
+		<p>This demo load multiple textures and generate a Texture Atlas Asset from them <i>at runtime</i>.<br />
+			If not all textures can fit in a single texture atlas, it will generate multiple textures
+			instead.<br /><br />
+			In this demo we limit the atlas textures size to 512x512, so we'll get more than one texture. Without
+			providing a size limit it will create textures as big as WebGL allows us.<br /><br />
+			On the left side of the canvas you'll see the generated atlas textures. On the right we'll extract a random
+			image from the atlas and render it, just to show how to use the atlas.</p>
 
-          // all source texture URLs
-          const sourceUrls = [
-            'assets/stone_wall.png',
-            'assets/sprite.png',
-            'assets/sprite-sm.png',
-            'assets/skelly.png',
-            'assets/level_block.jpg',
-            'assets/orcy.png',
-            'assets/lava.png',
-            'assets/baum.png',
-            'assets/overlay.png',
-            'assets/tilemap.png',
-            'assets/fishy/skeleton_icon.png',
-            'assets/fishy/seaweed.png',
-            'assets/fishy/bubble.png',
-            'assets/fishy/eye.png',
-            'assets/colors.png',
-          ];
+		<label><b>Texture Atlas Data:</b></label>
+		<p id="atlas-data"></p>
 
-          // create a texture atlas
-          let textureAtlas = await Shaku.assets.createTextureAtlas('texture-atlas', sourceUrls, 512, 512);
+		<!-- include shaku -->
+		<script src="js/demos.js"></script>
+		<script src="js/shaku.js"></script>
 
-          // write atlas data
-          let atlasDataParagraph = document.getElementById('atlas-data');
-          atlasDataParagraph.innerHTML = `Textures in atlas: ${textureAtlas.textures.length}.<br />`;
-          for (let texture of textureAtlas.textures) {
-            atlasDataParagraph.innerHTML += `Texture '${texture.url}'' | Size: ${texture.width},${texture.height}. Utilized area: ${texture.utilized}.<br />`;
-          }
+		<!-- demo code -->
+		<script>
+			async function runGame() {
+				// init shaku
+				await Shaku.init();
 
-          // create sprites and shapes batch
-          let spritesBatch = new Shaku.gfx.SpriteBatch();
-          let linesBatch = new Shaku.gfx.LinesBatch();
+				// add shaku's canvas to document and set resolution to 800x600
+				const screenX = 1400;
+				const screenY = 600;
+				document.body.appendChild(Shaku.gfx.canvas);
+				Shaku.gfx.setResolution(screenX, screenY, true);
 
-          // do a single main loop step
-          function step() 
-          {  
-            // start new frame and clear screen
-            Shaku.startFrame();
-            Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
+				// all source texture URLs
+				const sourceUrls = [
+					'assets/stone_wall.png',
+					'assets/sprite.png',
+					'assets/sprite-sm.png',
+					'assets/skelly.png',
+					'assets/level_block.jpg',
+					'assets/orcy.png',
+					'assets/lava.png',
+					'assets/baum.png',
+					'assets/overlay.png',
+					'assets/tilemap.png',
+					'assets/fishy/skeleton_icon.png',
+					'assets/fishy/seaweed.png',
+					'assets/fishy/bubble.png',
+					'assets/fishy/eye.png',
+					'assets/colors.png',
+				];
 
-            // draw the atlas textures
-            let offsetX = 10;
-            for (let texture of textureAtlas.textures) {
+				// create a texture atlas
+				let textureAtlas = await Shaku.assets.createTextureAtlas('texture-atlas', sourceUrls, 512, 512);
 
-              // calc size and position
-              let size = texture.getSize();
-              let position = new Shaku.utils.Vector2(offsetX + size.x / 2, screenY / 2);
-              offsetX += size.x + 20;
+				// write atlas data
+				let atlasDataParagraph = document.getElementById('atlas-data');
+				atlasDataParagraph.innerHTML = `Textures in atlas: ${textureAtlas.textures.length}.<br />`;
+				for (let texture of textureAtlas.textures) {
+					atlasDataParagraph.innerHTML += `Texture '${texture.url}'' | Size: ${texture.width},${texture.height}. Utilized area: ${texture.utilized}.<br />`;
+				}
 
-              // draw background
-              linesBatch.begin();
-              linesBatch.drawQuad(position, size, Shaku.utils.Color.red);
-              linesBatch.end();
+				// create sprites and shapes batch
+				let spritesBatch = new Shaku.gfx.SpriteBatch();
+				let linesBatch = new Shaku.gfx.LinesBatch();
 
-              // draw texture
-              spritesBatch.begin();
-              spritesBatch.drawQuad(texture, position, size);
-              spritesBatch.end();
-            }
+				// do a single main loop step
+				function step() {
+					// start new frame and clear screen
+					Shaku.startFrame();
+					Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
 
-            // draw texture from atlas
-            let currTextureUrl = sourceUrls[Math.floor(Shaku.gameTime.elapsed) % sourceUrls.length];
-            let textureInAtlas = textureAtlas.getTexture(currTextureUrl);
-            let size = textureInAtlas.sourceRectangle.getSize();
-            spritesBatch.begin();
-            spritesBatch.drawQuad(textureInAtlas, new Shaku.utils.Vector2(offsetX + 50 + size.x / 2, screenY / 2), size);
-            spritesBatch.end();
+					// draw the atlas textures
+					let offsetX = 10;
+					for (let texture of textureAtlas.textures) {
 
-            // end frame and request next frame
-            Shaku.endFrame();
-            Shaku.requestAnimationFrame(step);
-          }
+						// calc size and position
+						let size = texture.getSize();
+						let position = new Shaku.utils.Vector2(offsetX + size.x / 2, screenY / 2);
+						offsetX += size.x + 20;
 
-          // start main loop
-          step();
-        }
+						// draw background
+						linesBatch.begin();
+						linesBatch.drawQuad(position, size, Shaku.utils.Color.red);
+						linesBatch.end();
 
-        runGame();
-      </script>
+						// draw texture
+						spritesBatch.begin();
+						spritesBatch.drawQuad(texture, position, size);
+						spritesBatch.end();
+					}
 
-</div>
+					// draw texture from atlas
+					let currTextureUrl = sourceUrls[Math.floor(Shaku.gameTime.elapsed) % sourceUrls.length];
+					let textureInAtlas = textureAtlas.getTexture(currTextureUrl);
+					let size = textureInAtlas.sourceRectangle.getSize();
+					spritesBatch.begin();
+					spritesBatch.drawQuad(textureInAtlas, new Shaku.utils.Vector2(offsetX + 50 + size.x / 2, screenY / 2), size);
+					spritesBatch.end();
 
-<!-- code example part -->
-<div id="sample-code-modal" class="modal">
-  <div class="modal__overlay jsOverlay"></div>
-  <div class="modal__container">   
+					// end frame and request next frame
+					Shaku.endFrame();
+					Shaku.requestAnimationFrame(step);
+				}
 
-<p class="noselect">The following code generate and uses a texture atlas.</p>
-<pre><code class="language-js">// create a texture atlas without size limit
+				// start main loop
+				step();
+			}
+
+			runGame();
+		</script>
+
+	</div>
+
+	<!-- code example part -->
+	<div id="sample-code-modal" class="modal">
+		<div class="modal__overlay jsOverlay"></div>
+		<div class="modal__container">
+
+			<p class="noselect">The following code generate and uses a texture atlas.</p>
+			<pre><code class="language-js">// create a texture atlas without size limit
 let textureAtlas = await Shaku.assets.createTextureAtlas('texture-atlas',
 [
   'assets/stone_wall.png',
@@ -164,12 +167,13 @@ spritesBatch.drawQuad(textureInAtlas.texture, new Shaku.utils.Vector2(250, 250),
 spritesBatch.end();
 </code></pre>
 
-  <button class="modal__close" onclick="closeModal('sample-code-modal')">&#10005;</button>
-</div>
-</div>
+			<button class="modal__close" onclick="closeModal('sample-code-modal')">&#10005;</button>
+		</div>
+	</div>
 
-<link href="prism/prism.css" rel="stylesheet" />
-<script src="prism/prism.js"></script>
+	<link href="prism/prism.css" rel="stylesheet" />
+	<script src="prism/prism.js"></script>
 
-  </body>
+</body>
+
 </html>

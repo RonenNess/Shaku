@@ -1,159 +1,159 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <title>Shaku</title>
-    <meta name="description" content="Shaku - a simple and easy-to-use javascript library for videogame programming.">
-    <meta name="author" content="Ronen Ness">
-    <link href="css/style.css" rel="stylesheet" type="text/css" media="all">
-  </head>
-  <body>
-    <div class="noselect">
-    <button class="view-code-btn" onclick="showSampleCode();">View Code</button> 
-    <h1 class="demo-title">Shaku Gfx Demo: Wrap and Filter modes</h1>
-      <p>This demo demonstrate texture's Wrap and Filter mode properties.<br/><br/>
-      Press <b>1-3</b> to switch textures.</p>
 
-      <span class="credits">Wall texture is from: https://opengameart.org/content/stone-wall-with-cracks<br />
-      Lava texture is from: https://opengameart.org/content/2-seamless-lava-tiles<br />
-      Knight image is from: https://opengameart.org/content/knight-sprite</span>
+<head>
+	<meta charset="UTF-8">
+	<title>Shaku</title>
+	<meta name="description" content="Shaku - a simple and easy-to-use javascript library for videogame programming.">
+	<meta name="author" content="Ronen Ness">
+	<link href="css/style.css" rel="stylesheet" type="text/css" media="all">
+</head>
 
-      <!-- include shaku -->
-      <script src="js/demos.js"></script>
-      <script src="js/shaku.js"></script>
+<body>
+	<div class="noselect">
+		<button class="view-code-btn" onclick="showSampleCode();">View Code</button>
+		<h1 class="demo-title">Shaku Gfx Demo: Wrap and Filter modes</h1>
+		<p>This demo demonstrate texture's Wrap and Filter mode properties.<br /><br />
+			Press <b>1-3</b> to switch textures.</p>
 
-      <!-- demo code -->
-      <script>
-        async function runDemo()
-        {
-          // init shaku
-          await Shaku.init();
+		<span class="credits">Wall texture is from: https://opengameart.org/content/stone-wall-with-cracks<br />
+			Lava texture is from: https://opengameart.org/content/2-seamless-lava-tiles<br />
+			Knight image is from: https://opengameart.org/content/knight-sprite</span>
 
-          // screen size
-          let screenX = 1200;
-          let screenY = 1000;
+		<!-- include shaku -->
+		<script src="js/demos.js"></script>
+		<script src="js/shaku.js"></script>
 
-          // add canvas to document
-          document.body.appendChild(Shaku.gfx.canvas);
-          Shaku.gfx.setResolution(screenX, screenY, true);
+		<!-- demo code -->
+		<script>
+			async function runDemo() {
+				// init shaku
+				await Shaku.init();
 
-          // load font texture
-          let fontTexture = await Shaku.assets.loadFontTexture('assets/DejaVuSansMono.ttf', {fontName: 'DejaVuSansMono'});
+				// screen size
+				let screenX = 1200;
+				let screenY = 1000;
 
-          // create sprites and text batch
-          let spritesBatch = new Shaku.gfx.SpriteBatch();
-          let textSpriteBatch = new Shaku.gfx.TextSpriteBatch();
-          
-          // set outline
-          textSpriteBatch.outlineWeight = 1;
-          textSpriteBatch.outlineColor = Shaku.utils.Color.black;
-          
-          // draw a texture with simple outline
-          function drawTextWithOutline(text, position)
-          {
-            let textGroup = Shaku.gfx.buildText(fontTexture, text, 24, Shaku.utils.Color.black, Shaku.gfx.TextAlignments.Center);
-            textGroup.setColor(Shaku.utils.Color.white);
-            textGroup.position.copy(position);
-            textSpriteBatch.begin();
-            textSpriteBatch.drawText(textGroup);
-            textSpriteBatch.end();
-          }
+				// add canvas to document
+				document.body.appendChild(Shaku.gfx.canvas);
+				Shaku.gfx.setResolution(screenX, screenY, true);
 
-          // load textures
-          let texture1 = await Shaku.assets.loadTexture('assets/stone_wall.png');
-          let texture2 = await Shaku.assets.loadTexture('assets/lava.png');
-          let texture3 = await Shaku.assets.loadTexture('assets/sprite-sm.png');
-          let texture = texture1;
+				// load font texture
+				let fontTexture = await Shaku.assets.loadFontTexture('assets/DejaVuSansMono.ttf', { fontName: 'DejaVuSansMono' });
 
-          // do a main loop step.
-          function step() 
-          {  
-            // start frame and clear screen
-            Shaku.startFrame();
-            Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
-            
-            // control selected texture
-            if (Shaku.input.down('1')) { texture = texture1; }
-            if (Shaku.input.down('2')) { texture = texture2; }
-            if (Shaku.input.down('3')) { texture = texture3; }
+				// create sprites and text batch
+				let spritesBatch = new Shaku.gfx.SpriteBatch();
+				let textSpriteBatch = new Shaku.gfx.TextSpriteBatch();
 
-            let x = 10;
-            let y = 10;
+				// set outline
+				textSpriteBatch.outlineWeight = 1;
+				textSpriteBatch.outlineColor = Shaku.utils.Color.black;
 
-            let size = new Shaku.utils.Vector2(300, 300);
-            let origin = Shaku.utils.Vector2.zero();
+				// draw a texture with simple outline
+				function drawTextWithOutline(text, position) {
+					let textGroup = Shaku.gfx.buildText(fontTexture, text, 24, Shaku.utils.Color.black, Shaku.gfx.TextAlignments.Center);
+					textGroup.setColor(Shaku.utils.Color.white);
+					textGroup.position.copy(position);
+					textSpriteBatch.begin();
+					textSpriteBatch.drawText(textGroup);
+					textSpriteBatch.end();
+				}
 
-            // show filters: Linear
-            spritesBatch.begin();
-            texture.filter = Shaku.gfx.TextureFilterModes.Linear;
-            spritesBatch.drawQuad(texture, new Shaku.utils.Vector2(x, y), size, null, null, 0, origin);
-            spritesBatch.end();
-            drawTextWithOutline("Filter: Linear", new Shaku.utils.Vector2(x + 150, y + 35));
-            
-            x += 320;
+				// load textures
+				let texture1 = await Shaku.assets.loadTexture('assets/stone_wall.png');
+				let texture2 = await Shaku.assets.loadTexture('assets/lava.png');
+				let texture3 = await Shaku.assets.loadTexture('assets/sprite-sm.png');
+				let texture = texture1;
 
-            // show filters: Nearest
-            spritesBatch.begin();
-            texture.filter = Shaku.gfx.TextureFilterModes.Nearest;
-            spritesBatch.drawQuad(texture, new Shaku.utils.Vector2(x, y), size, null, null, 0, origin);
-            spritesBatch.end();
-            drawTextWithOutline("Filter: Nearest", new Shaku.utils.Vector2(x + 150, y + 35));
-            
-            x = 10;
-            y += 320;
+				// do a main loop step.
+				function step() {
+					// start frame and clear screen
+					Shaku.startFrame();
+					Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
 
-            // show wrap mode: Clamp
-            spritesBatch.begin();
-            texture.wrapMode = Shaku.gfx.TextureWrapModes.Clamp;
-            spritesBatch.drawQuad(texture, new Shaku.utils.Vector2(x, y), size, new Shaku.utils.Rectangle(-16, -16, 64, 64), null, 0, origin);
-            spritesBatch.end();
-            drawTextWithOutline("Wrap: Clamp", new Shaku.utils.Vector2(x + 150, y + 35));
+					// control selected texture
+					if (Shaku.input.down('1')) { texture = texture1; }
+					if (Shaku.input.down('2')) { texture = texture2; }
+					if (Shaku.input.down('3')) { texture = texture3; }
 
-            x += 320
+					let x = 10;
+					let y = 10;
 
-            // show wrap mode: Repeat
-            spritesBatch.begin();
-            texture.wrapMode = Shaku.gfx.TextureWrapModes.Repeat;
-            spritesBatch.drawQuad(texture, new Shaku.utils.Vector2(x, y), size, new Shaku.utils.Rectangle(-16, -16, 64, 64), null, 0, origin);
-            spritesBatch.end();
-            drawTextWithOutline("Wrap: Repeat", new Shaku.utils.Vector2(x + 150, y + 35));
+					let size = new Shaku.utils.Vector2(300, 300);
+					let origin = Shaku.utils.Vector2.zero();
 
-            x += 320
+					// show filters: Linear
+					spritesBatch.begin();
+					texture.filter = Shaku.gfx.TextureFilterModes.Linear;
+					spritesBatch.drawQuad(texture, new Shaku.utils.Vector2(x, y), size, null, null, 0, origin);
+					spritesBatch.end();
+					drawTextWithOutline("Filter: Linear", new Shaku.utils.Vector2(x + 150, y + 35));
 
-            // show wrap mode: Repeat Mirror
-            spritesBatch.begin();
-            texture.wrapMode = Shaku.gfx.TextureWrapModes.RepeatMirrored;
-            spritesBatch.drawQuad(texture, new Shaku.utils.Vector2(x, y), size, new Shaku.utils.Rectangle(-16, -16, 64, 64), null, 0, origin);
-            spritesBatch.end();
-            drawTextWithOutline("Wrap: Mirrored", new Shaku.utils.Vector2(x + 150, y + 35));
+					x += 320;
 
-            // reset states
-            texture.wrapMode = Shaku.gfx.TextureWrapModes.Clamp;
-            texture.filter = Shaku.gfx.TextureFilterModes.Nearest;
+					// show filters: Nearest
+					spritesBatch.begin();
+					texture.filter = Shaku.gfx.TextureFilterModes.Nearest;
+					spritesBatch.drawQuad(texture, new Shaku.utils.Vector2(x, y), size, null, null, 0, origin);
+					spritesBatch.end();
+					drawTextWithOutline("Filter: Nearest", new Shaku.utils.Vector2(x + 150, y + 35));
 
-            // end frame and request next frame
-            Shaku.endFrame();
-            Shaku.requestAnimationFrame(step);
-          }
+					x = 10;
+					y += 320;
 
-          // start main loop
-          step();
-        }
+					// show wrap mode: Clamp
+					spritesBatch.begin();
+					texture.wrapMode = Shaku.gfx.TextureWrapModes.Clamp;
+					spritesBatch.drawQuad(texture, new Shaku.utils.Vector2(x, y), size, new Shaku.utils.Rectangle(-16, -16, 64, 64), null, 0, origin);
+					spritesBatch.end();
+					drawTextWithOutline("Wrap: Clamp", new Shaku.utils.Vector2(x + 150, y + 35));
 
-        // start demo
-        runDemo();
+					x += 320;
 
-      </script>
+					// show wrap mode: Repeat
+					spritesBatch.begin();
+					texture.wrapMode = Shaku.gfx.TextureWrapModes.Repeat;
+					spritesBatch.drawQuad(texture, new Shaku.utils.Vector2(x, y), size, new Shaku.utils.Rectangle(-16, -16, 64, 64), null, 0, origin);
+					spritesBatch.end();
+					drawTextWithOutline("Wrap: Repeat", new Shaku.utils.Vector2(x + 150, y + 35));
 
-</div>
+					x += 320;
 
-<!-- code example part -->
-<div id="sample-code-modal" class="modal">
-  <div class="modal__overlay jsOverlay"></div>
-  <div class="modal__container">   
+					// show wrap mode: Repeat Mirror
+					spritesBatch.begin();
+					texture.wrapMode = Shaku.gfx.TextureWrapModes.RepeatMirrored;
+					spritesBatch.drawQuad(texture, new Shaku.utils.Vector2(x, y), size, new Shaku.utils.Rectangle(-16, -16, 64, 64), null, 0, origin);
+					spritesBatch.end();
+					drawTextWithOutline("Wrap: Mirrored", new Shaku.utils.Vector2(x + 150, y + 35));
 
-<p class="noselect">The following is a minimal code example to demonstrate different texture filters and wrap modes.</p>
-<pre><code class="language-js">// load sprite's texture asset
+					// reset states
+					texture.wrapMode = Shaku.gfx.TextureWrapModes.Clamp;
+					texture.filter = Shaku.gfx.TextureFilterModes.Nearest;
+
+					// end frame and request next frame
+					Shaku.endFrame();
+					Shaku.requestAnimationFrame(step);
+				}
+
+				// start main loop
+				step();
+			}
+
+			// start demo
+			runDemo();
+
+		</script>
+
+	</div>
+
+	<!-- code example part -->
+	<div id="sample-code-modal" class="modal">
+		<div class="modal__overlay jsOverlay"></div>
+		<div class="modal__container">
+
+			<p class="noselect">The following is a minimal code example to demonstrate different texture filters and
+				wrap modes.</p>
+			<pre><code class="language-js">// load sprite's texture asset
 let texture = await Shaku.assets.loadTexture('assets/sprite.png');
 
 // set texture to linear filter (smooth)
@@ -172,12 +172,13 @@ texture.wrapMode = Shaku.gfx.TextureWrapModes.RepeatMirrored;
 texture.wrapMode = Shaku.gfx.TextureWrapModes.Clamp;
 </code></pre>
 
-  <button class="modal__close" onclick="closeModal('sample-code-modal')">&#10005;</button>
-</div>
-</div>
+			<button class="modal__close" onclick="closeModal('sample-code-modal')">&#10005;</button>
+		</div>
+	</div>
 
-<link href="prism/prism.css" rel="stylesheet" />
-<script src="prism/prism.js"></script>
+	<link href="prism/prism.css" rel="stylesheet" />
+	<script src="prism/prism.js"></script>
 
-  </body>
+</body>
+
 </html>

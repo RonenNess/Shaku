@@ -1,65 +1,68 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <title>Shaku</title>
-    <meta name="description" content="Shaku - a simple and easy-to-use javascript library for videogame programming.">
-    <meta name="author" content="Ronen Ness">
-    <link href="css/style.css" rel="stylesheet" type="text/css" media="all">
-  </head>
-  <body>
-    <div class="noselect">
-    <button class="view-code-btn" onclick="showSampleCode();">View Code</button> 
-    <h1 class="demo-title">Shaku: Hello World</h1>
-      <p>This demo just sets up Shaku and create a running game loop.<br/>
-      <b>You should see nothing but a bluish rectangle below</b>, which is the canvas we'll render on in the other examples.</p>
-      
-      <!-- include shaku -->
-      <script src="js/demos.js"></script>
-      <script src="js/shaku.js"></script>
 
-      <!-- demo code -->
-      <script>
-        async function runGame()
-        {
-          // init shaku
-          await Shaku.init();
+<head>
+	<meta charset="UTF-8">
+	<title>Shaku</title>
+	<meta name="description" content="Shaku - a simple and easy-to-use javascript library for videogame programming.">
+	<meta name="author" content="Ronen Ness">
+	<link href="css/style.css" rel="stylesheet" type="text/css" media="all">
+</head>
 
-          // add shaku's canvas to document and set resolution to 800x600
-          document.body.appendChild(Shaku.gfx.canvas);
-          Shaku.gfx.setResolution(800, 600, true);
+<body>
+	<div class="noselect">
+		<button class="view-code-btn" onclick="showSampleCode();">View Code</button>
+		<h1 class="demo-title">Shaku: Hello World</h1>
+		<p>This demo just sets up Shaku and create a running game loop.<br />
+			<b>You should see nothing but a bluish rectangle below</b>, which is the canvas we'll render on in the other
+			examples.
+		</p>
 
-          // do a single main loop step
-          function step() 
-          {  
-            // start new frame and clear screen
-            Shaku.startFrame();
-            Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
+		<!-- include shaku -->
+		<script src="js/demos.js"></script>
+		<script src="js/shaku.js"></script>
 
-            // PUT YOUR GAME LOGIC HERE
+		<!-- demo code -->
+		<script>
+			async function runGame() {
+				// init shaku
+				await Shaku.init();
 
-            // end frame and request next frame
-            Shaku.endFrame();
-            Shaku.requestAnimationFrame(step);
-          }
+				// add shaku's canvas to document and set resolution to 800x600
+				document.body.appendChild(Shaku.gfx.canvas);
+				Shaku.gfx.setResolution(800, 600, true);
 
-          // start main loop
-          step();
-        }
+				// do a single main loop step
+				function step() {
+					// start new frame and clear screen
+					Shaku.startFrame();
+					Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
 
-        runGame();
-      </script>
+					// PUT YOUR GAME LOGIC HERE
 
-</div>
+					// end frame and request next frame
+					Shaku.endFrame();
+					Shaku.requestAnimationFrame(step);
+				}
 
-<!-- code example part -->
-<div id="sample-code-modal" class="modal">
-  <div class="modal__overlay jsOverlay"></div>
-  <div class="modal__container">   
+				// start main loop
+				step();
+			}
 
-<p class="noselect">The following code shows a minimal code example on how to init Shaku and create a main loop.</i>
-</p>
-<pre><code class="language-js">async function runGame()
+			runGame();
+		</script>
+
+	</div>
+
+	<!-- code example part -->
+	<div id="sample-code-modal" class="modal">
+		<div class="modal__overlay jsOverlay"></div>
+		<div class="modal__container">
+
+			<p class="noselect">The following code shows a minimal code example on how to init Shaku and create a main
+				loop.</i>
+			</p>
+			<pre><code class="language-js">async function runGame()
 {
   // init shaku
   await Shaku.init();
@@ -69,8 +72,8 @@
   Shaku.gfx.setResolution(800, 600, true);
 
   // do a single main loop step
-  function step() 
-  {  
+  function step()
+  {
     // start new frame and clear screen
     Shaku.startFrame();
     Shaku.gfx.clear(Shaku.utils.Color.cornflowerblue);
@@ -88,12 +91,13 @@
 
 runGame();</code></pre>
 
-  <button class="modal__close" onclick="closeModal('sample-code-modal')">&#10005;</button>
-</div>
-</div>
+			<button class="modal__close" onclick="closeModal('sample-code-modal')">&#10005;</button>
+		</div>
+	</div>
 
-<link href="prism/prism.css" rel="stylesheet" />
-<script src="prism/prism.js"></script>
+	<link href="prism/prism.css" rel="stylesheet" />
+	<script src="prism/prism.js"></script>
 
-  </body>
+</body>
+
 </html>
